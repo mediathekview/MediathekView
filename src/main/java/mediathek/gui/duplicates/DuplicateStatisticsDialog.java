@@ -82,10 +82,10 @@ public class DuplicateStatisticsDialog extends JDialog {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
         var dialogPane = new JPanel();
+        label1 = new JLabel();
         var contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
         table = new JTable();
-        label1 = new JLabel();
 
         //======== this ========
         setTitle("Duplikatstatistik"); //NON-NLS
@@ -98,6 +98,10 @@ public class DuplicateStatisticsDialog extends JDialog {
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
             dialogPane.setLayout(new BorderLayout(0, 5));
+
+            //---- label1 ----
+            label1.setText("Gesamtanzahl Duplikate:"); //NON-NLS
+            dialogPane.add(label1, BorderLayout.SOUTH);
 
             //======== contentPanel ========
             {
@@ -115,10 +119,6 @@ public class DuplicateStatisticsDialog extends JDialog {
                     scrollPane1.setViewportView(table);
                 }
                 contentPanel.add(scrollPane1, BorderLayout.CENTER);
-
-                //---- label1 ----
-                label1.setText("Gesamtanzahl Duplikate:"); //NON-NLS
-                contentPanel.add(label1, BorderLayout.SOUTH);
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
         }
@@ -130,8 +130,8 @@ public class DuplicateStatisticsDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     // Generated using JFormDesigner non-commercial license
+    private JLabel label1;
     private JScrollPane scrollPane1;
     private JTable table;
-    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

@@ -16,6 +16,12 @@ new FormModel {
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "Gesamtanzahl Duplikate:"
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "contentPanel"
 					auxiliary() {
@@ -33,12 +39,6 @@ new FormModel {
 						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label1"
-						"text": "Gesamtanzahl Duplikate:"
-					}, new FormLayoutConstraints( class java.lang.String ) {
-						"value": "South"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
