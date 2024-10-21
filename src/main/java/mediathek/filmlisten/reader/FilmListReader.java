@@ -3,6 +3,8 @@ package mediathek.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Sets;
 import mediathek.config.Config;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
@@ -44,6 +46,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
@@ -303,6 +306,8 @@ public class FilmListReader implements AutoCloseable {
         final boolean loadAudiodescription = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true);
         final boolean loadSignLanguage = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true);
         final boolean loadLivestreams = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true);
+        //FIXME implement config
+        final boolean checkDuplicates = true;
 
         while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {
@@ -362,9 +367,40 @@ public class FilmListReader implements AutoCloseable {
                 //just initialize the film object, rest will be done in one of the filters
                 datenFilm.init();
 
+                // this will add the film to the filmlist if it passes...
                 dateFilter.filter(datenFilm);
             }
         }
+
+        // search for duplicates after we have all the information available and initialized
+        if (checkDuplicates) {
+            checkDuplicates(listeFilme);
+        }
+    }
+
+    private void checkDuplicates(@NotNull ListeFilme filmList) {
+        logger.trace("Duplicate URL search start");
+        final Set<String> urlCache = Sets.newConcurrentHashSet();//new HashSet<>(filmList.size(), .75f);
+        //logger.trace("filmListe size: {}", filmList.size());
+
+        Stopwatch watch2 = Stopwatch.createStarted();
+        /*for (var film : filmList) {
+            final var url = film.getUrlNormalQuality();
+            final var duplicate = urlCache.contains(url);
+            film.setDuplicate(duplicate);
+            urlCache.add(url);
+        }*/
+        filmList.parallelStream().forEach(film -> {
+            final var url = film.getUrlNormalQuality();
+            final var duplicate = urlCache.contains(url);
+            film.setDuplicate(duplicate);
+            urlCache.add(url);
+        });
+        watch2.stop();
+        //logger.trace("urlCache size: {}", urlCache.size());
+        logger.trace("dupeCounter: {}", filmList.size() - urlCache.size());
+        urlCache.clear();
+        logger.trace("Duplicate URL search took: {}", watch2);
     }
 
     /**
