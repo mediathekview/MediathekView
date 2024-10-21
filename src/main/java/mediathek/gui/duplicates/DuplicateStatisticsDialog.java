@@ -9,6 +9,8 @@ import mediathek.config.Daten;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
 /**
@@ -22,18 +24,40 @@ public class DuplicateStatisticsDialog extends JDialog {
 
         var tableFormat = new DuplicateStatisticsTableFormat();
         var model = GlazedListsSwing.eventTableModelWithThreadProxyList(Daten.getInstance().getFilmListDuplicateStatisticsList(), tableFormat);
+        model.addTableModelListener(e -> updateTotalStats());
         table.setModel(model);
+        updateTotalStats();
 
-        model.addTableModelListener(e -> {
-            var statisticsEventList = Daten.getInstance().getFilmListDuplicateStatisticsList();
-            statisticsEventList.getReadWriteLock().readLock().lock();
-            long dupes = 0;
-            for (var item: statisticsEventList) {
-                dupes += item.count();
-            }
-            label1.setText(String.format("Gesamtanzahl Duplikate: %d", dupes));
-            statisticsEventList.getReadWriteLock().readLock().unlock();
-        });
+        //table.getColumnModel().getColumn(0).setPreferredWidth(120);
+        table.getColumnModel().getColumn(1).setPreferredWidth(130);
+        resizeSenderColumnWidth();
+
+        pack();
+    }
+
+    private void resizeSenderColumnWidth() {
+        final TableColumnModel columnModel = table.getColumnModel();
+        int width = 120; // Min width
+        for (int row = 0; row < table.getRowCount(); row++) {
+            TableCellRenderer renderer = table.getCellRenderer(row, 0);
+            Component comp = table.prepareRenderer(renderer, row, 0);
+            width = Math.max(comp.getPreferredSize().width + 1, width);
+        }
+        columnModel.getColumn(0).setPreferredWidth(width);
+    }
+
+    private void updateTotalStats() {
+        resizeSenderColumnWidth();
+
+        var statisticsEventList = Daten.getInstance().getFilmListDuplicateStatisticsList();
+        statisticsEventList.getReadWriteLock().readLock().lock();
+        long dupes = 0;
+        for (var item: statisticsEventList) {
+            dupes += item.count();
+        }
+        label1.setText(String.format("Gesamtanzahl Duplikate: %d", dupes));
+        statisticsEventList.getReadWriteLock().readLock().unlock();
+        pack();
     }
 
     private void initComponents() {
@@ -55,7 +79,7 @@ public class DuplicateStatisticsDialog extends JDialog {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setLayout(new BorderLayout());
+            dialogPane.setLayout(new BorderLayout(0, 5));
 
             //======== contentPanel ========
             {
@@ -68,6 +92,8 @@ public class DuplicateStatisticsDialog extends JDialog {
                     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     table.setShowHorizontalLines(false);
                     table.setShowVerticalLines(false);
+                    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                    table.setPreferredScrollableViewportSize(new Dimension(270, 300));
                     scrollPane1.setViewportView(table);
                 }
                 contentPanel.add(scrollPane1, BorderLayout.CENTER);

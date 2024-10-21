@@ -8,7 +8,9 @@ new FormModel {
 			"title": "Duplikatstatistik"
 			"defaultCloseOperation": 2
 			"type": enum java.awt.Window$Type UTILITY
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+				"vgap": 5
+			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
@@ -20,6 +22,8 @@ new FormModel {
 							"selectionMode": 0
 							"showHorizontalLines": false
 							"showVerticalLines": false
+							"autoResizeMode": 0
+							"preferredScrollableViewportSize": new java.awt.Dimension( 270, 300 )
 						} )
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
@@ -38,7 +42,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 290, 300 )
+			"size": new java.awt.Dimension( 290, 365 )
 		} )
 	}
 }
