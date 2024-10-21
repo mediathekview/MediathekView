@@ -44,9 +44,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
@@ -372,31 +370,45 @@ public class FilmListReader implements AutoCloseable {
 
         // search for duplicates after we have all the information available and initialized
         checkDuplicates(listeFilme);
+        printDuplicateStatistics(listeFilme);
+    }
+
+    private void printDuplicateStatistics(@NotNull ListeFilme listeFilme) {
+        Stopwatch watch = Stopwatch.createStarted();
+        final var duplicates = listeFilme.parallelStream()
+                .filter(DatenFilm::isDuplicate)
+                .toList();
+        final var senders = duplicates.parallelStream().map(DatenFilm::getSender).distinct().toList();
+        final Map<String,Long> statistics = new HashMap<>();
+        for (var sender: senders) {
+            final var dupes = duplicates.parallelStream().filter(f -> f.getSender().equals(sender)).count();
+            statistics.put(sender, dupes);
+        }
+        watch.stop();
+        logger.trace(statistics.toString());
+        long dupes = 0;
+        for (var key: statistics.keySet()) {
+            dupes += statistics.get(key);
+        }
+        logger.trace("Duplicate stream filter took: {}", watch);
+        logger.trace("Number of duplicates: {}", duplicates.size());
+        logger.trace("Calculated dupes: {}", dupes);
     }
 
     private void checkDuplicates(@NotNull ListeFilme filmList) {
-        logger.trace("Duplicate URL search start");
-        final Set<String> urlCache = Sets.newConcurrentHashSet();//new HashSet<>(filmList.size(), .75f);
-        //logger.trace("filmListe size: {}", filmList.size());
+        logger.trace("Start Duplicate URL search");
+        final Set<String> urlCache = Sets.newConcurrentHashSet();
 
-        Stopwatch watch2 = Stopwatch.createStarted();
-        /*for (var film : filmList) {
-            final var url = film.getUrlNormalQuality();
-            final var duplicate = urlCache.contains(url);
-            film.setDuplicate(duplicate);
-            urlCache.add(url);
-        }*/
+        Stopwatch watch = Stopwatch.createStarted();
         filmList.parallelStream().forEach(film -> {
             final var url = film.getUrlNormalQuality();
             final var duplicate = urlCache.contains(url);
             film.setDuplicate(duplicate);
             urlCache.add(url);
         });
-        watch2.stop();
-        //logger.trace("urlCache size: {}", urlCache.size());
-        logger.trace("dupeCounter: {}", filmList.size() - urlCache.size());
+        watch.stop();
+        logger.trace("Duplicate URL search took: {}", watch);
         urlCache.clear();
-        logger.trace("Duplicate URL search took: {}", watch2);
     }
 
     /**
