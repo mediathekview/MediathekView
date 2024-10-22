@@ -3,12 +3,14 @@ package mediathek.gui.duplicates;
 import ca.odell.glazedlists.TransactionList;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
+import com.google.common.hash.Hashing;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
@@ -46,17 +48,23 @@ public class FilmDuplicateEvaluationTask implements Runnable {
 
     private void checkDuplicates() {
         logger.trace("Start Duplicate URL search");
-        final Set<String> urlCache = Sets.newConcurrentHashSet();
+        final Set<Long> urlCache = Sets.newConcurrentHashSet();
 
+        var hf = Hashing.murmur3_128();
         Stopwatch watch = Stopwatch.createStarted();
         listeFilme.stream()
                 .filter(f -> !f.isLivestream())
                 .sorted(new BigSenderPenaltyComparator())
                 .forEach(film -> {
-            final var url = film.getUrlNormalQuality();
-            film.setDuplicate(urlCache.contains(url));
-            urlCache.add(url);
-        });
+                    final var hc = hf.newHasher()
+                            .putString(film.getUrlNormalQuality(), StandardCharsets.UTF_8)
+                            .putString(film.getHighQualityUrl(), StandardCharsets.UTF_8)
+                            .hash();
+                    final var hash = hc.padToLong();
+
+                    film.setDuplicate(urlCache.contains(hash));
+                    urlCache.add(hash);
+                });
         watch.stop();
         logger.trace("Duplicate URL search took: {}", watch);
         urlCache.clear();

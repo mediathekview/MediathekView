@@ -66,7 +66,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
      */
     private DatumFilm datumFilm = DatumFilm.UNDEFINED_FILM_DATE;
     private String description;
-    private String datumLong = "";
     private String sender = "";
     private String thema = "";
     private String titel = "";
@@ -85,7 +84,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.datumFilm = other.datumFilm;
         this.filmSize.setSize(other.filmSize.toString());
         this.description = other.description;
-        this.datumLong = other.datumLong;
         this.sender = other.sender;
         this.thema = other.thema;
         this.titel = other.titel;
@@ -177,16 +175,24 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public void setHighQualityUrl(@NotNull String urlHd) {
         if (urlHd.isEmpty())
             dataMap.remove(MapKeys.HIGH_QUALITY_URL);
-        else
+        else {
+            if (isCompressedUrl(urlHd)) {
+                urlHd = decompressUrl(urlHd);
+            }
             dataMap.put(MapKeys.HIGH_QUALITY_URL, urlHd);
-    }
-
-    public String getDatumLong() {
-        return datumLong;
+        }
     }
 
     public void setDatumLong(String datumLong) {
-        this.datumLong = datumLong;
+        long datum_long;
+        try {
+            datum_long = Long.parseLong(datumLong);
+        }
+        catch (Exception e) {
+            logger.error("Failed to parse datum long string", e);
+            datum_long = 0;
+        }
+        dataMap.put(MapKeys.TEMP_DATUM_LONG, datum_long);
     }
 
     public boolean isTrailerTeaser() {
@@ -411,23 +417,22 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    private void setDatum() {
+    private void setupDatumFilm() {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
-            try {
-                final long l = Long.parseLong(getDatumLong());
-                datumFilm = new DatumFilm(l * 1000); // sind SEKUNDEN!!
-            } catch (Exception ex) {
-                logger.error("Datum: {}, Zeit: {}, Datum_LONG: {}", getSendeDatum(), getSendeZeit(), getDatumLong(), ex);
-                datumFilm = new DatumFilm(0);
+            long datum_long = (long)dataMap.getOrDefault(MapKeys.TEMP_DATUM_LONG, 0);
+            datumFilm = new DatumFilm(datum_long * 1000); // convert from SECONDS to MILLISECONDS
+            if (datum_long == 0)
+            {
                 setSendeDatum("");
                 setSendeZeit("");
             }
         }
+        dataMap.remove(MapKeys.TEMP_DATUM_LONG);
     }
 
     public void init() {
-        setDatum();
+        setupDatumFilm();
     }
 
     /**
@@ -586,5 +591,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return dataMap.containsKey(MapKeys.BOOKMARK_DATA);
     }
 
-    enum MapKeys {FILM_NR, SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL, BOOKMARK_DATA, ABO_DATA}
+    enum MapKeys {FILM_NR, SUBTITLE_URL, WEBSITE_URL, LOW_QUALITY_URL, NORMAL_QUALITY_URL, HIGH_QUALITY_URL,
+        BOOKMARK_DATA,
+        ABO_DATA,
+        TEMP_DATUM_LONG
+    }
 }
