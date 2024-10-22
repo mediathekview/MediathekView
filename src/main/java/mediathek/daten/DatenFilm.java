@@ -420,7 +420,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private void setupDatumFilm() {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
-            long datum_long = (long)dataMap.getOrDefault(MapKeys.TEMP_DATUM_LONG, 0);
+            long datum_long = (long)dataMap.getOrDefault(MapKeys.TEMP_DATUM_LONG, 0L);
             datumFilm = new DatumFilm(datum_long * 1000); // convert from SECONDS to MILLISECONDS
             if (datum_long == 0)
             {
