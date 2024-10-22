@@ -22,7 +22,7 @@ public class DuplicateFilmDetailsTableFormat implements AdvancedTableFormat<Date
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return 7;
     }
 
     @Override
@@ -33,6 +33,8 @@ public class DuplicateFilmDetailsTableFormat implements AdvancedTableFormat<Date
             case 2 -> "Titel";
             case 3 -> "Datum";
             case 4 -> "Sendezeit";
+            case 5 -> "URL HQ";
+            case 6 -> "URL";
             default -> "X" + column;
         };
     }
@@ -45,6 +47,8 @@ public class DuplicateFilmDetailsTableFormat implements AdvancedTableFormat<Date
             case 2 -> baseObject.getTitle();
             case 3 -> baseObject.getSendeDatum();
             case 4 -> baseObject.getSendeZeit();
+            case 5 -> baseObject.getHighQualityUrl();
+            case 6 -> baseObject.getUrlNormalQuality();
             default -> "XX";
         };
     }

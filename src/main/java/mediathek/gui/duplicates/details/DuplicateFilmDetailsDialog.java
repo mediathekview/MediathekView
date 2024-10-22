@@ -35,7 +35,9 @@ public class DuplicateFilmDetailsDialog extends JDialog {
 
         table1.getColumnModel().getColumn(0).setPreferredWidth(90);
         table1.getColumnModel().getColumn(1).setPreferredWidth(120);
-        table1.getColumnModel().getColumn(2).setPreferredWidth(120);
+        table1.getColumnModel().getColumn(2).setPreferredWidth(200);
+        table1.getColumnModel().getColumn(5).setPreferredWidth(400);
+        table1.getColumnModel().getColumn(6).setPreferredWidth(400);
 
         var url = film.getUrlNormalQuality();
         Daten.getInstance().getListeFilme().parallelStream()
