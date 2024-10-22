@@ -25,6 +25,7 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
+import mediathek.gui.duplicates.FilmDuplicateEvaluationTask;
 import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
 import mediathek.gui.history.ResetDownloadHistoryAction;
@@ -107,6 +108,7 @@ public class MediathekGui extends JFrame {
     private final FilmInfoDialog filmInfo;
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
+    private final ShowDuplicateStatisticsAction showDuplicateStatisticsAction = new ShowDuplicateStatisticsAction(this);
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -604,6 +606,7 @@ public class MediathekGui extends JFrame {
                         daten.getFilmeLaden().loadFilmlist("", true);
                     }
                 })
+                .thenRun(new FilmDuplicateEvaluationTask())
                 .thenRun(new RefreshAboWorker(progressLabel, progressBar))
                 .thenRun(new BlacklistFilterWorker(progressLabel, progressBar));
 
@@ -995,6 +998,7 @@ public class MediathekGui extends JFrame {
             }
         }
         jMenuAnsicht.add(showBandwidthUsageAction);
+        jMenuAnsicht.add(showDuplicateStatisticsAction);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
         jMenuAnsicht.addSeparator();

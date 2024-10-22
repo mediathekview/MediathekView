@@ -70,7 +70,7 @@ public class PanelEinstellungenColor extends JPanel {
         tModel.setRowCount(0);
         for (MVC mvc : Daten.mVColor.liste) {
             object = new Object[MVC_MAX];
-            object[MVC_TEXT] = mvc.text;
+            object[MVC_TEXT] = mvc.getText();
             object[MVC_COLOR] = mvc;
             tModel.addRow(object);
         }

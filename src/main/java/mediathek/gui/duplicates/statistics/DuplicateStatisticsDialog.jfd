@@ -1,0 +1,91 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.4" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "Film-Statistik"
+			"defaultCloseOperation": 2
+			"type": enum java.awt.Window$Type UTILITY
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane"
+				"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+					"vgap": 5
+				} ) {
+					name: "commonStats"
+					"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "tblCommon"
+							"autoResizeMode": 0
+							"preferredScrollableViewportSize": new java.awt.Dimension( 250, 400 )
+							"selectionMode": 0
+							"showHorizontalLines": false
+							"showVerticalLines": false
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lblTotalCommon"
+						"text": "Gesamtanzahl Filme:"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Allgemein"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
+					"vgap": 5
+				} ) {
+					name: "duplicatePanel"
+					"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "tblDuplicates"
+							"selectionMode": 0
+							"showHorizontalLines": false
+							"showVerticalLines": false
+							"autoResizeMode": 0
+							"preferredScrollableViewportSize": new java.awt.Dimension( 250, 400 )
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "lblTotalDuplicates"
+						"text": "Gesamtanzahl Duplikate:"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Last"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Duplikate"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 290, 365 )
+		} )
+	}
+}

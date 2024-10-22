@@ -60,6 +60,7 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(film.isAudioVersion()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(film.isSignLanguage()), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.DUPLICATE, Boolean.toString(film.isDuplicate()), Field.Store.NO));
 
         addSendeDatum(doc, film);
 

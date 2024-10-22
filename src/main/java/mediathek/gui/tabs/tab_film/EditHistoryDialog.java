@@ -10,6 +10,8 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 /**
@@ -120,6 +123,8 @@ public class EditHistoryDialog extends JDialog {
         return idx;
     }
 
+    private static final Logger logger = LogManager.getLogger();
+
     private void restorePosition() {
         var config = ApplicationConfiguration.getConfiguration();
         try {
@@ -131,8 +136,11 @@ public class EditHistoryDialog extends JDialog {
 
             setSize(width, height);
             setLocation(x, y);
-        } catch (Exception ignored) {
-            System.out.println("COULD NOT FIND CONFIGURATION");
+        }
+        catch (NoSuchElementException ignored) {
+        }
+        catch (Exception ex) {
+            logger.error("Unhandled exception", ex);
         } finally {
             config.unlock(LockMode.READ);
         }

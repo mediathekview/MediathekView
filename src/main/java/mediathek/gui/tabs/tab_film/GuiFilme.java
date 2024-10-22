@@ -32,6 +32,7 @@ import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
+import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
@@ -1428,6 +1429,18 @@ public class GuiFilme extends AGuiTabPanel {
                     }
                 });
                 jPopupMenu.add(miCreateInfoFile);
+            });
+
+            res.ifPresent(film -> {
+                if (film.isDuplicate()) {
+                    jPopupMenu.addSeparator();
+                    var mi = new JMenuItem("Zusammengehörige Filme anzeigen...");
+                    mi.addActionListener(l -> {
+                        DuplicateFilmDetailsDialog dlg = new DuplicateFilmDetailsDialog(MediathekGui.ui(), film);
+                        dlg.setVisible(true);
+                    });
+                    jPopupMenu.add(mi);
+                }
             });
 
             // anzeigen

@@ -362,6 +362,7 @@ public class FilmListReader implements AutoCloseable {
                 //just initialize the film object, rest will be done in one of the filters
                 datenFilm.init();
 
+                // this will add the film to the filmlist if it passes...
                 dateFilter.filter(datenFilm);
             }
         }

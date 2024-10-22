@@ -24,6 +24,11 @@
 - **FEATURE:** Im Tab Beschreibung und im FilmInfo-Dialog können jeweils selektierte Texte der Beschreibung per Kontextmenü in die Zwischenablage kopiert werden.
 - **FEATURE(Linux):** Für exotische Window Manager können nun die FlatLaf-Dekorationen mittels `-dfd` oder `--disable-flatlaf-decorations` Parametern deaktiviert werden.
 - **FEATURE:** Info-Datei kann nun per Kontextmenü für jeden Eintrag manuell erzeugt werden.
+- **FEATURE:** Die Filmliste wird nun beim Laden zusätzlich auf Duplikate untersucht. Hierbei werden die Mediatheken der ARD und ZDF erst am Ende berücksichtigt um das Angebot der "kleineren" Sender nicht zu benachteiligen.
+- **FEATURE:** Duplikate werden im Tab `Filme` farblich hervorgehoben. Die Farbe kann in den Einstellungen modifiziert werden.
+- **FEATURE:** Im Tab `Filme` können über das Kontextmenü `Zusammengehörige Filme anzeigen...` bei einem markierten Duplikat alle zusammenghörigen Filme angezeigt werden.  
+- **FEATURE:** Mittels `Ansicht/Filmstatistik anzeigen` können nun für die vorhandenen Sender Informationen bzgl. Anzahl der Filme und der Duplikate angezeigt werden. Es wird hier nur die gesamte Filmliste ohne jegliche Filter abzüglich Livestreams berücksichtigt, so dass es zu Abweichungen zur Anzeige in der Statuszeile kommen kann.
+- **FEATURE:** Mit der Lucene-Suche können mittels des `duplicate`-Boolean Parameters Filmduplikate berücksichtigt werden.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
