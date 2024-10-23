@@ -11,16 +11,29 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.ApplicationConfiguration;
+import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.NoSuchElementException;
 
 /**
  * @author christianfranzke
  */
 public class DuplicateFilmDetailsDialog extends JDialog {
+    private static final String CONFIG_X = "duplicate_film_details_dialog.x";
+    private static final String CONFIG_Y = "duplicate_film_details_dialog.y";
+    private static final String CONFIG_HEIGHT = "duplicate_film_details_dialog.height";
+    private static final String CONFIG_WIDTH = "duplicate_film_details_dialog.width";
+    private static final Logger logger = LogManager.getLogger();
+
     public DuplicateFilmDetailsDialog(Window owner, @NotNull DatenFilm film) {
         super(owner);
         initComponents();
@@ -44,6 +57,51 @@ public class DuplicateFilmDetailsDialog extends JDialog {
                 .filter(f -> f.getUrlNormalQuality().equals(url))
                 .forEach(duplicateList::add);
 
+        restorePosition();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                savePosition();
+            }
+        });
+    }
+
+    private void restorePosition() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.READ);
+            int x = config.getInt(CONFIG_X);
+            int y = config.getInt(CONFIG_Y);
+            int width = config.getInt(CONFIG_WIDTH);
+            int height = config.getInt(CONFIG_HEIGHT);
+
+            setSize(width, height);
+            setLocation(x, y);
+        }
+        catch (NoSuchElementException e) {
+            pack();
+        }
+        catch (Exception ex) {
+            logger.error("Unhandled Exception", ex);
+            pack();
+        } finally {
+            config.unlock(LockMode.READ);
+        }
+    }
+
+    private void savePosition() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.WRITE);
+            var size = getSize();
+            var location = getLocation();
+            config.setProperty(CONFIG_WIDTH, size.width);
+            config.setProperty(CONFIG_HEIGHT, size.height);
+            config.setProperty(CONFIG_X, location.x);
+            config.setProperty(CONFIG_Y, location.y);
+        } finally {
+            config.unlock(LockMode.WRITE);
+        }
     }
 
     private void initComponents() {
