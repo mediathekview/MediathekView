@@ -26,7 +26,7 @@
 - **FEATURE:** Info-Datei kann nun per Kontextmenü für jeden Eintrag manuell erzeugt werden.
 - **FEATURE:** Die Filmliste wird nun beim Laden zusätzlich auf Duplikate untersucht. Hierbei werden die Mediatheken der ARD und ZDF erst am Ende berücksichtigt um das Angebot der "kleineren" Sender nicht zu benachteiligen.
 - **FEATURE:** Duplikate werden im Tab `Filme` farblich hervorgehoben. Die Farbe kann in den Einstellungen modifiziert werden. Es werden nur Filme als Duplikat markiert, deren normale und high-quality Film-URL identisch sind.
-- **FEATURE:** Im Tab `Filme` können über das Kontextmenü `Zusammengehörige Filme anzeigen...` bei einem markierten Duplikat alle zusammenghörigen Filme angezeigt werden.  
+- **FEATURE:** Im Tab `Filme` können über das Kontextmenü `Zusammengehörige Filme anzeigen...` bei einem markierten Duplikat alle zusammengehörigen Filme angezeigt werden.  
 - **FEATURE:** Mittels `Ansicht/Filmstatistik anzeigen` können nun für die vorhandenen Sender Informationen bzgl. Anzahl der Filme und der Duplikate angezeigt werden. Es wird hier nur die gesamte Filmliste ohne jegliche Filter abzüglich Livestreams berücksichtigt, so dass es zu Abweichungen zur Anzeige in der Statuszeile kommen kann.
 - **FEATURE:** Mit der Lucene-Suche können mittels des `duplicate`-Boolean Parameters Filmduplikate berücksichtigt werden.
 
