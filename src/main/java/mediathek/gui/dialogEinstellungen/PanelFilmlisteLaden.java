@@ -13,6 +13,7 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class PanelFilmlisteLaden extends JPanel {
     private final List<JCheckBox> senderCbList = new ArrayList<>();
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
 
     private void initReloadButton() {
         btnReloadFilmlist.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
@@ -74,6 +76,13 @@ public class PanelFilmlisteLaden extends JPanel {
             jButtonDateiAuswaehlen.setEnabled(selected);
             jCheckBoxUpdate.setEnabled(selected);
         });
+
+        // Duplicate evaluation
+        var enableDuplicateEvaluation = config.getBoolean(
+                ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
+        cbEvaluateDuplicates.setSelected(enableDuplicateEvaluation);
+        cbEvaluateDuplicates.addActionListener(l -> config.setProperty(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES,
+                        cbEvaluateDuplicates.isSelected()));
     }
 
     /**
@@ -86,7 +95,6 @@ public class PanelFilmlisteLaden extends JPanel {
     }
 
     private void setupCheckBoxes() {
-        final var config = ApplicationConfiguration.getConfiguration();
         cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,true));
         cbSign.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,cbSign.isSelected()));
 
@@ -251,6 +259,8 @@ public class PanelFilmlisteLaden extends JPanel {
         jRadioButtonManuell = new JRadioButton();
         var separator1 = new JSeparator();
         var panel3 = new JPanel();
+        panel4 = new JPanel();
+        cbEvaluateDuplicates = new JCheckBox();
         var panel2 = new JPanel();
         var label1 = new JLabel();
         var jSpinnerDays = new DaysSpinner();
@@ -299,6 +309,7 @@ public class PanelFilmlisteLaden extends JPanel {
                 .size("640").grow().fill(), //NON-NLS
             // rows
             new AC()
+                .gap()
                 .gap()
                 .gap()
                 .gap()
@@ -369,6 +380,17 @@ public class PanelFilmlisteLaden extends JPanel {
         {
             panel3.setBorder(new TitledBorder("Einschr\u00e4nkungen f\u00fcr das Laden der Filmliste")); //NON-NLS
             panel3.setLayout(new VerticalLayout());
+
+            //======== panel4 ========
+            {
+                panel4.setBorder(new TitledBorder("Duplikate (\u00c4nderungen erfordern Neuladen der Filmliste)")); //NON-NLS
+                panel4.setLayout(new VerticalLayout());
+
+                //---- cbEvaluateDuplicates ----
+                cbEvaluateDuplicates.setText("Erkennung beim Laden der Filmliste einschalten"); //NON-NLS
+                panel4.add(cbEvaluateDuplicates);
+            }
+            panel3.add(panel4);
 
             //======== panel2 ========
             {
@@ -577,6 +599,8 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox jCheckBoxUpdate;
     private JRadioButton jRadioButtonAuto;
     private JRadioButton jRadioButtonManuell;
+    private JPanel panel4;
+    private JCheckBox cbEvaluateDuplicates;
     private JButton btnReloadFilmlist;
     private JCheckBox cbSign;
     private JCheckBox cbTrailer;
