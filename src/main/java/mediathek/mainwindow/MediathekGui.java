@@ -25,7 +25,9 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
+import mediathek.gui.duplicates.CommonStatsEvaluationTask;
 import mediathek.gui.duplicates.FilmDuplicateEvaluationTask;
+import mediathek.gui.duplicates.overview.FilmDuplicateOverviewDialog;
 import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
 import mediathek.gui.history.ResetDownloadHistoryAction;
@@ -590,6 +592,8 @@ public class MediathekGui extends JFrame {
         swingStatusBar.add(progressLabel);
         swingStatusBar.add(progressBar);
 
+        var evaluateDuplicates = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
+
         var worker = CompletableFuture.runAsync(() -> {
                     logger.trace("Reading local filmlist");
                     MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
@@ -605,12 +609,17 @@ public class MediathekGui extends JFrame {
                     if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
                         daten.getFilmeLaden().loadFilmlist("", true);
                     }
-                })
-                .thenRun(new FilmDuplicateEvaluationTask())
+                });
+
+        if (evaluateDuplicates) {
+            worker = worker.thenRun(new FilmDuplicateEvaluationTask());
+        }
+
+        worker.thenRun(new CommonStatsEvaluationTask())
                 .thenRun(new RefreshAboWorker(progressLabel, progressBar))
                 .thenRun(new BlacklistFilterWorker(progressLabel, progressBar));
 
-        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList){
+        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList) {
             worker = worker.thenRun(new LuceneIndexWorker(progressLabel, progressBar));
         }
 
@@ -998,7 +1007,14 @@ public class MediathekGui extends JFrame {
             }
         }
         jMenuAnsicht.add(showBandwidthUsageAction);
+        jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showDuplicateStatisticsAction);
+        var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
+        mi.addActionListener(l -> {
+            FilmDuplicateOverviewDialog dlg = new FilmDuplicateOverviewDialog(this);
+            dlg.setVisible(true);
+        });
+        jMenuAnsicht.add(mi);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
         jMenuAnsicht.addSeparator();

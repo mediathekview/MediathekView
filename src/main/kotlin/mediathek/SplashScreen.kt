@@ -4,6 +4,7 @@ import mediathek.config.Konstanten
 import mediathek.tool.TimerPool.timerPool
 import mediathek.tool.UIProgressState
 import org.apache.commons.lang3.SystemUtils
+import org.jdesktop.swingx.StackLayout
 import java.awt.Color
 import java.awt.Cursor
 import java.awt.Dimension
@@ -14,19 +15,28 @@ import javax.swing.*
 import kotlin.math.roundToInt
 
 class SplashScreen : JWindow() {
-    private var versionLabel: JLabel? = null
+    private val versionLabel = JLabel()
     private var curSteps = 0.0
-    private var appTitleLabel: JLabel? = null
-    private var imageLabel: JLabel? = null
-    private var progressBar: JProgressBar? = null
-    private var statusLabel: JLabel? = null
+    private val appTitleLabel = JLabel()
+    private val imageLabel = JLabel()
+    private val progressBar = JProgressBar()
+    private val statusLabel = JLabel()
+    private val stackPanel = JPanel(StackLayout())
+
+
+    /**
+     * Needed for linux and windows where AWT doesnt seem to be able to properly draw JWindow black background anymore :(
+     */
+    private val backgroundPanel = JPanel()
+    private val splashContent = JPanel()
+
 
     init {
         initComponents()
         contentPane.background = Color.BLACK
         val res = String.format("Version: %s (%s %s)", Konstanten.MVVERSION, osName, SystemUtils.OS_ARCH)
-        versionLabel!!.text = res
-        progressBar!!.value = 0
+        versionLabel.text = res
+        progressBar.value = 0
         setLocationRelativeTo(null)
 
         //strange behaviour on win where window will not come to front or stay there...
@@ -64,50 +74,54 @@ class SplashScreen : JWindow() {
      * @param percentComplete The new percentage.
      */
     private fun updateStatus(statusText: String?, percentComplete: Int) {
-        appTitleLabel!!.paintImmediately(0, 0, appTitleLabel!!.width, appTitleLabel!!.height)
-        imageLabel!!.paintImmediately(0, 0, imageLabel!!.width, imageLabel!!.height)
-        versionLabel!!.paintImmediately(0, 0, versionLabel!!.width, versionLabel!!.height)
-        statusLabel!!.text = statusText
-        statusLabel!!.paintImmediately(0, 0, statusLabel!!.width, statusLabel!!.height)
-        progressBar!!.value = percentComplete
-        progressBar!!.paintImmediately(0, 0, progressBar!!.width, progressBar!!.height)
+        if (!SystemUtils.IS_OS_MAC_OSX)
+            backgroundPanel.paintImmediately(0,0, width, height)
+        appTitleLabel.paintImmediately(0, 0, appTitleLabel.width, appTitleLabel.height)
+        imageLabel.paintImmediately(0, 0, imageLabel.width, imageLabel.height)
+        versionLabel.paintImmediately(0, 0, versionLabel.width, versionLabel.height)
+        statusLabel.text = statusText
+        statusLabel.paintImmediately(0, 0, statusLabel.width, statusLabel.height)
+        progressBar.value = percentComplete
+        progressBar.paintImmediately(0, 0, progressBar.width, progressBar.height)
     }
 
     private fun initComponents() {
-        appTitleLabel = JLabel()
-        versionLabel = JLabel()
-        imageLabel = JLabel()
-        progressBar = JProgressBar()
-        statusLabel = JLabel()
         minimumSize = Dimension(640, 480)
         background = Color.black
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
         isAutoRequestFocus = false
         foreground = Color.black
-        val contentPane = contentPane
-        appTitleLabel!!.text = Konstanten.PROGRAMMNAME
-        appTitleLabel!!.font = appTitleLabel!!.font.deriveFont(
-            appTitleLabel!!.font.style or Font.BOLD,
-            appTitleLabel!!.font.size + 45f
+        appTitleLabel.text = Konstanten.PROGRAMMNAME
+        appTitleLabel.font = appTitleLabel.font.deriveFont(
+            appTitleLabel.font.style or Font.BOLD,
+            appTitleLabel.font.size + 45f
         )
-        appTitleLabel!!.foreground = Color.white
-        appTitleLabel!!.background = Color.black
-        appTitleLabel!!.isOpaque = true
-        versionLabel!!.text = "Version"
-        versionLabel!!.isOpaque = true
-        versionLabel!!.foreground = Color.white
-        versionLabel!!.background = Color.black
-        imageLabel!!.icon = ImageIcon(javaClass.getResource("/mediathek/res/MediathekView.png"))
-        imageLabel!!.background = Color.black
-        imageLabel!!.isOpaque = true
-        progressBar!!.value = 50
-        progressBar!!.preferredSize = Dimension(146, 10)
-        statusLabel!!.text = "Status Text Message is here"
-        statusLabel!!.foreground = Color.white
-        statusLabel!!.background = Color.black
-        statusLabel!!.isOpaque = true
-        val contentPaneLayout = GroupLayout(contentPane)
-        contentPane.layout = contentPaneLayout
+        appTitleLabel.foreground = Color.white
+        appTitleLabel.background = Color.black
+        appTitleLabel.isOpaque = true
+        versionLabel.text = "Version"
+        versionLabel.isOpaque = true
+        versionLabel.foreground = Color.white
+        versionLabel.background = Color.black
+        imageLabel.icon = ImageIcon(javaClass.getResource("/mediathek/res/MediathekView.png"))
+        imageLabel.background = Color.black
+        imageLabel.isOpaque = true
+        progressBar.value = 50
+        progressBar.preferredSize = Dimension(146, 10)
+        statusLabel.text = "Status Text Message is here"
+        statusLabel.foreground = Color.white
+        statusLabel.background = Color.black
+        statusLabel.isOpaque = true
+
+        backgroundPanel.background = Color.black
+        splashContent.background = Color.black
+
+        stackPanel.add(backgroundPanel, StackLayout.BOTTOM)
+        stackPanel.add(splashContent, StackLayout.TOP)
+        contentPane = stackPanel
+
+        val contentPaneLayout = GroupLayout(splashContent)
+        splashContent.layout = contentPaneLayout
         contentPaneLayout.setHorizontalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(

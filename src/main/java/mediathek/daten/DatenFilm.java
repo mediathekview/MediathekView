@@ -189,7 +189,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             datum_long = Long.parseLong(datumLong);
         }
         catch (Exception e) {
-            logger.error("Failed to parse datum long string", e);
+            logger.warn("Failed to parse datum long string: {}", datumLong);
             datum_long = 0;
         }
         dataMap.put(MapKeys.TEMP_DATUM_LONG, datum_long);
@@ -421,7 +421,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
             long datum_long = (long)dataMap.getOrDefault(MapKeys.TEMP_DATUM_LONG, 0L);
-            datumFilm = new DatumFilm(datum_long * 1000); // convert from SECONDS to MILLISECONDS
+            datumFilm = new DatumFilm(TimeUnit.MILLISECONDS.convert(datum_long, TimeUnit.SECONDS));
             if (datum_long == 0)
             {
                 setSendeDatum("");

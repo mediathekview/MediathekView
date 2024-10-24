@@ -11,6 +11,7 @@
 - **BUGFIX:** Der "Filmliste laden"-Dialog zeigt nun Scrollbars bei zu kleiner Dialoggröße an.
 - **BUGFIX(Linux):** Inkorrekte Verarbeitung der Parent-Beziehung bei Auswahldialogen wurde behoben.
 - **BUGFIX(Linux):** MV öffnet nun einen konfigurierten Browser im About-Dialog wenn Java keinen eigenen finden kann.
+- **BUGFIX(Linux/Windows):** Splashscreen zeigte keinen uniformen schwarzen Hintergrund mehr an.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
@@ -29,6 +30,7 @@
 - **FEATURE:** Im Tab `Filme` können über das Kontextmenü `Zusammengehörige Filme anzeigen...` bei einem markierten Duplikat alle zusammengehörigen Filme angezeigt werden.  
 - **FEATURE:** Mittels `Ansicht/Filmstatistik anzeigen` können nun für die vorhandenen Sender Informationen bzgl. Anzahl der Filme und der Duplikate angezeigt werden. Es wird hier nur die gesamte Filmliste ohne jegliche Filter abzüglich Livestreams berücksichtigt, so dass es zu Abweichungen zur Anzeige in der Statuszeile kommen kann.
 - **FEATURE:** Mit der Lucene-Suche können mittels des `duplicate`-Boolean Parameters Filmduplikate berücksichtigt werden.
+- **FEATURE:** Via `Ansicht/Übersicht aller Duplikate anzeigen...` werden in einem Dialog per Sender alle vorhandenen Duplikate dargestellt zzgl. der zugeordneten Filme.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.

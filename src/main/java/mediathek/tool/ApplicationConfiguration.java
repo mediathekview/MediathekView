@@ -70,6 +70,7 @@ public class ApplicationConfiguration {
     public static final String SEARCH_USE_FILM_DESCRIPTIONS =
             "searchfield.film.search_through_description";
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
+    public static final String FILM_EVALUATE_DUPLICATES = "film.evaluate_duplicates";
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
     private static final String GEO_LOCATION = "geo.location";

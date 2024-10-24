@@ -152,7 +152,7 @@ public class FilmListWriter {
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
         writeHighQualityUrl(jg, datenFilm);
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
-        jg.writeString(String.valueOf(datenFilm.getDatumFilm().getTime() / 1000));
+        jg.writeString(String.valueOf(TimeUnit.SECONDS.convert(datenFilm.getDatumFilm().getTime(), TimeUnit.MILLISECONDS)));
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
         if (datenFilm.countrySet.isEmpty())
             jg.writeString("");

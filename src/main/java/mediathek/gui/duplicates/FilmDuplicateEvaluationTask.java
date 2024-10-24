@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,10 +34,12 @@ public class FilmDuplicateEvaluationTask implements Runnable {
         Map<String, Long> statisticsMap = duplicates.parallelStream().collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
         TransactionList<FilmStatistics> tList = new TransactionList<>(statisticsEventList);
         tList.getReadWriteLock().writeLock().lock();
+        tList.beginEvent(true);
         tList.clear();
         for (var sender : statisticsMap.keySet()) {
             tList.add(new FilmStatistics(sender, statisticsMap.get(sender)));
         }
+        tList.commitEvent();
         tList.getReadWriteLock().writeLock().unlock();
         watch.stop();
 
@@ -70,50 +71,9 @@ public class FilmDuplicateEvaluationTask implements Runnable {
         urlCache.clear();
     }
 
-    private void calculateCommonStats() {
-        Stopwatch watch = Stopwatch.createStarted();
-        final var films = listeFilme.parallelStream()
-                .filter(f -> !f.isLivestream())
-                .toList();
-
-        var statisticsList = Daten.getInstance().getCommonStatistics();
-
-        Map<String, Long> statisticsMap = films.parallelStream()
-                .collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
-        TransactionList<FilmStatistics> tList = new TransactionList<>(statisticsList);
-        tList.getReadWriteLock().writeLock().lock();
-        tList.clear();
-        for (var sender : statisticsMap.keySet()) {
-            tList.add(new FilmStatistics(sender, statisticsMap.get(sender)));
-        }
-        tList.getReadWriteLock().writeLock().unlock();
-        watch.stop();
-
-        logger.trace("common stats calculation took: {}", watch);
-        logger.trace("Number of films: {}", films.size());
-    }
-
     @Override
     public void run() {
-        calculateCommonStats();
         checkDuplicates();
         printDuplicateStatistics();
-    }
-
-    private static class BigSenderPenaltyComparator implements Comparator<DatenFilm> {
-        @Override
-        public int compare(DatenFilm s1, DatenFilm s2) {
-            // "ARD" und "ZDF" immer am Ende um die kleineren Mediatheken nicht zu benachteiligen
-            final var s1_sender = s1.getSender();
-            final var s2_sender = s2.getSender();
-            if (s1_sender.equals("ARD") || s1_sender.equals("ZDF")) {
-                return 1;
-            }
-            if (s2_sender.equals("ARD") || s2_sender.equals("ZDF")) {
-                return -1;
-            }
-            // Alphabetisch sortieren für alle anderen
-            return s1.compareTo(s2);
-        }
     }
 }
