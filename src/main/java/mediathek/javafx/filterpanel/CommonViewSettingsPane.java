@@ -24,6 +24,7 @@ public class CommonViewSettingsPane extends VBox {
     public final SenderBoxNode senderCheckList = new SenderBoxNode();
     public final CheckBox cbDontShowAudioVersions = new CheckBox("Hörfassungen ausblenden");
     public final CheckBox cbDontShowGebaerdensprache = new CheckBox("Gebärdensprache nicht anzeigen");
+    public final CheckBox cbDontShowDuplicates = new CheckBox("Duplikate nicht anzeigen");
     public final CheckBox cbDontShowTrailers = new CheckBox("Trailer/Teaser/Vorschau nicht anzeigen");
     public final CheckBox cbShowUnseenOnly = new CheckBox("Gesehene Filme nicht anzeigen");
     public final CheckBox cbDontShowAbos = new CheckBox("Abos nicht anzeigen");
@@ -120,6 +121,7 @@ public class CommonViewSettingsPane extends VBox {
                 cbDontShowGebaerdensprache,
                 cbDontShowTrailers,
                 cbDontShowAudioVersions,
+                cbDontShowDuplicates,
                 new Separator(),
                 createSenderList(),
                 new Separator(),
@@ -163,6 +165,7 @@ public class CommonViewSettingsPane extends VBox {
                     cbDontShowGebaerdensprache.setDisable(disable);
                     cbDontShowTrailers.setDisable(disable);
                     cbDontShowAudioVersions.setDisable(disable);
+                    cbDontShowDuplicates.setDisable(disable);
                     senderCheckList.setDisable(disable);
                     themaComboBox.setDisable(disable);
                     filmLengthSliderNode.setDisable(disable);

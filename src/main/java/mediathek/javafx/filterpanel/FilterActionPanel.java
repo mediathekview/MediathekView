@@ -52,6 +52,7 @@ public class FilterActionPanel {
     private BooleanProperty dontShowSignLanguage;
     private BooleanProperty dontShowTrailers;
     private BooleanProperty dontShowAbos;
+    private BooleanProperty dontShowDuplicates;
     private BooleanProperty showLivestreamsOnly;
     private BooleanProperty showUnseenOnly;
     private BooleanProperty showBookMarkedOnly;
@@ -126,6 +127,9 @@ public class FilterActionPanel {
     public BooleanProperty dontShowAbosProperty() {
         return dontShowAbos;
     }
+
+    public BooleanProperty dontShowDuplicatesProperty() { return dontShowDuplicates;}
+    public boolean isDontShowDuplicates() { return dontShowDuplicates.get();}
 
     public boolean isShowLivestreamsOnly() {
         return showLivestreamsOnly.get();
@@ -303,6 +307,7 @@ public class FilterActionPanel {
         dontShowSignLanguage = viewSettingsPane.cbDontShowGebaerdensprache.selectedProperty();
         dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
         dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
+        dontShowDuplicates = viewSettingsPane.cbDontShowDuplicates.selectedProperty();
 
         setupThemaComboBox();
         viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().
@@ -336,6 +341,7 @@ public class FilterActionPanel {
         dontShowTrailers.set(filterConfig.isDontShowTrailers());
         dontShowSignLanguage.set(filterConfig.isDontShowSignLanguage());
         dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
+        dontShowDuplicates.set(filterConfig.isDontShowDuplicates());
 
         try {
             double loadedMin = filterConfig.getFilmLengthMin();
@@ -392,6 +398,8 @@ public class FilterActionPanel {
                 ((observable, oldValue, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
         dontShowAudioVersions.addListener(
                 ((observable, oldValue, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
+        dontShowDuplicates.addListener(
+                ((observable, oldValue, newValue) -> filterConfig.setDontShowDuplicates(newValue)));
 
         filmLengthSlider.lowValueProperty().addListener(
                 ((observable, oldValue, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));

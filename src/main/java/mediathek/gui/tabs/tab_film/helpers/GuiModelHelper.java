@@ -54,6 +54,7 @@ public abstract class GuiModelHelper {
                 && !filterActionPanel.isDontShowTrailers()
                 && !filterActionPanel.isDontShowSignLanguage()
                 && !filterActionPanel.isDontShowAudioVersions()
+                && !filterActionPanel.isDontShowDuplicates()
                 && filterActionPanel.zeitraumProperty().get().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
     }
 

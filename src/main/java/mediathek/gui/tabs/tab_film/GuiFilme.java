@@ -690,6 +690,7 @@ public class GuiFilme extends AGuiTabPanel {
             filterActionPanel.dontShowTrailersProperty().addListener(reloadTableListener);
             filterActionPanel.dontShowSignLanguageProperty().addListener(reloadTableListener);
             filterActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
+            filterActionPanel.dontShowDuplicatesProperty().addListener(reloadTableListener);
             filterActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
             var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
             filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);

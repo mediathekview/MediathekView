@@ -108,6 +108,10 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 if (filterActionPanel.isDontShowSignLanguage()) {
                     addNoSignLanguageQuery(qb, analyzer);
                 }
+                if (filterActionPanel.isDontShowDuplicates()) {
+                    addNoDuplicatesQuery(qb, analyzer);
+                }
+
                 if (filterActionPanel.isShowSubtitlesOnly()) {
                     addSubtitleOnlyQuery(qb, analyzer);
                 }
@@ -197,6 +201,11 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
         var q = new QueryParser(LuceneIndexKeys.SUBTITLE, analyzer)
                 .parse("\"true\"");
         qb.add(q, BooleanClause.Occur.FILTER);
+    }
+
+    private void addNoDuplicatesQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {
+        var q = new QueryParser(LuceneIndexKeys.DUPLICATE, analyzer).parse("\"true\"");
+        qb.add(q, BooleanClause.Occur.MUST_NOT);
     }
 
     private void addNoSignLanguageQuery(@NotNull BooleanQuery.Builder qb, @NotNull StandardAnalyzer analyzer) throws ParseException {

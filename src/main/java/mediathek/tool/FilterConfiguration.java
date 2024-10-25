@@ -232,6 +232,21 @@ public class FilterConfiguration {
         false);
   }
 
+  public boolean isDontShowDuplicates() {
+    return configuration.getBoolean(
+            toFilterConfigNameWithCurrentFilter(
+                    FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_DUPLICATES.getKey()),
+            false);
+  }
+
+  public FilterConfiguration setDontShowDuplicates(boolean dontShowDuplicates) {
+    configuration.setProperty(
+            toFilterConfigNameWithCurrentFilter(
+                    FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_DUPLICATES.getKey()),
+            dontShowDuplicates);
+    return this;
+  }
+
   public FilterConfiguration setShowUnseenOnly(boolean showUnseenOnly) {
     configuration.setProperty(
         toFilterConfigNameWithCurrentFilter(
@@ -495,7 +510,8 @@ public class FilterConfiguration {
     FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.filter_%s.dont_show.audio_versions"),
     FILTER_PANEL_FILM_LENGTH_MIN("filter.filter_%s.film_length.min"),
     FILTER_PANEL_FILM_LENGTH_MAX("filter.filter_%s.film_length.max"),
-    FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum");
+    FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum"),
+    FILTER_PANEL_DONT_SHOW_DUPLICATES("filter.filter_%s.dont_show_duplicates");
 
     private final String key;
 

@@ -67,6 +67,9 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             stream = stream.filter(film -> !film.isAudioVersion());
         if (filterActionPanel.isDontShowAbos())
             stream = stream.filter(film -> film.getAbo() == null);
+        if (filterActionPanel.isDontShowDuplicates()) {
+            stream = stream.filter(film -> !film.isDuplicate());
+        }
         if (filterActionPanel.isShowSubtitlesOnly()) {
             stream = stream.filter(this::subtitleCheck);
         }
