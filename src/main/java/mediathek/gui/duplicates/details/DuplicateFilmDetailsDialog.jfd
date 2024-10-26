@@ -11,10 +11,19 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "contentPanel"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "table1"
 							"autoResizeMode": 0
@@ -37,6 +46,9 @@ new FormModel {
 				} ) {
 					name: "buttonBar"
 					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "Schließen"

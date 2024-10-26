@@ -35,7 +35,7 @@ public class ColorUtils {
         if (c == null || c.length == 0) {
             return null;
         }
-        float ratio = 1f / ((float) c.length);
+        float ratio = 1f / c.length;
 
         int a = 0;
         int r = 0;

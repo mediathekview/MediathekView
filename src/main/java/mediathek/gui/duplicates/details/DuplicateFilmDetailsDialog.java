@@ -38,7 +38,7 @@ public class DuplicateFilmDetailsDialog extends JDialog {
         super(owner);
         initComponents();
 
-        okButton.addActionListener(l -> dispose());
+        okButton.addActionListener(_ -> dispose());
 
         BasicEventList<DatenFilm> duplicateList = new BasicEventList<>();
         SortedList<DatenFilm> sortedList = new SortedList<>(duplicateList);
@@ -107,11 +107,11 @@ public class DuplicateFilmDetailsDialog extends JDialog {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        scrollPane1 = new JScrollPane();
+        var dialogPane = new JPanel();
+        var contentPanel = new JPanel();
+        var scrollPane1 = new JScrollPane();
         table1 = new JTable();
-        buttonBar = new JPanel();
+        var buttonBar = new JPanel();
         okButton = new JButton();
 
         //======== this ========
@@ -168,11 +168,7 @@ public class DuplicateFilmDetailsDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
     private JTable table1;
-    private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
