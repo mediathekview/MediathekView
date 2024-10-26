@@ -18,6 +18,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class FilmDuplicateOverviewDialog extends JDialog {
         initComponents();
         EscapeKeyHandler.installHandler(this, this::dispose);
 
-        okButton.addActionListener(e -> dispose());
+        okButton.addActionListener(_ -> dispose());
         //must be called for tooltips working
         ToolTipManager.sharedInstance().registerComponent(tree);
 
@@ -54,7 +55,7 @@ public class FilmDuplicateOverviewDialog extends JDialog {
         var selectionModel = tree.getSelectionModel();
         selectionModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setCellRenderer(new CustomTreeCellRenderer());
-        selectionModel.addTreeSelectionListener(e -> {
+        selectionModel.addTreeSelectionListener(_ -> {
             var node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
             if (node == null)
                 return;
@@ -121,6 +122,7 @@ public class FilmDuplicateOverviewDialog extends JDialog {
         var list = Daten.getInstance().getListeFilme().parallelStream()
                 .filter(DatenFilm::isDuplicate)
                 .filter(f -> f.getSender().equals(sender))
+                .sorted(Comparator.comparing(DatenFilm::getTitle))
                 .toList();
         //System.out.println("List size: " + list.size() + " for sender: " + sender);
         for (var f : list) {
