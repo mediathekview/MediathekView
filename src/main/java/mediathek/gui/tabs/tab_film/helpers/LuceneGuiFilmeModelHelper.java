@@ -116,14 +116,14 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
 
                 //the complete lucene query...
                 Query finalQuery = qb.build();
-                logger.info("Executing Lucene query: {}", finalQuery.toString());
+                logger.info("Executing Lucene query: {}", finalQuery);
 
                 //SEARCH
                 final var searcher = new IndexSearcher(listeFilme.getReader());
                 final var docs = searcher.search(finalQuery, listeFilme.size());
                 final var hit_length = docs.scoreDocs.length;
 
-                Set<Integer> filmNrSet = new HashSet<>(hit_length);
+                Set<Integer> filmNrSet = HashSet.newHashSet(hit_length);
 
                 logger.trace("Hit size: {}", hit_length);
                 var watch2 = Stopwatch.createStarted();
@@ -220,13 +220,13 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
 
     private Query createZeitraumQuery() throws ParseException {
         var numDays = Integer.parseInt(filterActionPanel.zeitraumProperty().get());
-        var to_Date = LocalDateTime.now();
-        var from_Date = to_Date.minusDays(numDays);
+        var toDate = LocalDateTime.now();
+        var fromDate = toDate.minusDays(numDays);
         var utcZone = ZoneId.of("UTC");
         //[20190101 TO 20190801]
-        var toStr = DateTools.timeToString(to_Date.atZone(utcZone).toInstant().toEpochMilli(),
+        var toStr = DateTools.timeToString(toDate.atZone(utcZone).toInstant().toEpochMilli(),
                 DateTools.Resolution.DAY);
-        var fromStr = DateTools.timeToString(from_Date.atZone(utcZone).toInstant().toEpochMilli(),
+        var fromStr = DateTools.timeToString(fromDate.atZone(utcZone).toInstant().toEpochMilli(),
                 DateTools.Resolution.DAY);
         String zeitraum = String.format("[%s TO %s]", fromStr, toStr);
         return new QueryParser(LuceneIndexKeys.SENDE_DATUM, analyzer).parse(zeitraum);
