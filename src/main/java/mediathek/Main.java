@@ -354,9 +354,10 @@ public class Main {
                 // not an int -> show warning
                 // fractional scale is NOT supported under Linux, must use integer only.
                 var scaleFactor = Float.parseFloat(strScale);
-                System.out.println("uiScale factor: " + scaleFactor);
+                logger.trace("old uiScale factor {}", scaleFactor);
                 var newScale = Math.round(scaleFactor);
-                System.out.println("new scale: " + newScale);
+                logger.trace("new uiScale factor {}", newScale);
+
                 JOptionPane.showMessageDialog(null,
                         "<html>" +
                                 "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=" + strScale + "</i>.<br>" +
