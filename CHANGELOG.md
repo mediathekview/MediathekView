@@ -1,4 +1,6 @@
 # **14.2.0**
+- JDK 22 wird nun benötigt. Die von uns gelieferten Binaries enthalten dies.
+- **JDK 23 und 23.0.1 enthalten einen Fehler im Shenandoah GC der die moderne Suche eklatant (6-10x) langsamer laufen lässt!** Dies scheint erst in einer Nachfolgeversion wieder behoben zu sein. Es wird abgeraten die genannten Versionen und MV zu verwenden.
 - **BUGFIX:** MV aktualisiert nun vor dem Download mittels `-dq` oder `--download-quit` Parameter die Filmliste.
 - **BUGFIX:** FlatLaf Regression gelöst, die manchmal zu einer inkorrekten Darstellung der Oberfläche führte.
 - **BUGFIX(Linux/macOS):** Im "Film Speichern"-Dialog wurde der Zielpfad im Dark Mode weiß dargestellt.
