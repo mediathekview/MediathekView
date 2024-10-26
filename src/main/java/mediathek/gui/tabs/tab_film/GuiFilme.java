@@ -696,9 +696,9 @@ public class GuiFilme extends AGuiTabPanel {
             filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
             filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
 
-            filterActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> zeitraumTransition.playFromStart());
+            filterActionPanel.zeitraumProperty().addListener((_, _, _) -> zeitraumTransition.playFromStart());
 
-            filterActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
+            filterActionPanel.getViewSettingsPane().themaComboBox.setOnAction(_ -> {
                 if (!filterActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
                     reloadTableDataTransition.playFromStart();
                 }
