@@ -118,6 +118,9 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
 					name: "panel4"
 					"border": new javax.swing.border.TitledBorder( "Duplikate (Änderungen erfordern Neuladen der Filmliste)" )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "cbEvaluateDuplicates"
 						"text": "Erkennung beim Laden der Filmliste einschalten"

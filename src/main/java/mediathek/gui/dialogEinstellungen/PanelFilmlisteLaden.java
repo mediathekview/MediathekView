@@ -70,7 +70,7 @@ public class PanelFilmlisteLaden extends JPanel {
         //now add the item listeners for update
         senderCbList.forEach(cb -> cb.addItemListener(this::senderSelectionItemHandler));
 
-        jRadioButtonManuell.addChangeListener(l -> {
+        jRadioButtonManuell.addChangeListener(_ -> {
             final var selected = jRadioButtonManuell.isSelected();
             jTextFieldUrl.setEnabled(selected);
             jButtonDateiAuswaehlen.setEnabled(selected);
@@ -81,7 +81,7 @@ public class PanelFilmlisteLaden extends JPanel {
         var enableDuplicateEvaluation = config.getBoolean(
                 ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
         cbEvaluateDuplicates.setSelected(enableDuplicateEvaluation);
-        cbEvaluateDuplicates.addActionListener(l -> config.setProperty(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES,
+        cbEvaluateDuplicates.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES,
                         cbEvaluateDuplicates.isSelected()));
     }
 
@@ -96,19 +96,19 @@ public class PanelFilmlisteLaden extends JPanel {
 
     private void setupCheckBoxes() {
         cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,true));
-        cbSign.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,cbSign.isSelected()));
+        cbSign.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,cbSign.isSelected()));
 
         cbAudio.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION,true));
-        cbAudio.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION,cbAudio.isSelected()));
+        cbAudio.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION,cbAudio.isSelected()));
 
         cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER,true));
-        cbTrailer.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_TRAILER,cbTrailer.isSelected()));
+        cbTrailer.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_TRAILER,cbTrailer.isSelected()));
 
         cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true));
-        cbLivestreams.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
+        cbLivestreams.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
 
         jCheckBoxUpdate.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, false));
-        jCheckBoxUpdate.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected()));
+        jCheckBoxUpdate.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected()));
     }
 
     /**
@@ -174,7 +174,7 @@ public class PanelFilmlisteLaden extends JPanel {
         initRadio();
 
         jButtonDateiAuswaehlen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        jButtonDateiAuswaehlen.addActionListener(l -> {
+        jButtonDateiAuswaehlen.addActionListener(_ -> {
             var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Filmliste laden", "");
             if (loadFile != null) {
                 jTextFieldUrl.setText(loadFile.getAbsolutePath());
@@ -259,7 +259,7 @@ public class PanelFilmlisteLaden extends JPanel {
         jRadioButtonManuell = new JRadioButton();
         var separator1 = new JSeparator();
         var panel3 = new JPanel();
-        panel4 = new JPanel();
+        var panel4 = new JPanel();
         cbEvaluateDuplicates = new JCheckBox();
         var panel2 = new JPanel();
         var label1 = new JLabel();
@@ -599,7 +599,6 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox jCheckBoxUpdate;
     private JRadioButton jRadioButtonAuto;
     private JRadioButton jRadioButtonManuell;
-    private JPanel panel4;
     private JCheckBox cbEvaluateDuplicates;
     private JButton btnReloadFilmlist;
     private JCheckBox cbSign;
