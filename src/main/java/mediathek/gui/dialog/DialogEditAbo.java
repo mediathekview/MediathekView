@@ -32,6 +32,7 @@ public class DialogEditAbo extends JDialog {
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
     private final boolean isMultiEditMode;
+    private static final String TEXTFIELD_BACKGROUND = "TextField.background";
     /**
      * This determines in multi edit mode, which fields should be applied to all selected abos...
      */
@@ -76,21 +77,20 @@ public class DialogEditAbo extends JDialog {
         editorComp.setOpaque(true);
         editorComp.getDocument().addDocumentListener(new CheckPathDocListener());
 
-        // =====================
-        jButtonBeenden.addActionListener(e -> {
+        jButtonBeenden.addActionListener(_ -> {
             if (check()) {
                 dispose();
             } else {
                 MVMessageDialog.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE);
             }
         });
-        jButtonAbbrechen.addActionListener(e -> dispose());
+        jButtonAbbrechen.addActionListener(_ -> dispose());
         getRootPane().setDefaultButton(jButtonBeenden);
 
         EscapeKeyHandler.installHandler(this, this::dispose);
 
         jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
+        jButtonHelp.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
 
         if (comboboxPSet.getModel().getSize() == 0) {
             // dann gibts kein Set zum Aufzeichnen
@@ -123,7 +123,7 @@ public class DialogEditAbo extends JDialog {
         if (!s.equals(FilenameUtils.checkDateiname(s, false))) {
             editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
         } else {
-            editor.setBackground(UIManager.getColor("TextField.background"));
+            editor.setBackground(UIManager.getColor(TEXTFIELD_BACKGROUND));
         }
     }
 
@@ -251,7 +251,7 @@ public class DialogEditAbo extends JDialog {
                 final int minDauer = aktAbo.getMindestDauerMinuten();
                 sliderDauer.setValue(minDauer);
                 labelDauer.setText(String.valueOf(minDauer == 0 ? " alles " : minDauer));
-                sliderDauer.addChangeListener(e -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : Integer.toString(sliderDauer.getValue()))));
+                sliderDauer.addChangeListener(_ -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : Integer.toString(sliderDauer.getValue()))));
                 var p = new JPanel(new BorderLayout());
                 p.add(sliderDauer, BorderLayout.CENTER);
                 p.add(labelDauer, BorderLayout.EAST);
@@ -302,7 +302,7 @@ public class DialogEditAbo extends JDialog {
                     var jcb = new JCheckBox();
                     jcb.setBorder(emptyBorder);
                     jcb.setHorizontalTextPosition(JCheckBox.CENTER);
-                    jcb.addActionListener(l -> multiEditCbIndices[index.getIndex()] = jcb.isSelected());
+                    jcb.addActionListener(_ -> multiEditCbIndices[index.getIndex()] = jcb.isSelected());
                     gridbag.setConstraints(jcb, c);
                     panel.add(jcb);
                 }
@@ -372,21 +372,21 @@ public class DialogEditAbo extends JDialog {
         @Override
         public void insertUpdate(DocumentEvent e) {
             final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : UIManager.getColor("TextField.background"));
+            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
             jButtonBeenden.setEnabled(!isEmpty);
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
             final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : UIManager.getColor("TextField.background"));
+            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
             jButtonBeenden.setEnabled(!isEmpty);
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
             final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : UIManager.getColor("TextField.background"));
+            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
             jButtonBeenden.setEnabled(!isEmpty);
         }
     }
