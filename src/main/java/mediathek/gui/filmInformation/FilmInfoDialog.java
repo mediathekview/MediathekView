@@ -250,9 +250,9 @@ public class FilmInfoDialog extends JDialog {
         hyperlink.setEnabled(true);
         hyperlink.setToolTipText(url);
         hyperlink.setClicked(false);
-        var popupMenu = new JPopupMenu();
-        popupMenu.add(new CopyToClipboardAction(url));
-        hyperlink.setComponentPopupMenu(popupMenu);
+        var urlPopupMenu = new JPopupMenu();
+        urlPopupMenu.add(new CopyToClipboardAction(url));
+        hyperlink.setComponentPopupMenu(urlPopupMenu);
     }
 
     private void initComponents() {

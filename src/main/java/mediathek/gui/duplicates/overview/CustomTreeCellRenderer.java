@@ -9,6 +9,7 @@ import java.awt.*;
 
 class CustomTreeCellRenderer
         extends DefaultTreeCellRenderer {
+    @Override
     public Component getTreeCellRendererComponent(
             JTree tree,
             Object value,

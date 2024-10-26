@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class PanelPsetKurz extends PanelVorlage {
-    public boolean ok;
     private DatenPset pSet;
     private final ListePset listePset;
     private static final Logger logger = LogManager.getLogger();
@@ -37,7 +36,7 @@ public class PanelPsetKurz extends PanelVorlage {
         if (!listePset.isEmpty()) {
             jListPset.setSelectedIndex(0);
             init();
-            jListPset.addListSelectionListener(e -> {
+            jListPset.addListSelectionListener(_ -> {
                 if (!stopBeob) {
                     stopBeob = true;
                     init();
@@ -149,7 +148,6 @@ public class PanelPsetKurz extends PanelVorlage {
         c.insets = new Insets(4, 10, 4, 10);
         c.weightx = 1;
         c.weighty = 0;
- //       c.gridx = 0;
         c.gridy = 0;
 
         // Label
