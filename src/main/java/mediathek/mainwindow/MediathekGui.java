@@ -84,6 +84,7 @@ public class MediathekGui extends JFrame {
     private static final int MIN_WINDOW_HEIGHT = 600;
     private static final String ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL";
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
+    private static final String TABBED_PANE_TRAILING_COMPONENT = "JTabbedPane.trailingComponent";
     /**
      * "Pointer" to UI
      */
@@ -146,6 +147,7 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private boolean shutdownRequested;
+
     public MediathekGui() {
         ui = this;
 
@@ -238,7 +240,6 @@ public class MediathekGui extends JFrame {
                 try {
                     TimeUnit.SECONDS.sleep(10);
                     logger.info("Auto DL and Quit: Updating filmlist...");
-                    final var daten = Daten.getInstance();
                     daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
                     daten.getFilmeLaden().loadFilmlist("", false);
                     logger.info("Auto DL and Quit: Filmlist update done.");
@@ -283,6 +284,15 @@ public class MediathekGui extends JFrame {
         performAustrianVlcCheck();
     }
 
+    /**
+     * Return the user interface instance
+     *
+     * @return the class instance or null.
+     */
+    public static MediathekGui ui() {
+        return ui;
+    }
+
     private void performAustrianVlcCheck() {
         //perform check only when we are not in download-only mode...
         if (!Config.shouldDownloadAndQuit()) {
@@ -305,15 +315,6 @@ public class MediathekGui extends JFrame {
         //send before subscribing
         messageBus.publishAsync(new TableModelChangeEvent(true, false));
         messageBus.subscribe(this);
-    }
-
-    /**
-     * Return the user interface instance
-     *
-     * @return the class instance or null.
-     */
-    public static MediathekGui ui() {
-        return ui;
     }
 
     private void mapFilmUrlCopyCommands() {
@@ -368,7 +369,7 @@ public class MediathekGui extends JFrame {
     }
 
     protected void installToolBar() {
-        tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+        tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
         tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
     }
 
@@ -688,7 +689,6 @@ public class MediathekGui extends JFrame {
         /*
         We are not in maximized mode, so just read all the settings and restore...
          */
-        var config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.READ);
             int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH, MIN_WINDOW_WIDTH);
@@ -854,11 +854,11 @@ public class MediathekGui extends JFrame {
         if (topPosition) {
             tabbedPane.setTabPlacement(JTabbedPane.TOP);
             getContentPane().remove(commonToolBar);
-            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+            tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
         }
         else {
             tabbedPane.setTabPlacement(JTabbedPane.LEFT);
-            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", null);
+            tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, null);
             getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
         }
     }
@@ -1093,7 +1093,7 @@ public class MediathekGui extends JFrame {
         JMenu devMenu = new JMenu("Entwickler");
 
         JMenuItem miGc = new JMenuItem("GC ausführen");
-        miGc.addActionListener(l -> System.gc());
+        miGc.addActionListener(_ -> System.gc());
 
         devMenu.add(miGc);
 
