@@ -311,10 +311,12 @@ public class Main {
         }
 
         if (!correctParameters) {
-            //show error dialog
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
-            JOptionPane.showMessageDialog(null,getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
-                    JOptionPane.WARNING_MESSAGE);
+            if (!Config.isDebugModeEnabled()) {
+                //show error dialog
+                JOptionPane.showMessageDialog(null, getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
@@ -500,18 +502,13 @@ public class Main {
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
             Daten.getInstance().loadBookMarkData();
+
+            removeLuceneIndexDirectory();
             // enable modern search on demand
             var useModernSearch = ApplicationConfiguration.getConfiguration()
                     .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
             if (useModernSearch)
                 Daten.getInstance().setListeFilmeNachBlackList(new IndexedFilmList());
-            else {
-                try {
-                    checkModernSearchIndexRemoval();
-                } catch (IOException e) {
-                    logger.error("Unable to delete lucene index path", e);
-                }
-            }
 
             startGuiMode();
         });
@@ -519,14 +516,17 @@ public class Main {
 
     /**
      * Remove modern search index when not in use.
-     * @throws IOException
      */
-    private static void checkModernSearchIndexRemoval() throws IOException {
+    private static void removeLuceneIndexDirectory() {
         //when modern search is not in use, delete unused film index directory as a precaution
         var indexPath = StandardLocations.getFilmIndexPath();
         if (Files.exists(indexPath)) {
-            logger.info("Modern search not in use, deleting unnecessary index directory");
-            FileUtils.deletePathRecursively(indexPath);
+            try {
+                FileUtils.deletePathRecursively(indexPath);
+            }
+            catch (IOException e) {
+                logger.error("Failed to remove Lucene index directory", e);
+            }
         }
     }
 

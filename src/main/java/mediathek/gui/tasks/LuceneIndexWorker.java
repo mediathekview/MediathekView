@@ -11,10 +11,11 @@ import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.datum.DateUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -85,10 +86,12 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         });
 
         //index filmlist after blacklist only
-        var writer = filmListe.getWriter();
-        var totalSize = (float) filmListe.size();
+        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(new StandardAnalyzer());
+        indexWriterConfig.setRAMBufferSizeMB(256d);
 
-        try {
+        try (var writer = new IndexWriter(filmListe.getLuceneDirectory(), indexWriterConfig)) {
+            var totalSize = (float) filmListe.size();
+
             int counter = 0;
             Stopwatch watch = Stopwatch.createStarted();
             //for safety delete all entries
@@ -114,8 +117,6 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
             }
             reader = DirectoryReader.open(filmListe.getLuceneDirectory());
             filmListe.setReader(reader);
-
-            filmListe.setIndexSearcher(new IndexSearcher(reader));
         } catch (Exception ex) {
             logger.error("Lucene film index most probably damaged, deleting it.");
             try {

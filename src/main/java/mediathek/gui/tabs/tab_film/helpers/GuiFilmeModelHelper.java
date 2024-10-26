@@ -9,7 +9,6 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
-import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
@@ -19,7 +18,6 @@ import javax.swing.table.TableModel;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
@@ -73,17 +71,8 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         if (filterActionPanel.isShowSubtitlesOnly()) {
             stream = stream.filter(this::subtitleCheck);
         }
-        if (!filterThema.isEmpty()) {
-            stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
-        }
-        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
-            stream = stream.filter(this::maxLengthCheck);
-        }
-        if (filterActionPanel.isShowUnseenOnly()) {
-            stream = stream.filter(this::seenCheck);
-        }
-        //perform min length filtering after all others may have reduced the available entries...
-        stream = stream.filter(this::minLengthCheck);
+
+        stream = applyCommonFilters(stream, filterThema);
 
         //final stage filtering...
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
@@ -91,14 +80,12 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             stream = stream.filter(createFinalStageFilter());
         }
 
-        var list = stream.collect(Collectors.toList());
+        var list = stream.toList();
         stream.close();
 
         //adjust initial capacity
         filmModel = new TModelFilm(list.size());
         filmModel.addAll(list);
-
-        list.clear();
 
         if (filterActionPanel.isShowUnseenOnly())
             historyController.emptyMemoryCache();

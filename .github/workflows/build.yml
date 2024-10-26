@@ -8,11 +8,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 21
+      - name: Set up JDK 22
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '21'
+          java-version: '22'
           java-package: jdk
           cache: 'maven'
       - name: Build and test with Maven

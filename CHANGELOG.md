@@ -32,7 +32,7 @@
 - **FEATURE:** Mittels `Ansicht/Filmstatistik anzeigen` können nun für die vorhandenen Sender Informationen bzgl. Anzahl der Filme und der Duplikate angezeigt werden. Es wird hier nur die gesamte Filmliste ohne jegliche Filter abzüglich Livestreams berücksichtigt, so dass es zu Abweichungen zur Anzeige in der Statuszeile kommen kann.
 - **FEATURE:** Mit der Lucene-Suche können mittels des `duplicate`-Boolean Parameters Filmduplikate berücksichtigt werden.
 - **FEATURE:** Via `Ansicht/Übersicht aller Duplikate anzeigen...` werden in einem Dialog per Sender alle vorhandenen Duplikate dargestellt zzgl. der zugeordneten Filme.
-
+- **FEATURE:** Geschwindigkeitsoptimierungen für die moderne Suche.
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.

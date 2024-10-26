@@ -1214,9 +1214,6 @@ public class MediathekGui extends JFrame {
         logger.trace("Write app config.");
         ApplicationConfiguration.getInstance().writeConfiguration();
 
-        logger.trace("Cleanup Lucene index.");
-        cleanupLuceneIndex();
-
         RuntimeStatistics.printRuntimeStatistics();
         if (Config.isEnhancedLoggingEnabled()) {
             RuntimeStatistics.printDataUsageStatistics();
@@ -1232,18 +1229,6 @@ public class MediathekGui extends JFrame {
         System.exit(0);
 
         return true;
-    }
-
-    private void cleanupLuceneIndex() {
-        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList filmList) {
-            try (var writer = filmList.getWriter()) {
-                writer.deleteAll();
-                writer.commit();
-                //filmList.getLuceneDirectory().close();
-            } catch (Exception ex) {
-                logger.error("cleanupLuceneIndex error", ex);
-            }
-        }
     }
 
     /**

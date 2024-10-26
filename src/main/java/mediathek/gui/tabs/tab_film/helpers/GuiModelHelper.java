@@ -9,6 +9,7 @@ import mediathek.javafx.filterpanel.ZeitraumSpinner;
 
 import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public abstract class GuiModelHelper {
     protected SliderRange sliderRange;
@@ -34,6 +35,20 @@ public abstract class GuiModelHelper {
             return true; // always show entries with length 0, which are internally "no length"
         else
             return filmLength >= sliderRange.minLengthInSeconds();
+    }
+
+    public Stream<DatenFilm> applyCommonFilters(Stream<DatenFilm> stream, final String filterThema) {
+        if (!filterThema.isEmpty()) {
+            stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
+        }
+        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+            stream = stream.filter(this::maxLengthCheck);
+        }
+        if (filterActionPanel.isShowUnseenOnly()) {
+            stream = stream.filter(this::seenCheck);
+        }
+        //perform min length filtering after all others may have reduced the available entries...
+        return stream.filter(this::minLengthCheck);
     }
 
     protected boolean noFiltersAreSet() {
