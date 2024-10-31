@@ -96,7 +96,6 @@ public class GuiDownloads extends AGuiTabPanel {
     protected StopAllWaitingDownloadsAction stopAllWaitingDownloadsAction = new StopAllWaitingDownloadsAction(this);
     protected RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
     protected CleanupDownloadListAction cleanupDownloadListAction = new CleanupDownloadListAction(this);
-    protected InvertSelectionAction invertSelectionAction = new InvertSelectionAction(this);
     protected PlayDownloadAction playDownloadAction = new PlayDownloadAction(this);
     protected StopDownloadsAction stopDownloadsAction = new StopDownloadsAction(this);
     protected StartDownloadsAction startDownloadsAction = new StartDownloadsAction(this);
@@ -320,10 +319,6 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    public MVDownloadsTable getTableComponent() {
-        return tabelle;
-    }
-
     @Override
     public void installMenuEntries(JMenu menu) {
         JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
@@ -353,8 +348,6 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(miMarkFilmAsSeen);
         menu.add(miMarkFilmAsUnseen);
         menu.add(playDownloadAction);
-        menu.addSeparator();
-        menu.add(invertSelectionAction);
     }
 
     public void onComponentShown() {
