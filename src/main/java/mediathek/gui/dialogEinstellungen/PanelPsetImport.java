@@ -23,6 +23,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Arrays;
 
 public class PanelPsetImport extends PanelVorlage {
     private final ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
@@ -107,14 +108,14 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void table1Select() {
         String[] vorlage = new String[ListePsetVorlagen.PGR_MAX_ELEM];
-        for (int i = 0; i < ListePsetVorlagen.PGR_MAX_ELEM; i++) {
-            vorlage[i] = "";
-        }
+        Arrays.fill(vorlage, "");
+
         int selectedTableRow = jTableVorlagen.getSelectedRow();
         if (selectedTableRow >= 0) {
             int selectedModelRow = jTableVorlagen.convertRowIndexToModel(selectedTableRow);
+            final var model = jTableVorlagen.getModel();
             for (int i = 0; i < ListePsetVorlagen.PGR_MAX_ELEM; ++i) {
-                vorlage[i] = jTableVorlagen.getModel().getValueAt(selectedModelRow, i).toString();
+                vorlage[i] = model.getValueAt(selectedModelRow, i).toString();
             }
         }
         jTextFieldName.setText(vorlage[ListePsetVorlagen.PGR_NAME_NR]);
