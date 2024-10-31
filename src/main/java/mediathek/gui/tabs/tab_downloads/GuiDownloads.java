@@ -106,6 +106,7 @@ public class GuiDownloads extends AGuiTabPanel {
     protected DeleteDownloadAction deleteDownloadAction = new DeleteDownloadAction(this);
     protected OpenTargetFolderAction openTargetFolderAction = new OpenTargetFolderAction(this);
     protected ToggleFilterPanelAction toggleFilterPanelAction = new ToggleFilterPanelAction();
+    protected MergeSubtitleWithVideoAction mergeSubtitleWithVideoAction = new MergeSubtitleWithVideoAction(MediathekGui.ui());
     protected JToolBar swingToolBar = new JToolBar();
     private boolean onlyAbos;
     private boolean onlyDownloads;
@@ -340,6 +341,8 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.add(deferDownloadsAction);
         menu.add(deleteDownloadsAction);
         menu.add(editDownloadAction);
+        menu.addSeparator();
+        menu.add(mergeSubtitleWithVideoAction);
         menu.addSeparator();
         menu.add(cbShowDownloadDescription);
         menu.addSeparator();

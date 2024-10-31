@@ -100,6 +100,7 @@
         <controlsfx.version>11.2.1</controlsfx.version>
         <flatlaf.version>3.5.2</flatlaf.version>
         <guava.version>33.3.0-jre</guava.version>
+        <icu4j.version>76.1</icu4j.version>
         <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.17.2</jackson.version>
         <jaffree.version>2023.09.10</jaffree.version>
@@ -147,6 +148,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>${icu4j.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.github.lgooddatepicker</groupId>
             <artifactId>LGoodDatePicker</artifactId>
