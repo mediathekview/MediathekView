@@ -74,12 +74,13 @@ public class ProgramUpdateCheck implements AutoCloseable {
                     ListePset listePsetOrgSpeichern = Daten.listePset.getListeSpeichern();
                     if (!listePsetOrgSpeichern.isEmpty()) {
                         for (DatenPset psNew : listePsetStandard.getListeSpeichern()) {
-                            psNew.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
-                            psNew.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN];
-                            psNew.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN];
-                            psNew.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN];
-                            psNew.arr[DatenPset.PROGRAMMSET_MAX_LAENGE] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE];
-                            psNew.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD];
+                            final var psOrg = listePsetOrgSpeichern.getFirst();
+                            psNew.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = psOrg.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
+                            psNew.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN] = psOrg.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN];
+                            psNew.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN] = psOrg.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN];
+                            psNew.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN] = psOrg.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN];
+                            psNew.arr[DatenPset.PROGRAMMSET_MAX_LAENGE] = psOrg.arr[DatenPset.PROGRAMMSET_MAX_LAENGE];
+                            psNew.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD] = psOrg.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD];
                         }
                     }
                     if (!Daten.listePset.isEmpty()) {

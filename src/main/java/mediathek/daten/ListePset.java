@@ -113,7 +113,7 @@ public class ListePset extends ArrayList<DatenPset> {
                 // die erste Pset der Abos
                 ListePset ps = getListeAbo();
                 if (ps.size() > 0) {
-                    ret = getListeAbo().get(0);
+                    ret = getListeAbo().getFirst();
                     if (ret == null) {
                         // dann die erste Prgruppe
                         ret = get(0);

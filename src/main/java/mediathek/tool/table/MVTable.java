@@ -423,7 +423,7 @@ public abstract class MVTable extends JTable {
         var sortOrderStr = "";
         if (listeSortKeys != null) {
             if (!listeSortKeys.isEmpty()) {
-                SortKey sk = listeSortKeys.get(0);
+                SortKey sk = listeSortKeys.getFirst();
                 sortKeyColumnStr = String.valueOf(sk.getColumn());
                 sortOrderStr = sk.getSortOrder() == SortOrder.ASCENDING ? SORT_ASCENDING : SORT_DESCENDING;
             }

@@ -372,7 +372,7 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> filterActionPanel.updateThemaComboBox());
+                Platform.runLater(filterActionPanel::updateThemaComboBox);
             }
         });
 
@@ -1489,9 +1489,7 @@ public class GuiFilme extends AGuiTabPanel {
             mCopyToClipboard.add(miCopySenderThemaTitelToClipboard);
 
             var miCopyDescriptionToClipboard = new JMenuItem("Beschreibung");
-            miCopyDescriptionToClipboard.addActionListener(e -> {
-                GuiFunktionen.copyToClipboard(film.getDescription());
-            });
+            miCopyDescriptionToClipboard.addActionListener(_ -> GuiFunktionen.copyToClipboard(film.getDescription()));
             mCopyToClipboard.add(miCopyDescriptionToClipboard);
 
             setupFilmUrlCopyToClipboardEntries(mCopyToClipboard, film);
