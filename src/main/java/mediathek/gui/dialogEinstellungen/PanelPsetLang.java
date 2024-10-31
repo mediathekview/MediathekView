@@ -17,7 +17,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererProgramme;
 import mediathek.tool.cellrenderer.CellRendererPset;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
@@ -517,7 +517,7 @@ public class PanelPsetLang extends PanelVorlage {
     private void nurtabellePset() {
         stopBeob = true;
         tabellePset.getSpalten();
-        tabellePset.setModel(listePset.getModel());
+        tabellePset.setModel(listePset.createModel());
         tabellePset.setSpalten();
         spaltenSetzen();
         jLabelMeldungAbspielen.setVisible(listePset.getPsetAbspielen() == null);
@@ -588,7 +588,7 @@ public class PanelPsetLang extends PanelVorlage {
                 case FilmResolution.LOW -> jRadioButtonAufloesungKlein.setSelected(true);
                 default -> jRadioButtonAufloesungNormal.setSelected(true);
             }
-            tabelleProgramme.setModel(pSet.getListeProg().getModel());
+            tabelleProgramme.setModel(pSet.getListeProg().createModel());
             if (tabelleProgramme.getRowCount() > 0) {
                 spaltenSetzenProgramme();
                 tabelleProgramme.setRowSelectionInterval(0, 0);
@@ -609,7 +609,7 @@ public class PanelPsetLang extends PanelVorlage {
             tfGruppeZielName.setText("");
             tfGruppeZielPfad.setText("");
             jTextAreaSetBeschreibung.setText("");
-            tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
+            tabelleProgramme.setModel(new NonEditableTableModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
         }
         stopBeob = false;
         fillTextProgramme();
@@ -726,7 +726,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabellePset.convertRowIndexToModel(rows[i]);
-                    ((TModel) tabellePset.getModel()).removeRow(delRow);
+                    ((NonEditableTableModel) tabellePset.getModel()).removeRow(delRow);
                     listePset.remove(delRow);
                 }
                 tabellePset();
@@ -1088,7 +1088,7 @@ public class PanelPsetLang extends PanelVorlage {
                                         .addComponent(jCheckBoxButton)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jCheckBoxAbo)
-                                        .addContainerGap(71, Short.MAX_VALUE))
+                                        .addContainerGap(81, Short.MAX_VALUE))
                             );
                             jPanel6Layout.setVerticalGroup(
                                 jPanel6Layout.createParallelGroup()
@@ -1201,9 +1201,9 @@ public class PanelPsetLang extends PanelVorlage {
                                             .addComponent(jButtonGruppeStandardfarbe))
                                         .addComponent(jLabel11)
                                         .addComponent(jLabel13))
-                                    .addContainerGap(317, Short.MAX_VALUE))
+                                    .addContainerGap(325, Short.MAX_VALUE))
                         );
-                        jPanel5Layout.linkSize(SwingConstants.HORIZONTAL, jButtonGruppeFarbe, jButtonGruppeStandardfarbe);
+                        jPanel5Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButtonGruppeFarbe, jButtonGruppeStandardfarbe});
                         jPanel5Layout.setVerticalGroup(
                             jPanel5Layout.createParallelGroup()
                                 .addGroup(jPanel5Layout.createSequentialGroup()
@@ -1302,7 +1302,7 @@ public class PanelPsetLang extends PanelVorlage {
                                                     .addComponent(jButtonGruppePfad))
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                     .addComponent(jCheckBoxThema)
-                                                    .addGap(0, 205, Short.MAX_VALUE)))
+                                                    .addGap(0, 215, Short.MAX_VALUE)))
                                             .addGap(16, 16, 16))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                             .addComponent(jLabel8)
@@ -1354,7 +1354,7 @@ public class PanelPsetLang extends PanelVorlage {
                                         .addComponent(jLabel16))
                                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         );
-                        jPanel1Layout.linkSize(SwingConstants.VERTICAL, jButtonGruppePfad, tfGruppeZielName, tfGruppeZielPfad);
+                        jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonGruppePfad, tfGruppeZielName, tfGruppeZielPfad});
                     }
 
                     GroupLayout jPanel9Layout = new GroupLayout(jPanel9);
@@ -1419,7 +1419,7 @@ public class PanelPsetLang extends PanelVorlage {
 
                     //---- jTextArea1 ----
                     jTextArea1.setEditable(false);
-                    jTextArea1.setBackground(new Color(238, 238, 238));
+                    jTextArea1.setBackground(new Color(0xeeeeee));
                     jTextArea1.setColumns(20);
                     jTextArea1.setRows(4);
                     jTextArea1.setText("Filme, deren URL mit \"Pr\u00e4fix\" beginnt und mit \"Suffix\" endet, werden nicht\nmit einem Hilfsprogramm gespeichert, sondern direkt geladen.\n\nEine geringere Aufl\u00f6sung ist nicht bei jedem Sender m\u00f6glich, es wird dann in der gleichen\nAufl\u00f6sung geladen."); //NON-NLS
@@ -1544,7 +1544,7 @@ public class PanelPsetLang extends PanelVorlage {
                         jScrollPane1.setBorder(new TitledBorder(null, "Titel", TitledBorder.LEFT, TitledBorder.TOP)); //NON-NLS
 
                         //---- jTableProgramme ----
-                        jTableProgramme.setModel(new TModel());
+                        jTableProgramme.setModel(new NonEditableTableModel());
                         jTableProgramme.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                         jScrollPane1.setViewportView(jTableProgramme);
                     }
@@ -1669,12 +1669,12 @@ public class PanelPsetLang extends PanelVorlage {
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(jLabel4)
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(jTextFieldProgSuffix, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                                                    .addComponent(jTextFieldProgSuffix, GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
                                                 .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
                                                     .addGroup(jPanelProgrammDetailsLayout.createParallelGroup()
                                                         .addComponent(jCheckBoxRemoteDownload)
                                                         .addComponent(jCheckBoxRestart))
-                                                    .addGap(0, 194, Short.MAX_VALUE)))))
+                                                    .addGap(0, 206, Short.MAX_VALUE)))))
                                     .addContainerGap())
                         );
                         jPanelProgrammDetailsLayout.setVerticalGroup(
@@ -1709,7 +1709,7 @@ public class PanelPsetLang extends PanelVorlage {
                                     .addComponent(jCheckBoxRemoteDownload)
                                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         );
-                        jPanelProgrammDetailsLayout.linkSize(SwingConstants.VERTICAL, jButtonProgPfad, jTextFieldProgName, jTextFieldProgPfad, jTextFieldProgPraefix, jTextFieldProgSchalter, jTextFieldProgSuffix, jTextFieldProgZielDateiName);
+                        jPanelProgrammDetailsLayout.linkSize(SwingConstants.VERTICAL, new Component[] {jButtonProgPfad, jTextFieldProgName, jTextFieldProgPfad, jTextFieldProgPraefix, jTextFieldProgSchalter, jTextFieldProgSuffix, jTextFieldProgZielDateiName});
                     }
 
                     GroupLayout jPanelProgrammeLayout = new GroupLayout(jPanelProgramme);
