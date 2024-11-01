@@ -1,5 +1,6 @@
 package mediathek.daten;
 
+import mediathek.config.Config;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.javafx.bookmark.BookmarkData;
 import mediathek.tool.FileSize;
@@ -189,7 +190,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
             datum_long = Long.parseLong(datumLong);
         }
         catch (Exception e) {
-            logger.warn("Failed to parse datum long string: {}", datumLong);
+            if (Config.isDebugModeEnabled()) {
+                logger.warn("Failed to parse datum long string: {}", datumLong);
+            }
             datum_long = 0;
         }
         dataMap.put(MapKeys.TEMP_DATUM_LONG, datum_long);
