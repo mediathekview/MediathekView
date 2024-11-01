@@ -32,6 +32,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfSubripFilePath"
+						"toolTipText": "Pfad zur Untertiteldatei im Subrip Text Format (.srt)"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectInputSubrip"
@@ -47,6 +48,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfVideoFilePath"
+						"toolTipText": "Pfad zu einer von ffmpeg unterstützten Videodatei als Eingabemedium"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectInputVideo"

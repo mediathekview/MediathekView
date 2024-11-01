@@ -56,6 +56,7 @@ public class MergeSubripVideoDialog extends JDialog {
         btnMerge.setEnabled(false);
 
         fillLanguageComboBox();
+        cbLanguage.setSelectedItem(getLanguageText(LanguageCode.de));
 
         btnCancel.addActionListener(_ -> dispose());
 
@@ -79,12 +80,18 @@ public class MergeSubripVideoDialog extends JDialog {
             if (file != null) {
                 tfVideoFilePath.setText(file.getAbsolutePath());
             }
+            else {
+                tfVideoFilePath.setText("");
+            }
         });
 
         btnSelectVideoOutputPath.addActionListener(_ -> {
             var file = FileDialogs.chooseSaveFileLocation(this, "Videospeicherort wählen", "");
             if (file != null) {
                 tfVideoOutputPath.setText(file.getAbsolutePath());
+            }
+            else {
+                tfVideoOutputPath.setText("");
             }
         });
 
@@ -176,11 +183,14 @@ public class MergeSubripVideoDialog extends JDialog {
         btnCancel.setEnabled(true);
     }
 
+    private String getLanguageText(LanguageCode code) {
+        return String.format("%s [%s]", code.nativeName(), code.getISO3Language());
+    }
+
     public void fillLanguageComboBox() {
         List<String> languages = new ArrayList<>();
         for (var item : LanguageCode.values()) {
-            var entry = String.format("%s [%s]", item.nativeName(), item.getISO3Language());
-            languages.add(entry);
+            languages.add(getLanguageText(item));
         }
         cbLanguage.setModel(new DefaultComboBoxModel<>(languages.toArray(new String[0])));
     }
@@ -225,12 +235,18 @@ public class MergeSubripVideoDialog extends JDialog {
                 label1.setText("Untertitel-Datei:"); //NON-NLS
                 label1.setHorizontalAlignment(SwingConstants.RIGHT);
 
+                //---- tfSubripFilePath ----
+                tfSubripFilePath.setToolTipText("Pfad zur Untertiteldatei im Subrip Text Format (.srt)"); //NON-NLS
+
                 //---- btnSelectInputSubrip ----
                 btnSelectInputSubrip.setText("..."); //NON-NLS
 
                 //---- label2 ----
                 label2.setText("Video-Datei:"); //NON-NLS
                 label2.setHorizontalAlignment(SwingConstants.RIGHT);
+
+                //---- tfVideoFilePath ----
+                tfVideoFilePath.setToolTipText("Pfad zu einer von ffmpeg unterst\u00fctzten Videodatei als Eingabemedium"); //NON-NLS
 
                 //---- btnSelectInputVideo ----
                 btnSelectInputVideo.setText("..."); //NON-NLS
