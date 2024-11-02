@@ -36,7 +36,7 @@
 - **FEATURE:** Mit der Lucene-Suche können mittels des `duplicate`-Boolean Parameters Filmduplikate berücksichtigt werden.
 - **FEATURE:** Via `Ansicht/Übersicht aller Duplikate anzeigen...` werden in einem Dialog per Sender alle vorhandenen Duplikate dargestellt zzgl. der zugeordneten Filme.
 - **FEATURE:** Geschwindigkeitsoptimierungen für die moderne Suche.
-- **FEATURE:** Mittels Menü `Downloads/Unterttiteldatei zu Video hinzufügen...` kann eine vorhandene Untertiteldatei mit der korrekten Sprachzuordnung zu einem Video hinzugefügt werden. Moderne Videoplayer erkennen die Untertitelspur automatisch und man muss keine separaten Untertiteldateien mehr verwalten.
+- **FEATURE:** Mittels Menü `Downloads/Untertiteldatei zu Video hinzufügen...` kann eine vorhandene Untertiteldatei mit der korrekten Sprachzuordnung zu einem Video hinzugefügt werden. Moderne Videoplayer erkennen die Untertitelspur automatisch und man muss keine separaten Untertiteldateien mehr verwalten.
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.
