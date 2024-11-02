@@ -21,6 +21,8 @@ package mediathek.tool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
 import org.apache.lucene.analysis.custom.CustomAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
@@ -34,8 +36,8 @@ public class LuceneDefaultAnalyzer {
         Analyzer analyzer;
         try {
             analyzer = CustomAnalyzer.builder()
-                    .withTokenizer("whitespace")
-                    .addTokenFilter("lowercase")
+                    .withTokenizer(WhitespaceTokenizerFactory.class)
+                    .addTokenFilter(LowerCaseFilterFactory.class)
                     .build();
         }
         catch (IOException e) {
