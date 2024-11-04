@@ -1,5 +1,6 @@
 package mediathek.tool;
 
+import com.ibm.icu.text.Transliterator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -140,19 +141,14 @@ public class FilenameUtils {
      * @param fileName The UTF-16 filename string.
      * @return US-ASCII encoded string for the OS.
      */
-    private static String convertToASCIIEncoding(String fileName, boolean isPath) {
+    protected static String convertToASCIIEncoding(String fileName, boolean isPath) {
         String ret = fileName;
+        //remove NUL character from conversion...
+        ret = ret.replaceAll("\\u0000", "");
 
-        ret = ret.replace("ä", "ae");
-        ret = ret.replace("ö", "oe");
-        ret = ret.replace("ü", "ue");
-        ret = ret.replace("Ä", "Ae");
-        ret = ret.replace("Ö", "Oe");
-        ret = ret.replace("Ü", "Ue");
-        ret = ret.replace("ß", "ss");
-
-        // ein Versuch zu vereinfachen
-        ret = cleanUnicode(ret);
+        //convert to ASCII with icu4j
+        var transliterator = Transliterator.getInstance("de-ASCII");
+        ret = transliterator.transliterate(ret);
 
         ret = removeIllegalCharacters(ret, isPath);
 
@@ -167,9 +163,6 @@ public class FilenameUtils {
             if (buf.hasArray()) {
                 ret = new String(buf.array());
             }
-
-            //remove NUL character from conversion...
-            ret = ret.replaceAll("\\u0000", "");
         } catch (CharacterCodingException e) {
             logger.error("convertToASCIIEncoding", e);
         }
@@ -177,94 +170,11 @@ public class FilenameUtils {
         return ret;
     }
 
-    private static String cleanUnicode(String ret) {
-        String r = "";
-        char c;
-        for (int i = 0; i < ret.length(); ++i) {
-            c = ret.charAt(i);
-            //char hex = ret.charAt(i);
-            if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.BASIC_LATIN) {
-                r += c;
-            } else if (c == 'ß') {
-                r += "ß";
-            } else // Buchstaben
-            {
-                if (c == 'Â' || c == 'À' || c == 'Å' || c == 'Á') {
-                    r += "A";
-                } else if (c == 'å' || c == 'á' || c == 'à' || c == 'â') {
-                    r += "a";
-                } else if (c == 'Č') {
-                    r += "C";
-                } else if (c == 'ć' || c == 'č' || c == 'ç') {
-                    r += "c";
-                } else if (c == 'Đ') {
-                    r += "D";
-                } else if (c == 'É' || c == 'È') {
-                    r += "E";
-                } else if (c == 'é' || c == 'è' || c == 'ê' || c == 'ě' || c == 'ë') {
-                    r += "e";
-                } else if (c == 'í') {
-                    r += "i";
-                } else if (c == 'ñ') {
-                    r += "n";
-                } else if (c == 'ó' || c == 'ô' || c == 'ø') {
-                    r += "o";
-                } else if (c == 'Š') {
-                    r += "S";
-                } else if (c == 'ś' || c == 'š' || c == 'ş') {
-                    r += "s";
-                } else if (c == 'ł' || c == 'Ł') {
-                    r += "t";
-                } else if (c == 'û' || c == 'ù') {
-                    r += "u";
-                } else if (c == 'ý') {
-                    r += "y";
-                } else if (c == 'Ž' || c == 'Ź') {
-                    r += "Z";
-                } else if (c == 'ž' || c == 'ź') {
-                    r += "z";
-                } else if (c == 'æ') {
-                    r += "ae";
-                } else if (c == '–') {
-                    r += "-";
-                } else if (c == '„') {
-                    r += "\"";
-                } else if (c == '”' || c == '“' || c == '«' || c == '»') {
-                    r += "\"";
-                } else if (c == '?') {
-                    r += "?";
-                } else if (c == '°' || c == '™') {
-                } else if (c == '…') {
-                    r += "...";
-                } else if (c == '€') {
-                    r += "€";
-                } else if (c == '´' || c == '’' || c == '‘' || c == '¿') {
-                    r += "'";
-                } else if (c == '\u003F') {
-                    r += "?";
-                } else if (c == '\u0096') {
-                    r += "-";
-                } else if (c == '\u0085') {
-                } else if (c == '\u0080') {
-                } else if (c == '\u0084') {
-                } else if (c == '\u0092') {
-                } else if (c == '\u0093') {
-                } else if (c == '\u0091') {
-                    r += "-";
-                } else if (c == '\n') {
-                } else {
-                    r += "_";
-                }
-            }
-        }
-        return r;
-    }
-
     /**
      * Remove illegal characters from String based on current OS.
      *
      * @param input  The input string
-     * @param isPath
+     * @param isPath true if this is a path.
      * @return Cleaned-up string.
      */
     public static String removeIllegalCharacters(final String input, boolean isPath) {
@@ -281,11 +191,7 @@ public class FilenameUtils {
             ret = StringUtils.stripStart(ret, ".");
             ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
         } else {
-            logger.warn("This code path should NOT have been taken");
-            //we need to be more careful on Linux when using e.g. FAT32
-            //Therefore be more conservative by default and replace more characters.
-            ret = StringUtils.stripStart(ret, ".");
-            ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+            throw new IllegalStateException("Unsupported OS: " + SystemUtils.OS_NAME);
         }
 
         return ret;
