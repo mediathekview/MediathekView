@@ -1241,7 +1241,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
             jPopupMenu.addSeparator();
 
-            // URL abspielen
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
             itemPlayer.addActionListener(_ -> {
                 final int nr1 = tabelle.rowAtPoint(p);
@@ -1273,7 +1272,6 @@ public class GuiDownloads extends AGuiTabPanel {
             });
             jPopupMenu.add(itemPlayer);
 
-            // URL kopieren
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
             itemUrl.addActionListener(_ -> {
                 int nr1 = tabelle.rowAtPoint(p);

@@ -497,7 +497,7 @@ public class MediathekGui extends JFrame {
                 popupMenu = new PopupMenu();
 
             MenuItem miLoadNewFilmlist = new MenuItem("Neue Filmliste laden");
-            miLoadNewFilmlist.addActionListener(e -> performFilmListLoadOperation(false));
+            miLoadNewFilmlist.addActionListener(_ -> performFilmListLoadOperation(false));
 
             popupMenu.addSeparator();
             popupMenu.add(miLoadNewFilmlist);
@@ -1010,7 +1010,7 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showDuplicateStatisticsAction);
         var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
-        mi.addActionListener(l -> {
+        mi.addActionListener(_ -> {
             FilmDuplicateOverviewDialog dlg = new FilmDuplicateOverviewDialog(this);
             dlg.setVisible(true);
         });
