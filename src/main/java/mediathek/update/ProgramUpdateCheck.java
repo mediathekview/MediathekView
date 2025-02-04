@@ -110,7 +110,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
         var gui = MediathekGui.ui();
         try {
             //first check if network is available...
-            if (NetUtils.isReachable("res.mediathekview.de",1000)) {
+            if (NetUtils.isReachable("res.mediathekview.de",1, TimeUnit.SECONDS)) {
                 //we have internet...
                 SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
 

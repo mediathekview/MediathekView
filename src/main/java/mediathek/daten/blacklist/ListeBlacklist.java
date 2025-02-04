@@ -110,7 +110,17 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
             final Predicate<DatenFilm> pred = createPredicate();
 
-            completeFilmList.parallelStream().filter(pred).forEachOrdered(filteredList::add);
+            //TODO add config dialog setting
+            final var config = ApplicationConfiguration.getConfiguration();
+            var filterBlacklistDuplicates = config.getBoolean(ApplicationConfiguration.BLACKLIST_FILTER_DUPLICATES, false);
+            //if we don't evaluate there will be no chance to filter here...
+            var evaluateDuplicates = config.getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
+
+            var stream = completeFilmList.parallelStream();
+            if (evaluateDuplicates && filterBlacklistDuplicates) {
+                stream = stream.filter(film -> !film.isDuplicate());
+            }
+            stream.filter(pred).forEachOrdered(filteredList::add);
 
             setupNewEntries();
         }
@@ -148,7 +158,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         }
 
-        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(x -> true);
+        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(_ -> true);
         filterList.clear();
 
         return pred;

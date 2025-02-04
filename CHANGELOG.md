@@ -15,6 +15,7 @@
 - **BUGFIX(Linux):** MV öffnet nun einen konfigurierten Browser im About-Dialog wenn Java keinen eigenen finden kann.
 - **BUGFIX(Linux/Windows):** Splashscreen zeigte keinen uniformen schwarzen Hintergrund mehr an.
 - **BUGFIX:** Moderne Suche unterstützt nun die Suche mit *special characters*.
+- **BUGFIX(macOS):** Darstellungsfehler beim Wechsel Dark-/Lightmode wurde behoben.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
