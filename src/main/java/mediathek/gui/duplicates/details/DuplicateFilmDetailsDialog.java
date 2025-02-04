@@ -38,7 +38,7 @@ public class DuplicateFilmDetailsDialog extends JDialog {
         super(owner);
         initComponents();
 
-        okButton.addActionListener(_ -> dispose());
+        okButton.addActionListener(e -> dispose());
 
         BasicEventList<DatenFilm> duplicateList = new BasicEventList<>();
         SortedList<DatenFilm> sortedList = new SortedList<>(duplicateList);

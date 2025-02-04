@@ -77,20 +77,20 @@ public class DialogEditAbo extends JDialog {
         editorComp.setOpaque(true);
         editorComp.getDocument().addDocumentListener(new CheckPathDocListener());
 
-        jButtonBeenden.addActionListener(_ -> {
+        jButtonBeenden.addActionListener(e -> {
             if (check()) {
                 dispose();
             } else {
                 MVMessageDialog.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE);
             }
         });
-        jButtonAbbrechen.addActionListener(_ -> dispose());
+        jButtonAbbrechen.addActionListener(e -> dispose());
         getRootPane().setDefaultButton(jButtonBeenden);
 
         EscapeKeyHandler.installHandler(this, this::dispose);
 
         jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHelp.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
+        jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
 
         if (comboboxPSet.getModel().getSize() == 0) {
             // dann gibts kein Set zum Aufzeichnen
@@ -251,7 +251,7 @@ public class DialogEditAbo extends JDialog {
                 final int minDauer = aktAbo.getMindestDauerMinuten();
                 sliderDauer.setValue(minDauer);
                 labelDauer.setText(String.valueOf(minDauer == 0 ? " alles " : minDauer));
-                sliderDauer.addChangeListener(_ -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : Integer.toString(sliderDauer.getValue()))));
+                sliderDauer.addChangeListener(e -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : Integer.toString(sliderDauer.getValue()))));
                 var p = new JPanel(new BorderLayout());
                 p.add(sliderDauer, BorderLayout.CENTER);
                 p.add(labelDauer, BorderLayout.EAST);
@@ -302,7 +302,7 @@ public class DialogEditAbo extends JDialog {
                     var jcb = new JCheckBox();
                     jcb.setBorder(emptyBorder);
                     jcb.setHorizontalTextPosition(JCheckBox.CENTER);
-                    jcb.addActionListener(_ -> multiEditCbIndices[index.getIndex()] = jcb.isSelected());
+                    jcb.addActionListener(e -> multiEditCbIndices[index.getIndex()] = jcb.isSelected());
                     gridbag.setConstraints(jcb, c);
                     panel.add(jcb);
                 }

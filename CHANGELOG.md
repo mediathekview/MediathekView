@@ -1,6 +1,8 @@
 # **14.2.0**
-- JDK 22 wird nun benötigt. Die von uns gelieferten Binaries enthalten dies.
-- **JDK 23 und 23.0.1 enthalten einen Fehler im Shenandoah GC der die moderne Suche eklatant (6-10x) langsamer laufen lässt!** Dies scheint erst in einer Nachfolgeversion wieder behoben zu sein. Es wird abgeraten die genannten Versionen und MV zu verwenden.
+- **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
+- **(Linux/Windows):** Die von uns gelieferten Binaries enthalten JDK 23.0.2.
+- **(macOS):** Intel Version beinhaltet JDK 21, Apple Silicon Version nutzt JDK 23.0.2.
+- **JDK 23 und 23.0.1 enthalten einen Fehler im Shenandoah GC der die moderne Suche eklatant (6-10x) langsamer laufen lässt!** Dieser ist erst in 23.0.2 behoben. Es wird abgeraten die genannten Versionen mit MV zu verwenden.
 - **BUGFIX:** MV aktualisiert nun vor dem Download mittels `-dq` oder `--download-quit` Parameter die Filmliste.
 - **BUGFIX:** FlatLaf Regression gelöst, die manchmal zu einer inkorrekten Darstellung der Oberfläche führte.
 - **BUGFIX(Linux/macOS):** Im "Film Speichern"-Dialog wurde der Zielpfad im Dark Mode weiß dargestellt.
@@ -38,6 +40,7 @@
 - **FEATURE:** Via `Ansicht/Übersicht aller Duplikate anzeigen...` werden in einem Dialog per Sender alle vorhandenen Duplikate dargestellt zzgl. der zugeordneten Filme.
 - **FEATURE:** Geschwindigkeitsoptimierungen für die moderne Suche.
 - **FEATURE:** Mittels Menü `Downloads/Untertiteldatei zu Video hinzufügen...` kann eine vorhandene Untertiteldatei mit der korrekten Sprachzuordnung zu einem Video hinzugefügt werden. Moderne Videoplayer erkennen die Untertitelspur automatisch und man muss keine separaten Untertiteldateien mehr verwalten.
+
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.

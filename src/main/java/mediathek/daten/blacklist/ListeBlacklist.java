@@ -159,7 +159,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         }
 
-        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(_ -> true);
+        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(f -> true);
         filterList.clear();
 
         return pred;

@@ -84,13 +84,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.language.version>22</jdk.language.version>
-        <kotlin.language.target>22</kotlin.language.target>
+        <jdk.language.version>21</jdk.language.version>
+        <kotlin.language.target>21</kotlin.language.target>
+        <jvm.target.version>21</jvm.target.version>
+
         <kotlin.version>2.1.10</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
-        <maven.compiler.target>${jdk.language.version}</maven.compiler.target>
+        <maven.compiler.target>${jvm.target.version}</maven.compiler.target>
 
         <annotations.version>24.1.0</annotations.version>
         <assertj-core.version>3.26.3</assertj-core.version>
@@ -582,7 +584,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <release>${jdk.language.version}</release>
+                    <release>${jvm.target.version}</release>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
@@ -1094,6 +1096,7 @@
                 </os>
             </activation>
             <properties>
+                <jvm.target.version>21</jvm.target.version>
                 <javafx.platform>mac</javafx.platform>
             </properties>
             <dependencies>

@@ -33,7 +33,7 @@ public class FilmDuplicateOverviewDialog extends JDialog {
         initComponents();
         EscapeKeyHandler.installHandler(this, this::dispose);
 
-        okButton.addActionListener(_ -> dispose());
+        okButton.addActionListener(e -> dispose());
         //must be called for tooltips working
         ToolTipManager.sharedInstance().registerComponent(tree);
 
@@ -55,7 +55,7 @@ public class FilmDuplicateOverviewDialog extends JDialog {
         var selectionModel = tree.getSelectionModel();
         selectionModel.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setCellRenderer(new CustomTreeCellRenderer());
-        selectionModel.addTreeSelectionListener(_ -> {
+        selectionModel.addTreeSelectionListener(e -> {
             var node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
             if (node == null)
                 return;

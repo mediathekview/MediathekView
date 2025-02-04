@@ -36,7 +36,7 @@ public class PanelPsetKurz extends PanelVorlage {
         if (!listePset.isEmpty()) {
             jListPset.setSelectedIndex(0);
             init();
-            jListPset.addListSelectionListener(_ -> {
+            jListPset.addListSelectionListener(le -> {
                 if (!stopBeob) {
                     stopBeob = true;
                     init();

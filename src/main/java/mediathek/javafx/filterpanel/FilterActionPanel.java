@@ -181,7 +181,7 @@ public class FilterActionPanel {
 
     private void setupAddNewFilterButton() {
         viewSettingsPane.setAddNewFilterButtonEventHandler(
-                _ -> {
+                e -> {
                     FilterDTO newFilter =
                             new FilterDTO(
                                     UUID.randomUUID(), String.format("Filter %d", availableFilters.size() + 1));
@@ -197,7 +197,7 @@ public class FilterActionPanel {
         }
 
         viewSettingsPane.btnDeleteCurrentFilter.setOnAction(
-                _ -> {
+                e -> {
                     FilterDTO filterToDelete = filterConfig.getCurrentFilter();
                     filterConfig.deleteFilter(filterToDelete);
 
@@ -221,7 +221,7 @@ public class FilterActionPanel {
                 });
 
         viewSettingsPane.setFilterSelectionChangeListener(
-                (_, oldValue, newValue) -> {
+                (ov, oldValue, newValue) -> {
                     if (newValue != null && !newValue.equals(oldValue)) {
                         filterConfig.setCurrentFilter(newValue);
                     }
@@ -254,7 +254,7 @@ public class FilterActionPanel {
     }
 
     private void setupDeleteFilterButton() {
-        viewSettingsPane.btnDeleteFilterSettings.setOnAction(_ -> {
+        viewSettingsPane.btnDeleteFilterSettings.setOnAction(e -> {
             viewSettingsPane.senderCheckList.getCheckModel().clearChecks();
 
             filterConfig.clearCurrentFilter();
@@ -263,7 +263,7 @@ public class FilterActionPanel {
     }
 
     private void setupRenameFilterButton() {
-        viewSettingsPane.btnRenameFilter.setOnAction(_ -> {
+        viewSettingsPane.btnRenameFilter.setOnAction(e -> {
             final var fltName = filterConfig.getCurrentFilter().name();
             SwingUtilities.invokeLater(() -> {
                 String s = (String)JOptionPane.showInputDialog(
@@ -311,7 +311,7 @@ public class FilterActionPanel {
 
         setupThemaComboBox();
         viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().
-                addListener((ListChangeListener<String>) _ -> updateThemaComboBox());
+                addListener((ListChangeListener<String>) c -> updateThemaComboBox());
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
 
@@ -378,35 +378,35 @@ public class FilterActionPanel {
 
     private void setupConfigListeners() {
         showOnlyHighQuality.addListener(
-                (_, _, newValue) -> filterConfig.setShowHdOnly(newValue));
+                (ov, oldVal, newValue) -> filterConfig.setShowHdOnly(newValue));
         showSubtitlesOnly.addListener(
-                ((_, _, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
         showBookMarkedOnly.addListener(
-                ((_, _, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
         showNewOnly.addListener(
-                ((_, _, newValue) -> filterConfig.setShowNewOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowNewOnly(newValue)));
         showUnseenOnly.addListener(
-                ((_, _, newValue) -> filterConfig.setShowUnseenOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowUnseenOnly(newValue)));
         showLivestreamsOnly.addListener(
-                ((_, _, newValue) -> filterConfig.setShowLivestreamsOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowLivestreamsOnly(newValue)));
 
         dontShowAbos.addListener(
-                ((_, _, newValue) -> filterConfig.setDontShowAbos(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowAbos(newValue)));
         dontShowTrailers.addListener(
-                ((_, _, newValue) -> filterConfig.setDontShowTrailers(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowTrailers(newValue)));
         dontShowSignLanguage.addListener(
-                ((_, _, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
         dontShowAudioVersions.addListener(
-                ((_, _, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
         dontShowDuplicates.addListener(
-                ((_, _, newValue) -> filterConfig.setDontShowDuplicates(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowDuplicates(newValue)));
 
         filmLengthSlider.lowValueProperty().addListener(
-                ((_, _, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
+                ((ov, oldVal, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
         filmLengthSlider.highValueProperty().addListener(
-                ((_, _, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
+                ((ov, oldVal, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
 
-        zeitraumProperty.addListener(((_, _, newValue) -> filterConfig.setZeitraum(newValue)));
+        zeitraumProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
     }
 
     /**

@@ -58,11 +58,11 @@ public class MergeSubripVideoDialog extends JDialog {
         fillLanguageComboBox();
         cbLanguage.setSelectedItem(getLanguageText(LanguageCode.de));
 
-        btnCancel.addActionListener(_ -> dispose());
+        btnCancel.addActionListener(e -> dispose());
 
         setupTextFieldListener();
 
-        btnSelectInputSubrip.addActionListener(_ -> {
+        btnSelectInputSubrip.addActionListener(e -> {
             var file = FileDialogs.chooseLoadFileLocation(this, "Untertitel wählen", "");
             if (file != null) {
                 var fileStr = file.getAbsolutePath();
@@ -75,7 +75,7 @@ public class MergeSubripVideoDialog extends JDialog {
                 }
             }
         });
-        btnSelectInputVideo.addActionListener(_ -> {
+        btnSelectInputVideo.addActionListener(e -> {
             var file = FileDialogs.chooseLoadFileLocation(this, "Video wählen", "");
             if (file != null) {
                 tfVideoFilePath.setText(file.getAbsolutePath());
@@ -85,7 +85,7 @@ public class MergeSubripVideoDialog extends JDialog {
             }
         });
 
-        btnSelectVideoOutputPath.addActionListener(_ -> {
+        btnSelectVideoOutputPath.addActionListener(e -> {
             var file = FileDialogs.chooseSaveFileLocation(this, "Videospeicherort wählen", "");
             if (file != null) {
                 tfVideoOutputPath.setText(file.getAbsolutePath());
@@ -95,7 +95,7 @@ public class MergeSubripVideoDialog extends JDialog {
             }
         });
 
-        btnMerge.addActionListener(_ -> {
+        btnMerge.addActionListener(evt -> {
             try {
                 var lang = (String) cbLanguage.getSelectedItem();
                 if (lang == null)
@@ -126,7 +126,7 @@ public class MergeSubripVideoDialog extends JDialog {
                         .addArgument("-metadata:s:s:0")
                         .addArgument("language=" + lang);
                 ffmpeg.executeAsync().toCompletableFuture()
-                        .thenAccept(_ -> SwingUtilities.invokeLater(() -> {
+                        .thenAccept(e -> SwingUtilities.invokeLater(() -> {
                             shutdownMergeProcess();
                             JOptionPane.showMessageDialog(MergeSubripVideoDialog.this, "Das Zusammenführen war erfolgreich", Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
                             dispose();
