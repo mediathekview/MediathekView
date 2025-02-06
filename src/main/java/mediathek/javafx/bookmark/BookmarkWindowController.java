@@ -26,7 +26,6 @@ import javafx.stage.Stage;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
-import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -317,8 +316,8 @@ public class BookmarkWindowController implements Initializable {
 
     // create filtered and sortable list
     filteredBookmarkList = new FilteredList<>(listeBookmarkList.getObervableList(), p -> true);
-    SortedList<BookmarkData> slisteBookmarkList = new SortedList<>(filteredBookmarkList);
-    slisteBookmarkList.comparatorProperty().bind(tbBookmarks.comparatorProperty());
+    SortedList<BookmarkData> sortedBookmarkList = new SortedList<>(filteredBookmarkList);
+    sortedBookmarkList.comparatorProperty().bind(tbBookmarks.comparatorProperty());
 
     listeBookmarkList.getObervableList().addListener((ListChangeListener.Change<? extends BookmarkData> c) -> {
       while (c.next()) {
@@ -331,7 +330,7 @@ public class BookmarkWindowController implements Initializable {
       JavaFxUtils.invokeInFxThreadAndWait(this::updateDisplay);
     });
 
-    tbBookmarks.setItems(slisteBookmarkList);
+    tbBookmarks.setItems(sortedBookmarkList);
     tbBookmarks.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     // Add listener to set button and context item state depending on selection
@@ -630,7 +629,7 @@ public class BookmarkWindowController implements Initializable {
    */
   private void saveBookMarkList() {
     if (listUpdated) {
-      listeBookmarkList.saveToFile(StandardLocations.getBookmarkFilePath());
+      listeBookmarkList.saveToFile();
       btnSaveList.setDisable(true);
     }
     listUpdated = false;

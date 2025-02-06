@@ -78,7 +78,7 @@ public class Daten {
     private Daten() {
         filmeLaden = new FilmeLaden(this);
 
-        listeBookmarkList = BookmarkDataList.getInstance(this);
+        listeBookmarkList = new BookmarkDataList(this);
 
         listePset = new ListePset();
 
@@ -131,14 +131,6 @@ public class Daten {
 
     public StarterClass getStarterClass() {
         return starterClass;
-    }
-
-    /**
-     * Load the stored bookmarkdata form JSON file
-     * into memory
-     */
-    public void loadBookMarkData() {
-        listeBookmarkList.loadFromFile(StandardLocations.getBookmarkFilePath());
     }
 
     /**

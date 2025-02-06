@@ -18,6 +18,7 @@
 - **BUGFIX(Linux/Windows):** Splashscreen zeigte keinen uniformen schwarzen Hintergrund mehr an.
 - **BUGFIX:** Moderne Suche unterstützt nun die Suche mit *special characters*.
 - **BUGFIX(macOS):** Darstellungsfehler beim Wechsel Dark-/Lightmode wurde behoben.
+- **BUGFIX:** *Filme/Film merken* wurde in *Filme/Ausgewählte Filme merken* umbenannt.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
@@ -40,6 +41,8 @@
 - **FEATURE:** Via `Ansicht/Übersicht aller Duplikate anzeigen...` werden in einem Dialog per Sender alle vorhandenen Duplikate dargestellt zzgl. der zugeordneten Filme.
 - **FEATURE:** Geschwindigkeitsoptimierungen für die moderne Suche.
 - **FEATURE:** Mittels Menü `Downloads/Untertiteldatei zu Video hinzufügen...` kann eine vorhandene Untertiteldatei mit der korrekten Sprachzuordnung zu einem Video hinzugefügt werden. Moderne Videoplayer erkennen die Untertitelspur automatisch und man muss keine separaten Untertiteldateien mehr verwalten.
+- **FEATURE:** Merkliste: Die Funktionen sind nun über eine Toolbar im Tab Filme steuerbar.
+- **FEATURE:** Merkliste: Die Menüfunktion *Filme/Ausgewählte Filme merken* und die jeweiligen Toolbar-Buttons können nun mit Mehrfachauswahl von Filmen umgehen.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.

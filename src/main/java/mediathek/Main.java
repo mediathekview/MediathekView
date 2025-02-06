@@ -502,7 +502,7 @@ public class Main {
 
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
-            Daten.getInstance().loadBookMarkData();
+            Daten.getInstance().getListeBookmarkList().loadFromFile();
 
             removeLuceneIndexDirectory();
             // enable modern search on demand
