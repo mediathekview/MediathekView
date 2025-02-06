@@ -9,6 +9,7 @@ import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.tool.MessageBus;
+import mediathek.tool.datum.DatumFilm;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -133,32 +134,48 @@ public class FilmListWriter {
         MessageBus.getMessageBus().publishAsync(new FilmListWriteStopEvent());
     }
 
-    private void writeEntry(DatenFilm datenFilm, JsonGenerator jg) throws IOException {
+    private void writeDatumLong(DatenFilm datenFilm, JsonGenerator jg) throws IOException {
+        var filmDate = datenFilm.getDatumFilm();
+        if (filmDate.equals(DatumFilm.UNDEFINED_FILM_DATE)) {
+            jg.writeString("");
+        }
+        else {
+            var time_sec = TimeUnit.SECONDS.convert(filmDate.getTime(), TimeUnit.MILLISECONDS);
+            var str = String.valueOf(time_sec);
+            jg.writeString(str);
+        }
+    }
+
+    private void writeFilmLength(DatenFilm datenFilm, JsonGenerator jg) throws IOException {
+        jg.writeString(datenFilm.getFilmLengthAsString());
+    }
+
+    private void writeEntry(DatenFilm film, JsonGenerator jg) throws IOException {
         jg.writeArrayFieldStart(TAG_JSON_LIST);
 
-        writeSender(jg, datenFilm);
-        writeThema(jg, datenFilm);
-        writeTitel(jg, datenFilm);
-        jg.writeString(datenFilm.getSendeDatum());
-        writeZeit(jg, datenFilm);
-        jg.writeString(datenFilm.getFilmLengthAsString());
-        jg.writeString(datenFilm.getFileSize().toString());
-        jg.writeString(datenFilm.getDescription());
-        jg.writeString(datenFilm.getUrlNormalQuality());
-        jg.writeString(datenFilm.getWebsiteUrl());
-        jg.writeString(datenFilm.getSubtitleUrl());
+        writeSender(jg, film);
+        writeThema(jg, film);
+        writeTitel(jg, film);
+        jg.writeString(film.getSendeDatum());
+        writeZeit(jg, film);
+        writeFilmLength(film, jg);
+        jg.writeString(film.getFileSize().toString());
+        jg.writeString(film.getDescription());
+        jg.writeString(film.getUrlNormalQuality());
+        jg.writeString(film.getWebsiteUrl());
+        jg.writeString(film.getSubtitleUrl());
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP
-        writeLowQualityUrl(jg, datenFilm);
+        writeLowQualityUrl(jg, film);
         skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
-        writeHighQualityUrl(jg, datenFilm);
+        writeHighQualityUrl(jg, film);
         skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
-        jg.writeString(String.valueOf(TimeUnit.SECONDS.convert(datenFilm.getDatumFilm().getTime(), TimeUnit.MILLISECONDS)));
+        writeDatumLong(film, jg);
         skipEntry(jg); //DatenFilm.FILM_URL_HISTORY
-        if (datenFilm.countrySet.isEmpty())
+        if (film.countrySet.isEmpty())
             jg.writeString("");
         else
-            jg.writeString(datenFilm.countrySet.stream().map(Country::toString).collect(Collectors.joining("-")));
-        jg.writeString(Boolean.toString(datenFilm.isNew()));
+            jg.writeString(film.countrySet.stream().map(Country::toString).collect(Collectors.joining("-")));
+        jg.writeString(Boolean.toString(film.isNew()));
 
         jg.writeEndArray();
     }

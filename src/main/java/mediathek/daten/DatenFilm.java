@@ -187,11 +187,16 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public void setDatumLong(String datumLong) {
         long datum_long;
         try {
-            datum_long = Long.parseLong(datumLong);
+            if (!datumLong.isEmpty()) {
+                datum_long = Long.parseLong(datumLong);
+            }
+            else {
+                datum_long = 0;
+            }
         }
         catch (Exception e) {
             if (Config.isDebugModeEnabled()) {
-                logger.warn("Failed to parse datum long string: {}", datumLong);
+                logger.error("Failed to parse datum long string: {}", datumLong);
             }
             datum_long = 0;
         }
@@ -424,14 +429,18 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
             long datum_long = (long)dataMap.getOrDefault(MapKeys.TEMP_DATUM_LONG, 0L);
-            datumFilm = new DatumFilm(TimeUnit.MILLISECONDS.convert(datum_long, TimeUnit.SECONDS));
             if (datum_long == 0)
             {
                 setSendeDatum("");
                 setSendeZeit("");
+                datumFilm = new DatumFilm(0);
+                dataMap.remove(MapKeys.TEMP_DATUM_LONG);
+            }
+            else {
+                datumFilm = new DatumFilm(TimeUnit.MILLISECONDS.convert(datum_long, TimeUnit.SECONDS));
+                dataMap.put(MapKeys.TEMP_DATUM_LONG, datum_long);
             }
         }
-        dataMap.remove(MapKeys.TEMP_DATUM_LONG);
     }
 
     public void init() {
