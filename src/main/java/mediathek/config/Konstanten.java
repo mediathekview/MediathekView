@@ -35,6 +35,9 @@ public class Konstanten {
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";
 
+    public static final String FULL_FILM_LIST = "Filmliste-akt.xz";
+    public static final String DIFF_FILM_LIST = "Filmliste-diff.xz";
+
     public static final long ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
 
     public static final String PROGRAMMNAME = "MediathekView";
