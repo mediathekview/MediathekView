@@ -2,6 +2,8 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.daten.ListePset;
+import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz;
+import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang;
 import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;

@@ -19,6 +19,7 @@
 - **BUGFIX:** Moderne Suche unterstützt nun die Suche mit *special characters*.
 - **BUGFIX(macOS):** Darstellungsfehler beim Wechsel Dark-/Lightmode wurde behoben.
 - **BUGFIX:** *Filme/Film merken* wurde in *Filme/Ausgewählte Filme merken* umbenannt.
+- **BUGFIX:** *Film abspielen* Toolbar Button ist nur noch aktiv wenn keine Mehrfachauswahl in der Filmliste aktiv ist.
 - **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
 - **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
 - **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
@@ -43,6 +44,7 @@
 - **FEATURE:** Mittels Menü `Downloads/Untertiteldatei zu Video hinzufügen...` kann eine vorhandene Untertiteldatei mit der korrekten Sprachzuordnung zu einem Video hinzugefügt werden. Moderne Videoplayer erkennen die Untertitelspur automatisch und man muss keine separaten Untertiteldateien mehr verwalten.
 - **FEATURE:** Merkliste: Die Funktionen sind nun über eine Toolbar im Tab Filme steuerbar.
 - **FEATURE:** Merkliste: Die Menüfunktion *Filme/Ausgewählte Filme merken* und die jeweiligen Toolbar-Buttons können nun mit Mehrfachauswahl von Filmen umgehen.
+- **FEATURE:** Die Sender *ONE* und *ARD-alpha* wurden hinzugefügt. Bei bestehenden Installationen müssen diese in den Einstellungen manuell aktiviert werden! Es werden vorerst keine Senderlogos dargestellt.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.

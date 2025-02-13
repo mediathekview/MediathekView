@@ -2,6 +2,8 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz;
+import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;

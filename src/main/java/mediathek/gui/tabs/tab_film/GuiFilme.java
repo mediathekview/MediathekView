@@ -230,6 +230,8 @@ public class GuiFilme extends AGuiTabPanel {
         tabelle.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 updateSelectedListItemsCount(tabelle);
+                final int sel = tabelle.getSelectedRowCount();
+                playFilmAction.setEnabled(sel <= 1);
             }
         });
 

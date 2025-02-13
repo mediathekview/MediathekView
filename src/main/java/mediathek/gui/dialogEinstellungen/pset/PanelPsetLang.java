@@ -1,4 +1,22 @@
-package mediathek.gui.dialogEinstellungen;
+/*
+ * Copyright (c) 2025 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package mediathek.gui.dialogEinstellungen.pset;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -63,11 +81,9 @@ public class PanelPsetLang extends PanelVorlage {
 
     @Handler
     private void handleProgramSetChanged(ProgramSetChangedEvent e) {
-        SwingUtilities.invokeLater(() -> {
             if (!stopBeob) {
                 tabellePset();
             }
-        });
     }
 
     private void init() {
@@ -358,7 +374,9 @@ public class PanelPsetLang extends PanelVorlage {
         tfGruppeZielPfad.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD, false));
 
+        jTextFieldSetName.getDocument().addDocumentListener(new DuplicatePsetNameCheckListener(jTextFieldSetName));
         jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
+
         handler = new TextCopyPasteHandler<>(jTextFieldSetName);
         jTextFieldSetName.setComponentPopupMenu(handler.getPopupMenu());
 
@@ -597,7 +615,7 @@ public class PanelPsetLang extends PanelVorlage {
                 tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(0, 0, true));
             }
         } else {
-            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+            jScrollPane1.setBorder(BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "Sets");
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
@@ -638,26 +656,27 @@ public class PanelPsetLang extends PanelVorlage {
      * Send message that changes to the Pset were performed.
      */
     private void notifyProgramSetChanged() {
-        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publish(new ProgramSetChangedEvent());
     }
 
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
         final int row = tabelleProgramme.getSelectedRow();
+        final boolean validRowSelected = row != -1;
         final boolean letzteZeile = tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1;
 
-        jTextFieldProgPfad.setEnabled(row != -1);
-        jTextFieldProgSchalter.setEnabled(row != -1);
-        jTextFieldProgZielDateiName.setEnabled(row != -1);
-        jTextFieldProgName.setEnabled(row != -1);
-        jTextFieldProgZielDateiName.setEnabled(row != -1);
-        jTextFieldProgPraefix.setEnabled(row != -1);
-        jTextFieldProgSuffix.setEnabled(row != -1);
-        jButtonProgPfad.setEnabled(row != -1);
-        jCheckBoxRestart.setEnabled(row != -1);
-        jCheckBoxRemoteDownload.setEnabled(row != -1);
-        if (row != -1) {
+        jTextFieldProgPfad.setEnabled(validRowSelected);
+        jTextFieldProgSchalter.setEnabled(validRowSelected);
+        jTextFieldProgZielDateiName.setEnabled(validRowSelected);
+        jTextFieldProgName.setEnabled(validRowSelected);
+        jTextFieldProgZielDateiName.setEnabled(validRowSelected);
+        jTextFieldProgPraefix.setEnabled(validRowSelected);
+        jTextFieldProgSuffix.setEnabled(validRowSelected);
+        jButtonProgPfad.setEnabled(validRowSelected);
+        jCheckBoxRestart.setEnabled(validRowSelected);
+        jCheckBoxRemoteDownload.setEnabled(validRowSelected);
+        if (validRowSelected) {
             DatenProg prog = getPset().getProg(tabelleProgramme.convertRowIndexToModel(row));
             jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
             jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER]);
@@ -866,19 +885,6 @@ public class PanelPsetLang extends PanelVorlage {
             //unused in plaintext components
         }
 
-        private void setNamePruefen() {
-            //doppelte Gruppennamen suchen
-            int row = tabellePset.getSelectedRow();
-            if (row != -1) {
-                if (listePset.stream().filter(set -> set.getName().equals(jTextFieldSetName.getText())).count() > 1) {
-                    jTextFieldSetName.setBackground(Color.ORANGE);
-                } else {
-                    jTextFieldSetName.setBackground(UIManager.getDefaults().getColor("TextField.background"));
-                }
-            }
-            jTextFieldSetName.requestFocusInWindow();
-        }
-
         private void eingabe() {
             if (!stopBeob) {
                 final int row = tabellePset.getSelectedRow();
@@ -898,7 +904,6 @@ public class PanelPsetLang extends PanelVorlage {
                     NoSelectionErrorDialog.show(null);
                 }
             }
-            setNamePruefen();
         }
     }
 
@@ -1898,5 +1903,6 @@ public class PanelPsetLang extends PanelVorlage {
     private JButton jButtonGruppeLoeschen;
     private JButton jButtonGruppeAuf;
     private JButton jButtonGruppeAb;
+
     // End of variables declaration//GEN-END:variables
 }

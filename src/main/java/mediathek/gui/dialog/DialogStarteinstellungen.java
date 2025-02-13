@@ -6,8 +6,8 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
-import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
-import mediathek.gui.dialogEinstellungen.PanelPsetLang;
+import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz;
+import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang;
 import mediathek.tool.GuiFunktionenProgramme;
 import org.apache.commons.lang3.SystemUtils;
 
