@@ -79,7 +79,6 @@ public class Konstanten {
      */
     public static final long MIN_FILM_FILE_SIZE_KB = 256 * FileUtils.ONE_KB;
     public static final String XML_START = "Mediathek";
-    public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
 
