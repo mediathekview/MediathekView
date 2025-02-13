@@ -10,7 +10,7 @@
 - **BUGFIX:** Im "Neues Abo anlegen"-Dialog werden Textfelder im Dark Mode nicht mehr weiß hinterlegt.
 - **BUGFIX:** Diverse Textfelder werden im Dark Mode nicht mehr mit weißem Hintergrund dargestellt.
 - **BUGFIX:** MV löscht bei einem fehlerhaften Lucene-Index diesen nun um einen erfolgreichen Start zu ermöglichen.
-- **BUGFIX:** Das Umbenennen von PSets in den Einstellungen funktioniert nun richtig.
+- **BUGFIX:** Das Umbenennen von PSets in den Einstellungen funktioniert nun in allen Modi richtig.
 - **BUGFIX(Linux):** Der Einstellungen-Dialog öffnet sich nicht mehr vom Hauptfenster verdeckt.
 - **BUGFIX:** Der "Filmliste laden"-Dialog zeigt nun Scrollbars bei zu kleiner Dialoggröße an.
 - **BUGFIX(Linux):** Inkorrekte Verarbeitung der Parent-Beziehung bei Auswahldialogen wurde behoben.
