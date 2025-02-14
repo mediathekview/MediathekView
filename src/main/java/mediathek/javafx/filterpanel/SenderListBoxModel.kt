@@ -55,6 +55,7 @@ object SenderListBoxModel {
         providedSenderList.add("SR")
         providedSenderList.add("SRF")
         providedSenderList.add("SRF.Podcast")
+        providedSenderList.add("tagesschau24")
         providedSenderList.add("SWR")
         providedSenderList.add("WDR")
         providedSenderList.add("ZDF")

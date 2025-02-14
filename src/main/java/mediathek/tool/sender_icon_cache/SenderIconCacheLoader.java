@@ -93,6 +93,7 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
             case "DW" -> getIcon(WIKI_BASE_URL + "/6/69/Deutsche_Welle_Logo.svg/743px-Deutsche_Welle_Logo.svg.png", "/mediathek/res/sender/dw.png");
             case "NDR" -> getIcon(WIKI_BASE_URL + "/0/08/NDR_Dachmarke.svg/308px-NDR_Dachmarke.svg.png", "/mediathek/res/sender/ndr.png");
             //case "ONE" -> null;
+            //case "tagesschau24" -> null;
             case "ORF" -> getIcon(WIKI_BASE_URL + "/d/dd/ORF_logo.svg/709px-ORF_logo.svg.png", "/mediathek/res/sender/orf.png");
             case "RBB" -> getIcon(WIKI_BASE_URL + "/7/79/Rbb_Logo_2017.08.svg/320px-Rbb_Logo_2017.08.svg.png", "/mediathek/res/sender/rbb.png");
             case "SR" -> getIcon(WIKI_BASE_URL + "/8/83/SR_Dachmarke.svg/602px-SR_Dachmarke.svg.png", "/mediathek/res/sender/sr.png");

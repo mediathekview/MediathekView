@@ -44,7 +44,7 @@
 - **FEATURE:** Mittels Menü `Downloads/Untertiteldatei zu Video hinzufügen...` kann eine vorhandene Untertiteldatei mit der korrekten Sprachzuordnung zu einem Video hinzugefügt werden. Moderne Videoplayer erkennen die Untertitelspur automatisch und man muss keine separaten Untertiteldateien mehr verwalten.
 - **FEATURE:** Merkliste: Die Funktionen sind nun über eine Toolbar im Tab Filme steuerbar.
 - **FEATURE:** Merkliste: Die Menüfunktion *Filme/Ausgewählte Filme merken* und die jeweiligen Toolbar-Buttons können nun mit Mehrfachauswahl von Filmen umgehen.
-- **FEATURE:** Die Sender *ONE* und *ARD-alpha* wurden hinzugefügt. Bei bestehenden Installationen müssen diese in den Einstellungen manuell aktiviert werden! Es werden vorerst keine Senderlogos dargestellt.
+- **FEATURE:** Die Sender *ONE*, *ARD-alpha* und *tagesschau24* wurden hinzugefügt. Bei bestehenden Installationen müssen diese in den Einstellungen manuell aktiviert werden! Es werden vorerst keine Senderlogos dargestellt.
 
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
