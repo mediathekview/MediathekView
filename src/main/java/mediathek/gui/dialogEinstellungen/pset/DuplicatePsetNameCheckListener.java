@@ -19,6 +19,7 @@
 package mediathek.gui.dialogEinstellungen.pset;
 
 import mediathek.config.Daten;
+import mediathek.daten.DatenPset;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -57,10 +58,12 @@ public class DuplicatePsetNameCheckListener implements DocumentListener {
     }
 
     private void duplicateNameCheck() {
-        var equalNameCount = Daten.listePset.stream().filter(set -> set.getName().equals(textField.getText())).count();
-        var hasDuplicateName = equalNameCount > 1;
+        var count = Daten.listePset.stream()
+                .map(DatenPset::getName)
+                .filter(name -> name.equals(textField.getText()))
+                .count();
 
-        if (hasDuplicateName) {
+        if (count > 1) {
             markDuplicate();
         } else {
             resetDuplicate();
