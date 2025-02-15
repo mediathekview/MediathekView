@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -109,6 +110,9 @@ public class FilmListWriter {
 
                 final long filmEntries = listeFilme.size();
                 float curEntry = 0f;
+
+                if (compressSenderTag)
+                    listeFilme.sort(Comparator.comparing(DatenFilm::getSender).thenComparing(DatenFilm::getThema));
 
                 for (DatenFilm datenFilm : listeFilme) {
                     writeEntry(datenFilm, jg);

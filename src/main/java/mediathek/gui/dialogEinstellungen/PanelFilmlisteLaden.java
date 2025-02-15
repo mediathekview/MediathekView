@@ -143,6 +143,7 @@ public class PanelFilmlisteLaden extends JPanel {
         senderCbList.add(checkBox26);
         senderCbList.add(checkBox27);
         senderCbList.add(checkBox28);
+        senderCbList.add(checkBox29);
     }
 
     private boolean warningDialogShown;
