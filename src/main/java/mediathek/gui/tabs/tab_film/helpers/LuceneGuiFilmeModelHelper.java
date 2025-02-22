@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 derreisende77.
+ * Copyright (c) 2024-2025 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -66,9 +66,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     public LuceneGuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
                                      @NotNull SeenHistoryController historyController,
                                      @NotNull SearchFieldData searchFieldData) {
-        this.filterActionPanel = filterActionPanel;
-        this.historyController = historyController;
-        this.searchFieldData = searchFieldData;
+        super(filterActionPanel, historyController, searchFieldData);
     }
 
     private TModelFilm performTableFiltering() {
