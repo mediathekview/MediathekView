@@ -79,13 +79,10 @@ public abstract class GuiModelHelper {
     }
 
     protected boolean noFiltersAreSet() {
-        var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
-
         return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
                 && searchFieldData.isEmpty()
-                && ((int) filmLengthSlider.getLowValue() == 0)
-                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
+                && filterActionPanel.getFilmLengthSliderValues().noFiltersAreSet()
                 && !filterActionPanel.isDontShowAbos()
                 && !filterActionPanel.isShowUnseenOnly()
                 && !filterActionPanel.isShowOnlyHighQuality()
@@ -105,9 +102,9 @@ public abstract class GuiModelHelper {
     }
 
     protected void calculateFilmLengthSliderValues() {
-        final long minLength = (long) filterActionPanel.getFilmLengthSlider().getLowValue();
-        maxLength = (long) filterActionPanel.getFilmLengthSlider().getHighValue();
-        var minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
+        var sliderVals = filterActionPanel.getFilmLengthSliderValues();
+        maxLength = sliderVals.maxLength();
+        var minLengthInSeconds = TimeUnit.SECONDS.convert(sliderVals.minLength(), TimeUnit.MINUTES);
         var maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
         sliderRange = new SliderRange(minLengthInSeconds, maxLengthInSeconds);
     }

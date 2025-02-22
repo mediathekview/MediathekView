@@ -648,11 +648,7 @@ public class GuiFilme extends AGuiTabPanel {
             setupDataTransitions();
 
             final ChangeListener<Boolean> reloadTableListener = (ov, oV, nV) -> reloadTableDataTransition.playFromStart();
-            final ChangeListener<Boolean> reloadTableListener2 = (ov, oV, newValue) -> {
-                if (!newValue) {
-                    reloadTableDataTransition.playFromStart();
-                }
-            };
+
             filterActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
             filterActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
             filterActionPanel.showNewOnlyProperty().addListener(reloadTableListener);
@@ -664,9 +660,12 @@ public class GuiFilme extends AGuiTabPanel {
             filterActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
             filterActionPanel.dontShowDuplicatesProperty().addListener(reloadTableListener);
             filterActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
-            var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
-            filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
-            filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
+
+            filterActionPanel.addFilmLengthSliderListeners((v1, v2, newValue) -> {
+                if (!newValue) {
+                    reloadTableDataTransition.playFromStart();
+                }
+            });
 
             filterActionPanel.zeitraumProperty().addListener((ov, oV, nV) -> zeitraumTransition.playFromStart());
 

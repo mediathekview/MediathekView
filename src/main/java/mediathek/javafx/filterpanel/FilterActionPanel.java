@@ -8,6 +8,7 @@ import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -88,8 +89,13 @@ public class FilterActionPanel {
         return filterDialog;
     }
 
-    public RangeSlider getFilmLengthSlider() {
-        return filmLengthSlider;
+    public void addFilmLengthSliderListeners(@NotNull ChangeListener<Boolean> listener) {
+        filmLengthSlider.lowValueChangingProperty().addListener(listener);
+        filmLengthSlider.highValueChangingProperty().addListener(listener);
+    }
+
+    public FilmLengthSliderValues getFilmLengthSliderValues() {
+        return new FilmLengthSliderValues((long)filmLengthSlider.getLowValue(), (long)filmLengthSlider.getHighValue());
     }
 
     public ReadOnlyObjectProperty<String> zeitraumProperty() {
