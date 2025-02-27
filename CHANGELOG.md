@@ -1,3 +1,6 @@
+# **14.3.0**
+- **BUGFIX:** Duplikatsuche berücksicht nur HQ-URL wenn Film auch HQ ist.
+
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
 - **(Linux/Windows):** Die von uns gelieferten Binaries enthalten JDK 23.0.2.
