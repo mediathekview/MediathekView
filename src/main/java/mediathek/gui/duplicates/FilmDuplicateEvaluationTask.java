@@ -61,6 +61,8 @@ public class FilmDuplicateEvaluationTask implements Runnable {
                             .putString(film.getUrlNormalQuality(), StandardCharsets.UTF_8);
                     if (film.isHighQuality())
                         hasher = hasher.putString(film.getHighQualityUrl(), StandardCharsets.UTF_8);
+                    if (film.hasLowQuality())
+                        hasher = hasher.putString(film.getLowQualityUrl(), StandardCharsets.UTF_8);
                     final var hc = hasher.hash();
                     final var hash = hc.padToLong();
 

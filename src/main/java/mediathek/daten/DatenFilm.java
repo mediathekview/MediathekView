@@ -416,6 +416,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return dataMap.containsKey(MapKeys.HIGH_QUALITY_URL);
     }
 
+    public boolean hasLowQuality() {
+        return dataMap.containsKey(MapKeys.LOW_QUALITY_URL);
+    }
+
     @Override
     public int compareTo(@NotNull DatenFilm other) {
         int ret;
