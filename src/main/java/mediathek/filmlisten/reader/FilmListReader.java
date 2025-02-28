@@ -212,14 +212,15 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseDatumLong(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setDatumLong(checkedString(jp));
+        var str = checkedString(jp);
+        datenFilm.setDatumLong(str);
     }
 
     private void parseSendedatum(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setSendeDatum(checkedString(jp));
     }
 
-    private void parseDauer(JsonParser jp, DatenFilm datenFilm) throws IOException {
+    private void parseFilmLength(JsonParser jp, DatenFilm datenFilm) throws IOException {
         datenFilm.setFilmLength(checkedString(jp));
     }
 
@@ -315,7 +316,7 @@ public class FilmListReader implements AutoCloseable {
                 parseTitel(jp, datenFilm);
                 parseSendedatum(jp, datenFilm);
                 parseTime(jp, datenFilm);
-                parseDauer(jp, datenFilm);
+                parseFilmLength(jp, datenFilm);
                 parseGroesse(jp, datenFilm);
                 parseDescription(jp, datenFilm);
                 parseUrl(jp, datenFilm);
@@ -362,6 +363,7 @@ public class FilmListReader implements AutoCloseable {
                 //just initialize the film object, rest will be done in one of the filters
                 datenFilm.init();
 
+                // this will add the film to the filmlist if it passes...
                 dateFilter.filter(datenFilm);
             }
         }
@@ -396,6 +398,7 @@ public class FilmListReader implements AutoCloseable {
             } else
                 processFromFile(source, listeFilme);
 
+            convertTagesschau24(listeFilme);
         } catch (MalformedURLException | URISyntaxException ex) {
             logger.warn(ex);
         }
@@ -434,6 +437,20 @@ public class FilmListReader implements AutoCloseable {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
         }
+    }
+
+    /**
+     * Convert ARD films with thema tagesschau24 to sender tagesschau24.
+     * @param list source film list
+     */
+    protected void convertTagesschau24(@NotNull ListeFilme list) {
+       var films = list.parallelStream()
+                .filter(f -> f.getSender().equalsIgnoreCase("ARD"))
+                .filter(f -> f.getThema().equalsIgnoreCase("tagesschau24"))
+               .toList();
+       for (var film : films) {
+           film.setSender("tagesschau24");
+       }
     }
 
     private String buildClientInfo()

@@ -1,0 +1,132 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.4" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"modal": true
+			"title": "Untertitel zu Video hinzufügen"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq l {space :::p, par l {seq l {par t:::p {comp label2::::104:x, comp label3::t:p:98:p, comp label1::::104:x}, space :::p, par l {seq l {comp tfVideoFilePath:::::x, space :::p, comp btnSelectInputVideo:::p:33:p}, seq {comp tfSubripFilePath:::::x, space :::p, comp btnSelectInputSubrip:::p:33:p}, seq {comp cbLanguage:::p:155:p, space :0:0:x}}}, seq t {par t {seq {comp label4:::p:104:p, space :6:6:p, comp tfVideoOutputPath:::p:368:p}, seq l {space :p:20:p, comp busyLabel:::p::p}}, space :6:6:p, comp btnSelectVideoOutputPath:::p:33:p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp btnSelectInputSubrip::b:p::p, comp tfSubripFilePath::b:p::p, comp label1::b:p::p}, space :::p, par b {comp label3::b:p::p, comp cbLanguage::b:p::p}, space :::p, par b {comp btnSelectInputVideo::b:p::p, comp label2::b:p::p, comp tfVideoFilePath::b:p::p}, space s:::p, par l {seq l {space :7:7:p, comp label4:::p::p}, comp tfVideoOutputPath:::p::p, comp btnSelectVideoOutputPath:::p::p}, space s:::p, comp busyLabel:::p::p, space :::x}}"
+				} ) {
+					name: "contentPanel"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Untertitel-Datei:"
+						"horizontalAlignment": 4
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "tfSubripFilePath"
+						"toolTipText": "Pfad zur Untertiteldatei im Subrip Text Format (.srt)"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnSelectInputSubrip"
+						"text": "..."
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "Video-Datei:"
+						"horizontalAlignment": 4
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "tfVideoFilePath"
+						"toolTipText": "Pfad zu einer von ffmpeg unterstützten Videodatei als Eingabemedium"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnSelectInputVideo"
+						"text": "..."
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label3"
+						"text": "Sprache:"
+						"horizontalAlignment": 4
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "cbLanguage"
+						"toolTipText": "Sprache der Untertitel"
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label4"
+						"text": "Zieldatei:"
+						"horizontalAlignment": 4
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "tfVideoOutputPath"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnSelectVideoOutputPath"
+						"text": "..."
+					} )
+					add( new FormComponent( "org.jdesktop.swingx.JXBusyLabel" ) {
+						name: "busyLabel"
+						"text": "Führe Video und Untertitel zusammen"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0:1.0, 0, 80"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+				} ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnCancel"
+						"text": "Abbrechen"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnClose"
+						"text": "Zusammenführen"
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "btnMerge"
+						}
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 0
+						"gridx": 2
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 555, 295 )
+		} )
+	}
+}

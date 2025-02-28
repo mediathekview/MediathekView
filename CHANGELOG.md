@@ -1,3 +1,51 @@
+# **14.2.0**
+- **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
+- **(Linux/Windows):** Die von uns gelieferten Binaries enthalten JDK 23.0.2.
+- **(macOS):** Intel Version beinhaltet JDK 21, Apple Silicon Version nutzt JDK 23.0.2.
+- **JDK 23 und 23.0.1 enthalten einen Fehler im Shenandoah GC der die moderne Suche eklatant (6-10x) langsamer laufen lässt!** Dieser ist erst in 23.0.2 behoben. Es wird abgeraten die genannten Versionen mit MV zu verwenden.
+- **BUGFIX:** MV aktualisiert nun vor dem Download mittels `-dq` oder `--download-quit` Parameter die Filmliste.
+- **BUGFIX:** FlatLaf Regression gelöst, die manchmal zu einer inkorrekten Darstellung der Oberfläche führte.
+- **BUGFIX(Linux/macOS):** Im "Film Speichern"-Dialog wurde der Zielpfad im Dark Mode weiß dargestellt.
+- **BUGFIX:** "Film speichern"-Dialog speichert nun explizit seine Größe,etc und stellt sie wieder her.
+- **BUGFIX:** Im "Neues Abo anlegen"-Dialog werden Textfelder im Dark Mode nicht mehr weiß hinterlegt.
+- **BUGFIX:** Diverse Textfelder werden im Dark Mode nicht mehr mit weißem Hintergrund dargestellt.
+- **BUGFIX:** MV löscht bei einem fehlerhaften Lucene-Index diesen nun um einen erfolgreichen Start zu ermöglichen.
+- **BUGFIX:** Das Umbenennen von PSets in den Einstellungen funktioniert nun in allen Modi richtig.
+- **BUGFIX(Linux):** Der Einstellungen-Dialog öffnet sich nicht mehr vom Hauptfenster verdeckt.
+- **BUGFIX:** Der "Filmliste laden"-Dialog zeigt nun Scrollbars bei zu kleiner Dialoggröße an.
+- **BUGFIX(Linux):** Inkorrekte Verarbeitung der Parent-Beziehung bei Auswahldialogen wurde behoben.
+- **BUGFIX(Linux):** MV öffnet nun einen konfigurierten Browser im About-Dialog wenn Java keinen eigenen finden kann.
+- **BUGFIX(Linux/Windows):** Splashscreen zeigte keinen uniformen schwarzen Hintergrund mehr an.
+- **BUGFIX:** Moderne Suche unterstützt nun die Suche mit *special characters*.
+- **BUGFIX(macOS):** Darstellungsfehler beim Wechsel Dark-/Lightmode wurde behoben.
+- **BUGFIX:** *Filme/Film merken* wurde in *Filme/Ausgewählte Filme merken* umbenannt.
+- **BUGFIX:** *Film abspielen* Toolbar Button ist nur noch aktiv wenn keine Mehrfachauswahl in der Filmliste aktiv ist.
+- **FEATURE(Linux/Windows):** Das Aussehen von FlatLaf kann in `.mediathek3/flatlaf` angepasst werden.
+- **FEATURE:** Selektierte Einträge in `Suchhistorie bearbeiten`-Dialog können nun mittels Entfernen-Taste gelöscht werden.
+- **FEATURE:** Das Blacklist Filter-Icon in der Toolbar kann mittels *Einstellungen/Allgemein* mit einem aussagefähigen Zusatztext dargestellt werden.
+- **FEATURE:** Dark Mode für Filter-Dialog.
+- **FEATURE:** Beschleunigte Verarbeitung von Lucene mittels native access aktiviert (benötigt `--enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector` in den Startparametern)
+- **FEATURE:** *Einstellungen/Set bearbeiten* für Dark Mode-Kompatibilität angepasst.
+- **FEATURE:** Der Einstellungen-Dialog ist nun vollständig Dark-Mode-kompatibel.
+- **FEATURE:** Im Tab Filme kann nun *Sender - Thema - Titel* in die Zwischenablage per Kontextmenü kopiert werden.
+- **FEATURE:** Bei Änderungen der Senderauswahl wird nun jeweils einmalig per Warndialog auf die Notwendigkeit eines Neustarts der App hingewiesen.
+- **FEATURE:** Im Tab Filme kann nun die Filmbeschreibung per Kontextmenü in die Zwischenablage kopiert werden.
+- **FEATURE:** Im Tab Beschreibung und im FilmInfo-Dialog können jeweils selektierte Texte der Beschreibung per Kontextmenü in die Zwischenablage kopiert werden.
+- **FEATURE(Linux):** Für exotische Window Manager können nun die FlatLaf-Dekorationen mittels `-dfd` oder `--disable-flatlaf-decorations` Parametern deaktiviert werden.
+- **FEATURE:** Info-Datei kann nun per Kontextmenü für jeden Eintrag manuell erzeugt werden.
+- **FEATURE:** Die Filmliste wird nun beim Laden zusätzlich auf Duplikate untersucht. Hierbei werden die Mediatheken der ARD und ZDF erst am Ende berücksichtigt um das Angebot der "kleineren" Sender nicht zu benachteiligen.
+- **FEATURE:** Duplikate werden im Tab `Filme` farblich hervorgehoben. Die Farbe kann in den Einstellungen modifiziert werden. Es werden nur Filme als Duplikat markiert, deren normale und high-quality Film-URL identisch sind.
+- **FEATURE:** Duplikate können im Filterpanel ausgeblendet werden.
+- **FEATURE:** Im Tab `Filme` können über das Kontextmenü `Zusammengehörige Filme anzeigen...` bei einem markierten Duplikat alle zusammengehörigen Filme angezeigt werden.  
+- **FEATURE:** Mittels `Ansicht/Filmstatistik anzeigen` können nun für die vorhandenen Sender Informationen bzgl. Anzahl der Filme und der Duplikate angezeigt werden. Es wird hier nur die gesamte Filmliste ohne jegliche Filter abzüglich Livestreams berücksichtigt, so dass es zu Abweichungen zur Anzeige in der Statuszeile kommen kann.
+- **FEATURE:** Mit der Lucene-Suche können mittels des `duplicate`-Boolean Parameters Filmduplikate berücksichtigt werden.
+- **FEATURE:** Via `Ansicht/Übersicht aller Duplikate anzeigen...` werden in einem Dialog per Sender alle vorhandenen Duplikate dargestellt zzgl. der zugeordneten Filme.
+- **FEATURE:** Geschwindigkeitsoptimierungen für die moderne Suche.
+- **FEATURE:** Mittels Menü `Downloads/Untertiteldatei zu Video hinzufügen...` kann eine vorhandene Untertiteldatei mit der korrekten Sprachzuordnung zu einem Video hinzugefügt werden. Moderne Videoplayer erkennen die Untertitelspur automatisch und man muss keine separaten Untertiteldateien mehr verwalten.
+- **FEATURE:** Merkliste: Die Funktionen sind nun über eine Toolbar im Tab Filme steuerbar.
+- **FEATURE:** Merkliste: Die Menüfunktion *Filme/Ausgewählte Filme merken* und die jeweiligen Toolbar-Buttons können nun mit Mehrfachauswahl von Filmen umgehen.
+- **FEATURE:** Die Sender *ONE*, *ARD-alpha* und *tagesschau24* wurden hinzugefügt. Bei bestehenden Installationen müssen diese in den Einstellungen manuell aktiviert werden! Es werden vorerst keine Senderlogos dargestellt.
+
 # **14.1.0**
 - JDK 21 wird nun mitgeliefert. Behebt primär Darstellungsfehler von Java Apps unter Windows.
 - **macOS/Windows:** ffmpeg 7.0 ist nun enthalten.

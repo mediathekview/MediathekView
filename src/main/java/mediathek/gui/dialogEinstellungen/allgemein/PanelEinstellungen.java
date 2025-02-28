@@ -15,7 +15,6 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTitledPanel;
-import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -153,6 +152,14 @@ public class PanelEinstellungen extends JPanel {
             ApplicationConfiguration.getConfiguration().setProperty(CellRendererBaseWithStart.ICON_POSITION_RIGHT, cbDrawListIconsRight.isSelected());
             MediathekGui.ui().repaint();
         });
+
+        boolean useIconWithText = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, false);
+        cbShowBlacklistIconWithText.setSelected(useIconWithText);
+        cbShowBlacklistIconWithText.addActionListener(l -> {
+            var useText = cbShowBlacklistIconWithText.isSelected();
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, useText);
+        });
     }
 
     private static final String NO_INFLUENCE_TEXT = "Einstellung hat unter macOS keine Auswirkung";
@@ -209,6 +216,7 @@ public class PanelEinstellungen extends JPanel {
         jpfProxyPassword = new JPasswordField();
         var panel1 = new JPanel();
         jCheckBoxTray = new JCheckBox();
+        cbShowBlacklistIconWithText = new JCheckBox();
         cbUseWikipediaSenderLogos = new JCheckBox();
         cbAutomaticUpdateChecks = new JCheckBox();
         cbDrawListIconsRight = new JCheckBox();
@@ -349,23 +357,39 @@ public class PanelEinstellungen extends JPanel {
 
         //======== panel1 ========
         {
-            panel1.setLayout(new VerticalLayout());
+            panel1.setLayout(new MigLayout(
+                new LC().insets("0").hideMode(3).gridGap("5", "0"), //NON-NLS
+                // columns
+                new AC()
+                    .grow().align("left").gap() //NON-NLS
+                    .fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill()));
 
             //---- jCheckBoxTray ----
             jCheckBoxTray.setText("Programm ins Tray minimieren"); //NON-NLS
-            panel1.add(jCheckBoxTray);
+            panel1.add(jCheckBoxTray, new CC().cell(0, 0));
+
+            //---- cbShowBlacklistIconWithText ----
+            cbShowBlacklistIconWithText.setText("Blacklist-Filter-Icon mit Text anzeigen"); //NON-NLS
+            cbShowBlacklistIconWithText.setToolTipText("Neustart erforderlich"); //NON-NLS
+            panel1.add(cbShowBlacklistIconWithText, new CC().cell(1, 0));
 
             //---- cbUseWikipediaSenderLogos ----
             cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
-            panel1.add(cbUseWikipediaSenderLogos);
+            panel1.add(cbUseWikipediaSenderLogos, new CC().cell(0, 1));
 
             //---- cbAutomaticUpdateChecks ----
             cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen"); //NON-NLS
-            panel1.add(cbAutomaticUpdateChecks);
+            panel1.add(cbAutomaticUpdateChecks, new CC().cell(0, 2));
 
             //---- cbDrawListIconsRight ----
             cbDrawListIconsRight.setText("Info-Icons der Listen rechts darstellen"); //NON-NLS
-            panel1.add(cbDrawListIconsRight);
+            panel1.add(cbDrawListIconsRight, new CC().cell(0, 3));
         }
 
         //---- modernSearchTitlePanel ----
@@ -416,6 +440,7 @@ public class PanelEinstellungen extends JPanel {
     private JTextField jtfProxyUser;
     private JPasswordField jpfProxyPassword;
     private JCheckBox jCheckBoxTray;
+    private JCheckBox cbShowBlacklistIconWithText;
     private JCheckBox cbUseWikipediaSenderLogos;
     private JCheckBox cbAutomaticUpdateChecks;
     private JCheckBox cbDrawListIconsRight;

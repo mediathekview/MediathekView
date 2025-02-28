@@ -311,10 +311,12 @@ public class Main {
         }
 
         if (!correctParameters) {
-            //show error dialog
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
-            JOptionPane.showMessageDialog(null,getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
-                    JOptionPane.WARNING_MESSAGE);
+            if (!Config.isDebugModeEnabled()) {
+                //show error dialog
+                JOptionPane.showMessageDialog(null, getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
@@ -352,9 +354,10 @@ public class Main {
                 // not an int -> show warning
                 // fractional scale is NOT supported under Linux, must use integer only.
                 var scaleFactor = Float.parseFloat(strScale);
-                System.out.println("uiScale factor: " + scaleFactor);
+                logger.trace("old uiScale factor {}", scaleFactor);
                 var newScale = Math.round(scaleFactor);
-                System.out.println("new scale: " + newScale);
+                logger.trace("new uiScale factor {}", newScale);
+
                 JOptionPane.showMessageDialog(null,
                         "<html>" +
                                 "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=" + strScale + "</i>.<br>" +
@@ -377,6 +380,14 @@ public class Main {
             Config.setDnsIpPreferenceMode(mode);
         }
         logger.trace("Setting DNS selector to mode: {}", Config.getDnsIpPreferenceMode().toString());
+    }
+
+    private static void registerFlatLafCustomization() {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            var settings = StandardLocations.getSettingsDirectory().resolve("flatlaf");
+            logger.info("Registering {} as custom FlatLaf config folder", settings);
+            FlatLaf.registerCustomDefaultsSource(settings.toFile());
+        }
     }
 
     /**
@@ -411,12 +422,16 @@ public class Main {
                 configureDnsPreferenceMode(parseResult);
 
                 if (SystemUtils.IS_OS_LINUX) {
-                    // enable custom window decorations
-                    JFrame.setDefaultLookAndFeelDecorated( true );
-                    JDialog.setDefaultLookAndFeelDecorated( true );
+                    if (!Config.isDisableFlatLafDecorations()) {
+                        // enable custom window decorations
+                        JFrame.setDefaultLookAndFeelDecorated(true);
+                        JDialog.setDefaultLookAndFeelDecorated(true);
+                    }
                 }
 
                 setupDockIcon();
+
+                registerFlatLafCustomization();
                 setupFlatLaf();
 
                 if (SystemUtils.IS_OS_LINUX) {
@@ -487,7 +502,9 @@ public class Main {
 
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
-            Daten.getInstance().loadBookMarkData();
+            Daten.getInstance().getListeBookmarkList().loadFromFile();
+
+            removeLuceneIndexDirectory();
             // enable modern search on demand
             var useModernSearch = ApplicationConfiguration.getConfiguration()
                     .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
@@ -496,6 +513,22 @@ public class Main {
 
             startGuiMode();
         });
+    }
+
+    /**
+     * Remove modern search index when not in use.
+     */
+    private static void removeLuceneIndexDirectory() {
+        //when modern search is not in use, delete unused film index directory as a precaution
+        var indexPath = StandardLocations.getFilmIndexPath();
+        if (Files.exists(indexPath)) {
+            try {
+                FileUtils.deletePathRecursively(indexPath);
+            }
+            catch (IOException e) {
+                logger.error("Failed to remove Lucene index directory", e);
+            }
+        }
     }
 
     /**

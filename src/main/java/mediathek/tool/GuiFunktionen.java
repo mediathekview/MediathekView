@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class GuiFunktionen {
@@ -264,21 +265,17 @@ public class GuiFunktionen {
         return ret;
     }
 
-    public static String getFileNameWithoutSuffix(String pfad) {
-        // Suffix einer URL extrahieren
-        // "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
-        // FILENAME.SUFF
-        String ret = "";
-        if (pfad != null) {
-            if (!pfad.isEmpty() && pfad.contains(".")) {
-                ret = pfad.substring(0, pfad.lastIndexOf('.'));
-            }
-        }
-        if (ret.isEmpty()) {
-            ret = pfad;
-            logger.error("getFileNameWithoutSuffix({})", pfad);
-        }
-        return ret;
+    /**
+     * Strip the extension from a filename, e.g. file1.mp4 becomes file1
+     * @param fileName the filename
+     * @return the stripped filename
+     */
+    public static String getFileNameWithoutExtension(@NotNull String fileName) {
+        return Optional.of(fileName.lastIndexOf('.'))
+                .filter(i-> i >= 0)
+                .filter(i-> i > fileName.lastIndexOf(File.separator))
+                .map(i-> fileName.substring(0, i))
+                .orElse(fileName);
     }
 
     /**

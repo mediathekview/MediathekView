@@ -8,22 +8,33 @@ class GuiFunktionenTest {
     @Test
     void getFilmListUpdateType() {
         var res = GuiFunktionen.getFilmListUpdateType();
-        Assertions.assertSame(res, FilmListUpdateType.AUTOMATIC);
+        Assertions.assertSame(FilmListUpdateType.AUTOMATIC, res);
     }
 
     @Test
     void getSuffixFromUrl() {
-        var testStr = "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd";
+        final var testStr = "https://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd";
+        final var expected = "m3u8";
         var res = GuiFunktionen.getSuffixFromUrl(testStr);
 
-        Assertions.assertEquals(res, "m3u8");
+        Assertions.assertEquals(expected, res);
     }
 
     @Test
-    void getFileNameWithoutSuffix() {
-        var testStr = "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd";
-        var res = GuiFunktionen.getFileNameWithoutSuffix(testStr);
+    void getFileNameWithoutExtension_web() {
+        final var testStr = "https://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd";
+        final var expected = "https://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av";
+        var res = GuiFunktionen.getFileNameWithoutExtension(testStr);
 
-        Assertions.assertEquals(res, "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av");
+        Assertions.assertEquals(expected, res);
+    }
+
+    @Test
+    void getFileNameWithoutExtension_file() {
+        final var testStr = "/Users/derreisende/file1.mp4";
+        final var expected = "/Users/derreisende/file1";
+        var res = GuiFunktionen.getFileNameWithoutExtension(testStr);
+
+        Assertions.assertEquals(expected, res);
     }
 }

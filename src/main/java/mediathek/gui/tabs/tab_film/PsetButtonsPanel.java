@@ -41,7 +41,6 @@ public class PsetButtonsPanel extends JPanel {
 
     @Handler
     private void handleProgramSetChangedEvent(ProgramSetChangedEvent e) {
-        System.out.println("Handle PSET CHANGE");
         SwingUtilities.invokeLater(this::setupButtonLayout);
     }
 

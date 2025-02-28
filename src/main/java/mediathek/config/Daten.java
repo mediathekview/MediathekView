@@ -1,5 +1,7 @@
 package mediathek.config;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
 import com.google.common.util.concurrent.*;
 import mediathek.Main;
 import mediathek.SplashScreen;
@@ -10,6 +12,7 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
+import mediathek.gui.duplicates.FilmStatistics;
 import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
@@ -45,6 +48,8 @@ public class Daten {
     public static ListePset listePset;
     // flags
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
+    private final EventList<FilmStatistics> duplicateStatisticsEventList = new BasicEventList<>();
+    private final EventList<FilmStatistics> commonStatisticsEventList = new BasicEventList<>();
     private final FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     /**
      * "source" list of all entries, contains everything
@@ -73,7 +78,7 @@ public class Daten {
     private Daten() {
         filmeLaden = new FilmeLaden(this);
 
-        listeBookmarkList = BookmarkDataList.getInstance(this);
+        listeBookmarkList = new BookmarkDataList(this);
 
         listePset = new ListePset();
 
@@ -120,16 +125,12 @@ public class Daten {
         return xmlFilePath;
     }
 
+    public EventList<FilmStatistics> getDuplicateStatistics() { return duplicateStatisticsEventList; }
+
+    public EventList<FilmStatistics> getCommonStatistics() { return commonStatisticsEventList; }
+
     public StarterClass getStarterClass() {
         return starterClass;
-    }
-
-    /**
-     * Load the stored bookmarkdata form JSON file
-     * into memory
-     */
-    public void loadBookMarkData() {
-        listeBookmarkList.loadFromFile(StandardLocations.getBookmarkFilePath());
     }
 
     /**

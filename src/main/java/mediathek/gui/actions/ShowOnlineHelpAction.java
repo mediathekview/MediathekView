@@ -25,7 +25,7 @@ public class ShowOnlineHelpAction extends AbstractAction {
 
     private void openUrl() {
         try {
-            UrlHyperlinkAction.openURL(null, Konstanten.ADRESSE_ONLINE_HELP);
+            UrlHyperlinkAction.openURL(Konstanten.ADRESSE_ONLINE_HELP);
         } catch (URISyntaxException ex) {
             logger.warn(ex);
         }

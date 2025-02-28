@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -119,7 +119,11 @@ new FormModel {
 					name: "jpfProxyPassword"
 				} )
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
+				"$columnConstraints": "[grow,left][fill]"
+				"$rowConstraints": "[fill][fill][fill][fill]"
+			} ) {
 				name: "panel1"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
@@ -127,18 +131,33 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTray"
 					"text": "Programm ins Tray minimieren"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbShowBlacklistIconWithText"
+					"text": "Blacklist-Filter-Icon mit Text anzeigen"
+					"toolTipText": "Neustart erforderlich"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbUseWikipediaSenderLogos"
 					"text": "Senderlogos von Wikipedia verwenden"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbAutomaticUpdateChecks"
 					"text": "Programmupdates täglich suchen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 2"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDrawListIconsRight"
 					"text": "Info-Icons der Listen rechts darstellen"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 3"
 				} )
 			} )
 			add( new FormComponent( "org.jdesktop.swingx.JXTitledPanel" ) {

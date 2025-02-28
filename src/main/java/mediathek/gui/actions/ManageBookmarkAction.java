@@ -18,6 +18,6 @@ public class ManageBookmarkAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        mediathekGui.tabFilme.showBookmarkWindow();
+        mediathekGui.tabFilme.showManageBookmarkWindow();
     }
 }

@@ -1,7 +1,7 @@
 package mediathek.tool.table;
 
 import mediathek.daten.DatenPset;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ public class MVPsetTable extends MVTable {
                 Optional.empty(),
                 Optional.empty());
 
-        setModel(new TModel(new Object[][]{}, DatenPset.COLUMN_NAMES));
+        setModel(new NonEditableTableModel(new Object[][]{}, DatenPset.COLUMN_NAMES));
         setRowSorter(null);
         setAutoCreateRowSorter(false); // Reihenfolge ist die Anzeige der Button!
     }

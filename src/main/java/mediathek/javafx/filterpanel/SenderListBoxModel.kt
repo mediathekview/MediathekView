@@ -33,6 +33,7 @@ object SenderListBoxModel {
     init {
         providedSenderList.add("3Sat")
         providedSenderList.add("ARD")
+        providedSenderList.add("ARD-alpha")
         providedSenderList.add("ARTE.DE")
         providedSenderList.add("ARTE.EN")
         providedSenderList.add("ARTE.ES")
@@ -46,6 +47,7 @@ object SenderListBoxModel {
         providedSenderList.add("KiKA")
         providedSenderList.add("MDR")
         providedSenderList.add("NDR")
+        providedSenderList.add("ONE")
         providedSenderList.add("ORF")
         providedSenderList.add("PHOENIX")
         providedSenderList.add("Radio Bremen TV")
@@ -53,6 +55,7 @@ object SenderListBoxModel {
         providedSenderList.add("SR")
         providedSenderList.add("SRF")
         providedSenderList.add("SRF.Podcast")
+        providedSenderList.add("tagesschau24")
         providedSenderList.add("SWR")
         providedSenderList.add("WDR")
         providedSenderList.add("ZDF")

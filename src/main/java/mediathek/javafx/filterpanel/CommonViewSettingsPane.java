@@ -5,81 +5,143 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.util.StringConverter;
 import mediathek.gui.messages.TableModelChangeEvent;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.controlsfx.glyphfont.Glyph;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class CommonViewSettingsPane extends VBox implements Initializable {
-    private static final Logger logger = LogManager.getLogger(CommonViewSettingsPane.class);
-    @FXML
-    public Button btnDeleteFilterSettings;
-    @FXML
-    public CheckBox cbShowOnlyHd;
-    @FXML
-    public CheckBox cbShowSubtitlesOnly;
-    @FXML
-    public CheckBox cbShowNewOnly;
-    @FXML
-    public CheckBox cbShowBookMarkedOnly;
-    @FXML
-    public CheckBox cbShowOnlyLivestreams;
-    @FXML
-    public CheckBox cbShowUnseenOnly;
-    @FXML
-    public CheckBox cbDontShowAbos;
-    @FXML
-    public CheckBox cbDontShowGebaerdensprache;
-    @FXML
-    public CheckBox cbDontShowTrailers;
-    @FXML
-    public CheckBox cbDontShowAudioVersions;
-    @FXML
-    public SenderBoxNode senderCheckList;
-    @FXML
-    public ThemaComboBox themaComboBox;
-    @FXML
-    public FilmLenghtSliderNode filmLengthSliderNode;
-    @FXML
-    public ZeitraumSpinner zeitraumSpinner;
-    @FXML
-    public Button btnDeleteCurrentFilter;
-    @FXML
-    private Label themaLabel;
-    @FXML
-    private ComboBox<FilterDTO> filterSelect;
-    @FXML
-    private Button btnAddNewFilter;
-    @FXML
-    public Button btnRenameFilter;
-
+public class CommonViewSettingsPane extends VBox {
+    public final ThemaComboBox themaComboBox = new ThemaComboBox();
+    public final FilmLenghtSliderNode filmLengthSliderNode = new FilmLenghtSliderNode();
+    public final ZeitraumSpinner zeitraumSpinner = new ZeitraumSpinner();
+    public final SenderBoxNode senderCheckList = new SenderBoxNode();
+    public final CheckBox cbDontShowAudioVersions = new CheckBox("Hörfassungen ausblenden");
+    public final CheckBox cbDontShowGebaerdensprache = new CheckBox("Gebärdensprache nicht anzeigen");
+    public final CheckBox cbDontShowDuplicates = new CheckBox("Duplikate nicht anzeigen");
+    public final CheckBox cbDontShowTrailers = new CheckBox("Trailer/Teaser/Vorschau nicht anzeigen");
+    public final CheckBox cbShowUnseenOnly = new CheckBox("Gesehene Filme nicht anzeigen");
+    public final CheckBox cbDontShowAbos = new CheckBox("Abos nicht anzeigen");
+    public final CheckBox cbShowOnlyHd = new CheckBox("Nur High Quality(HQ) Filme anzeigen");
+    public final CheckBox cbShowSubtitlesOnly = new CheckBox("Nur Filme mit Untertitel anzeigen");
+    public final CheckBox cbShowNewOnly = new CheckBox("Nur neue Filme anzeigen");
+    public final CheckBox cbShowBookMarkedOnly = new CheckBox("Nur gemerkte Filme anzeigen");
+    public final CheckBox cbShowOnlyLivestreams = new CheckBox("Nur Livestream anzeigen");
+    public final Button btnDeleteFilterSettings = new Button();
+    public final Button btnDeleteCurrentFilter = new Button();
+    public final Button btnRenameFilter = new Button();
+    private final ComboBox<FilterDTO> filterSelect = new ComboBox<>();
+    private final Button btnAddNewFilter = new Button();
     private boolean deleteCurrentFilterButtonDisabled;
 
-    public CommonViewSettingsPane() {
-        super();
-
-        try {
-            URL url = getClass().getResource("/mediathek/res/programm/fxml/filter_settings_pane.fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(url);
-            fxmlLoader.setRoot(this);
-            fxmlLoader.setController(this);
-            fxmlLoader.load();
-        } catch (IOException e) {
-            logger.error("Failed to load FXML!", e);
+    static class FontAwesomeGlyph extends Glyph {
+        public FontAwesomeGlyph(String icon) {
+            setFontFamily("FontAwesome");
+            setFontSize(16d);
+            setIcon(icon);
         }
+    }
+
+    private HBox createTopButtonRow() {
+        HBox btnBox = new HBox();
+        btnBox.setSpacing(4d);
+        btnBox.getChildren().addAll(filterSelect, btnRenameFilter, btnAddNewFilter, btnDeleteCurrentFilter,
+                new Separator(Orientation.VERTICAL), btnDeleteFilterSettings);
+        return btnBox;
+    }
+
+    private Pane createSenderList() {
+        senderCheckList.setPrefHeight(150d);
+        senderCheckList.setMinHeight(100d);
+        VBox.setVgrow(senderCheckList, Priority.ALWAYS);
+        var titledPane = new VBox();
+        titledPane.getChildren().addAll(new Label("Sender:"),
+                senderCheckList);
+        VBox.setVgrow(titledPane, Priority.ALWAYS);
+
+        return titledPane;
+    }
+
+    private Pane createThemaBox() {
+        var hbox = new HBox();
+        hbox.setSpacing(4d);
+        HBox.setHgrow(themaComboBox, Priority.ALWAYS);
+        var borderPane = new BorderPane();
+        var themaLabel = new Label("Thema:");
+        themaLabel.setMinWidth(USE_PREF_SIZE);
+        // font size is greater on tested ubuntu linux :(
+        if (SystemUtils.IS_OS_LINUX)
+            themaLabel.setPrefWidth(50d);
+        else
+            themaLabel.setPrefWidth(45d);
+        borderPane.setCenter(themaLabel);
+        hbox.getChildren().addAll(borderPane, themaComboBox);
+
+        return hbox;
+    }
+
+    private void setupButtons() {
+        btnRenameFilter.setTooltip(new Tooltip("Filter umbenennen"));
+        btnRenameFilter.setGraphic(new FontAwesomeGlyph("EDIT"));
+
+        btnAddNewFilter.setTooltip(new Tooltip("Neuen Filter anlegen"));
+        btnAddNewFilter.setGraphic(new FontAwesomeGlyph("PLUS"));
+
+        btnDeleteCurrentFilter.setTooltip(new Tooltip("Aktuellen Filter löschen"));
+        btnDeleteCurrentFilter.setGraphic(new FontAwesomeGlyph("TRASH_ALT"));
+
+        btnDeleteFilterSettings.setTooltip(new Tooltip("Aktuellen Filter zurücksetzen"));
+        btnDeleteFilterSettings.setGraphic(new FontAwesomeGlyph("RECYCLE"));
+    }
+
+    public CommonViewSettingsPane() {
+        setPadding(new Insets(5, 5, 5, 5));
+        setSpacing(4d);
+
+        filterSelect.setPromptText("Filter Auswahl");
+
+        setupButtons();
+
+        getChildren().addAll(createTopButtonRow(),
+                new Separator(),
+                cbShowNewOnly,
+                cbShowBookMarkedOnly,
+                cbShowOnlyHd,
+                cbShowSubtitlesOnly,
+                cbShowOnlyLivestreams,
+                new Separator(),
+                cbShowUnseenOnly,
+                cbDontShowAbos,
+                cbDontShowGebaerdensprache,
+                cbDontShowTrailers,
+                cbDontShowAudioVersions,
+                cbDontShowDuplicates,
+                new Separator(),
+                createSenderList(),
+                new Separator(),
+                createThemaBox(),
+                new Separator(),
+                filmLengthSliderNode,
+                new Separator(),
+                createZeitraumSpinner());
+
+
+        MessageBus.getMessageBus().subscribe(this);
+    }
+
+    private Pane createZeitraumSpinner() {
+        var flowPane = new FlowPane(4d,0d);
+        flowPane.getChildren().add(new Label("Zeitraum:"));
+        flowPane.getChildren().add(zeitraumSpinner);
+        flowPane.getChildren().add(new Label("Tage"));
+
+        return flowPane;
     }
 
     /**
@@ -103,6 +165,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
                     cbDontShowGebaerdensprache.setDisable(disable);
                     cbDontShowTrailers.setDisable(disable);
                     cbDontShowAudioVersions.setDisable(disable);
+                    cbDontShowDuplicates.setDisable(disable);
                     senderCheckList.setDisable(disable);
                     themaComboBox.setDisable(disable);
                     filmLengthSliderNode.setDisable(disable);
@@ -117,16 +180,6 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     public void disableDeleteCurrentFilterButton(boolean disable) {
         deleteCurrentFilterButtonDisabled = disable;
         btnDeleteCurrentFilter.setDisable(disable);
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        themaLabel.setMinWidth(USE_PREF_SIZE);
-        // font size is greater on tested ubuntu linux :(
-        if (SystemUtils.IS_OS_LINUX) themaLabel.setPrefWidth(50d);
-        else themaLabel.setPrefWidth(45d);
-
-        MessageBus.getMessageBus().subscribe(this);
     }
 
     public void setFilterSelectionChangeListener(ChangeListener<FilterDTO> changeListener) {

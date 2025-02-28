@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2025 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.gui.tabs.tab_film.helpers;
 
 import javafx.collections.ObservableList;
@@ -9,7 +27,6 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
-import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
@@ -19,7 +36,6 @@ import javax.swing.table.TableModel;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
@@ -28,41 +44,8 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     public GuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
                                @NotNull SeenHistoryController historyController,
                                @NotNull SearchFieldData searchFieldData) {
-        this.filterActionPanel = filterActionPanel;
-        this.historyController = historyController;
-        this.searchFieldData = searchFieldData;
+        super(filterActionPanel, historyController, searchFieldData);
     }
-
-    private String getFilterThema() {
-        String filterThema = filterActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
-        if (filterThema == null) {
-            filterThema = "";
-        }
-
-        return filterThema;
-    }
-
-    @Override
-    protected boolean noFiltersAreSet() {
-        var filmLengthSlider = filterActionPanel.getFilmLengthSlider();
-
-        return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
-                && getFilterThema().isEmpty()
-                && searchFieldData.isEmpty()
-                && ((int) filmLengthSlider.getLowValue() == 0)
-                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
-                && !filterActionPanel.isDontShowAbos()
-                && !filterActionPanel.isShowUnseenOnly()
-                && !filterActionPanel.isShowOnlyHighQuality()
-                && !filterActionPanel.isShowSubtitlesOnly()
-                && !filterActionPanel.isShowLivestreamsOnly()
-                && !filterActionPanel.isShowNewOnly()
-                && !filterActionPanel.isShowBookMarkedOnly()
-                && !filterActionPanel.isDontShowTrailers()
-                && !filterActionPanel.isDontShowSignLanguage()
-                && !filterActionPanel.isDontShowAudioVersions();
-    }
-
 
     private void performTableFiltering() {
         arrIrgendwo = searchFieldData.evaluateThemaTitel();
@@ -98,20 +81,14 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             stream = stream.filter(film -> !film.isAudioVersion());
         if (filterActionPanel.isDontShowAbos())
             stream = stream.filter(film -> film.getAbo() == null);
+        if (filterActionPanel.isDontShowDuplicates()) {
+            stream = stream.filter(film -> !film.isDuplicate());
+        }
         if (filterActionPanel.isShowSubtitlesOnly()) {
             stream = stream.filter(this::subtitleCheck);
         }
-        if (!filterThema.isEmpty()) {
-            stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
-        }
-        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
-            stream = stream.filter(this::maxLengthCheck);
-        }
-        if (filterActionPanel.isShowUnseenOnly()) {
-            stream = stream.filter(this::seenCheck);
-        }
-        //perform min length filtering after all others may have reduced the available entries...
-        stream = stream.filter(this::minLengthCheck);
+
+        stream = applyCommonFilters(stream, filterThema);
 
         //final stage filtering...
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
@@ -119,14 +96,12 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             stream = stream.filter(createFinalStageFilter());
         }
 
-        var list = stream.collect(Collectors.toList());
+        var list = stream.toList();
         stream.close();
 
         //adjust initial capacity
         filmModel = new TModelFilm(list.size());
         filmModel.addAll(list);
-
-        list.clear();
 
         if (filterActionPanel.isShowUnseenOnly())
             historyController.emptyMemoryCache();

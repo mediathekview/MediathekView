@@ -28,5 +28,9 @@ public enum DatenFilmFlags {
     /**
      * Indicates that film contains a .m3u8 URL.
      */
-    PLAYLIST
+    PLAYLIST,
+    /**
+     * Indicate that this film's URL is already existing hence this entry is a duplicate.
+     */
+    DUPLICATE
 }

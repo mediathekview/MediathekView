@@ -10,13 +10,18 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.configuration2.sync.LockMode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 /**
@@ -30,6 +35,18 @@ public class EditHistoryDialog extends JDialog {
     private final EventList<String> eventList;
     private final Function<Integer,Integer> inc_op = f -> f + 1;
     private final Function<Integer,Integer> dec_op = f -> f - 1;
+    private final DeleteKeyAdapter keyAdapter = new DeleteKeyAdapter();
+    private boolean keyAdapterInstalled;
+
+    private class DeleteKeyAdapter extends KeyAdapter {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                e.consume();
+                deleteEntries();
+            }
+        }
+    }
 
     public EditHistoryDialog(Window owner, JMenuItem menuItem, EventList<String> eventList) {
         super(owner);
@@ -55,23 +72,7 @@ public class EditHistoryDialog extends JDialog {
         });
         adjustButtons();
 
-        btnDeleteEntries.addActionListener(l -> {
-            var changeList = new ArrayList<String>();
-            var listModel = list.getModel();
-            for (var idx : list.getSelectedIndices()) {
-                changeList.add(listModel.getElementAt(idx));
-            }
-
-            var lock = eventList.getReadWriteLock().writeLock();
-            lock.lock();
-            try {
-                changeList.forEach(eventList::remove);
-            }
-            finally {
-                lock.unlock();
-            }
-            changeList.clear();
-        });
+        btnDeleteEntries.addActionListener(l -> deleteEntries());
 
         btnUp.addActionListener(l -> {
             var idx = list.getSelectedIndex();
@@ -86,6 +87,24 @@ public class EditHistoryDialog extends JDialog {
         });
 
         restorePosition();
+    }
+
+    private void deleteEntries() {
+        var changeList = new ArrayList<String>();
+        var listModel = list.getModel();
+        for (var idx : list.getSelectedIndices()) {
+            changeList.add(listModel.getElementAt(idx));
+        }
+
+        var lock = eventList.getReadWriteLock().writeLock();
+        lock.lock();
+        try {
+            changeList.forEach(eventList::remove);
+        }
+        finally {
+            lock.unlock();
+        }
+        changeList.clear();
     }
 
     private int moveEntry(int idx, Function<Integer,Integer> operator) {
@@ -104,6 +123,8 @@ public class EditHistoryDialog extends JDialog {
         return idx;
     }
 
+    private static final Logger logger = LogManager.getLogger();
+
     private void restorePosition() {
         var config = ApplicationConfiguration.getConfiguration();
         try {
@@ -115,8 +136,11 @@ public class EditHistoryDialog extends JDialog {
 
             setSize(width, height);
             setLocation(x, y);
-        } catch (Exception ignored) {
-            System.out.println("COULD NOT FIND CONFIGURATION");
+        }
+        catch (NoSuchElementException ignored) {
+        }
+        catch (Exception ex) {
+            logger.error("Unhandled exception", ex);
         } finally {
             config.unlock(LockMode.READ);
         }
@@ -150,6 +174,22 @@ public class EditHistoryDialog extends JDialog {
                 btnUp.setEnabled(false);
             if (idx == list.getModel().getSize() - 1) //last
                 btnDown.setEnabled(false);
+        }
+        setupKeyListener(itemCount);
+    }
+
+    private void setupKeyListener(int itemCount) {
+        if (itemCount > 0) {
+            if (!keyAdapterInstalled) {
+                list.addKeyListener(keyAdapter);
+                keyAdapterInstalled = true;
+            }
+        }
+        else {
+            if (keyAdapterInstalled) {
+                list.removeKeyListener(keyAdapter);
+                keyAdapterInstalled = false;
+            }
         }
     }
 

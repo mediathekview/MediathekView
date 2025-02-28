@@ -1,4 +1,22 @@
-package mediathek.gui.dialogEinstellungen;
+/*
+ * Copyright (c) 2025 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package mediathek.gui.dialogEinstellungen.pset;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -17,7 +35,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererProgramme;
 import mediathek.tool.cellrenderer.CellRendererPset;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
@@ -63,11 +81,9 @@ public class PanelPsetLang extends PanelVorlage {
 
     @Handler
     private void handleProgramSetChanged(ProgramSetChangedEvent e) {
-        SwingUtilities.invokeLater(() -> {
             if (!stopBeob) {
                 tabellePset();
             }
-        });
     }
 
     private void init() {
@@ -125,7 +141,7 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgPraefix.setEnabled(false);
         jTextFieldProgSuffix.setEnabled(false);
 
-        jButtonProgPfad.addActionListener(l -> {
+        jButtonProgPfad.addActionListener(e -> {
             String initialFile = "";
             if (!jTextFieldProgPfad.getText().isEmpty()) {
                 initialFile = jTextFieldProgPfad.getText();
@@ -136,7 +152,7 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonProgPlus.addActionListener(l -> {
+        jButtonProgPlus.addActionListener(e -> {
             DatenProg prog = new DatenProg();
             progNeueZeile(prog);
         });
@@ -306,7 +322,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
         });
-        jButtonGruppeStandardfarbe.addActionListener(l -> {
+        jButtonGruppeStandardfarbe.addActionListener(e -> {
             DatenPset pSet = getPset();
             if (pSet != null) {
                 pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
@@ -332,7 +348,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jButtonExport.addActionListener(e -> setExport());
 
-        jButtonGruppePfad.addActionListener(l -> {
+        jButtonGruppePfad.addActionListener(e -> {
             var initialFile = "";
             if (!tfGruppeZielPfad.getText().isEmpty()) {
                 initialFile = tfGruppeZielPfad.getText();
@@ -358,7 +374,9 @@ public class PanelPsetLang extends PanelVorlage {
         tfGruppeZielPfad.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD, false));
 
+        jTextFieldSetName.getDocument().addDocumentListener(new DuplicatePsetNameCheckListener(jTextFieldSetName));
         jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
+
         handler = new TextCopyPasteHandler<>(jTextFieldSetName);
         jTextFieldSetName.setComponentPopupMenu(handler.getPopupMenu());
 
@@ -378,7 +396,7 @@ public class PanelPsetLang extends PanelVorlage {
         jRadioButtonAufloesungKlein.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungNormal.addActionListener(e -> setAufloesung());
         jRadioButtonAufloesungHD.addActionListener(e -> setAufloesung());
-        jButtonPruefen.addActionListener(l -> programmePruefen());
+        jButtonPruefen.addActionListener(e -> programmePruefen());
 
 
         tabelleProgramme.getSelectionModel().addListSelectionListener(e -> {
@@ -517,7 +535,7 @@ public class PanelPsetLang extends PanelVorlage {
     private void nurtabellePset() {
         stopBeob = true;
         tabellePset.getSpalten();
-        tabellePset.setModel(listePset.getModel());
+        tabellePset.setModel(listePset.createModel());
         tabellePset.setSpalten();
         spaltenSetzen();
         jLabelMeldungAbspielen.setVisible(listePset.getPsetAbspielen() == null);
@@ -526,20 +544,22 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void spaltenSetzen() {
+        final var columnModel = tabellePset.getColumnModel();
         for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
+            var column = columnModel.getColumn(tabellePset.convertColumnIndexToView(i));
             if (i == DatenPset.PROGRAMMSET_NAME) {
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(120);
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(1000);
+                column.setMinWidth(10);
+                column.setPreferredWidth(120);
+                column.setMaxWidth(1000);
             } else if (i == DatenPset.PROGRAMMSET_IST_ABSPIELEN
                     || i == DatenPset.PROGRAMMSET_IST_SPEICHERN) {
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(10);
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(80);
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(1000);
+                column.setMinWidth(10);
+                column.setPreferredWidth(80);
+                column.setMaxWidth(1000);
             } else {
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMinWidth(0);
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setPreferredWidth(0);
-                tabellePset.getColumnModel().getColumn(tabellePset.convertColumnIndexToView(i)).setMaxWidth(0);
+                column.setMinWidth(0);
+                column.setPreferredWidth(0);
+                column.setMaxWidth(0);
             }
         }
     }
@@ -588,14 +608,14 @@ public class PanelPsetLang extends PanelVorlage {
                 case FilmResolution.LOW -> jRadioButtonAufloesungKlein.setSelected(true);
                 default -> jRadioButtonAufloesungNormal.setSelected(true);
             }
-            tabelleProgramme.setModel(pSet.getListeProg().getModel());
+            tabelleProgramme.setModel(pSet.getListeProg().createModel());
             if (tabelleProgramme.getRowCount() > 0) {
                 spaltenSetzenProgramme();
                 tabelleProgramme.setRowSelectionInterval(0, 0);
                 tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(0, 0, true));
             }
         } else {
-            jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
+            jScrollPane1.setBorder(BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "Sets");
             //jSpinnerLaenge.setValue(GuiKonstanten.MAX_LAENGE_DATEINAME); Exception!
             jCheckBoxLaenge.setSelected(false);
@@ -609,7 +629,7 @@ public class PanelPsetLang extends PanelVorlage {
             tfGruppeZielName.setText("");
             tfGruppeZielPfad.setText("");
             jTextAreaSetBeschreibung.setText("");
-            tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
+            tabelleProgramme.setModel(new NonEditableTableModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
         }
         stopBeob = false;
         fillTextProgramme();
@@ -636,26 +656,27 @@ public class PanelPsetLang extends PanelVorlage {
      * Send message that changes to the Pset were performed.
      */
     private void notifyProgramSetChanged() {
-        MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
+        MessageBus.getMessageBus().publish(new ProgramSetChangedEvent());
     }
 
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
         final int row = tabelleProgramme.getSelectedRow();
+        final boolean validRowSelected = row != -1;
         final boolean letzteZeile = tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1;
 
-        jTextFieldProgPfad.setEnabled(row != -1);
-        jTextFieldProgSchalter.setEnabled(row != -1);
-        jTextFieldProgZielDateiName.setEnabled(row != -1);
-        jTextFieldProgName.setEnabled(row != -1);
-        jTextFieldProgZielDateiName.setEnabled(row != -1);
-        jTextFieldProgPraefix.setEnabled(row != -1);
-        jTextFieldProgSuffix.setEnabled(row != -1);
-        jButtonProgPfad.setEnabled(row != -1);
-        jCheckBoxRestart.setEnabled(row != -1);
-        jCheckBoxRemoteDownload.setEnabled(row != -1);
-        if (row != -1) {
+        jTextFieldProgPfad.setEnabled(validRowSelected);
+        jTextFieldProgSchalter.setEnabled(validRowSelected);
+        jTextFieldProgZielDateiName.setEnabled(validRowSelected);
+        jTextFieldProgName.setEnabled(validRowSelected);
+        jTextFieldProgZielDateiName.setEnabled(validRowSelected);
+        jTextFieldProgPraefix.setEnabled(validRowSelected);
+        jTextFieldProgSuffix.setEnabled(validRowSelected);
+        jButtonProgPfad.setEnabled(validRowSelected);
+        jCheckBoxRestart.setEnabled(validRowSelected);
+        jCheckBoxRemoteDownload.setEnabled(validRowSelected);
+        if (validRowSelected) {
             DatenProg prog = getPset().getProg(tabelleProgramme.convertRowIndexToModel(row));
             jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
             jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER]);
@@ -726,7 +747,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabellePset.convertRowIndexToModel(rows[i]);
-                    ((TModel) tabellePset.getModel()).removeRow(delRow);
+                    ((NonEditableTableModel) tabellePset.getModel()).removeRow(delRow);
                     listePset.remove(delRow);
                 }
                 tabellePset();
@@ -750,7 +771,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
 
-            final var entryName = liste.get(0).getName();
+            final var entryName = liste.getFirst().getName();
             String name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
@@ -864,24 +885,6 @@ public class PanelPsetLang extends PanelVorlage {
             //unused in plaintext components
         }
 
-        private void setNamePruefen() {
-            //doppelte Gruppennamen suchen
-            int row = tabellePset.getSelectedRow();
-            if (row != -1) {
-                int foundgruppe = 0;
-                for (DatenPset gruppe : listePset) {
-                    if (jTextFieldSetName.getText().equals(gruppe.getName())) {
-                        ++foundgruppe;
-                    }
-                }
-                if (foundgruppe > 1) {
-                    jTextFieldSetName.setBackground(Color.ORANGE);
-                } else {
-                    jTextFieldSetName.setBackground(Color.WHITE);
-                }
-            }
-        }
-
         private void eingabe() {
             if (!stopBeob) {
                 final int row = tabellePset.getSelectedRow();
@@ -901,7 +904,6 @@ public class PanelPsetLang extends PanelVorlage {
                     NoSelectionErrorDialog.show(null);
                 }
             }
-            setNamePruefen();
         }
     }
 
@@ -1093,7 +1095,7 @@ public class PanelPsetLang extends PanelVorlage {
                                         .addComponent(jCheckBoxButton)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jCheckBoxAbo)
-                                        .addContainerGap(71, Short.MAX_VALUE))
+                                        .addContainerGap(81, Short.MAX_VALUE))
                             );
                             jPanel6Layout.setVerticalGroup(
                                 jPanel6Layout.createParallelGroup()
@@ -1206,7 +1208,7 @@ public class PanelPsetLang extends PanelVorlage {
                                             .addComponent(jButtonGruppeStandardfarbe))
                                         .addComponent(jLabel11)
                                         .addComponent(jLabel13))
-                                    .addContainerGap(317, Short.MAX_VALUE))
+                                    .addContainerGap(325, Short.MAX_VALUE))
                         );
                         jPanel5Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButtonGruppeFarbe, jButtonGruppeStandardfarbe});
                         jPanel5Layout.setVerticalGroup(
@@ -1307,7 +1309,7 @@ public class PanelPsetLang extends PanelVorlage {
                                                     .addComponent(jButtonGruppePfad))
                                                 .addGroup(jPanel1Layout.createSequentialGroup()
                                                     .addComponent(jCheckBoxThema)
-                                                    .addGap(0, 205, Short.MAX_VALUE)))
+                                                    .addGap(0, 215, Short.MAX_VALUE)))
                                             .addGap(16, 16, 16))
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                             .addComponent(jLabel8)
@@ -1424,7 +1426,7 @@ public class PanelPsetLang extends PanelVorlage {
 
                     //---- jTextArea1 ----
                     jTextArea1.setEditable(false);
-                    jTextArea1.setBackground(new Color(238, 238, 238));
+                    jTextArea1.setBackground(new Color(0xeeeeee));
                     jTextArea1.setColumns(20);
                     jTextArea1.setRows(4);
                     jTextArea1.setText("Filme, deren URL mit \"Pr\u00e4fix\" beginnt und mit \"Suffix\" endet, werden nicht\nmit einem Hilfsprogramm gespeichert, sondern direkt geladen.\n\nEine geringere Aufl\u00f6sung ist nicht bei jedem Sender m\u00f6glich, es wird dann in der gleichen\nAufl\u00f6sung geladen."); //NON-NLS
@@ -1549,7 +1551,7 @@ public class PanelPsetLang extends PanelVorlage {
                         jScrollPane1.setBorder(new TitledBorder(null, "Titel", TitledBorder.LEFT, TitledBorder.TOP)); //NON-NLS
 
                         //---- jTableProgramme ----
-                        jTableProgramme.setModel(new TModel());
+                        jTableProgramme.setModel(new NonEditableTableModel());
                         jTableProgramme.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
                         jScrollPane1.setViewportView(jTableProgramme);
                     }
@@ -1674,12 +1676,12 @@ public class PanelPsetLang extends PanelVorlage {
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(jLabel4)
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(jTextFieldProgSuffix, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                                                    .addComponent(jTextFieldProgSuffix, GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
                                                 .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
                                                     .addGroup(jPanelProgrammDetailsLayout.createParallelGroup()
                                                         .addComponent(jCheckBoxRemoteDownload)
                                                         .addComponent(jCheckBoxRestart))
-                                                    .addGap(0, 194, Short.MAX_VALUE)))))
+                                                    .addGap(0, 206, Short.MAX_VALUE)))))
                                     .addContainerGap())
                         );
                         jPanelProgrammDetailsLayout.setVerticalGroup(
@@ -1901,5 +1903,6 @@ public class PanelPsetLang extends PanelVorlage {
     private JButton jButtonGruppeLoeschen;
     private JButton jButtonGruppeAuf;
     private JButton jButtonGruppeAb;
+
     // End of variables declaration//GEN-END:variables
 }

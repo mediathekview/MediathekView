@@ -5,7 +5,6 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.tool.MessageBus;
-import mediathek.tool.models.TModel;
 import mediathek.tool.models.TModelDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -175,8 +174,7 @@ public class MVDownloadsTable extends MVTable {
                 JTable target = (JTable) info.getComponent();
                 JTable.DropLocation dl = (JTable.DropLocation) info.getDropLocation();
                 int index = dl.getRow();
-                TModel tModel = (TModel) table.getModel();
-                int max = tModel.getRowCount();
+                int max = table.getModel().getRowCount();
                 if (index < 0 || index > max) {
                     index = max;
                 }

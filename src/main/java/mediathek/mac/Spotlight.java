@@ -66,7 +66,7 @@ public class Spotlight {
      * @return a Map containing all metadata for the file
      */
     public static Map<String, String> getMetadata(File file) throws IOException {
-        var process = Runtime.getRuntime().exec(new String[]{"mdls", file.getAbsolutePath()});
+        var process = Runtime.getRuntime().exec(new String[]{"/usr/bin/mdls", file.getAbsolutePath()});
 
         HashMap<String, String> results = new HashMap<>();
         try (var is = process.getInputStream();

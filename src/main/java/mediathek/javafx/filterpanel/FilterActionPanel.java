@@ -8,6 +8,7 @@ import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -52,6 +53,7 @@ public class FilterActionPanel {
     private BooleanProperty dontShowSignLanguage;
     private BooleanProperty dontShowTrailers;
     private BooleanProperty dontShowAbos;
+    private BooleanProperty dontShowDuplicates;
     private BooleanProperty showLivestreamsOnly;
     private BooleanProperty showUnseenOnly;
     private BooleanProperty showBookMarkedOnly;
@@ -87,8 +89,13 @@ public class FilterActionPanel {
         return filterDialog;
     }
 
-    public RangeSlider getFilmLengthSlider() {
-        return filmLengthSlider;
+    public void addFilmLengthSliderListeners(@NotNull ChangeListener<Boolean> listener) {
+        filmLengthSlider.lowValueChangingProperty().addListener(listener);
+        filmLengthSlider.highValueChangingProperty().addListener(listener);
+    }
+
+    public FilmLengthSliderValues getFilmLengthSliderValues() {
+        return new FilmLengthSliderValues((long)filmLengthSlider.getLowValue(), (long)filmLengthSlider.getHighValue());
     }
 
     public ReadOnlyObjectProperty<String> zeitraumProperty() {
@@ -126,6 +133,9 @@ public class FilterActionPanel {
     public BooleanProperty dontShowAbosProperty() {
         return dontShowAbos;
     }
+
+    public BooleanProperty dontShowDuplicatesProperty() { return dontShowDuplicates;}
+    public boolean isDontShowDuplicates() { return dontShowDuplicates.get();}
 
     public boolean isShowLivestreamsOnly() {
         return showLivestreamsOnly.get();
@@ -177,7 +187,7 @@ public class FilterActionPanel {
 
     private void setupAddNewFilterButton() {
         viewSettingsPane.setAddNewFilterButtonEventHandler(
-                event -> {
+                e -> {
                     FilterDTO newFilter =
                             new FilterDTO(
                                     UUID.randomUUID(), String.format("Filter %d", availableFilters.size() + 1));
@@ -193,7 +203,7 @@ public class FilterActionPanel {
         }
 
         viewSettingsPane.btnDeleteCurrentFilter.setOnAction(
-                event -> {
+                e -> {
                     FilterDTO filterToDelete = filterConfig.getCurrentFilter();
                     filterConfig.deleteFilter(filterToDelete);
 
@@ -217,7 +227,7 @@ public class FilterActionPanel {
                 });
 
         viewSettingsPane.setFilterSelectionChangeListener(
-                (observableValue, oldValue, newValue) -> {
+                (ov, oldValue, newValue) -> {
                     if (newValue != null && !newValue.equals(oldValue)) {
                         filterConfig.setCurrentFilter(newValue);
                     }
@@ -303,6 +313,7 @@ public class FilterActionPanel {
         dontShowSignLanguage = viewSettingsPane.cbDontShowGebaerdensprache.selectedProperty();
         dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
         dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
+        dontShowDuplicates = viewSettingsPane.cbDontShowDuplicates.selectedProperty();
 
         setupThemaComboBox();
         viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().
@@ -336,6 +347,7 @@ public class FilterActionPanel {
         dontShowTrailers.set(filterConfig.isDontShowTrailers());
         dontShowSignLanguage.set(filterConfig.isDontShowSignLanguage());
         dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
+        dontShowDuplicates.set(filterConfig.isDontShowDuplicates());
 
         try {
             double loadedMin = filterConfig.getFilmLengthMin();
@@ -372,33 +384,35 @@ public class FilterActionPanel {
 
     private void setupConfigListeners() {
         showOnlyHighQuality.addListener(
-                (observable, oldValue, newValue) -> filterConfig.setShowHdOnly(newValue));
+                (ov, oldVal, newValue) -> filterConfig.setShowHdOnly(newValue));
         showSubtitlesOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
         showBookMarkedOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
         showNewOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowNewOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowNewOnly(newValue)));
         showUnseenOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowUnseenOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowUnseenOnly(newValue)));
         showLivestreamsOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowLivestreamsOnly(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setShowLivestreamsOnly(newValue)));
 
         dontShowAbos.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowAbos(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowAbos(newValue)));
         dontShowTrailers.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowTrailers(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowTrailers(newValue)));
         dontShowSignLanguage.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
         dontShowAudioVersions.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
+        dontShowDuplicates.addListener(
+                ((ov, oldVal, newValue) -> filterConfig.setDontShowDuplicates(newValue)));
 
         filmLengthSlider.lowValueProperty().addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
+                ((ov, oldVal, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
         filmLengthSlider.highValueProperty().addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
+                ((ov, oldVal, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
 
-        zeitraumProperty.addListener(((os, oV, newValue) -> filterConfig.setZeitraum(newValue)));
+        zeitraumProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
     }
 
     /**

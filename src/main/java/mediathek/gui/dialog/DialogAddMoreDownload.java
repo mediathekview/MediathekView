@@ -13,7 +13,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import java.awt.*;
 import java.util.Objects;
 
 public class DialogAddMoreDownload extends JDialog {
@@ -109,10 +108,11 @@ public class DialogAddMoreDownload extends JDialog {
 
             private void tus() {
                 String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
-                if (!s.equals(FilenameUtils.checkDateiname(s, true /*pfad*/))) {
-                    jComboBoxPath.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                var editor = jComboBoxPath.getEditor().getEditorComponent();
+                if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
+                    editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
-                    jComboBoxPath.getEditor().getEditorComponent().setBackground(Color.WHITE);
+                    editor.setBackground(UIManager.getDefaults().getColor("TextField.background"));
                 }
             }
         });

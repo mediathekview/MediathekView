@@ -18,6 +18,7 @@ import mediathek.gui.messages.DownloadListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,12 +33,15 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.File;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
@@ -45,25 +49,33 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class DialogAddDownload extends JDialog {
+    private static final Logger logger = LogManager.getLogger();
+    private static final String NO_DATA_AVAILABLE = "Keine Daten verfügbar.";
+    private static final String KEY_LABEL_FOREGROUND = "Label.foreground";
+    private static final String KEY_TEXTFIELD_BACKGROUND = "TextField.background";
+    private static final String TITLED_BORDER_STRING = "Download-Qualität";
+    private final DatenFilm film;
+    private final Optional<FilmResolution.Enum> requestedResolution;
+    private final ListePset listeSpeichern = Daten.listePset.getListeSpeichern();
     /**
      * The currently selected pSet or null when no selection.
      */
     private DatenPset active_pSet;
     private DatenDownload datenDownload;
-    private final DatenFilm film;
     private String orgPfad = "";
-    private final Optional<FilmResolution.Enum> requestedResolution;
     private String dateiGroesse_HQ = "";
     private String dateiGroesse_Hoch = "";
     private String dateiGroesse_Klein = "";
     private boolean nameGeaendert;
     private boolean stopBeob;
     private JTextComponent cbPathTextComponent;
-    private static final Logger logger = LogManager.getLogger();
-    private final ListePset listeSpeichern = Daten.listePset.getListeSpeichern();
-    private static final String NO_DATA_AVAILABLE = "Keine Daten verfügbar.";
-    private static final String KEY_LABEL_FOREGROUND = "Label.foreground";
-
+    private Path ffprobePath;
+    private ListenableFuture<FFprobeResult> resultListenableFuture;
+    private ListenableFuture<String> hqFuture;
+    private ListenableFuture<String> hochFuture;
+    private ListenableFuture<String> kleinFuture;
+    private boolean restoreFetchSize;
+    private boolean highQualityMandated;
 
     public DialogAddDownload(@NotNull Frame parent, @NotNull DatenFilm film, @Nullable DatenPset pSet, @NotNull Optional<FilmResolution.Enum> requestedResolution) {
         super(parent, true);
@@ -80,8 +92,80 @@ public class DialogAddDownload extends JDialog {
         if (SystemUtils.IS_OS_MAC_OSX) {
             pack();
         }
-
+        restoreWindowSizeFromConfig();
         setLocationRelativeTo(parent);
+
+        addComponentListener(new DialogPositionComponentListener());
+    }
+
+    public static void setModelPfad(String pfad, JComboBox<String> jcb) {
+        ArrayList<String> pfade = new ArrayList<>();
+        final boolean showLastUsedPath = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true);
+
+        // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
+        if (!showLastUsedPath && !pfad.isEmpty()) {
+            // aktueller Pfad an Platz 1
+            pfade.add(pfad);
+
+        }
+        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
+            String[] p = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
+            for (String s : p) {
+                if (!pfade.contains(s)) {
+                    pfade.add(s);
+                }
+            }
+        }
+        if (showLastUsedPath && !pfad.isEmpty()) {
+            // aktueller Pfad zum Schluss
+            if (!pfade.contains(pfad)) {
+                pfade.add(pfad);
+            }
+        }
+        jcb.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
+    }
+
+    public static void saveComboPfad(JComboBox<String> jcb, String orgPath) {
+        ArrayList<String> pfade = new ArrayList<>();
+        String s = Objects.requireNonNull(jcb.getSelectedItem()).toString();
+
+        if (!s.equals(orgPath) || ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)) {
+            pfade.add(s);
+        }
+        for (int i = 0; i < jcb.getItemCount(); ++i) {
+            s = jcb.getItemAt(i);
+            if (!s.equals(orgPath) && !pfade.contains(s)) {
+                pfade.add(s);
+            }
+        }
+        if (!pfade.isEmpty()) {
+            s = pfade.getFirst();
+            for (int i = 1; i < Math.min(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD, pfade.size()); ++i) {
+                final var pfad = pfade.get(i);
+                if (!pfad.isEmpty()) {
+                    s += "<>" + pfad;
+                }
+            }
+        }
+        MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
+    }
+
+    private void restoreWindowSizeFromConfig() {
+        var config = ApplicationConfiguration.getConfiguration();
+        try {
+            config.lock(LockMode.READ);
+            final int width = config.getInt(ApplicationConfiguration.AddDownloadDialog.WIDTH);
+            final int height = config.getInt(ApplicationConfiguration.AddDownloadDialog.HEIGHT);
+            final int x = config.getInt(ApplicationConfiguration.AddDownloadDialog.X);
+            final int y = config.getInt(ApplicationConfiguration.AddDownloadDialog.Y);
+
+            setBounds(x, y, width, height);
+        } catch (NoSuchElementException ignored) {
+            //do not restore anything
+        } finally {
+            config.unlock(LockMode.READ);
+        }
+
     }
 
     private void setupFilmQualityRadioButtons() {
@@ -110,9 +194,6 @@ public class DialogAddDownload extends JDialog {
 
         btnRequestLiveInfo.addActionListener(l -> handleRequestLiveFilmInfo());
     }
-
-    private Path ffprobePath;
-    private ListenableFuture<FFprobeResult> resultListenableFuture;
 
     /**
      * Return only the first part of the long codec name.
@@ -147,6 +228,9 @@ public class DialogAddDownload extends JDialog {
                 .executeAsync();
         resultListenableFuture = JdkFutureAdapters.listenInPoolThread(resultFuture);
         Futures.addCallback(resultListenableFuture, new FutureCallback<>() {
+            private static final String ERR_MSG_PART = "Server returned ";
+            private static final String MSG_UNKNOWN_ERROR = "Unbekannter Fehler aufgetreten.";
+
             @Override
             public void onSuccess(FFprobeResult result) {
                 var audioStreamResult = result.getStreams().stream().filter(stream -> stream.getCodecType() == StreamType.AUDIO).findAny();
@@ -244,9 +328,6 @@ public class DialogAddDownload extends JDialog {
                 });
             }
 
-            private static final String ERR_MSG_PART = "Server returned ";
-            private static final String MSG_UNKNOWN_ERROR = "Unbekannter Fehler aufgetreten.";
-
             private @NotNull String getJaffreeErrorString(JaffreeAbnormalExitException e) {
                 String final_str;
                 try {
@@ -329,12 +410,6 @@ public class DialogAddDownload extends JDialog {
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
     }
-
-    private ListenableFuture<String> hqFuture;
-    private ListenableFuture<String> hochFuture;
-    private ListenableFuture<String> kleinFuture;
-
-    private boolean restoreFetchSize;
 
     private void launchResolutionFutures() {
         // always fetch file size during dialog ops...
@@ -473,7 +548,7 @@ public class DialogAddDownload extends JDialog {
                     if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
                         jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
-                        jTextFieldName.setBackground(UIManager.getDefaults().getColor("TextField.background"));
+                        jTextFieldName.setBackground(UIManager.getDefaults().getColor(KEY_TEXTFIELD_BACKGROUND));
                     }
                 }
 
@@ -507,10 +582,11 @@ public class DialogAddDownload extends JDialog {
                     //perform checks only when OS is not windows
                     if (!SystemUtils.IS_OS_WINDOWS) {
                         String s = cbPathTextComponent.getText();
+                        final var editor = jComboBoxPfad.getEditor().getEditorComponent();
                         if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
-                            jComboBoxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                            editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                         } else {
-                            jComboBoxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);
+                            editor.setBackground(UIManager.getColor(KEY_TEXTFIELD_BACKGROUND));
                         }
                     }
                     calculateAndCheckDiskSpace();
@@ -625,8 +701,6 @@ public class DialogAddDownload extends JDialog {
         return usableSpace;
     }
 
-    private static final String TITLED_BORDER_STRING = "Download-Qualität";
-
     /**
      * Calculate free disk space on volume and check if the movies can be safely downloaded.
      */
@@ -677,58 +751,6 @@ public class DialogAddDownload extends JDialog {
         }
     }
 
-    public static void setModelPfad(String pfad, JComboBox<String> jcb) {
-        ArrayList<String> pfade = new ArrayList<>();
-        final boolean showLastUsedPath = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true);
-
-        // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!showLastUsedPath && !pfad.isEmpty()) {
-            // aktueller Pfad an Platz 1
-            pfade.add(pfad);
-
-        }
-        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
-            String[] p = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
-            for (String s : p) {
-                if (!pfade.contains(s)) {
-                    pfade.add(s);
-                }
-            }
-        }
-        if (showLastUsedPath && !pfad.isEmpty()) {
-            // aktueller Pfad zum Schluss
-            if (!pfade.contains(pfad)) {
-                pfade.add(pfad);
-            }
-        }
-        jcb.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
-    }
-
-    public static void saveComboPfad(JComboBox<String> jcb, String orgPath) {
-        ArrayList<String> pfade = new ArrayList<>();
-        String s = Objects.requireNonNull(jcb.getSelectedItem()).toString();
-
-        if (!s.equals(orgPath) || ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)) {
-            pfade.add(s);
-        }
-        for (int i = 0; i < jcb.getItemCount(); ++i) {
-            s = jcb.getItemAt(i);
-            if (!s.equals(orgPath) && !pfade.contains(s)) {
-                pfade.add(s);
-            }
-        }
-        if (!pfade.isEmpty()) {
-            s = pfade.get(0);
-            for (int i = 1; i < Math.min(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD, pfade.size()); ++i) {
-                final var pfad = pfade.get(i);
-                if (!pfad.isEmpty()) {
-                    s += "<>" + pfad;
-                }
-            }
-        }
-        MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
-    }
-
     private boolean isHighQualityRequested() {
         return active_pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(FilmResolution.Enum.HIGH_QUALITY.toString())
                 && film.isHighQuality();
@@ -739,7 +761,6 @@ public class DialogAddDownload extends JDialog {
                 !film.getLowQualityUrl().isEmpty();
     }
 
-    private boolean highQualityMandated;
     /**
      * Setup the resolution radio buttons based on available download URLs.
      */
@@ -843,6 +864,35 @@ public class DialogAddDownload extends JDialog {
         dispose();
     }
 
+    private static class DialogPositionComponentListener extends ComponentAdapter {
+        @Override
+        public void componentResized(ComponentEvent e) {
+            storeWindowPosition(e);
+        }
+
+        @Override
+        public void componentMoved(ComponentEvent e) {
+            storeWindowPosition(e);
+        }
+
+        private void storeWindowPosition(ComponentEvent e) {
+            var config = ApplicationConfiguration.getConfiguration();
+            var component = e.getComponent();
+
+            var dims = component.getSize();
+            var loc = component.getLocation();
+            try {
+                config.lock(LockMode.WRITE);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.WIDTH, dims.width);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.HEIGHT, dims.height);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.X, loc.x);
+                config.setProperty(ApplicationConfiguration.AddDownloadDialog.Y, loc.y);
+            } finally {
+                config.unlock(LockMode.WRITE);
+            }
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -855,7 +905,7 @@ public class DialogAddDownload extends JDialog {
         jCheckBoxInfodatei = new javax.swing.JCheckBox();
         jCheckBoxPfadSpeichern = new javax.swing.JCheckBox();
         jCheckBoxSubtitle = new javax.swing.JCheckBox();
-        jPanel7 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldName = new javax.swing.JTextField();
         javax.swing.JLabel jLabelSet = new javax.swing.JLabel();
@@ -973,7 +1023,7 @@ public class DialogAddDownload extends JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -1063,7 +1113,7 @@ public class DialogAddDownload extends JDialog {
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonOk});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, jButtonAbbrechen, jButtonOk);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1098,7 +1148,6 @@ public class DialogAddDownload extends JDialog {
     private javax.swing.JCheckBox jCheckBoxSubtitle;
     private javax.swing.JComboBox<String> jComboBoxPfad;
     private javax.swing.JComboBox<String> jComboBoxPset;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanelSize;
     private javax.swing.JRadioButton jRadioButtonAufloesungHd;
     private javax.swing.JRadioButton jRadioButtonAufloesungHoch;

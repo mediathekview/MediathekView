@@ -53,7 +53,7 @@ public class MVSubtitle {
         if (url.isEmpty())
             return;
 
-        var plainFileName = GuiFunktionen.getFileNameWithoutSuffix(file.getAbsolutePath());
+        var plainFileName = GuiFunktionen.getFileNameWithoutExtension(file.getAbsolutePath());
 
         final Request request = new Request.Builder().url(url).get().build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
@@ -123,7 +123,7 @@ public class MVSubtitle {
      * @param ttmlPath The path to the origin TTML subtitle file.
      */
     private void convertSubtitle(@NotNull Path ttmlPath) {
-        var subtitleFileStr = GuiFunktionen.getFileNameWithoutSuffix(ttmlPath.toAbsolutePath().toString());
+        var subtitleFileStr = GuiFunktionen.getFileNameWithoutExtension(ttmlPath.toAbsolutePath().toString());
 
         try (TimedTextMarkupLanguageParser parser = new TimedTextMarkupLanguageParser()) {
             if (!subtitleFileStr.endsWith('.' + SUFFIX_SRT) && !subtitleFileStr.endsWith("." + SUFFIX_VTT)) {

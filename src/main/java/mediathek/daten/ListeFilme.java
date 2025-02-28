@@ -94,7 +94,11 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return DatenFilm object if found or null
      */
     public synchronized DatenFilm getFilmByUrlAndSender(final String url, final String sender) {
-      return parallelStream().filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url) && f.getSender().equalsIgnoreCase(sender)).findAny().orElse(null);
+        return parallelStream()
+                .filter(f -> f.getSender().equalsIgnoreCase(sender))
+                .filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url))
+                .findAny()
+                .orElse(null);
     }
 
     public synchronized DatenFilm getFilmByUrl_klein_hoch_hd(String url) {

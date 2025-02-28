@@ -199,7 +199,7 @@ public class DatenPset implements Comparable<DatenPset> {
             MVMessageDialog.showMessageDialog(null, "Programme einrichten!",
                     "Kein Programm", JOptionPane.INFORMATION_MESSAGE);
         } else if (listeProg.size() == 1) {
-            ret = listeProg.get(0);
+            ret = listeProg.getFirst();
         } else {
             for (DatenProg prog : listeProg) {
                 if (prog.urlTesten(url)) {

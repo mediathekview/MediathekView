@@ -117,17 +117,6 @@ public abstract class MVTable extends JTable {
         lineBreak = lb;
     }
 
-    public void invertSelection() {
-        final ListSelectionModel mdl = getSelectionModel();
-        final int[] selected = getSelectedRows();
-        mdl.setValueIsAdjusting(true);
-        mdl.setSelectionInterval(0, getRowCount() - 1);
-        for (int i : selected) {
-            mdl.removeSelectionInterval(i, i);
-        }
-        mdl.setValueIsAdjusting(false);
-    }
-
     /**
      * Return a fictious size of a multi-line text area.
      * @return The fictious size of a multi-line label.
@@ -423,7 +412,7 @@ public abstract class MVTable extends JTable {
         var sortOrderStr = "";
         if (listeSortKeys != null) {
             if (!listeSortKeys.isEmpty()) {
-                SortKey sk = listeSortKeys.get(0);
+                SortKey sk = listeSortKeys.getFirst();
                 sortKeyColumnStr = String.valueOf(sk.getColumn());
                 sortOrderStr = sk.getSortOrder() == SortOrder.ASCENDING ? SORT_ASCENDING : SORT_DESCENDING;
             }

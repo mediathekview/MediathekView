@@ -939,7 +939,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public String getFileNameWithoutSuffix() {
-        return GuiFunktionen.getFileNameWithoutSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        return GuiFunktionen.getFileNameWithoutExtension(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
     }
 
     @Override

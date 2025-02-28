@@ -1,5 +1,6 @@
 package mediathek.mac
 
+import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.util.SystemInfo
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
@@ -7,7 +8,6 @@ import mediathek.gui.messages.DownloadStartEvent
 import mediathek.gui.messages.InstallTabSwitchListenerEvent
 import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.INotificationCenter
@@ -18,11 +18,13 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
 import java.awt.Desktop
+import java.awt.FlowLayout
 import java.awt.Taskbar
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.io.IOException
-import javax.swing.Box
+import javax.swing.JPanel
+import javax.swing.JToolBar
 import kotlin.io.path.absolutePathString
 
 class MediathekGuiMac : MediathekGui() {
@@ -44,13 +46,25 @@ class MediathekGuiMac : MediathekGui() {
     }
 
     override fun configureTabPlacement() {
-        // force tab position top on macOS
-        config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true)
+        // do not configure as it interferes with installToolBar and is not necessary...
+    }
 
-        super.configureTabPlacement()
+    private class MacToolBarPanel(commonToolBar: JToolBar) : JPanel() {
+        private class MacFullWindowPlaceHolder : JPanel() {
+            init {
+                layout = FlowLayout()
+                putClientProperty( FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen" )
+            }
+        }
+
+        init {
+            layout = BorderLayout()
+            add(MacFullWindowPlaceHolder(), BorderLayout.WEST)
+            add(commonToolBar, BorderLayout.CENTER)
+        }
     }
     override fun installToolBar() {
-        contentPane.add(commonToolBar, BorderLayout.PAGE_START)
+        contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
     }
 
     override fun createFontMenu() {
@@ -160,11 +174,11 @@ class MediathekGuiMac : MediathekGui() {
             }
         }
 
-        getRootPane().putClientProperty("apple.awt.windowTitleVisible", false)
+        val rootPane = getRootPane()
+        rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
         if (SystemInfo.isMacFullWindowContentSupported) {
-            getRootPane().putClientProperty("apple.awt.fullWindowContent", true)
-            getRootPane().putClientProperty("apple.awt.transparentTitleBar", true)
-            commonToolBar.add(Box.createHorizontalStrut(70), 0)
+            rootPane.putClientProperty("apple.awt.fullWindowContent", true)
+            rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
         }
     }
 

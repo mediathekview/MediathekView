@@ -26,8 +26,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -183,6 +185,13 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
         }
     }
 
+    private DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        dbf.setNamespaceAware(true);
+        return dbf.newDocumentBuilder();
+    }
+
     /**
      * Parse the TTML file into internal representation.
      *
@@ -191,11 +200,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
     public boolean parse(Path ttmlFilePath) {
         boolean ret;
         try {
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-
-            final DocumentBuilder db = dbf.newDocumentBuilder();
-            doc = db.parse(ttmlFilePath.toFile());
+            doc = getDocumentBuilder().parse(ttmlFilePath.toFile());
 
             //Check that we have TTML v1.0 file as we have tested only them...
             final NodeList metaData = doc.getElementsByTagName("ebuttm:documentEbuttVersion");
@@ -212,7 +217,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             buildFilmList();
             ret = true;
         } catch (Exception ex) {
-            logger.error("File: " + ttmlFilePath, ex);
+            logger.error("File: {}", ttmlFilePath, ex);
             ret = false;
         }
         return ret;
@@ -227,11 +232,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
     public boolean parseXmlFlash(Path ttmlFilePath) {
         boolean ret;
         try {
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-
-            final DocumentBuilder db = dbf.newDocumentBuilder();
-            doc = db.parse(ttmlFilePath.toFile());
+            doc = getDocumentBuilder().parse(ttmlFilePath.toFile());
 
             //Check that we have TTML v1.0 file as we have tested only them...
             final NodeList metaData = doc.getElementsByTagName("tt");
@@ -281,7 +282,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             buildFilmListFlash();
             ret = true;
         } catch (Exception ex) {
-            logger.error("File: " + ttmlFilePath,ex);
+            logger.error("File: {}", ttmlFilePath,ex);
             ret = false;
         }
         return ret;

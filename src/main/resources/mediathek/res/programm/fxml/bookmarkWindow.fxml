@@ -14,7 +14,7 @@
                 <Tooltip text="Aus der Merkliste löschen"/>
             </tooltip>
             <graphic>
-                <Glyph fontFamily="FontAwesome" icon="MINUS" fontSize="16"/>
+                <Glyph fontFamily="FontAwesome" icon="TRASH" fontSize="16"/>
             </graphic>
         </Button>
         <Button fx:id="btnMarkViewed" disable="true" mnemonicParsing="false" onAction="#btnMarkEntryAsViewed">
@@ -93,6 +93,5 @@
         <Label fx:id="lblCount" text="Label"/>
         <Label fx:id="lblSeen" text="Label"/>
         <Label fx:id="lblFilter" text="Label"/>
-        <Label fx:id="lblMessage" text="Label"/>
     </HBox>
 </AnchorPane>

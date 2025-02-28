@@ -5,6 +5,7 @@
 package mediathek.gui.filmInformation;
 
 import com.formdev.flatlaf.util.ScaledImageIcon;
+import mediathek.config.Konstanten;
 import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -42,10 +43,13 @@ public class FilmInfoDialog extends JDialog {
     private static final Dimension DEFAULT_SENDER_DIMENSION = new Dimension(64, 64);
     private static final Logger logger = LogManager.getLogger();
     private Optional<DatenFilm> currentFilmOptional = Optional.empty();
+    private final JPopupMenu popupMenu = new JPopupMenu();
 
     public FilmInfoDialog(Window owner) {
         super(owner);
         initComponents();
+
+        setupDescriptionPopupMenu();
 
         setupHyperlink();
 
@@ -54,6 +58,21 @@ public class FilmInfoDialog extends JDialog {
 
         setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FilmInfoDialog.VISIBLE, false));
         setupListeners();
+    }
+
+    private void setupDescriptionPopupMenu() {
+        var item = new JMenuItem("Auswahl kopieren");
+        item.addActionListener(l -> {
+            final var selected = (lblDescription.getSelectionEnd() - lblDescription.getSelectionStart()) > 0;
+            if (!selected) {
+                JOptionPane.showMessageDialog(this, "Kein Text markiert!", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                GuiFunktionen.copyToClipboard(lblDescription.getSelectedText());
+            }
+        });
+        popupMenu.add(item);
+        lblDescription.setComponentPopupMenu(popupMenu);
     }
 
     private void setupListeners() {
@@ -127,7 +146,7 @@ public class FilmInfoDialog extends JDialog {
 
     private void openUrl(String url) {
         try {
-            UrlHyperlinkAction.openURL(null, url);
+            UrlHyperlinkAction.openURL(url);
         } catch (URISyntaxException ex) {
             logger.warn(ex);
         }
@@ -231,9 +250,9 @@ public class FilmInfoDialog extends JDialog {
         hyperlink.setEnabled(true);
         hyperlink.setToolTipText(url);
         hyperlink.setClicked(false);
-        var popupMenu = new JPopupMenu();
-        popupMenu.add(new CopyToClipboardAction(url));
-        hyperlink.setComponentPopupMenu(popupMenu);
+        var urlPopupMenu = new JPopupMenu();
+        urlPopupMenu.add(new CopyToClipboardAction(url));
+        hyperlink.setComponentPopupMenu(urlPopupMenu);
     }
 
     private void initComponents() {

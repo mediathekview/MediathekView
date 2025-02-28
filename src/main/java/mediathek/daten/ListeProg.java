@@ -19,8 +19,9 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 
+import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -54,8 +55,8 @@ public class ListeProg extends ArrayList<DatenProg> {
         return neu;
     }
 
-    public TModel getModel() {
-        TModel model;
+    public TableModel createModel() {
+        TableModel model;
         Object[][] object;
         DatenProg daten;
         int i = 0;
@@ -67,9 +68,9 @@ public class ListeProg extends ArrayList<DatenProg> {
                 object[i] = daten.arr;
                 ++i;
             }
-            model = new TModel(object, DatenProg.COLUMN_NAMES);
+            model = new NonEditableTableModel(object, DatenProg.COLUMN_NAMES);
         } else {
-            model = new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES);
+            model = new NonEditableTableModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES);
         }
         return model;
     }

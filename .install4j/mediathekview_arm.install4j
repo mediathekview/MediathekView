@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="${install4j.version}" transformSequenceNumber="9">
+<install4j version="10.0.9" transformSequenceNumber="10">
   <directoryPresets config="${project.basedir}/.install4j" />
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux-aarch64" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Zulu" release="${install4j.zulu.jdk.version}">
+    <jreBundles jdkProviderId="Liberica" release="23/23.0.2+9">
       <modules>
         <defaultModules set="all" />
+        <module name="jdk.incubator.vector" />
       </modules>
     </jreBundles>
   </application>
-  <files preserveSymlinks="false">
+  <files>
     <mountPoints>
       <mountPoint id="58" />
     </mountPoints>

@@ -12,7 +12,7 @@ import java.io.StringWriter;
 public class SwingErrorDialog {
     public static void showExceptionMessage(@Nullable Component parentComponent,
                                             @NotNull String messageText,
-                                            @NotNull Exception exception) throws HeadlessException {
+                                            @NotNull Throwable exception) throws HeadlessException {
 
         StringWriter stringWriter = new StringWriter();
         exception.printStackTrace(new PrintWriter(stringWriter));

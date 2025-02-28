@@ -5,7 +5,6 @@ import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.dialog.ButtonFlowPanel
 import mediathek.gui.dialog.ButtonPanel
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.Version
@@ -26,7 +25,7 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
         val dlBtn = JButton("Zur Download-Seite")
         dlBtn.addActionListener {
             try {
-                UrlHyperlinkAction.openURI(MediathekGui.ui(), URI(Konstanten.ADRESSE_DOWNLOAD))
+                UrlHyperlinkAction.openURI(URI(Konstanten.ADRESSE_DOWNLOAD))
                 dispose()
             } catch (e: URISyntaxException) {
                 logger.error(e)

@@ -9,6 +9,8 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.reader.FilmListReader;
+import mediathek.gui.duplicates.CommonStatsEvaluationTask;
+import mediathek.gui.duplicates.FilmDuplicateEvaluationTask;
 import mediathek.gui.messages.FilmListReadStopEvent;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.FilmlistWriterWorker;
@@ -317,6 +319,12 @@ public class FilmeLaden {
         }
         var workerTask = CompletableFuture.runAsync(new RefreshAboWorker(progLabel, progressBar))
                 .thenRun(new BlacklistFilterWorker(progLabel, progressBar));
+
+        var evaluateDuplicates = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
+        if (evaluateDuplicates) {
+            workerTask = workerTask.thenRun(new FilmDuplicateEvaluationTask());
+        }
+        workerTask = workerTask.thenRun(new CommonStatsEvaluationTask());
 
         if (writeFilmList) {
             workerTask = workerTask.thenRun(new FilmlistWriterWorker(progLabel, progressBar));

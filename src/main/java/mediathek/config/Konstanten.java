@@ -27,13 +27,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(14,1,0);
+    public static final Version MVVERSION = new Version(14,2,0);
 
     public static final ApplicationType APPLICATION_TYPE = ApplicationType.PRODUCTION;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
 
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";
+
+    public static final String FULL_FILM_LIST = "Filmliste-akt.xz";
+    public static final String DIFF_FILM_LIST = "Filmliste-diff.xz";
 
     public static final long ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
 
@@ -79,7 +82,6 @@ public class Konstanten {
      */
     public static final long MIN_FILM_FILE_SIZE_KB = 256 * FileUtils.ONE_KB;
     public static final String XML_START = "Mediathek";
-    public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
 

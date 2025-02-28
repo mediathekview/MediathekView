@@ -26,7 +26,6 @@ import javafx.stage.Stage;
 import jiconfont.icons.font_awesome.FontAwesome;
 import jiconfont.javafx.IconNode;
 import mediathek.config.Daten;
-import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -135,8 +134,6 @@ public class BookmarkWindowController implements Initializable {
   @FXML
   private Label lblSeen;
   @FXML
-  private Label lblMessage;
-  @FXML
   private Label lblFilter;
   @FXML
   private TextArea taDescription;
@@ -220,10 +217,9 @@ public class BookmarkWindowController implements Initializable {
     dlgstage.initOwner(this.stage);
     try {
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mediathek/res/programm/fxml/bookmarkNoteDialog.fxml"));
-      BookmarkNoteDialog bdialog = new BookmarkNoteDialog();
+      BookmarkNoteDialogController bdialog = new BookmarkNoteDialogController();
       fxmlLoader.setController(bdialog);
       Scene scene = new Scene(fxmlLoader.load());
-      scene.getStylesheets().add(getClass().getResource("/mediathek/res/css/bookmarkNoteDialog.css").toExternalForm());
       dlgstage.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
       dlgstage.setScene(scene);
       if (bdialog.SetandShow(dlgstage, tbBookmarks.getSelectionModel().getSelectedItem())) {
@@ -241,7 +237,7 @@ public class BookmarkWindowController implements Initializable {
     String url = tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl();
     try {
       if (url != null) {
-        UrlHyperlinkAction.openURL(null,url);
+        UrlHyperlinkAction.openURL(url);
       }
     }
     catch (URISyntaxException ex) {
@@ -320,8 +316,8 @@ public class BookmarkWindowController implements Initializable {
 
     // create filtered and sortable list
     filteredBookmarkList = new FilteredList<>(listeBookmarkList.getObervableList(), p -> true);
-    SortedList<BookmarkData> slisteBookmarkList = new SortedList<>(filteredBookmarkList);
-    slisteBookmarkList.comparatorProperty().bind(tbBookmarks.comparatorProperty());
+    SortedList<BookmarkData> sortedBookmarkList = new SortedList<>(filteredBookmarkList);
+    sortedBookmarkList.comparatorProperty().bind(tbBookmarks.comparatorProperty());
 
     listeBookmarkList.getObervableList().addListener((ListChangeListener.Change<? extends BookmarkData> c) -> {
       while (c.next()) {
@@ -334,7 +330,7 @@ public class BookmarkWindowController implements Initializable {
       JavaFxUtils.invokeInFxThreadAndWait(this::updateDisplay);
     });
 
-    tbBookmarks.setItems(slisteBookmarkList);
+    tbBookmarks.setItems(sortedBookmarkList);
     tbBookmarks.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     // Add listener to set button and context item state depending on selection
@@ -626,7 +622,6 @@ public class BookmarkWindowController implements Initializable {
                                     30,
                                     TimeUnit.SECONDS);
     }
-    lblMessage.setText("");
   }
 
   /**
@@ -634,9 +629,8 @@ public class BookmarkWindowController implements Initializable {
    */
   private void saveBookMarkList() {
     if (listUpdated) {
-      listeBookmarkList.saveToFile(StandardLocations.getBookmarkFilePath());
+      listeBookmarkList.saveToFile();
       btnSaveList.setDisable(true);
-      JavaFxUtils.invokeInFxThreadAndWait(() -> lblMessage.setText("Merkliste ist gesichert"));
     }
     listUpdated = false;
   }
@@ -683,9 +677,7 @@ public class BookmarkWindowController implements Initializable {
 
     SwingUtilities.invokeLater(() -> { // swing dialogs must be called from EDT!!
       final var pSet = Daten.listePset.getListeSpeichern().getFirst();
-      final var ui = MediathekGui.ui();
-      var dlg = new DialogAddDownload(ui, film, pSet, Optional.empty());
-      dlg.setLocationRelativeTo(ui);
+      var dlg = new DialogAddDownload(MediathekGui.ui(), film, pSet, Optional.empty());
       dlg.setVisible(true);
       showStage();
     });

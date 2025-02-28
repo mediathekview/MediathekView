@@ -67,7 +67,6 @@ public class ListeAbo extends ArrayList<DatenAbo> {
         datenAbo.setPsetName("");
 
         DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), datenAbo, false);
-        dialogEditAbo.setTitle("Neues Abo anlegen");
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.successful()) {
             if (!aboExistiertBereits(datenAbo)) {

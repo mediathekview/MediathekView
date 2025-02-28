@@ -25,6 +25,9 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
+import mediathek.gui.duplicates.CommonStatsEvaluationTask;
+import mediathek.gui.duplicates.FilmDuplicateEvaluationTask;
+import mediathek.gui.duplicates.overview.FilmDuplicateOverviewDialog;
 import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
 import mediathek.gui.history.ResetDownloadHistoryAction;
@@ -81,6 +84,7 @@ public class MediathekGui extends JFrame {
     private static final int MIN_WINDOW_HEIGHT = 600;
     private static final String ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL";
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
+    private static final String TABBED_PANE_TRAILING_COMPONENT = "JTabbedPane.trailingComponent";
     /**
      * "Pointer" to UI
      */
@@ -107,6 +111,7 @@ public class MediathekGui extends JFrame {
     private final FilmInfoDialog filmInfo;
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
+    private final ShowDuplicateStatisticsAction showDuplicateStatisticsAction = new ShowDuplicateStatisticsAction(this);
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -142,6 +147,7 @@ public class MediathekGui extends JFrame {
     private IndicatorThread progressIndicatorThread;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private boolean shutdownRequested;
+
     public MediathekGui() {
         ui = this;
 
@@ -233,6 +239,16 @@ public class MediathekGui extends JFrame {
             var future = Daten.getInstance().getDecoratedPool().submit(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(10);
+                    logger.info("Auto DL and Quit: Updating filmlist...");
+                    daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
+                    daten.getFilmeLaden().loadFilmlist("", false);
+                    logger.info("Auto DL and Quit: Filmlist update done.");
+                    logger.info("Auto DL and Quit: Loading Abos...");
+                    daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false);
+                    logger.info("Auto DL and Quit: Loading Abos done.");
+                    logger.info("Auto DL and Quit: Applying Blacklist...");
+                    daten.getListeBlacklist().filterListe();
+                    logger.info("Auto DL and Quit: Applying Blacklist...done.");
                     logger.info("Auto DL and Quit: Starting all downloads...");
                     SwingUtilities.invokeAndWait(() -> tabDownloads.starten(true));
                     return true;
@@ -268,6 +284,15 @@ public class MediathekGui extends JFrame {
         performAustrianVlcCheck();
     }
 
+    /**
+     * Return the user interface instance
+     *
+     * @return the class instance or null.
+     */
+    public static MediathekGui ui() {
+        return ui;
+    }
+
     private void performAustrianVlcCheck() {
         //perform check only when we are not in download-only mode...
         if (!Config.shouldDownloadAndQuit()) {
@@ -290,15 +315,6 @@ public class MediathekGui extends JFrame {
         //send before subscribing
         messageBus.publishAsync(new TableModelChangeEvent(true, false));
         messageBus.subscribe(this);
-    }
-
-    /**
-     * Return the user interface instance
-     *
-     * @return the class instance or null.
-     */
-    public static MediathekGui ui() {
-        return ui;
     }
 
     private void mapFilmUrlCopyCommands() {
@@ -353,18 +369,29 @@ public class MediathekGui extends JFrame {
     }
 
     protected void installToolBar() {
-        tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+        tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
         tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
+    }
+
+    protected void createToggleBlacklistButton() {
+        boolean useIconWithText = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, false);
+        if (useIconWithText) {
+            commonToolBar.add(new JButton(toggleBlacklistAction));
+        }
+        else {
+            commonToolBar.add(toggleBlacklistAction);
+        }
     }
 
     protected void createCommonToolBar() {
         commonToolBar.add(loadFilmListAction);
         commonToolBar.add(showFilmInformationAction);
-        commonToolBar.add(toggleBlacklistAction);
+        createToggleBlacklistButton();
         commonToolBar.addSeparator();
         commonToolBar.add(editBlacklistAction);
         commonToolBar.add(manageAboAction);
-        commonToolBar.add(manageBookmarkAction);
+        //commonToolBar.add(manageBookmarkAction);
         commonToolBar.addSeparator();
         commonToolBar.add(settingsAction);
         createDarkModeToggleButton();
@@ -566,6 +593,8 @@ public class MediathekGui extends JFrame {
         swingStatusBar.add(progressLabel);
         swingStatusBar.add(progressBar);
 
+        var evaluateDuplicates = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
+
         var worker = CompletableFuture.runAsync(() -> {
                     logger.trace("Reading local filmlist");
                     MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
@@ -581,11 +610,17 @@ public class MediathekGui extends JFrame {
                     if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
                         daten.getFilmeLaden().loadFilmlist("", true);
                     }
-                })
+                });
+
+        if (evaluateDuplicates) {
+            worker = worker.thenRun(new FilmDuplicateEvaluationTask());
+        }
+
+        worker.thenRun(new CommonStatsEvaluationTask())
                 .thenRun(new RefreshAboWorker(progressLabel, progressBar))
                 .thenRun(new BlacklistFilterWorker(progressLabel, progressBar));
 
-        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList){
+        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList) {
             worker = worker.thenRun(new LuceneIndexWorker(progressLabel, progressBar));
         }
 
@@ -654,7 +689,6 @@ public class MediathekGui extends JFrame {
         /*
         We are not in maximized mode, so just read all the settings and restore...
          */
-        var config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.READ);
             int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH, MIN_WINDOW_WIDTH);
@@ -820,11 +854,11 @@ public class MediathekGui extends JFrame {
         if (topPosition) {
             tabbedPane.setTabPlacement(JTabbedPane.TOP);
             getContentPane().remove(commonToolBar);
-            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", commonToolBar);
+            tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
         }
         else {
             tabbedPane.setTabPlacement(JTabbedPane.LEFT);
-            tabbedPane.putClientProperty("JTabbedPane.trailingComponent", null);
+            tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, null);
             getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
         }
     }
@@ -893,7 +927,11 @@ public class MediathekGui extends JFrame {
 
     @Handler
     private void handleShowSettingsDialogEvent(ShowSettingsDialogEvent evt) {
-        SwingUtilities.invokeLater(() -> getSettingsDialog().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            getSettingsDialog().setVisible(true);
+            if (!SystemUtils.IS_OS_LINUX)
+                getSettingsDialog().toFront();
+        });
     }
 
     /**
@@ -969,6 +1007,14 @@ public class MediathekGui extends JFrame {
             }
         }
         jMenuAnsicht.add(showBandwidthUsageAction);
+        jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(showDuplicateStatisticsAction);
+        var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
+        mi.addActionListener(e -> {
+            FilmDuplicateOverviewDialog dlg = new FilmDuplicateOverviewDialog(this);
+            dlg.setVisible(true);
+        });
+        jMenuAnsicht.add(mi);
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
         jMenuAnsicht.addSeparator();
@@ -1047,7 +1093,7 @@ public class MediathekGui extends JFrame {
         JMenu devMenu = new JMenu("Entwickler");
 
         JMenuItem miGc = new JMenuItem("GC ausführen");
-        miGc.addActionListener(l -> System.gc());
+        miGc.addActionListener(e -> System.gc());
 
         devMenu.add(miGc);
 
@@ -1128,7 +1174,7 @@ public class MediathekGui extends JFrame {
         }
 
         logger.trace("Save bookmark list.");
-        daten.getListeBookmarkList().saveToFile(StandardLocations.getBookmarkFilePath());
+        daten.getListeBookmarkList().saveToFile();
 
         // stop the download thread
         logger.trace("Stop Starter Thread.");
@@ -1168,9 +1214,6 @@ public class MediathekGui extends JFrame {
         logger.trace("Write app config.");
         ApplicationConfiguration.getInstance().writeConfiguration();
 
-        logger.trace("Cleanup Lucene index.");
-        cleanupLuceneIndex();
-
         RuntimeStatistics.printRuntimeStatistics();
         if (Config.isEnhancedLoggingEnabled()) {
             RuntimeStatistics.printDataUsageStatistics();
@@ -1186,18 +1229,6 @@ public class MediathekGui extends JFrame {
         System.exit(0);
 
         return true;
-    }
-
-    private void cleanupLuceneIndex() {
-        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList filmList) {
-            try (var writer = filmList.getWriter()) {
-                writer.deleteAll();
-                writer.commit();
-                //filmList.getLuceneDirectory().close();
-            } catch (Exception ex) {
-                logger.error("cleanupLuceneIndex error", ex);
-            }
-        }
     }
 
     /**
