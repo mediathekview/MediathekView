@@ -132,11 +132,11 @@
 
         <mainclass>mediathek.Main</mainclass>
 
-        <install4j.version>10.0.9</install4j.version>
+        <install4j.version>11.0.2</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
-        <install4j.licenseKey>${env.LICENSE_KEY_10}</install4j.licenseKey>
-        <install4j.jdk.min-version>22</install4j.jdk.min-version>
+        <install4j.licenseKey>${env.LICENSE_KEY_11}</install4j.licenseKey>
+        <install4j.jdk.min-version>23</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
