@@ -1,5 +1,6 @@
 # **14.3.0**
 - **BUGFIX:** Duplikatsuche berücksicht nur HQ-URL wenn Film auch HQ ist.
+- **BUGFIX:** Alte tagesschau24 Filme in der Liste werden nur konvertiert wenn der Sender auch angezeigt werden soll.
 - **FEATURE (macOS/Windows/Linux GNOME):** Auf unterstützten Systemen nimmt MV nun das aktuelle Erscheinungsbild des Betriebssystem an, wenn es unter *Einstellungen/Allgemein/Erscheinungsbild des Betriebssystem verwenden* konfiguriert wurde.
 
 # **14.2.0**
