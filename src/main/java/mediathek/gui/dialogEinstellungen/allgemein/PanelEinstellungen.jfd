@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.6" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -122,7 +122,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
 				"$columnConstraints": "[grow,left][fill]"
-				"$rowConstraints": "[fill][fill][fill][fill]"
+				"$rowConstraints": "[fill][fill][fill][][fill]"
 			} ) {
 				name: "panel1"
 				auxiliary() {
@@ -158,6 +158,16 @@ new FormModel {
 					"text": "Info-Icons der Listen rechts darstellen"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 3"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "checkBox1"
+					"text": "Erscheinungsbild des Betriebssystem verwenden"
+					"toolTipText": "Stellt den Hell-/Dunkelmodus der App beim Programmstart nach den aktuellen Einstellungen des Betriebssystem ein."
+					auxiliary() {
+						"JavaCodeGenerator.variableName": "cbUseSystemDarkMode"
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 4 2 1"
 				} )
 			} )
 			add( new FormComponent( "org.jdesktop.swingx.JXTitledPanel" ) {

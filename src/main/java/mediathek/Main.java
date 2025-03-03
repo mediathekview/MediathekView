@@ -53,6 +53,7 @@ public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
     private static final Logger logger = LogManager.getLogger(Main.class);
     public static Optional<SplashScreen> splashScreen = Optional.empty();
+    public static SingleInstance SINGLE_INSTANCE_WATCHER;
 
     static {
         // set up log4j callback registry
@@ -267,19 +268,6 @@ public class Main {
         }
     }
 
-    private static void setupFlatLaf() {
-        var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
-        LookAndFeel laf;
-
-        if (darkMode) {
-            laf = DarkModeFactory.getLookAndFeel();
-        }
-        else {
-            laf = LightModeFactory.getLookAndFeel();
-        }
-        FlatLaf.setup(laf);
-    }
-
     /**
      * Check if Shenandoah GC settings are supplied to JVM.
      * Otherwise display warning dialog.
@@ -432,7 +420,7 @@ public class Main {
                 setupDockIcon();
 
                 registerFlatLafCustomization();
-                setupFlatLaf();
+                DarkModeSetup.setup();
 
                 if (SystemUtils.IS_OS_LINUX) {
                     checkUiScaleSetting();
@@ -632,8 +620,6 @@ public class Main {
         logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory());
     }
 
-    public static SingleInstance SINGLE_INSTANCE_WATCHER;
-
     /**
      * Prevent startup of multiple instances of the app.
      */
@@ -719,5 +705,43 @@ public class Main {
         }
 
         return window;
+    }
+
+    static class DarkModeSetup {
+        private static LookAndFeel getCurrentLookAndFeel(boolean darkMode) {
+            LookAndFeel laf;
+            if (darkMode) {
+                laf = DarkModeFactory.getLookAndFeel();
+            }
+            else {
+                laf = LightModeFactory.getLookAndFeel();
+            }
+
+            return laf;
+        }
+
+        private static void setupFlatLaf() {
+            var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
+            FlatLaf.setup(getCurrentLookAndFeel(darkMode));
+        }
+
+        public static void setup() {
+            if (DarkModeDetector.hasDarkModeDetectionSupport()) {
+                logger.trace("setting up dark mode system laf");
+                var useSystemMode = ApplicationConfiguration
+                        .getConfiguration()
+                        .getBoolean(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, false);
+                if (useSystemMode) {
+                    FlatLaf.setup(getCurrentLookAndFeel(DarkModeDetector.isDarkMode()));
+                }
+                else {
+                    setupFlatLaf();
+                }
+            }
+            else {
+                logger.trace("dark mode detection not supported, using config");
+                setupFlatLaf();
+            }
+        }
     }
 }

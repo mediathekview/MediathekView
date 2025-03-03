@@ -1,5 +1,6 @@
 # **14.3.0**
 - **BUGFIX:** Duplikatsuche berücksicht nur HQ-URL wenn Film auch HQ ist.
+- **FEATURE (macOS/Windows/Linux GNOME):** Auf unterstützten Systemen nimmt MV nun das aktuelle Erscheinungsbild des Betriebssystem an, wenn es unter *Einstellungen/Allgemein/Erscheinungsbild des Betriebssystem verwenden* konfiguriert wurde.
 
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.

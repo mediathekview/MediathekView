@@ -160,6 +160,12 @@ public class PanelEinstellungen extends JPanel {
             var useText = cbShowBlacklistIconWithText.isSelected();
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, useText);
         });
+
+        boolean useSystemDarkMode = ApplicationConfiguration.getConfiguration()
+                .getBoolean(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, false);
+        cbUseSystemDarkMode.setSelected(useSystemDarkMode);
+        cbUseSystemDarkMode.addActionListener(l -> ApplicationConfiguration.getConfiguration()
+                .setProperty(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, cbUseSystemDarkMode.isSelected()));
     }
 
     private static final String NO_INFLUENCE_TEXT = "Einstellung hat unter macOS keine Auswirkung";
@@ -220,6 +226,7 @@ public class PanelEinstellungen extends JPanel {
         cbUseWikipediaSenderLogos = new JCheckBox();
         cbAutomaticUpdateChecks = new JCheckBox();
         cbDrawListIconsRight = new JCheckBox();
+        cbUseSystemDarkMode = new JCheckBox();
         modernSearchTitlePanel = new JXTitledPanel();
 
         //======== this ========
@@ -368,6 +375,7 @@ public class PanelEinstellungen extends JPanel {
                     .fill().gap()
                     .fill().gap()
                     .fill().gap()
+                    .gap()
                     .fill()));
 
             //---- jCheckBoxTray ----
@@ -390,6 +398,11 @@ public class PanelEinstellungen extends JPanel {
             //---- cbDrawListIconsRight ----
             cbDrawListIconsRight.setText("Info-Icons der Listen rechts darstellen"); //NON-NLS
             panel1.add(cbDrawListIconsRight, new CC().cell(0, 3));
+
+            //---- cbUseSystemDarkMode ----
+            cbUseSystemDarkMode.setText("Erscheinungsbild des Betriebssystem verwenden"); //NON-NLS
+            cbUseSystemDarkMode.setToolTipText("Stellt den Hell-/Dunkelmodus der App beim Programmstart nach den aktuellen Einstellungen des Betriebssystem ein."); //NON-NLS
+            panel1.add(cbUseSystemDarkMode, new CC().cell(0, 4, 2, 1));
         }
 
         //---- modernSearchTitlePanel ----
@@ -444,6 +457,7 @@ public class PanelEinstellungen extends JPanel {
     private JCheckBox cbUseWikipediaSenderLogos;
     private JCheckBox cbAutomaticUpdateChecks;
     private JCheckBox cbDrawListIconsRight;
+    private JCheckBox cbUseSystemDarkMode;
     private JXTitledPanel modernSearchTitlePanel;
     // End of variables declaration//GEN-END:variables
 }
