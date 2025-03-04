@@ -16,7 +16,7 @@ default:
     - mvrunner1
   before_script:
     - apt-get update -qq
-    - apt-get install -y -qq openjdk-11-jre-headless ssh lib32ncurses6 lib32z1 wget tar file gnupg2 git-lfs > /dev/null
+    - apt-get install -y -qq openjdk-21-jre-headless ssh lib32ncurses6 lib32z1 wget tar file gnupg2 git-lfs > /dev/null
     - source /private/ENVS
     - whoami
     - mkdir -p ~/.ssh
