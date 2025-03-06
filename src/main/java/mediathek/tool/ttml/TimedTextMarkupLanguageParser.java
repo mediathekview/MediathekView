@@ -50,10 +50,11 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
     private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SSS");
     private final SimpleDateFormat sdfFlash = new SimpleDateFormat("s.S");
     private final Map<String, Integer> alignMap = new HashMap<>();
-    private final Map<String, String> colorMap = new Hashtable<>();
+    private final Map<String, List<String>> colorMap = new HashMap<>();
     private final Map<String, Integer> regionMap = new HashMap<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
     private String color = "#FFFFFF";
+    private String backgroundColor = "#000000C2";
     private Document doc;
 
     public TimedTextMarkupLanguageParser() {
@@ -116,8 +117,16 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 final NamedNodeMap attrMap = subnode.getAttributes();
                 final Node idNode = attrMap.getNamedItem("xml:id");
                 final Node colorNode = attrMap.getNamedItem("tts:color");
+                final Node colorBackgroundNode = attrMap.getNamedItem("tts:backgroundColor");
                 if (idNode != null && colorNode != null) {
-                    colorMap.put(idNode.getNodeValue(), colorNode.getNodeValue());
+                    final List<String> colorList = new ArrayList<>();
+                    colorList.add(colorNode.getNodeValue());
+                    if (colorBackgroundNode != null) {
+                        colorList.add(colorBackgroundNode.getNodeValue());
+                    } else {
+                        colorList.add(backgroundColor);
+                    }
+                    colorMap.put(idNode.getNodeValue(), colorList);
                 }
             }
         }
@@ -223,11 +232,13 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                     final StyledString textContent = new StyledString();
                     textContent.setText(node.getTextContent());
 
-                    final String col = colorMap.get(styleNode.getNodeValue());
-                    if (col == null) {
+                    final List<String> colors = colorMap.get(styleNode.getNodeValue());
+                    if (colors == null) {
                         textContent.setColor(color); // gabs beim BR
+                        textContent.setBackgroundColor(backgroundColor);
                     } else {
-                        textContent.setColor(colorMap.get(styleNode.getNodeValue()));
+                        textContent.setColor(colors.get(0));
+                        textContent.setBackgroundColor(colors.get(1));
                     }
                     subtitle.listOfStrings.add(textContent);
                 }
@@ -264,7 +275,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 if (beginNode != null && endNode != null) {
                     subtitle.begin = parseFlash(beginNode.getNodeValue());
                     subtitle.end = parseFlash(endNode.getNodeValue());
-                    final StyledString textContent = new StyledString(subnode.getTextContent(), color);
+                    final StyledString textContent = new StyledString(subnode.getTextContent(), color, backgroundColor);
 
                     final Node col = attrMap.getNamedItem("tts:color");
                     if (col != null) {
