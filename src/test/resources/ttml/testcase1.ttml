@@ -31,17 +31,17 @@
 <tt:br/>
 <tt:span style="textWhite">Nachrichten derzeit verschickt.</tt:span>
 </tt:p>
-<tt:p xml:id="sub1" style="textCenter" region="bottom" begin="00:00:14.514" end="00:00:18.394">
+<tt:p xml:id="sub1" style="textCenter" region="top" begin="00:00:14.514" end="00:00:18.394">
 <tt:span style="textWhite">Der Trick ist simpel, sagt das</tt:span>
 <tt:br/>
 <tt:span style="textWhite">Niedersächsische Landeskriminalamt.</tt:span>
 </tt:p>
-<tt:p xml:id="sub2" style="textCenter" region="bottom" begin="00:00:18.474" end="00:00:22.034">
+<tt:p xml:id="sub2" style="textLeft" region="bottom" begin="00:00:18.474" end="00:00:22.034">
 <tt:span style="textWhite">Die Kriminellen geben vor die Tochter</tt:span>
 <tt:br/>
 <tt:span style="textWhite">oder der Sohn zu sein</tt:span>
 </tt:p>
-<tt:p xml:id="sub3" style="textCenter" region="bottom" begin="00:00:22.114" end="00:00:25.834">
+<tt:p xml:id="sub3" style="textRight" region="top" begin="00:00:22.114" end="00:00:25.834">
 <tt:span style="textWhite">und dringend finanzielle Hilfe</tt:span>
 <tt:br/>
 <tt:span style="textWhite">und eine Überweisung zu benötigen.</tt:span>
@@ -62,17 +62,17 @@
 <tt:br/>
 <tt:span style="textYellow">dann machen die Leute das leider.</tt:span>
 </tt:p>
-<tt:p xml:id="sub8" style="textCenter" region="bottom" begin="00:00:35.834" end="00:00:38.394">
+<tt:p xml:id="sub8" region="bottom" begin="00:00:35.834" end="00:00:38.394">
 <tt:span style="textWhite">Oft geht es gleich</tt:span>
 <tt:br/>
 <tt:span style="textWhite">um mehrere Tausend Euro.</tt:span>
 </tt:p>
-<tt:p xml:id="sub9" style="textCenter" region="bottom" begin="00:00:38.514" end="00:00:41.834">
+<tt:p xml:id="sub9" style="textCenter" begin="00:00:38.514" end="00:00:41.834">
 <tt:span style="textWhite">Insgesamt haben die Betrüger 2022</tt:span>
 <tt:br/>
 <tt:span style="textWhite">allein in Niedersachsen</tt:span>
 </tt:p>
-<tt:p xml:id="sub10" style="textCenter" region="bottom" begin="00:00:41.914" end="00:00:43.914">
+<tt:p xml:id="sub10" begin="00:00:41.914" end="00:00:43.914">
 <tt:span style="textWhite">mehr als 4,5 Mio. Euro erbeutet.</tt:span>
 </tt:p>
 <tt:p xml:id="sub11" style="textCenter" region="bottom" begin="00:00:43.994" end="00:00:46.874">
