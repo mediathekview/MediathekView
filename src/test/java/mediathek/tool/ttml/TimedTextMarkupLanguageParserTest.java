@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,6 +19,8 @@ class TimedTextMarkupLanguageParserTest {
             //gain access to private fields
             var ttmlFormtterField = TimedTextMarkupLanguageParser.class.getDeclaredField("ttmlFormat");
             ttmlFormtterField.setAccessible(true);
+            var assFormatterMethod = TimedTextMarkupLanguageParser.class.getDeclaredMethod("getAssTime", Date.class);
+            assFormatterMethod.setAccessible(true);
             var srtFormatterField = TimedTextMarkupLanguageParser.class.getDeclaredField("srtFormat");
             srtFormatterField.setAccessible(true);
 
@@ -26,7 +29,9 @@ class TimedTextMarkupLanguageParserTest {
             SimpleDateFormat srtFormatter = (SimpleDateFormat) srtFormatterField.get(parser);
 
             var ttmlDate = ttmlFormatter.parse("00:03:00.080");
+            var assString = (String) assFormatterMethod.invoke(parser, ttmlDate);
             var srtString = srtFormatter.format(ttmlDate);
+            assertTrue(assString.endsWith(".08"));
             assertTrue(srtString.endsWith(",080"));
         }
     }
@@ -37,6 +42,8 @@ class TimedTextMarkupLanguageParserTest {
             //gain access to private fields
             var ttmlFormtterField = TimedTextMarkupLanguageParser.class.getDeclaredField("ttmlFormat");
             ttmlFormtterField.setAccessible(true);
+            var assFormatterMethod = TimedTextMarkupLanguageParser.class.getDeclaredMethod("getAssTime", Date.class);
+            assFormatterMethod.setAccessible(true);
             var srtFormatterField = TimedTextMarkupLanguageParser.class.getDeclaredField("srtFormat");
             srtFormatterField.setAccessible(true);
 
@@ -46,7 +53,9 @@ class TimedTextMarkupLanguageParserTest {
 
             //variable fraction
             var ttmlDate = ttmlFormatter.parse("00:03:00.80");
+            var assString = (String) assFormatterMethod.invoke(parser, ttmlDate);
             var srtString = srtFormatter.format(ttmlDate);
+            assertTrue(assString.endsWith(".08"));
             assertTrue(srtString.endsWith(",080"));
         }
     }
@@ -57,6 +66,8 @@ class TimedTextMarkupLanguageParserTest {
             //gain access to private fields
             var ttmlFormtterField = TimedTextMarkupLanguageParser.class.getDeclaredField("ttmlFormat");
             ttmlFormtterField.setAccessible(true);
+            var assFormatterMethod = TimedTextMarkupLanguageParser.class.getDeclaredMethod("getAssTime", Date.class);
+            assFormatterMethod.setAccessible(true);
             var srtFormatterField = TimedTextMarkupLanguageParser.class.getDeclaredField("srtFormat");
             srtFormatterField.setAccessible(true);
 
@@ -65,8 +76,39 @@ class TimedTextMarkupLanguageParserTest {
             SimpleDateFormat srtFormatter = (SimpleDateFormat) srtFormatterField.get(parser);
 
             var ttmlDate = ttmlFormatter.parse("00:03:04.400");
+            var assString = (String) assFormatterMethod.invoke(parser, ttmlDate);
             var srtString = srtFormatter.format(ttmlDate);
+            assertTrue(assString.endsWith(".40"));
             assertTrue(srtString.endsWith(",400"));
+        }
+    }
+
+    @Test
+    void convert_ttml_to_ass() {
+        Path tempAss = null;
+        try (TimedTextMarkupLanguageParser parser = new TimedTextMarkupLanguageParser()) {
+            var file = new File("src/test/resources/ttml/testcase1.ttml");
+            var ttmlPath = file.toPath();
+            var res = parser.parse(ttmlPath);
+            assertTrue(res);
+
+            tempAss = Files.createTempFile("converted_ass_test_case", ".ass");
+            parser.toAss(tempAss);
+
+            file = new File("src/test/resources/ttml/testcase1.ass");
+            var expectedAssResultPath = file.toPath();
+            var mismatch = Files.mismatch(expectedAssResultPath, tempAss);
+            assertEquals(-1L, mismatch);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            if (tempAss != null) {
+                try {
+                    Files.deleteIfExists(tempAss);
+                } catch (IOException ignored) {
+                }
+            }
         }
     }
 
