@@ -1502,10 +1502,12 @@ public class GuiFilme extends AGuiTabPanel {
                     jPopupMenu.add(mi);
                 }
 
-                jPopupMenu.addSeparator();
-                var mi = new JMenuItem("Duplikate entfernen...");
-                mi.addActionListener(e -> performDuplicateRemoval(film));
-                jPopupMenu.add(mi);
+                if (!film.isLivestream()) {
+                    jPopupMenu.addSeparator();
+                    var mi = new JMenuItem("Duplikate entfernen...");
+                    mi.addActionListener(e -> performDuplicateRemoval(film));
+                    jPopupMenu.add(mi);
+                }
             });
 
             // anzeigen
