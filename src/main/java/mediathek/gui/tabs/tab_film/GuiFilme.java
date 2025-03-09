@@ -405,7 +405,7 @@ public class GuiFilme extends AGuiTabPanel {
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
             if (filterActionPanel.isShowUnseenOnly()) {
-                Platform.runLater(reloadTableDataTransition::playFromStart);
+                MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
             } else {
                 tabelle.fireTableDataChanged(true);
             }
@@ -418,16 +418,6 @@ public class GuiFilme extends AGuiTabPanel {
             tabelle.fireTableDataChanged(true);
             updateStartInfoProperty();
         });
-    }
-
-    @Handler
-    private void handleAboListChanged(AboListChangedEvent e) {
-        Platform.runLater(reloadTableDataTransition::playFromStart);
-    }
-
-    @Handler
-    private void handleBlacklistChangedEvent(BlacklistChangedEvent e) {
-        Platform.runLater(reloadTableDataTransition::playFromStart);
     }
 
     @Handler
@@ -634,12 +624,26 @@ public class GuiFilme extends AGuiTabPanel {
         zeitraumTransition.setOnFinished(e -> {
             // reset sender filter first
             filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
-            try {
-                SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
-            } catch (InterruptedException | InvocationTargetException ex) {
-                logger.error("Failed to filter list", ex);
-            }
-            reloadTableDataTransition.playFromStart();
+            MessageBus.getMessageBus().publish(new FilterZeitraumEvent());
+        });
+    }
+
+    private static class FilterZeitraumEvent extends BaseEvent {}
+
+    /**
+     * Update table data when receiving ReloadTableDataEvent or subclasses of it.
+     * @param e event
+     */
+    @Handler
+    private void handleReloadTableDataEvent(ReloadTableDataEvent e) {
+        Platform.runLater(reloadTableDataTransition::playFromStart);
+    }
+
+    @Handler
+    private void handleFilterZeitraumEvent(FilterZeitraumEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            daten.getListeBlacklist().filterListe();
+            MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
     }
 
@@ -663,15 +667,16 @@ public class GuiFilme extends AGuiTabPanel {
 
             filterActionPanel.addFilmLengthSliderListeners((v1, v2, newValue) -> {
                 if (!newValue) {
-                    reloadTableDataTransition.playFromStart();
+                    MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
                 }
             });
 
-            filterActionPanel.zeitraumProperty().addListener((ov, oV, nV) -> zeitraumTransition.playFromStart());
+            filterActionPanel.zeitraumProperty()
+                    .addListener((ov, oV, nV) -> zeitraumTransition.playFromStart());
 
             filterActionPanel.getViewSettingsPane().themaComboBox.setOnAction(e -> {
                 if (!filterActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
-                    reloadTableDataTransition.playFromStart();
+                    MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
                 }
             });
         });
@@ -1749,7 +1754,7 @@ public class GuiFilme extends AGuiTabPanel {
                                 final String thema = film.getThema();
                                 final String sender = film.getSender();
                                 // Blackliste für alle Fälle einschalten, notify kommt beim add()
-                                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
+                                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, true);
                                 var listeBlacklist = daten.getListeBlacklist();
                                 if (!this.sender) {
                                     listeBlacklist.add(new BlacklistRule("", thema, "", ""));

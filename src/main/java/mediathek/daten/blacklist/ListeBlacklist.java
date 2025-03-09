@@ -231,7 +231,8 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         calculateZeitraumBoundaries();
         calculateMinimumFilmLength();
 
-        blacklistIsActive = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
+        var config = ApplicationConfiguration.getConfiguration();
+        blacklistIsActive = config.getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false);
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         doNotShowGeoBlockedFilms = ApplicationConfiguration.getInstance().getBlacklistDoNotShowGeoblockedFilms();
 

@@ -10,17 +10,8 @@ import javax.swing.JOptionPane
 import javax.swing.SwingWorker
 import kotlin.math.roundToInt
 
-class FilmlistExportWorker(private val exportAction: AbstractAction, selectedFile: File,
-                           compressSender: Boolean, compressThema: Boolean) : SwingWorker<Boolean, Double?>() {
-    private val selectedFile: File?
-    private val compressSender: Boolean
-    private val compressThema: Boolean
-
-    init {
-        this.selectedFile = selectedFile
-        this.compressSender = compressSender
-        this.compressThema = compressThema
-    }
+class FilmlistExportWorker(private val exportAction: AbstractAction, private val selectedFile: File,
+                           private val compressSender: Boolean, private val compressThema: Boolean) : SwingWorker<Boolean, Double?>() {
 
     private fun showError() {
         JOptionPane.showMessageDialog(MediathekGui.ui(),
@@ -44,7 +35,7 @@ class FilmlistExportWorker(private val exportAction: AbstractAction, selectedFil
             else
                 showError()
         }
-        catch (e: Exception) {
+        catch (_: Exception) {
             showError()
         }
         exportAction.isEnabled = true
@@ -52,7 +43,6 @@ class FilmlistExportWorker(private val exportAction: AbstractAction, selectedFil
 
     @Throws(Exception::class)
     override fun doInBackground(): Boolean {
-        if (selectedFile != null) {
             val writer = FilmListWriter(true)
             writer.setCompressSenderTag(compressSender)
             writer.setCompressThemaTag(compressThema)
@@ -60,7 +50,6 @@ class FilmlistExportWorker(private val exportAction: AbstractAction, selectedFil
             writer.writeFilmList(selectedFile.absolutePath,
                                  Daten.getInstance().listeFilme)
             { prog: Double -> progress = (100.0 * prog).roundToInt() }
-        }
         return true
     }
 }

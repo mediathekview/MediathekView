@@ -75,6 +75,7 @@ public class ApplicationConfiguration {
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
     public static final String BLACKLIST_FILTER_DUPLICATES = "blacklist.filter_duplicates";
+    public static final String BLACKLIST_IS_ON = "blacklist.is_on";
     private static final String GEO_LOCATION = "geo.location";
     private static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
     /**
