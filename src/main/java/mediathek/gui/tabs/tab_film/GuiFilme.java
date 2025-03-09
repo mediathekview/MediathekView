@@ -15,10 +15,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.util.Duration;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVColor;
-import mediathek.config.MVConfig;
+import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
@@ -26,6 +23,7 @@ import mediathek.daten.abo.DatenAbo;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.filmlisten.writer.FilmListWriter;
 import mediathek.gui.FilterSelectionComboBoxModel;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
@@ -1503,6 +1501,50 @@ public class GuiFilme extends AGuiTabPanel {
                     });
                     jPopupMenu.add(mi);
                 }
+
+                jPopupMenu.addSeparator();
+                var mi = new JMenuItem("Duplikate entfernen...");
+                mi.addActionListener(e -> {
+                    var daten = Daten.getInstance();
+                    var completeFilmList = daten.getListeFilme();
+                    var filteredFilmList = daten.getListeBlacklist();
+
+                    var duplicateList = new ArrayList<>(completeFilmList.parallelStream()
+                            .filter(f -> f.getSender().equalsIgnoreCase(film.getSender()))
+                            .filter(f -> f.getThema().equalsIgnoreCase(film.getThema()))
+                            .filter(f -> f.getTitle().equalsIgnoreCase(film.getTitle()))
+                            .filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(film.getUrlNormalQuality()))
+                            .toList());
+                    var filmCount = duplicateList.size();
+                    if (filmCount > 1) {
+                        filmCount--; // decrement to show only duplicates
+                        var duplicateString = filmCount == 1 ? "Duplikat" : "Duplikate";
+                        var message = String.format("Es wurden %d %s gefunden.\nMöchten Sie diese entfernen?", filmCount, duplicateString);
+                        var result = JOptionPane.showConfirmDialog(mediathekGui, message,
+                                Konstanten.PROGRAMMNAME, JOptionPane.YES_NO_OPTION);
+                        if (result == JOptionPane.YES_OPTION) {
+                            // selected film will survive
+                            duplicateList.remove(film);
+                            //remove from original filmlist and update balcklist filtering
+                            completeFilmList.removeAll(duplicateList);
+
+                            // we must manually write the modified filmlist
+                            var writer = new FilmListWriter(false);
+                            writer.writeFilmList(StandardLocations.getFilmlistFilePathString(),
+                                    completeFilmList, null);
+
+                            // filtered only after write otherwise race will occur
+                            filteredFilmList.filterListAndNotifyListeners();
+                            JOptionPane.showMessageDialog(mediathekGui, "Duplikate wurden entfernt.",
+                                    Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(mediathekGui, "Es wurden keine Duplikate gefunden.",
+                                Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+                jPopupMenu.add(mi);
             });
 
             // anzeigen
