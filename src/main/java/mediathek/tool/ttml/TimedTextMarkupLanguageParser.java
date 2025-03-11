@@ -49,12 +49,59 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
     private final SimpleDateFormat ttmlFormat = new SimpleDateFormat("HH:mm:ss.SS");
     private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SSS");
     private final SimpleDateFormat sdfFlash = new SimpleDateFormat("s.S");
+    private final Map<String, Integer> alignMap = new HashMap<>();
     private final Map<String, String> colorMap = new Hashtable<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
     private String color = "#FFFFFF";
     private Document doc;
 
     public TimedTextMarkupLanguageParser() {
+    }
+
+    /**
+     * Build a map of used alignments within the TTML file.
+     *
+     * <p>Converts the alignments to {@link Integer}:
+     * <p>start:  -1
+     * <p>left:   -1
+     * <p>center:  0
+     * <p>right:   1
+     * <p>end:     1
+     */
+    private void buildAlignmentMap() {
+        final NodeList styleData = doc.getElementsByTagName("tt:style");
+        for (int i = 0; i < styleData.getLength(); i++) {
+            final Node subnode = styleData.item(i);
+            if (subnode.hasAttributes()) {
+                final NamedNodeMap attrMap = subnode.getAttributes();
+                final Node idNode = attrMap.getNamedItem("xml:id");
+                final Node alignmentNode = attrMap.getNamedItem("tts:textAlign");
+                if (idNode != null && alignmentNode != null) {
+                    Integer alignment = 0;
+                    switch (alignmentNode.getNodeValue()) {
+                        case "start":
+                            alignment = -1;
+                            break;
+                        case "left":
+                            alignment = -1;
+                            break;
+                        case "center":
+                            alignment = 0;
+                            break;
+                        case "right":
+                            alignment = 1;
+                            break;
+                        case "end":
+                            alignment = 1;
+                            break;
+                        default:
+                            alignment = 0;
+                            break;
+                    }
+                    alignMap.put(idNode.getNodeValue(), alignment);
+                }
+            }
+        }
     }
 
     /**
@@ -106,6 +153,13 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                     subtitle.end = ttmlFormat.parse(endNode.getNodeValue());
                     checkHours(subtitle.end);
                 }
+
+                final Node styleNode = attrMap.getNamedItem("style");
+                final Integer alignment =
+                    (styleNode != null && alignMap.containsKey(styleNode.getNodeValue()))
+                        ? alignMap.get(styleNode.getNodeValue())
+                        : 0;
+                subtitle.region = Integer.toString(alignment + 2);
             }
 
             final NodeList childNodes = subnode.getChildNodes();
@@ -213,6 +267,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 throw new Exception("Unknown File Format");
             }
 
+            buildAlignmentMap();
             buildColorMap();
             buildFilmList();
             ret = true;

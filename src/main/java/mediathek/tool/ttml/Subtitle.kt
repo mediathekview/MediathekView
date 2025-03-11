@@ -9,4 +9,6 @@ internal class Subtitle {
     var end: Date? = null
     @JvmField
     val listOfStrings: List<StyledString> = ArrayList()
+    @JvmField
+    var region: String? = null
 }
