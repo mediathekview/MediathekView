@@ -237,7 +237,10 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
           final StyledString textContent = new StyledString();
           textContent.setText(node.getTextContent());
 
-          final List<String> colors = colorMap.get(styleNode.getNodeValue());
+          final List<String> colors =
+              (styleNode != null && colorMap.containsKey(styleNode.getNodeValue()))
+                  ? colorMap.get(styleNode.getNodeValue())
+                  : null;
           if (colors == null) {
             textContent.setColor(color); // gabs beim BR
             textContent.setBackgroundColor(backgroundColor);
