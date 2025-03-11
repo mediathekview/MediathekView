@@ -51,6 +51,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
     private final SimpleDateFormat sdfFlash = new SimpleDateFormat("s.S");
     private final Map<String, Integer> alignMap = new HashMap<>();
     private final Map<String, String> colorMap = new Hashtable<>();
+    private final Map<String, Integer> regionMap = new HashMap<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
     private String color = "#FFFFFF";
     private Document doc;
@@ -122,6 +123,50 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
         }
     }
 
+    /**
+     * Build a map of used screen regions within the TTML file.
+     *
+     * This ignores the tts:origin and tts:extent attributes for now
+     * and solely decides position mapping on tts:displayAlign.
+     *
+     * ASS format aligns to numbers as seen on the numpad on a keyboard.
+     * <p>Possible positions:
+     * <p>7 8 9
+     * <p>4 5 6
+     * <p>1 2 3
+     *
+     * Defaults to bottom center (2).
+     */
+    private void buildRegionMap() {
+        final NodeList styleData = doc.getElementsByTagName("tt:region");
+        for (int i = 0; i < styleData.getLength(); i++) {
+            final Node subnode = styleData.item(i);
+            if (subnode.hasAttributes()) {
+                final NamedNodeMap attrMap = subnode.getAttributes();
+                final Node idNode = attrMap.getNamedItem("xml:id");
+                final Node regionNode = attrMap.getNamedItem("tts:displayAlign");
+                if (idNode != null && regionNode != null) {
+                    Integer region = 0;
+                    switch (regionNode.getNodeValue()) {
+                        case "before":
+                            region = 8;
+                            break;
+                        case "center":
+                            region = 5;
+                            break;
+                        case "after":
+                            region = 2;
+                            break;
+                        default:
+                            region = 2;
+                            break;
+                    }
+                    regionMap.put(idNode.getNodeValue(), region);
+                }
+            }
+        }
+    }
+
     private void checkHours(@NotNull Date date) {
         //HACK:: Don´t know why this is set like this...
         //but we have to subract 10 hours from the XML
@@ -154,12 +199,17 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                     checkHours(subtitle.end);
                 }
 
+                final Node regionNode = attrMap.getNamedItem("region");
                 final Node styleNode = attrMap.getNamedItem("style");
                 final Integer alignment =
                     (styleNode != null && alignMap.containsKey(styleNode.getNodeValue()))
                         ? alignMap.get(styleNode.getNodeValue())
                         : 0;
-                subtitle.region = Integer.toString(alignment + 2);
+                final Integer region =
+                    (regionNode != null && regionMap.containsKey(regionNode.getNodeValue()))
+                        ? regionMap.get(regionNode.getNodeValue())
+                        : 2;
+                subtitle.region = Integer.toString(alignment + region);
             }
 
             final NodeList childNodes = subnode.getChildNodes();
@@ -269,6 +319,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
 
             buildAlignmentMap();
             buildColorMap();
+            buildRegionMap();
             buildFilmList();
             ret = true;
         } catch (Exception ex) {
