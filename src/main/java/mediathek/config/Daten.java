@@ -84,8 +84,8 @@ public class Daten {
 
         listeAbo = new ListeAbo();
 
-        listeDownloads = new ListeDownloads(this);
-        listeDownloadsButton = new ListeDownloads(this);
+        listeDownloads = new ListeDownloads();
+        listeDownloadsButton = new ListeDownloads();
 
         starterClass = new StarterClass(this);
     }
