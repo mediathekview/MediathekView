@@ -398,13 +398,6 @@ public class FilmListReader implements AutoCloseable {
             } else
                 processFromFile(source, listeFilme);
 
-            if (SenderFilmlistLoadApprover.isApproved("tagesschau24")) {
-                logger.trace("converting old tagesschau24 entries to sender tagesschau24");
-                convertTagesschau24(listeFilme);
-            }
-            else {
-                logger.trace("conversion of tagesschau24 stopped as it is not approved");
-            }
         } catch (MalformedURLException | URISyntaxException ex) {
             logger.warn(ex);
         }
@@ -443,20 +436,6 @@ public class FilmListReader implements AutoCloseable {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
         }
-    }
-
-    /**
-     * Convert ARD films with thema tagesschau24 to sender tagesschau24.
-     * @param list source film list
-     */
-    protected void convertTagesschau24(@NotNull ListeFilme list) {
-       var films = list.parallelStream()
-                .filter(f -> f.getSender().equalsIgnoreCase("ARD"))
-                .filter(f -> f.getThema().equalsIgnoreCase("tagesschau24"))
-               .toList();
-       for (var film : films) {
-           film.setSender("tagesschau24");
-       }
     }
 
     private String buildClientInfo()
