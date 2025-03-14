@@ -6,8 +6,7 @@ import ca.odell.glazedlists.TransactionList;
 import ca.odell.glazedlists.javafx.EventObservableList;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -28,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -60,12 +60,16 @@ public class FilterActionPanel {
     private BooleanProperty showSubtitlesOnly;
     private BooleanProperty showOnlyHighQuality;
     private BooleanProperty showNewOnly;
+
+    private final ListProperty<String> selectedChannels = new SimpleListProperty<>(FXCollections.observableArrayList());
+
+
     /**
      * Stores the list of thema strings used for autocompletion.
      */
     private SuggestionProvider<String> themaSuggestionProvider;
-    private CommonViewSettingsPane viewSettingsPane;
 
+    private CommonViewSettingsPane viewSettingsPane;
     public FilterActionPanel(@NotNull JToggleButton filterToggleBtn) {
         this.filterConfig = new FilterConfiguration();
 
@@ -100,6 +104,10 @@ public class FilterActionPanel {
 
     public ReadOnlyObjectProperty<String> zeitraumProperty() {
         return zeitraumProperty;
+    }
+
+    public ObservableList<String> selectedChannels() {
+        return selectedChannels.get();
     }
 
     public boolean isDontShowAudioVersions() {
@@ -298,6 +306,9 @@ public class FilterActionPanel {
             });
         });
     }
+    public ListProperty<String> selectedChannelsProperty() {
+        return selectedChannels;
+    }
 
     private void setupViewSettingsPane() {
         viewSettingsPane = new CommonViewSettingsPane();
@@ -314,10 +325,13 @@ public class FilterActionPanel {
         dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
         dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
         dontShowDuplicates = viewSettingsPane.cbDontShowDuplicates.selectedProperty();
-
         setupThemaComboBox();
         viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().
-                addListener((ListChangeListener<String>) c -> updateThemaComboBox());
+                addListener((ListChangeListener<String>) c -> {
+                    selectedChannels.setAll(viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems());
+                    updateThemaComboBox();
+                });
+
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
 
@@ -413,6 +427,8 @@ public class FilterActionPanel {
                 ((ov, oldVal, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
 
         zeitraumProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
+
+       selectedChannels.addListener(   ((ov, oldVal, newValue) -> filterConfig.setCheckedChannels((Set<String>) newValue)));
     }
 
     /**
