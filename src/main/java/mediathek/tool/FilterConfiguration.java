@@ -27,7 +27,6 @@ public class FilterConfiguration {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
-
     public FilterConfiguration() {
         this(ApplicationConfiguration.getConfiguration());
     }
@@ -131,8 +130,16 @@ public class FilterConfiguration {
                         migrateOldFilterConfiguration(
                                 FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getOldKey(),
                                 newFilter,
-                                String.class,  // JSON wird als String gespeichert
-                                json -> setCheckedChannels(parseJsonToSet(json))))) {
+                                String.class,
+                                json -> setCheckedChannels(parseJsonToSet(json))),
+
+                () ->
+                        migrateOldFilterConfiguration(
+                                FilterConfigurationKeys.FILTER_PANEL_THEMA.getOldKey(),
+                                newFilter,
+                                String.class,
+                                this::setThema)
+        )) {
             addNewFilter(newFilter);
             LOG.info("Filter migration abgeschlossen.");
         }
@@ -190,10 +197,6 @@ public class FilterConfiguration {
 
     private String toFilterConfigNameWithCurrentFilter(String filterConfigNamePattern) {
         return String.format(filterConfigNamePattern, getCurrentFilterID());
-    }
-
-    private String toFilterConfigNameWithCurrentFilter(String filterConfigNamePattern, String value) {
-        return String.format(filterConfigNamePattern, getCurrentFilterID(), value);
     }
 
     public boolean isShowSubtitlesOnly() {
@@ -393,39 +396,51 @@ public class FilterConfiguration {
 
     public Set<String> getCheckedChannels() {
         String json = configuration.getString(
-                toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()), "[]");
-        try {
-            return objectMapper.readValue(json, new TypeReference<Set<String>>() {});
-        } catch (Exception e) {
-            LOG.error("Fehler beim Laden der Senderliste", e);
-            return new HashSet<>();
-        }
+                toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()),
+                "[]"
+        );
+        return parseJsonToSet(json);
     }
 
     public FilterConfiguration setCheckedChannels(Set<String> newList) {
         try {
             String json = objectMapper.writeValueAsString(newList);
             configuration.setProperty(
-                    toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()), json);
+                    toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()),
+                    json
+            );
+
+            LOG.info("Checked Channels gespeichert: {}", newList);
         } catch (Exception e) {
-            LOG.error("Fehler beim Speichern der Senderliste", e);
+            LOG.error("Fehler beim Speichern der Checked Channels", e);
         }
         return this;
     }
 
 
+    public String getThema() {
+        return configuration.getString(
+                toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
+                "");
+    }
+
+    public FilterConfiguration setThema(String thema) {
+        configuration.setProperty(
+                toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()),
+                thema);
+        return this;
+    }
+
 
     private Set<String> parseJsonToSet(String json) {
         try {
-            return objectMapper.readValue(json, new TypeReference<Set<String>>() {});
+            return objectMapper.readValue(json, new TypeReference<Set<String>>() {
+            });
         } catch (Exception e) {
             LOG.error("Fehler beim Konvertieren der alten Senderliste aus JSON", e);
             return new HashSet<>();
         }
     }
-
-
-
 
 
     public FilterConfiguration clearCurrentFilter() {
@@ -567,8 +582,8 @@ public class FilterConfiguration {
         FILTER_PANEL_FILM_LENGTH_MAX("filter.filter_%s.film_length.max"),
         FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum"),
         FILTER_PANEL_DONT_SHOW_DUPLICATES("filter.filter_%s.dont_show_duplicates"),
-        FILTER_PANEL_CHECKED_CHANNELS("filter.filter_%s.checked_channels");
-
+        FILTER_PANEL_CHECKED_CHANNELS("filter.filter_%s.checked_channels"),
+        FILTER_PANEL_THEMA("filter.filter_%s.thema");
         private final String key;
 
         FilterConfigurationKeys(final String key) {

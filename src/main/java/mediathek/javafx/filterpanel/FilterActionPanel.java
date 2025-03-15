@@ -25,10 +25,7 @@ import org.controlsfx.control.textfield.TextFields;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This class sets up the GuiFilme filter dialog.
@@ -61,7 +58,8 @@ public class FilterActionPanel {
     private BooleanProperty showOnlyHighQuality;
     private BooleanProperty showNewOnly;
 
-    private final ListProperty<String> selectedChannels = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private ListProperty<String> checkedChannels = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private ObjectProperty<String> themaProperty;
 
 
     /**
@@ -78,10 +76,10 @@ public class FilterActionPanel {
         setupRenameFilterButton();
 
         SwingUtilities.invokeLater(
-                () -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
-
+                () -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));;
         restoreConfigSettings();
-
+        ObservableList<String> senderList = FXCollections.observableArrayList(filterConfig.getCheckedChannels());
+        checkedChannels = new SimpleListProperty<>(senderList);
         setupConfigListeners();
         availableFilters = FXCollections.observableArrayList(filterConfig.getAvailableFilters());
         setupFilterSelection();
@@ -99,7 +97,7 @@ public class FilterActionPanel {
     }
 
     public FilmLengthSliderValues getFilmLengthSliderValues() {
-        return new FilmLengthSliderValues((long)filmLengthSlider.getLowValue(), (long)filmLengthSlider.getHighValue());
+        return new FilmLengthSliderValues((long) filmLengthSlider.getLowValue(), (long) filmLengthSlider.getHighValue());
     }
 
     public ReadOnlyObjectProperty<String> zeitraumProperty() {
@@ -107,7 +105,11 @@ public class FilterActionPanel {
     }
 
     public ObservableList<String> selectedChannels() {
-        return selectedChannels.get();
+        return checkedChannels;
+    }
+
+    public ObjectProperty<String> themaProperty() {
+        return themaProperty;
     }
 
     public boolean isDontShowAudioVersions() {
@@ -142,8 +144,13 @@ public class FilterActionPanel {
         return dontShowAbos;
     }
 
-    public BooleanProperty dontShowDuplicatesProperty() { return dontShowDuplicates;}
-    public boolean isDontShowDuplicates() { return dontShowDuplicates.get();}
+    public BooleanProperty dontShowDuplicatesProperty() {
+        return dontShowDuplicates;
+    }
+
+    public boolean isDontShowDuplicates() {
+        return dontShowDuplicates.get();
+    }
 
     public boolean isShowLivestreamsOnly() {
         return showLivestreamsOnly.get();
@@ -280,7 +287,7 @@ public class FilterActionPanel {
         viewSettingsPane.btnRenameFilter.setOnAction(e -> {
             final var fltName = filterConfig.getCurrentFilter().name();
             SwingUtilities.invokeLater(() -> {
-                String s = (String)JOptionPane.showInputDialog(
+                String s = (String) JOptionPane.showInputDialog(
                         MediathekGui.ui(),
                         "Neuer Name des Filters:",
                         "Filter umbenennen",
@@ -291,23 +298,20 @@ public class FilterActionPanel {
                 if (s != null) {
                     if (!s.isEmpty()) {
                         final var fName = s.trim();
-                        if (!fName.equals(fltName)){
+                        if (!fName.equals(fltName)) {
                             renameCurrentFilter(fName);
                             logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
-                        }
-                        else
+                        } else
                             logger.warn("New and old filter name are identical...doing nothing");
-                    }
-                    else
+                    } else
                         logger.warn("Rename filter text was empty...doing nothing");
-                }
-                else
+                } else
                     logger.trace("User cancelled rename");
             });
         });
     }
     public ListProperty<String> selectedChannelsProperty() {
-        return selectedChannels;
+        return checkedChannels;
     }
 
     private void setupViewSettingsPane() {
@@ -325,10 +329,13 @@ public class FilterActionPanel {
         dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
         dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
         dontShowDuplicates = viewSettingsPane.cbDontShowDuplicates.selectedProperty();
+        themaProperty = viewSettingsPane.themaComboBox.valueProperty();
         setupThemaComboBox();
         viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().
                 addListener((ListChangeListener<String>) c -> {
-                    selectedChannels.setAll(viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems());
+                    if(!checkedChannels.isNull().get()){
+                        checkedChannels.setAll(viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems());
+                    }
                     updateThemaComboBox();
                 });
 
@@ -339,6 +346,7 @@ public class FilterActionPanel {
     }
 
     private void setupThemaComboBox() {
+
         viewSettingsPane.themaComboBox.setItems(observableThemaList);
         themaSuggestionProvider = SuggestionProvider.create(sourceThemaList);
         TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
@@ -362,6 +370,8 @@ public class FilterActionPanel {
         dontShowSignLanguage.set(filterConfig.isDontShowSignLanguage());
         dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
         dontShowDuplicates.set(filterConfig.isDontShowDuplicates());
+        themaProperty.set(filterConfig.getThema());
+        viewSettingsPane.themaComboBox.setValue(filterConfig.getThema());
 
         try {
             double loadedMin = filterConfig.getFilmLengthMin();
@@ -394,6 +404,22 @@ public class FilterActionPanel {
             logger.debug("Beim wiederherstellen der Filter Einstellungen für den Zeitraum ist ein Fehler aufgetreten!",
                     exception);
         }
+
+        try {
+            Set<String> checkedChannels = filterConfig.getCheckedChannels();
+            Object[] channelArray = checkedChannels.toArray();
+            viewSettingsPane.senderCheckList.getCheckModel().clearChecks();
+            for (int i = 0; i < channelArray.length; i++) {
+                String sender = channelArray[i].toString();
+                if (viewSettingsPane.senderCheckList.getItems().contains(sender)) {
+                    viewSettingsPane.senderCheckList.getCheckModel().check(sender);
+                }
+            }
+        } catch (Exception exception) {
+            logger.debug("Beim Wiederherstellen der Filter Einstellungen für die ausgewählten Sender ist ein Fehler aufgetreten!",
+                    exception);
+        }
+
     }
 
     private void setupConfigListeners() {
@@ -428,7 +454,8 @@ public class FilterActionPanel {
 
         zeitraumProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
 
-       selectedChannels.addListener(   ((ov, oldVal, newValue) -> filterConfig.setCheckedChannels((Set<String>) newValue)));
+        checkedChannels.addListener((obs, oldList, newList) -> filterConfig.setCheckedChannels(new HashSet<>(newList)));
+        themaProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setThema(newValue)));
     }
 
     /**
@@ -458,6 +485,7 @@ public class FilterActionPanel {
     public void updateThemaComboBox() {
         //update the thema list -> updates the combobox automagically
         //use transaction list to minimize updates...
+        String aktuellesThema = viewSettingsPane.themaComboBox.getValue();
         var transactionThemaList = new TransactionList<>(sourceThemaList);
         transactionThemaList.beginEvent(true);
         transactionThemaList.clear();
@@ -473,6 +501,9 @@ public class FilterActionPanel {
         themaSuggestionProvider.clearSuggestions();
         themaSuggestionProvider.addPossibleSuggestions(sourceThemaList);
 
-        viewSettingsPane.themaComboBox.getSelectionModel().select(0);
+        if (!sourceThemaList.contains(aktuellesThema) && aktuellesThema != null && !aktuellesThema.isEmpty()) {
+            sourceThemaList.add(aktuellesThema);
+        }
+        viewSettingsPane.themaComboBox.setValue(aktuellesThema);
     }
 }
