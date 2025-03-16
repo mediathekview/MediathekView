@@ -68,6 +68,7 @@ public class FilterActionPanel {
     private SuggestionProvider<String> themaSuggestionProvider;
 
     private CommonViewSettingsPane viewSettingsPane;
+
     public FilterActionPanel(@NotNull JToggleButton filterToggleBtn) {
         this.filterConfig = new FilterConfiguration();
 
@@ -75,8 +76,8 @@ public class FilterActionPanel {
         setupDeleteFilterButton();
         setupRenameFilterButton();
 
-        SwingUtilities.invokeLater(
-                () -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));;
+        SwingUtilities.invokeLater(() -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
+        
         restoreConfigSettings();
         ObservableList<String> senderList = FXCollections.observableArrayList(filterConfig.getCheckedChannels());
         checkedChannels = new SimpleListProperty<>(senderList);
@@ -201,15 +202,12 @@ public class FilterActionPanel {
     }
 
     private void setupAddNewFilterButton() {
-        viewSettingsPane.setAddNewFilterButtonEventHandler(
-                e -> {
-                    FilterDTO newFilter =
-                            new FilterDTO(
-                                    UUID.randomUUID(), String.format("Filter %d", availableFilters.size() + 1));
-                    filterConfig.addNewFilter(newFilter);
-                    viewSettingsPane.disableDeleteCurrentFilterButton(false);
-                    viewSettingsPane.selectFilter(newFilter);
-                });
+        viewSettingsPane.setAddNewFilterButtonEventHandler(e -> {
+            FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), String.format("Filter %d", availableFilters.size() + 1));
+            filterConfig.addNewFilter(newFilter);
+            viewSettingsPane.disableDeleteCurrentFilterButton(false);
+            viewSettingsPane.selectFilter(newFilter);
+        });
     }
 
     private void setupDeleteCurrentFilterButton() {
@@ -217,59 +215,53 @@ public class FilterActionPanel {
             viewSettingsPane.disableDeleteCurrentFilterButton(true);
         }
 
-        viewSettingsPane.btnDeleteCurrentFilter.setOnAction(
-                e -> {
-                    FilterDTO filterToDelete = filterConfig.getCurrentFilter();
-                    filterConfig.deleteFilter(filterToDelete);
+        viewSettingsPane.btnDeleteCurrentFilter.setOnAction(e -> {
+            FilterDTO filterToDelete = filterConfig.getCurrentFilter();
+            filterConfig.deleteFilter(filterToDelete);
 
-                    if (availableFilters.size() <= 1) {
-                        viewSettingsPane.disableDeleteCurrentFilterButton(true);
-                    }
-                });
+            if (availableFilters.size() <= 1) {
+                viewSettingsPane.disableDeleteCurrentFilterButton(true);
+            }
+        });
     }
 
     private void setupFilterSelection() {
         viewSettingsPane.setAvailableFilters(availableFilters);
-        FilterConfiguration.addAvailableFiltersObserver(
-                () -> Platform.runLater(() -> {
-                    availableFilters.clear();
-                    availableFilters.addAll(filterConfig.getAvailableFilters());
-                }));
-        FilterConfiguration.addCurrentFiltersObserver(
-                filter -> {
-                    viewSettingsPane.selectFilter(filter);
-                    restoreConfigSettings();
-                });
+        FilterConfiguration.addAvailableFiltersObserver(() -> Platform.runLater(() -> {
+            availableFilters.clear();
+            availableFilters.addAll(filterConfig.getAvailableFilters());
+        }));
+        FilterConfiguration.addCurrentFiltersObserver(filter -> {
+            viewSettingsPane.selectFilter(filter);
+            restoreConfigSettings();
+        });
 
-        viewSettingsPane.setFilterSelectionChangeListener(
-                (ov, oldValue, newValue) -> {
-                    if (newValue != null && !newValue.equals(oldValue)) {
-                        filterConfig.setCurrentFilter(newValue);
-                    }
-                });
+        viewSettingsPane.setFilterSelectionChangeListener((ov, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals(oldValue)) {
+                filterConfig.setCurrentFilter(newValue);
+            }
+        });
 
-        viewSettingsPane.setFilterSelectionStringConverter(
-                new StringConverter<>() {
+        viewSettingsPane.setFilterSelectionStringConverter(new StringConverter<>() {
 
-                    @Override
-                    public String toString(FilterDTO filter) {
-                        if (filter == null) {
-                            return null;
-                        }
-                        return filter.name();
-                    }
+            @Override
+            public String toString(FilterDTO filter) {
+                if (filter == null) {
+                    return null;
+                }
+                return filter.name();
+            }
 
-                    @Override
-                    public FilterDTO fromString(String name) {
-                        return filterConfig.findFilterForName(name).orElseGet(() -> renameCurrentFilter(name));
-                    }
-                });
+            @Override
+            public FilterDTO fromString(String name) {
+                return filterConfig.findFilterForName(name).orElseGet(() -> renameCurrentFilter(name));
+            }
+        });
     }
 
     private FilterDTO renameCurrentFilter(String newValue) {
         FilterDTO currentFilter = filterConfig.getCurrentFilter();
-        logger.debug("Can't find a filter with name \"{}\". Renaming the current filter \"{}\" to it.",
-                newValue, currentFilter.name());
+        logger.debug("Can't find a filter with name \"{}\". Renaming the current filter \"{}\" to it.", newValue, currentFilter.name());
         filterConfig.renameCurrentFilter(newValue);
         return filterConfig.getCurrentFilter();
     }
@@ -287,29 +279,20 @@ public class FilterActionPanel {
         viewSettingsPane.btnRenameFilter.setOnAction(e -> {
             final var fltName = filterConfig.getCurrentFilter().name();
             SwingUtilities.invokeLater(() -> {
-                String s = (String) JOptionPane.showInputDialog(
-                        MediathekGui.ui(),
-                        "Neuer Name des Filters:",
-                        "Filter umbenennen",
-                        JOptionPane.PLAIN_MESSAGE,
-                        null,
-                        null,
-                        fltName);
+                String s = (String) JOptionPane.showInputDialog(MediathekGui.ui(), "Neuer Name des Filters:", "Filter umbenennen", JOptionPane.PLAIN_MESSAGE, null, null, fltName);
                 if (s != null) {
                     if (!s.isEmpty()) {
                         final var fName = s.trim();
                         if (!fName.equals(fltName)) {
                             renameCurrentFilter(fName);
                             logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
-                        } else
-                            logger.warn("New and old filter name are identical...doing nothing");
-                    } else
-                        logger.warn("Rename filter text was empty...doing nothing");
-                } else
-                    logger.trace("User cancelled rename");
+                        } else logger.warn("New and old filter name are identical...doing nothing");
+                    } else logger.warn("Rename filter text was empty...doing nothing");
+                } else logger.trace("User cancelled rename");
             });
         });
     }
+
     public ListProperty<String> selectedChannelsProperty() {
         return checkedChannels;
     }
@@ -331,13 +314,12 @@ public class FilterActionPanel {
         dontShowDuplicates = viewSettingsPane.cbDontShowDuplicates.selectedProperty();
         themaProperty = viewSettingsPane.themaComboBox.valueProperty();
         setupThemaComboBox();
-        viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().
-                addListener((ListChangeListener<String>) c -> {
-                    if(!checkedChannels.isNull().get()){
-                        checkedChannels.setAll(viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems());
-                    }
-                    updateThemaComboBox();
-                });
+        viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems().addListener((ListChangeListener<String>) c -> {
+            if (!checkedChannels.isNull().get()) {
+                checkedChannels.setAll(viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems());
+            }
+            updateThemaComboBox();
+        });
 
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
@@ -394,15 +376,13 @@ public class FilterActionPanel {
             }
 
         } catch (Exception exception) {
-            logger.debug("Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!",
-                    exception);
+            logger.debug("Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!", exception);
         }
 
         try {
             viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(filterConfig.getZeitraum());
         } catch (Exception exception) {
-            logger.debug("Beim wiederherstellen der Filter Einstellungen für den Zeitraum ist ein Fehler aufgetreten!",
-                    exception);
+            logger.debug("Beim wiederherstellen der Filter Einstellungen für den Zeitraum ist ein Fehler aufgetreten!", exception);
         }
 
         try {
@@ -416,41 +396,27 @@ public class FilterActionPanel {
                 }
             }
         } catch (Exception exception) {
-            logger.debug("Beim Wiederherstellen der Filter Einstellungen für die ausgewählten Sender ist ein Fehler aufgetreten!",
-                    exception);
+            logger.debug("Beim Wiederherstellen der Filter Einstellungen für die ausgewählten Sender ist ein Fehler aufgetreten!", exception);
         }
 
     }
 
     private void setupConfigListeners() {
-        showOnlyHighQuality.addListener(
-                (ov, oldVal, newValue) -> filterConfig.setShowHdOnly(newValue));
-        showSubtitlesOnly.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
-        showBookMarkedOnly.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
-        showNewOnly.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setShowNewOnly(newValue)));
-        showUnseenOnly.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setShowUnseenOnly(newValue)));
-        showLivestreamsOnly.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setShowLivestreamsOnly(newValue)));
+        showOnlyHighQuality.addListener((ov, oldVal, newValue) -> filterConfig.setShowHdOnly(newValue));
+        showSubtitlesOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
+        showBookMarkedOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
+        showNewOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowNewOnly(newValue)));
+        showUnseenOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowUnseenOnly(newValue)));
+        showLivestreamsOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowLivestreamsOnly(newValue)));
 
-        dontShowAbos.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setDontShowAbos(newValue)));
-        dontShowTrailers.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setDontShowTrailers(newValue)));
-        dontShowSignLanguage.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
-        dontShowAudioVersions.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
-        dontShowDuplicates.addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setDontShowDuplicates(newValue)));
+        dontShowAbos.addListener(((ov, oldVal, newValue) -> filterConfig.setDontShowAbos(newValue)));
+        dontShowTrailers.addListener(((ov, oldVal, newValue) -> filterConfig.setDontShowTrailers(newValue)));
+        dontShowSignLanguage.addListener(((ov, oldVal, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
+        dontShowAudioVersions.addListener(((ov, oldVal, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
+        dontShowDuplicates.addListener(((ov, oldVal, newValue) -> filterConfig.setDontShowDuplicates(newValue)));
 
-        filmLengthSlider.lowValueProperty().addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
-        filmLengthSlider.highValueProperty().addListener(
-                ((ov, oldVal, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
+        filmLengthSlider.lowValueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
+        filmLengthSlider.highValueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
 
         zeitraumProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
 
@@ -491,9 +457,7 @@ public class FilterActionPanel {
         transactionThemaList.clear();
 
         var selectedSenders = viewSettingsPane.senderCheckList.getCheckModel().getCheckedItems();
-        var tempThemaList = getThemaList(selectedSenders).stream().distinct()
-                .sorted(GermanStringSorter.getInstance())
-                .toList();
+        var tempThemaList = getThemaList(selectedSenders).stream().distinct().sorted(GermanStringSorter.getInstance()).toList();
         transactionThemaList.addAll(tempThemaList);
         transactionThemaList.commitEvent();
 

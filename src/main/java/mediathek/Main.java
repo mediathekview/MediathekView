@@ -111,10 +111,8 @@ public class Main {
         final String path;
         final String fileName = "/mediathekview.log";
 
-        if (!Config.isPortableMode())
-            path = StandardLocations.getSettingsDirectory() + fileName;
-        else
-            path = Config.baseFilePath + fileName;
+        if (!Config.isPortableMode()) path = StandardLocations.getSettingsDirectory() + fileName;
+        else path = Config.baseFilePath + fileName;
 
 
         final PatternLayout consolePattern;
@@ -132,11 +130,7 @@ public class Main {
         }
         consoleAppender.start();
 
-        var fileAppenderBuilder = FileAppender.newBuilder()
-                .setName("LogFile")
-                .withAppend(false)
-                .withFileName(path)
-                .setLayout(PatternLayout.newBuilder().withPattern("%-5p %d  [%t] %C{2} (%F:%L) - %m%n").build())
+        var fileAppenderBuilder = FileAppender.newBuilder().setName("LogFile").withAppend(false).withFileName(path).setLayout(PatternLayout.newBuilder().withPattern("%-5p %d  [%t] %C{2} (%F:%L) - %m%n").build())
                 //.setLayout(PatternLayout.newBuilder().withPattern("[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n").build())
                 .setConfiguration(config);
 
@@ -152,13 +146,7 @@ public class Main {
             fileAppender.start();
             config.addAppender(fileAppender);
 
-            asyncAppender = AsyncAppender.newBuilder()
-                    .setName("Async")
-                    .setAppenderRefs(new AppenderRef[]{AppenderRef.createAppenderRef(fileAppender.getName(), null, null)})
-                    .setConfiguration(config)
-                    .setIncludeLocation(true)
-                    .setBlocking(false)
-                    .build();
+            asyncAppender = AsyncAppender.newBuilder().setName("Async").setAppenderRefs(new AppenderRef[]{AppenderRef.createAppenderRef(fileAppender.getName(), null, null)}).setConfiguration(config).setIncludeLocation(true).setBlocking(false).build();
 
             asyncAppender.start();
             config.addAppender(asyncAppender);
@@ -167,8 +155,7 @@ public class Main {
         final var rootLogger = loggerContext.getRootLogger();
         rootLogger.setLevel(Level.TRACE);
         rootLogger.addAppender(consoleAppender);
-        if (!Config.isFileLoggingDisabled())
-            rootLogger.addAppender(asyncAppender);
+        if (!Config.isFileLoggingDisabled()) rootLogger.addAppender(asyncAppender);
 
         loggerContext.updateLoggers();
     }
@@ -203,8 +190,7 @@ public class Main {
         logger.info("OS Arch: {}", SystemUtils.OS_ARCH);
         if (DarkModeDetector.hasDarkModeDetectionSupport())
             logger.info("OS Dark Mode enabled: {}", DarkModeDetector.isDarkMode());
-        else
-            logger.info("OS Dark Mode detection not supported");
+        else logger.info("OS Dark Mode detection not supported");
         logger.info("OS Available Processors: {}", runtime.availableProcessors());
     }
 
@@ -227,16 +213,14 @@ public class Main {
                         logger.error("settings migration error", e);
                     }
                 }
-            } else
-                logger.trace("nothing to migrate");
+            } else logger.trace("nothing to migrate");
         }
     }
 
     private static void printPortableModeInfo() {
         if (Config.isPortableMode()) {
             logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-        } else
-            logger.info("Configuring for non-portable mode");
+        } else logger.info("Configuring for non-portable mode");
     }
 
     private static void setupCpuAffinity() {
@@ -273,8 +257,7 @@ public class Main {
 
         if (darkMode) {
             laf = DarkModeFactory.getLookAndFeel();
-        }
-        else {
+        } else {
             laf = LightModeFactory.getLookAndFeel();
         }
         FlatLaf.setup(laf);
@@ -298,45 +281,30 @@ public class Main {
         //Incorrect VM params
         var mxParamCount = paramList.stream().filter(s -> s.startsWith("-Xmx")).findAny().stream().count();
 
-        if ((useShenandoahGC > 0)
-                && (shenandoahHeuristics > 0)
-                && (stringDedup > 0)
-                && (maxRamPct > 0)
-                && (mxParamCount == 0))
+        if ((useShenandoahGC > 0) && (shenandoahHeuristics > 0) && (stringDedup > 0) && (maxRamPct > 0) && (mxParamCount == 0))
             correctParameters = true;
 
         if (SystemUtils.IS_OS_LINUX) {
-            if (addOpens == 0)
-                correctParameters = false;
+            if (addOpens == 0) correctParameters = false;
         }
 
         if (!correctParameters) {
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
             if (!Config.isDebugModeEnabled()) {
                 //show error dialog
-                JOptionPane.showMessageDialog(null, getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
-                        JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, getJvmErrorMessageString(), Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
             }
         }
     }
 
     @NotNull
     private static String getJvmErrorMessageString() {
-        var message = "<html>" +
-                "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
-                "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
-                "<ul>" +
-                "<li>-XX:+UseShenandoahGC</li>" +
-                "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
-                "<li>-XX:+UseStringDeduplication</li>" +
-                "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
+        var message = "<html>" + "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" + "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" + "<ul>" + "<li>-XX:+UseShenandoahGC</li>" + "<li>-XX:ShenandoahGCHeuristics=compact</li>" + "<li>-XX:+UseStringDeduplication</li>" + "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
         if (SystemUtils.IS_OS_LINUX) {
             message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
         }
 
-        message += "</ul><br/>" +
-                    "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
-                    "</html>";
+        message += "</ul><br/>" + "<b>-Xmx</b> sollte nicht mehr genutzt werden!" + "</html>";
         return message;
     }
 
@@ -349,8 +317,7 @@ public class Main {
         if (strScale != null) {
             try {
                 Integer.parseInt(strScale);
-            }
-            catch (NumberFormatException ex) {
+            } catch (NumberFormatException ex) {
                 // not an int -> show warning
                 // fractional scale is NOT supported under Linux, must use integer only.
                 var scaleFactor = Float.parseFloat(strScale);
@@ -358,12 +325,7 @@ public class Main {
                 var newScale = Math.round(scaleFactor);
                 logger.trace("new uiScale factor {}", newScale);
 
-                JOptionPane.showMessageDialog(null,
-                        "<html>" +
-                                "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=" + strScale + "</i>.<br>" +
-                                "<b>Java unter Linux unterstützt nur ganzzahlige Skalierung!</b><br><br>" +
-                                "Sie sollten <i>-Dsun.java2d.uiScale=" + newScale + "</i> oder größer verwenden falls die Schriftgröße zu klein ist.",
-                        Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "<html>" + "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=" + strScale + "</i>.<br>" + "<b>Java unter Linux unterstützt nur ganzzahlige Skalierung!</b><br><br>" + "Sie sollten <i>-Dsun.java2d.uiScale=" + newScale + "</i> oder größer verwenden falls die Schriftgröße zu klein ist.", Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
             }
         }
     }
@@ -373,8 +335,7 @@ public class Main {
         if (parseResult.hasMatchedOption("dpm")) {
             logger.trace("Dns preference mode set via CLI, storing config value");
             config.setProperty(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode()));
-        }
-        else {
+        } else {
             logger.trace("Dns preference mode NOT set, using config setting");
             var mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode())));
             Config.setDnsIpPreferenceMode(mode);
@@ -438,8 +399,7 @@ public class Main {
                     checkUiScaleSetting();
                 }
 
-                if (!Config.isDisableJvmParameterChecks())
-                    checkJVMSettings();
+                if (!Config.isDisableJvmParameterChecks()) checkJVMSettings();
 
                 if (SystemUtils.IS_OS_WINDOWS) {
                     if (!VersionHelpers.IsWindows10OrGreater())
@@ -466,10 +426,7 @@ public class Main {
             } catch (CommandLine.ParameterException ex) {
                 try (var err = cmd.getErr()) {
                     var errStr = ex.getMessage() + "\n\n" + ex.getCommandLine().getUsageMessage();
-                    JOptionPane.showMessageDialog(null,
-                            errStr,
-                            "Fehlerhafte Kommandozeilenparameter",
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, errStr, "Fehlerhafte Kommandozeilenparameter", JOptionPane.ERROR_MESSAGE);
                     err.println(ex.getMessage());
                     if (!CommandLine.UnmatchedArgumentException.printSuggestions(ex, err)) {
                         ex.getCommandLine().usage(err);
@@ -486,12 +443,10 @@ public class Main {
             if (!isDebuggerAttached()) {
                 if (!Config.isSplashScreenDisabled()) {
                     splashScreen = Optional.of(new SplashScreen());
-                }
-                else {
+                } else {
                     logger.warn("Splash screen disabled...");
                 }
-            }
-            else {
+            } else {
                 logger.warn("Debugger detected -> Splash screen disabled...");
             }
             splashScreen.ifPresent(splash -> splash.setVisible(true));
@@ -506,10 +461,8 @@ public class Main {
 
             removeLuceneIndexDirectory();
             // enable modern search on demand
-            var useModernSearch = ApplicationConfiguration.getConfiguration()
-                    .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
-            if (useModernSearch)
-                Daten.getInstance().setListeFilmeNachBlackList(new IndexedFilmList());
+            var useModernSearch = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
+            if (useModernSearch) Daten.getInstance().setListeFilmeNachBlackList(new IndexedFilmList());
 
             startGuiMode();
         });
@@ -524,8 +477,7 @@ public class Main {
         if (Files.exists(indexPath)) {
             try {
                 FileUtils.deletePathRecursively(indexPath);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 logger.error("Failed to remove Lucene index directory", e);
             }
         }
@@ -551,12 +503,11 @@ public class Main {
         } catch (Exception e) {
             logger.error("migrateSeenHistory", e);
             splashScreen.ifPresent(SplashScreen::close);
-            SwingErrorDialog.showExceptionMessage(null,
-                    """
-                            <html>Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.<br>
-                            Das Programm kann nicht fortfahren und wird beendet.<br><br>
-                            Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.</html>
-                            """, e);
+            SwingErrorDialog.showExceptionMessage(null, """
+                    <html>Bei der Migration der Historie der Filme ist ein Fehler aufgetreten.<br>
+                    Das Programm kann nicht fortfahren und wird beendet.<br><br>
+                    Bitte überprüfen Sie die Fehlermeldung und suchen Sie Hilfe im Forum.</html>
+                    """, e);
             System.exit(99);
         }
     }
@@ -572,9 +523,7 @@ public class Main {
             var dialog = new DialogStarteinstellungen(null);
             if (dialog.showDialog() == DialogStarteinstellungen.ResultCode.CANCELLED) {
                 //show termination dialog
-                JOptionPane.showMessageDialog(null,
-                        "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" +
-                                "MediathekView muss deshalb beendet werden.</html>", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" + "MediathekView muss deshalb beendet werden.</html>", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
 
                 deleteSettingsDirectory();
 
@@ -589,8 +538,7 @@ public class Main {
             var settingsPath = StandardLocations.getSettingsDirectory();
             var agentDb = settingsPath.resolve("user_agents.mv.db");
             Files.deleteIfExists(agentDb);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Error deleting old user agent database occured", e);
         }
     }
@@ -600,26 +548,23 @@ public class Main {
         var dbFolder = settingsPath.resolve("database");
         var traceFile = settingsPath.resolve("databasemediathekview.trace.db");
 
-        if (!Files.exists(dbFolder))
-            return;
+        if (!Files.exists(dbFolder)) return;
 
         try (var walk = Files.walk(dbFolder)) {
-            walk.sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
+            walk.sorted(Comparator.reverseOrder()).map(Path::toFile)
                     //.peek(System.out::println)
                     .forEach(File::delete);
 
             Files.deleteIfExists(traceFile);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Got an error deleting old database directory", ex);
         }
     }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteSettingsDirectory() {
         try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
-            walk.sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
+            walk.sorted(Comparator.reverseOrder()).map(Path::toFile)
                     //.peek(System.out::println)
                     .forEach(File::delete);
         } catch (Exception ex) {
@@ -640,10 +585,7 @@ public class Main {
     private static void installSingleInstanceHandler() {
         SINGLE_INSTANCE_WATCHER = new SingleInstance();
         if (SINGLE_INSTANCE_WATCHER.isAppAlreadyActive()) {
-            JOptionPane.showMessageDialog(null,
-                    "Es dürfen nicht mehrere MediathekView-Instanzen gleichzeitig laufen.\n" +
-                            "Bitte beenden Sie zuerst das andere Programm.",
-                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Es dürfen nicht mehrere MediathekView-Instanzen gleichzeitig laufen.\n" + "Bitte beenden Sie zuerst das andere Programm.", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
     }
@@ -658,10 +600,7 @@ public class Main {
     private static void checkMemoryRequirements() {
         final var maxMem = Runtime.getRuntime().maxMemory();
         if (maxMem < Konstanten.MINIMUM_MEMORY_THRESHOLD) {
-            JOptionPane.showMessageDialog(null,
-                    "Es werden mindestens 768MB RAM zum Betrieb benötigt.\n" +
-                            "Das Programm wird nun beendet.",
-                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Es werden mindestens 768MB RAM zum Betrieb benötigt.\n" + "Das Programm wird nun beendet.", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
 
             System.exit(3);
         }
@@ -707,14 +646,11 @@ public class Main {
         } else if (SystemUtils.IS_OS_LINUX) {
             window = new MediathekGuiX11();
         } else {
-            JOptionPane.showMessageDialog(null,
-                    """
-                            Sie führen MediathekView auf einem nicht unterstützten Betriebssystem aus.
-                            Es werden nur macOS, Windows und Linux unterstützt.
-
-                            Das Programm wird beendet, da die Funktionsfähigkeit nicht gewährleistet werden kann.""",
-                    Konstanten.PROGRAMMNAME,
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, """
+                    Sie führen MediathekView auf einem nicht unterstützten Betriebssystem aus.
+                    Es werden nur macOS, Windows und Linux unterstützt.
+                    
+                    Das Programm wird beendet, da die Funktionsfähigkeit nicht gewährleistet werden kann.""", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
             System.exit(2);
         }
 

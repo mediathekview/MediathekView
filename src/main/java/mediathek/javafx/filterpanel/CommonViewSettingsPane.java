@@ -51,8 +51,7 @@ public class CommonViewSettingsPane extends VBox {
     private HBox createTopButtonRow() {
         HBox btnBox = new HBox();
         btnBox.setSpacing(4d);
-        btnBox.getChildren().addAll(filterSelect, btnRenameFilter, btnAddNewFilter, btnDeleteCurrentFilter,
-                new Separator(Orientation.VERTICAL), btnDeleteFilterSettings);
+        btnBox.getChildren().addAll(filterSelect, btnRenameFilter, btnAddNewFilter, btnDeleteCurrentFilter, new Separator(Orientation.VERTICAL), btnDeleteFilterSettings);
         return btnBox;
     }
 
@@ -61,8 +60,7 @@ public class CommonViewSettingsPane extends VBox {
         senderCheckList.setMinHeight(100d);
         VBox.setVgrow(senderCheckList, Priority.ALWAYS);
         var titledPane = new VBox();
-        titledPane.getChildren().addAll(new Label("Sender:"),
-                senderCheckList);
+        titledPane.getChildren().addAll(new Label("Sender:"), senderCheckList);
         VBox.setVgrow(titledPane, Priority.ALWAYS);
 
         return titledPane;
@@ -76,10 +74,8 @@ public class CommonViewSettingsPane extends VBox {
         var themaLabel = new Label("Thema:");
         themaLabel.setMinWidth(USE_PREF_SIZE);
         // font size is greater on tested ubuntu linux :(
-        if (SystemUtils.IS_OS_LINUX)
-            themaLabel.setPrefWidth(50d);
-        else
-            themaLabel.setPrefWidth(45d);
+        if (SystemUtils.IS_OS_LINUX) themaLabel.setPrefWidth(50d);
+        else themaLabel.setPrefWidth(45d);
         borderPane.setCenter(themaLabel);
         hbox.getChildren().addAll(borderPane, themaComboBox);
 
@@ -108,35 +104,14 @@ public class CommonViewSettingsPane extends VBox {
 
         setupButtons();
 
-        getChildren().addAll(createTopButtonRow(),
-                new Separator(),
-                cbShowNewOnly,
-                cbShowBookMarkedOnly,
-                cbShowOnlyHd,
-                cbShowSubtitlesOnly,
-                cbShowOnlyLivestreams,
-                new Separator(),
-                cbShowUnseenOnly,
-                cbDontShowAbos,
-                cbDontShowGebaerdensprache,
-                cbDontShowTrailers,
-                cbDontShowAudioVersions,
-                cbDontShowDuplicates,
-                new Separator(),
-                createSenderList(),
-                new Separator(),
-                createThemaBox(),
-                new Separator(),
-                filmLengthSliderNode,
-                new Separator(),
-                createZeitraumSpinner());
+        getChildren().addAll(createTopButtonRow(), new Separator(), cbShowNewOnly, cbShowBookMarkedOnly, cbShowOnlyHd, cbShowSubtitlesOnly, cbShowOnlyLivestreams, new Separator(), cbShowUnseenOnly, cbDontShowAbos, cbDontShowGebaerdensprache, cbDontShowTrailers, cbDontShowAudioVersions, cbDontShowDuplicates, new Separator(), createSenderList(), new Separator(), createThemaBox(), new Separator(), filmLengthSliderNode, new Separator(), createZeitraumSpinner());
 
 
         MessageBus.getMessageBus().subscribe(this);
     }
 
     private Pane createZeitraumSpinner() {
-        var flowPane = new FlowPane(4d,0d);
+        var flowPane = new FlowPane(4d, 0d);
         flowPane.getChildren().add(new Label("Zeitraum:"));
         flowPane.getChildren().add(zeitraumSpinner);
         flowPane.getChildren().add(new Label("Tage"));
@@ -151,30 +126,29 @@ public class CommonViewSettingsPane extends VBox {
      */
     @Handler
     private void handleTableModelChangeEvent(TableModelChangeEvent evt) {
-        Platform.runLater(
-                () -> {
-                    final boolean disable = evt.active;
-                    btnDeleteFilterSettings.setDisable(disable);
-                    cbShowOnlyHd.setDisable(disable);
-                    cbShowSubtitlesOnly.setDisable(disable);
-                    cbShowNewOnly.setDisable(disable);
-                    cbShowBookMarkedOnly.setDisable(disable);
-                    cbShowOnlyLivestreams.setDisable(disable);
-                    cbShowUnseenOnly.setDisable(disable);
-                    cbDontShowAbos.setDisable(disable);
-                    cbDontShowGebaerdensprache.setDisable(disable);
-                    cbDontShowTrailers.setDisable(disable);
-                    cbDontShowAudioVersions.setDisable(disable);
-                    cbDontShowDuplicates.setDisable(disable);
-                    senderCheckList.setDisable(disable);
-                    themaComboBox.setDisable(disable);
-                    filmLengthSliderNode.setDisable(disable);
-                    zeitraumSpinner.setDisable(disable);
-                    filterSelect.setDisable(disable);
-                    btnDeleteCurrentFilter.setDisable(disable || deleteCurrentFilterButtonDisabled);
-                    btnAddNewFilter.setDisable(disable);
-                    btnRenameFilter.setDisable(disable);
-                });
+        Platform.runLater(() -> {
+            final boolean disable = evt.active;
+            btnDeleteFilterSettings.setDisable(disable);
+            cbShowOnlyHd.setDisable(disable);
+            cbShowSubtitlesOnly.setDisable(disable);
+            cbShowNewOnly.setDisable(disable);
+            cbShowBookMarkedOnly.setDisable(disable);
+            cbShowOnlyLivestreams.setDisable(disable);
+            cbShowUnseenOnly.setDisable(disable);
+            cbDontShowAbos.setDisable(disable);
+            cbDontShowGebaerdensprache.setDisable(disable);
+            cbDontShowTrailers.setDisable(disable);
+            cbDontShowAudioVersions.setDisable(disable);
+            cbDontShowDuplicates.setDisable(disable);
+            senderCheckList.setDisable(disable);
+            themaComboBox.setDisable(disable);
+            filmLengthSliderNode.setDisable(disable);
+            zeitraumSpinner.setDisable(disable);
+            filterSelect.setDisable(disable);
+            btnDeleteCurrentFilter.setDisable(disable || deleteCurrentFilterButtonDisabled);
+            btnAddNewFilter.setDisable(disable);
+            btnRenameFilter.setDisable(disable);
+        });
     }
 
     public void disableDeleteCurrentFilterButton(boolean disable) {
