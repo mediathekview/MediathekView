@@ -14,10 +14,9 @@ import javafx.collections.ObservableList;
 import javafx.util.StringConverter;
 import mediathek.config.Daten;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.EventListWithEmptyFirstEntry;
-import mediathek.tool.FilterConfiguration;
-import mediathek.tool.FilterDTO;
-import mediathek.tool.GermanStringSorter;
+import mediathek.tool.*;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.RangeSlider;
@@ -59,7 +58,7 @@ public class FilterActionPanel {
     private BooleanProperty showNewOnly;
 
     private ListProperty<String> checkedChannels = new SimpleListProperty<>(FXCollections.observableArrayList());
-    private ObjectProperty<String> themaProperty;
+    private ReadOnlyObjectProperty<String> themaProperty;
 
 
     /**
@@ -109,7 +108,7 @@ public class FilterActionPanel {
         return checkedChannels;
     }
 
-    public ObjectProperty<String> themaProperty() {
+    public ReadOnlyObjectProperty<String> themaProperty() {
         return themaProperty;
     }
 
@@ -285,15 +284,18 @@ public class FilterActionPanel {
                     if (!s.isEmpty()) {
                         final var fName = s.trim();
                         if (!fName.equals(fltName)) {
+                            Configuration config = ApplicationConfiguration.getConfiguration();
+                            config.lock(LockMode.WRITE);
                             thema = filterConfig.getThema();
                             filterConfig.setThema("");
                             renameCurrentFilter(fName);
+                            filterConfig.setThema(thema);
+                            config.unlock(LockMode.WRITE);
                             logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
                         } else logger.warn("New and old filter name are identical...doing nothing");
                     } else logger.warn("Rename filter text was empty...doing nothing");
                 } else logger.trace("User cancelled rename");
 
-                filterConfig.setThema(thema);
             });
         });
     }
@@ -357,7 +359,6 @@ public class FilterActionPanel {
         dontShowSignLanguage.set(filterConfig.isDontShowSignLanguage());
         dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
         dontShowDuplicates.set(filterConfig.isDontShowDuplicates());
-        themaProperty.set(filterConfig.getThema());
         viewSettingsPane.themaComboBox.setValue(filterConfig.getThema());
 
         try {

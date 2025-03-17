@@ -45,7 +45,33 @@ public class FilterConfiguration {
 
     private void migrateOldFilterConfigurations() {
         FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), "Alter Filter");
-        if (migrateAll(() -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(), newFilter, Boolean.class, this::setDontShowAbos), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(), newFilter, Boolean.class, this::setDontShowAudioVersions), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey(), newFilter, Boolean.class, this::setDontShowSignLanguage), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey(), newFilter, Boolean.class, this::setDontShowTrailers), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getOldKey(), newFilter, Double.class, this::setFilmLengthMax), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(), newFilter, Double.class, this::setFilmLengthMin), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowHdOnly), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowLivestreamsOnly), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowNewOnly), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowBookMarkedOnly), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowSubtitlesOnly), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowUnseenOnly), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getOldKey(), newFilter, String.class, this::setZeitraum), () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getOldKey(), newFilter, String.class, json -> setCheckedChannels(parseJsonToSet(json))),
+        if (migrateAll(() -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(), newFilter, Boolean.class, this::setDontShowAbos),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(), newFilter, Boolean.class, this::setDontShowAudioVersions),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE.getOldKey(), newFilter, Boolean.class, this::setDontShowSignLanguage),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS.getOldKey(), newFilter, Boolean.class, this::setDontShowTrailers),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getOldKey(), newFilter, Double.class, this::setFilmLengthMax),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(), newFilter, Double.class, this::setFilmLengthMin),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowHdOnly),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowLivestreamsOnly),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowNewOnly),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowBookMarkedOnly),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowSubtitlesOnly),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowUnseenOnly),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getOldKey(), newFilter, String.class, this::setZeitraum),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getOldKey(), newFilter, String.class, json -> setCheckedChannels(parseJsonToSet(json))),
 
                 () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_THEMA.getOldKey(), newFilter, String.class, this::setThema))) {
             addNewFilter(newFilter);
@@ -229,9 +255,16 @@ public class FilterConfiguration {
     }
 
     public FilterConfiguration setThema(String thema) {
-        configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey()), thema);
+        String key = toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_THEMA.getKey());
+
+        if (thema == null || thema.trim().isEmpty()) {
+            configuration.clearProperty(key);
+        } else {
+            configuration.setProperty(key, thema);
+        }
         return this;
     }
+
 
 
     private Set<String> parseJsonToSet(String json) {
