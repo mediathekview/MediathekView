@@ -77,7 +77,7 @@ public class FilterActionPanel {
         setupRenameFilterButton();
 
         SwingUtilities.invokeLater(() -> filterDialog = new OldSwingJavaFxFilterDialog(MediathekGui.ui(), viewSettingsPane, filterToggleBtn));
-        
+
         restoreConfigSettings();
         ObservableList<String> senderList = FXCollections.observableArrayList(filterConfig.getCheckedChannels());
         checkedChannels = new SimpleListProperty<>(senderList);
@@ -279,16 +279,21 @@ public class FilterActionPanel {
         viewSettingsPane.btnRenameFilter.setOnAction(e -> {
             final var fltName = filterConfig.getCurrentFilter().name();
             SwingUtilities.invokeLater(() -> {
+                String thema = "";
                 String s = (String) JOptionPane.showInputDialog(MediathekGui.ui(), "Neuer Name des Filters:", "Filter umbenennen", JOptionPane.PLAIN_MESSAGE, null, null, fltName);
                 if (s != null) {
                     if (!s.isEmpty()) {
                         final var fName = s.trim();
                         if (!fName.equals(fltName)) {
+                            thema = filterConfig.getThema();
+                            filterConfig.setThema("");
                             renameCurrentFilter(fName);
                             logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
                         } else logger.warn("New and old filter name are identical...doing nothing");
                     } else logger.warn("Rename filter text was empty...doing nothing");
                 } else logger.trace("User cancelled rename");
+
+                filterConfig.setThema(thema);
             });
         });
     }
