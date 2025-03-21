@@ -26,7 +26,6 @@ public class BeobTableHeader extends MouseAdapter {
     private final boolean displaySenderIconMenus;
     private final MVConfig.Configs configKey;
     private JCheckBoxMenuItem[] box;
-    private JMenuItem miResetColumns;
 
     /**
      * Context Menu for manipulation of table visual appearance from table header.
@@ -54,14 +53,6 @@ public class BeobTableHeader extends MouseAdapter {
         for (int index = 0; index < colCount; index++) {
             columns[index] = (String) colModel.getColumn(index).getHeaderValue();
         }
-
-        createStaticMenuEntries();
-    }
-
-    private void createStaticMenuEntries() {
-        miResetColumns = new JMenuItem("Spalten zurücksetzen");
-        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
-
     }
 
     @Override
@@ -157,6 +148,8 @@ public class BeobTableHeader extends MouseAdapter {
         }
 
         // Tabellenspalten zurücksetzen
+        var miResetColumns = new JMenuItem("Spalten zurücksetzen");
+        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
         jPopupMenu.add(miResetColumns);
 
         return jPopupMenu;
