@@ -1242,6 +1242,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.addSeparator();
 
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
+            itemPlayer.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-play.svg"));
             itemPlayer.addActionListener(e -> {
                 final int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {
