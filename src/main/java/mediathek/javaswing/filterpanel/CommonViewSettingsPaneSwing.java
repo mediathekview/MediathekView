@@ -27,6 +27,7 @@ public class CommonViewSettingsPaneSwing extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        filmLengthSliderSwing1 = new mediathek.javaswing.filterpanel.FilmLengthSliderSwing();
         jPanel1 = new javax.swing.JPanel();
         zeitraumSpinnerSwing1 = new mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing();
         jLabel1 = new javax.swing.JLabel();
@@ -179,6 +180,7 @@ public class CommonViewSettingsPaneSwing extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mediathek.javaswing.filterpanel.FilmLengthSliderNodeSwing filmLengthSliderNodeSwing1;
+    private mediathek.javaswing.filterpanel.FilmLengthSliderSwing filmLengthSliderSwing1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
