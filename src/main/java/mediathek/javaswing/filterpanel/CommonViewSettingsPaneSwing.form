@@ -24,17 +24,57 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="filterSelect" pref="202" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnRenameFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnaddNewFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnDeleteCurrentFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnDeleteFilterSettings" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="scrollPaneSender" alignment="1" max="32767" attributes="0"/>
+                  <Component id="separatorSender" alignment="0" max="32767" attributes="0"/>
+                  <Component id="separatorBtmRow" alignment="0" max="32767" attributes="0"/>
+                  <Component id="separatorCB" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="filterSelect" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnRenameFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnaddNewFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnDeleteCurrentFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnDeleteFilterSettings" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="senderLabel" alignment="0" max="32767" attributes="0"/>
+                  <Component id="separatorThema" alignment="1" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="themaLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="themaComboBox" min="-2" pref="335" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="separatorSlider" alignment="1" max="32767" attributes="0"/>
+                  <Component id="filmLengthSliderNode" alignment="0" pref="0" max="32767" attributes="0"/>
+                  <Component id="separatorSpinner" alignment="1" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="zeitraumSpinner" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="cbDontShowGebaerdensprache" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbShowSubtitlesOnly" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbShowNewOnly" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbShowBookMarkedOnly" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbShowOnlyHd" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbShowOnlyLivestreams" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbShowUnseenOnly" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbDontShowAbos" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbDontShowTrailers" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                          <Component id="cbDontShowAudioVersions" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -50,7 +90,56 @@
                   <Component id="filterSelect" min="-2" max="-2" attributes="0"/>
                   <Component id="btnDeleteCurrentFilter" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="604" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="separatorBtmRow" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbShowNewOnly" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbShowBookMarkedOnly" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbShowOnlyHd" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbShowSubtitlesOnly" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbShowOnlyLivestreams" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="separatorCB" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbShowUnseenOnly" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbDontShowAbos" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbDontShowGebaerdensprache" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbDontShowTrailers" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbDontShowAudioVersions" linkSize="9" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="separatorSender" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="senderLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="scrollPaneSender" min="-2" pref="80" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="separatorThema" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="themaComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="themaLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="separatorSlider" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="filmLengthSliderNode" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="separatorSpinner" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="zeitraumSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="9" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -117,6 +206,148 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="separatorBtmRow">
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbShowNewOnly">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nur neue Filme anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbShowBookMarkedOnly">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nur gemerkte Filme anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbShowOnlyHd">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nur High Quality(HQ) Filme anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbShowSubtitlesOnly">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nur Filme mit Untertitel anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbShowOnlyLivestreams">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nur Live Streams anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="separatorCB">
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbShowUnseenOnly">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gesehene Filme nicht anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbDontShowAbos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Abos nicht anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbDontShowGebaerdensprache">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Geb&#xe4;rdensprache nicht anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbDontShowTrailers">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Trailer/Teaser/Vorschau nicht anzeigen"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbDontShowAudioVersions">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="H&#xf6;rfassungen ausblenden"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="separatorSender">
+    </Component>
+    <Component class="javax.swing.JLabel" name="senderLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Sender:"/>
+      </Properties>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="scrollPaneSender">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="com.jidesoft.swing.CheckBoxList" name="senderCheckList">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+          </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JSeparator" name="separatorThema">
+    </Component>
+    <Component class="mediathek.javaswing.filterpanel.ThemaComboBoxSwing" name="themaComboBox">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="separatorSlider">
+    </Component>
+    <Component class="mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing" name="zeitraumSpinner">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="themaLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Thema:"/>
+      </Properties>
+    </Component>
+    <Component class="mediathek.javaswing.filterpanel.FilmLengthSliderNodeSwing" name="filmLengthSliderNode">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JSeparator" name="separatorSpinner">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Zeitraum:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Tage"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

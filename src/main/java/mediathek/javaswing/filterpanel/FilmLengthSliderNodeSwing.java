@@ -18,6 +18,7 @@ public class FilmLengthSliderNodeSwing extends javax.swing.JPanel {
      */
     public FilmLengthSliderNodeSwing() {
         initComponents();
+       
         filmLengthSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -44,6 +45,8 @@ public class FilmLengthSliderNodeSwing extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        filmLengthSlider = new mediathek.javaswing.filterpanel.FilmLengthSliderSwing();
+
         lblMin.setText("min");
 
         lblMax.setText("max");
@@ -52,25 +55,24 @@ public class FilmLengthSliderNodeSwing extends javax.swing.JPanel {
 
         lblMaximalLaenge.setText("Maximallänge:  ");
 
+        filmLengthSlider.setValue(10);
+        filmLengthSlider.setUpperValue(90);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblMindestlaenge)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblMin)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
-                        .addComponent(lblMaximalLaenge)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblMax)
-                        .addGap(17, 17, 17))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(filmLengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addComponent(lblMindestlaenge)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
+                .addComponent(lblMaximalLaenge)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblMax)
+                .addGap(17, 17, 17))
+            .addComponent(filmLengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -81,15 +83,15 @@ public class FilmLengthSliderNodeSwing extends javax.swing.JPanel {
                     .addComponent(lblMin)
                     .addComponent(lblMaximalLaenge)
                     .addComponent(lblMax))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filmLengthSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(filmLengthSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public final mediathek.javaswing.filterpanel.FilmLengthSliderSwing filmLengthSlider = new mediathek.javaswing.filterpanel.FilmLengthSliderSwing();
+    public mediathek.javaswing.filterpanel.FilmLengthSliderSwing filmLengthSlider;
     private final javax.swing.JLabel lblMax = new javax.swing.JLabel();
     private final javax.swing.JLabel lblMaximalLaenge = new javax.swing.JLabel();
     private final javax.swing.JLabel lblMin = new javax.swing.JLabel();
