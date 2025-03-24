@@ -41,6 +41,7 @@ import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
 import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.javafx.filterpanel.SearchControlFieldMode;
+import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -111,7 +112,7 @@ public class GuiFilme extends AGuiTabPanel {
     private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final SeenHistoryController historyController = new SeenHistoryController();
     private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
-    private final PauseTransition zeitraumTransition = new PauseTransition(Duration.millis(250));
+    private final Timer zeitraumTimer;
     /**
      * The JavaFx Film action popup panel.
      */
@@ -156,6 +157,15 @@ public class GuiFilme extends AGuiTabPanel {
         add(new FilmToolBar(), BorderLayout.NORTH);
 
         start_init();
+
+        zeitraumTimer = new Timer(250, e -> {
+            // reset sender filter first
+            JavaFxUtils.invokeInFxThreadAndWait(() -> filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks());
+            MessageBus.getMessageBus().publish(new FilterZeitraumEvent());
+        });
+        zeitraumTimer.setRepeats(false);
+        zeitraumTimer.setCoalesce(true);
+
         // register message bus handler
         MessageBus.getMessageBus().subscribe(this);
 
@@ -618,12 +628,6 @@ public class GuiFilme extends AGuiTabPanel {
                 logger.error("Table reload failed", ex);
             }
         });
-
-        zeitraumTransition.setOnFinished(e -> {
-            // reset sender filter first
-            filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
-            MessageBus.getMessageBus().publish(new FilterZeitraumEvent());
-        });
     }
 
     private static class FilterZeitraumEvent extends BaseEvent {}
@@ -670,7 +674,12 @@ public class GuiFilme extends AGuiTabPanel {
             });
 
             filterActionPanel.zeitraumProperty()
-                    .addListener((ov, oV, nV) -> zeitraumTransition.playFromStart());
+                    .addListener((ov, oV, nV) -> SwingUtilities.invokeLater(() -> {
+                        if (!zeitraumTimer.isRunning())
+                            zeitraumTimer.start();
+                        else
+                            zeitraumTimer.restart();
+                    }));
 
             filterActionPanel.getViewSettingsPane().themaComboBox.setOnAction(e -> {
                 if (!filterActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
