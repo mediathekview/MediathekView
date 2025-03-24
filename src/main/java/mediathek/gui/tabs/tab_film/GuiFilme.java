@@ -11,10 +11,8 @@ import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.util.Duration;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -68,7 +66,6 @@ import java.awt.print.PrinterException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -105,14 +102,14 @@ public class GuiFilme extends AGuiTabPanel {
     private final BookmarkRemoveFilmAction bookmarkRemoveFilmAction = new BookmarkRemoveFilmAction();
     private final BookmarkClearListAction bookmarkClearListAction = new BookmarkClearListAction();
     private final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(MediathekGui.ui());
-    private final PauseTransition reloadTableDataTransition = new PauseTransition(Duration.millis(250d));
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
     private final JScrollPane filmListScrollPane = new JScrollPane();
     private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
     private final SeenHistoryController historyController = new SeenHistoryController();
     private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
-    private final Timer zeitraumTimer;
+    private final NonRepeatingTimer zeitraumTimer;
+    private final NonRepeatingTimer reloadTableDataTimer;
     /**
      * The JavaFx Film action popup panel.
      */
@@ -158,13 +155,13 @@ public class GuiFilme extends AGuiTabPanel {
 
         start_init();
 
-        zeitraumTimer = new Timer(250, e -> {
+        zeitraumTimer = new NonRepeatingTimer(e -> {
             // reset sender filter first
             JavaFxUtils.invokeInFxThreadAndWait(() -> filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks());
             MessageBus.getMessageBus().publish(new FilterZeitraumEvent());
         });
-        zeitraumTimer.setRepeats(false);
-        zeitraumTimer.setCoalesce(true);
+
+        reloadTableDataTimer = new NonRepeatingTimer(e -> loadTable());
 
         // register message bus handler
         MessageBus.getMessageBus().subscribe(this);
@@ -619,26 +616,18 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private void setupDataTransitions() {
-        //execute on JavaFX thread!
-        reloadTableDataTransition.setOnFinished(e -> {
-            try {
-                SwingUtilities.invokeAndWait(this::loadTable);
-            } catch (InterruptedException | InvocationTargetException ex) {
-                logger.error("Table reload failed", ex);
-            }
-        });
-    }
-
-    private static class FilterZeitraumEvent extends BaseEvent {}
-
     /**
      * Update table data when receiving ReloadTableDataEvent or subclasses of it.
      * @param e event
      */
     @Handler
     private void handleReloadTableDataEvent(ReloadTableDataEvent e) {
-        Platform.runLater(reloadTableDataTransition::playFromStart);
+        SwingUtilities.invokeLater(() -> {
+            if (!reloadTableDataTimer.isRunning())
+                reloadTableDataTimer.start();
+            else
+                reloadTableDataTimer.restart();
+        });
     }
 
     @Handler
@@ -651,9 +640,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     private void setupActionListeners() {
         Platform.runLater(() -> {
-            setupDataTransitions();
-
-            final ChangeListener<Boolean> reloadTableListener = (ov, oV, nV) -> reloadTableDataTransition.playFromStart();
+            final ChangeListener<Boolean> reloadTableListener = (ov, oV, nV) -> MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
 
             filterActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
             filterActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
@@ -761,6 +748,17 @@ public class GuiFilme extends AGuiTabPanel {
                 },
                 decoratedPool);
     }
+
+    static class NonRepeatingTimer extends Timer {
+        public NonRepeatingTimer(ActionListener listener) {
+            super(250, listener);
+
+            setRepeats(false);
+            setCoalesce(true);
+        }
+    }
+
+    private static class FilterZeitraumEvent extends BaseEvent {}
 
     static public class FilterVisibilityToggleButton extends JToggleButton {
         public FilterVisibilityToggleButton(Action a) {
