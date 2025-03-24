@@ -1,5 +1,6 @@
 package mediathek.javaswing.filterpanel;
 
+import java.awt.Component;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.SVGIconUtilities;
 import java.awt.Dimension;
@@ -47,7 +48,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
         btnDeleteCurrentFilter.setToolTipText("Aktuellen Filter löschen");
         btnDeleteCurrentFilter.setPreferredSize(new Dimension(72, 22));
 
-        btnDeleteFilterSettings.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
+        btnDeleteFilterSettings.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/recycle.svg"));
         btnDeleteFilterSettings.setToolTipText("Aktuellen Filter zurücksetzen");
         btnDeleteFilterSettings.setPreferredSize(new Dimension(72, 22));
 
@@ -56,7 +57,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+                .addComponent(filterSelect, 0, 202, Short.MAX_VALUE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -65,8 +66,11 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                 .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap())
         );
+
+        layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter, btnaddNewFilter});
+
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -78,6 +82,8 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                     .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(604, Short.MAX_VALUE))
         );
+
+        layout.linkSize(SwingConstants.VERTICAL, new Component[] {btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter, btnaddNewFilter});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
