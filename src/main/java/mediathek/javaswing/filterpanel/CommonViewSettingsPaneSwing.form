@@ -26,30 +26,6 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jSeparator4" alignment="1" max="32767" attributes="0"/>
-                  <Component id="jSeparator1" alignment="1" max="32767" attributes="0"/>
-                  <Component id="jPanel1" alignment="1" max="32767" attributes="0"/>
-                  <Component id="jSeparator2" alignment="0" max="32767" attributes="0"/>
-                  <Component id="filmLengthSliderNodeSwing1" alignment="0" pref="441" max="32767" attributes="0"/>
-                  <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jSeparator3" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox4" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox5" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jSeparator5" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox2" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox1" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox3" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox6" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox7" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox8" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox9" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jCheckBox10" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jSeparator6" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jPanel3" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="jComboBox1" min="-2" pref="150" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
               <Component id="filterSelect" min="-2" pref="127" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnRenameFilter" min="-2" pref="36" max="-2" attributes="0"/>
