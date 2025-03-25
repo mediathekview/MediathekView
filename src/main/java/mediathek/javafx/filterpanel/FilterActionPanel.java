@@ -107,24 +107,12 @@ public class FilterActionPanel {
         return zeitraumProperty;
     }
 
-    public boolean isDontShowAudioVersions() {
-        return dontShowAudioVersions.get();
-    }
-
     public BooleanProperty dontShowAudioVersionsProperty() {
         return dontShowAudioVersions;
     }
 
-    public boolean isDontShowSignLanguage() {
-        return dontShowSignLanguage.get();
-    }
-
     public BooleanProperty dontShowSignLanguageProperty() {
         return dontShowSignLanguage;
-    }
-
-    public boolean isDontShowTrailers() {
-        return dontShowTrailers.get();
     }
 
     public BooleanProperty dontShowTrailersProperty() {
@@ -141,14 +129,6 @@ public class FilterActionPanel {
 
     public BooleanProperty dontShowDuplicatesProperty() {
         return dontShowDuplicates;
-    }
-
-    public boolean isDontShowDuplicates() {
-        return dontShowDuplicates.get();
-    }
-
-    public boolean isShowLivestreamsOnly() {
-        return showLivestreamsOnly.get();
     }
 
     public BooleanProperty showLivestreamsOnlyProperty() {
@@ -171,10 +151,6 @@ public class FilterActionPanel {
         return showBookMarkedOnly;
     }
 
-    public boolean isShowSubtitlesOnly() {
-        return showSubtitlesOnly.get();
-    }
-
     public BooleanProperty showSubtitlesOnlyProperty() {
         return showSubtitlesOnly;
     }
@@ -185,10 +161,6 @@ public class FilterActionPanel {
 
     public BooleanProperty showOnlyHighQualityProperty() {
         return showOnlyHighQuality;
-    }
-
-    public boolean isShowNewOnly() {
-        return showNewOnly.get();
     }
 
     public BooleanProperty showNewOnlyProperty() {
