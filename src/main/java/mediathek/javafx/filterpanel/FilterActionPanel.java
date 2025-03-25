@@ -99,10 +99,6 @@ public class FilterActionPanel {
         filmLengthSlider.highValueChangingProperty().addListener(listener);
     }
 
-    public FilmLengthSliderValues getFilmLengthSliderValues() {
-        return new FilmLengthSliderValues((long) filmLengthSlider.getLowValue(), (long) filmLengthSlider.getHighValue());
-    }
-
     public ReadOnlyObjectProperty<String> zeitraumProperty() {
         return zeitraumProperty;
     }

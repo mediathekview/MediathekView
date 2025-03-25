@@ -120,8 +120,7 @@ public abstract class GuiModelHelper {
      * Convert slider values for faster user later.
      */
     protected void calculateFilmLengthSliderValues() {
-        var sliderVals = filterActionPanel.getFilmLengthSliderValues();
-        minLengthInSeconds = sliderVals.minLengthInSeconds();
-        maxLengthInSeconds = sliderVals.maxLengthInSeconds();
+        minLengthInSeconds = TimeUnit.SECONDS.convert((long)filterConfiguration.getFilmLengthMin(), TimeUnit.MINUTES);
+        maxLengthInSeconds = TimeUnit.SECONDS.convert((long)filterConfiguration.getFilmLengthMax(), TimeUnit.MINUTES);
     }
 }
