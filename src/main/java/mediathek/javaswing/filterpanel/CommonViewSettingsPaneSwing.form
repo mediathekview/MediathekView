@@ -36,7 +36,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRenameFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnaddNewFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="btnAddNewFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnDeleteCurrentFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -46,8 +46,8 @@
                   <Component id="separatorThema" alignment="1" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="themaLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="themaComboBox" min="-2" pref="335" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="themaComboBox" max="32767" attributes="0"/>
                   </Group>
                   <Component id="separatorSlider" alignment="1" max="32767" attributes="0"/>
                   <Component id="filmLengthSliderNode" alignment="0" pref="0" max="32767" attributes="0"/>
@@ -56,11 +56,11 @@
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <Component id="zeitraumLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="zeitraumSpinner" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                              <Component id="tageLabel" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="cbDontShowGebaerdensprache" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
                           <Component id="cbShowSubtitlesOnly" linkSize="8" alignment="1" pref="414" max="32767" attributes="0"/>
@@ -85,7 +85,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="btnDeleteFilterSettings" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
-                  <Component id="btnaddNewFilter" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
+                  <Component id="btnAddNewFilter" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="btnRenameFilter" linkSize="2" alignment="0" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="filterSelect" min="-2" max="-2" attributes="0"/>
                   <Component id="btnDeleteCurrentFilter" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
@@ -135,9 +135,9 @@
               <Component id="separatorSpinner" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="zeitraumLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="zeitraumSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="tageLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="9" max="32767" attributes="0"/>
           </Group>
@@ -165,7 +165,7 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JButton" name="btnaddNewFilter">
+    <Component class="javax.swing.JButton" name="btnAddNewFilter">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="SVGIconUtilities.createSVGIcon(&quot;icons/fontawesome/plus.svg&quot;)" type="code"/>
@@ -339,12 +339,12 @@
     </Component>
     <Component class="javax.swing.JSeparator" name="separatorSpinner">
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="zeitraumLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Zeitraum:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel2">
+    <Component class="javax.swing.JLabel" name="tageLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Tage"/>
       </Properties>

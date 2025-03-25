@@ -2,16 +2,19 @@ package mediathek.javaswing.filterpanel;
 
 import com.jidesoft.swing.CheckBoxList;
 import java.awt.Component;
+import javafx.beans.value.ChangeListener;
+import javafx.util.StringConverter;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.SVGIconUtilities;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
 
 public class CommonViewSettingsPaneSwing extends JDialog {
+
+    private boolean deleteCurrentFilterButtonDisabled;
 
     public CommonViewSettingsPaneSwing(Frame parent, boolean modal) {
 
@@ -30,7 +33,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
 
         filterSelect = new JComboBox<>();
         btnRenameFilter = new JButton();
-        btnaddNewFilter = new JButton();
+        btnAddNewFilter = new JButton();
         btnDeleteCurrentFilter = new JButton();
         btnDeleteFilterSettings = new JButton();
         separatorBtmRow = new JSeparator();
@@ -56,8 +59,8 @@ public class CommonViewSettingsPaneSwing extends JDialog {
         themaLabel = new JLabel();
         filmLengthSliderNode = new FilmLengthSliderNodeSwing();
         separatorSpinner = new JSeparator();
-        jLabel1 = new JLabel();
-        jLabel2 = new JLabel();
+        zeitraumLabel = new JLabel();
+        tageLabel = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Filter");
@@ -66,9 +69,9 @@ public class CommonViewSettingsPaneSwing extends JDialog {
         btnRenameFilter.setToolTipText("Filter umbenennen");
         btnRenameFilter.setPreferredSize(new Dimension(72, 22));
 
-        btnaddNewFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
-        btnaddNewFilter.setToolTipText("Neuen Filter anlegen");
-        btnaddNewFilter.setPreferredSize(new Dimension(72, 22));
+        btnAddNewFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
+        btnAddNewFilter.setToolTipText("Neuen Filter anlegen");
+        btnAddNewFilter.setPreferredSize(new Dimension(72, 22));
 
         btnDeleteCurrentFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
         btnDeleteCurrentFilter.setToolTipText("Aktuellen Filter löschen");
@@ -104,9 +107,9 @@ public class CommonViewSettingsPaneSwing extends JDialog {
 
         themaLabel.setText("Thema:");
 
-        jLabel1.setText("Zeitraum:");
+        zeitraumLabel.setText("Zeitraum:");
 
-        jLabel2.setText("Tage");
+        tageLabel.setText("Tage");
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -123,7 +126,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnaddNewFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddNewFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -132,8 +135,8 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                     .addComponent(separatorThema, GroupLayout.Alignment.TRAILING)
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(themaLabel)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(themaComboBox, GroupLayout.PREFERRED_SIZE, 335, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(themaComboBox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(separatorSlider, GroupLayout.Alignment.TRAILING)
                     .addComponent(filmLengthSliderNode, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(separatorSpinner, GroupLayout.Alignment.TRAILING)
@@ -141,11 +144,11 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(zeitraumLabel)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(zeitraumSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2))
+                                .addComponent(tageLabel))
                             .addComponent(cbDontShowGebaerdensprache, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
                             .addComponent(cbShowSubtitlesOnly, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
                             .addComponent(cbShowNewOnly, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
@@ -159,7 +162,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                 .addContainerGap())
         );
 
-        layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter, btnaddNewFilter});
+        layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {btnAddNewFilter, btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter});
 
         layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {cbDontShowAbos, cbDontShowAudioVersions, cbDontShowGebaerdensprache, cbDontShowTrailers, cbShowBookMarkedOnly, cbShowNewOnly, cbShowOnlyHd, cbShowOnlyLivestreams, cbShowSubtitlesOnly, cbShowUnseenOnly});
 
@@ -168,7 +171,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnaddNewFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddNewFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
@@ -216,24 +219,100 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                 .addComponent(separatorSpinner, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(zeitraumLabel)
                     .addComponent(zeitraumSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(tageLabel))
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
-        layout.linkSize(SwingConstants.VERTICAL, new Component[] {btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter, btnaddNewFilter});
+        layout.linkSize(SwingConstants.VERTICAL, new Component[] {btnAddNewFilter, btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter});
 
         layout.linkSize(SwingConstants.VERTICAL, new Component[] {cbDontShowAbos, cbDontShowAudioVersions, cbDontShowGebaerdensprache, cbDontShowTrailers, cbShowBookMarkedOnly, cbShowNewOnly, cbShowOnlyHd, cbShowOnlyLivestreams, cbShowSubtitlesOnly, cbShowUnseenOnly});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    public void disableDeleteCurrentFilterButton(boolean disable) {
+        deleteCurrentFilterButtonDisabled = disable;
+        btnDeleteCurrentFilter.setEnabled(!disable);
+    }
+
+    public void selectFilter(FilterDTO filter) {
+        ComboBoxModel <FilterDTO> selectionModel = filterSelect.getModel();
+        if (!filter.equals(selectionModel.getSelectedItem())) {
+            selectionModel.setSelectedItem(filter);
+        }
+    }
+
+    public void setAddNewFilterButtonEventHandler(ActionListener listener) {
+        btnAddNewFilter.addActionListener(listener);
+    }
+
+    public void setAvailableFilters(DefaultComboBoxModel<FilterDTO> filters) {
+        filterSelect.setModel(filters);
+    }
+
+    public void setFilterSelectionChangeListener(ActionListener listener) {
+        filterSelect.addActionListener(listener);
+    }
+
+    public void setFilterSelectionStringConverter(java.util.function.Function<FilterDTO, String> toStringConverter) {
+        // Set custom renderer for display
+        filterSelect.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof FilterDTO) {
+                    setText(toStringConverter.apply((FilterDTO) value));
+                }
+                return this;
+            }
+        });
+
+        // Set custom editor for text input
+        filterSelect.setEditor(new ComboBoxEditor() {
+            private JTextField editor = new JTextField();
+
+            @Override
+            public Component getEditorComponent() {
+                return editor;
+            }
+
+            @Override
+            public void setItem(Object item) {
+                if (item instanceof FilterDTO) {
+                    editor.setText(toStringConverter.apply((FilterDTO) item));
+                }
+            }
+
+            @Override
+            public Object getItem() {
+                String text = editor.getText();
+                return new FilterDTO(text); // Assuming a constructor exists
+            }
+
+            @Override
+            public void selectAll() {
+                editor.selectAll();
+            }
+
+            @Override
+            public void addActionListener(java.awt.event.ActionListener l) {
+                editor.addActionListener(l);
+            }
+
+            @Override
+            public void removeActionListener(java.awt.event.ActionListener l) {
+                editor.removeActionListener(l);
+            }
+        });
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public JButton btnAddNewFilter;
     public JButton btnDeleteCurrentFilter;
     public JButton btnDeleteFilterSettings;
     public JButton btnRenameFilter;
-    public JButton btnaddNewFilter;
     public JCheckBox cbDontShowAbos;
     public JCheckBox cbDontShowAudioVersions;
     public JCheckBox cbDontShowGebaerdensprache;
@@ -246,8 +325,6 @@ public class CommonViewSettingsPaneSwing extends JDialog {
     public JCheckBox cbShowUnseenOnly;
     public FilmLengthSliderNodeSwing filmLengthSliderNode;
     public JComboBox<FilterDTO> filterSelect;
-    private JLabel jLabel1;
-    private JLabel jLabel2;
     private JScrollPane scrollPaneSender;
     public CheckBoxList senderCheckList;
     private JLabel senderLabel;
@@ -257,8 +334,10 @@ public class CommonViewSettingsPaneSwing extends JDialog {
     private JSeparator separatorSlider;
     private JSeparator separatorSpinner;
     private JSeparator separatorThema;
+    private JLabel tageLabel;
     public ThemaComboBoxSwing themaComboBox;
     private JLabel themaLabel;
+    private JLabel zeitraumLabel;
     public ZeitraumSpinnerSwing zeitraumSpinner;
     // End of variables declaration//GEN-END:variables
 }
