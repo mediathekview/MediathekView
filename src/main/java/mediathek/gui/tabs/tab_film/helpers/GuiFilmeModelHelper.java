@@ -49,8 +49,6 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private void performTableFiltering() {
-        String[] arrIrgendwo = searchFieldData.evaluateThemaTitel();
-
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
@@ -92,6 +90,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         stream = applyCommonFilters(stream, filterThema);
 
         //final stage filtering...
+        String[] arrIrgendwo = searchFieldData.evaluateThemaTitel();
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         if (!searchFieldEmpty) {
             stream = stream.filter(FinalStageFilterFactory
