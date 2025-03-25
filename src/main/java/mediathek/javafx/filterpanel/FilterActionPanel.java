@@ -115,10 +115,6 @@ public class FilterActionPanel {
         return dontShowTrailers;
     }
 
-    public boolean isDontShowAbos() {
-        return dontShowAbos.get();
-    }
-
     public BooleanProperty dontShowAbosProperty() {
         return dontShowAbos;
     }
@@ -137,10 +133,6 @@ public class FilterActionPanel {
 
     public BooleanProperty showUnseenOnlyProperty() {
         return showUnseenOnly;
-    }
-
-    public boolean isShowBookMarkedOnly() {
-        return showBookMarkedOnly.get();
     }
 
     public BooleanProperty showBookMarkedOnlyProperty() {
