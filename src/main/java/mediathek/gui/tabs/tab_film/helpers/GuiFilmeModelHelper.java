@@ -18,7 +18,6 @@
 
 package mediathek.gui.tabs.tab_film.helpers;
 
-import javafx.collections.ObservableList;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
@@ -29,8 +28,6 @@ import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
-import java.util.HashSet;
-import java.util.Set;
 
 public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
@@ -46,17 +43,14 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final ObservableList<String> selectedSenders = filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
 
         if (filterConfiguration.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
         var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
+        var selectedSenders = filterConfiguration.getCheckedChannels();
         if (!selectedSenders.isEmpty()) {
-            //ObservableList.contains() is insanely slow...this speeds up to factor 250!
-            Set<String> senderSet = new HashSet<>(selectedSenders.size());
-            senderSet.addAll(selectedSenders);
-            stream = stream.filter(f -> senderSet.contains(f.getSender()));
+            stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
         }
         if (filterConfiguration.isShowNewOnly())
             stream = stream.filter(DatenFilm::isNew);

@@ -19,7 +19,6 @@
 package mediathek.gui.tabs.tab_film.helpers;
 
 import com.google.common.base.Stopwatch;
-import javafx.collections.ObservableList;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
@@ -128,7 +127,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                 if (filterConfiguration.isShowNewOnly()) {
                     addNewOnlyQuery(qb);
                 }
-                final ObservableList<String> selectedSenders = filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
+                var selectedSenders = filterConfiguration.getCheckedChannels();
                 if (!selectedSenders.isEmpty()) {
                     addSenderFilterQuery(qb, selectedSenders);
                 }
@@ -186,7 +185,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
         }
     }
 
-    private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull List<String> selectedSenders) {
+    private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull Collection<String> selectedSenders) {
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         for (var sender : selectedSenders) {
             // sender must be lowercase as StandardAnalyzer converts it to lower during indexing
