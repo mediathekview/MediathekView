@@ -410,7 +410,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filterActionPanel.isShowUnseenOnly()) {
+            if (filterConfig.isShowUnseenOnly()) {
                 MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -511,7 +511,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filterActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filterConfig.isShowHdOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -541,7 +541,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filterActionPanel.isShowOnlyHighQuality()) {
+            if (filterConfig.isShowHdOnly()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 

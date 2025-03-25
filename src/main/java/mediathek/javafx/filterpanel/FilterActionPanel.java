@@ -127,10 +127,6 @@ public class FilterActionPanel {
         return showLivestreamsOnly;
     }
 
-    public boolean isShowUnseenOnly() {
-        return showUnseenOnly.get();
-    }
-
     public BooleanProperty showUnseenOnlyProperty() {
         return showUnseenOnly;
     }
@@ -141,10 +137,6 @@ public class FilterActionPanel {
 
     public BooleanProperty showSubtitlesOnlyProperty() {
         return showSubtitlesOnly;
-    }
-
-    public boolean isShowOnlyHighQuality() {
-        return showOnlyHighQuality.get();
     }
 
     public BooleanProperty showOnlyHighQualityProperty() {
