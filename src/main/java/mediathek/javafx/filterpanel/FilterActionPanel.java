@@ -295,24 +295,13 @@ public class FilterActionPanel {
 
         try {
             double loadedMin = filterConfig.getFilmLengthMin();
-            if (loadedMin > filmLengthSlider.getHighValue()) {
-                filmLengthSlider.setHighValueChanging(true);
-                filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-                filmLengthSlider.setHighValueChanging(false);
-
-                filmLengthSlider.setLowValueChanging(true);
-                filmLengthSlider.setLowValue(loadedMin);
-                filmLengthSlider.setLowValueChanging(false);
-            } else {
-                filmLengthSlider.setLowValueChanging(true);
-                filmLengthSlider.setLowValue(loadedMin);
-                filmLengthSlider.setLowValueChanging(false);
-
-                filmLengthSlider.setHighValueChanging(true);
-                filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-                filmLengthSlider.setHighValueChanging(false);
-            }
-
+            filmLengthSlider.setHighValueChanging(true);
+            filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
+            filmLengthSlider.setHighValueChanging(false);
+            
+            filmLengthSlider.setLowValueChanging(true);
+            filmLengthSlider.setLowValue(loadedMin);
+            filmLengthSlider.setLowValueChanging(false);
         } catch (Exception exception) {
             logger.debug("Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!", exception);
         }
