@@ -76,7 +76,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
         try {
             calculateFilmLengthSliderValues();
 
-            if (filterActionPanel.isShowUnseenOnly())
+            if (filterConfiguration.isShowUnseenOnly())
                 historyController.prepareMemoryCache();
 
             String searchText = searchFieldData.searchFieldText();
@@ -103,29 +103,29 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                         logger.error("Unable to add zeitraum filter", ex);
                     }
                 }
-                if (filterActionPanel.isShowLivestreamsOnly()) {
+                if (filterConfiguration.isShowLivestreamsOnly()) {
                     addLivestreamQuery(qb);
                 }
-                if (filterActionPanel.isShowOnlyHighQuality()) {
+                if (filterConfiguration.isShowHdOnly()) {
                     addHighQualityOnlyQuery(qb);
                 }
-                if (filterActionPanel.isDontShowTrailers()) {
+                if (filterConfiguration.isDontShowTrailers()) {
                     addNoTrailerTeaserQuery(qb);
                 }
-                if (filterActionPanel.isDontShowAudioVersions()) {
+                if (filterConfiguration.isDontShowAudioVersions()) {
                     addNoAudioVersionQuery(qb);
                 }
-                if (filterActionPanel.isDontShowSignLanguage()) {
+                if (filterConfiguration.isDontShowSignLanguage()) {
                     addNoSignLanguageQuery(qb);
                 }
-                if (filterActionPanel.isDontShowDuplicates()) {
+                if (filterConfiguration.isDontShowDuplicates()) {
                     addNoDuplicatesQuery(qb);
                 }
 
-                if (filterActionPanel.isShowSubtitlesOnly()) {
+                if (filterConfiguration.isShowSubtitlesOnly()) {
                     addSubtitleOnlyQuery(qb);
                 }
-                if (filterActionPanel.isShowNewOnly()) {
+                if (filterConfiguration.isShowNewOnly()) {
                     addNewOnlyQuery(qb);
                 }
                 final ObservableList<String> selectedSenders = filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
