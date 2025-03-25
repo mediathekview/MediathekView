@@ -94,7 +94,7 @@ public abstract class GuiModelHelper {
     }
 
     protected boolean noFiltersAreSet() {
-        return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
+        return filterConfiguration.getCheckedChannels().isEmpty()
                 && filterConfiguration.getThema().isEmpty()
                 && searchFieldData.isEmpty()
                 && noFilmlengthFilterIsSet()
