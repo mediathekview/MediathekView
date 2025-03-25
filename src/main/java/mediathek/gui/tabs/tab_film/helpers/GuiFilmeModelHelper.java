@@ -40,7 +40,6 @@ import java.util.function.Predicate;
 
 public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
-    private String[] arrIrgendwo;
 
     public GuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
                                @NotNull SeenHistoryController historyController,
@@ -50,7 +49,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private void performTableFiltering() {
-        arrIrgendwo = searchFieldData.evaluateThemaTitel();
+        String[] arrIrgendwo = searchFieldData.evaluateThemaTitel();
 
         calculateFilmLengthSliderValues();
 
@@ -95,7 +94,8 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         //final stage filtering...
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         if (!searchFieldEmpty) {
-            stream = stream.filter(createFinalStageFilter());
+            stream = stream.filter(FinalStageFilterFactory
+                    .createFinalStageFilter(searchFieldData.searchThroughDescriptions(), arrIrgendwo));
         }
 
         var list = stream.toList();
@@ -107,26 +107,6 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
 
         if (filterActionPanel.isShowUnseenOnly())
             historyController.emptyMemoryCache();
-    }
-
-    private Predicate<DatenFilm> createFinalStageFilter() {
-        //if arrIrgendwo contains more than one search fields fall back to "old" pattern search
-        //otherwise use more optimized search
-        boolean isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.length > 1;
-        Predicate<DatenFilm> filter;
-        if (searchFieldData.searchThroughDescriptions()) {
-            if (isPattern)
-                filter = new FinalStagePatternFilterWithDescription(arrIrgendwo);
-            else
-                filter = new FinalStageFilterNoPatternWithDescription(arrIrgendwo);
-        }
-        else {
-            if (isPattern)
-                filter = new FinalStagePatternFilter(arrIrgendwo);
-            else
-                filter = new FinalStageFilterNoPattern(arrIrgendwo);
-        }
-        return filter;
     }
 
     @Override
@@ -145,5 +125,28 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             return new TModelFilm();
 
         return filmModel;
+    }
+
+    static class FinalStageFilterFactory {
+        public static Predicate<DatenFilm> createFinalStageFilter(boolean searchThroughDescription,
+                                                                  @NotNull String[] arrIrgendwo) {
+            //if arrIrgendwo contains more than one search fields fall back to "old" pattern search
+            //otherwise use more optimized search
+            boolean isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.length > 1;
+            Predicate<DatenFilm> filter;
+            if (searchThroughDescription) {
+                if (isPattern)
+                    filter = new FinalStagePatternFilterWithDescription(arrIrgendwo);
+                else
+                    filter = new FinalStageFilterNoPatternWithDescription(arrIrgendwo);
+            }
+            else {
+                if (isPattern)
+                    filter = new FinalStagePatternFilter(arrIrgendwo);
+                else
+                    filter = new FinalStageFilterNoPattern(arrIrgendwo);
+            }
+            return filter;
+        }
     }
 }
