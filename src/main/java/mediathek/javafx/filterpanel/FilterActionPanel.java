@@ -27,7 +27,10 @@ import org.controlsfx.control.textfield.TextFields;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class sets up the GuiFilme filter dialog.
@@ -325,13 +328,10 @@ public class FilterActionPanel {
 
     private void restoreSenderList() {
         try {
-            Set<String> checkedChannels = filterConfig.getCheckedChannels();
-            Object[] channelArray = checkedChannels.toArray();
             final var checkModel = viewSettingsPane.senderCheckList.getCheckModel();
             checkModel.clearChecks();
             final var senderItems = viewSettingsPane.senderCheckList.getItems();
-            for (var item : channelArray) {
-                final String sender = item.toString();
+            for (var sender : filterConfig.getCheckedChannels()) {
                 if (senderItems.contains(sender)) {
                     checkModel.check(sender);
                 }
