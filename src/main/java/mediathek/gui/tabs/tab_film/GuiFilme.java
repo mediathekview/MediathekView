@@ -192,31 +192,24 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Handler
     public void handleTableModelChange(TableModelChangeEvent e) {
+        final Consumer<Boolean> function = (Boolean flag) -> {
+            playFilmAction.setEnabled(flag);
+            saveFilmAction.setEnabled(flag);
+            bookmarkAddFilmAction.setEnabled(flag);
+            bookmarkRemoveFilmAction.setEnabled(flag);
+            bookmarkClearListAction.setEnabled(flag);
+            manageBookmarkAction.setEnabled(flag);
+            toggleFilterDialogVisibilityAction.setEnabled(flag);
+            searchField.setEnabled(flag);
+            filterSelectionComboBox.setEnabled(flag);
+        };
         if (e.active) {
-            SwingUtilities.invokeLater(() -> {
-                playFilmAction.setEnabled(false);
-                saveFilmAction.setEnabled(false);
-                bookmarkAddFilmAction.setEnabled(false);
-                bookmarkRemoveFilmAction.setEnabled(false);
-                bookmarkClearListAction.setEnabled(false);
-                manageBookmarkAction.setEnabled(false);
-                toggleFilterDialogVisibilityAction.setEnabled(false);
-                searchField.setEnabled(false);
-                filterSelectionComboBox.setEnabled(false);
-            });
+            SwingUtilities.invokeLater(() -> function.accept(false));
         } else {
             SwingUtilities.invokeLater(() -> {
-                playFilmAction.setEnabled(true);
-                saveFilmAction.setEnabled(true);
-                bookmarkAddFilmAction.setEnabled(true);
-                bookmarkRemoveFilmAction.setEnabled(true);
-                bookmarkClearListAction.setEnabled(true);
-                manageBookmarkAction.setEnabled(true);
-                toggleFilterDialogVisibilityAction.setEnabled(true);
-                searchField.setEnabled(true);
+                function.accept(true);
                 if (e.fromSearchField)
                     searchField.requestFocusInWindow();
-                filterSelectionComboBox.setEnabled(true);
             });
         }
     }
