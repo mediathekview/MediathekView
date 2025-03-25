@@ -24,6 +24,7 @@ import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.tool.FilterConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
@@ -31,18 +32,21 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public abstract class GuiModelHelper {
-    protected SliderRange sliderRange;
-    protected long maxLength;
     protected FilterActionPanel filterActionPanel;
     protected SeenHistoryController historyController;
     protected SearchFieldData searchFieldData;
+    protected FilterConfiguration filterConfiguration;
+    private SliderRange sliderRange;
+    private long maxLength;
 
     protected GuiModelHelper(@NotNull FilterActionPanel filterActionPanel,
                           @NotNull SeenHistoryController historyController,
-                          @NotNull SearchFieldData searchFieldData) {
+                          @NotNull SearchFieldData searchFieldData,
+                             @NotNull FilterConfiguration filterConfiguration) {
         this.filterActionPanel = filterActionPanel;
         this.historyController = historyController;
         this.searchFieldData = searchFieldData;
+        this.filterConfiguration = filterConfiguration;
     }
 
     /**

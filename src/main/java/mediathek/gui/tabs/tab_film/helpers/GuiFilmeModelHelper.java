@@ -29,6 +29,7 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
 import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.tool.Filter;
+import mediathek.tool.FilterConfiguration;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,8 +44,9 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
 
     public GuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
                                @NotNull SeenHistoryController historyController,
-                               @NotNull SearchFieldData searchFieldData) {
-        super(filterActionPanel, historyController, searchFieldData);
+                               @NotNull SearchFieldData searchFieldData,
+                               @NotNull FilterConfiguration filterConfiguration) {
+        super(filterActionPanel, historyController, searchFieldData, filterConfiguration);
     }
 
     private void performTableFiltering() {

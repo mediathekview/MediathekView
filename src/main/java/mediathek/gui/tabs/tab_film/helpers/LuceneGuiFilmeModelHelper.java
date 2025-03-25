@@ -29,6 +29,7 @@ import mediathek.gui.tasks.LuceneIndexKeys;
 import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.FilterConfiguration;
 import mediathek.tool.LuceneDefaultAnalyzer;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.TModelFilm;
@@ -65,8 +66,9 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
 
     public LuceneGuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
                                      @NotNull SeenHistoryController historyController,
-                                     @NotNull SearchFieldData searchFieldData) {
-        super(filterActionPanel, historyController, searchFieldData);
+                                     @NotNull SearchFieldData searchFieldData,
+                                     @NotNull FilterConfiguration filterConfiguration) {
+        super(filterActionPanel, historyController, searchFieldData, filterConfiguration);
     }
 
     private TModelFilm performTableFiltering() {

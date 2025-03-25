@@ -710,14 +710,9 @@ public class GuiFilme extends AGuiTabPanel {
 
         var decoratedPool = daten.getDecoratedPool();
         modelFuture = decoratedPool.submit(() -> {
-            GuiModelHelper helper;
-            var searchFieldData = new SearchFieldData(searchField.getText(),
-                    searchField.getSearchMode());
-            if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
-            } else {
-                helper = new GuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
-            }
+            var searchFieldData = new SearchFieldData(searchField.getText(), searchField.getSearchMode());
+            GuiModelHelper helper = GuiModelHelperFactory.createGuiModelHelper(filterActionPanel,
+                    historyController, searchFieldData, filterConfig);
             return helper.getFilteredTableModel();
         });
         Futures.addCallback(modelFuture,
@@ -748,6 +743,21 @@ public class GuiFilme extends AGuiTabPanel {
                     }
                 },
                 decoratedPool);
+    }
+
+    static class GuiModelHelperFactory {
+        public static GuiModelHelper createGuiModelHelper(@NotNull FilterActionPanel filterActionPanel,
+                                                          @NotNull SeenHistoryController historyController,
+                                                          @NotNull SearchFieldData searchFieldData,
+                                                          @NotNull FilterConfiguration filterConfig) {
+            GuiModelHelper helper;
+            if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
+                helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData, filterConfig);
+            } else {
+                helper = new GuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData, filterConfig);
+            }
+            return helper;
+        }
     }
 
     static class NonRepeatingTimer extends Timer {
