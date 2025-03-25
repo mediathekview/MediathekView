@@ -87,7 +87,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             stream = stream.filter(film -> !film.isDuplicate());
         }
         if (filterActionPanel.isShowSubtitlesOnly()) {
-            stream = stream.filter(this::subtitleCheck);
+            stream = stream.filter(DatenFilm::hasAnySubtitles);
         }
 
         stream = applyCommonFilters(stream, filterThema);
@@ -127,10 +127,6 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
                 filter = new FinalStageFilterNoPattern(arrIrgendwo);
         }
         return filter;
-    }
-
-    private boolean subtitleCheck(DatenFilm film) {
-        return film.hasSubtitle() || film.hasBurnedInSubtitles();
     }
 
     @Override
