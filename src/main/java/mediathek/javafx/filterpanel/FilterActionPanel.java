@@ -293,18 +293,7 @@ public class FilterActionPanel {
         dontShowDuplicates.set(filterConfig.isDontShowDuplicates());
         viewSettingsPane.themaComboBox.setValue(filterConfig.getThema());
 
-        try {
-            double loadedMin = filterConfig.getFilmLengthMin();
-            filmLengthSlider.setHighValueChanging(true);
-            filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-            filmLengthSlider.setHighValueChanging(false);
-            
-            filmLengthSlider.setLowValueChanging(true);
-            filmLengthSlider.setLowValue(loadedMin);
-            filmLengthSlider.setLowValueChanging(false);
-        } catch (Exception exception) {
-            logger.debug("Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!", exception);
-        }
+        restoreFilmLengthSlider();
 
         try {
             viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(filterConfig.getZeitraum());
@@ -313,6 +302,21 @@ public class FilterActionPanel {
         }
 
         restoreSenderList();
+    }
+
+    private void restoreFilmLengthSlider() {
+        try {
+            double loadedMin = filterConfig.getFilmLengthMin();
+            filmLengthSlider.setHighValueChanging(true);
+            filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
+            filmLengthSlider.setHighValueChanging(false);
+
+            filmLengthSlider.setLowValueChanging(true);
+            filmLengthSlider.setLowValue(loadedMin);
+            filmLengthSlider.setLowValueChanging(false);
+        } catch (Exception exception) {
+            logger.debug("Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!", exception);
+        }
     }
 
     private void restoreSenderList() {
