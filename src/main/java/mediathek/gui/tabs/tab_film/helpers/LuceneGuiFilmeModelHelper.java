@@ -62,12 +62,14 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private final Analyzer analyzer = LuceneDefaultAnalyzer.buildAnalyzer();
+    private final FilterActionPanel filterActionPanel;
 
     public LuceneGuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
                                      @NotNull SeenHistoryController historyController,
                                      @NotNull SearchFieldData searchFieldData,
                                      @NotNull FilterConfiguration filterConfiguration) {
-        super(filterActionPanel, historyController, searchFieldData, filterConfiguration);
+        super(historyController, searchFieldData, filterConfiguration);
+        this.filterActionPanel = filterActionPanel;
     }
 
     private TModelFilm performTableFiltering() {

@@ -754,7 +754,7 @@ public class GuiFilme extends AGuiTabPanel {
             if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
                 helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData, filterConfig);
             } else {
-                helper = new GuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData, filterConfig);
+                helper = new GuiFilmeModelHelper(historyController, searchFieldData, filterConfig);
             }
             return helper;
         }

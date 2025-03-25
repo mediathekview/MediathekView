@@ -22,7 +22,6 @@ import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
-import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
@@ -32,11 +31,10 @@ import javax.swing.table.TableModel;
 public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
 
-    public GuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
-                               @NotNull SeenHistoryController historyController,
+    public GuiFilmeModelHelper(@NotNull SeenHistoryController historyController,
                                @NotNull SearchFieldData searchFieldData,
                                @NotNull FilterConfiguration filterConfiguration) {
-        super(filterActionPanel, historyController, searchFieldData, filterConfiguration);
+        super(historyController, searchFieldData, filterConfiguration);
     }
 
     private void performTableFiltering() {
