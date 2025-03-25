@@ -276,7 +276,7 @@ public class FilterActionPanel {
 
     private void restoreConfigSettings() {
         viewSettingsPane.selectFilter(filterConfig.getCurrentFilter());
-        showOnlyHighQuality.set(filterConfig.isShowHdOnly());
+        showOnlyHighQuality.set(filterConfig.isShowHighQualityOnly());
         showSubtitlesOnly.set(filterConfig.isShowSubtitlesOnly());
         showNewOnly.set(filterConfig.isShowNewOnly());
         showBookMarkedOnly.set(filterConfig.isShowBookMarkedOnly());
@@ -342,7 +342,7 @@ public class FilterActionPanel {
     }
 
     private void setupConfigListeners() {
-        showOnlyHighQuality.addListener((ov, oldVal, newValue) -> filterConfig.setShowHdOnly(newValue));
+        showOnlyHighQuality.addListener((ov, oldVal, newValue) -> filterConfig.setShowHighQualityOnly(newValue));
         showSubtitlesOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
         showBookMarkedOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
         showNewOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowNewOnly(newValue)));

@@ -54,7 +54,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             stream = stream.filter(DatenFilm::isBookmarked);
         if (filterConfiguration.isShowLivestreamsOnly())
             stream = stream.filter(DatenFilm::isLivestream);
-        if (filterConfiguration.isShowHdOnly())
+        if (filterConfiguration.isShowHighQualityOnly())
             stream = stream.filter(DatenFilm::isHighQuality);
         if (filterConfiguration.isDontShowTrailers())
             stream = stream.filter(film -> !film.isTrailerTeaser());

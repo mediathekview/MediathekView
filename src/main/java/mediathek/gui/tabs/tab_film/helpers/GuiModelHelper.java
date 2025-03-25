@@ -96,7 +96,7 @@ public abstract class GuiModelHelper {
                 && noFilmlengthFilterIsSet()
                 && !filterConfiguration.isDontShowAbos()
                 && !filterConfiguration.isShowUnseenOnly()
-                && !filterConfiguration.isShowHdOnly()
+                && !filterConfiguration.isShowHighQualityOnly()
                 && !filterConfiguration.isShowSubtitlesOnly()
                 && !filterConfiguration.isShowLivestreamsOnly()
                 && !filterConfiguration.isShowNewOnly()

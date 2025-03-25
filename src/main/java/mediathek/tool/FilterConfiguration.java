@@ -54,7 +54,7 @@ public class FilterConfiguration {
 
                 () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(), newFilter, Double.class, this::setFilmLengthMin),
 
-                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowHdOnly),
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowHighQualityOnly),
 
                 () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowLivestreamsOnly),
 
@@ -97,11 +97,11 @@ public class FilterConfiguration {
         return false;
     }
 
-    public boolean isShowHdOnly() {
+    public boolean isShowHighQualityOnly() {
         return configuration.getBoolean(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getKey()), false);
     }
 
-    public FilterConfiguration setShowHdOnly(boolean showHdOnly) {
+    public FilterConfiguration setShowHighQualityOnly(boolean showHdOnly) {
         configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getKey()), showHdOnly);
         return this;
     }

@@ -103,7 +103,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                 if (filterConfiguration.isShowLivestreamsOnly()) {
                     addLivestreamQuery(qb);
                 }
-                if (filterConfiguration.isShowHdOnly()) {
+                if (filterConfiguration.isShowHighQualityOnly()) {
                     addHighQualityOnlyQuery(qb);
                 }
                 if (filterConfiguration.isDontShowTrailers()) {
