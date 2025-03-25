@@ -85,7 +85,7 @@ public abstract class GuiModelHelper {
 
     protected boolean noFiltersAreSet() {
         return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
-                && getFilterThema().isEmpty()
+                && filterConfiguration.getThema().isEmpty()
                 && searchFieldData.isEmpty()
                 && filterActionPanel.getFilmLengthSliderValues().noFiltersAreSet()
                 && !filterActionPanel.isDontShowAbos()
@@ -113,11 +113,5 @@ public abstract class GuiModelHelper {
         var sliderVals = filterActionPanel.getFilmLengthSliderValues();
         minLengthInSeconds = sliderVals.minLengthInSeconds();
         maxLengthInSeconds = sliderVals.maxLengthInSeconds();
-    }
-
-    protected String getFilterThema() {
-        String filterThema = filterActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
-
-        return filterThema == null ? "" : filterThema;
     }
 }

@@ -42,8 +42,6 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     private void performTableFiltering() {
         calculateFilmLengthSliderValues();
 
-        final String filterThema = getFilterThema();
-
         if (filterConfiguration.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
@@ -75,7 +73,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             stream = stream.filter(DatenFilm::hasAnySubtitles);
         }
 
-        stream = applyCommonFilters(stream, filterThema);
+        stream = applyCommonFilters(stream, filterConfiguration.getThema());
 
         //final stage filtering...
         String[] arrIrgendwo = searchFieldData.evaluateThemaTitel();

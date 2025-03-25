@@ -166,7 +166,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
             if (filterActionPanel.isDontShowAbos())
                 stream = stream.filter(film -> film.getAbo() == null);
 
-            var resultList = applyCommonFilters(stream, getFilterThema()).toList();
+            var resultList = applyCommonFilters(stream, filterConfiguration.getThema()).toList();
             logger.trace("Resulting filmlist size after all filters applied: {}", resultList.size());
 
             //adjust initial capacity
