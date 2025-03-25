@@ -71,8 +71,8 @@ public class FilterActionPanel {
 
     private CommonViewSettingsPane viewSettingsPane;
 
-    public FilterActionPanel(@NotNull JToggleButton filterToggleBtn) {
-        this.filterConfig = new FilterConfiguration();
+    public FilterActionPanel(@NotNull JToggleButton filterToggleBtn, @NotNull FilterConfiguration filterConfig) {
+        this.filterConfig = filterConfig;
 
         setupViewSettingsPane();
         setupDeleteFilterButton();

@@ -114,6 +114,7 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     private final FilterActionPanel filterActionPanel;
+    private final FilterConfiguration filterConfig = new FilterConfiguration();
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
@@ -150,7 +151,7 @@ public class GuiFilme extends AGuiTabPanel {
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsTab();
 
-        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility);
+        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility, filterConfig);
         add(new FilmToolBar(), BorderLayout.NORTH);
 
         start_init();
