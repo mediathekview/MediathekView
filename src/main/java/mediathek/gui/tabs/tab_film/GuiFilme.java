@@ -711,7 +711,7 @@ public class GuiFilme extends AGuiTabPanel {
         var decoratedPool = daten.getDecoratedPool();
         modelFuture = decoratedPool.submit(() -> {
             var searchFieldData = new SearchFieldData(searchField.getText(), searchField.getSearchMode());
-            GuiModelHelper helper = GuiModelHelperFactory.createGuiModelHelper(filterActionPanel,
+            GuiModelHelper helper = GuiModelHelperFactory.createGuiModelHelper(
                     historyController, searchFieldData, filterConfig);
             return helper.getFilteredTableModel();
         });
@@ -746,13 +746,12 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     static class GuiModelHelperFactory {
-        public static GuiModelHelper createGuiModelHelper(@NotNull FilterActionPanel filterActionPanel,
-                                                          @NotNull SeenHistoryController historyController,
+        public static GuiModelHelper createGuiModelHelper(@NotNull SeenHistoryController historyController,
                                                           @NotNull SearchFieldData searchFieldData,
                                                           @NotNull FilterConfiguration filterConfig) {
             GuiModelHelper helper;
             if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData, filterConfig);
+                helper = new LuceneGuiFilmeModelHelper(historyController, searchFieldData, filterConfig);
             } else {
                 helper = new GuiFilmeModelHelper(historyController, searchFieldData, filterConfig);
             }

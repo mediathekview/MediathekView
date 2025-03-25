@@ -25,7 +25,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.gui.tasks.LuceneIndexKeys;
-import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.FilterConfiguration;
@@ -62,14 +61,11 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private final Analyzer analyzer = LuceneDefaultAnalyzer.buildAnalyzer();
-    private final FilterActionPanel filterActionPanel;
 
-    public LuceneGuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
-                                     @NotNull SeenHistoryController historyController,
+    public LuceneGuiFilmeModelHelper(@NotNull SeenHistoryController historyController,
                                      @NotNull SearchFieldData searchFieldData,
                                      @NotNull FilterConfiguration filterConfiguration) {
         super(historyController, searchFieldData, filterConfiguration);
-        this.filterActionPanel = filterActionPanel;
     }
 
     private TModelFilm performTableFiltering() {
@@ -97,7 +93,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                 qb.add(initialQuery, BooleanClause.Occur.MUST);
 
                 //Zeitraum filter on demand...
-                if (!filterActionPanel.zeitraumProperty().get().equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
+                if (!filterConfiguration.getZeitraum().equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
                     try {
                         qb.add(createZeitraumQuery(), BooleanClause.Occur.FILTER);
                     } catch (Exception ex) {
@@ -163,9 +159,9 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                         .filter(film -> filmNrSet.contains(film.getFilmNr()));
             }
 
-            if (filterActionPanel.isShowBookMarkedOnly())
+            if (filterConfiguration.isShowBookMarkedOnly())
                 stream = stream.filter(DatenFilm::isBookmarked);
-            if (filterActionPanel.isDontShowAbos())
+            if (filterConfiguration.isDontShowAbos())
                 stream = stream.filter(film -> film.getAbo() == null);
 
             var resultList = applyCommonFilters(stream, filterConfiguration.getThema()).toList();
@@ -175,7 +171,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
             var filmModel = new TModelFilm(resultList.size());
             filmModel.addAll(resultList);
 
-            if (filterActionPanel.isShowUnseenOnly())
+            if (filterConfiguration.isShowUnseenOnly())
                 historyController.emptyMemoryCache();
 
             return filmModel;
@@ -239,7 +235,8 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private Query createZeitraumQuery() throws ParseException {
-        var numDays = Integer.parseInt(filterActionPanel.zeitraumProperty().get());
+
+        var numDays = Integer.parseInt(filterConfiguration.getZeitraum());
         var toDate = LocalDateTime.now();
         var fromDate = toDate.minusDays(numDays);
         var utcZone = ZoneId.of("UTC");
