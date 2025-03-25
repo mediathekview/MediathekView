@@ -48,7 +48,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         final String filterThema = getFilterThema();
         final ObservableList<String> selectedSenders = filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
 
-        if (filterActionPanel.isShowUnseenOnly())
+        if (filterConfiguration.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
         var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
@@ -58,26 +58,26 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             senderSet.addAll(selectedSenders);
             stream = stream.filter(f -> senderSet.contains(f.getSender()));
         }
-        if (filterActionPanel.isShowNewOnly())
+        if (filterConfiguration.isShowNewOnly())
             stream = stream.filter(DatenFilm::isNew);
-        if (filterActionPanel.isShowBookMarkedOnly())
+        if (filterConfiguration.isShowBookMarkedOnly())
             stream = stream.filter(DatenFilm::isBookmarked);
-        if (filterActionPanel.isShowLivestreamsOnly())
+        if (filterConfiguration.isShowLivestreamsOnly())
             stream = stream.filter(DatenFilm::isLivestream);
-        if (filterActionPanel.isShowOnlyHighQuality())
+        if (filterConfiguration.isShowHdOnly())
             stream = stream.filter(DatenFilm::isHighQuality);
-        if (filterActionPanel.isDontShowTrailers())
+        if (filterConfiguration.isDontShowTrailers())
             stream = stream.filter(film -> !film.isTrailerTeaser());
-        if (filterActionPanel.isDontShowSignLanguage())
+        if (filterConfiguration.isDontShowSignLanguage())
             stream = stream.filter(film -> !film.isSignLanguage());
-        if (filterActionPanel.isDontShowAudioVersions())
+        if (filterConfiguration.isDontShowAudioVersions())
             stream = stream.filter(film -> !film.isAudioVersion());
-        if (filterActionPanel.isDontShowAbos())
+        if (filterConfiguration.isDontShowAbos())
             stream = stream.filter(film -> film.getAbo() == null);
-        if (filterActionPanel.isDontShowDuplicates()) {
+        if (filterConfiguration.isDontShowDuplicates()) {
             stream = stream.filter(film -> !film.isDuplicate());
         }
-        if (filterActionPanel.isShowSubtitlesOnly()) {
+        if (filterConfiguration.isShowSubtitlesOnly()) {
             stream = stream.filter(DatenFilm::hasAnySubtitles);
         }
 
@@ -98,7 +98,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         filmModel = new TModelFilm(list.size());
         filmModel.addAll(list);
 
-        if (filterActionPanel.isShowUnseenOnly())
+        if (filterConfiguration.isShowUnseenOnly())
             historyController.emptyMemoryCache();
     }
 
