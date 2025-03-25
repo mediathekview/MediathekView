@@ -18,6 +18,8 @@
 
 package mediathek.javafx.filterpanel;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Store filmlength slider values.
  *
@@ -27,5 +29,13 @@ package mediathek.javafx.filterpanel;
 public record FilmLengthSliderValues(long minLength, long maxLength) {
     public boolean noFiltersAreSet() {
         return minLength == 0 || maxLength == FilmLengthSlider.UNLIMITED_VALUE;
+    }
+
+    public long minLengthInSeconds() {
+        return TimeUnit.SECONDS.convert(minLength(), TimeUnit.MINUTES);
+    }
+
+    public long maxLengthInSeconds() {
+        return TimeUnit.SECONDS.convert(maxLength(), TimeUnit.MINUTES);
     }
 }

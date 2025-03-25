@@ -32,12 +32,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public abstract class GuiModelHelper {
+    private final long UNLIMITED_LENGTH_IN_SECONDS = TimeUnit.SECONDS.convert(FilmLengthSlider.UNLIMITED_VALUE, TimeUnit.MINUTES);
     protected FilterActionPanel filterActionPanel;
     protected SeenHistoryController historyController;
     protected SearchFieldData searchFieldData;
     protected FilterConfiguration filterConfiguration;
-    private SliderRange sliderRange;
-    private long maxLength;
+    private long minLengthInSeconds;
+    private long maxLengthInSeconds = UNLIMITED_LENGTH_IN_SECONDS;
 
     protected GuiModelHelper(@NotNull FilterActionPanel filterActionPanel,
                           @NotNull SeenHistoryController historyController,
@@ -57,7 +58,7 @@ public abstract class GuiModelHelper {
     public abstract TableModel getFilteredTableModel();
 
     protected boolean maxLengthCheck(DatenFilm film) {
-        return film.getFilmLength() < sliderRange.maxLengthInSeconds();
+        return film.getFilmLength() < maxLengthInSeconds;
     }
 
     protected boolean minLengthCheck(DatenFilm film) {
@@ -65,14 +66,14 @@ public abstract class GuiModelHelper {
         if (filmLength == 0)
             return true; // always show entries with length 0, which are internally "no length"
         else
-            return filmLength >= sliderRange.minLengthInSeconds();
+            return filmLength >= minLengthInSeconds;
     }
 
     public Stream<DatenFilm> applyCommonFilters(Stream<DatenFilm> stream, final String filterThema) {
         if (!filterThema.isEmpty()) {
             stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
         }
-        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+        if (maxLengthInSeconds < UNLIMITED_LENGTH_IN_SECONDS) {
             stream = stream.filter(this::maxLengthCheck);
         }
         if (filterActionPanel.isShowUnseenOnly()) {
@@ -105,12 +106,13 @@ public abstract class GuiModelHelper {
         return !historyController.hasBeenSeenFromCache(film);
     }
 
+    /**
+     * Convert slider values for faster user later.
+     */
     protected void calculateFilmLengthSliderValues() {
         var sliderVals = filterActionPanel.getFilmLengthSliderValues();
-        maxLength = sliderVals.maxLength();
-        var minLengthInSeconds = TimeUnit.SECONDS.convert(sliderVals.minLength(), TimeUnit.MINUTES);
-        var maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
-        sliderRange = new SliderRange(minLengthInSeconds, maxLengthInSeconds);
+        minLengthInSeconds = sliderVals.minLengthInSeconds();
+        maxLengthInSeconds = sliderVals.maxLengthInSeconds();
     }
 
     protected String getFilterThema() {
