@@ -76,30 +76,40 @@ public abstract class GuiModelHelper {
         if (maxLengthInSeconds < UNLIMITED_LENGTH_IN_SECONDS) {
             stream = stream.filter(this::maxLengthCheck);
         }
-        if (filterActionPanel.isShowUnseenOnly()) {
+        if (filterConfiguration.isShowUnseenOnly()) {
             stream = stream.filter(this::seenCheck);
         }
         //perform min length filtering after all others may have reduced the available entries...
         return stream.filter(this::minLengthCheck);
     }
 
+    /**
+     * If conditions are met, no filmlength filter is set.
+     * @return true if filtering is not needed, false if needed.
+     */
+    private boolean noFilmlengthFilterIsSet() {
+        var filmLengthMin = (long)filterConfiguration.getFilmLengthMin();
+        var filmLengthMax = (long)filterConfiguration.getFilmLengthMax();
+        return filmLengthMin == 0 || filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE;
+    }
+
     protected boolean noFiltersAreSet() {
         return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
                 && filterConfiguration.getThema().isEmpty()
                 && searchFieldData.isEmpty()
-                && filterActionPanel.getFilmLengthSliderValues().noFiltersAreSet()
-                && !filterActionPanel.isDontShowAbos()
-                && !filterActionPanel.isShowUnseenOnly()
-                && !filterActionPanel.isShowOnlyHighQuality()
-                && !filterActionPanel.isShowSubtitlesOnly()
-                && !filterActionPanel.isShowLivestreamsOnly()
-                && !filterActionPanel.isShowNewOnly()
-                && !filterActionPanel.isShowBookMarkedOnly()
-                && !filterActionPanel.isDontShowTrailers()
-                && !filterActionPanel.isDontShowSignLanguage()
-                && !filterActionPanel.isDontShowAudioVersions()
-                && !filterActionPanel.isDontShowDuplicates()
-                && filterActionPanel.zeitraumProperty().get().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+                && noFilmlengthFilterIsSet()
+                && !filterConfiguration.isDontShowAbos()
+                && !filterConfiguration.isShowUnseenOnly()
+                && !filterConfiguration.isShowHdOnly()
+                && !filterConfiguration.isShowSubtitlesOnly()
+                && !filterConfiguration.isShowLivestreamsOnly()
+                && !filterConfiguration.isShowNewOnly()
+                && !filterConfiguration.isShowBookMarkedOnly()
+                && !filterConfiguration.isDontShowTrailers()
+                && !filterConfiguration.isDontShowSignLanguage()
+                && !filterConfiguration.isDontShowAudioVersions()
+                && !filterConfiguration.isDontShowDuplicates()
+                && filterConfiguration.getZeitraum().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
     }
 
     protected boolean seenCheck(DatenFilm film) {

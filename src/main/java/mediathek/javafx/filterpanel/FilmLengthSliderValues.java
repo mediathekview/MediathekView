@@ -27,10 +27,6 @@ import java.util.concurrent.TimeUnit;
  * @param maxLength in Minutes
  */
 public record FilmLengthSliderValues(long minLength, long maxLength) {
-    public boolean noFiltersAreSet() {
-        return minLength == 0 || maxLength == FilmLengthSlider.UNLIMITED_VALUE;
-    }
-
     public long minLengthInSeconds() {
         return TimeUnit.SECONDS.convert(minLength(), TimeUnit.MINUTES);
     }
