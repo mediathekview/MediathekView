@@ -23,12 +23,7 @@ import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
 import mediathek.javafx.filterpanel.FilterActionPanel;
-import mediathek.tool.Filter;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.table.TableModel;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 
 public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
@@ -126,26 +120,4 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         return filmModel;
     }
 
-    static class FinalStageFilterFactory {
-        public static Predicate<DatenFilm> createFinalStageFilter(boolean searchThroughDescription,
-                                                                  @NotNull String[] arrIrgendwo) {
-            //if arrIrgendwo contains more than one search fields fall back to "old" pattern search
-            //otherwise use more optimized search
-            boolean isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.length > 1;
-            Predicate<DatenFilm> filter;
-            if (searchThroughDescription) {
-                if (isPattern)
-                    filter = new FinalStagePatternFilterWithDescription(arrIrgendwo);
-                else
-                    filter = new FinalStageFilterNoPatternWithDescription(arrIrgendwo);
-            }
-            else {
-                if (isPattern)
-                    filter = new FinalStagePatternFilter(arrIrgendwo);
-                else
-                    filter = new FinalStageFilterNoPattern(arrIrgendwo);
-            }
-            return filter;
-        }
-    }
 }
