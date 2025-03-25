@@ -114,7 +114,7 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     private final FilterActionPanel filterActionPanel;
-    private final FilterConfiguration filterConfig = new FilterConfiguration();
+    private final FilterConfiguration filterConfiguration = new FilterConfiguration();
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
@@ -151,7 +151,7 @@ public class GuiFilme extends AGuiTabPanel {
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsTab();
 
-        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility, filterConfig);
+        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility, filterConfiguration);
         add(new FilmToolBar(), BorderLayout.NORTH);
 
         start_init();
@@ -168,6 +168,10 @@ public class GuiFilme extends AGuiTabPanel {
         MessageBus.getMessageBus().subscribe(this);
 
         setupActionListeners();
+    }
+
+    public FilterConfiguration getFilterConfiguration() {
+        return filterConfiguration;
     }
 
     public FilterActionPanel getFilterActionPanel() {
@@ -410,7 +414,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filterConfig.isShowUnseenOnly()) {
+            if (filterConfiguration.isShowUnseenOnly()) {
                 MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -511,7 +515,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filterConfig.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filterConfiguration.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -541,7 +545,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filterConfig.isShowHighQualityOnly()) {
+            if (filterConfiguration.isShowHighQualityOnly()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -712,7 +716,7 @@ public class GuiFilme extends AGuiTabPanel {
         modelFuture = decoratedPool.submit(() -> {
             var searchFieldData = new SearchFieldData(searchField.getText(), searchField.getSearchMode());
             GuiModelHelper helper = GuiModelHelperFactory.createGuiModelHelper(
-                    historyController, searchFieldData, filterConfig);
+                    historyController, searchFieldData, filterConfiguration);
             return helper.getFilteredTableModel();
         });
         Futures.addCallback(modelFuture,
