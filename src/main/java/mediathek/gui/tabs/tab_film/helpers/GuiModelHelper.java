@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public abstract class GuiModelHelper {
-    private final long UNLIMITED_LENGTH_IN_SECONDS = TimeUnit.SECONDS.convert(FilmLengthSlider.UNLIMITED_VALUE, TimeUnit.MINUTES);
+    private final static long UNLIMITED_LENGTH_IN_SECONDS = TimeUnit.SECONDS.convert(FilmLengthSlider.UNLIMITED_VALUE, TimeUnit.MINUTES);
     protected FilterActionPanel filterActionPanel;
     protected SeenHistoryController historyController;
     protected SearchFieldData searchFieldData;
