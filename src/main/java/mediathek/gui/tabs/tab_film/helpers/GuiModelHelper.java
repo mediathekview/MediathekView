@@ -83,17 +83,17 @@ public abstract class GuiModelHelper {
      * If conditions are met, no filmlength filter is set.
      * @return true if filtering is not needed, false if needed.
      */
-    private boolean filmLengthFilterIsSet() {
+    private boolean filmLengthFilterIsNotSet() {
         var filmLengthMin = (long)filterConfiguration.getFilmLengthMin();
         var filmLengthMax = (long)filterConfiguration.getFilmLengthMax();
-        return filmLengthMin == 0 || filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE;
+        return filmLengthMin == 0 && filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE;
     }
 
     protected boolean noFiltersAreSet() {
         return filterConfiguration.getCheckedChannels().isEmpty()
                 && filterConfiguration.getThema().isEmpty()
                 && searchFieldData.isEmpty()
-                && !filmLengthFilterIsSet()
+                && filmLengthFilterIsNotSet()
                 && !filterConfiguration.isDontShowAbos()
                 && !filterConfiguration.isShowUnseenOnly()
                 && !filterConfiguration.isShowHighQualityOnly()
