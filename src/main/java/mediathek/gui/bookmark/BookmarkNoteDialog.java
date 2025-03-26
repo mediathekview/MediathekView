@@ -47,6 +47,7 @@ public class BookmarkNoteDialog extends javax.swing.JDialog {
         jButton4 = new JButton();
         jLabel4 = new JLabel();
         jLabel5 = new JLabel();
+        jButton1 = new JButton();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -70,6 +71,12 @@ public class BookmarkNoteDialog extends javax.swing.JDialog {
 
         jLabel5.setText("ProgressBar Indkator?");
 
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -79,7 +86,9 @@ public class BookmarkNoteDialog extends javax.swing.JDialog {
                         .addGap(14, 14, 14)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addComponent(jScrollPane1))
                             .addGroup(layout.createSequentialGroup()
@@ -118,7 +127,10 @@ public class BookmarkNoteDialog extends javax.swing.JDialog {
                         .addComponent(jButton4, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)))
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(45, 45, 45)
+                        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 113, GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -129,6 +141,10 @@ public class BookmarkNoteDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -173,6 +189,7 @@ public class BookmarkNoteDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private JButton jButton1;
     private JButton jButton2;
     private JButton jButton3;
     private JButton jButton4;
