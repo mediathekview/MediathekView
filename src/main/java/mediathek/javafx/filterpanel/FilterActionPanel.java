@@ -50,7 +50,6 @@ public class FilterActionPanel {
     private final EventObservableList<String> observableThemaList = new EventObservableList<>(new EventListWithEmptyFirstEntry(sourceThemaList));
     private OldSwingJavaFxFilterDialog filterDialog;
     private RangeSlider filmLengthSlider;
-    private ReadOnlyObjectProperty<String> zeitraumProperty;
     private BooleanProperty dontShowAudioVersions;
     private BooleanProperty dontShowSignLanguage;
     private BooleanProperty dontShowTrailers;
@@ -100,10 +99,6 @@ public class FilterActionPanel {
     public void addFilmLengthSliderListeners(@NotNull ChangeListener<Boolean> listener) {
         filmLengthSlider.lowValueChangingProperty().addListener(listener);
         filmLengthSlider.highValueChangingProperty().addListener(listener);
-    }
-
-    public ReadOnlyObjectProperty<String> zeitraumProperty() {
-        return zeitraumProperty;
     }
 
     public BooleanProperty dontShowAudioVersionsProperty() {
@@ -263,8 +258,6 @@ public class FilterActionPanel {
         });
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
-
-        zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
     }
 
     private void setupThemaComboBox() {
@@ -351,7 +344,7 @@ public class FilterActionPanel {
         filmLengthSlider.lowValueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
         filmLengthSlider.highValueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
 
-        zeitraumProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
+        viewSettingsPane.zeitraumSpinner.valueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
 
         checkedChannels.addListener((obs, oldList, newList) -> filterConfig.setCheckedChannels(new HashSet<>(newList)));
         themaProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setThema(newValue)));

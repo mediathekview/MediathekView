@@ -658,7 +658,7 @@ public class GuiFilme extends AGuiTabPanel {
                 }
             });
 
-            filterActionPanel.zeitraumProperty()
+            filterActionPanel.getViewSettingsPane().zeitraumSpinner.valueProperty()
                     .addListener((ov, oV, nV) -> SwingUtilities.invokeLater(() -> {
                         if (!zeitraumTimer.isRunning())
                             zeitraumTimer.start();
