@@ -1,6 +1,6 @@
 package mediathek.gui.tabs.tab_film
 
-import mediathek.javafx.filterpanel.SearchControlFieldMode
+import mediathek.javaswing.filterpanel.SearchControlFieldModeSwing
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -8,37 +8,37 @@ internal class SearchFieldDataTest {
 
     @Test
     fun searchThroughDescriptions() {
-        var data = SearchFieldData("", SearchControlFieldMode.IRGENDWO)
+        var data = SearchFieldData("", SearchControlFieldModeSwing.IRGENDWO)
         assertTrue(data.searchThroughDescriptions())
 
-        data = SearchFieldData("", SearchControlFieldMode.THEMA_TITEL);
+        data = SearchFieldData("", SearchControlFieldModeSwing.THEMA_TITEL);
         assertFalse(data.searchThroughDescriptions())
     }
 
     @Test
     fun isEmpty() {
-        var data = SearchFieldData("", SearchControlFieldMode.THEMA_TITEL)
+        var data = SearchFieldData("", SearchControlFieldModeSwing.THEMA_TITEL)
         assertTrue(data.isEmpty())
 
-        data = SearchFieldData("test", SearchControlFieldMode.THEMA_TITEL)
+        data = SearchFieldData("test", SearchControlFieldModeSwing.THEMA_TITEL)
         assertFalse(data.isEmpty())
     }
 
     @Test
     fun evaluateThemaTitel() {
-        var data = SearchFieldData("Axel,Prahl", SearchControlFieldMode.THEMA_TITEL)
+        var data = SearchFieldData("Axel,Prahl", SearchControlFieldModeSwing.THEMA_TITEL)
         var res = data.evaluateThemaTitel()
         assertEquals(res[0], "axel")
         assertEquals(res[1], "prahl")
 
-        data = SearchFieldData("Axel Prahl", SearchControlFieldMode.THEMA_TITEL)
+        data = SearchFieldData("Axel Prahl", SearchControlFieldModeSwing.THEMA_TITEL)
         res = data.evaluateThemaTitel()
         assertEquals(res[0], "axel prahl")
     }
 
     @Test
     fun searchFieldText() {
-        val data = SearchFieldData("testStr", SearchControlFieldMode.THEMA_TITEL)
+        val data = SearchFieldData("testStr", SearchControlFieldModeSwing.THEMA_TITEL)
         assertEquals(data.searchFieldText, "testStr");
     }
 }

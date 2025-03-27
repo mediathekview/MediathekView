@@ -14,6 +14,9 @@ import javax.swing.JSlider;
  */
 public class RangeSliderSwing extends JSlider {
 
+    private boolean valueChanging = false;
+    private boolean upperValueChanging = false;
+
     /**
      * Constructs a RangeSlider with default minimum and maximum values of 0
      * and 100.
@@ -96,4 +99,25 @@ public class RangeSliderSwing extends JSlider {
         // Set extent to set upper value.
         setExtent(newExtent);
     }
+
+    public boolean isValueChanging() {
+
+        return valueChanging;
+    }
+
+    public void setValueChanging(boolean valueChanging) {
+
+        this.valueChanging = valueChanging;
+    }
+
+    public boolean isUpperValueChanging() {
+
+        return upperValueChanging;
+    }
+
+    public void setUpperValueChanging(boolean upperValueChanging) {
+
+        this.upperValueChanging = upperValueChanging;
+    }
+
 }

@@ -2,23 +2,23 @@ package mediathek.javaswing.filterpanel;
 
 import com.jidesoft.swing.CheckBoxList;
 import java.awt.Component;
-import javafx.beans.value.ChangeListener;
-import javafx.util.StringConverter;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.SVGIconUtilities;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionListener;
+import java.util.UUID;
 import javax.swing.*;
 
 
-public class CommonViewSettingsPaneSwing extends JDialog {
+public class CommonViewSettingsPaneSwing extends JPanel {
+    private static final Logger logger = LogManager.getLogger(CommonViewSettingsPaneSwing.class);
 
     private boolean deleteCurrentFilterButtonDisabled;
 
-    public CommonViewSettingsPaneSwing(Frame parent, boolean modal) {
+    public CommonViewSettingsPaneSwing() {
 
-        super(parent, modal);
         initComponents();
     }
 
@@ -31,7 +31,6 @@ public class CommonViewSettingsPaneSwing extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        filterSelect = new JComboBox<>();
         btnRenameFilter = new JButton();
         btnAddNewFilter = new JButton();
         btnDeleteCurrentFilter = new JButton();
@@ -61,9 +60,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
         separatorSpinner = new JSeparator();
         zeitraumLabel = new JLabel();
         tageLabel = new JLabel();
-
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Filter");
+        filterSelect = new JComboBox<>();
 
         btnRenameFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
         btnRenameFilter.setToolTipText("Filter umbenennen");
@@ -99,7 +96,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
 
         cbDontShowTrailers.setText("Trailer/Teaser/Vorschau nicht anzeigen");
 
-        cbDontShowAudioVersions.setText("Hörfassungen ausblenden");
+        cbDontShowAudioVersions.setText("Hörfassungen ausb");
 
         senderLabel.setText("Sender:");
 
@@ -111,60 +108,64 @@ public class CommonViewSettingsPaneSwing extends JDialog {
 
         tageLabel.setText("Tage");
 
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        GroupLayout layout = new GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(scrollPaneSender, GroupLayout.Alignment.TRAILING)
-                    .addComponent(separatorSender)
-                    .addComponent(separatorBtmRow)
-                    .addComponent(separatorCB)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(filterSelect, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddNewFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
-                    .addComponent(senderLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(separatorThema, GroupLayout.Alignment.TRAILING)
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(themaLabel)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(themaComboBox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(separatorSlider, GroupLayout.Alignment.TRAILING)
-                    .addComponent(filmLengthSliderNode, GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(separatorSpinner, GroupLayout.Alignment.TRAILING)
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cbDontShowAudioVersions, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbDontShowTrailers, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                            .addComponent(cbDontShowGebaerdensprache, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbDontShowAbos, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbShowOnlyLivestreams, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbShowSubtitlesOnly, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbShowOnlyHd, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbShowBookMarkedOnly, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbShowNewOnly, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbShowUnseenOnly, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(76, 76, 76))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(scrollPaneSender)
+                            .addComponent(separatorSender, GroupLayout.Alignment.LEADING)
+                            .addComponent(separatorBtmRow, GroupLayout.Alignment.LEADING)
+                            .addComponent(separatorCB, GroupLayout.Alignment.LEADING)
+                            .addComponent(senderLabel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(separatorThema)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(zeitraumLabel)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(zeitraumSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(themaLabel)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tageLabel))
-                            .addComponent(cbDontShowGebaerdensprache, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbShowSubtitlesOnly, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbShowNewOnly, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbShowBookMarkedOnly, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbShowOnlyHd, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbShowOnlyLivestreams, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbShowUnseenOnly, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbDontShowAbos, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbDontShowTrailers, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                            .addComponent(cbDontShowAudioVersions, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE))))
-                .addContainerGap())
+                                .addComponent(themaComboBox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(separatorSlider)
+                            .addComponent(filmLengthSliderNode, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                            .addComponent(separatorSpinner)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(zeitraumLabel)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(zeitraumSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(tageLabel))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnAddNewFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, 403, GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
 
         layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {btnAddNewFilter, btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter});
-
-        layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {cbDontShowAbos, cbDontShowAudioVersions, cbDontShowGebaerdensprache, cbDontShowTrailers, cbShowBookMarkedOnly, cbShowNewOnly, cbShowOnlyHd, cbShowOnlyLivestreams, cbShowSubtitlesOnly, cbShowUnseenOnly});
 
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -173,8 +174,8 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                     .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAddNewFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separatorBtmRow, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -187,7 +188,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                 .addComponent(cbShowSubtitlesOnly)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbShowOnlyLivestreams)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(46, 46, 46)
                 .addComponent(separatorCB, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbShowUnseenOnly)
@@ -199,7 +200,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                 .addComponent(cbDontShowTrailers)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbDontShowAudioVersions)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(34, 34, 34)
                 .addComponent(separatorSender, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(senderLabel)
@@ -222,14 +223,13 @@ public class CommonViewSettingsPaneSwing extends JDialog {
                     .addComponent(zeitraumLabel)
                     .addComponent(zeitraumSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(tageLabel))
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         layout.linkSize(SwingConstants.VERTICAL, new Component[] {btnAddNewFilter, btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter});
 
         layout.linkSize(SwingConstants.VERTICAL, new Component[] {cbDontShowAbos, cbDontShowAudioVersions, cbDontShowGebaerdensprache, cbDontShowTrailers, cbShowBookMarkedOnly, cbShowNewOnly, cbShowOnlyHd, cbShowOnlyLivestreams, cbShowSubtitlesOnly, cbShowUnseenOnly});
 
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     public void disableDeleteCurrentFilterButton(boolean disable) {
@@ -288,7 +288,7 @@ public class CommonViewSettingsPaneSwing extends JDialog {
             @Override
             public Object getItem() {
                 String text = editor.getText();
-                return new FilterDTO(text); // Assuming a constructor exists
+                return new FilterDTO(UUID.randomUUID(), text);
             }
 
             @Override

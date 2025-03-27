@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_film.helpers;
 
-import javafx.collections.ObservableList;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
@@ -9,14 +8,15 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
-import mediathek.javafx.filterpanel.FilmActionPanel;
-import mediathek.javafx.filterpanel.FilmLengthSlider;
+import mediathek.javaswing.filterpanel.FilmActionPanelSwing;
+import mediathek.javaswing.filterpanel.FilmLengthSliderSwing;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
     private String[] arrIrgendwo;
 
-    public GuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
+    public GuiFilmeModelHelper(@NotNull FilmActionPanelSwing filmActionPanel,
                                @NotNull SeenHistoryController historyController,
                                @NotNull SearchFieldData searchFieldData) {
         this.filmActionPanel = filmActionPanel;
@@ -34,7 +34,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private String getFilterThema() {
-        String filterThema = filmActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
+        String filterThema = filmActionPanel.getViewSettingsPane().themaComboBox.getSelectedThema();
         if (filterThema == null) {
             filterThema = "";
         }
@@ -46,11 +46,11 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
     protected boolean noFiltersAreSet() {
         var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
 
-        return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
+        return filmActionPanel.getViewSettingsPane().senderCheckList.getSelectionModel().getSelectedItemsCount() == 0
                 && getFilterThema().isEmpty()
                 && searchFieldData.isEmpty()
-                && ((int) filmLengthSlider.getLowValue() == 0)
-                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
+                && ((int) filmLengthSlider.getValue() == 0)
+                && ((int) filmLengthSlider.getUpperValue() == FilmLengthSliderSwing.UNLIMITED_VALUE)
                 && !filmActionPanel.isDontShowAbos()
                 && !filmActionPanel.isShowUnseenOnly()
                 && !filmActionPanel.isShowOnlyHighQuality()
@@ -70,7 +70,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
+        final List selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getSelectedValuesList();
 
         if (filmActionPanel.isShowUnseenOnly())
             historyController.prepareMemoryCache();
@@ -104,7 +104,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         if (!filterThema.isEmpty()) {
             stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
         }
-        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+        if (maxLength < FilmLengthSliderSwing.UNLIMITED_VALUE) {
             stream = stream.filter(this::maxLengthCheck);
         }
         if (filmActionPanel.isShowUnseenOnly()) {

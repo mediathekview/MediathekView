@@ -52,7 +52,7 @@ public class CommonViewSettingsPane extends VBox implements Initializable {
     @FXML
     public ThemaComboBox themaComboBox;
     @FXML
-    public FilmLenghtSliderNode filmLengthSliderNode;
+    public FilmLengthSliderNode filmLengthSliderNode;
     @FXML
     public ZeitraumSpinner zeitraumSpinner;
     @FXML

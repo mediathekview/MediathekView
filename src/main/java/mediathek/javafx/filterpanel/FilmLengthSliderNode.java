@@ -8,12 +8,12 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.controlsfx.tools.Borders;
 
-public class FilmLenghtSliderNode extends VBox {
+public class FilmLengthSliderNode extends VBox {
     public final FilmLengthSlider _filmLengthSlider = new FilmLengthSlider();
     private final Label lblMin = new Label("min");
     private final Label lblMax = new Label("max");
 
-    public FilmLenghtSliderNode() {
+    public FilmLengthSliderNode() {
         _filmLengthSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
         _filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> lblMax.setText(_filmLengthSlider.getLabelFormatter().toString(newValue)));
 

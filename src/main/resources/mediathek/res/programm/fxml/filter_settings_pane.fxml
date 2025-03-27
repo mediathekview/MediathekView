@@ -4,7 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import mediathek.javafx.filterpanel.FilmLenghtSliderNode?>
+<?import mediathek.javafx.filterpanel.FilmLengthSliderNode?>
 <?import mediathek.javafx.filterpanel.SenderBoxNode?>
 <?import mediathek.javafx.filterpanel.ThemaComboBox?>
 <?import mediathek.javafx.filterpanel.ZeitraumSpinner?>
@@ -70,7 +70,7 @@
         </ThemaComboBox>
     </HBox>
     <Separator/>
-    <FilmLenghtSliderNode fx:id="filmLengthSliderNode"/>
+    <FilmLengthSliderNode fx:id="filmLengthSliderNode"/>
     <Separator/>
     <FlowPane hgap="4.0">
         <Label text="Zeitraum:"/>

@@ -1,13 +1,13 @@
 package mediathek.gui.tabs.tab_film
 
-import mediathek.javafx.filterpanel.SearchControlFieldMode
+import mediathek.javaswing.filterpanel.SearchControlFieldModeSwing
 import mediathek.tool.Filter
 import java.util.regex.Pattern
 
 @JvmRecord
-data class SearchFieldData(val searchFieldText: String, val searchMode: SearchControlFieldMode) {
+data class SearchFieldData(val searchFieldText: String, val searchMode: SearchControlFieldModeSwing) {
     fun searchThroughDescriptions(): Boolean {
-        return searchMode == SearchControlFieldMode.IRGENDWO
+        return searchMode == SearchControlFieldModeSwing.IRGENDWO
     }
 
     fun isEmpty(): Boolean {

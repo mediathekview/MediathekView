@@ -7,6 +7,5 @@ public class SenderListComboBoxModelSwing extends DefaultEventComboBoxModel<Stri
 
     public SenderListComboBoxModelSwing() {
         super(new EventListWithEmptyFirstEntry(SenderListBoxModelSwing.getReadOnlySenderList()));
-        setSelectedItem("");
     }
 }

@@ -7,7 +7,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.BlacklistChangedEvent;
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
@@ -192,11 +192,11 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
     private void calculateZeitraumBoundaries() {
         try {
-            var strZeitraum = MediathekGui.ui().tabFilme.filmActionPanel.zeitraumProperty().get();
-            if (strZeitraum.equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE))
+            var strZeitraum = MediathekGui.ui().tabFilme.filmActionPanelSwing.zeitraumProperty().getValue();
+            if (strZeitraum.equals(ZeitraumSpinnerSwing.UNLIMITED_VALUE))
                 days_lower_boundary = 0;
             else {
-                var days_ms = TimeUnit.MILLISECONDS.convert(Long.parseLong(strZeitraum), TimeUnit.DAYS);
+                var days_ms = TimeUnit.MILLISECONDS.convert(Long.parseLong(strZeitraum.toString()), TimeUnit.DAYS);
                 days_lower_boundary = System.currentTimeMillis() - days_ms;
             }
         } catch (Exception ex) {

@@ -3,11 +3,7 @@ package mediathek.javaswing.filterpanel;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransactionList;
-import impl.org.controlsfx.autocompletion.SuggestionProvider;
-import javafx.collections.ListChangeListener;
-import javafx.util.StringConverter;
 import mediathek.config.Daten;
-import mediathek.javafx.filterpanel.CommonViewSettingsPane;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
@@ -15,18 +11,16 @@ import mediathek.tool.GermanStringSorter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.controlsfx.control.textfield.TextFields;
 import org.jetbrains.annotations.NotNull;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import ca.odell.glazedlists.*;
-import ca.odell.glazedlists.swing.AutoCompleteSupport;
+import java.util.function.Function;
 
 public class FilmActionPanelSwing {
     private static final Logger logger = LogManager.getLogger();
@@ -37,8 +31,17 @@ public class FilmActionPanelSwing {
     private final DefaultComboBoxModel<String> observableThemaList = new DefaultComboBoxModel<>();
     private final DefaultComboBoxModel<FilterDTO> availableFilters = new DefaultComboBoxModel<>();
     private RangeSliderSwing filmLengthSlider;
-    private SuggestionProvider<String> themaSuggestionProvider;
-
+    private JCheckBox showOnlyHighQuality = new JCheckBox();
+    private JCheckBox showSubtitlesOnly = new JCheckBox();
+    private JCheckBox showNewOnly  = new JCheckBox();
+    private JCheckBox showBookMarkedOnly = new JCheckBox();
+    private JCheckBox showLivestreamsOnly = new JCheckBox();
+    private JCheckBox showUnseenOnly = new JCheckBox();
+    private JCheckBox dontShowAbos = new JCheckBox();
+    private JCheckBox dontShowSignLanguage = new JCheckBox();
+    private JCheckBox dontShowTrailers = new JCheckBox();
+    private JCheckBox dontShowAudioVersions = new JCheckBox();
+    private ZeitraumSpinnerSwing zeitraumProperty = new ZeitraumSpinnerSwing();
 
     public FilmActionPanelSwing(@NotNull JToggleButton filterToggleBtn) {
         this.filterConfig = new FilterConfiguration();
@@ -58,20 +61,12 @@ public class FilmActionPanelSwing {
         setupAddNewFilterButton();
     }
 
-    public OldSwingFilterDialog getFilterDialog() {
-        return filterDialog;
-    }
-
-    private RangeSliderSwing getFilmLengthSlider() {
-        return filmLengthSlider;
-    }
-
     private void setupAddNewFilterButton() {
         viewSettingsPane.setAddNewFilterButtonEventHandler(
                 event -> {
                     FilterDTO newFilter =
                             new FilterDTO(
-                                    UUID.randomUUID(), String.format("Filter %d", availableFilters.size() + 1));
+                                    UUID.randomUUID(), String.format("Filter %d", availableFilters.getSize() + 1));
                     filterConfig.addNewFilter(newFilter);
                     viewSettingsPane.disableDeleteCurrentFilterButton(false);
                     viewSettingsPane.selectFilter(newFilter);
@@ -114,22 +109,15 @@ public class FilmActionPanelSwing {
                 filterConfig.setCurrentFilter(newValue);
             }
         });
-        viewSettingsPane.setFilterSelectionStringConverter(
-                new StringConverter<>() {
-
-                    @Override
-                    public String toString(FilterDTO filter) {
-                        if (filter == null) {
-                            return null;
-                        }
-                        return filter.name();
-                    }
-
-                    @Override
-                    public FilterDTO fromString(String name) {
-                        return filterConfig.findFilterForName(name).orElseGet(() -> renameCurrentFilter(name));
-                    }
-                });
+        viewSettingsPane.setFilterSelectionStringConverter(new Function<FilterDTO, String>() {
+            @Override
+            public String apply(FilterDTO filter) {
+                if (filter == null) {
+                    return null;
+                }
+                return filter.name();
+            }
+        });
     }
 
     private FilterDTO renameCurrentFilter(String newValue) {
@@ -152,69 +140,103 @@ public class FilmActionPanelSwing {
     private void setupViewSettingsPane() {
         viewSettingsPane = new CommonViewSettingsPaneSwing();
 
-        showOnlyHighQuality = viewSettingsPane.cbShowOnlyHd.selectedProperty();
-        showSubtitlesOnly = viewSettingsPane.cbShowSubtitlesOnly.selectedProperty();
-        showNewOnly = viewSettingsPane.cbShowNewOnly.selectedProperty();
-        showBookMarkedOnly = viewSettingsPane.cbShowBookMarkedOnly.selectedProperty();
-        showLivestreamsOnly = viewSettingsPane.cbShowOnlyLivestreams.selectedProperty();
+        showOnlyHighQuality = viewSettingsPane.cbShowOnlyHd;
+        showSubtitlesOnly = viewSettingsPane.cbShowSubtitlesOnly;
+        showNewOnly = viewSettingsPane.cbShowNewOnly;
+        showBookMarkedOnly = viewSettingsPane.cbShowBookMarkedOnly;
+        showLivestreamsOnly = viewSettingsPane.cbShowOnlyLivestreams;
 
-        showUnseenOnly = viewSettingsPane.cbShowUnseenOnly.selectedProperty();
-        dontShowAbos = viewSettingsPane.cbDontShowAbos.selectedProperty();
-        dontShowSignLanguage = viewSettingsPane.cbDontShowGebaerdensprache.selectedProperty();
-        dontShowTrailers = viewSettingsPane.cbDontShowTrailers.selectedProperty();
-        dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions.selectedProperty();
+        showUnseenOnly = viewSettingsPane.cbShowUnseenOnly;
+        dontShowAbos = viewSettingsPane.cbDontShowAbos;
+        dontShowSignLanguage = viewSettingsPane.cbDontShowGebaerdensprache;
+        dontShowTrailers = viewSettingsPane.cbDontShowTrailers;
+        dontShowAudioVersions = viewSettingsPane.cbDontShowAudioVersions;
 
         setupThemaComboBox();
-        viewSettingsPane.senderCheckList.getSelectionModel().addListSelectionListener(ListSelectionListener);
-                addListener((ListChangeListener<String>) c -> updateThemaComboBox());
+        viewSettingsPane.senderCheckList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    updateThemaComboBox();
+                }
+            }
+        });
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode.filmLengthSlider;
 
-        zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
+        zeitraumProperty = viewSettingsPane.zeitraumSpinner;
     }
+
 
     private void setupThemaComboBox() {
-        viewSettingsPane.themaComboBox.setModel(observableThemaList);
-        //themaSuggestionProvider = SuggestionProvider.create(sourceThemaList);
-        TextFields.bindAutoCompletion(viewSettingsPane.themaComboBox.getEditor(), themaSuggestionProvider);
+        // Mach die ComboBox editierbar für Autovervollständigung
+        viewSettingsPane.themaComboBox.setEditable(true);
+
+        // Hol den JTextField der ComboBox, um die Autovervollständigung zu implementieren
+        JTextField textField = (JTextField) viewSettingsPane.themaComboBox.getEditor().getEditorComponent();
+
+        // Füge einen KeyListener hinzu, um die Autovervollständigung zu realisieren
+        textField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // Sobald eine Taste gedrückt wird, filtere die Liste nach den Eingaben
+                String inputText = textField.getText().toLowerCase();
+                filterThemaList(inputText);
+            }
+        });
     }
 
-    public CommonViewSettingsPaneSwing getViewSettingsPane() {
-        return viewSettingsPane;
+    private void filterThemaList(String inputText) {
+        List<String> filteredList = new ArrayList<>();
+
+        for (int i = 0; i < sourceThemaList.size(); i++) {
+            String thema = sourceThemaList.get(i);
+            if (thema.toLowerCase().contains(inputText)) {
+                filteredList.add(thema);
+            }
+        }
+
+        // Aktualisiere das ComboBox-Modell mit den gefilterten Themen
+        observableThemaList.removeAllElements();
+        for (String thema : filteredList) {
+            observableThemaList.addElement(thema);
+        }
+        viewSettingsPane.themaComboBox.setSelectedIndex(0); // Setzt den ersten Eintrag als ausgewählt
     }
+
 
     private void restoreConfigSettings() {
         viewSettingsPane.selectFilter(filterConfig.getCurrentFilter());
-        showOnlyHighQuality.set(filterConfig.isShowHdOnly());
-        showSubtitlesOnly.set(filterConfig.isShowSubtitlesOnly());
-        showNewOnly.set(filterConfig.isShowNewOnly());
-        showBookMarkedOnly.set(filterConfig.isShowBookMarkedOnly());
-        showUnseenOnly.set(filterConfig.isShowUnseenOnly());
-        showLivestreamsOnly.set(filterConfig.isShowLivestreamsOnly());
+        showOnlyHighQuality.setSelected(filterConfig.isShowHdOnly());
+        showSubtitlesOnly.setSelected(filterConfig.isShowSubtitlesOnly());
+        showNewOnly.setSelected(filterConfig.isShowNewOnly());
+        showBookMarkedOnly.setSelected(filterConfig.isShowBookMarkedOnly());
+        showUnseenOnly.setSelected(filterConfig.isShowUnseenOnly());
+        showLivestreamsOnly.setSelected(filterConfig.isShowLivestreamsOnly());
 
-        dontShowAbos.set(filterConfig.isDontShowAbos());
-        dontShowTrailers.set(filterConfig.isDontShowTrailers());
-        dontShowSignLanguage.set(filterConfig.isDontShowSignLanguage());
-        dontShowAudioVersions.set(filterConfig.isDontShowAudioVersions());
+        dontShowAbos.setSelected(filterConfig.isDontShowAbos());
+        dontShowTrailers.setSelected(filterConfig.isDontShowTrailers());
+        dontShowSignLanguage.setSelected(filterConfig.isDontShowSignLanguage());
+        dontShowAudioVersions.setSelected(filterConfig.isDontShowAudioVersions());
 
         try {
             double loadedMin = filterConfig.getFilmLengthMin();
-            if (loadedMin > filmLengthSlider.getHighValue()) {
-                filmLengthSlider.setHighValueChanging(true);
-                filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-                filmLengthSlider.setHighValueChanging(false);
+            if (loadedMin > filmLengthSlider.getUpperValue()) {
+                filmLengthSlider.setUpperValueChanging(true);
+                filmLengthSlider.setUpperValue((int) filterConfig.getFilmLengthMax());
+                filmLengthSlider.setUpperValueChanging(false);
 
-                filmLengthSlider.setLowValueChanging(true);
-                filmLengthSlider.setLowValue(loadedMin);
-                filmLengthSlider.setLowValueChanging(false);
+                filmLengthSlider.setValueChanging(true);
+                filmLengthSlider.setValue((int) loadedMin);
+                filmLengthSlider.setValueChanging(false);
             } else {
-                filmLengthSlider.setLowValueChanging(true);
-                filmLengthSlider.setLowValue(loadedMin);
-                filmLengthSlider.setLowValueChanging(false);
+                filmLengthSlider.setValueChanging(true);
+                filmLengthSlider.setValue((int) loadedMin);
+                filmLengthSlider.setValueChanging(false);
 
-                filmLengthSlider.setHighValueChanging(true);
-                filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-                filmLengthSlider.setHighValueChanging(false);
+                filmLengthSlider.setUpperValueChanging(true);
+                filmLengthSlider.setUpperValue((int) filterConfig.getFilmLengthMax());
+                filmLengthSlider.setUpperValueChanging(false);
             }
 
         } catch (Exception exception) {
@@ -223,43 +245,131 @@ public class FilmActionPanelSwing {
         }
 
         try {
-            viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(filterConfig.getZeitraum());
+            viewSettingsPane.zeitraumSpinner.setValue(filterConfig.getZeitraum());
         } catch (Exception exception) {
             logger.debug("Beim wiederherstellen der Filter Einstellungen für den Zeitraum ist ein Fehler aufgetreten!",
                     exception);
         }
     }
 
-    private void setupConfigListeners() {
-        showOnlyHighQuality.addListener(
-                (observable, oldValue, newValue) -> filterConfig.setShowHdOnly(newValue));
-        showSubtitlesOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
-        showBookMarkedOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
-        showNewOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowNewOnly(newValue)));
-        showUnseenOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowUnseenOnly(newValue)));
-        showLivestreamsOnly.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setShowLivestreamsOnly(newValue)));
-
-        dontShowAbos.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowAbos(newValue)));
-        dontShowTrailers.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowTrailers(newValue)));
-        dontShowSignLanguage.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowSignLanguage(newValue)));
-        dontShowAudioVersions.addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setDontShowAudioVersions(newValue)));
-
-        filmLengthSlider.lowValueProperty().addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
-        filmLengthSlider.highValueProperty().addListener(
-                ((observable, oldValue, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
-
-        zeitraumProperty.addListener(((os, oV, newValue) -> filterConfig.setZeitraum(newValue)));
+    public CommonViewSettingsPaneSwing getViewSettingsPane(){
+        return viewSettingsPane;
     }
+
+    public OldSwingFilterDialog getFilterDialog() {
+        return filterDialog;
+    }
+
+    public RangeSliderSwing getFilmLengthSlider() {
+        return filmLengthSlider;
+    }
+
+    public ZeitraumSpinnerSwing zeitraumProperty() {
+        return zeitraumProperty;
+    }
+
+    public boolean isDontShowAudioVersions() {
+        return dontShowAudioVersions.isSelected();
+    }
+
+    public JCheckBox dontShowAudioVersionsProperty() {
+        return dontShowAudioVersions;
+    }
+
+    public boolean isDontShowSignLanguage() {
+        return dontShowSignLanguage.isSelected();
+    }
+
+    public JCheckBox dontShowSignLanguageProperty() {
+        return dontShowSignLanguage;
+    }
+
+    public boolean isDontShowTrailers() {
+        return dontShowTrailers.isSelected();
+    }
+
+    public JCheckBox dontShowTrailersProperty() {
+        return dontShowTrailers;
+    }
+
+    public boolean isDontShowAbos() {
+        return dontShowAbos.isSelected();
+    }
+
+    public JCheckBox dontShowAbosProperty() {
+        return dontShowAbos;
+    }
+
+    public boolean isShowLivestreamsOnly() {
+        return showLivestreamsOnly.isSelected();
+    }
+
+    public JCheckBox showLivestreamsOnlyProperty() {
+        return showLivestreamsOnly;
+    }
+
+    public boolean isShowUnseenOnly() {
+        return showUnseenOnly.isSelected();
+    }
+
+    public JCheckBox showUnseenOnlyProperty() {
+        return showUnseenOnly;
+    }
+
+    public boolean isShowBookMarkedOnly() {
+        return showBookMarkedOnly.isSelected();
+    }
+
+    public JCheckBox showBookMarkedOnlyProperty() {
+        return showBookMarkedOnly;
+    }
+
+    public boolean isShowSubtitlesOnly() {
+        return showSubtitlesOnly.isSelected();
+    }
+
+    public JCheckBox showSubtitlesOnlyProperty() {
+        return showSubtitlesOnly;
+    }
+
+    public boolean isShowOnlyHighQuality() {
+        return showOnlyHighQuality.isSelected();
+    }
+
+    public JCheckBox showOnlyHighQualityProperty() {
+        return showOnlyHighQuality;
+    }
+
+    public boolean isShowNewOnly() {
+        return showNewOnly.isSelected();
+    }
+
+    public JCheckBox showNewOnlyProperty() {
+        return showNewOnly;
+    }
+
+    private void setupConfigListeners() {
+        // ActionListener für JCheckBox-Komponenten
+        showOnlyHighQuality.addActionListener(e -> filterConfig.setShowHdOnly(showOnlyHighQuality.isSelected()));
+        showSubtitlesOnly.addActionListener(e -> filterConfig.setShowSubtitlesOnly(showSubtitlesOnly.isSelected()));
+        showBookMarkedOnly.addActionListener(e -> filterConfig.setShowBookMarkedOnly(showBookMarkedOnly.isSelected()));
+        showNewOnly.addActionListener(e -> filterConfig.setShowNewOnly(showNewOnly.isSelected()));
+        showUnseenOnly.addActionListener(e -> filterConfig.setShowUnseenOnly(showUnseenOnly.isSelected()));
+        showLivestreamsOnly.addActionListener(e -> filterConfig.setShowLivestreamsOnly(showLivestreamsOnly.isSelected()));
+
+        dontShowAbos.addActionListener(e -> filterConfig.setDontShowAbos(dontShowAbos.isSelected()));
+        dontShowTrailers.addActionListener(e -> filterConfig.setDontShowTrailers(dontShowTrailers.isSelected()));
+        dontShowSignLanguage.addActionListener(e -> filterConfig.setDontShowSignLanguage(dontShowSignLanguage.isSelected()));
+        dontShowAudioVersions.addActionListener(e -> filterConfig.setDontShowAudioVersions(dontShowAudioVersions.isSelected()));
+
+        // ChangeListener für JSlider-Komponenten (Film length slider)
+        filmLengthSlider.addChangeListener(e -> filterConfig.setFilmLengthMin(filmLengthSlider.getValue()));
+        filmLengthSlider.addChangeListener(e -> filterConfig.setFilmLengthMax(filmLengthSlider.getUpperValue()));
+
+        // ChangeListener für Spinner-Komponenten (Zeitraum)
+        zeitraumProperty.addChangeListener(e -> filterConfig.setZeitraum(String.valueOf(zeitraumProperty.getValue())));
+    }
+
 
     /**
      * Retrieve the list of all thema based on sender select checkbox list.
@@ -299,11 +409,9 @@ public class FilmActionPanelSwing {
         transactionThemaList.addAll(tempThemaList);
         transactionThemaList.commitEvent();
 
-        //update autocompletion provider here only as the other listeners fire too much
-        themaSuggestionProvider.clearSuggestions();
-        themaSuggestionProvider.addPossibleSuggestions(sourceThemaList);
-
         viewSettingsPane.themaComboBox.setSelectedIndex(0);
     }
+
+
 }
 

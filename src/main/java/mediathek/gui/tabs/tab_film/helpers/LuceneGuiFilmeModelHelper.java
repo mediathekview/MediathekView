@@ -1,16 +1,15 @@
 package mediathek.gui.tabs.tab_film.helpers;
 
 import com.google.common.base.Stopwatch;
-import javafx.collections.ObservableList;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.gui.tasks.LuceneIndexKeys;
-import mediathek.javafx.filterpanel.FilmActionPanel;
-import mediathek.javafx.filterpanel.FilmLengthSlider;
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.javaswing.filterpanel.FilmActionPanelSwing;
+import mediathek.javaswing.filterpanel.FilmLengthSliderSwing;
+import mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.TModelFilm;
@@ -46,7 +45,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
     }
 
 
-    public LuceneGuiFilmeModelHelper(@NotNull FilmActionPanel filmActionPanel,
+    public LuceneGuiFilmeModelHelper(@NotNull FilmActionPanelSwing filmActionPanel,
                                      @NotNull SeenHistoryController historyController,
                                      @NotNull SearchFieldData searchFieldData) {
         this.filmActionPanel = filmActionPanel;
@@ -55,7 +54,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
     }
 
     private String getFilterThema() {
-        String filterThema = filmActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
+        String filterThema = filmActionPanel.getViewSettingsPane().themaComboBox.getSelectedThema();
         if (filterThema == null) {
             filterThema = "";
         }
@@ -67,11 +66,11 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
     protected boolean noFiltersAreSet() {
         var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
 
-        return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
+        return filmActionPanel.getViewSettingsPane().senderCheckList.getSelectionModel().getSelectedItemsCount() == 0
                 && getFilterThema().isEmpty()
                 && searchFieldData.isEmpty()
-                && ((int) filmLengthSlider.getLowValue() == 0)
-                && ((int) filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
+                && ((int) filmLengthSlider.getValue() == 0)
+                && ((int) filmLengthSlider.getUpperValue() == FilmLengthSliderSwing.UNLIMITED_VALUE)
                 && !filmActionPanel.isDontShowAbos()
                 && !filmActionPanel.isShowUnseenOnly()
                 && !filmActionPanel.isShowOnlyHighQuality()
@@ -82,7 +81,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 && !filmActionPanel.isDontShowTrailers()
                 && !filmActionPanel.isDontShowSignLanguage()
                 && !filmActionPanel.isDontShowAudioVersions()
-                && filmActionPanel.zeitraumProperty().get().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+                && filmActionPanel.zeitraumProperty().getValue().equals(ZeitraumSpinnerSwing.UNLIMITED_VALUE);
     }
 
 
@@ -117,7 +116,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 qb.add(initialQuery, BooleanClause.Occur.MUST);
 
                 //Zeitraum filter on demand...
-                if (!filmActionPanel.zeitraumProperty().get().equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
+                if (!filmActionPanel.zeitraumProperty().getValue().equals(ZeitraumSpinnerSwing.UNLIMITED_VALUE)) {
                     try {
                         qb.add(createZeitraumQuery(listeFilme), BooleanClause.Occur.FILTER);
                     } catch (Exception ex) {
@@ -145,7 +144,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 if (filmActionPanel.isShowNewOnly()) {
                     addNewOnlyQuery(qb, analyzer);
                 }
-                final ObservableList<String> selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
+                final List selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getSelectedValuesList();
                 if (!selectedSenders.isEmpty()) {
                     addSenderFilterQuery(qb, analyzer, selectedSenders);
                 }
@@ -181,7 +180,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
             if (!filterThema.isEmpty()) {
                 stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
             }
-            if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+            if (maxLength < FilmLengthSliderSwing.UNLIMITED_VALUE) {
                 stream = stream.filter(this::maxLengthCheck);
             }
             if (filmActionPanel.isShowUnseenOnly()) {
@@ -262,7 +261,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
     }
 
     private Query createZeitraumQuery(@NotNull IndexedFilmList listeFilme) throws ParseException {
-        var numDays = Integer.parseInt(filmActionPanel.zeitraumProperty().get());
+        var numDays = Integer.parseInt((String) filmActionPanel.zeitraumProperty().getValue());
         var to_Date = LocalDateTime.now();
         var from_Date = to_Date.minusDays(numDays);
         var utcZone = ZoneId.of("UTC");

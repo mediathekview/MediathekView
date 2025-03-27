@@ -1,6 +1,6 @@
 package mediathek.tool;
 
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing;
 import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -348,7 +348,7 @@ public class FilterConfiguration {
   public String getZeitraum() {
     return configuration.getString(
         toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()),
-        ZeitraumSpinner.UNLIMITED_VALUE);
+        ZeitraumSpinnerSwing.UNLIMITED_VALUE);
   }
 
   public FilterConfiguration setZeitraum(String zeitraum) {

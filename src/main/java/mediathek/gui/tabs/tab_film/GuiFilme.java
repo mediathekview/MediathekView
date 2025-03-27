@@ -11,7 +11,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.util.Duration;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -37,8 +36,8 @@ import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
 import mediathek.javafx.bookmark.BookmarkWindowController;
-import mediathek.javafx.filterpanel.FilmActionPanel;
-import mediathek.javafx.filterpanel.SearchControlFieldMode;
+import mediathek.javaswing.filterpanel.FilmActionPanelSwing;
+import mediathek.javaswing.filterpanel.SearchControlFieldModeSwing;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -55,6 +54,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
@@ -112,7 +113,7 @@ public class GuiFilme extends AGuiTabPanel {
     /**
      * The JavaFx Film action popup panel.
      */
-    public FilmActionPanel filmActionPanel;
+    public FilmActionPanelSwing filmActionPanelSwing;
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
@@ -290,7 +291,7 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private void setupFilmActionPanel() {
-        filmActionPanel = new FilmActionPanel(btnToggleFilterDialogVisibility);
+        filmActionPanelSwing = new FilmActionPanelSwing(btnToggleFilterDialogVisibility);
     }
 
     private void setupPsetButtonsTab() {
@@ -366,7 +367,7 @@ public class GuiFilme extends AGuiTabPanel {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> filmActionPanel.updateThemaComboBox());
+                Platform.runLater(() -> filmActionPanelSwing.updateThemaComboBox());
             }
         });
 
@@ -409,7 +410,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filmActionPanel.isShowUnseenOnly()) {
+            if (filmActionPanelSwing.isShowUnseenOnly()) {
                 Platform.runLater(reloadTableDataTransition::playFromStart);
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -512,7 +513,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filmActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filmActionPanelSwing.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -558,7 +559,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filmActionPanel.isShowOnlyHighQuality()) {
+            if (filmActionPanelSwing.isShowOnlyHighQuality()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -646,7 +647,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         zeitraumTransition.setOnFinished(evt -> {
             // reset sender filter first
-            filmActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().clearChecks();
+            filmActionPanelSwing.getViewSettingsPane().senderCheckList.getSelectionModel().clearSelection();
             try {
                 SwingUtilities.invokeAndWait(() -> daten.getListeBlacklist().filterListe());
             } catch (InterruptedException | InvocationTargetException e) {
@@ -660,30 +661,49 @@ public class GuiFilme extends AGuiTabPanel {
         Platform.runLater(() -> {
             setupDataTransitions();
 
-            final ChangeListener<Boolean> reloadTableListener = (ob, ov, nv) -> reloadTableDataTransition.playFromStart();
-            final ChangeListener<Boolean> reloadTableListener2 = (ob, ov, newValue) -> {
-                if (!newValue) {
+
+            final ChangeListener reloadTableListener = new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
                     reloadTableDataTransition.playFromStart();
                 }
             };
-            filmActionPanel.showOnlyHighQualityProperty().addListener(reloadTableListener);
-            filmActionPanel.showSubtitlesOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showNewOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showBookMarkedOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.showUnseenOnlyProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowAbosProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowTrailersProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowSignLanguageProperty().addListener(reloadTableListener);
-            filmActionPanel.dontShowAudioVersionsProperty().addListener(reloadTableListener);
-            filmActionPanel.showLivestreamsOnlyProperty().addListener(reloadTableListener);
-            var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
-            filmLengthSlider.lowValueChangingProperty().addListener(reloadTableListener2);
-            filmLengthSlider.highValueChangingProperty().addListener(reloadTableListener2);
 
-            filmActionPanel.zeitraumProperty().addListener((observable, oldValue, newValue) -> zeitraumTransition.playFromStart());
+            final ChangeListener reloadTableListener2 = new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    // Hier muss überprüft werden, ob der Wert false ist.
+                    // Da ChangeListener kein direktes "newValue" übergibt, muss die Quelle des Events geprüft werden.
 
-            filmActionPanel.getViewSettingsPane().themaComboBox.setOnAction(evt -> {
-                if (!filmActionPanel.getViewSettingsPane().themaComboBox.getItems().isEmpty()) {
+                    // Beispielhafte Annahme: Die Quelle ist ein JToggleButton oder JSlider.
+                    Object source = e.getSource();
+                    if (source instanceof javax.swing.JToggleButton) {
+                        javax.swing.JToggleButton toggleButton = (javax.swing.JToggleButton) source;
+                        if (!toggleButton.isSelected()) {
+                            reloadTableDataTransition.playFromStart();
+                        }
+                    }
+                }
+            };
+
+            filmActionPanelSwing.showOnlyHighQualityProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.showSubtitlesOnlyProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.showNewOnlyProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.showBookMarkedOnlyProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.showUnseenOnlyProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.dontShowAbosProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.dontShowTrailersProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.dontShowSignLanguageProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.dontShowAudioVersionsProperty().addChangeListener(reloadTableListener);
+            filmActionPanelSwing.showLivestreamsOnlyProperty().addChangeListener(reloadTableListener);
+            var filmLengthSlider = filmActionPanelSwing.getFilmLengthSlider();
+            filmLengthSlider.addChangeListener(reloadTableListener2);
+            filmLengthSlider.addChangeListener(reloadTableListener2);
+
+            filmActionPanelSwing.zeitraumProperty().addChangeListener(e  -> zeitraumTransition.playFromStart());
+
+            filmActionPanelSwing.getViewSettingsPane().themaComboBox.addActionListener(evt -> {
+                if (filmActionPanelSwing.getViewSettingsPane().themaComboBox.getItemCount() != 0) {
                     reloadTableDataTransition.playFromStart();
                 }
             });
@@ -727,9 +747,9 @@ public class GuiFilme extends AGuiTabPanel {
             var searchFieldData = new SearchFieldData(searchField.getText(),
                     searchField.getSearchMode());
             if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                helper = new LuceneGuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
+                helper = new LuceneGuiFilmeModelHelper(filmActionPanelSwing, historyController, searchFieldData);
             } else {
-                helper = new GuiFilmeModelHelper(filmActionPanel, historyController, searchFieldData);
+                helper = new GuiFilmeModelHelper(filmActionPanelSwing, historyController, searchFieldData);
             }
             return helper.getFilteredTableModel();
         });
@@ -782,11 +802,10 @@ public class GuiFilme extends AGuiTabPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            var dlg = filmActionPanel.getFilterDialog();
+            var dlg = filmActionPanelSwing.getFilterDialog();
             if (dlg != null) {
                 var visible = dlg.isVisible();
                 visible = !visible;
-
                 dlg.setVisible(visible);
             }
         }
@@ -796,7 +815,7 @@ public class GuiFilme extends AGuiTabPanel {
         private static final Dimension DEFAULT_DIMENSION = new Dimension(500, 100);
         private static final String SEARCHMODE_PROPERTY_STRING = "searchMode";
         protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-        protected SearchControlFieldMode searchMode;
+        protected SearchControlFieldModeSwing searchMode;
 
         public SearchField() {
             super("", 20);
@@ -832,11 +851,11 @@ public class GuiFilme extends AGuiTabPanel {
             this.pcs.addPropertyChangeListener(SEARCHMODE_PROPERTY_STRING, listener);
         }
 
-        public SearchControlFieldMode getSearchMode() {
+        public SearchControlFieldModeSwing getSearchMode() {
             return searchMode;
         }
 
-        public void setSearchMode(SearchControlFieldMode mode) {
+        public void setSearchMode(SearchControlFieldModeSwing mode) {
             var oldValue = searchMode;
             searchMode = mode;
             pcs.firePropertyChange(SEARCHMODE_PROPERTY_STRING, oldValue, mode);
@@ -860,12 +879,12 @@ public class GuiFilme extends AGuiTabPanel {
             private final JMenuItem miClearHistory = new JMenuItem("Historie löschen");
             private String SEARCH_HISTORY_CONFIG = "search.history.items";
 
-            public SearchHistoryButton(@Nullable SearchControlFieldMode mode) {
+            public SearchHistoryButton(@Nullable SearchControlFieldModeSwing mode) {
                 super(new FlatSearchWithHistoryIcon(true));
                 setToolTipText("Vorherige Suchen");
 
                 if (mode != null) {
-                    if (mode == SearchControlFieldMode.LUCENE) {
+                    if (mode == SearchControlFieldModeSwing.LUCENE) {
                         SEARCH_HISTORY_CONFIG += "_lucene";
                     }
                 }
@@ -932,11 +951,11 @@ public class GuiFilme extends AGuiTabPanel {
 
     public class LuceneSearchField extends SearchField {
         private static final Dimension LUCENE_DEFAULT_DIMENSION = new Dimension(700, 100);
-        private final SearchHistoryButton luceneSearchHistoryButton = new SearchHistoryButton(SearchControlFieldMode.LUCENE);
+        private final SearchHistoryButton luceneSearchHistoryButton = new SearchHistoryButton(SearchControlFieldModeSwing.LUCENE);
 
         public LuceneSearchField() {
             setMaximumSize(LUCENE_DEFAULT_DIMENSION);
-            setSearchMode(SearchControlFieldMode.LUCENE);
+            setSearchMode(SearchControlFieldModeSwing.LUCENE);
 
             putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Lucene Search Query");
             putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_COMPONENT, luceneSearchHistoryButton);
@@ -1002,9 +1021,9 @@ public class GuiFilme extends AGuiTabPanel {
             //put placeholder text
             boolean bSearchThroughDescription = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
             if (bSearchThroughDescription)
-                setSearchMode(SearchControlFieldMode.IRGENDWO);
+                setSearchMode(SearchControlFieldModeSwing.IRGENDWO);
             else
-                setSearchMode(SearchControlFieldMode.THEMA_TITEL);
+                setSearchMode(SearchControlFieldModeSwing.THEMA_TITEL);
         }
 
         @Override
@@ -1077,7 +1096,7 @@ public class GuiFilme extends AGuiTabPanel {
             }
             putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, text);
 
-            if (searchMode == SearchControlFieldMode.IRGENDWO || searchMode == SearchControlFieldMode.THEMA_TITEL) {
+            if (searchMode == SearchControlFieldModeSwing.IRGENDWO || searchMode == SearchControlFieldModeSwing.THEMA_TITEL) {
                 setToolTipText(text + " durchsuchen");
             } else {
                 setToolTipText("Lucene Query Syntax für die Suche");
@@ -1108,16 +1127,16 @@ public class GuiFilme extends AGuiTabPanel {
                 addActionListener(l -> {
                     switch (getSearchMode()) {
                         case IRGENDWO -> {
-                            setSearchMode(SearchControlFieldMode.THEMA_TITEL);
+                            setSearchMode(SearchControlFieldModeSwing.THEMA_TITEL);
                             setupToolTip(false);
                         }
                         case THEMA_TITEL -> {
-                            setSearchMode(SearchControlFieldMode.IRGENDWO);
+                            setSearchMode(SearchControlFieldModeSwing.IRGENDWO);
                             setupToolTip(true);
                         }
                     }
                     //update config
-                    ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, getSearchMode() == SearchControlFieldMode.IRGENDWO);
+                    ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, getSearchMode() == SearchControlFieldModeSwing.IRGENDWO);
 
                     loadTable();
                 });

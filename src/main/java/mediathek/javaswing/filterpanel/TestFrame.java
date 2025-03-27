@@ -15,7 +15,6 @@ public class TestFrame {
         setupFlatLaf();
         JFrame frame = new JFrame();
         frame.setSize(200, 200);
-        new CommonViewSettingsPaneSwing(frame, true).setVisible(true);
 
     }
 
