@@ -1,13 +1,13 @@
-package mediathek.javaswing.filterpanel;
+package mediathek.gui.filterpanel.filterpanel;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.TransactionList;
+import com.jidesoft.swing.RangeSlider;
 import mediathek.config.Daten;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
-import mediathek.tool.GermanStringSorter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +18,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -30,7 +31,7 @@ public class FilmActionPanelSwing {
     private final EventList<String> sourceThemaList = new BasicEventList<>();
     private final DefaultComboBoxModel<String> observableThemaList = new DefaultComboBoxModel<>();
     private final DefaultComboBoxModel<FilterDTO> availableFilters = new DefaultComboBoxModel<>();
-    private RangeSliderSwing filmLengthSlider;
+    private RangeSlider filmLengthSlider;
     private JCheckBox showOnlyHighQuality = new JCheckBox();
     private JCheckBox showSubtitlesOnly = new JCheckBox();
     private JCheckBox showNewOnly  = new JCheckBox();
@@ -69,6 +70,7 @@ public class FilmActionPanelSwing {
                                     UUID.randomUUID(), String.format("Filter %d", availableFilters.getSize() + 1));
                     filterConfig.addNewFilter(newFilter);
                     viewSettingsPane.disableDeleteCurrentFilterButton(false);
+                    viewSettingsPane.senderCheckList.clearCheckBoxListSelection();
                     viewSettingsPane.selectFilter(newFilter);
                 });
     }
@@ -162,7 +164,7 @@ public class FilmActionPanelSwing {
             }
         });
 
-        filmLengthSlider = viewSettingsPane.filmLengthSliderNode.filmLengthSlider;
+       filmLengthSlider = viewSettingsPane.filmLengthSliderNode.filmLengthSlider;
 
         zeitraumProperty = viewSettingsPane.zeitraumSpinner;
     }
@@ -221,22 +223,22 @@ public class FilmActionPanelSwing {
 
         try {
             double loadedMin = filterConfig.getFilmLengthMin();
-            if (loadedMin > filmLengthSlider.getUpperValue()) {
-                filmLengthSlider.setUpperValueChanging(true);
-                filmLengthSlider.setUpperValue((int) filterConfig.getFilmLengthMax());
-                filmLengthSlider.setUpperValueChanging(false);
+            if (loadedMin > filmLengthSlider.getHighValue()) {
+                //filmLengthSlider.setValueChanging(true);
+                filmLengthSlider.setHighValue((int) filterConfig.getFilmLengthMax());
+                //filmLengthSlider.setUpperValueChanging(false);
 
-                filmLengthSlider.setValueChanging(true);
-                filmLengthSlider.setValue((int) loadedMin);
-                filmLengthSlider.setValueChanging(false);
+                //filmLengthSlider.setValueChanging(true);
+                filmLengthSlider.setLowValue((int) loadedMin);
+                //filmLengthSlider.setValueChanging(false);
             } else {
-                filmLengthSlider.setValueChanging(true);
-                filmLengthSlider.setValue((int) loadedMin);
-                filmLengthSlider.setValueChanging(false);
+                //filmLengthSlider.setValueChanging(true);
+                filmLengthSlider.setLowValue((int) loadedMin);
+                //filmLengthSlider.setValueChanging(false);
 
-                filmLengthSlider.setUpperValueChanging(true);
-                filmLengthSlider.setUpperValue((int) filterConfig.getFilmLengthMax());
-                filmLengthSlider.setUpperValueChanging(false);
+                //filmLengthSlider.setUpperValueChanging(true);
+                filmLengthSlider.setHighValue((int) filterConfig.getFilmLengthMax());
+                //filmLengthSlider.setUpperValueChanging(false);
             }
 
         } catch (Exception exception) {
@@ -260,7 +262,7 @@ public class FilmActionPanelSwing {
         return filterDialog;
     }
 
-    public RangeSliderSwing getFilmLengthSlider() {
+    public RangeSlider getFilmLengthSlider() {
         return filmLengthSlider;
     }
 
@@ -363,8 +365,8 @@ public class FilmActionPanelSwing {
         dontShowAudioVersions.addActionListener(e -> filterConfig.setDontShowAudioVersions(dontShowAudioVersions.isSelected()));
 
         // ChangeListener für JSlider-Komponenten (Film length slider)
-        filmLengthSlider.addChangeListener(e -> filterConfig.setFilmLengthMin(filmLengthSlider.getValue()));
-        filmLengthSlider.addChangeListener(e -> filterConfig.setFilmLengthMax(filmLengthSlider.getUpperValue()));
+        filmLengthSlider.addChangeListener(e -> filterConfig.setFilmLengthMin(filmLengthSlider.getLowValue()));
+        filmLengthSlider.addChangeListener(e -> filterConfig.setFilmLengthMax(filmLengthSlider.getHighValue()));
 
         // ChangeListener für Spinner-Komponenten (Zeitraum)
         zeitraumProperty.addChangeListener(e -> filterConfig.setZeitraum(String.valueOf(zeitraumProperty.getValue())));
@@ -402,12 +404,13 @@ public class FilmActionPanelSwing {
         transactionThemaList.beginEvent(true);
         transactionThemaList.clear();
 
-        var selectedSenders = viewSettingsPane.senderCheckList.getSelectedValuesList();
+        var selectedSenders = viewSettingsPane.senderCheckList.getCheckBoxListSelectedValues();
+        System.out.println("FAP: " + Arrays.toString(selectedSenders));/*
         var tempThemaList = getThemaList(selectedSenders).stream().distinct()
                 .sorted(GermanStringSorter.getInstance())
                 .toList();
         transactionThemaList.addAll(tempThemaList);
-        transactionThemaList.commitEvent();
+        transactionThemaList.commitEvent();*/
 
         viewSettingsPane.themaComboBox.setSelectedIndex(0);
     }

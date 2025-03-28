@@ -1,4 +1,4 @@
-package mediathek.javaswing.filterpanel;
+package mediathek.gui.filterpanel.filterpanel;
 
 import mediathek.tool.FilterDTO;
 import javax.swing.*;

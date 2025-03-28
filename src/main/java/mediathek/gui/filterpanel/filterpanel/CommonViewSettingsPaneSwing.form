@@ -16,7 +16,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Component id="separatorSender" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
@@ -32,15 +33,13 @@
                           <Component id="cbShowNewOnly" alignment="0" max="32767" attributes="0"/>
                           <Component id="cbShowUnseenOnly" alignment="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="76" pref="76" max="-2" attributes="0"/>
+                      <EmptySpace min="76" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="scrollPaneSender" alignment="1" max="32767" attributes="0"/>
-                          <Component id="separatorSender" alignment="0" max="32767" attributes="0"/>
                           <Component id="separatorBtmRow" alignment="0" max="32767" attributes="0"/>
                           <Component id="separatorCB" alignment="0" max="32767" attributes="0"/>
-                          <Component id="senderLabel" alignment="0" max="32767" attributes="0"/>
                           <Component id="separatorThema" alignment="1" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="themaLabel" min="-2" max="-2" attributes="0"/>
@@ -48,19 +47,19 @@
                               <Component id="themaComboBox" max="32767" attributes="0"/>
                           </Group>
                           <Component id="separatorSlider" alignment="1" max="32767" attributes="0"/>
-                          <Component id="filmLengthSliderNode" alignment="0" pref="626" max="32767" attributes="0"/>
                           <Component id="separatorSpinner" alignment="1" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Group type="102" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
                                       <Component id="zeitraumLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Component id="zeitraumSpinner" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="tageLabel" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="1" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="filterSelect" min="-2" pref="100" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="btnRenameFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="btnAddNewFilter" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
@@ -70,13 +69,17 @@
                                       <Component id="btnDeleteFilterSettings" linkSize="1" min="-2" pref="36" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="filterSelect" min="-2" pref="403" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="senderLabel" min="-2" pref="210" max="-2" attributes="0"/>
+                          <Component id="filmLengthSliderNode" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="15" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -87,8 +90,8 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnDeleteFilterSettings" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="btnAddNewFilter" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
+                  <Component id="btnDeleteFilterSettings" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="btnRenameFilter" linkSize="2" alignment="0" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="btnDeleteCurrentFilter" linkSize="2" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="filterSelect" min="-2" max="-2" attributes="0"/>
@@ -105,7 +108,7 @@
               <Component id="cbShowSubtitlesOnly" linkSize="9" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cbShowOnlyLivestreams" linkSize="9" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="separatorCB" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cbShowUnseenOnly" linkSize="9" min="-2" max="-2" attributes="0"/>
@@ -117,12 +120,12 @@
               <Component id="cbDontShowTrailers" linkSize="9" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cbDontShowAudioVersions" linkSize="9" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="separatorSender" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="senderLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="scrollPaneSender" min="-2" pref="80" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="scrollPaneSender" min="-2" pref="142" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="separatorThema" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -132,11 +135,11 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="separatorSlider" min="-2" pref="10" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="filmLengthSliderNode" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
               <Component id="separatorSpinner" min="-2" pref="10" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="zeitraumLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="zeitraumSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -282,7 +285,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbDontShowAudioVersions">
       <Properties>
-        <Property name="text" type="java.lang.String" value="H&#xf6;rfassungen ausb"/>
+        <Property name="text" type="java.lang.String" value="H&#xf6;rfassungen ausblenden"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -303,6 +306,11 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
         <Component class="com.jidesoft.swing.CheckBoxList" name="senderCheckList">
+          <Properties>
+            <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new SenderListComboBoxModelSwing()" type="code"/>
+            </Property>
+          </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -312,14 +320,14 @@
     </Container>
     <Component class="javax.swing.JSeparator" name="separatorThema">
     </Component>
-    <Component class="mediathek.javaswing.filterpanel.ThemaComboBoxSwing" name="themaComboBox">
+    <Component class="mediathek.gui.filterpanel.filterpanel.ThemaComboBoxSwing" name="themaComboBox">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JSeparator" name="separatorSlider">
     </Component>
-    <Component class="mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing" name="zeitraumSpinner">
+    <Component class="mediathek.gui.filterpanel.filterpanel.ZeitraumSpinnerSwing" name="zeitraumSpinner">
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
@@ -328,11 +336,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Thema:"/>
       </Properties>
-    </Component>
-    <Component class="mediathek.javaswing.filterpanel.FilmLengthSliderNodeSwing" name="filmLengthSliderNode">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
-      </AuxValues>
     </Component>
     <Component class="javax.swing.JSeparator" name="separatorSpinner">
     </Component>
@@ -347,13 +350,13 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="filterSelect">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="0"/>
-        </Property>
-      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;FilterDTO&gt;"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+      </AuxValues>
+    </Component>
+    <Component class="mediathek.gui.filterpanel.filterpanel.FilmLengthSliderNodeSwing" name="filmLengthSliderNode">
+      <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
     </Component>

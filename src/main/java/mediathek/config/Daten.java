@@ -10,6 +10,7 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
+import mediathek.gui.bookmark.BookmarkDataListSwing;
 import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.notification.INotificationCenter;
@@ -54,6 +55,7 @@ public class Daten {
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist = new ListeBlacklist();
     private final BookmarkDataList listeBookmarkList;
+    private final BookmarkDataListSwing listeBookmarkListSwing;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
@@ -74,6 +76,7 @@ public class Daten {
         filmeLaden = new FilmeLaden(this);
 
         listeBookmarkList = BookmarkDataList.getInstance(this);
+        listeBookmarkListSwing = BookmarkDataListSwing.getInstance(this);
 
         listePset = new ListePset();
 
@@ -130,6 +133,10 @@ public class Daten {
      */
     public void loadBookMarkData() {
         listeBookmarkList.loadFromFile(StandardLocations.getBookmarkFilePath());
+    }
+
+    public void loadBookMarkDataSwing() {
+        listeBookmarkListSwing.loadFromFile(StandardLocations.getBookmarkFilePath());
     }
 
     /**
@@ -211,6 +218,7 @@ public class Daten {
         listeDownloads.clear();
         listeBlacklist.clear();
         listeBookmarkList.clear();
+        listeBookmarkListSwing.clear();
     }
 
     private boolean load() {
@@ -391,6 +399,9 @@ public class Daten {
 
     public BookmarkDataList getListeBookmarkList() {
         return listeBookmarkList;
+    }
+    public BookmarkDataListSwing getListeBookmarkListSwing() {
+        return listeBookmarkListSwing;
     }
 
     public ListeAbo getListeAbo() {

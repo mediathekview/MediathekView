@@ -7,9 +7,9 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.gui.tasks.LuceneIndexKeys;
-import mediathek.javaswing.filterpanel.FilmActionPanelSwing;
-import mediathek.javaswing.filterpanel.FilmLengthSliderSwing;
-import mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing;
+import mediathek.gui.filterpanel.filterpanel.FilmActionPanelSwing;
+import mediathek.gui.filterpanel.filterpanel.FilmLengthSliderSwing;
+import mediathek.gui.filterpanel.filterpanel.ZeitraumSpinnerSwing;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.TModelFilm;
@@ -66,11 +66,11 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
     protected boolean noFiltersAreSet() {
         var filmLengthSlider = filmActionPanel.getFilmLengthSlider();
 
-        return filmActionPanel.getViewSettingsPane().senderCheckList.getSelectionModel().getSelectedItemsCount() == 0
+        return filmActionPanel.getViewSettingsPane().senderCheckList.getCheckBoxListSelectedValues().length == 0
                 && getFilterThema().isEmpty()
                 && searchFieldData.isEmpty()
-                && ((int) filmLengthSlider.getValue() == 0)
-                && ((int) filmLengthSlider.getUpperValue() == FilmLengthSliderSwing.UNLIMITED_VALUE)
+                && ((int) filmLengthSlider.getLowValue() == 0)
+                && ((int) filmLengthSlider.getHighValue() == FilmLengthSliderSwing.UNLIMITED_VALUE)
                 && !filmActionPanel.isDontShowAbos()
                 && !filmActionPanel.isShowUnseenOnly()
                 && !filmActionPanel.isShowOnlyHighQuality()
@@ -144,9 +144,14 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper{
                 if (filmActionPanel.isShowNewOnly()) {
                     addNewOnlyQuery(qb, analyzer);
                 }
-                final List selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getSelectedValuesList();
-                if (!selectedSenders.isEmpty()) {
-                    addSenderFilterQuery(qb, analyzer, selectedSenders);
+                final Object[] selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckBoxListSelectedValues();
+
+                List<String> senderList = Arrays.stream(selectedSenders)
+                        .map(Object::toString)  // Falls es sich nicht um Strings handelt
+                        .collect(Collectors.toList());
+
+                if (!senderList.isEmpty()) {
+                    addSenderFilterQuery(qb, analyzer, senderList);
                 }
 
                 //the complete lucene query...

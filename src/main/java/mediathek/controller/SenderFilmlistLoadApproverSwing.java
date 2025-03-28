@@ -1,11 +1,8 @@
 package mediathek.controller;
 
-import mediathek.config.Konstanten;
-import mediathek.javafx.filterpanel.SenderListBoxModel;
-import mediathek.javaswing.filterpanel.SenderListBoxModelSwing;
+import mediathek.gui.filterpanel.filterpanel.SenderListBoxModelSwing;
 import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.sync.LockMode;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,6 +1,6 @@
 package mediathek.tool;
 
-import mediathek.javaswing.filterpanel.ZeitraumSpinnerSwing;
+import mediathek.gui.filterpanel.filterpanel.ZeitraumSpinnerSwing;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

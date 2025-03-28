@@ -136,7 +136,7 @@ public class BookmarkDataList
     }
     else { // delete existing bookmarks
       for (DatenFilm movie: movies) {  // delete references
-        movie.setBookmark(null);
+        movie.setBookmark((BookmarkData) null);
       }
       olist.removeAll(dellist);
     }
@@ -150,7 +150,7 @@ public class BookmarkDataList
     for (BookmarkData bookmark: bookmarks) {  // delete references
       DatenFilm movie = bookmark.getDatenFilm();
       if (movie != null) {
-         movie.setBookmark(null);
+         movie.setBookmark((BookmarkData) null);
       }
     }
     olist.removeAll(bookmarks);

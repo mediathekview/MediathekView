@@ -8,13 +8,14 @@ import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
 import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
-import mediathek.javaswing.filterpanel.FilmActionPanelSwing;
-import mediathek.javaswing.filterpanel.FilmLengthSliderSwing;
+import mediathek.gui.filterpanel.filterpanel.FilmActionPanelSwing;
+import mediathek.gui.filterpanel.filterpanel.FilmLengthSliderSwing;
 import mediathek.tool.Filter;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,8 +50,8 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         return filmActionPanel.getViewSettingsPane().senderCheckList.getSelectionModel().getSelectedItemsCount() == 0
                 && getFilterThema().isEmpty()
                 && searchFieldData.isEmpty()
-                && ((int) filmLengthSlider.getValue() == 0)
-                && ((int) filmLengthSlider.getUpperValue() == FilmLengthSliderSwing.UNLIMITED_VALUE)
+                && ((int) filmLengthSlider.getLowValue() == 0)
+                && ((int) filmLengthSlider.getHighValue() == FilmLengthSliderSwing.UNLIMITED_VALUE)
                 && !filmActionPanel.isDontShowAbos()
                 && !filmActionPanel.isShowUnseenOnly()
                 && !filmActionPanel.isShowOnlyHighQuality()
@@ -70,16 +71,19 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final List selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getSelectedValuesList();
+        final Object[] selectedSenders = filmActionPanel.getViewSettingsPane().senderCheckList.getCheckBoxListSelectedValues();
 
+        List<String> senderList = Arrays.stream(selectedSenders)
+                .map(Object::toString)  // Falls es sich nicht um Strings handelt
+                .collect(Collectors.toList());
         if (filmActionPanel.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
         var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
-        if (!selectedSenders.isEmpty()) {
+        if (!senderList.isEmpty()) {
             //ObservableList.contains() is insanely slow...this speeds up to factor 250!
-            Set<String> senderSet = new HashSet<>(selectedSenders.size());
-            senderSet.addAll(selectedSenders);
+            Set<String> senderSet = new HashSet<>(senderList.size());
+            senderSet.addAll(senderList);
             stream = stream.filter(f -> senderSet.contains(f.getSender()));
         }
         if (filmActionPanel.isShowNewOnly())

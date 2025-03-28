@@ -1,9 +1,10 @@
-package mediathek.javaswing.filterpanel;
+package mediathek.gui.filterpanel.filterpanel;
 
 import com.jidesoft.swing.CheckBoxList;
 import java.awt.Component;
 import mediathek.tool.FilterDTO;
 import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.SenderListComboBoxModelSwing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.awt.Dimension;
@@ -56,11 +57,11 @@ public class CommonViewSettingsPaneSwing extends JPanel {
         separatorSlider = new JSeparator();
         zeitraumSpinner = new ZeitraumSpinnerSwing();
         themaLabel = new JLabel();
-        filmLengthSliderNode = new FilmLengthSliderNodeSwing();
         separatorSpinner = new JSeparator();
         zeitraumLabel = new JLabel();
         tageLabel = new JLabel();
         filterSelect = new JComboBox<>();
+        filmLengthSliderNode = new FilmLengthSliderNodeSwing();
 
         btnRenameFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
         btnRenameFilter.setToolTipText("Filter umbenennen");
@@ -96,10 +97,11 @@ public class CommonViewSettingsPaneSwing extends JPanel {
 
         cbDontShowTrailers.setText("Trailer/Teaser/Vorschau nicht anzeigen");
 
-        cbDontShowAudioVersions.setText("Hörfassungen ausb");
+        cbDontShowAudioVersions.setText("Hörfassungen ausblenden");
 
         senderLabel.setText("Sender:");
 
+        senderCheckList.setModel(new SenderListComboBoxModelSwing());
         scrollPaneSender.setViewportView(senderCheckList);
 
         themaLabel.setText("Thema:");
@@ -111,6 +113,7 @@ public class CommonViewSettingsPaneSwing extends JPanel {
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(separatorSender)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -126,43 +129,44 @@ public class CommonViewSettingsPaneSwing extends JPanel {
                             .addComponent(cbShowBookMarkedOnly, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cbShowNewOnly, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cbShowUnseenOnly, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(76, 76, 76))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addComponent(scrollPaneSender)
-                            .addComponent(separatorSender, GroupLayout.Alignment.LEADING)
                             .addComponent(separatorBtmRow, GroupLayout.Alignment.LEADING)
                             .addComponent(separatorCB, GroupLayout.Alignment.LEADING)
-                            .addComponent(senderLabel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(separatorThema)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(themaLabel)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(themaComboBox, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(separatorSlider)
-                            .addComponent(filmLengthSliderNode, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
                             .addComponent(separatorSpinner)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                            .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
+                                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(zeitraumLabel)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(zeitraumSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(tageLabel))
-                                    .addGroup(layout.createSequentialGroup()
+                                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
                                         .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnAddNewFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, 403, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(senderLabel, GroupLayout.PREFERRED_SIZE, 210, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(filmLengthSliderNode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 15, Short.MAX_VALUE))))
         );
 
         layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {btnAddNewFilter, btnDeleteCurrentFilter, btnDeleteFilterSettings, btnRenameFilter});
@@ -171,8 +175,8 @@ public class CommonViewSettingsPaneSwing extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAddNewFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDeleteFilterSettings, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRenameFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDeleteCurrentFilter, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                     .addComponent(filterSelect, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -188,7 +192,7 @@ public class CommonViewSettingsPaneSwing extends JPanel {
                 .addComponent(cbShowSubtitlesOnly)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbShowOnlyLivestreams)
-                .addGap(46, 46, 46)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separatorCB, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbShowUnseenOnly)
@@ -200,12 +204,12 @@ public class CommonViewSettingsPaneSwing extends JPanel {
                 .addComponent(cbDontShowTrailers)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbDontShowAudioVersions)
-                .addGap(34, 34, 34)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separatorSender, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(senderLabel)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollPaneSender, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrollPaneSender, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separatorThema, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -214,11 +218,11 @@ public class CommonViewSettingsPaneSwing extends JPanel {
                     .addComponent(themaLabel))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separatorSlider, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(filmLengthSliderNode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(9, 9, 9)
                 .addComponent(separatorSpinner, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(zeitraumLabel)
                     .addComponent(zeitraumSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)

@@ -3,7 +3,7 @@ package mediathek.gui.tabs.tab_film.helpers;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
-import mediathek.javaswing.filterpanel.FilmActionPanelSwing;
+import mediathek.gui.filterpanel.filterpanel.FilmActionPanelSwing;
 
 import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +42,7 @@ public abstract class GuiModelHelper {
 
     protected void calculateFilmLengthSliderValues() {
         final long minLength = (long) filmActionPanel.getFilmLengthSlider().getValue();
-        maxLength = (long) filmActionPanel.getFilmLengthSlider().getUpperValue();
+        maxLength = (long) filmActionPanel.getFilmLengthSlider().getHighValue();
         var minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
         var maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
         sliderRange = new SliderRange(minLengthInSeconds, maxLengthInSeconds);

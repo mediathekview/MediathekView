@@ -4,9 +4,11 @@
  */
 package mediathek.gui.bookmark;
 
+import mediathek.tool.SVGIconUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,17 +22,18 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import org.jdesktop.swingx.JXHyperlink;
 
 /**
  *
  * @author Markus
  */
-public class BookmarkWindow extends javax.swing.JDialog {
+public class BookmarkDialogSwing extends javax.swing.JDialog {
 
     /**
      * Creates new form BookmarkWindow
      */
-    public BookmarkWindow(java.awt.Frame parent, boolean modal) {
+    public BookmarkDialogSwing(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
@@ -58,33 +61,28 @@ public class BookmarkWindow extends javax.swing.JDialog {
         jSeparator2 = new JSeparator();
         jScrollPane2 = new JScrollPane();
         jTextArea1 = new JTextArea();
-        jLabel1 = new JLabel();
         jLabel2 = new JLabel();
         jLabel3 = new JLabel();
         jLabel4 = new JLabel();
+        jXHyperlink1 = new JXHyperlink();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         jToolBar1.setRollover(true);
 
-        jButton1.setText("Test");
+        jButton1.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(SwingConstants.BOTTOM);
         jToolBar1.add(jButton1);
 
-        jButton2.setText("Test");
+        jButton2.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(SwingConstants.CENTER);
         jButton2.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jButton2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
         jToolBar1.add(jButton2);
 
-        jButton3.setText("Test");
+        jButton3.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(SwingConstants.CENTER);
         jButton3.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -93,7 +91,7 @@ public class BookmarkWindow extends javax.swing.JDialog {
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 437, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGap(0, 21, Short.MAX_VALUE)
@@ -101,20 +99,20 @@ public class BookmarkWindow extends javax.swing.JDialog {
 
         jToolBar1.add(jPanel1);
 
-        jButton4.setText("Test");
+        jButton4.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(SwingConstants.CENTER);
         jButton4.setVerticalTextPosition(SwingConstants.BOTTOM);
         jToolBar1.add(jButton4);
         jToolBar1.add(jSeparator1);
 
-        jToggleButton1.setText("Test");
+        jToggleButton1.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
         jToggleButton1.setFocusable(false);
         jToggleButton1.setHorizontalTextPosition(SwingConstants.CENTER);
         jToggleButton1.setVerticalTextPosition(SwingConstants.BOTTOM);
         jToolBar1.add(jToggleButton1);
 
-        jButton5.setText("Test");
+        jButton5.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
         jButton5.setFocusable(false);
         jButton5.setHorizontalTextPosition(SwingConstants.CENTER);
         jButton5.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -122,13 +120,10 @@ public class BookmarkWindow extends javax.swing.JDialog {
 
         jTable1.setModel(new DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Sender", "Thema", "Titel", "Dauer", "Sendedatum", "", "", "Url", "Verfügbar bis", "Notiz"
+
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -137,18 +132,18 @@ public class BookmarkWindow extends javax.swing.JDialog {
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
-        jLabel1.setText("Link zu Webseite");
-
         jLabel2.setText("Label");
 
         jLabel3.setText("Label");
 
         jLabel4.setText("Label");
 
+        jXHyperlink1.setText("Link zur Webseite");
+
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar1, GroupLayout.DEFAULT_SIZE, 1631, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -157,13 +152,13 @@ public class BookmarkWindow extends javax.swing.JDialog {
                     .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)))
+                                .addComponent(jLabel4))
+                            .addComponent(jXHyperlink1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -177,7 +172,7 @@ public class BookmarkWindow extends javax.swing.JDialog {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
+                .addComponent(jXHyperlink1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -188,10 +183,6 @@ public class BookmarkWindow extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton2ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -210,20 +201,21 @@ public class BookmarkWindow extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BookmarkWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BookmarkWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BookmarkWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BookmarkWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                BookmarkWindow dialog = new BookmarkWindow(new javax.swing.JFrame(), true);
+                BookmarkDialogSwing dialog = new BookmarkDialogSwing(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -241,7 +233,6 @@ public class BookmarkWindow extends javax.swing.JDialog {
     private JButton jButton3;
     private JButton jButton4;
     private JButton jButton5;
-    private JLabel jLabel1;
     private JLabel jLabel2;
     private JLabel jLabel3;
     private JLabel jLabel4;
@@ -254,5 +245,6 @@ public class BookmarkWindow extends javax.swing.JDialog {
     private JTextArea jTextArea1;
     private JToggleButton jToggleButton1;
     private JToolBar jToolBar1;
+    private JXHyperlink jXHyperlink1;
     // End of variables declaration//GEN-END:variables
 }

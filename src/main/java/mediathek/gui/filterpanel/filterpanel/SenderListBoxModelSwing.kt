@@ -1,4 +1,4 @@
-package mediathek.javaswing.filterpanel
+package mediathek.gui.filterpanel.filterpanel
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
