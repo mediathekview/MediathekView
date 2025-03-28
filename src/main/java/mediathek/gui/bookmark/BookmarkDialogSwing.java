@@ -67,6 +67,7 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
         jXHyperlink1 = new JXHyperlink();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Merkliste verwalten");
 
         jToolBar1.setRollover(true);
 

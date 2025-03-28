@@ -1,0 +1,94 @@
+package mediathek.tool.models;
+
+import mediathek.daten.DatenFilm;
+import mediathek.gui.bookmark.BookmarkDataSwing;
+import mediathek.tool.FilmSize;
+import mediathek.tool.datum.DatumFilm;
+import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TModelBookmark extends AbstractTableModel {
+
+    private static final int COLUMN_COUNT = 15;
+    private final List<BookmarkDataSwing> dataList;
+
+    public TModelBookmark() {
+        dataList = new ArrayList<>();
+    }
+
+    public TModelBookmark(int capacity) {
+        dataList = new ArrayList<>(capacity);
+    }
+
+    @Override
+    public int getRowCount() {
+        return dataList.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return COLUMN_COUNT;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return switch (columnIndex) {
+            case DatenFilm.FILM_NR, DatenFilm.FILM_DAUER -> Integer.class;
+            case DatenFilm.FILM_DATUM -> DatumFilm.class;
+            case DatenFilm.FILM_GROESSE -> FilmSize.class;
+            case DatenFilm.FILM_HD, DatenFilm.FILM_UT -> Boolean.class;
+            case DatenFilm.FILM_DATUM_LONG -> Long.class;
+            default -> String.class;
+        };
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return switch (column) {
+            case BookmarkDataSwing., DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
+            case DatenFilm.FILM_NR -> "Nr";
+            case DatenFilm.FILM_SENDER -> "Sender";
+            case DatenFilm.FILM_THEMA -> "Thema";
+            case DatenFilm.FILM_TITEL -> "Titel";
+            case DatenFilm.FILM_DATUM -> "Datum";
+            case DatenFilm.FILM_ZEIT -> "Zeit";
+            case DatenFilm.FILM_DAUER -> "Dauer";
+            case DatenFilm.FILM_GROESSE -> "Größe [MB]";
+            case DatenFilm.FILM_HD -> "HQ";
+            case DatenFilm.FILM_UT -> "UT";
+            case DatenFilm.FILM_GEO -> "Geo";
+            case DatenFilm.FILM_URL -> "URL";
+            default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
+        };
+    }
+
+    @Override
+    public Object getValueAt(int row, int column) {
+        final var film = dataList.get(row);
+
+        return switch (column) {
+            case DatenFilm.FILM_NR -> film.getFilmNr();
+            case DatenFilm.FILM_SENDER -> film.getSender();
+            case DatenFilm.FILM_THEMA -> film.getThema();
+            case DatenFilm.FILM_TITEL -> film.getTitle();
+            case DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
+            case DatenFilm.FILM_DATUM -> film.getDatumFilm();
+            case DatenFilm.FILM_ZEIT -> film.getSendeZeit();
+            case DatenFilm.FILM_DAUER -> film.getFilmLength();
+            case DatenFilm.FILM_GROESSE -> film.getFileSize();
+            case DatenFilm.FILM_HD -> film.isHighQuality();
+            case DatenFilm.FILM_UT -> film.hasSubtitle();
+            case DatenFilm.FILM_GEO -> film.countrySet;
+            case DatenFilm.FILM_URL -> film.getUrlNormalQuality();
+            case DatenFilm.FILM_REF -> film;
+            default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
+        };
+    }
+
+    public void addAll(List<DatenFilm> listeFilme) {
+        final int oldRowCount = dataList.size();
+        dataList.addAll(listeFilme);
+        fireTableRowsInserted(oldRowCount, oldRowCount + dataList.size());
+    }
+}
