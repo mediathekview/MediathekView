@@ -1,4 +1,4 @@
-package mediathek.gui.filterpanel.filterpanel;
+package mediathek.gui.filterpanel;
 
 import mediathek.config.Daten;
 import mediathek.filmeSuchen.ListenerFilmeLaden;

@@ -1,4 +1,4 @@
-package mediathek.gui.filterpanel.filterpanel
+package mediathek.gui.filterpanel
 
 enum class SearchControlFieldModeSwing {
     THEMA_TITEL, IRGENDWO, LUCENE

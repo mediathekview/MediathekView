@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
@@ -47,47 +48,62 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jToolBar1 = new JToolBar();
-        jButton1 = new JButton();
-        jButton2 = new JButton();
-        jButton3 = new JButton();
-        jPanel1 = new JPanel();
-        jButton4 = new JButton();
-        jSeparator1 = new JToolBar.Separator();
-        jToggleButton1 = new JToggleButton();
-        jButton5 = new JButton();
         jScrollPane1 = new JScrollPane();
-        jTable1 = new JTable();
-        jSeparator2 = new JSeparator();
+        tbBookmarks = new JTable();
+        toolBar = new JToolBar();
+        btnDeleteEntry = new JButton();
+        btnMarkViewed = new JButton();
+        btnEditNote = new JButton();
+        jPanel1 = new JPanel();
+        btnSaveList = new JButton();
+        jSeparator1 = new JToolBar.Separator();
+        btnShowDetails = new JToggleButton();
+        btnFilter = new JButton();
+        lblCount = new JLabel();
+        lblSeen = new JLabel();
+        lblFilter = new JLabel();
+        lblMessage = new JLabel();
+        spSplitPane = new JSplitPane();
         jScrollPane2 = new JScrollPane();
-        jTextArea1 = new JTextArea();
-        jLabel2 = new JLabel();
-        jLabel3 = new JLabel();
-        jLabel4 = new JLabel();
-        jXHyperlink1 = new JXHyperlink();
+        taDescription = new JTextArea();
+        hyperLink = new JXHyperlink();
+
+        jScrollPane1.setViewportView(tbBookmarks);
+        if (tbBookmarks.getColumnModel().getColumnCount() > 0) {
+            tbBookmarks.getColumnModel().getColumn(0).setPreferredWidth(60);
+            tbBookmarks.getColumnModel().getColumn(1).setPreferredWidth(200);
+            tbBookmarks.getColumnModel().getColumn(2).setPreferredWidth(300);
+            tbBookmarks.getColumnModel().getColumn(3).setPreferredWidth(60);
+            tbBookmarks.getColumnModel().getColumn(5).setPreferredWidth(25);
+            tbBookmarks.getColumnModel().getColumn(6).setPreferredWidth(25);
+            tbBookmarks.getColumnModel().getColumn(7).setPreferredWidth(450);
+            tbBookmarks.getColumnModel().getColumn(9).setPreferredWidth(400);
+        }
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Merkliste verwalten");
 
-        jToolBar1.setRollover(true);
+        toolBar.setRollover(true);
 
-        jButton1.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToolBar1.add(jButton1);
+        btnDeleteEntry.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
+        btnDeleteEntry.setToolTipText("Aus der Merkliste löschen");
+        btnDeleteEntry.setFocusable(false);
+        btnDeleteEntry.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnDeleteEntry.setVerticalTextPosition(SwingConstants.BOTTOM);
+        toolBar.add(btnDeleteEntry);
 
-        jButton2.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton2.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToolBar1.add(jButton2);
+        btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
+        btnMarkViewed.setFocusable(false);
+        btnMarkViewed.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnMarkViewed.setVerticalTextPosition(SwingConstants.BOTTOM);
+        toolBar.add(btnMarkViewed);
 
-        jButton3.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton3.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToolBar1.add(jButton3);
+        btnEditNote.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
+        btnEditNote.setToolTipText("Anmerkungen bearbeiten");
+        btnEditNote.setFocusable(false);
+        btnEditNote.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnEditNote.setVerticalTextPosition(SwingConstants.BOTTOM);
+        toolBar.add(btnEditNote);
 
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -98,92 +114,93 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
             .addGap(0, 21, Short.MAX_VALUE)
         );
 
-        jToolBar1.add(jPanel1);
+        toolBar.add(jPanel1);
 
-        jButton4.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToolBar1.add(jButton4);
-        jToolBar1.add(jSeparator1);
+        btnSaveList.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
+        btnSaveList.setToolTipText("Geänderte Merkliste abspeichern");
+        btnSaveList.setFocusable(false);
+        btnSaveList.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnSaveList.setVerticalTextPosition(SwingConstants.BOTTOM);
+        toolBar.add(btnSaveList);
+        toolBar.add(jSeparator1);
 
-        jToggleButton1.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
-        jToggleButton1.setFocusable(false);
-        jToggleButton1.setHorizontalTextPosition(SwingConstants.CENTER);
-        jToggleButton1.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToolBar1.add(jToggleButton1);
+        btnShowDetails.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
+        btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen");
+        btnShowDetails.setFocusable(false);
+        btnShowDetails.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnShowDetails.setVerticalTextPosition(SwingConstants.BOTTOM);
+        toolBar.add(btnShowDetails);
 
-        jButton5.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButton5.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToolBar1.add(jButton5);
+        btnFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+        btnFilter.setFocusable(false);
+        btnFilter.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnFilter.setVerticalTextPosition(SwingConstants.BOTTOM);
+        toolBar.add(btnFilter);
 
-        jTable1.setModel(new DefaultTableModel(
-            new Object [][] {
+        lblCount.setText("Label");
 
-            },
-            new String [] {
+        lblSeen.setText("Label");
 
+        lblFilter.setText("Label");
+
+        lblMessage.setText("Label");
+
+        spSplitPane.setDividerSize(0);
+        spSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+
+        taDescription.setColumns(20);
+        taDescription.setRows(5);
+        jScrollPane2.setViewportView(taDescription);
+
+        spSplitPane.setRightComponent(jScrollPane2);
+
+        hyperLink.setText("Link zur Webseite");
+        hyperLink.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                hyperLinkActionPerformed(evt);
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
-
-        jLabel2.setText("Label");
-
-        jLabel3.setText("Label");
-
-        jLabel4.setText("Label");
-
-        jXHyperlink1.setText("Link zur Webseite");
+        });
+        spSplitPane.setBottomComponent(hyperLink);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, GroupLayout.DEFAULT_SIZE, 1631, Short.MAX_VALUE)
+            .addComponent(toolBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jSeparator2)
-                    .addComponent(jScrollPane2)
+                    .addComponent(spSplitPane)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4))
-                            .addComponent(jXHyperlink1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(lblCount)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblSeen)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblFilter)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblMessage)
+                        .addGap(0, 458, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                .addComponent(toolBar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(spSplitPane, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 246, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator2, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jXHyperlink1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
+                    .addComponent(lblCount)
+                    .addComponent(lblSeen)
+                    .addComponent(lblFilter)
+                    .addComponent(lblMessage))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void hyperLinkActionPerformed(ActionEvent evt) {//GEN-FIRST:event_hyperLinkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hyperLinkActionPerformed
 
     /**
      * @param args the command line arguments
@@ -229,23 +246,24 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JButton jButton1;
-    private JButton jButton2;
-    private JButton jButton3;
-    private JButton jButton4;
-    private JButton jButton5;
-    private JLabel jLabel2;
-    private JLabel jLabel3;
-    private JLabel jLabel4;
+    public JButton btnDeleteEntry;
+    public JButton btnEditNote;
+    public JButton btnFilter;
+    public JButton btnMarkViewed;
+    public JButton btnSaveList;
+    public JToggleButton btnShowDetails;
+    public JXHyperlink hyperLink;
     private JPanel jPanel1;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
     private JToolBar.Separator jSeparator1;
-    private JSeparator jSeparator2;
-    private JTable jTable1;
-    private JTextArea jTextArea1;
-    private JToggleButton jToggleButton1;
-    private JToolBar jToolBar1;
-    private JXHyperlink jXHyperlink1;
+    public JLabel lblCount;
+    public JLabel lblFilter;
+    public JLabel lblMessage;
+    public JLabel lblSeen;
+    public JSplitPane spSplitPane;
+    public JTextArea taDescription;
+    public JTable tbBookmarks;
+    public JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 }

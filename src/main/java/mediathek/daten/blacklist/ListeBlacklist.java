@@ -7,7 +7,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.BlacklistChangedEvent;
-import mediathek.gui.filterpanel.filterpanel.ZeitraumSpinnerSwing;
+import mediathek.gui.filterpanel.ZeitraumSpinnerSwing;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;

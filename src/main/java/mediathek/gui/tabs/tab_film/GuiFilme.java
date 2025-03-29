@@ -27,7 +27,6 @@ import mediathek.gui.FilterSelectionComboBoxModel;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.bookmark.BookmarkDialogController;
-import mediathek.gui.bookmark.BookmarkDialogSwing;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
@@ -38,8 +37,8 @@ import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
 import mediathek.javafx.bookmark.BookmarkWindowController;
-import mediathek.gui.filterpanel.filterpanel.FilmActionPanelSwing;
-import mediathek.gui.filterpanel.filterpanel.SearchControlFieldModeSwing;
+import mediathek.gui.filterpanel.FilmActionPanelSwing;
+import mediathek.gui.filterpanel.SearchControlFieldModeSwing;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -122,7 +121,7 @@ public class GuiFilme extends AGuiTabPanel {
     protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
     protected PsetButtonsPanel psetButtonsPanel;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
-    private  Optional<BookmarkDialogController> bookmarkDialogSwing = Optional.empty();
+    private BookmarkDialogController bookmarkDialogSwing = new BookmarkDialogController();
     private boolean stopBeob;
     private MVFilmTable tabelle;
     /**
@@ -550,12 +549,9 @@ public class GuiFilme extends AGuiTabPanel {
             bookmarkWindowController = Optional.of(new BookmarkWindowController());
             bookmarkWindowController.get().setPartner(this);
         }
-        bookmarkWindowController.get().show();
-        if (bookmarkDialogSwing.isEmpty()) {
-            bookmarkDialogSwing = Optional.of(new BookmarkDialogController());
-            bookmarkDialogSwing.get().setPartner(this);
-        }
-        bookmarkDialogSwing.get().show();
+        //bookmarkWindowController.get().show();
+        bookmarkDialogSwing.show();
+
     }
 
     public void playerStarten(DatenPset pSet) {

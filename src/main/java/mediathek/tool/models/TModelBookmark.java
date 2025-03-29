@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TModelBookmark extends AbstractTableModel {
 
-    private static final int COLUMN_COUNT = 15;
+    private static final int COLUMN_COUNT = 10;
     private final List<BookmarkDataSwing> dataList;
 
     public TModelBookmark() {
@@ -34,11 +34,8 @@ public class TModelBookmark extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return switch (columnIndex) {
-            case DatenFilm.FILM_NR, DatenFilm.FILM_DAUER -> Integer.class;
-            case DatenFilm.FILM_DATUM -> DatumFilm.class;
-            case DatenFilm.FILM_GROESSE -> FilmSize.class;
-            case DatenFilm.FILM_HD, DatenFilm.FILM_UT -> Boolean.class;
-            case DatenFilm.FILM_DATUM_LONG -> Long.class;
+            case BookmarkDataSwing.BOOKMARK_DAUER -> Integer.class;
+            case BookmarkDataSwing.BOOKMARK_DATUM -> DatumFilm.class;
             default -> String.class;
         };
     }
@@ -46,19 +43,15 @@ public class TModelBookmark extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return switch (column) {
-            case BookmarkDataSwing., DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
-            case DatenFilm.FILM_NR -> "Nr";
-            case DatenFilm.FILM_SENDER -> "Sender";
-            case DatenFilm.FILM_THEMA -> "Thema";
-            case DatenFilm.FILM_TITEL -> "Titel";
-            case DatenFilm.FILM_DATUM -> "Datum";
-            case DatenFilm.FILM_ZEIT -> "Zeit";
-            case DatenFilm.FILM_DAUER -> "Dauer";
-            case DatenFilm.FILM_GROESSE -> "Größe [MB]";
-            case DatenFilm.FILM_HD -> "HQ";
-            case DatenFilm.FILM_UT -> "UT";
-            case DatenFilm.FILM_GEO -> "Geo";
-            case DatenFilm.FILM_URL -> "URL";
+            case BookmarkDataSwing.BOOKMARK_ABSPIELEN,BookmarkDataSwing.BOOKMARK_AUFZEICHNEN ->  "";
+            case BookmarkDataSwing.BOOKMARK_SENDER -> "Sender";
+            case BookmarkDataSwing.BOOKMARK_THEMA -> "Thema";
+            case BookmarkDataSwing.BOOKMARK_TITEL -> "Titel";
+            case BookmarkDataSwing.BOOKMARK_DAUER -> "Dauer";
+            case BookmarkDataSwing.BOOKMARK_DATUM -> "Datum";
+            case BookmarkDataSwing.BOOKMARK_URL -> "URL";
+            case BookmarkDataSwing.BOOKMARK_VERFUEGBAR -> "Verfügbar bis";
+            case BookmarkDataSwing.BOOKMARK_NOTIZ -> "Notiz";
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
         };
     }
@@ -68,25 +61,20 @@ public class TModelBookmark extends AbstractTableModel {
         final var film = dataList.get(row);
 
         return switch (column) {
-            case DatenFilm.FILM_NR -> film.getFilmNr();
-            case DatenFilm.FILM_SENDER -> film.getSender();
-            case DatenFilm.FILM_THEMA -> film.getThema();
-            case DatenFilm.FILM_TITEL -> film.getTitle();
-            case DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN -> "";
-            case DatenFilm.FILM_DATUM -> film.getDatumFilm();
-            case DatenFilm.FILM_ZEIT -> film.getSendeZeit();
-            case DatenFilm.FILM_DAUER -> film.getFilmLength();
-            case DatenFilm.FILM_GROESSE -> film.getFileSize();
-            case DatenFilm.FILM_HD -> film.isHighQuality();
-            case DatenFilm.FILM_UT -> film.hasSubtitle();
-            case DatenFilm.FILM_GEO -> film.countrySet;
-            case DatenFilm.FILM_URL -> film.getUrlNormalQuality();
-            case DatenFilm.FILM_REF -> film;
+            case BookmarkDataSwing.BOOKMARK_SENDER -> film.getSender();
+            case BookmarkDataSwing.BOOKMARK_THEMA -> film.getThema();
+            case BookmarkDataSwing.BOOKMARK_TITEL -> film.getTitel();
+            case BookmarkDataSwing.BOOKMARK_DATUM -> film.getSendDate();
+            case BookmarkDataSwing.BOOKMARK_DAUER -> film.getDauer();
+            case BookmarkDataSwing.BOOKMARK_ABSPIELEN, BookmarkDataSwing.BOOKMARK_AUFZEICHNEN -> "";
+            case BookmarkDataSwing.BOOKMARK_URL -> film.getWebUrl();
+            case BookmarkDataSwing.BOOKMARK_VERFUEGBAR -> film.getExpiry();
+            case BookmarkDataSwing.BOOKMARK_NOTIZ -> film.getNote();
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
         };
     }
 
-    public void addAll(List<DatenFilm> listeFilme) {
+    public void addAll(List<BookmarkDataSwing> listeFilme) {
         final int oldRowCount = dataList.size();
         dataList.addAll(listeFilme);
         fireTableRowsInserted(oldRowCount, oldRowCount + dataList.size());

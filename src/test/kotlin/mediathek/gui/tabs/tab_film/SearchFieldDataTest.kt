@@ -1,6 +1,6 @@
 package mediathek.gui.tabs.tab_film
 
-import mediathek.gui.filterpanel.filterpanel.SearchControlFieldModeSwing
+import mediathek.gui.filterpanel.SearchControlFieldModeSwing
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

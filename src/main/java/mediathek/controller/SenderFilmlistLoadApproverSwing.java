@@ -1,6 +1,6 @@
 package mediathek.controller;
 
-import mediathek.gui.filterpanel.filterpanel.SenderListBoxModelSwing;
+import mediathek.gui.filterpanel.SenderListBoxModelSwing;
 import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.Configuration;
 

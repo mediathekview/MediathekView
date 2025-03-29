@@ -3,7 +3,7 @@ package mediathek.gui.tabs.tab_film.helpers;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
-import mediathek.gui.filterpanel.filterpanel.FilmActionPanelSwing;
+import mediathek.gui.filterpanel.FilmActionPanelSwing;
 
 import javax.swing.table.TableModel;
 import java.util.concurrent.TimeUnit;

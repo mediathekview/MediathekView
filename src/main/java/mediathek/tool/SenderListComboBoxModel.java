@@ -1,7 +1,7 @@
 package mediathek.tool;
 
 import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
-import mediathek.gui.filterpanel.filterpanel.SenderListBoxModelSwing;
+import mediathek.gui.filterpanel.SenderListBoxModelSwing;
 
 public class SenderListComboBoxModel extends DefaultEventComboBoxModel<String> {
 

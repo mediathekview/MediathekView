@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package mediathek.gui.filterpanel.filterpanel;
+package mediathek.gui.filterpanel;
 
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;

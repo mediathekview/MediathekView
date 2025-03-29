@@ -1,8 +1,7 @@
-package mediathek.gui.filterpanel.filterpanel;
+package mediathek.gui.filterpanel;
 
 import mediathek.tool.FilterDTO;
 import javax.swing.*;
-import java.awt.Component;
 import java.util.UUID;
 
 public class FilterComboBoxSwing extends JComboBox<FilterDTO> {

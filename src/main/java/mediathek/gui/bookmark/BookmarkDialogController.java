@@ -16,9 +16,12 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
 import mediathek.tool.TimerPool;
+import mediathek.tool.models.TModelBookmark;
+import mediathek.tool.models.TModelFilm;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
+import org.jdesktop.swingx.JXHyperlink;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -42,44 +45,88 @@ import java.util.concurrent.TimeUnit;
 
 public class BookmarkDialogController {
 
-    private JFrame frame = new JFrame();
+    private static final String[] BTNFILTER_TOOLTIPTEXT = {
+            "Nur ungesehene Filme anzeigen",
+            "Nur gesehene Filme anzeigen",
+            "Alle Filme anzeigen"
+    };
+
+    private static final String[] LBLFILTER_MESSAGETEXT = {"", "Ungesehene Filme", "Gesehene Filme"};
+
+    private static final boolean[] LBLSEEN_DISABLE = {false, true, false};
+
     private final BookmarkDataListSwing listeBookmarkList;
-    private Color colorExpired;
-    private Color colorSeen;
-    private Color colorSelected;
+
     private final SeenHistoryController history = new SeenHistoryController();
+
+    private BookmarkDialogSwing bookmarkDialogSwing;
+
+    private Color colorExpired;
+
+    private Color colorSeen;
+
+    private Color colorSelected;
+
     private JMenuItem playItem;
+
     private JMenuItem loadItem;
+
     private JMenuItem deleteItem;
+
     private JMenuItem viewItem;
+
     private JMenuItem webItem;
+
     private JMenuItem copyItem;
+
     private JMenuItem editItem;
+
     private JPopupMenu cellContextMenu;
+
     private GuiFilme infotab;
+
     private double divPosition;
+
     private boolean listUpdated;
+
     private ScheduledFuture<?> saveBookmarkTask;
+
     private int filterState;
 
     private JButton btnSaveList;
+
     private JButton btnDeleteEntry;
+
     private JButton btnMarkViewed;
+
     private JToggleButton btnShowDetails;
+
     private JButton btnFilter;
+
     private JButton btnEditNote;
+
+    private JToolBar toolBar;
+
     private JTable tbBookmarks;
+
     private JLabel lblCount;
+
     private JLabel lblSeen;
+
     private JLabel lblMessage;
+
     private JLabel lblFilter;
+
     private JTextArea taDescription;
+
     private JSplitPane spSplitPane;
-    private JButton hyperLink;
+
+    private JXHyperlink hyperLink;
 
     public BookmarkDialogController() {
         listeBookmarkList = Daten.getInstance().getListeBookmarkListSwing();
         listUpdated = false;
+        bookmarkDialogSwing = new BookmarkDialogSwing(null, true);
     }
 
     public void initialize() {
@@ -96,66 +143,33 @@ public class BookmarkDialogController {
                 ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerLocation());
         btnShowDetailsAction(null);
         updateDescriptionArea();
+restoreWindowState();
+        bookmarkDialogSwing.setVisible(true);
     }
 
     private void createUI() {
-        frame = new JFrame("Merkliste verwalten");
-        frame.setIconImage(new ImageIcon(getClass().getResource("/mediathek/res/MediathekView.png")).getImage());
+        toolBar = bookmarkDialogSwing.toolBar;
+        btnSaveList = bookmarkDialogSwing.btnSaveList;
+        btnDeleteEntry = bookmarkDialogSwing.btnDeleteEntry;
+        btnMarkViewed = bookmarkDialogSwing.btnMarkViewed;
+        btnShowDetails = bookmarkDialogSwing.btnShowDetails;
+        btnFilter = bookmarkDialogSwing.btnFilter;
+        btnEditNote = bookmarkDialogSwing.btnEditNote;
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Toolbar
-        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        btnSaveList = new JButton("Speichern");
-        btnDeleteEntry = new JButton("Löschen");
-        btnMarkViewed = new JButton("Als gesehen markieren");
-        btnShowDetails = new JToggleButton("Details");
-        btnFilter = new JButton("Filter");
-        btnEditNote = new JButton("Anmerkung");
+        lblCount = bookmarkDialogSwing.lblCount;
+        lblSeen = bookmarkDialogSwing.lblSeen;
+        lblMessage = bookmarkDialogSwing.lblMessage;
+        lblFilter = bookmarkDialogSwing.lblFilter;
+        spSplitPane = bookmarkDialogSwing.spSplitPane;
 
-        toolbar.add(btnSaveList);
-        toolbar.add(btnDeleteEntry);
-        toolbar.add(btnMarkViewed);
-        toolbar.add(btnShowDetails);
-        toolbar.add(btnFilter);
-        toolbar.add(btnEditNote);
-
-        // Status bar
-        JPanel statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        lblCount = new JLabel("Einträge: 0 / 0");
-        lblSeen = new JLabel("Gesehen: 0");
-        lblMessage = new JLabel("");
-        lblFilter = new JLabel("");
-
-        statusBar.add(lblCount);
-        statusBar.add(lblSeen);
-        statusBar.add(lblMessage);
-        statusBar.add(lblFilter);
-
-        // Table
-        tbBookmarks = new JTable();
-        JScrollPane tableScrollPane = new JScrollPane(tbBookmarks);
-
-        // Details panel
-        JPanel detailsPanel = new JPanel(new BorderLayout());
-        taDescription = new JTextArea();
+        tbBookmarks = bookmarkDialogSwing.tbBookmarks;
+        bookmarkDialogSwing.tbBookmarks.setModel(new TModelBookmark());
+        taDescription = bookmarkDialogSwing.taDescription;
         taDescription.setEditable(false);
         taDescription.setLineWrap(true);
         taDescription.setWrapStyleWord(true);
-        hyperLink = new JButton("Webseite öffnen");
-        hyperLink.setVisible(false);
-
-        detailsPanel.add(new JScrollPane(taDescription), BorderLayout.CENTER);
-        detailsPanel.add(hyperLink, BorderLayout.SOUTH);
-
-        spSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tableScrollPane, detailsPanel);
-
-        mainPanel.add(toolbar, BorderLayout.NORTH);
-        mainPanel.add(spSplitPane, BorderLayout.CENTER);
-        mainPanel.add(statusBar, BorderLayout.SOUTH);
-
-        frame.setContentPane(mainPanel);
-        frame.setSize(800, 600);
+        hyperLink = bookmarkDialogSwing.hyperLink;
     }
 
     private void setupTable() {
@@ -413,15 +427,6 @@ public class BookmarkDialogController {
         }
     }
 
-    private static final String[] BTNFILTER_TOOLTIPTEXT = {
-            "Nur ungesehene Filme anzeigen",
-            "Nur gesehene Filme anzeigen",
-            "Alle Filme anzeigen"
-    };
-
-    private static final String[] LBLFILTER_MESSAGETEXT = {"", "Ungesehene Filme", "Gesehene Filme"};
-    private static final boolean[] LBLSEEN_DISABLE = {false, true, false};
-
     private void btnFilterAction(ActionEvent e) {
         if (++filterState > 2) {
             filterState = 0;
@@ -436,14 +441,14 @@ public class BookmarkDialogController {
     }
 
     public void show() {
-        if (!frame.isVisible()) {
+        if (!bookmarkDialogSwing.isVisible()) {
             restoreWindowState();
             initSettings();
             refresh();
-            frame.setVisible(true);
+            bookmarkDialogSwing.setVisible(true);
         } else {
-            frame.toFront();
-            frame.requestFocus();
+            bookmarkDialogSwing.toFront();
+            bookmarkDialogSwing.requestFocus();
         }
     }
 
@@ -452,7 +457,7 @@ public class BookmarkDialogController {
     }
 
     private void refresh() {
-        if (frame.isVisible()) {
+        if (bookmarkDialogSwing.isVisible()) {
             updateTableData();
             updateDisplay();
         }
@@ -533,7 +538,7 @@ public class BookmarkDialogController {
             if (previouslyCreatedDownload == null) {
                 createDownload(film);
             } else {
-                int result = JOptionPane.showConfirmDialog(frame,
+                int result = JOptionPane.showConfirmDialog(bookmarkDialogSwing,
                         "Ein Download für den Film existiert bereits.\nNochmal anlegen?",
                         "Merkliste", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
@@ -546,7 +551,7 @@ public class BookmarkDialogController {
 
     private void createDownload(DatenFilm film) {
         final var daten = Daten.getInstance();
-        frame.setVisible(false);
+        bookmarkDialogSwing.setVisible(false);
 
         DatenPset pSet = Daten.listePset.getListeSpeichern().get(0);
         final var ui = MediathekGui.ui();
@@ -570,18 +575,18 @@ public class BookmarkDialogController {
             }
         }
 
-        frame.setVisible(true);
-        frame.toFront();
+        bookmarkDialogSwing.setVisible(true);
+        bookmarkDialogSwing.toFront();
     }
 
-    private void saveSettings() {
+    public void saveSettings() {
         Configuration config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.WRITE);
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", frame.getWidth());
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".height", frame.getHeight());
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", frame.getX());
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", frame.getY());
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", bookmarkDialogSwing.getWidth());
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".height", bookmarkDialogSwing.getHeight());
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", bookmarkDialogSwing.getX());
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", bookmarkDialogSwing.getY());
 
             String colbase = ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns";
             config.setProperty(colbase + ".no", tbBookmarks.getColumnCount());
@@ -608,10 +613,10 @@ public class BookmarkDialogController {
         Configuration config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.READ);
-            frame.setSize(
+            bookmarkDialogSwing.setSize(
                     config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 800),
                     config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".height", 600));
-            frame.setLocation(
+            bookmarkDialogSwing.setLocation(
                     config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0),
                     config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0));
         } finally {

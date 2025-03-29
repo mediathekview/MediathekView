@@ -1,4 +1,4 @@
-package mediathek.gui.filterpanel.filterpanel;
+package mediathek.gui.filterpanel;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

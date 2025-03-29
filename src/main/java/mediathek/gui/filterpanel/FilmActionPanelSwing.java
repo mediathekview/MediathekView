@@ -1,4 +1,4 @@
-package mediathek.gui.filterpanel.filterpanel;
+package mediathek.gui.filterpanel;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -18,7 +18,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -405,8 +404,8 @@ public class FilmActionPanelSwing {
         transactionThemaList.clear();
 
         var selectedSenders = viewSettingsPane.senderCheckList.getCheckBoxListSelectedValues();
-        System.out.println("FAP: " + Arrays.toString(selectedSenders));/*
-        var tempThemaList = getThemaList(selectedSenders).stream().distinct()
+
+        /*        var tempThemaList = getThemaList(selectedSenders).stream().distinct()
                 .sorted(GermanStringSorter.getInstance())
                 .toList();
         transactionThemaList.addAll(tempThemaList);

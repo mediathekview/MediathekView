@@ -1,4 +1,4 @@
-package mediathek.gui.filterpanel.filterpanel
+package mediathek.gui.filterpanel
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList

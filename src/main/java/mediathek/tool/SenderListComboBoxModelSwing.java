@@ -4,7 +4,7 @@ import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.swing.DefaultEventComboBoxModel;
 import mediathek.controller.SenderFilmlistLoadApproverSwing;
-import mediathek.gui.filterpanel.filterpanel.SenderListBoxModelSwing;
+import mediathek.gui.filterpanel.SenderListBoxModelSwing;
 
 public class SenderListComboBoxModelSwing extends DefaultEventComboBoxModel<String> {
 

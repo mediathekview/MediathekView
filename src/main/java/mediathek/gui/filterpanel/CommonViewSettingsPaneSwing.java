@@ -1,4 +1,4 @@
-package mediathek.gui.filterpanel.filterpanel;
+package mediathek.gui.filterpanel;
 
 import com.jidesoft.swing.CheckBoxList;
 import java.awt.Component;

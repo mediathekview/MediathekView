@@ -13,6 +13,17 @@ import mediathek.javafx.bookmark.BookmarkDateDiff;
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class BookmarkDataSwing {
+    public static final int BOOKMARK_SENDER = 0; // wird vor dem Speichern gelöscht!
+    public static final int BOOKMARK_THEMA = 1;
+    public static final int BOOKMARK_TITEL = 2;
+    public static final int BOOKMARK_DAUER = 3;
+    public static final int BOOKMARK_DATUM = 4;
+    public static final int BOOKMARK_ABSPIELEN = 5; // no getter/setter access
+    public static final int BOOKMARK_AUFZEICHNEN = 6; // no getter/setter access
+    public static final int BOOKMARK_URL = 7;
+    public static final int BOOKMARK_VERFUEGBAR = 8;
+    public static final int BOOKMARK_NOTIZ = 9;
+    public static final int MAX_ELEM = 17;
 
     private String url;
     private String sender;
@@ -175,4 +186,5 @@ public class BookmarkDataSwing {
     public boolean willExpire() {
         return this.willExpire;
     }
+
 }

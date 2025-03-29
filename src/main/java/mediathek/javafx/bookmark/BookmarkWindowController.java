@@ -161,6 +161,7 @@ public class BookmarkWindowController implements Initializable {
    */
   @FXML
   private void btnMarkEntryAsViewed(Event e) {
+    System.out.println("hihihihihihi");
     ObservableList<BookmarkData> selections = tbBookmarks.getSelectionModel().getSelectedItems();
     if (!selections.isEmpty()) {
       boolean hasUnSeen = isUnSeenSelected(); // true if unseen in selection
