@@ -23,6 +23,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import mediathek.tool.table.MVBookmarkTable;
 import org.jdesktop.swingx.JXHyperlink;
 
 /**
@@ -37,6 +38,7 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
     public BookmarkDialogSwing(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+    
     }
 
     /**
@@ -48,8 +50,6 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new JScrollPane();
-        tbBookmarks = new JTable();
         toolBar = new JToolBar();
         btnDeleteEntry = new JButton();
         btnMarkViewed = new JButton();
@@ -64,21 +64,12 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
         lblFilter = new JLabel();
         lblMessage = new JLabel();
         spSplitPane = new JSplitPane();
-        jScrollPane2 = new JScrollPane();
-        taDescription = new JTextArea();
+        jScrollPane3 = new JScrollPane();
+        tbBookmarks = new MVBookmarkTable();
+        jPanel2 = new JPanel();
         hyperLink = new JXHyperlink();
-
-        jScrollPane1.setViewportView(tbBookmarks);
-        if (tbBookmarks.getColumnModel().getColumnCount() > 0) {
-            tbBookmarks.getColumnModel().getColumn(0).setPreferredWidth(60);
-            tbBookmarks.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tbBookmarks.getColumnModel().getColumn(2).setPreferredWidth(300);
-            tbBookmarks.getColumnModel().getColumn(3).setPreferredWidth(60);
-            tbBookmarks.getColumnModel().getColumn(5).setPreferredWidth(25);
-            tbBookmarks.getColumnModel().getColumn(6).setPreferredWidth(25);
-            tbBookmarks.getColumnModel().getColumn(7).setPreferredWidth(450);
-            tbBookmarks.getColumnModel().getColumn(9).setPreferredWidth(400);
-        }
+        jScrollPane4 = new JScrollPane();
+        taDescription = new JTextArea();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Merkliste verwalten");
@@ -145,14 +136,11 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
 
         lblMessage.setText("Label");
 
-        spSplitPane.setDividerSize(0);
         spSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
-        taDescription.setColumns(20);
-        taDescription.setRows(5);
-        jScrollPane2.setViewportView(taDescription);
+        jScrollPane3.setViewportView(tbBookmarks);
 
-        spSplitPane.setRightComponent(jScrollPane2);
+        spSplitPane.setLeftComponent(jScrollPane3);
 
         hyperLink.setText("Link zur Webseite");
         hyperLink.addActionListener(new ActionListener() {
@@ -160,7 +148,33 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
                 hyperLinkActionPerformed(evt);
             }
         });
-        spSplitPane.setBottomComponent(hyperLink);
+
+        taDescription.setColumns(20);
+        taDescription.setRows(5);
+        jScrollPane4.setViewportView(taDescription);
+
+        GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 857, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(hyperLink, GroupLayout.PREFERRED_SIZE, 845, GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane4, GroupLayout.PREFERRED_SIZE, 357, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 97, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(364, 364, 364)
+                    .addComponent(hyperLink, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(74, Short.MAX_VALUE)))
+        );
+
+        spSplitPane.setRightComponent(jPanel2);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -178,14 +192,13 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
                         .addComponent(lblFilter)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblMessage)
-                        .addGap(0, 458, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolBar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(spSplitPane, GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spSplitPane)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCount)
@@ -254,8 +267,9 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
     public JToggleButton btnShowDetails;
     public JXHyperlink hyperLink;
     private JPanel jPanel1;
-    private JScrollPane jScrollPane1;
-    private JScrollPane jScrollPane2;
+    private JPanel jPanel2;
+    private JScrollPane jScrollPane3;
+    private JScrollPane jScrollPane4;
     private JToolBar.Separator jSeparator1;
     public JLabel lblCount;
     public JLabel lblFilter;

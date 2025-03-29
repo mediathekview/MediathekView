@@ -124,6 +124,7 @@ public class MVConfig {
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS("Eigenschaften-Tabellen-Abos"),
+        SYSTEM_EIGENSCHAFTEN_TABELLE_BOOKMARK("Eigenschaften-Tabellen-Bookmark"),
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN("Meldungsfenster-Systemmeldungen"),
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN("Meldungsfenster-Playermeldungen"),
         SYSTEM_ANSICHT_SET_LANG("Ansicht-Set-lang"),
