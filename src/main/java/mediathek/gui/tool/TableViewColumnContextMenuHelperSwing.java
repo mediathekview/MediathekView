@@ -1,5 +1,6 @@
 package mediathek.gui.tool;
 
+import mediathek.tool.SVGIconUtilities;
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -39,7 +40,14 @@ public class TableViewColumnContextMenuHelperSwing {
         TableColumnModel columnModel = table.getColumnModel();
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
             TableColumn column = columnModel.getColumn(i);
-            JCheckBoxMenuItem item = new JCheckBoxMenuItem(column.getHeaderValue().toString());
+            JCheckBoxMenuItem item;
+            if(i == 5){
+                item = new JCheckBoxMenuItem(SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
+            }else if(i == 6){
+                item = new JCheckBoxMenuItem(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
+            }else{
+                item = new JCheckBoxMenuItem(column.getHeaderValue().toString());
+            }
             item.setSelected(true);
             item.addActionListener(e -> {
                 boolean visible = item.isSelected();

@@ -1,7 +1,7 @@
 package mediathek.daten;
 
 import mediathek.daten.abo.DatenAbo;
-import mediathek.gui.bookmark.BookmarkDataSwing;
+import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.javafx.bookmark.BookmarkData;
 import mediathek.tool.FileSize;
 import mediathek.tool.FilmSize;
@@ -551,7 +551,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             dataMap.put(MapKeys.BOOKMARK_DATA, bookmark);
     }
 
-    public void setBookmark(@Nullable BookmarkDataSwing bookmark) {
+    public void setBookmark(@Nullable DatenBookmark bookmark) {
         if (bookmark == null)
             dataMap.remove(MapKeys.BOOKMARK_DATA);
         else

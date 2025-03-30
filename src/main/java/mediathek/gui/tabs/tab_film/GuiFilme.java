@@ -26,7 +26,6 @@ import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.FilterSelectionComboBoxModel;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.gui.bookmark.BookmarkDialogController;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
@@ -121,7 +120,6 @@ public class GuiFilme extends AGuiTabPanel {
     protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
     protected PsetButtonsPanel psetButtonsPanel;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
-    private BookmarkDialogController bookmarkDialogSwing = new BookmarkDialogController();
     private boolean stopBeob;
     private MVFilmTable tabelle;
     /**
@@ -531,12 +529,12 @@ public class GuiFilme extends AGuiTabPanel {
                     JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
-                daten.getListeBookmarkListSwing().checkAndBookmarkMovies(movies);
+                daten.getListeBookmark().checkAndBookmarkMovies(movies);
                 repaint();
             }
         } else {
             daten.getListeBookmarkList().checkAndBookmarkMovies(movies);
-            daten.getListeBookmarkListSwing().checkAndBookmarkMovies(movies);
+            daten.getListeBookmark().checkAndBookmarkMovies(movies);
             repaint();
         }
     }
@@ -549,8 +547,8 @@ public class GuiFilme extends AGuiTabPanel {
             bookmarkWindowController = Optional.of(new BookmarkWindowController());
             bookmarkWindowController.get().setPartner(this);
         }
-        //bookmarkWindowController.get().show();
-        bookmarkDialogSwing.show();
+        bookmarkWindowController.get().show();
+
 
     }
 

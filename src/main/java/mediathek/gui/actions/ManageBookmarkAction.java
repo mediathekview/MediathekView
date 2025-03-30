@@ -1,6 +1,11 @@
 package mediathek.gui.actions;
 
+import mediathek.config.Daten;
+import mediathek.daten.bookmark.DatenBookmark;
+import mediathek.daten.bookmark.ListeBookmark;
 import mediathek.gui.bookmark.BookmarkDialogSwing;
+import mediathek.javafx.bookmark.BookmarkData;
+import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SVGIconUtilities;
 
@@ -19,7 +24,18 @@ public class ManageBookmarkAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        BookmarkDialogSwing dialog = new BookmarkDialogSwing(mediathekGui, true);
+        BookmarkDialogSwing dialog = new BookmarkDialogSwing(mediathekGui, false);
         dialog.setVisible(true);
+        BookmarkDataList bdl = Daten.getInstance().getListeBookmarkList();
+        for(int i = 0; i < bdl.getNbOfEntries(); i++) {
+            BookmarkData bd = bdl.getObervableList().get(i);
+            System.out.println(bd.getTitel());
+        }
+        System.out.println("-----");
+        ListeBookmark lb = Daten.getInstance().getListeBookmark();
+        for(int i = 0; i < lb.getNbOfEntries(); i++) {
+            DatenBookmark db = lb.getListModel().get(i);
+            System.out.println(db.getTitel());
+        }
     }
 }

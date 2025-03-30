@@ -1,4 +1,4 @@
-package mediathek.gui.bookmark;
+package mediathek.daten.bookmark;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -11,39 +11,35 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.javafx.bookmark.BookmarkData;
-import mediathek.javafx.bookmark.BookmarkDataList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
 
 /**
  * Stores a full list of bookmarked movies.
  * @author K. Wich
  */
-public class BookmarkDataListSwing {
-    private final List<BookmarkDataSwing> list;
-    private final EventListenerList listenerList = new EventListenerList();
-    private static BookmarkDataListSwing instance;
+public class ListeBookmark {
+    private final List<DatenBookmark> list;
+    private static ListeBookmark instance;
+    private final DefaultListModel<DatenBookmark> listModel;
 
-    public BookmarkDataListSwing(Daten daten) {
+    private ListeBookmark(Daten daten) {
         list = new ArrayList<>();
+        listModel = new DefaultListModel<>();
 
         if (daten != null) {
-            // Wait until film list is ready and update references
+            // Wait until film liste is ready and update references
             daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
                 @Override
                 public void fertig(ListenerFilmeLadenEvent event) {
-                    Runnable r = () -> updateBookMarksFromFilmList();
-                    new Thread(r).start();
+                    SwingUtilities.invokeLater(() -> updateBookMarksFromFilmList());
                 }
             });
         }
@@ -54,16 +50,16 @@ public class BookmarkDataListSwing {
      * @param daten Reference to Daten object used by list
      * @return existing or new instance
      */
-    public static BookmarkDataListSwing getInstance(Daten daten) {
-        return instance == null ? instance = new BookmarkDataListSwing(daten) : instance;
+    public static ListeBookmark getInstance(Daten daten) {
+        return instance == null ? instance = new ListeBookmark(daten) : instance;
     }
 
     /**
-     * Return data list for Bookmark window
-     * @return List of bookmarks
+     * Return data list model for Bookmark window
+     * @return ListModel
      */
-    public List<BookmarkDataSwing> getList() {
-        return list;
+    public DefaultListModel<DatenBookmark> getListModel() {
+        return listModel;
     }
 
     /**
@@ -79,33 +75,7 @@ public class BookmarkDataListSwing {
      */
     public void clear() {
         list.clear();
-        fireChangeEvent();
-    }
-
-    /**
-     * Add a change listener
-     * @param listener the listener to add
-     */
-    public void addChangeListener(ChangeListener listener) {
-        listenerList.add(ChangeListener.class, listener);
-    }
-
-    /**
-     * Remove a change listener
-     * @param listener the listener to remove
-     */
-    public void removeChangeListener(ChangeListener listener) {
-        listenerList.remove(ChangeListener.class, listener);
-    }
-
-    /**
-     * Notify all listeners that the list has changed
-     */
-    protected void fireChangeEvent() {
-        ChangeEvent event = new ChangeEvent(this);
-        for (ChangeListener listener : listenerList.getListeners(ChangeListener.class)) {
-            listener.stateChanged(event);
-        }
+        listModel.clear();
     }
 
     /**
@@ -114,7 +84,7 @@ public class BookmarkDataListSwing {
      */
     public int getSeenNbOfEntries() {
         int count = 0;
-        for (BookmarkDataSwing d: list) {
+        for (DatenBookmark d: list) {
             if (d.getSeen()) {
                 count++;
             }
@@ -131,7 +101,7 @@ public class BookmarkDataListSwing {
      */
     public void checkAndBookmarkMovies(List<DatenFilm> movies) {
         ArrayList<DatenFilm> addlist = new ArrayList<>();
-        ArrayList<BookmarkDataSwing> dellist = new ArrayList<>();
+        ArrayList<DatenBookmark> dellist = new ArrayList<>();
         boolean add = false;
         for (DatenFilm data: movies) {
             if (!data.isBookmarked()) {
@@ -139,7 +109,7 @@ public class BookmarkDataListSwing {
                 addlist.add(data);
             }
             else {
-                BookmarkDataSwing movie = findMovieInList(data);
+                DatenBookmark movie = findMovieInList(data);
                 if (movie != null) {
                     dellist.add(movie);
                 }
@@ -148,13 +118,14 @@ public class BookmarkDataListSwing {
 
         if (add) {
             // Check if history list is known
-            try (var history = new SeenHistoryController()){
+            try (var history = new SeenHistoryController()) {
                 for (DatenFilm movie: addlist) {
-                    BookmarkDataSwing bdata = new BookmarkDataSwing(movie);
+                    DatenBookmark bdata = new DatenBookmark(movie);
                     movie.setBookmark(bdata); // Link backwards
                     // Set seen marker if in history and not livestream
                     bdata.setSeen(!bdata.isLiveStream() && history.hasBeenSeen(movie));
                     list.add(bdata);
+                    listModel.addElement(bdata);
                 }
             }
             catch (Exception ex) {
@@ -163,28 +134,27 @@ public class BookmarkDataListSwing {
         }
         else { // delete existing bookmarks
             for (DatenFilm movie: movies) {  // delete references
-                movie.setBookmark((BookmarkDataSwing) null);
+                movie.setBookmark((DatenBookmark) null);
             }
             list.removeAll(dellist);
+            dellist.forEach(listModel::removeElement);
         }
-        fireChangeEvent();
     }
 
     /**
      * Delete given bookmarks from list and remove reference in film list)
      * @param bookmarks The list of bookmarks.
      */
-    public void deleteEntries(List<BookmarkDataSwing> bookmarks) {
-        for (BookmarkDataSwing bookmark: bookmarks) {  // delete references
+    public void deleteEntries(List<DatenBookmark> bookmarks) {
+        for (DatenBookmark bookmark: bookmarks) {  // delete references
             DatenFilm movie = bookmark.getDatenFilm();
             if (movie != null) {
-                movie.setBookmark((BookmarkDataSwing) null);
+                movie.setBookmark((DatenBookmark) null);
             }
         }
         list.removeAll(bookmarks);
-        fireChangeEvent();
+        bookmarks.forEach(listModel::removeElement);
     }
-
 
     /**
      * Load Bookmarklist from backup medium
@@ -195,24 +165,24 @@ public class BookmarkDataListSwing {
     public void loadFromFile(Path filePath) {
         try (JsonParser parser = new MappingJsonFactory().createParser(filePath.toFile())) {
             JsonToken jToken;
-            while((jToken = parser.nextToken()) != null){
+            while((jToken = parser.nextToken()) != null) {
                 if (jToken == JsonToken.START_ARRAY) {
                     while (parser.nextToken() != JsonToken.END_ARRAY) {
-                        BookmarkDataSwing obj = parser.readValueAs(BookmarkDataSwing.class);
+                        DatenBookmark obj = parser.readValueAs(DatenBookmark.class);
                         list.add(obj);
+                        listModel.addElement(obj);
                     }
                 }
             }
         }
         catch (Exception e) {
-            logger.warn("Could not read bookmarks from file {}, error {} => file ignored", filePath.toString(), e.getMessage());
+            logger.warn("Could not read bookmarks from file {}, error {} => file ignored",
+                    filePath.toString(), e.getMessage());
         }
 
         //sanity check if someone added way too many bookmarks
         if (list.size() > 1000)
             logger.warn("Bookmark entries exceed threshold: {}", list.size());
-
-        fireChangeEvent();
     }
 
     private static final Logger logger = LogManager.getLogger();
@@ -222,18 +192,21 @@ public class BookmarkDataListSwing {
      * @param filePath: File to save to
      */
     public void saveToFile(Path filePath) {
-        try (JsonGenerator jGenerator = new MappingJsonFactory().createGenerator(filePath.toFile(), JsonEncoding.UTF8).useDefaultPrettyPrinter()) {
+        try (JsonGenerator jGenerator = new MappingJsonFactory()
+                .createGenerator(filePath.toFile(), JsonEncoding.UTF8)
+                .useDefaultPrettyPrinter()) {
             jGenerator.writeStartObject();
             jGenerator.writeFieldName("bookmarks");
             jGenerator.writeStartArray();
-            for (BookmarkDataSwing bookmarkData : list) {
+            for (DatenBookmark bookmarkData : list) {
                 jGenerator.writeObject(bookmarkData);
             }
             jGenerator.writeEndArray();
             jGenerator.writeEndObject();
         }
         catch (IOException e) {
-            logger.warn("Could not save bookmarks to file {}, error {}", filePath.toString(), e.toString());
+            logger.warn("Could not save bookmarks to file {}, error {}",
+                    filePath.toString(), e.toString());
         }
     }
 
@@ -243,23 +216,21 @@ public class BookmarkDataListSwing {
      * @param list: List of movies
      */
     public void updateSeen(boolean seen, List<DatenFilm> list) {
-        list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) -> movie.getBookmark().setSeen(seen));
-        fireChangeEvent();
+        list.stream().filter(DatenFilm::isBookmarked).forEachOrdered((movie) ->
+                movie.getBookmark().setSeen(seen));
     }
 
     public void updateSeen(boolean seen, DatenFilm film) {
-        if (film.isBookmarked()) {
+        if (film.isBookmarked())
             film.getBookmark().setSeen(seen);
-            fireChangeEvent();
-        }
     }
 
     /**
      * Find Movie in list
      */
-    private BookmarkDataSwing findMovieInList(DatenFilm movie) {
-        BookmarkDataSwing result = null;
-        for (BookmarkDataSwing data: list) {
+    private DatenBookmark findMovieInList(DatenFilm movie) {
+        DatenBookmark result = null;
+        for (DatenBookmark data: list) {
             if (data.getDatenFilm() != null && data.getDatenFilm().equals(movie)) {
                 result = data;
                 break;
@@ -271,14 +242,13 @@ public class BookmarkDataListSwing {
     /**
      * Updates the stored bookmark data reference with actual film list
      * and links the entries
-     * Executed in background
      */
     public void updateBookMarksFromFilmList() {
-        Iterator<BookmarkDataSwing> iterator = list.iterator();
+        Iterator<DatenBookmark> iterator = list.iterator();
         ListeFilme listefilme = Daten.getInstance().getListeFilme();
         DatenFilm filmdata;
         while (iterator.hasNext()) {
-            BookmarkDataSwing data = iterator.next();
+            DatenBookmark data = iterator.next();
             filmdata = listefilme.getFilmByUrlAndSender(data.getUrl(), data.getSender());
             if (filmdata != null) {
                 data.setDatenFilm(filmdata);
@@ -288,6 +258,5 @@ public class BookmarkDataListSwing {
                 data.setDatenFilm(null);
             }
         }
-        fireChangeEvent();
     }
 }

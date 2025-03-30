@@ -471,7 +471,6 @@ public class Main {
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
             Daten.getInstance().loadBookMarkData();
-            Daten.getInstance().loadBookMarkDataSwing();
             // enable modern search on demand
             var useModernSearch = ApplicationConfiguration.getConfiguration()
                     .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);

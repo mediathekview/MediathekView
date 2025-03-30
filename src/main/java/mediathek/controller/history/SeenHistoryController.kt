@@ -41,8 +41,7 @@ class SeenHistoryController : AutoCloseable {
             deleteStatement!!.executeUpdate()
 
             Daten.getInstance().listeBookmarkList.updateSeen(false, film)
-            Daten.getInstance().listeBookmarkListSwing.updateSeen(false,film)
-
+            Daten.getInstance().listeBookmark.updateSeen(false, film)
             sendChangeMessage()
         } catch (ex: SQLException) {
             logger.error("markUnseen", ex)
@@ -57,7 +56,7 @@ class SeenHistoryController : AutoCloseable {
             }
 
             Daten.getInstance().listeBookmarkList.updateSeen(false, list)
-            Daten.getInstance().listeBookmarkListSwing.updateSeen(false, list)
+            Daten.getInstance().listeBookmark.updateSeen(false, list)
             sendChangeMessage()
         } catch (ex: SQLException) {
             logger.error("markUnseen", ex)
@@ -70,7 +69,7 @@ class SeenHistoryController : AutoCloseable {
         try {
             writeToDatabase(film)
             Daten.getInstance().listeBookmarkList.updateSeen(true, film)
-            Daten.getInstance().listeBookmarkListSwing.updateSeen(true, film)
+            Daten.getInstance().listeBookmark.updateSeen(true, film)
             sendChangeMessage()
         } catch (ex: SQLException) {
             logger.error("markSeen single", ex)
@@ -88,7 +87,8 @@ class SeenHistoryController : AutoCloseable {
 
             // Update bookmarks with seen information
             Daten.getInstance().listeBookmarkList.updateSeen(true, list)
-            Daten.getInstance().listeBookmarkListSwing.updateSeen(true, list)
+            Daten.getInstance().listeBookmark.updateSeen(true, list)
+
             //send one change for all...
             sendChangeMessage()
         } catch (ex: SQLException) {

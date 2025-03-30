@@ -1,4 +1,4 @@
-package mediathek.gui.bookmark;
+package mediathek.daten.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,8 +12,8 @@ import mediathek.javafx.bookmark.BookmarkDateDiff;
  * Note: Prepared for Jackson JSON storage
  */
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class BookmarkDataSwing {
-    public static final int BOOKMARK_SENDER = 0; // wird vor dem Speichern gelöscht!
+public class DatenBookmark {
+    public static final int BOOKMARK_SENDER = 0;
     public static final int BOOKMARK_THEMA = 1;
     public static final int BOOKMARK_TITEL = 2;
     public static final int BOOKMARK_DAUER = 3;
@@ -21,9 +21,13 @@ public class BookmarkDataSwing {
     public static final int BOOKMARK_ABSPIELEN = 5; // no getter/setter access
     public static final int BOOKMARK_AUFZEICHNEN = 6; // no getter/setter access
     public static final int BOOKMARK_URL = 7;
-    public static final int BOOKMARK_VERFUEGBAR = 8;
-    public static final int BOOKMARK_NOTIZ = 9;
-    public static final int MAX_ELEM = 17;
+    public static final int BOOKMARK_VERFUEGBAR_BIS = 8;
+    public static final int BOOKMARK_NOTIZ = 9; // Geoblocking
+    /**
+     * Index for Date as long value in SECONDS!!
+     */
+    public static final int BOOKMARK_DATUM_LONG = 10;
+    public static final int MAX_ELEM = 10;
 
     private String url;
     private String sender;
@@ -37,11 +41,11 @@ public class BookmarkDataSwing {
     private String expiry;
     private boolean willExpire;
 
-    public BookmarkDataSwing() {
+    public DatenBookmark() {
         seen = false;
     }
 
-    public BookmarkDataSwing(DatenFilm filmdata) {
+    public DatenBookmark(DatenFilm filmdata) {
         this();
         this.url = filmdata.getUrlNormalQuality();
         this.sender = filmdata.getSender();
@@ -186,5 +190,6 @@ public class BookmarkDataSwing {
     public boolean willExpire() {
         return this.willExpire;
     }
-
 }
+
+

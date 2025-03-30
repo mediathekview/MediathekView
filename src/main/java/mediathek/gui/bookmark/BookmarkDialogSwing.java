@@ -4,25 +4,17 @@
  */
 package mediathek.gui.bookmark;
 
+import mediathek.config.MVConfig;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.bookmark.DatenBookmark;
+import mediathek.gui.tool.TableViewColumnContextMenuHelperSwing;
+import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.tool.SVGIconUtilities;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
+import java.awt.Frame;
+import javax.swing.*;
+import mediathek.tool.listener.BeobTableHeader;
+import mediathek.tool.models.TModelBookmark;
+import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVBookmarkTable;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -30,17 +22,23 @@ import org.jdesktop.swingx.JXHyperlink;
  *
  * @author Markus
  */
-public class BookmarkDialogSwing extends javax.swing.JDialog {
+public class BookmarkDialogSwing extends JDialog {
+    public static boolean[] VISIBLE_COLUMNS = new boolean[DatenBookmark.MAX_ELEM];
+    private static final int[] BUTTON_COLUMNS = {DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN};
+    private static final int[] HIDDEN_COLUMNS = {DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN};
 
-    /**
-     * Creates new form BookmarkWindow
-     */
-    public BookmarkDialogSwing(java.awt.Frame parent, boolean modal) {
+
+    public BookmarkDialogSwing(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-    
+        tbBookmarks.setModel(new TModelBookmark());
+        setupHeaderPopupMenu();
     }
 
+
+    private void setupHeaderPopupMenu() {
+        new TableViewColumnContextMenuHelperSwing(tbBookmarks);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -143,11 +141,6 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
         spSplitPane.setLeftComponent(jScrollPane3);
 
         hyperLink.setText("Link zur Webseite");
-        hyperLink.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                hyperLinkActionPerformed(evt);
-            }
-        });
 
         taDescription.setColumns(20);
         taDescription.setRows(5);
@@ -211,52 +204,6 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void hyperLinkActionPerformed(ActionEvent evt) {//GEN-FIRST:event_hyperLinkActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_hyperLinkActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BookmarkDialogSwing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                BookmarkDialogSwing dialog = new BookmarkDialogSwing(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public JButton btnDeleteEntry;
@@ -277,7 +224,7 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
     public JLabel lblSeen;
     public JSplitPane spSplitPane;
     public JTextArea taDescription;
-    public JTable tbBookmarks;
+    public MVBookmarkTable tbBookmarks;
     public JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
 }
