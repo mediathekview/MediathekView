@@ -59,6 +59,8 @@ object SenderListBoxModel {
         providedSenderList.add("SWR")
         providedSenderList.add("WDR")
         providedSenderList.add("ZDF")
+        providedSenderList.add("ZDFinfo")
+        providedSenderList.add("ZDFneo")
         providedSenderList.add("ZDF-tivi")
         providedSenderList.sortWith(GermanStringSorter.getInstance())
     }
