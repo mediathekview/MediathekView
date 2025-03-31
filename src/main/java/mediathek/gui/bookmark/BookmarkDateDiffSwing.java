@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
  */
 public class BookmarkDateDiffSwing {
 
-  private  LocalDate today;
+  private LocalDate today;
   private static BookmarkDateDiffSwing bookmarkDateComparator;
   DateTimeFormatter dateformatter;
 

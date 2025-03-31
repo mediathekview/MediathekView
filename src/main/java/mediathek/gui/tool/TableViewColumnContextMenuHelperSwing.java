@@ -14,16 +14,19 @@ public class TableViewColumnContextMenuHelperSwing {
 
     private final JTable table;
     private JPopupMenu columnMenu;
+    private final ImageIcon playIcon;
+    private final ImageIcon downloadIcon;
 
     public TableViewColumnContextMenuHelperSwing(final JTable table) {
         this.table = table;
+        this.playIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
+        this.downloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
         setupColumnMenu();
     }
 
     private void setupColumnMenu() {
         columnMenu = new JPopupMenu();
 
-        // 1. Standard-Menüpunkte (Alle auswählen/abwählen)
         JMenuItem selectAllItem = new JMenuItem("Alle auswählen");
         selectAllItem.addActionListener(this::selectAllColumns);
         columnMenu.add(selectAllItem);
@@ -34,56 +37,31 @@ public class TableViewColumnContextMenuHelperSwing {
 
         columnMenu.addSeparator();
 
-        // 2. Spalteneinträge mit Icons NEBEN der Checkbox
         TableColumnModel columnModel = table.getColumnModel();
         for (int i = 0; i < columnModel.getColumnCount(); i++) {
             TableColumn column = columnModel.getColumn(i);
             String columnName = column.getHeaderValue().toString();
 
-            // Für Play/Download-Spalten: Icon + unsichtbarer Text
-            if (i == 5 || i == 6) {
-                JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
-                panel.setOpaque(false);
-
-                JCheckBox checkBox = new JCheckBox();
-                checkBox.setSelected(true);
-                checkBox.addActionListener(e -> {
-                    boolean visible = checkBox.isSelected();
-                    column.setMinWidth(visible ? 50 : 0);
-                    column.setMaxWidth(visible ? Integer.MAX_VALUE : 0);
-                });
-
-                JLabel iconLabel = new JLabel();
-                if (i == 5) {
-                    iconLabel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg"));
-                    iconLabel.setToolTipText("Play");
-                } else {
-                    iconLabel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
-                    iconLabel.setToolTipText("Download");
-                }
-
-                panel.add(checkBox);
-                panel.add(iconLabel);
-
-                JMenuItem customItem = new JMenuItem();
-                customItem.setLayout(new BorderLayout());
-                customItem.add(panel, BorderLayout.WEST);
-                columnMenu.add(customItem);
+            if (i == 5) {
+                JCheckBoxMenuItem item = new JCheckBoxMenuItem(columnName, playIcon);
+                item.setSelected(true);
+                item.addActionListener(e -> toggleColumnVisibility(column, item));
+                columnMenu.add(item);
             }
-            // Normale Spalten mit Text
+            else if (i == 6) {
+                JCheckBoxMenuItem item = new JCheckBoxMenuItem(columnName, downloadIcon);
+                item.setSelected(true);
+                item.addActionListener(e -> toggleColumnVisibility(column, item));
+                columnMenu.add(item);
+            }
             else {
                 JCheckBoxMenuItem item = new JCheckBoxMenuItem(columnName);
                 item.setSelected(true);
-                item.addActionListener(e -> {
-                    boolean visible = item.isSelected();
-                    column.setMinWidth(visible ? 50 : 0);
-                    column.setMaxWidth(visible ? Integer.MAX_VALUE : 0);
-                });
+                item.addActionListener(e -> toggleColumnVisibility(column, item));
                 columnMenu.add(item);
             }
         }
 
-        // 3. MouseListener für Tabellenkopf
         JTableHeader header = table.getTableHeader();
         header.addMouseListener(new MouseAdapter() {
             @Override
@@ -93,6 +71,12 @@ public class TableViewColumnContextMenuHelperSwing {
                 }
             }
         });
+    }
+
+    private void toggleColumnVisibility(TableColumn column, JCheckBoxMenuItem item) {
+        boolean visible = item.isSelected();
+        column.setMinWidth(visible ? 50 : 0);
+        column.setMaxWidth(visible ? Integer.MAX_VALUE : 0);
     }
 
     private void showColumnMenu(Component invoker, Point point) {
