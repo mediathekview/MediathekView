@@ -24,8 +24,14 @@ public class BeobTableHeader extends MouseAdapter {
      */
     private final int[] button;
     private final boolean displaySenderIconMenus;
+    private final boolean display;
     private final MVConfig.Configs configKey;
+    private boolean displayAll = true;
+    private boolean hideAll = true;
     private JCheckBoxMenuItem[] box;
+    private JCheckBoxMenuItem cbmiShowAllColumns;
+    private JCheckBoxMenuItem cbmiHideAllColumns;
+    private JMenuItem miResetColumns;
 
     /**
      * Context Menu for manipulation of table visual appearance from table header.
@@ -38,13 +44,14 @@ public class BeobTableHeader extends MouseAdapter {
      * @param configKey If not NULL, store config setting for LINEBREAK in this key.
      *                  If NULL, do not store/restore values and do not show LINEBREAK context menu entries.
      */
-    public BeobTableHeader(@NotNull MVTable tabelle, boolean[] spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, MVConfig.Configs configKey) {
+    public BeobTableHeader(@NotNull MVTable tabelle, boolean[] spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, boolean display, MVConfig.Configs configKey) {
         this.tabelle = tabelle;
         this.displaySenderIconMenus = displaySenderIconMenus;
         spaltenAnzeigen = spalten;
         this.hiddenColumns = hiddenColumns;
         this.configKey = configKey;
         button = bbutton;
+        this.display = display;
 
         //dynamically query column names from table
         final var colModel = tabelle.getTableHeader().getColumnModel();
@@ -53,6 +60,18 @@ public class BeobTableHeader extends MouseAdapter {
         for (int index = 0; index < colCount; index++) {
             columns[index] = (String) colModel.getColumn(index).getHeaderValue();
         }
+
+        createStaticMenuEntries();
+    }
+
+    public BeobTableHeader(@NotNull MVTable tabelle, boolean[] spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, MVConfig.Configs configKey) {
+        this(tabelle,spalten,hiddenColumns,bbutton, displaySenderIconMenus,false,configKey );
+    }
+
+    private void createStaticMenuEntries() {
+        miResetColumns = new JMenuItem("Spalten zurücksetzen");
+        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
+
     }
 
     @Override
@@ -91,6 +110,17 @@ public class BeobTableHeader extends MouseAdapter {
 
     protected JPopupMenu prepareMenu() {
         JPopupMenu jPopupMenu = new JPopupMenu();
+        if(display){
+            cbmiShowAllColumns = new JCheckBoxMenuItem("Alle auswählen");
+            cbmiShowAllColumns.setSelected(alleAnzeigen());
+            jPopupMenu.add(cbmiShowAllColumns);
+            cbmiHideAllColumns = new JCheckBoxMenuItem("Alle abwählen");
+            cbmiHideAllColumns.setSelected(alleVerstecken());
+            jPopupMenu.add(cbmiHideAllColumns);
+            jPopupMenu.addSeparator();
+
+        }
+
         // Spalten ein-ausschalten
         box = new JCheckBoxMenuItem[this.columns.length];
         for (int i = 0; i < columns.length; ++i) {
@@ -148,11 +178,17 @@ public class BeobTableHeader extends MouseAdapter {
         }
 
         // Tabellenspalten zurücksetzen
-        var miResetColumns = new JMenuItem("Spalten zurücksetzen");
-        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
         jPopupMenu.add(miResetColumns);
 
         return jPopupMenu;
+    }
+
+    private boolean alleAnzeigen() {
+        return displayAll;
+    }
+
+    private boolean alleVerstecken(){
+        return hideAll;
     }
 
     private void showMenu(MouseEvent evt) {
@@ -168,6 +204,16 @@ public class BeobTableHeader extends MouseAdapter {
         for (int i = 0; i < box.length; ++i) {
             if (box[i] != null) {
                 spaltenAnzeigen[i] = box[i].isSelected();
+                if(display){
+                    if (!box[i].isSelected()) {
+                        displayAll = false;
+                        cbmiShowAllColumns.setSelected(false);
+                    }
+                    if (box[i].isSelected()) {
+                        hideAll = false;
+                        cbmiHideAllColumns.setSelected(false);
+                    }
+                }
             }
         }
         tabelle.spaltenEinAus();

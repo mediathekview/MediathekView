@@ -23,7 +23,8 @@ public class DatenBookmark {
     public static final int BOOKMARK_URL = 7;
     public static final int BOOKMARK_VERFUEGBAR = 8;
     public static final int BOOKMARK_NOTIZ = 9;
-    public static final int MAX_ELEM = 17;
+    public static final int MAX_ELEM = 10;
+    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
 
     private String url;
     private String sender;
@@ -185,6 +186,10 @@ public class DatenBookmark {
     @JsonIgnore
     public boolean willExpire() {
         return this.willExpire;
+    }
+
+    public static boolean anzeigen(int i) {
+        return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
 }
