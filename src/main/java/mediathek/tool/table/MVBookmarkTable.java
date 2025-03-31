@@ -14,7 +14,7 @@ import java.util.Optional;
 public class MVBookmarkTable extends MVTable{
 
     public MVBookmarkTable(){
-        super(DatenBookmark.MAX_ELEM, GuiFilme.VISIBLE_COLUMNS,
+        super(DatenBookmark.MAX_ELEM, DatenBookmark.spaltenAnzeigen,
                 Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN),
                 Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN),
                 Optional.of(Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_BOOKMARK));

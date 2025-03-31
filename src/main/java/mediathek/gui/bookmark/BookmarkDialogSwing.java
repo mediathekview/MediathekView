@@ -4,6 +4,8 @@
  */
 package mediathek.gui.bookmark;
 
+import mediathek.daten.abo.DatenAbo;
+import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.tool.SVGIconUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +25,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
+import mediathek.tool.listener.BeobTableHeader;
+import mediathek.tool.models.TModelBookmark;
 import mediathek.tool.table.MVBookmarkTable;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -38,7 +42,27 @@ public class BookmarkDialogSwing extends javax.swing.JDialog {
     public BookmarkDialogSwing(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        tabelle.setModel(new TModelBookmark());
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
+                DatenBookmark.spaltenAnzeigen,
+                new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
+                new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
+                true,
+                true,
+                null));
     
+    }
+
+
+    @Override
+    public void dispose() {
+        tabelleSpeichern();
+        super.dispose();
+    }
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.writeTableConfigurationData();
+        }
     }
 
     /**
