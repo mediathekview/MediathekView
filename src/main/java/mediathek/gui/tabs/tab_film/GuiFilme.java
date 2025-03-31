@@ -114,6 +114,7 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     private final FilterActionPanel filterActionPanel;
+    private final FilterConfiguration filterConfiguration = new FilterConfiguration();
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
@@ -150,7 +151,7 @@ public class GuiFilme extends AGuiTabPanel {
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsTab();
 
-        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility);
+        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility, filterConfiguration);
         add(new FilmToolBar(), BorderLayout.NORTH);
 
         start_init();
@@ -167,6 +168,10 @@ public class GuiFilme extends AGuiTabPanel {
         MessageBus.getMessageBus().subscribe(this);
 
         setupActionListeners();
+    }
+
+    public FilterConfiguration getFilterConfiguration() {
+        return filterConfiguration;
     }
 
     public FilterActionPanel getFilterActionPanel() {
@@ -187,31 +192,24 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Handler
     public void handleTableModelChange(TableModelChangeEvent e) {
+        final Consumer<Boolean> function = (Boolean flag) -> {
+            playFilmAction.setEnabled(flag);
+            saveFilmAction.setEnabled(flag);
+            bookmarkAddFilmAction.setEnabled(flag);
+            bookmarkRemoveFilmAction.setEnabled(flag);
+            bookmarkClearListAction.setEnabled(flag);
+            manageBookmarkAction.setEnabled(flag);
+            toggleFilterDialogVisibilityAction.setEnabled(flag);
+            searchField.setEnabled(flag);
+            filterSelectionComboBox.setEnabled(flag);
+        };
         if (e.active) {
-            SwingUtilities.invokeLater(() -> {
-                playFilmAction.setEnabled(false);
-                saveFilmAction.setEnabled(false);
-                bookmarkAddFilmAction.setEnabled(false);
-                bookmarkRemoveFilmAction.setEnabled(false);
-                bookmarkClearListAction.setEnabled(false);
-                manageBookmarkAction.setEnabled(false);
-                toggleFilterDialogVisibilityAction.setEnabled(false);
-                searchField.setEnabled(false);
-                filterSelectionComboBox.setEnabled(false);
-            });
+            SwingUtilities.invokeLater(() -> function.accept(false));
         } else {
             SwingUtilities.invokeLater(() -> {
-                playFilmAction.setEnabled(true);
-                saveFilmAction.setEnabled(true);
-                bookmarkAddFilmAction.setEnabled(true);
-                bookmarkRemoveFilmAction.setEnabled(true);
-                bookmarkClearListAction.setEnabled(true);
-                manageBookmarkAction.setEnabled(true);
-                toggleFilterDialogVisibilityAction.setEnabled(true);
-                searchField.setEnabled(true);
+                function.accept(true);
                 if (e.fromSearchField)
                     searchField.requestFocusInWindow();
-                filterSelectionComboBox.setEnabled(true);
             });
         }
     }
@@ -409,7 +407,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filterActionPanel.isShowUnseenOnly()) {
+            if (filterConfiguration.isShowUnseenOnly()) {
                 MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -510,7 +508,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filterActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filterConfiguration.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -540,7 +538,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filterActionPanel.isShowOnlyHighQuality()) {
+            if (filterConfiguration.isShowHighQualityOnly()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -660,7 +658,7 @@ public class GuiFilme extends AGuiTabPanel {
                 }
             });
 
-            filterActionPanel.zeitraumProperty()
+            filterActionPanel.getViewSettingsPane().zeitraumSpinner.valueProperty()
                     .addListener((ov, oV, nV) -> SwingUtilities.invokeLater(() -> {
                         if (!zeitraumTimer.isRunning())
                             zeitraumTimer.start();
@@ -709,14 +707,9 @@ public class GuiFilme extends AGuiTabPanel {
 
         var decoratedPool = daten.getDecoratedPool();
         modelFuture = decoratedPool.submit(() -> {
-            GuiModelHelper helper;
-            var searchFieldData = new SearchFieldData(searchField.getText(),
-                    searchField.getSearchMode());
-            if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
-            } else {
-                helper = new GuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
-            }
+            var searchFieldData = new SearchFieldData(searchField.getText(), searchField.getSearchMode());
+            GuiModelHelper helper = GuiModelHelperFactory.createGuiModelHelper(
+                    historyController, searchFieldData, filterConfiguration);
             return helper.getFilteredTableModel();
         });
         Futures.addCallback(modelFuture,
@@ -747,6 +740,20 @@ public class GuiFilme extends AGuiTabPanel {
                     }
                 },
                 decoratedPool);
+    }
+
+    static class GuiModelHelperFactory {
+        public static GuiModelHelper createGuiModelHelper(@NotNull SeenHistoryController historyController,
+                                                          @NotNull SearchFieldData searchFieldData,
+                                                          @NotNull FilterConfiguration filterConfig) {
+            GuiModelHelper helper;
+            if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
+                helper = new LuceneGuiFilmeModelHelper(historyController, searchFieldData, filterConfig);
+            } else {
+                helper = new GuiFilmeModelHelper(historyController, searchFieldData, filterConfig);
+            }
+            return helper;
+        }
     }
 
     static class NonRepeatingTimer extends Timer {

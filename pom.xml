@@ -99,7 +99,7 @@
         <commons-configuration2.version>2.11.0</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <controlsfx.version>11.2.1</controlsfx.version>
+        <controlsfx.version>11.2.2</controlsfx.version>
         <flatlaf.version>3.5.4</flatlaf.version>
         <guava.version>33.4.0-jre</guava.version>
         <icu4j.version>76.1</icu4j.version>

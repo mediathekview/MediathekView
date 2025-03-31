@@ -2,6 +2,7 @@
 - **BUGFIX:** Duplikatsuche berücksicht nur HQ-URL wenn Film auch HQ ist.
 - **BUGFIX:** Alte tagesschau24 Filme in der Liste werden nur konvertiert wenn der Sender auch angezeigt werden soll.
 - **BUGFIX:** Darkmode Anzeigefehler im Kontextmenü des Tab Filme behoben.
+- **BUGFIX:** Filterdialog im Dark Mode ändert nicht mehr die Größe.
 - **FEATURE (macOS/Windows/Linux GNOME):** Auf unterstützten Systemen nimmt MV nun das aktuelle Erscheinungsbild des Betriebssystem an, wenn es unter *Einstellungen/Allgemein/Erscheinungsbild des Betriebssystem verwenden* konfiguriert wurde.
 - **FEATURE:** Lokale Filmduplikate können nach Anwahl eines Ursprungsfilmes über das Kontextmenü *"Duplikate entfernen..."* gesucht und permanent aus der Liste entfernt werden. *WICHTIG:* Etwaige Duplikat-Markierungen bleiben bis zum Neustart ggf. erhalten da keine listenweite Duplikaterkennung nach einer Löschung gestartet wird.
 - **FEATURE:** Thema und Sender werden nun in den Filtern gespeichert. Vielen Dank an @MarkusJannek
