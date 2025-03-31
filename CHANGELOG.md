@@ -7,6 +7,7 @@
 - **FEATURE:** Lokale Filmduplikate können nach Anwahl eines Ursprungsfilmes über das Kontextmenü *"Duplikate entfernen..."* gesucht und permanent aus der Liste entfernt werden. *WICHTIG:* Etwaige Duplikat-Markierungen bleiben bis zum Neustart ggf. erhalten da keine listenweite Duplikaterkennung nach einer Löschung gestartet wird.
 - **FEATURE:** Thema und Sender werden nun in den Filtern gespeichert. Vielen Dank an @MarkusJannek
 - **FEATURE:** Tab Download Kontextmenüeintrag *Film (URL) abspielen* besitzt nun in eigenes Icon. @MarkusJannek
+- **FEATURE:** MV kann nun die Sender ZDFinfo und ZDFneo in der Filmliste auswerten.
 
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
