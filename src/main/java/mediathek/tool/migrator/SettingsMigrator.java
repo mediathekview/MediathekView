@@ -54,8 +54,18 @@ public class SettingsMigrator {
                     case "system-panel-videoplayer-anzeigen" -> migrateSystemPanelVideoplayerAnzeigen(element);
                     case "Blacklist-Geo-nicht-anzeigen" -> migrateDoNotShowGeoFilms(element);
                     case "Groesse-Einstellungen" -> migrateSettingsDialogSize(element);
+                    case "Blacklist-ausgeschaltet" -> migrateSystemBlacklistOn(element);
                 }
             }
+        }
+    }
+
+    private void migrateSystemBlacklistOn(Element element) {
+        var node = element.getFirstChild();
+        if (node != null) {
+            boolean result = Boolean.parseBoolean(node.getNodeValue());
+            config.setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, result);
+            logger.debug("migrateSystemBlacklistOn");
         }
     }
 

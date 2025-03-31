@@ -6,16 +6,23 @@ import java.awt.*;
 
 public class MVC {
 
-    public MVConfig.Configs configs;
-    public String text;
+    private final String text;
+    private final MVConfig.Configs config;
     public Color color = new Color(0);
-    public Color colorReset = new Color(0);
-
-    public MVC(MVConfig.Configs configs, Color ccolor, String ttext) {
-        this.configs = configs;
+    private Color colorReset = new Color(0);
+    public MVC(MVConfig.Configs configs, Color color, String ttext) {
+        this.config = configs;
         text = ttext;
-        color = ccolor;
-        colorReset = ccolor;
+        this.color = color;
+        colorReset = color;
+    }
+
+    public MVConfig.Configs getConfig() {
+        return config;
+    }
+
+    public String getText() {
+        return text;
     }
 
     public void set(Color c) {

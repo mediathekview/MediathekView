@@ -148,7 +148,9 @@ public class PanelBlacklist extends JPanel {
     private void init_() {
         jCheckBoxAbo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)));
         jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
-        jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON)));
+
+        var blacklist_is_on = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false);
+        jCheckBoxBlacklistEingeschaltet.setSelected(blacklist_is_on);
 
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
 
@@ -196,7 +198,7 @@ public class PanelBlacklist extends JPanel {
             Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, jCheckBoxBlacklistEingeschaltet.isSelected());
             notifyBlacklistChanged();
         });
         jButtonHinzufuegen.addActionListener(e -> onAddBlacklistRule());

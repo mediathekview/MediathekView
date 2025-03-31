@@ -22,27 +22,27 @@ public class LuceneIndexKeys {
      */
     public static final String BESCHREIBUNG = "beschreibung";
     /**
-     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
+     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String LIVESTREAM = "livestream";
     /**
-     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
+     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String HIGH_QUALITY = "highquality";
     /**
-     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
+     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String SUBTITLE = "untertitel";
     /**
-     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
+     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String TRAILER_TEASER = "trailerteaser";
     /**
-     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
+     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String AUDIOVERSION = "audioversion";
     /**
-     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
+     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String SIGN_LANGUAGE = "signlanguage";
     /**
@@ -51,7 +51,7 @@ public class LuceneIndexKeys {
      */
     public static final String SENDE_DATUM = "sendedatum";
     /**
-     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true"
+     * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String NEW = "neu";
     /**
@@ -62,4 +62,8 @@ public class LuceneIndexKeys {
      * Filmgröße in Megabytes. Integer-Value. 0 wenn nicht vorhanden.
      */
     public static final String FILM_SIZE = "größe";
+    /**
+     * Boolean Key ist nur vorhanden, wenn Film als Duplikat klassifiziert wurde. Dann "true".
+     */
+    public static final String DUPLICATE = "duplicate";
 }

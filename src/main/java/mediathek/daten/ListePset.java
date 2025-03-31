@@ -6,10 +6,11 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.MessageBus;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -113,7 +114,7 @@ public class ListePset extends ArrayList<DatenPset> {
                 // die erste Pset der Abos
                 ListePset ps = getListeAbo();
                 if (ps.size() > 0) {
-                    ret = getListeAbo().get(0);
+                    ret = getListeAbo().getFirst();
                     if (ret == null) {
                         // dann die erste Prgruppe
                         ret = get(0);
@@ -202,8 +203,8 @@ public class ListePset extends ArrayList<DatenPset> {
         return ret;
     }
 
-    public TModel getModel() {
-        TModel model;
+    public TableModel createModel() {
+        TableModel model;
         Object[][] object;
         DatenPset datenPset;
         int i = 0;
@@ -215,9 +216,9 @@ public class ListePset extends ArrayList<DatenPset> {
                 object[i] = datenPset.arr;
                 ++i;
             }
-            model = new TModel(object, DatenPset.COLUMN_NAMES);
+            model = new NonEditableTableModel(object, DatenPset.COLUMN_NAMES);
         } else {
-            model = new TModel(new Object[0][DatenPset.MAX_ELEM], DatenPset.COLUMN_NAMES);
+            model = new NonEditableTableModel(new Object[0][DatenPset.MAX_ELEM], DatenPset.COLUMN_NAMES);
         }
         return model;
     }

@@ -13,6 +13,7 @@ import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.affinity.Affinity;
+import mediathek.tool.dns.IPvPreferenceMode;
 import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
 import mediathek.x11.MediathekGuiX11;
@@ -52,6 +53,7 @@ public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
     private static final Logger logger = LogManager.getLogger(Main.class);
     public static Optional<SplashScreen> splashScreen = Optional.empty();
+    public static SingleInstance SINGLE_INSTANCE_WATCHER;
 
     static {
         // set up log4j callback registry
@@ -266,19 +268,6 @@ public class Main {
         }
     }
 
-    private static void setupFlatLaf() {
-        var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
-        LookAndFeel laf;
-
-        if (darkMode) {
-            laf = DarkModeFactory.getLookAndFeel();
-        }
-        else {
-            laf = LightModeFactory.getLookAndFeel();
-        }
-        FlatLaf.setup(laf);
-    }
-
     /**
      * Check if Shenandoah GC settings are supplied to JVM.
      * Otherwise display warning dialog.
@@ -310,10 +299,12 @@ public class Main {
         }
 
         if (!correctParameters) {
-            //show error dialog
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
-            JOptionPane.showMessageDialog(null,getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
-                    JOptionPane.WARNING_MESSAGE);
+            if (!Config.isDebugModeEnabled()) {
+                //show error dialog
+                JOptionPane.showMessageDialog(null, getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
@@ -351,9 +342,10 @@ public class Main {
                 // not an int -> show warning
                 // fractional scale is NOT supported under Linux, must use integer only.
                 var scaleFactor = Float.parseFloat(strScale);
-                System.out.println("uiScale factor: " + scaleFactor);
+                logger.trace("old uiScale factor {}", scaleFactor);
                 var newScale = Math.round(scaleFactor);
-                System.out.println("new scale: " + newScale);
+                logger.trace("new uiScale factor {}", newScale);
+
                 JOptionPane.showMessageDialog(null,
                         "<html>" +
                                 "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=" + strScale + "</i>.<br>" +
@@ -361,6 +353,28 @@ public class Main {
                                 "Sie sollten <i>-Dsun.java2d.uiScale=" + newScale + "</i> oder größer verwenden falls die Schriftgröße zu klein ist.",
                         Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
             }
+        }
+    }
+
+    private static void configureDnsPreferenceMode(CommandLine.ParseResult parseResult) {
+        var config = ApplicationConfiguration.getConfiguration();
+        if (parseResult.hasMatchedOption("dpm")) {
+            logger.trace("Dns preference mode set via CLI, storing config value");
+            config.setProperty(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode()));
+        }
+        else {
+            logger.trace("Dns preference mode NOT set, using config setting");
+            var mode = IPvPreferenceMode.fromString(config.getString(ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE, String.valueOf(Config.getDnsIpPreferenceMode())));
+            Config.setDnsIpPreferenceMode(mode);
+        }
+        logger.trace("Setting DNS selector to mode: {}", Config.getDnsIpPreferenceMode().toString());
+    }
+
+    private static void registerFlatLafCustomization() {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            var settings = StandardLocations.getSettingsDirectory().resolve("flatlaf");
+            logger.info("Registering {} as custom FlatLaf config folder", settings);
+            FlatLaf.registerCustomDefaultsSource(settings.toFile());
         }
     }
 
@@ -393,14 +407,20 @@ public class Main {
                 setupLogging();
                 printPortableModeInfo();
 
+                configureDnsPreferenceMode(parseResult);
+
                 if (SystemUtils.IS_OS_LINUX) {
-                    // enable custom window decorations
-                    JFrame.setDefaultLookAndFeelDecorated( true );
-                    JDialog.setDefaultLookAndFeelDecorated( true );
+                    if (!Config.isDisableFlatLafDecorations()) {
+                        // enable custom window decorations
+                        JFrame.setDefaultLookAndFeelDecorated(true);
+                        JDialog.setDefaultLookAndFeelDecorated(true);
+                    }
                 }
 
                 setupDockIcon();
-                setupFlatLaf();
+
+                registerFlatLafCustomization();
+                DarkModeSetup.setup();
 
                 if (SystemUtils.IS_OS_LINUX) {
                     checkUiScaleSetting();
@@ -470,7 +490,9 @@ public class Main {
 
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
-            Daten.getInstance().loadBookMarkData();
+            Daten.getInstance().getListeBookmarkList().loadFromFile();
+
+            removeLuceneIndexDirectory();
             // enable modern search on demand
             var useModernSearch = ApplicationConfiguration.getConfiguration()
                     .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
@@ -479,6 +501,22 @@ public class Main {
 
             startGuiMode();
         });
+    }
+
+    /**
+     * Remove modern search index when not in use.
+     */
+    private static void removeLuceneIndexDirectory() {
+        //when modern search is not in use, delete unused film index directory as a precaution
+        var indexPath = StandardLocations.getFilmIndexPath();
+        if (Files.exists(indexPath)) {
+            try {
+                FileUtils.deletePathRecursively(indexPath);
+            }
+            catch (IOException e) {
+                logger.error("Failed to remove Lucene index directory", e);
+            }
+        }
     }
 
     /**
@@ -582,8 +620,6 @@ public class Main {
         logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory());
     }
 
-    public static SingleInstance SINGLE_INSTANCE_WATCHER;
-
     /**
      * Prevent startup of multiple instances of the app.
      */
@@ -669,5 +705,43 @@ public class Main {
         }
 
         return window;
+    }
+
+    static class DarkModeSetup {
+        private static LookAndFeel getCurrentLookAndFeel(boolean darkMode) {
+            LookAndFeel laf;
+            if (darkMode) {
+                laf = DarkModeFactory.getLookAndFeel();
+            }
+            else {
+                laf = LightModeFactory.getLookAndFeel();
+            }
+
+            return laf;
+        }
+
+        private static void setupFlatLaf() {
+            var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
+            FlatLaf.setup(getCurrentLookAndFeel(darkMode));
+        }
+
+        public static void setup() {
+            if (DarkModeDetector.hasDarkModeDetectionSupport()) {
+                logger.trace("setting up dark mode system laf");
+                var useSystemMode = ApplicationConfiguration
+                        .getConfiguration()
+                        .getBoolean(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, false);
+                if (useSystemMode) {
+                    FlatLaf.setup(getCurrentLookAndFeel(DarkModeDetector.isDarkMode()));
+                }
+                else {
+                    setupFlatLaf();
+                }
+            }
+            else {
+                logger.trace("dark mode detection not supported, using config");
+                setupFlatLaf();
+            }
+        }
     }
 }

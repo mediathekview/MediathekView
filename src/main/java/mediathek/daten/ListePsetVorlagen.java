@@ -5,7 +5,7 @@ import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.NetUtils;
 import mediathek.tool.http.MVHttpClient;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -25,7 +26,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ListePsetVorlagen extends ArrayList<String[]> {
     private static final String BS_WIN_32 = "Windows-32Bit";
@@ -51,11 +51,11 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
     private static final Logger logger = LogManager.getLogger(ListePsetVorlagen.class);
 
 
-    public TModel getTModel(String bs) {
+    public TableModel createModel(String bs) {
         String[][] object;
         if (this.size() > 0) {
             if (!bs.isEmpty()) {
-                List<String[]> tmp = this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).collect(Collectors.toList());
+                List<String[]> tmp = this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).toList();
                 object = new String[tmp.size()][PGR_MAX_ELEM];
                 for (int i = 0; i < tmp.size(); i++) {
                     object[i] = tmp.get(i);
@@ -66,9 +66,9 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
                     object[i] = this.get(i);
                 }
             }
-            return new TModel(object, PGR_COLUMN_NAMES);
+            return new NonEditableTableModel(object, PGR_COLUMN_NAMES);
         } else {
-            return new TModel(new Object[][]{}, PGR_COLUMN_NAMES);
+            return new NonEditableTableModel(new Object[][]{}, PGR_COLUMN_NAMES);
         }
     }
 

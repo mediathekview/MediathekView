@@ -96,10 +96,11 @@ public class MVPanelDownloadZiel extends JPanel {
                 nameGeaendert = true;
                 checkPfadName();
                 String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
-                if (!s.equals(FilenameUtils.checkDateiname(s, true /*pfad*/))) {
-                    jComboBoxPath.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                var editor = jComboBoxPath.getEditor().getEditorComponent();
+                if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
+                    editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
-                    jComboBoxPath.getEditor().getEditorComponent().setBackground(Color.WHITE);
+                    editor.setBackground(UIManager.getDefaults().getColor("TextField.background"));
                 }
             }
         });
@@ -301,7 +302,7 @@ public class MVPanelDownloadZiel extends JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDelPath, jButtonPath, jComboBoxPath, jTextFieldName});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, jButtonDelPath, jButtonPath, jComboBoxPath, jTextFieldName);
 
     }// </editor-fold>//GEN-END:initComponents
 

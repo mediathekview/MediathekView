@@ -13,7 +13,6 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>MediathekView.jar</include>
-				<include>*.exe</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -26,6 +25,8 @@
 				<exclude>**/*.exe</exclude>
 				<exclude>**/*.sh</exclude>
 				<exclude>**/*.bat</exclude>
+				<exclude>**/*.ico</exclude>
+				<exclude>**/*.svg</exclude>
 			</excludes>
 		</fileSet>
 	</fileSets>

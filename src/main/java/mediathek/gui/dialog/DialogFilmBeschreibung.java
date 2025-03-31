@@ -63,7 +63,7 @@ public class DialogFilmBeschreibung extends JDialog {
             String pfad = "";
             ListePset lp = Daten.listePset.getListeSpeichern();
             if (!lp.isEmpty()) {
-                DatenPset p = lp.get(0);
+                DatenPset p = lp.getFirst();
                 pfad = p.getZielPfad();
             }
             if (pfad.isEmpty()) {

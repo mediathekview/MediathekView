@@ -9,6 +9,8 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.reader.FilmListReader;
+import mediathek.gui.duplicates.CommonStatsEvaluationTask;
+import mediathek.gui.duplicates.FilmDuplicateEvaluationTask;
 import mediathek.gui.messages.FilmListReadStopEvent;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.FilmlistWriterWorker;
@@ -23,6 +25,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -174,6 +177,12 @@ public class FilmeLaden {
         fillHash(daten.getListeFilme());
     }
 
+    private void displayLogInfo(@NotNull ListeFilme listeFilme) {
+        logger.info("Alte Liste erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
+        logger.info("  Anzahl Filme: {}", listeFilme.size());
+        logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
+    }
+
     public boolean loadFilmlist(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         ListeFilme listeFilme = daten.getListeFilme();
@@ -183,9 +192,8 @@ public class FilmeLaden {
 
         logger.trace("loadFilmlist(String,boolean)");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
-        logger.info("  Anzahl Filme: {}", listeFilme.size());
-        logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
+        displayLogInfo(listeFilme);
+
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -220,9 +228,8 @@ public class FilmeLaden {
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         logger.debug("Filme laden (Update), start");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().getMetaData().getGenerationDateTimeAsString());
-        logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
-        logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
+        displayLogInfo(daten.getListeFilme());
+
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -232,7 +239,7 @@ public class FilmeLaden {
 
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
-            logger.info("Filmliste laden von: " + dateiUrl);
+            logger.info("Filmliste laden von: {}", dateiUrl);
             final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
             if (dateiUrl.isEmpty()) {
                 dateiUrl = StandardLocations.getFilmListUrl(FilmListDownloadType.FULL);
@@ -317,6 +324,12 @@ public class FilmeLaden {
         }
         var workerTask = CompletableFuture.runAsync(new RefreshAboWorker(progLabel, progressBar))
                 .thenRun(new BlacklistFilterWorker(progLabel, progressBar));
+
+        var evaluateDuplicates = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
+        if (evaluateDuplicates) {
+            workerTask = workerTask.thenRun(new FilmDuplicateEvaluationTask());
+        }
+        workerTask = workerTask.thenRun(new CommonStatsEvaluationTask());
 
         if (writeFilmList) {
             workerTask = workerTask.thenRun(new FilmlistWriterWorker(progLabel, progressBar));

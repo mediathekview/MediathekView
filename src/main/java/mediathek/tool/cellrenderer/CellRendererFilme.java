@@ -7,6 +7,7 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
+import mediathek.tool.ColorUtils;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
@@ -97,7 +99,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
                         var textArea = createTextArea(value.toString());
-                        applyColorSettings(textArea, datenFilm, isSelected, isBookMarked);
+                        applyColorSettings(textArea, datenFilm, isBookMarked, isSelected);
                         return textArea;
                     }
                 }
@@ -126,7 +128,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
             }
 
-            applyColorSettings(this, datenFilm, isSelected, isBookMarked);
+            applyColorSettings(this, datenFilm, isBookMarked, isSelected);
         } catch (Exception ex) {
             logger.error("Fehler", ex);
         }
@@ -147,19 +149,31 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
     }
 
-    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isSelected, boolean isBookMarked) {
-        if (!isSelected) {
-            if (history.hasBeenSeen(datenFilm)) {
-                c.setBackground(MVColor.FILM_HISTORY.color);
-            }
+    private final java.util.List<Color> bgList = new ArrayList<>();
 
-            if (datenFilm.isNew()) {
-                c.setForeground(MVColor.getNewColor());
-            }
-            if (isBookMarked) {
-                c.setBackground(MVColor.FILM_BOOKMARKED.color);
-            }
+    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isBookMarked, boolean isSelected) {
+        bgList.clear();
+
+        bgList.add(c.getBackground());
+
+        if (history.hasBeenSeen(datenFilm)) {
+            bgList.add(MVColor.FILM_HISTORY.color);
         }
+
+        if (datenFilm.isNew() && !isSelected) {
+            c.setForeground(MVColor.getNewColor());
+        }
+        if (isBookMarked) {
+            bgList.add(MVColor.FILM_BOOKMARKED.color);
+        }
+        if (datenFilm.isDuplicate()) {
+            bgList.add(MVColor.FILM_DUPLICATE.color);
+        }
+
+        if (bgList.size() >= 2)
+            c.setBackground(ColorUtils.blend(bgList.toArray(new Color[0])));
+        else
+            c.setBackground(bgList.getFirst());
     }
 
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {

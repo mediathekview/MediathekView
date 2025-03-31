@@ -27,13 +27,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(14,0,1);
+    public static final Version MVVERSION = new Version(14,3,0);
 
-    public static final ApplicationType APPLICATION_TYPE = ApplicationType.PRODUCTION;
+    public static final ApplicationType APPLICATION_TYPE = ApplicationType.NIGHTLY;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
 
     public static final String FORMAT_ZIP = ".zip";
     public static final String FORMAT_XZ = ".xz";
+
+    public static final String FULL_FILM_LIST = "Filmliste-akt.xz";
+    public static final String DIFF_FILM_LIST = "Filmliste-diff.xz";
 
     public static final long ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
 
@@ -47,7 +50,10 @@ public class Konstanten {
 
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
     public static final byte MAX_EXTERNAL_STARTS = 3;
-    public static final byte CONTINUE_DOWNLOAD = 60; //seconds
+    /**
+     * Default time for automatic continuation of existing downloads.
+     */
+    public static final byte DOWNLOAD_CONTINUATION_DEFAULT_TIME = 60; //seconds
     public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
 
     // MediathekView URLs
@@ -76,7 +82,6 @@ public class Konstanten {
      */
     public static final long MIN_FILM_FILE_SIZE_KB = 256 * FileUtils.ONE_KB;
     public static final String XML_START = "Mediathek";
-    public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
 

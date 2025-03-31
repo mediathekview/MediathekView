@@ -1,7 +1,7 @@
 package mediathek.tool.table;
 
 import mediathek.daten.DatenProg;
-import mediathek.tool.models.TModel;
+import mediathek.tool.models.NonEditableTableModel;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ public class MVProgTable extends MVTable {
                 Optional.empty(),
                 Optional.empty());
 
-        setModel(new TModel(new Object[][]{}, DatenProg.COLUMN_NAMES));
+        setModel(new NonEditableTableModel(new Object[][]{}, DatenProg.COLUMN_NAMES));
     }
 
     @Override

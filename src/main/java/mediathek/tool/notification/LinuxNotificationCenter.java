@@ -4,6 +4,7 @@ import es.blackleg.jlibnotify.JLibnotify;
 import es.blackleg.jlibnotify.core.DefaultJLibnotifyLoader;
 import es.blackleg.jlibnotify.exception.JLibnotifyInitException;
 import es.blackleg.jlibnotify.exception.JLibnotifyLoadException;
+import mediathek.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,19 +23,18 @@ public class LinuxNotificationCenter implements INotificationCenter, Closeable {
             nativeSupport = true;
 
             var serverInfo = libNotify.getServerInfo();
-            logger.debug("Name: {}", serverInfo.getName());
-            logger.debug("Spec Version: {}", serverInfo.getSpecVersion());
-            logger.debug("Vendor: {}", serverInfo.getVendor());
-            logger.debug("Version: {}", serverInfo.getVersion());
+            logger.info(serverInfo);
 
-            logger.debug("Server capabilities:");
-            var caps = libNotify.getServerCapabilities();
-            for (var s : caps)
-                logger.debug("\t {}",s);
+            if (Config.isDebugModeEnabled()) {
+                logger.debug("Server capabilities:");
+                var caps = libNotify.getServerCapabilities();
+                for (var s : caps)
+                    logger.debug("\t {}", s);
+            }
         }
         catch (UnsatisfiedLinkError | RuntimeException | JLibnotifyLoadException | JLibnotifyInitException e) {
             nativeSupport = false;
-            logger.error("failed to initialize libNotify",e);
+            logger.error("Failed to initialize libNotify",e);
         }
     }
 

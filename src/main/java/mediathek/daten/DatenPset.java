@@ -81,6 +81,22 @@ public class DatenPset implements Comparable<DatenPset> {
         arr[PROGRAMMSET_IST_BUTTON] = Boolean.TRUE.toString();
     }
 
+    /**
+     * Indicate whether a subtitle file should be downloaded.
+     * @return true if download, otherwise false.
+     */
+    public boolean shouldDownloadSubtitle() {
+        return Boolean.parseBoolean(arr[PROGRAMMSET_SUBTITLE]);
+    }
+
+    /**
+     * Indicate wheter an Infofile should be created.
+     * @return true for creation, false otherwise
+     */
+    public boolean shouldCreateInfofile() {
+        return Boolean.parseBoolean(arr[DatenPset.PROGRAMMSET_INFODATEI]);
+    }
+
     public void addProg(DatenProg prog) {
         listeProg.add(prog);
     }
@@ -183,7 +199,7 @@ public class DatenPset implements Comparable<DatenPset> {
             MVMessageDialog.showMessageDialog(null, "Programme einrichten!",
                     "Kein Programm", JOptionPane.INFORMATION_MESSAGE);
         } else if (listeProg.size() == 1) {
-            ret = listeProg.get(0);
+            ret = listeProg.getFirst();
         } else {
             for (DatenProg prog : listeProg) {
                 if (prog.urlTesten(url)) {

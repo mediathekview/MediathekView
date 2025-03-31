@@ -13,7 +13,7 @@ import java.nio.file.Paths
 import java.util.*
 
 open class MVInfoFile {
-    private fun formatFilmAsString(film: DatenFilm?, url: HttpUrl?): String {
+    private fun formatFilmAsString(film: DatenFilm?, url: HttpUrl?, extended: Boolean = false): String {
         if (null == film || url == null)
             return ""
 
@@ -39,9 +39,16 @@ open class MVInfoFile {
         sb.append(film.websiteUrl)
         sb.append(System.lineSeparator())
         sb.append(System.lineSeparator())
-        sb.append(FILM_URL)
+        sb.append("URL")
         sb.append(System.lineSeparator())
-        sb.append(url)
+        if (!extended)
+            sb.append(url)
+        else {
+            if (film.isHighQuality)
+                sb.append("HQ: ${film.decompressUrl(film.highQualityUrl)}\n")
+            sb.append("Normal: ${film.urlNormalQuality}\n")
+            sb.append("LQ: ${film.decompressUrl(film.lowQualityUrl)}\n")
+        }
         sb.append(System.lineSeparator())
         sb.append(System.lineSeparator())
         sb.append(splitStringIntoMaxFixedLengthLines(film.description, MAX_LINE_LENGTH))
@@ -80,6 +87,22 @@ open class MVInfoFile {
     }
 
     @Throws(IOException::class)
+    fun writeManualInfoFile(film: DatenFilm, path: Path) {
+        path.toFile().parentFile.mkdirs()
+
+        Files.newOutputStream(path).use { os ->
+            DataOutputStream(os).use { dos ->
+                OutputStreamWriter(dos).use { osw ->
+                    BufferedWriter(osw).use { br ->
+                        br.write(formatFilmAsString(film, film.urlNormalQuality.toHttpUrl(), extended = true))
+                        br.flush()
+                    }
+                }
+            }
+        }
+    }
+
+    @Throws(IOException::class)
     fun writeInfoFile(datenDownload: DatenDownload) {
         File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs()
         val path = Paths.get(datenDownload.fileNameWithoutSuffix + ".txt")
@@ -99,7 +122,6 @@ open class MVInfoFile {
         private const val FILM_DATUM = "Datum"
         private const val FILM_ZEIT = "Zeit"
         private const val FILM_DAUER = "Dauer"
-        private const val FILM_URL = "URL"
         private const val MAX_HEADER_LENGTH = 12
         private const val MAX_LINE_LENGTH = 62
     }

@@ -4,7 +4,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.datum.Datum;
 
-public class TModelDownload extends TModel {
+public class TModelDownload extends NonEditableTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return switch (columnIndex) {

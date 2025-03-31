@@ -3,10 +3,6 @@
   Author     :  K. Wich
 */
 
-.table-column {
-  -fx-text-fill: black;
-}
-
 .column-header .label {
   -fx-alignment: center-left;
 }
@@ -30,11 +26,7 @@
 }
 
 
-#colSender {
-  -fx-text-fill: darkblue;
-}
-
-#colBtnDownload, 
+#colBtnDownload,
 #colBtnPlay {
   -fx-alignment: center;
 }
@@ -46,6 +38,5 @@
 .Expiry {
   -fx-text-fill: red;
   -fx-font-weight: bold;
-  -fx-background-color: lightyellow;
 }
 

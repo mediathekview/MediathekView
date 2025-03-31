@@ -5,6 +5,7 @@
         <Logger name="javax.jmdns.impl" level="warn"/>
         <Logger name="oshi" level="warn"/>
         <Logger name="com.zaxxer.hikari" level="warn"/>
+        <Logger name="org.sqlite.core.NativeDB" level="warn"/>
         <Root level="trace">
         </Root>
     </Loggers>

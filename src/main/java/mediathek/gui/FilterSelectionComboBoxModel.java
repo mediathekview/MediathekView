@@ -1,5 +1,6 @@
 package mediathek.gui;
 
+import javafx.application.Platform;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
 
@@ -15,7 +16,7 @@ public class FilterSelectionComboBoxModel extends DefaultComboBoxModel<FilterDTO
     public void setSelectedItem(Object anObject) {
         super.setSelectedItem(anObject);
         if (anObject != null) {
-            filterConfiguration.setCurrentFilter((FilterDTO) anObject);
+            Platform.runLater(() -> filterConfiguration.setCurrentFilter((FilterDTO) anObject));
         }
     }
 

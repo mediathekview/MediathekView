@@ -26,7 +26,10 @@ import java.util.concurrent.TimeUnit;
  * The global application configuration class. This will contain all the config data in the future.
  */
 public class ApplicationConfiguration {
+    public static final String TOOLBAR_BLACKLIST_ICON_WITH_TEXT = "toolbar.blacklist_icon.text";
+
     public static final String APPLICATION_DARK_MODE = "application.dark_mode";
+    public static final String APPLICATION_USE_SYSTEM_DARK_MODE = "application.use_system_dark_mode";
     public static final String APPLICATION_USER_AGENT = "application.user_agent";
     public static final String APPLICATION_USE_MODERN_SEARCH = "application.use.modern_search";
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER =
@@ -64,11 +67,15 @@ public class ApplicationConfiguration {
     public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
     public static final String DOWNLOAD_MAX_SIMULTANEOUS_NUM = "download.max_simultaneous.number";
     public static final String DOWNLOAD_FETCH_FILE_SIZE = "download.fetch_file_size";
+    public static final String DOWNLOAD_CONTINUATION_TIME = "download.continuation.time";
     public static final String SEARCH_USE_FILM_DESCRIPTIONS =
             "searchfield.film.search_through_description";
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
+    public static final String FILM_EVALUATE_DUPLICATES = "film.evaluate_duplicates";
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
+    public static final String BLACKLIST_FILTER_DUPLICATES = "blacklist.filter_duplicates";
+    public static final String BLACKLIST_IS_ON = "blacklist.is_on";
     private static final String GEO_LOCATION = "geo.location";
     private static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
     /**
@@ -255,6 +262,13 @@ public class ApplicationConfiguration {
         public static final String X = "application.ui.filter_dialog.location.x";
         public static final String Y = "application.ui.filter_dialog.location.y";
         public static final String VISIBLE = "application.ui.filter_dialog.visible";
+    }
+
+    public static class AddDownloadDialog {
+        public static final String WIDTH = "application.ui.adddownload_dialog.width";
+        public static final String HEIGHT = "application.ui.adddownload_dialog.height";
+        public static final String X = "application.ui.adddownload_dialog.location.x";
+        public static final String Y = "application.ui.adddownload_dialog.location.y";
     }
 
     public static class FilmInfoDialog {

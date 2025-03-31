@@ -1,10 +1,31 @@
+/*
+ * Copyright (c) 2024 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.gui.tasks;
 
 import com.google.common.base.Stopwatch;
 import mediathek.config.Daten;
+import mediathek.config.StandardLocations;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.FileUtils;
+import mediathek.tool.LuceneDefaultAnalyzer;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.datum.DateUtil;
 import org.apache.logging.log4j.LogManager;
@@ -12,17 +33,18 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class LuceneIndexWorker extends SwingWorker<Void, Void> {
     private static final Logger logger = LogManager.getLogger();
     private final JProgressBar progressBar;
     private final JLabel progLabel;
-    private int oldProgress = 0;
+    private int oldProgress;
 
     public LuceneIndexWorker(@NotNull JLabel progLabel, @NotNull JProgressBar progressBar) {
         this.progressBar = progressBar;
@@ -57,6 +79,7 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(film.isAudioVersion()), Field.Store.NO));
         doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(film.isSignLanguage()), Field.Store.NO));
+        doc.add(new StringField(LuceneIndexKeys.DUPLICATE, Boolean.toString(film.isDuplicate()), Field.Store.NO));
 
         addSendeDatum(doc, film);
 
@@ -81,10 +104,12 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         });
 
         //index filmlist after blacklist only
-        var writer = filmListe.getWriter();
-        var totalSize = (float) filmListe.size();
+        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(LuceneDefaultAnalyzer.buildAnalyzer());
+        indexWriterConfig.setRAMBufferSizeMB(256d);
 
-        try {
+        try (var writer = new IndexWriter(filmListe.getLuceneDirectory(), indexWriterConfig)) {
+            var totalSize = (float) filmListe.size();
+
             int counter = 0;
             Stopwatch watch = Stopwatch.createStarted();
             //for safety delete all entries
@@ -110,12 +135,19 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
             }
             reader = DirectoryReader.open(filmListe.getLuceneDirectory());
             filmListe.setReader(reader);
-
-            filmListe.setIndexSearcher(new IndexSearcher(reader));
         } catch (Exception ex) {
+            logger.error("Lucene film index most probably damaged, deleting it.");
+            try {
+                var indexPath = StandardLocations.getFilmIndexPath();
+                if (Files.exists(indexPath)) {
+                    FileUtils.deletePathRecursively(indexPath);
+                }
+            } catch (IOException e) {
+                logger.error("Unable to delete lucene index path", e);
+            }
             SwingUtilities.invokeLater(() -> {
                 SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
-                        "Fehler bei der Erstellung des Filmindex.\nDas Programm wird beendet da es nicht lauffähig ist.", ex);
+                        "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.", ex);
                 MediathekGui.ui().quitApplication();
             });
         }

@@ -32,6 +32,7 @@ public class MVColor {
     // Tabelle Filme
     public static final MVC FILM_HISTORY = new MVC(MVConfig.Configs.FARBE__FILM_HISTORY, new Color(225, 225, 225), "Filme, gesehen");
     public static final MVC FILM_BOOKMARKED = new MVC(MVConfig.Configs.FARBE__FILM_BOOKMARKED, new Color(204, 238, 255), "Filme, gemerkt");
+    public static final MVC FILM_DUPLICATE = new MVC(MVConfig.Configs.FARBE__FILM_DUPLICATE, new Color(255, 209, 220), "Film, Duplikat");
 
     // Tabelle Downloads
     public static final MVC DOWNLOAD_IST_ABO = new MVC(MVConfig.Configs.FARBE__DOWNLOAD_IST_ABO, new Color(138, 67, 0), "Download ist ein Abo");
@@ -59,6 +60,7 @@ public class MVColor {
     public MVColor() {
         liste.add(FILM_HISTORY);
         liste.add(FILM_BOOKMARKED);
+        liste.add(FILM_DUPLICATE);
         liste.add(DOWNLOAD_IST_ABO);
         liste.add(DOWNLOAD_IST_DIREKTER_DOWNLOAD);
         liste.add(DOWNLOAD_WAIT);
@@ -130,9 +132,9 @@ public class MVColor {
     }
 
     public final void load() {
-        liste.stream().filter(mvc -> !MVConfig.get(mvc.configs).isEmpty()).forEach(mvc -> {
+        liste.stream().filter(mvc -> !MVConfig.get(mvc.getConfig()).isEmpty()).forEach(mvc -> {
             try {
-                mvc.color = new Color(Integer.parseInt(MVConfig.get(mvc.configs)));
+                mvc.color = new Color(Integer.parseInt(MVConfig.get(mvc.getConfig())));
             } catch (Exception ignored) {
             }
         });
@@ -140,7 +142,7 @@ public class MVColor {
 
     public final void save() {
         for (MVC mvc : liste) {
-            MVConfig.add(mvc.configs, String.valueOf(mvc.color.getRGB()));
+            MVConfig.add(mvc.getConfig(), String.valueOf(mvc.color.getRGB()));
         }
     }
 

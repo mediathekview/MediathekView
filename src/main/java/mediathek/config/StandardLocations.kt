@@ -9,7 +9,7 @@ import java.nio.file.Files
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.Optional
+import java.util.*
 
 object StandardLocations {
     /**
@@ -111,8 +111,8 @@ object StandardLocations {
     @JvmStatic
     fun getFilmListUrl(type: FilmListDownloadType): String {
         return when (type) {
-            FilmListDownloadType.FULL -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz").toString()
-            FilmListDownloadType.DIFF_ONLY -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz").toString()
+            FilmListDownloadType.FULL -> Konstanten.ROUTER_BASE_URL.resolve(Konstanten.FULL_FILM_LIST).toString()
+            FilmListDownloadType.DIFF_ONLY -> Konstanten.ROUTER_BASE_URL.resolve(Konstanten.DIFF_FILM_LIST).toString()
         }
     }
 

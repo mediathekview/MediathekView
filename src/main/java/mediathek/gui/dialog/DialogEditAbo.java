@@ -32,6 +32,7 @@ public class DialogEditAbo extends JDialog {
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
     private final boolean isMultiEditMode;
+    private static final String TEXTFIELD_BACKGROUND = "TextField.background";
     /**
      * This determines in multi edit mode, which fields should be applied to all selected abos...
      */
@@ -66,7 +67,7 @@ public class DialogEditAbo extends JDialog {
         // Zielpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();
         if (!pfade.contains(aktAbo.getZielpfad())) {
-            pfade.add(0, aktAbo.getZielpfad());
+            pfade.addFirst(aktAbo.getZielpfad());
         }
         comboboxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
         comboboxPfad.setEditable(true);
@@ -76,7 +77,6 @@ public class DialogEditAbo extends JDialog {
         editorComp.setOpaque(true);
         editorComp.getDocument().addDocumentListener(new CheckPathDocListener());
 
-        // =====================
         jButtonBeenden.addActionListener(e -> {
             if (check()) {
                 dispose();
@@ -119,10 +119,11 @@ public class DialogEditAbo extends JDialog {
 
     private void checkPfad() {
         String s = ((JTextComponent) comboboxPfad.getEditor().getEditorComponent()).getText();
-        if (!s.equals(FilenameUtils.checkDateiname(s, false /*pfad*/))) {
-            comboboxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
+        final var editor = comboboxPfad.getEditor().getEditorComponent();
+        if (!s.equals(FilenameUtils.checkDateiname(s, false))) {
+            editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
         } else {
-            comboboxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);
+            editor.setBackground(UIManager.getColor(TEXTFIELD_BACKGROUND));
         }
     }
 
@@ -301,7 +302,7 @@ public class DialogEditAbo extends JDialog {
                     var jcb = new JCheckBox();
                     jcb.setBorder(emptyBorder);
                     jcb.setHorizontalTextPosition(JCheckBox.CENTER);
-                    jcb.addActionListener(l -> multiEditCbIndices[index.getIndex()] = jcb.isSelected());
+                    jcb.addActionListener(e -> multiEditCbIndices[index.getIndex()] = jcb.isSelected());
                     gridbag.setConstraints(jcb, c);
                     panel.add(jcb);
                 }
@@ -371,21 +372,21 @@ public class DialogEditAbo extends JDialog {
         @Override
         public void insertUpdate(DocumentEvent e) {
             final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : Color.white);
+            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
             jButtonBeenden.setEnabled(!isEmpty);
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
             final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : Color.white);
+            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
             jButtonBeenden.setEnabled(!isEmpty);
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
             final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : Color.white);
+            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
             jButtonBeenden.setEnabled(!isEmpty);
         }
     }
@@ -400,6 +401,7 @@ public class DialogEditAbo extends JDialog {
         jButtonHelp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Neues Abo anlegen");
 
         javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
         jPanelExtra.setLayout(jPanelExtraLayout);
@@ -439,7 +441,7 @@ public class DialogEditAbo extends JDialog {
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonBeenden});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, jButtonAbbrechen, jButtonBeenden);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

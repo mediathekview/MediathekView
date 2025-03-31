@@ -209,7 +209,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
 
         Icon icon;
         if (iconList.size() == 1)
-            icon = iconList.get(0);
+            icon = iconList.getFirst();
         else
             icon = new CompoundIcon(CompoundIcon.Axis.X_AXIS, 3, iconList.toArray(new Icon[0]));
         setIcon(icon);

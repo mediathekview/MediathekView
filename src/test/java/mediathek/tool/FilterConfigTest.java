@@ -37,7 +37,7 @@ class FilterConfigTest {
             false),
         arguments(
             "isDontShowTrailers", (Supplier<Boolean>) filterConfig::isDontShowTrailers, false),
-        arguments("isShowHdOnly", (Supplier<Boolean>) filterConfig::isShowHdOnly, false),
+        arguments("isShowHdOnly", (Supplier<Boolean>) filterConfig::isShowHighQualityOnly, false),
         arguments(
             "isShowLivestreamsOnly",
             (Supplier<Boolean>) filterConfig::isShowLivestreamsOnly,
@@ -188,7 +188,7 @@ class FilterConfigTest {
     assertThat(config.isDontShowTrailers()).isTrue();
     assertThat(config.getFilmLengthMax()).isEqualTo(85d);
     assertThat(config.getFilmLengthMin()).isEqualTo(23d);
-    assertThat(config.isShowHdOnly()).isTrue();
+    assertThat(config.isShowHighQualityOnly()).isTrue();
     assertThat(config.isShowLivestreamsOnly()).isFalse();
     assertThat(config.isShowNewOnly()).isTrue();
     assertThat(config.isShowSubtitlesOnly()).isTrue();

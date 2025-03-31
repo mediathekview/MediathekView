@@ -1,28 +1,71 @@
 package mediathek.mac
 
+import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.util.SystemInfo
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
 import mediathek.gui.messages.DownloadStartEvent
 import mediathek.gui.messages.InstallTabSwitchListenerEvent
+import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.GuiFunktionenProgramme
+import mediathek.tool.MessageBus
 import mediathek.tool.notification.INotificationCenter
 import mediathek.tool.notification.MacNotificationCenter
 import mediathek.tool.threads.IndicatorThread
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.awt.BorderLayout
 import java.awt.Desktop
+import java.awt.FlowLayout
 import java.awt.Taskbar
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.io.IOException
-import javax.swing.Box
+import javax.swing.JPanel
+import javax.swing.JToolBar
 import kotlin.io.path.absolutePathString
 
 class MediathekGuiMac : MediathekGui() {
     private val powerManager = OsxPowerManager()
+
+    override fun useAlternateRowColors(): Boolean {
+        return true
+    }
+
+    override fun addQuitMenuItem() {
+        //using native handler instead
+    }
+
+    override fun addSettingsMenuItem() {
+        //using native handler instead
+    }
+    override fun setToolBarProperties() {
+        //not used on macOS
+    }
+
+    override fun configureTabPlacement() {
+        // do not configure as it interferes with installToolBar and is not necessary...
+    }
+
+    private class MacToolBarPanel(commonToolBar: JToolBar) : JPanel() {
+        private class MacFullWindowPlaceHolder : JPanel() {
+            init {
+                layout = FlowLayout()
+                putClientProperty( FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen" )
+            }
+        }
+
+        init {
+            layout = BorderLayout()
+            add(MacFullWindowPlaceHolder(), BorderLayout.WEST)
+            add(commonToolBar, BorderLayout.CENTER)
+        }
+    }
+    override fun installToolBar() {
+        contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
+    }
 
     override fun createFontMenu() {
         //unused on macOS
@@ -126,14 +169,16 @@ class MediathekGuiMac : MediathekGui() {
         }
 
         if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
-            desktop.setPreferencesHandler { settingsDialog.isVisible = true }
+            desktop.setPreferencesHandler {
+                MessageBus.messageBus.publishAsync(ShowSettingsDialogEvent())
+            }
         }
 
-        getRootPane().putClientProperty("apple.awt.windowTitleVisible", false)
+        val rootPane = getRootPane()
+        rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
         if (SystemInfo.isMacFullWindowContentSupported) {
-            getRootPane().putClientProperty("apple.awt.fullWindowContent", true)
-            getRootPane().putClientProperty("apple.awt.transparentTitleBar", true)
-            commonToolBar.add(Box.createHorizontalStrut(70), 0)
+            rootPane.putClientProperty("apple.awt.fullWindowContent", true)
+            rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
         }
     }
 
