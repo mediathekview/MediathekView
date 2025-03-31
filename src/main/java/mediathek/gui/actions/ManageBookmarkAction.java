@@ -26,16 +26,5 @@ public class ManageBookmarkAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         BookmarkDialogSwing dialog = new BookmarkDialogSwing(mediathekGui, false);
         dialog.setVisible(true);
-        BookmarkDataList bdl = Daten.getInstance().getListeBookmarkList();
-        for(int i = 0; i < bdl.getNbOfEntries(); i++) {
-            BookmarkData bd = bdl.getObervableList().get(i);
-            System.out.println(bd.getTitel());
-        }
-        System.out.println("-----");
-        ListeBookmark lb = Daten.getInstance().getListeBookmark();
-        for(int i = 0; i < lb.getNbOfEntries(); i++) {
-            DatenBookmark db = lb.getListModel().get(i);
-            System.out.println(db.getTitel());
-        }
     }
 }

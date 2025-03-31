@@ -65,7 +65,6 @@ public class TModelFilm extends AbstractTableModel {
     @Override
     public Object getValueAt(int row, int column) {
         final var film = dataList.get(row);
-
         return switch (column) {
             case DatenFilm.FILM_NR -> film.getFilmNr();
             case DatenFilm.FILM_SENDER -> film.getSender();

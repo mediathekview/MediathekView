@@ -5,17 +5,16 @@
 package mediathek.gui.bookmark;
 
 import mediathek.config.MVConfig;
-import mediathek.daten.DatenFilm;
 import mediathek.daten.bookmark.DatenBookmark;
+import mediathek.gui.messages.StartEvent;
 import mediathek.gui.tool.TableViewColumnContextMenuHelperSwing;
-import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.tool.SVGIconUtilities;
 import java.awt.Frame;
 import javax.swing.*;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelBookmark;
-import mediathek.tool.models.TModelFilm;
 import mediathek.tool.table.MVBookmarkTable;
+import net.engio.mbassy.listener.Handler;
 import org.jdesktop.swingx.JXHyperlink;
 
 /**
@@ -31,14 +30,36 @@ public class BookmarkDialogSwing extends JDialog {
     public BookmarkDialogSwing(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        tbBookmarks.setModel(new TModelBookmark());
-        setupHeaderPopupMenu();
+        tabelle.setModel(new TModelBookmark());
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(
+                tabelle,
+                VISIBLE_COLUMNS,
+                HIDDEN_COLUMNS,
+                BUTTON_COLUMNS,
+                true,
+               null));
     }
 
 
     private void setupHeaderPopupMenu() {
-        new TableViewColumnContextMenuHelperSwing(tbBookmarks);
+        new TableViewColumnContextMenuHelperSwing(tabelle);
     }
+    private void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.writeTableConfigurationData();
+        }
+    }
+    private synchronized void reloadTable() {
+        // nur Downloads die schon in der Liste sind werden geladen
+        tabelle.getSpalten();
+    }
+
+    @Override
+    public void dispose(){
+        tabelleSpeichern();
+        super.dispose();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -63,7 +84,7 @@ public class BookmarkDialogSwing extends JDialog {
         lblMessage = new JLabel();
         spSplitPane = new JSplitPane();
         jScrollPane3 = new JScrollPane();
-        tbBookmarks = new MVBookmarkTable();
+        tabelle = new MVBookmarkTable();
         jPanel2 = new JPanel();
         hyperLink = new JXHyperlink();
         jScrollPane4 = new JScrollPane();
@@ -136,7 +157,7 @@ public class BookmarkDialogSwing extends JDialog {
 
         spSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
-        jScrollPane3.setViewportView(tbBookmarks);
+        jScrollPane3.setViewportView(tabelle);
 
         spSplitPane.setLeftComponent(jScrollPane3);
 
@@ -204,7 +225,6 @@ public class BookmarkDialogSwing extends JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public JButton btnDeleteEntry;
     public JButton btnEditNote;
@@ -224,7 +244,8 @@ public class BookmarkDialogSwing extends JDialog {
     public JLabel lblSeen;
     public JSplitPane spSplitPane;
     public JTextArea taDescription;
-    public MVBookmarkTable tbBookmarks;
+    public MVBookmarkTable tabelle;
     public JToolBar toolBar;
     // End of variables declaration//GEN-END:variables
+
 }

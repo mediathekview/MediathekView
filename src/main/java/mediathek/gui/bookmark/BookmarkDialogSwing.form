@@ -227,7 +227,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="mediathek.tool.table.MVBookmarkTable" name="tbBookmarks">
+            <Component class="mediathek.tool.table.MVBookmarkTable" name="tabelle">
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new mediathek.tool.table.MVBookmarkTable()"/>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

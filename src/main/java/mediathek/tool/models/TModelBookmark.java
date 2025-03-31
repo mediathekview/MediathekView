@@ -55,18 +55,17 @@ public class TModelBookmark extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int column) {
-        final var film = dataList.get(row);
-
+        final var bookmark = dataList.get(row);
         return switch (column) {
-            case DatenBookmark.BOOKMARK_SENDER -> film.getSender();
-            case DatenBookmark.BOOKMARK_THEMA -> film.getThema();
-            case DatenBookmark.BOOKMARK_TITEL -> film.getTitel();
-            case DatenBookmark.BOOKMARK_DATUM -> film.getSendDate();
-            case DatenBookmark.BOOKMARK_DAUER -> film.getDauer();
+            case DatenBookmark.BOOKMARK_SENDER -> bookmark.getSender();
+            case DatenBookmark.BOOKMARK_THEMA -> bookmark.getThema();
+            case DatenBookmark.BOOKMARK_TITEL -> bookmark.getTitel();
+            case DatenBookmark.BOOKMARK_DATUM -> bookmark.getSendDate();
+            case DatenBookmark.BOOKMARK_DAUER -> bookmark.getDauer();
             case DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN -> "";
-            case DatenBookmark.BOOKMARK_URL -> film.getWebUrl();
-            case DatenBookmark.BOOKMARK_VERFUEGBAR_BIS -> film.getExpiry();
-            case DatenBookmark.BOOKMARK_NOTIZ -> film.getNote();
+            case DatenBookmark.BOOKMARK_URL -> bookmark.getWebUrl();
+            case DatenBookmark.BOOKMARK_VERFUEGBAR_BIS -> bookmark.getExpiry();
+            case DatenBookmark.BOOKMARK_NOTIZ -> bookmark.getNote();
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: " + column);
         };
     }
