@@ -4,10 +4,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
-import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.sync.LockMode;
 
 public class ManageBookmarkAction extends AbstractAction {
     private final MediathekGui mediathekGui;

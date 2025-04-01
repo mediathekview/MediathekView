@@ -1,23 +1,8 @@
 package mediathek.gui.bookmark;
 
-import java.awt.Frame;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
@@ -28,269 +13,136 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.jdesktop.swingx.JXHyperlink;
 
 public class BookmarkDialog extends JDialog {
-private TableColumn colSender;
-    /**
-     * Creates new form BookmarkDialog
-     */
-    public BookmarkDialog(Frame parent) {
-        super(parent, true);
-        initComponents();
-        restoreWindowSizeFromConfig();
-        tabelle.setModel(new TModelBookmark());
-        restoreColumnsFromConfig();
-       tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
-                DatenBookmark.spaltenAnzeigen,
-                new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
-                new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
-                true,
-                true,
-                null));
+  private JToolBar toolBar;
+  private JButton btnDeleteEntry, btnMarkViewed, btnEditNote, btnSaveList, btnFilter;
+  private JToggleButton btnShowDetails;
+  private JLabel lblCount, lblSeen, lblFilter, lblMessage;
+  private JSplitPane spSplitPane;
+  private MVBookmarkTable tabelle;
+  private JXHyperlink hyperLink;
+  private JTextArea taDescription;
 
-    }
+  public BookmarkDialog(Frame parent) {
+    super(parent, true);
+    setTitle("Merkliste verwalten");
+    setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    setLayout(new BorderLayout());
+
+    initComponents();
+    restoreWindowSizeFromConfig();
+    restoreColumnsFromConfig();
+  }
+
+  private void initComponents() {
+    toolBar = new JToolBar();
+    btnDeleteEntry = createToolbarButton("icons/fontawesome/minus.svg", "Aus der Merkliste löschen");
+    btnMarkViewed = createToolbarButton("icons/fontawesome/eye.svg", "Als gesehen markieren");
+    btnEditNote = createToolbarButton("icons/fontawesome/pen.svg", "Anmerkungen bearbeiten");
+    btnSaveList = createToolbarButton("icons/fontawesome/floppy-disk.svg", "Merkliste speichern");
+    btnShowDetails = new JToggleButton(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
+    btnFilter = createToolbarButton("icons/fontawesome/filter.svg", "Filter setzen");
+
+    toolBar.add(btnDeleteEntry);
+    toolBar.add(btnMarkViewed);
+    toolBar.add(btnEditNote);
+    toolBar.add(new JLabel());
+    toolBar.add(btnSaveList);
+    toolBar.add(new JToolBar.Separator());
+    toolBar.add(btnShowDetails);
+    toolBar.add(btnFilter);
+
+    tabelle = new MVBookmarkTable();
+    tabelle.setModel(new TModelBookmark());
+    tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
+        DatenBookmark.spaltenAnzeigen,
+        new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
+        new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
+        true, true, null));
+
+    JScrollPane tableScrollPane = new JScrollPane(tabelle);
+
+    taDescription = new JTextArea(5, 20);
+    JScrollPane textScrollPane = new JScrollPane(taDescription);
+
+    hyperLink = new JXHyperlink();
+    hyperLink.setText("Link zur Webseite");
+
+    JPanel bottomPanel = new JPanel(new BorderLayout());
+    bottomPanel.add(textScrollPane, BorderLayout.NORTH);
+    bottomPanel.add(hyperLink, BorderLayout.CENTER);
+
+    spSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tableScrollPane, bottomPanel);
+
+    JPanel statusPanel = new JPanel();
+    lblCount = new JLabel("Label");
+    lblSeen = new JLabel("Label");
+    lblFilter = new JLabel("Label");
+    lblMessage = new JLabel("Label");
+    statusPanel.add(lblCount);
+    statusPanel.add(lblSeen);
+    statusPanel.add(lblFilter);
+    statusPanel.add(lblMessage);
+
+    add(toolBar, BorderLayout.NORTH);
+    add(spSplitPane, BorderLayout.CENTER);
+    add(statusPanel, BorderLayout.SOUTH);
+
+    pack();
+  }
+
+  private JButton createToolbarButton(String iconPath, String tooltip) {
+    JButton button = new JButton(SVGIconUtilities.createSVGIcon(iconPath));
+    button.setToolTipText(tooltip);
+    return button;
+  }
 
   private void restoreColumnsFromConfig() {
     var config = ApplicationConfiguration.getConfiguration();
     try {
       config.lock(LockMode.READ);
-      final int ansColumn = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.no");
-      System.out.println(ansColumn + " Hallo");
-      for(int i = 1; i <= ansColumn; i++){
-        boolean isVisible   = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".visible");
-        int colWidth = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".size");
+      int ansColumn = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.no", 0);
+      for (int i = 1; i <= ansColumn; i++) {
+        boolean isVisible = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".visible", true);
+        int colWidth = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".size", 100);
         TableColumn column = tabelle.getColumnModel().getColumn(i - 1);
-        if(isVisible){
-          column.setMinWidth(10);
-          column.setPreferredWidth(colWidth);
-          column.setMaxWidth(3000);
-        }else{
+        if (!isVisible) {
           column.setMinWidth(0);
           column.setPreferredWidth(0);
           column.setMaxWidth(0);
+        } else {
+          column.setMinWidth(10);
+          column.setPreferredWidth(colWidth);
+          column.setMaxWidth(3000);
         }
       }
-    } catch (NoSuchElementException ignored) {
-      // do not restore anything
-    } finally {
-      config.unlock(LockMode.READ);
-    }
-    }
-
-
-  private void restoreWindowSizeFromConfig() {
-    var config = ApplicationConfiguration.getConfiguration();
-    try {
-      config.lock(LockMode.READ);
-        final int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640);
-        final int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480);
-        final int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0);
-        final int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0);
-
-      setBounds(x, y,width, height);
-    } catch (NoSuchElementException ignored) {
-      // do not restore anything
     } finally {
       config.unlock(LockMode.READ);
     }
   }
 
-
-    @Override
-    public void dispose() {
-        tabelleSpeichern();
-        super.dispose();
+  private void restoreWindowSizeFromConfig() {
+    var config = ApplicationConfiguration.getConfiguration();
+    try {
+      config.lock(LockMode.READ);
+      int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640);
+      int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".height", 480);
+      int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0);
+      int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0);
+      setBounds(x, y, width, height);
+    } finally {
+      config.unlock(LockMode.READ);
     }
+  }
 
-    public void tabelleSpeichern() {
-        if (tabelle != null) {
-            tabelle.writeTableConfigurationData();
-        }
+  @Override
+  public void dispose() {
+    tabelleSpeichern();
+    super.dispose();
+  }
+
+  private void tabelleSpeichern() {
+    if (tabelle != null) {
+      tabelle.writeTableConfigurationData();
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        toolBar = new JToolBar();
-        btnDeleteEntry = new JButton();
-        btnMarkViewed = new JButton();
-        btnEditNote = new JButton();
-        jPanel1 = new JPanel();
-        btnSaveList = new JButton();
-        jSeparator1 = new JToolBar.Separator();
-        btnShowDetails = new JToggleButton();
-        btnFilter = new JButton();
-        lblCount = new JLabel();
-        lblSeen = new JLabel();
-        lblFilter = new JLabel();
-        lblMessage = new JLabel();
-        spSplitPane = new JSplitPane();
-        jScrollPane3 = new JScrollPane();
-        tabelle = new MVBookmarkTable();
-        jPanel2 = new JPanel();
-        hyperLink = new JXHyperlink();
-        jScrollPane4 = new JScrollPane();
-        taDescription = new JTextArea();
-
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Merkliste verwalten");
-
-        toolBar.setRollover(true);
-
-        btnDeleteEntry.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
-        btnDeleteEntry.setToolTipText("Aus der Merkliste löschen");
-        btnDeleteEntry.setFocusable(false);
-        btnDeleteEntry.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnDeleteEntry.setVerticalTextPosition(SwingConstants.BOTTOM);
-        toolBar.add(btnDeleteEntry);
-
-        btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
-        btnMarkViewed.setFocusable(false);
-        btnMarkViewed.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnMarkViewed.setVerticalTextPosition(SwingConstants.BOTTOM);
-        toolBar.add(btnMarkViewed);
-
-        btnEditNote.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
-        btnEditNote.setToolTipText("Anmerkungen bearbeiten");
-        btnEditNote.setFocusable(false);
-        btnEditNote.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnEditNote.setVerticalTextPosition(SwingConstants.BOTTOM);
-        toolBar.add(btnEditNote);
-
-        GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 21, Short.MAX_VALUE)
-        );
-
-        toolBar.add(jPanel1);
-
-        btnSaveList.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
-        btnSaveList.setToolTipText("Geänderte Merkliste abspeichern");
-        btnSaveList.setFocusable(false);
-        btnSaveList.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnSaveList.setVerticalTextPosition(SwingConstants.BOTTOM);
-        toolBar.add(btnSaveList);
-        toolBar.add(jSeparator1);
-
-        btnShowDetails.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
-        btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen");
-        btnShowDetails.setFocusable(false);
-        btnShowDetails.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnShowDetails.setVerticalTextPosition(SwingConstants.BOTTOM);
-        toolBar.add(btnShowDetails);
-
-        btnFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
-        btnFilter.setFocusable(false);
-        btnFilter.setHorizontalTextPosition(SwingConstants.CENTER);
-        btnFilter.setVerticalTextPosition(SwingConstants.BOTTOM);
-        toolBar.add(btnFilter);
-
-        lblCount.setText("Label");
-
-        lblSeen.setText("Label");
-
-        lblFilter.setText("Label");
-
-        lblMessage.setText("Label");
-
-        spSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-
-        jScrollPane3.setViewportView(tabelle);
-
-        spSplitPane.setLeftComponent(jScrollPane3);
-
-        hyperLink.setText("Link zur Webseite");
-
-        taDescription.setColumns(20);
-        taDescription.setRows(5);
-        jScrollPane4.setViewportView(taDescription);
-
-        GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 857, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(hyperLink, GroupLayout.PREFERRED_SIZE, 845, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-        jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, GroupLayout.PREFERRED_SIZE, 357, GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 97, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(364, 364, 364)
-                    .addComponent(hyperLink, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(74, Short.MAX_VALUE)))
-        );
-
-        spSplitPane.setRightComponent(jPanel2);
-
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(toolBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(spSplitPane)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblCount)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblSeen)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblFilter)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblMessage)
-                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(toolBar, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spSplitPane)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCount)
-                    .addComponent(lblSeen)
-                    .addComponent(lblFilter)
-                    .addComponent(lblMessage))
-                .addContainerGap())
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    public JButton btnDeleteEntry;
-    public JButton btnEditNote;
-    public JButton btnFilter;
-    public JButton btnMarkViewed;
-    public JButton btnSaveList;
-    public JToggleButton btnShowDetails;
-    public JXHyperlink hyperLink;
-    private JPanel jPanel1;
-    private JPanel jPanel2;
-    private JScrollPane jScrollPane3;
-    private JScrollPane jScrollPane4;
-    private JToolBar.Separator jSeparator1;
-    public JLabel lblCount;
-    public JLabel lblFilter;
-    public JLabel lblMessage;
-    public JLabel lblSeen;
-    public JSplitPane spSplitPane;
-    public JTextArea taDescription;
-    public MVBookmarkTable tabelle;
-    public JToolBar toolBar;
-    // End of variables declaration//GEN-END:variables
+  }
 }
