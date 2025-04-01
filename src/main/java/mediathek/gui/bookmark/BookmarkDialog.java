@@ -1,6 +1,10 @@
 package mediathek.gui.bookmark;
 
 import java.awt.Frame;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import javax.swing.table.TableColumn;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,10 +19,12 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import mediathek.daten.bookmark.DatenBookmark;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelBookmark;
 import mediathek.tool.table.MVBookmarkTable;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.jdesktop.swingx.JXHyperlink;
 
 public class BookmarkDialog extends JDialog {
@@ -29,7 +35,9 @@ public class BookmarkDialog extends JDialog {
     public BookmarkDialog(Frame parent) {
         super(parent, true);
         initComponents();
+        restoreWindowSizeFromConfig();
         tabelle.setModel(new TModelBookmark());
+  //      restoreColumnsFromConfig();
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
                 DatenBookmark.spaltenAnzeigen,
                 new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
@@ -37,8 +45,51 @@ public class BookmarkDialog extends JDialog {
                 true,
                 true,
                 null));
-    
+
     }
+
+  /*private void restoreColumnsFromConfig() {
+    var config = ApplicationConfiguration.getConfiguration();
+    try {
+      config.lock(LockMode.READ);
+      final int ansColumn = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.no");
+      System.out.println(ansColumn + " Hallo");
+      for(int i = 0; i <= ansColumn; i++){
+        boolean isVisible   = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".visible");
+        int colWidth = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".size");
+        System.out.println(tabelle.getColumnModel().getColumnIndex("Sender"));
+
+
+        *//*if(isVisible){
+          currCol.setWidth(colWidth);
+        }else{
+          tabelle.getColumnModel().removeColumn(currCol);
+        }*//*
+      }
+    } catch (NoSuchElementException ignored) {
+      // do not restore anything
+    } finally {
+      config.unlock(LockMode.READ);
+    }
+    }*/
+
+
+  private void restoreWindowSizeFromConfig() {
+    var config = ApplicationConfiguration.getConfiguration();
+    try {
+      config.lock(LockMode.READ);
+        final int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640);
+        final int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480);
+        final int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0);
+        final int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0);
+
+      setBounds(x, y,width, height);
+    } catch (NoSuchElementException ignored) {
+      // do not restore anything
+    } finally {
+      config.unlock(LockMode.READ);
+    }
+  }
 
 
     @Override
@@ -46,6 +97,7 @@ public class BookmarkDialog extends JDialog {
         tabelleSpeichern();
         super.dispose();
     }
+
     public void tabelleSpeichern() {
         if (tabelle != null) {
             tabelle.writeTableConfigurationData();
