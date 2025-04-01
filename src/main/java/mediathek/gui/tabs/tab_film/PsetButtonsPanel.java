@@ -59,19 +59,7 @@ public class PsetButtonsPanel extends JPanel {
                     comp = new JLabel(pset.getName());
                 } else {
                     var b = new JButton(pset.getName());
-                    b.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            if (SwingUtilities.isLeftMouseButton(e)) {
-                                guiFilme.playerStarten(pset);
-                            } else if (SwingUtilities.isRightMouseButton(e)) {
-                                // SettingsAction ausführen
-                                new SettingsAction().actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, null));
-                            }
-                        }
-                    });
-
-
+                    b.addActionListener(l -> guiFilme.playerStarten(pset));
                     comp = b;
                 }
 
