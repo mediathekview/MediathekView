@@ -5,18 +5,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
-import mediathek.config.Daten;
-import mediathek.controller.history.SeenHistoryController;
-import mediathek.daten.DatenFilm;
-import mediathek.daten.ListeFilme;
-import mediathek.filmeSuchen.ListenerFilmeLaden;
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.daten.bookmark.DatenBookmark;
-import mediathek.javafx.bookmark.BookmarkData;
-import mediathek.javafx.bookmark.BookmarkDataList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -25,6 +13,14 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
+import mediathek.config.Daten;
+import mediathek.controller.history.SeenHistoryController;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.ListeFilme;
+import mediathek.filmeSuchen.ListenerFilmeLaden;
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Stores a full list of bookmarked movies.
@@ -33,7 +29,7 @@ import javax.swing.event.EventListenerList;
 public class ListeBookmark {
     private final List<DatenBookmark> list;
     private final EventListenerList listenerList = new EventListenerList();
-    private static ListeBookmark instance;
+    private static final Logger logger = LogManager.getLogger();
 
     public ListeBookmark(Daten daten) {
         list = new ArrayList<>();
@@ -48,15 +44,6 @@ public class ListeBookmark {
                 }
             });
         }
-    }
-
-    /**
-     * Return singleton
-     * @param daten Reference to Daten object used by list
-     * @return existing or new instance
-     */
-    public static ListeBookmark getInstance(Daten daten) {
-        return instance == null ? instance = new ListeBookmark(daten) : instance;
     }
 
     /**
@@ -185,8 +172,7 @@ public class ListeBookmark {
         list.removeAll(bookmarks);
         fireChangeEvent();
     }
-
-
+    
     /**
      * Load Bookmarklist from backup medium
      * @param filePath: File to read from
@@ -215,8 +201,6 @@ public class ListeBookmark {
 
         fireChangeEvent();
     }
-
-    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Save Bookmarklist to backup medium
