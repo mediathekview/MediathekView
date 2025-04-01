@@ -1,11 +1,10 @@
 package mediathek.gui.actions;
 
-import mediathek.gui.bookmark.BookmarkDialogSwing;
+import java.awt.event.ActionEvent;
+import javax.swing.*;
+import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SVGIconUtilities;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 public class ManageBookmarkAction extends AbstractAction {
     private final MediathekGui mediathekGui;
@@ -20,7 +19,7 @@ public class ManageBookmarkAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        BookmarkDialogSwing dialogSwing = new BookmarkDialogSwing(mediathekGui,true);
+    BookmarkDialog dialogSwing = new BookmarkDialog(mediathekGui);
         dialogSwing.setVisible(true);
     }
 }

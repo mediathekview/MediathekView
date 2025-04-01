@@ -1,46 +1,33 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package mediathek.gui.bookmark;
 
-import mediathek.daten.abo.DatenAbo;
-import mediathek.daten.bookmark.DatenBookmark;
-import mediathek.tool.SVGIconUtilities;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Frame;
 import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
+import mediathek.daten.bookmark.DatenBookmark;
+import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelBookmark;
 import mediathek.tool.table.MVBookmarkTable;
 import org.jdesktop.swingx.JXHyperlink;
 
-/**
- *
- * @author Markus
- */
-public class BookmarkDialogSwing extends javax.swing.JDialog {
+public class BookmarkDialog extends JDialog {
 
     /**
-     * Creates new form BookmarkWindow
+     * Creates new form BookmarkDialog
      */
-    public BookmarkDialogSwing(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public BookmarkDialog(Frame parent) {
+        super(parent, true);
         initComponents();
         tabelle.setModel(new TModelBookmark());
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
