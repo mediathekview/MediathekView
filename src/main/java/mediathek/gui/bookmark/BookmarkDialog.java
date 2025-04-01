@@ -28,7 +28,7 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.jdesktop.swingx.JXHyperlink;
 
 public class BookmarkDialog extends JDialog {
-
+private TableColumn colSender;
     /**
      * Creates new form BookmarkDialog
      */
@@ -37,8 +37,8 @@ public class BookmarkDialog extends JDialog {
         initComponents();
         restoreWindowSizeFromConfig();
         tabelle.setModel(new TModelBookmark());
-  //      restoreColumnsFromConfig();
-        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
+        restoreColumnsFromConfig();
+       tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
                 DatenBookmark.spaltenAnzeigen,
                 new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
                 new int[]{DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN},
@@ -48,30 +48,32 @@ public class BookmarkDialog extends JDialog {
 
     }
 
-  /*private void restoreColumnsFromConfig() {
+  private void restoreColumnsFromConfig() {
     var config = ApplicationConfiguration.getConfiguration();
     try {
       config.lock(LockMode.READ);
       final int ansColumn = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.no");
       System.out.println(ansColumn + " Hallo");
-      for(int i = 0; i <= ansColumn; i++){
+      for(int i = 1; i <= ansColumn; i++){
         boolean isVisible   = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".visible");
         int colWidth = config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".columns.col" + i + ".size");
-        System.out.println(tabelle.getColumnModel().getColumnIndex("Sender"));
-
-
-        *//*if(isVisible){
-          currCol.setWidth(colWidth);
+        TableColumn column = tabelle.getColumnModel().getColumn(i - 1);
+        if(isVisible){
+          column.setMinWidth(10);
+          column.setPreferredWidth(colWidth);
+          column.setMaxWidth(3000);
         }else{
-          tabelle.getColumnModel().removeColumn(currCol);
-        }*//*
+          column.setMinWidth(0);
+          column.setPreferredWidth(0);
+          column.setMaxWidth(0);
+        }
       }
     } catch (NoSuchElementException ignored) {
       // do not restore anything
     } finally {
       config.unlock(LockMode.READ);
     }
-    }*/
+    }
 
 
   private void restoreWindowSizeFromConfig() {
