@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 import mediathek.config.Daten;
+import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
@@ -172,14 +174,12 @@ public class ListeBookmark {
         list.removeAll(bookmarks);
         fireChangeEvent();
     }
-    
+
     /**
      * Load Bookmarklist from backup medium
-     * @param filePath: File to read from
-     *
-     * TODO: Add File checks
      */
-    public void loadFromFile(Path filePath) {
+    public void loadFromFile() {
+        var filePath = StandardLocations.getBookmarkFilePath();
         try (JsonParser parser = new MappingJsonFactory().createParser(filePath.toFile())) {
             JsonToken jToken;
             while((jToken = parser.nextToken()) != null){
@@ -204,21 +204,16 @@ public class ListeBookmark {
 
     /**
      * Save Bookmarklist to backup medium
-     * @param filePath: File to save to
      */
-    public void saveToFile(Path filePath) {
-        try (JsonGenerator jGenerator = new MappingJsonFactory().createGenerator(filePath.toFile(), JsonEncoding.UTF8).useDefaultPrettyPrinter()) {
-            jGenerator.writeStartObject();
-            jGenerator.writeFieldName("bookmarks");
-            jGenerator.writeStartArray();
-            for (DatenBookmark bookmarkData : list) {
-                jGenerator.writeObject(bookmarkData);
-            }
-            jGenerator.writeEndArray();
-            jGenerator.writeEndObject();
-        }
-        catch (IOException e) {
-            logger.warn("Could not save bookmarks to file {}, error {}", filePath.toString(), e.toString());
+    public synchronized void saveToFile() {
+        var filePath = StandardLocations.getBookmarkFilePath();
+
+        try {
+            var objectMapper = new ObjectMapper().writerWithDefaultPrettyPrinter();
+            objectMapper.writeValue(filePath.toFile(), this);
+            logger.trace("Bookmarks written");
+        } catch (IOException e) {
+            logger.error("Could not save bookmarks to {}", filePath, e);
         }
     }
 

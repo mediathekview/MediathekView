@@ -20,7 +20,8 @@ public class ManageBookmarkAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
 
     BookmarkDialog dialogSwing = new BookmarkDialog(mediathekGui);
-
+        dialogSwing.toFront();
+        dialogSwing.requestFocus();
         dialogSwing.setVisible(true);
     }
 }

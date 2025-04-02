@@ -1,8 +1,20 @@
 package mediathek.gui.bookmark;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Frame;
+import java.awt.BorderLayout;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.WindowConstants;
 import javax.swing.table.TableColumn;
+import mediathek.config.Daten;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
@@ -31,6 +43,13 @@ public class BookmarkDialog extends JDialog {
     initComponents();
     restoreWindowSizeFromConfig();
     restoreColumnsFromConfig();
+    loadDataToTable();
+  }
+
+  private void loadDataToTable() {
+    List<DatenBookmark> list = Daten.getInstance().getListeBookmark().getList();
+    int dataItems = list.size();
+    System.out.println(list.get(0).getThema());
   }
 
   private void initComponents() {
