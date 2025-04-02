@@ -1,7 +1,7 @@
 package mediathek.gui.bookmark;
 
-import java.awt.Frame;
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -19,7 +19,6 @@ import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.cellrenderer.CellRendererBookmark;
-import mediathek.tool.cellrenderer.CellRendererFilme;
 import mediathek.tool.datum.DatumFilm;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelBookmark;
@@ -59,7 +58,6 @@ public class BookmarkDialog extends JDialog {
 
   private void loadDataToTable() {
     List<DatenBookmark> list = Daten.getInstance().getListeBookmark().getList();
-    int dataItems = list.size();
     TModelBookmark model = (TModelBookmark) tabelle.getModel();
       model.addAll(list);
   }
