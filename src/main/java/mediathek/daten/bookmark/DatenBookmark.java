@@ -23,7 +23,8 @@ public class DatenBookmark {
     public static final int BOOKMARK_URL = 7;
     public static final int BOOKMARK_VERFUEGBAR = 8;
     public static final int BOOKMARK_NOTIZ = 9;
-    public static final int MAX_ELEM = 10;
+    public static final int BOOKMARK_DATUM_LONG = 10;
+    public static final int MAX_ELEM = 11;
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
 
     private String url;

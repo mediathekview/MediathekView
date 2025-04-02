@@ -73,8 +73,11 @@ public class TModelBookmark extends AbstractTableModel {
     }
 
     public void addAll(List<DatenBookmark> listeFilme) {
+        if (listeFilme == null || listeFilme.isEmpty()) {
+            return;
+        }
         final int oldRowCount = dataList.size();
         dataList.addAll(listeFilme);
-        fireTableRowsInserted(oldRowCount, oldRowCount + dataList.size());
+        fireTableRowsInserted(oldRowCount, oldRowCount + dataList.size() - 1);
     }
 }

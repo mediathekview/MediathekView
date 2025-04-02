@@ -18,6 +18,8 @@ import mediathek.config.Daten;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.cellrenderer.CellRendererFilme;
+import mediathek.tool.datum.DatumFilm;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.models.TModelBookmark;
 import mediathek.tool.table.MVBookmarkTable;
@@ -41,15 +43,24 @@ public class BookmarkDialog extends JDialog {
     setLayout(new BorderLayout());
 
     initComponents();
+    setupCellRenderer();
     restoreWindowSizeFromConfig();
     restoreColumnsFromConfig();
     loadDataToTable();
   }
 
+  private void setupCellRenderer() {
+    CellRendererFilme cellRenderer = new CellRendererFilme();
+    tabelle.setDefaultRenderer(Object.class, cellRenderer);
+    tabelle.setDefaultRenderer(DatumFilm.class, cellRenderer);
+    tabelle.setDefaultRenderer(Integer.class, cellRenderer);
+  }
+
   private void loadDataToTable() {
     List<DatenBookmark> list = Daten.getInstance().getListeBookmark().getList();
     int dataItems = list.size();
-    System.out.println(list.get(0).getThema());
+    TModelBookmark model = (TModelBookmark) tabelle.getModel();
+      model.addAll(list);
   }
 
   private void initComponents() {
