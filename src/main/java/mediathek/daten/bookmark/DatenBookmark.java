@@ -2,8 +2,10 @@ package mediathek.daten.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.concurrent.TimeUnit;
 import mediathek.daten.DatenFilm;
 import mediathek.javafx.bookmark.BookmarkDateDiff;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 /**
  * Bookmark data definition used to store movies
@@ -191,6 +193,14 @@ public class DatenBookmark {
 
     public static boolean anzeigen(int i) {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
+    } /**
+     * Get the film's length or duration formatted as a string in "HH:MM:SS" format.
+     * Similar to {@link DatenFilm#getFilmLength()}.
+     *
+     * @return film length or duration as String.
+     */
+    public String getFilmLengthAsString() {
+       return filmdata.getFilmLengthAsString();
     }
 
 }

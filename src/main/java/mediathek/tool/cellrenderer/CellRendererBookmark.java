@@ -68,9 +68,8 @@ public class CellRendererBookmark extends CellRendererBaseWithStart {
 
       final int rowModelIndex = table.convertRowIndexToModel(row);
       final int columnModelIndex = table.convertColumnIndexToModel(column);
-      final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
-      final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
-      final boolean isBookMarked = datenFilm.isBookmarked();
+      final DatenBookmark datenFilm = (DatenBookmark) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
+      final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrl());
       final var mvTable = (MVTable) table;
 
 
@@ -82,7 +81,7 @@ public class CellRendererBookmark extends CellRendererBaseWithStart {
         switch (columnModelIndex) {
           case DatenBookmark.BOOKMARK_THEMA , DatenBookmark.BOOKMARK_TITEL , DatenBookmark.BOOKMARK_URL -> {
             var textArea = createTextArea(value.toString());
-            applyColorSettings(textArea, datenFilm, isBookMarked, isSelected);
+            applyColorSettings(textArea, datenFilm, isSelected);
             return textArea;
           }
         }
@@ -93,24 +92,23 @@ public class CellRendererBookmark extends CellRendererBaseWithStart {
       //NOT IN LINEBREAK MODE -> REGULAR HANDLING
       //here comes the content...
       switch (columnModelIndex) {
-        case DatenFilm.FILM_DAUER -> setText(datenFilm.getFilmLengthAsString());
-        case DatenFilm.FILM_ABSPIELEN -> handleButtonStartColumn(datenDownload, isSelected);
-        case DatenFilm.FILM_AUFZEICHNEN -> handleButtonDownloadColumn(isSelected);
+        case DatenBookmark.BOOKMARK_DAUER -> setText(datenFilm.getFilmLengthAsString());
+        case DatenBookmark.BOOKMARK_ABSPIELEN -> handleButtonStartColumn(datenDownload, isSelected);
+        case DatenBookmark.BOOKMARK_AUFZEICHNEN -> handleButtonDownloadColumn(isSelected);
 
-        case DatenFilm.FILM_SENDER -> {
+        case DatenBookmark.BOOKMARK_SENDER -> {
           if (mvTable.showSenderIcons()) {
             Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
             setSenderIcon(value.toString(), targetDim);
           }
         }
-        case DatenFilm.FILM_TITEL -> {
-          setText(datenFilm.getTitle());
-          setIndicatorIcons(table, datenFilm, isSelected);
+        case DatenBookmark.BOOKMARK_TITEL -> {
+          setText(datenFilm.getTitel());
+          setIndicatorIcons(table, datenFilm.getDataAsDatenFilm(), isSelected);
         }
-        case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
-      }
+        }
 
-      applyColorSettings(this, datenFilm, isBookMarked, isSelected);
+      applyColorSettings(this, datenFilm, isSelected);
     } catch (Exception ex) {
       logger.error("Fehler", ex);
     }
@@ -125,32 +123,18 @@ public class CellRendererBookmark extends CellRendererBaseWithStart {
    */
   private void applyHorizontalAlignment(final int columnModelIndex) {
     switch (columnModelIndex) {
-      case DatenFilm.FILM_NR, DatenFilm.FILM_DATUM, DatenFilm.FILM_ZEIT, DatenFilm.FILM_DAUER, DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_MERKEN ->
+      case DatenBookmark.BOOKMARK_DATUM, DatenBookmark.BOOKMARK_DAUER, DatenBookmark.BOOKMARK_ABSPIELEN, DatenBookmark.BOOKMARK_AUFZEICHNEN ->
           setHorizontalAlignment(SwingConstants.CENTER);
-      case DatenFilm.FILM_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
-    }
+      }
   }
 
   private final java.util.List<Color> bgList = new ArrayList<>();
 
-  private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isBookMarked, boolean isSelected) {
+  private void applyColorSettings(Component c, @NotNull DatenBookmark datenFilm, boolean isSelected) {
     bgList.clear();
 
     bgList.add(c.getBackground());
 
-    if (history.hasBeenSeen(datenFilm)) {
-      bgList.add(MVColor.FILM_HISTORY.color);
-    }
-
-    if (datenFilm.isNew() && !isSelected) {
-      c.setForeground(MVColor.getNewColor());
-    }
-    if (isBookMarked) {
-      bgList.add(MVColor.FILM_BOOKMARKED.color);
-    }
-    if (datenFilm.isDuplicate()) {
-      bgList.add(MVColor.FILM_DUPLICATE.color);
-    }
 
     if (bgList.size() >= 2)
       c.setBackground(ColorUtils.blend(bgList.toArray(new Color[0])));
