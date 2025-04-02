@@ -18,6 +18,7 @@ import mediathek.config.Daten;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.cellrenderer.CellRendererBookmark;
 import mediathek.tool.cellrenderer.CellRendererFilme;
 import mediathek.tool.datum.DatumFilm;
 import mediathek.tool.listener.BeobTableHeader;
@@ -50,7 +51,7 @@ public class BookmarkDialog extends JDialog {
   }
 
   private void setupCellRenderer() {
-    CellRendererFilme cellRenderer = new CellRendererFilme();
+    CellRendererBookmark cellRenderer = new CellRendererBookmark();
     tabelle.setDefaultRenderer(Object.class, cellRenderer);
     tabelle.setDefaultRenderer(DatumFilm.class, cellRenderer);
     tabelle.setDefaultRenderer(Integer.class, cellRenderer);
@@ -75,7 +76,7 @@ public class BookmarkDialog extends JDialog {
     toolBar.add(btnDeleteEntry);
     toolBar.add(btnMarkViewed);
     toolBar.add(btnEditNote);
-    toolBar.add(new JLabel());
+    toolBar.add(new JPanel());
     toolBar.add(btnSaveList);
     toolBar.add(new JToolBar.Separator());
     toolBar.add(btnShowDetails);
