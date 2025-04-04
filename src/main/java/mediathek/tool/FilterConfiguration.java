@@ -2,6 +2,7 @@ package mediathek.tool;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -95,6 +97,34 @@ public class FilterConfiguration {
             }
         }
         return false;
+    }
+
+    public boolean noFiltersAreSet() {
+        /*
+         * If conditions are met, no filmlength filter is set.
+         * return true if filtering is not needed, false if needed.
+         */
+        final BooleanSupplier filmLengthFilterIsNotSet = () -> {
+            var filmLengthMin = (long)getFilmLengthMin();
+            var filmLengthMax = (long)getFilmLengthMax();
+            return filmLengthMin == 0 && filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE;
+        };
+
+        return getCheckedChannels().isEmpty()
+                && getThema().isEmpty()
+                && filmLengthFilterIsNotSet.getAsBoolean()
+                && !isDontShowAbos()
+                && !isShowUnseenOnly()
+                && !isShowHighQualityOnly()
+                && !isShowSubtitlesOnly()
+                && !isShowLivestreamsOnly()
+                && !isShowNewOnly()
+                && !isShowBookMarkedOnly()
+                && !isDontShowTrailers()
+                && !isDontShowSignLanguage()
+                && !isDontShowAudioVersions()
+                && !isDontShowDuplicates()
+                && getZeitraum().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
     }
 
     public boolean isShowHighQualityOnly() {

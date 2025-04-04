@@ -22,7 +22,6 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.javafx.filterpanel.FilmLengthSlider;
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.tool.FilterConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,33 +78,8 @@ public abstract class GuiModelHelper {
         return stream.filter(this::minLengthCheck);
     }
 
-    /**
-     * If conditions are met, no filmlength filter is set.
-     * @return true if filtering is not needed, false if needed.
-     */
-    private boolean filmLengthFilterIsNotSet() {
-        var filmLengthMin = (long)filterConfiguration.getFilmLengthMin();
-        var filmLengthMax = (long)filterConfiguration.getFilmLengthMax();
-        return filmLengthMin == 0 && filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE;
-    }
-
     protected boolean noFiltersAreSet() {
-        return filterConfiguration.getCheckedChannels().isEmpty()
-                && filterConfiguration.getThema().isEmpty()
-                && searchFieldData.isEmpty()
-                && filmLengthFilterIsNotSet()
-                && !filterConfiguration.isDontShowAbos()
-                && !filterConfiguration.isShowUnseenOnly()
-                && !filterConfiguration.isShowHighQualityOnly()
-                && !filterConfiguration.isShowSubtitlesOnly()
-                && !filterConfiguration.isShowLivestreamsOnly()
-                && !filterConfiguration.isShowNewOnly()
-                && !filterConfiguration.isShowBookMarkedOnly()
-                && !filterConfiguration.isDontShowTrailers()
-                && !filterConfiguration.isDontShowSignLanguage()
-                && !filterConfiguration.isDontShowAudioVersions()
-                && !filterConfiguration.isDontShowDuplicates()
-                && filterConfiguration.getZeitraum().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+        return filterConfiguration.noFiltersAreSet() && searchFieldData.isEmpty();
     }
 
     protected boolean seenCheck(DatenFilm film) {

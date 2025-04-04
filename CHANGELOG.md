@@ -1,4 +1,5 @@
 # **14.3.0**
+- interne Geschwindigkeitsverbesserungen.
 - **BUGFIX:** Duplikatsuche berücksicht nur HQ-URL wenn Film auch HQ ist.
 - **BUGFIX:** Alte tagesschau24 Filme in der Liste werden nur konvertiert wenn der Sender auch angezeigt werden soll.
 - **BUGFIX:** Darkmode Anzeigefehler im Kontextmenü des Tab Filme behoben.
