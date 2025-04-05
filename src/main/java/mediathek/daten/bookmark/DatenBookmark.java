@@ -2,205 +2,179 @@ package mediathek.daten.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.concurrent.TimeUnit;
 import mediathek.daten.DatenFilm;
 import mediathek.javafx.bookmark.BookmarkDateDiff;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 
-/**
- * Bookmark data definition used to store movies
- * @author K. Wich
- *
- * Note: Prepared for Jackson JSON storage
- */
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DatenBookmark {
-    public static final int BOOKMARK_SENDER = 0; // wird vor dem Speichern gelöscht!
-    public static final int BOOKMARK_THEMA = 1;
-    public static final int BOOKMARK_TITEL = 2;
-    public static final int BOOKMARK_DAUER = 3;
-    public static final int BOOKMARK_DATUM = 4;
-    public static final int BOOKMARK_ABSPIELEN = 5; // no getter/setter access
-    public static final int BOOKMARK_AUFZEICHNEN = 6; // no getter/setter access
-    public static final int BOOKMARK_URL = 7;
-    public static final int BOOKMARK_VERFUEGBAR = 8;
-    public static final int BOOKMARK_NOTIZ = 9;
-    public static final int BOOKMARK_DATUM_LONG = 10;
-    public static final int MAX_ELEM = 11;
-    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
 
     private String url;
     private String sender;
+  private String thema;
     private String titel;
-    private String senddate;
+  private String sendDate;
     private boolean seen;
-    private DatenFilm filmdata;
     private String highQualityUrl;
     private String urlKlein;
     private String note;
     private String expiry;
     private boolean willExpire;
+  private String dauer;
+
+  @JsonIgnore private DatenFilm filmdata;
 
     public DatenBookmark() {
-        seen = false;
+    this.seen = false;
     }
 
     public DatenBookmark(DatenFilm filmdata) {
         this();
         this.url = filmdata.getUrlNormalQuality();
+    this.thema = filmdata.getThema();
         this.sender = filmdata.getSender();
         this.titel = filmdata.getTitle();
-        this.senddate = filmdata.getSendeDatum();
+    this.sendDate = filmdata.getSendeDatum();
         this.highQualityUrl = filmdata.getHighQualityUrl();
         this.urlKlein = filmdata.getLowQualityUrl();
         this.filmdata = filmdata;
+    this.dauer = filmdata.getFilmLengthAsString();
         this.willExpire = false;
     }
 
-    // getter/setter used for Jackson
-    public String getUrl(){ return this.url; }
-    public void   setUrl(String url){ this.url = url; }
+  // --- Getter/Setter für JSON & JTable-Nutzung ---
 
-    public String getSender(){ return this.sender; }
-    public void   setSender(String url){ this.sender = url; }
+  public String getUrl() {
+    return url;
+  }
 
-    public String getThema(){ return (filmdata != null ? filmdata.getThema(): ""); }
-    public void   setThema(String url){}
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public String getTitel(){ return this.titel; }
-    public void   setTitel(String url){ this.titel = url;}
+  public String getSender() {
+    return sender;
+  }
 
-    public String getDauer(){ return ((filmdata != null) ? filmdata.getFilmLengthAsString(): ""); }
-    public void   setDauer(String dauer){}
+  public void setSender(String sender) {
+    this.sender = sender;
+  }
 
-    public String getDescription(){ return ((filmdata != null) ? filmdata.getDescription(): ""); }
-    public void   setDescription(String description){}
+  public String getThema() {
+    return thema;
+  }
 
-    public String getNote(){ return this.note; }
-    public void   setNote(String note){ this.note = note; }
+  public void setThema(String thema) {
+    this.thema = thema;
+  }
 
-    public String getExpiry(){ return this.expiry; }
-    public void   setExpiry(String expiry){
-        this.expiry = expiry;
-        // Check if expiry is about to happen:
-        willExpire = expiry != null && BookmarkDateDiff.getInstance().diff2Today(expiry) < 4;
-    }
+  public String getTitel() {
+    return titel;
+  }
 
-    public boolean getSeen(){ return this.seen; }
-    public void   setSeen(boolean seen){ this.seen = seen; }
+  public void setTitel(String titel) {
+    this.titel = titel;
+  }
 
-    public String getSendDate(){ return this.senddate; }
-    public void   setSendDate(String senddate){ this.senddate = senddate; }
+  public String getSendDate() {
+    return sendDate;
+  }
 
-    public String getHighQualityUrl(){ return this.highQualityUrl; }
-    public void   setHighQualityUrl(String highQualityUrl){ this.highQualityUrl = highQualityUrl;}
+  public void setSendDate(String sendDate) {
+    this.sendDate = sendDate;
+  }
+
+  public boolean isSeen() {
+    return seen;
+  }
+
+  public void setSeen(boolean seen) {
+    this.seen = seen;
+  }
+
+  public String getHighQualityUrl() {
+    return highQualityUrl;
+  }
+
+  public void setHighQualityUrl(String highQualityUrl) {
+    this.highQualityUrl = highQualityUrl;
+  }
 
     public String getUrlKlein() { return urlKlein; }
     public void setUrlKlein(String urlKlein) { this.urlKlein = urlKlein; }
 
-    // other methods:
-    @JsonIgnore
-    public boolean hasURL() {
-        return this.url != null;
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
+  }
+
+  public String getExpiry() {
+    return expiry;
+  }
+
+  public void setExpiry(String expiry) {
+    this.expiry = expiry;
+    this.willExpire = expiry != null && BookmarkDateDiff.getInstance().diff2Today(expiry) < 4;
+  }
+
+  public String getDauer() {
+    return dauer;
+  }
+
+  public void setDauer(String dauer) {
+    this.dauer = dauer;
+  }
+
+  public boolean isWillExpire() {
+    return willExpire;
+  }
+
+  public void setWillExpire(boolean willExpire) {
+    this.willExpire = willExpire;
+  }
+
+  // --- Optional, falls DatenFilm benötigt wird ---
+
+  @JsonIgnore
+  public DatenFilm getFilmdata() {
+    return filmdata;
+  }
+
+  @JsonIgnore
+  public void setFilmdata(DatenFilm filmdata) {
+    this.filmdata = filmdata;
+  }
+
+  // --- Hilfsmethoden (nur wenn wirklich gebraucht) ---
+
+  @JsonIgnore
+  public boolean hasWebURL() {
+    return filmdata != null
+        && filmdata.getWebsiteUrl() != null
+        && !filmdata.getWebsiteUrl().isEmpty();
     }
 
-    @JsonIgnore
-    public boolean hasWebURL() {
-        return (this.filmdata != null && !this.filmdata.getWebsiteUrl().isEmpty());
-    }
-
-    /**
-     * Compare with URL and Sender to get unique movie
-     * @param url String
-     * @param sender String
-     * @return true if equal
-     */
-    @JsonIgnore
-    public boolean isMovie(String url, String sender) {
-        return this.url.compareTo(url) == 0 && this.sender.compareTo(sender) == 0;
-    }
-
-    @JsonIgnore
-    public boolean isNotInFilmList() {
-        return this.filmdata == null;
-    }
-
-    @JsonIgnore
-    public boolean isLiveStream() {
-        return (this.filmdata != null) ? this.filmdata.isLivestream() : false;
-    }
-
-    @JsonIgnore
-    public void setDatenFilm(DatenFilm filmdata) {
-        this.filmdata = filmdata;
-    }
-
-    @JsonIgnore
-    public DatenFilm getDatenFilm() {
-        return this.filmdata;
-    }
-
-    @JsonIgnore
-    public String getWebUrl() {
-        return (this.filmdata != null) ? this.filmdata.getWebsiteUrl() : null;
-    }
-
-    @JsonIgnore
-    public String getFormattedNote() {
-        return note != null && !note.isEmpty() ? String.format("\n\nAnmerkung:\n%s", note) : "";
+  @JsonIgnore
+  public boolean isLiveStream() {
+    return filmdata != null && filmdata.isLivestream();
     }
 
     @JsonIgnore
     public String getExtendedDescription() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(sender).append(" - ").append(titel);
         if (expiry != null && !expiry.isEmpty()) {
-            return String.format("%s - %s (Verfügbar bis %s)\n\n%s%s", sender, titel, expiry, getDescription(), getFormattedNote());
+      sb.append(" (Verfügbar bis ").append(expiry).append(")");
         }
-        else {
-            return String.format("%s - %s\n\n%s%s", sender, titel, getDescription(), getFormattedNote());
-        }
+    sb.append("\n\n");
+    if (filmdata != null && filmdata.getDescription() != null) {
+      sb.append(filmdata.getDescription());
     }
-
-    /**
-     * Get either the stored DatenFilm object or a new created from the internal data
-     * @return DatenFilm Object
-     */
-    @JsonIgnore
-    public DatenFilm getDataAsDatenFilm() {
-        DatenFilm Film = getDatenFilm();
-        if (Film == null) { // No reference in in object create new return object
-            Film = new DatenFilm();
-            Film.setThema(getThema());
-            Film.setTitle(getTitel());
-            Film.setNormalQualityUrl(getUrl());
-            Film.setHighQualityUrl(getHighQualityUrl());
-            Film.setLowQualityUrl(getUrlKlein());
-            Film.setSender(getSender());
-            Film.setFilmLength(getDauer());
-        }
-        return Film;
+    if (note != null && !note.isEmpty()) {
+      sb.append("\n\nAnmerkung:\n").append(note);
     }
-
-    /**
-     * Check if expiry date is about to expire
-     * @return true/false
-     *
-     * Note: Always returns false if no expiry date is set
-     */
-    @JsonIgnore
-    public boolean willExpire() {
-        return this.willExpire;
+    return sb.toString();
     }
-
-    public static boolean anzeigen(int i) {
-        return spaltenAnzeigen == null || spaltenAnzeigen[i];
-    } /**
-     * Get the film's length or duration formatted as a string in "HH:MM:SS" format.
-     * Similar to {@link DatenFilm#getFilmLength()}.
-     *
-     * @return film length or duration as String.
-     */
-    public String getFilmLengthAsString() {
-       return filmdata.getFilmLengthAsString();
-    }
-
 }

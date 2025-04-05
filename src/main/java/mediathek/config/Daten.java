@@ -60,7 +60,6 @@ public class Daten {
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist = new ListeBlacklist();
     private final BookmarkDataList listeBookmarkList;
-    private final ListeBookmark listeBookmark;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
@@ -81,7 +80,6 @@ public class Daten {
         filmeLaden = new FilmeLaden(this);
 
         listeBookmarkList = new BookmarkDataList(this);
-        listeBookmark = new ListeBookmark(this);
 
         listePset = new ListePset();
 
@@ -215,7 +213,6 @@ public class Daten {
         listeDownloads.clear();
         listeBlacklist.clear();
         listeBookmarkList.clear();
-        listeBookmark.clear();
     }
 
     private boolean load() {
@@ -404,10 +401,6 @@ public class Daten {
 
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
-    }
-
-    public ListeBookmark getListeBookmark() {
-        return listeBookmark;
     }
 
     /**

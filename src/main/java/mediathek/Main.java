@@ -491,7 +491,6 @@ public class Main {
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
             Daten.getInstance().getListeBookmarkList().loadFromFile();
-            Daten.getInstance().getListeBookmark().loadFromFile();
 
             removeLuceneIndexDirectory();
             // enable modern search on demand
