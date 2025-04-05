@@ -126,7 +126,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             filmLength = 0;
         }
         else {
-            final String[] split = StringUtils.split(dauer, ':');
+            final String[] split = dauer.split(":");
 
             try {
                 filmLength += Integer.parseInt(split[0]) * 3600; //hour
