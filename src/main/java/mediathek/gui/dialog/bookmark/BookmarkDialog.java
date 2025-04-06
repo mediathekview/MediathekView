@@ -4,8 +4,10 @@
 
 package mediathek.gui.dialog.bookmark;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.table.*;
-import mediathek.gui.*;
+
 import static mediathek.config.StandardLocations.getBookmarkFilePath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,19 +18,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
-import com.formdev.flatlaf.extras.*;
 import com.intellij.uiDesigner.core.*;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.daten.bookmark.ListeBookmark;
+import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.BookmarkModel;
 import net.miginfocom.swing.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.*;
 
 /**
  * @author Markus
  */
 public class BookmarkDialog extends JDialog {
+
+  private static final Logger logger = LogManager.getLogger();
   private static final String JSON_DATEI = getBookmarkFilePath().toString();
   private List<DatenBookmark> bookmarks;
   private BookmarkModel model;
@@ -38,7 +46,18 @@ public class BookmarkDialog extends JDialog {
     bookmarks = ladeBookmarks(JSON_DATEI);
     model = new BookmarkModel(bookmarks);
     initComponents();
+    tabelle.setModel(model);
     initActions();
+    initIcons();
+  }
+
+  private void initIcons() {
+    btnDeleteEntry.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
+    btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
+    btnEditNote.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
+    btnSaveList.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
+    btnShowDetails.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
+    btnFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
   }
 
   private void initComponents() {
@@ -58,7 +77,7 @@ public class BookmarkDialog extends JDialog {
     panel2 = new JPanel();
     scrollPane1 = new JScrollPane();
     textArea1 = new JTextArea();
-    xHyperlink1 = new JXHyperlink();
+    hyperlink = new JXHyperlink();
 
     //======== this ========
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -80,16 +99,11 @@ public class BookmarkDialog extends JDialog {
     {
 
       //---- btnDeleteEntry ----
-      btnDeleteEntry.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
       btnDeleteEntry.setToolTipText("Aus der Merkliste l\u00f6schen");
       toolBar1.add(btnDeleteEntry);
-
-      //---- btnMarkViewed ----
-      btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
       toolBar1.add(btnMarkViewed);
 
       //---- btnEditNote ----
-      btnEditNote.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
       btnEditNote.setToolTipText("Anmerkungen bearbeiten");
       toolBar1.add(btnEditNote);
 
@@ -108,18 +122,13 @@ public class BookmarkDialog extends JDialog {
       toolBar1.add(panel1);
 
       //---- btnSaveList ----
-      btnSaveList.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
       btnSaveList.setToolTipText("Ge\u00e4nderte Merkliste abspeichern");
       toolBar1.add(btnSaveList);
       toolBar1.addSeparator();
 
       //---- btnShowDetails ----
-      btnShowDetails.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
       btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen");
       toolBar1.add(btnShowDetails);
-
-      //---- btnFilter ----
-      btnFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
       toolBar1.add(btnFilter);
     }
     contentPane.add(toolBar1, "cell 0 0 3 1");
@@ -132,7 +141,15 @@ public class BookmarkDialog extends JDialog {
       {
 
         //---- tabelle ----
-        tabelle.setModel(model);
+        tabelle.setModel(new DefaultTableModel(
+          new Object[][] {
+            {null, null},
+            {null, null},
+          },
+          new String[] {
+            null, null
+          }
+        ));
         tabelle.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         scrollPane2.setViewportView(tabelle);
       }
@@ -152,9 +169,9 @@ public class BookmarkDialog extends JDialog {
           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
           null, null, null));
 
-        //---- xHyperlink1 ----
-        xHyperlink1.setText("Link zur Webseite");
-        panel2.add(xHyperlink1, new GridConstraints(2, 0, 1, 1,
+        //---- hyperlink ----
+        hyperlink.setText("Link zur Webseite");
+        panel2.add(hyperlink, new GridConstraints(2, 0, 1, 1,
           GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -192,6 +209,60 @@ public class BookmarkDialog extends JDialog {
       speichereBookmarks(bookmarks, JSON_DATEI);
       JOptionPane.showMessageDialog(this, "Merkliste gespeichert.", "Info", JOptionPane.INFORMATION_MESSAGE);
     });
+
+    // Tabelle: Auswahl-Listener für Hyperlink Tooltip
+    tabelle.getSelectionModel().addListSelectionListener(e -> {
+      if (!e.getValueIsAdjusting()) {
+        int selectedRow = tabelle.getSelectedRow();
+        if (selectedRow >= 0) {
+          int modelRow = tabelle.convertRowIndexToModel(selectedRow);
+          DatenBookmark bookmark = model.getBookmarks().get(modelRow);
+          if (bookmark.getUrl() != null && !bookmark.getUrl().isEmpty()) {
+            hyperlink.setToolTipText(bookmark.getUrl());
+            hyperlink.setEnabled(true);
+          } else {
+            hyperlink.setToolTipText("");
+            hyperlink.setEnabled(false);
+          }
+        } else {
+          hyperlink.setToolTipText("");
+          hyperlink.setEnabled(false);
+        }
+      }
+    });
+
+
+    //Hyperlink
+    hyperlink.addActionListener(e -> {
+      if (!hyperlink.getToolTipText().isEmpty()) {
+        var toolTipText = hyperlink.getToolTipText();
+        if (Desktop.isDesktopSupported()) {
+          var d = Desktop.getDesktop();
+          if (d.isSupported(Desktop.Action.BROWSE)) {
+            try {
+              d.browse(new URI(toolTipText));
+            } catch (Exception ex) {
+              SwingErrorDialog.showExceptionMessage(
+                  MediathekGui.ui(),
+                  "Es trat ein Fehler beim Öffnen des Links auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                  ex);
+            }
+          } else {
+            openUrl(toolTipText);
+          }
+        } else {
+          openUrl(toolTipText);
+        }
+      }
+    });
+  }
+
+  private void openUrl(String url) {
+    try {
+      UrlHyperlinkAction.openURL(url);
+    } catch (URISyntaxException ex) {
+      logger.warn(ex);
+    }
   }
 
 
@@ -233,6 +304,6 @@ public class BookmarkDialog extends JDialog {
   private JPanel panel2;
   private JScrollPane scrollPane1;
   private JTextArea textArea1;
-  private JXHyperlink xHyperlink1;
+  private JXHyperlink hyperlink;
   // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

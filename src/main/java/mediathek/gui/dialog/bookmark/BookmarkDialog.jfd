@@ -16,16 +16,13 @@ new FormModel {
 				name: "toolBar1"
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnDeleteEntry"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/trash-can.svg" )
 					"toolTipText": "Aus der Merkliste löschen"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnMarkViewed"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/eye.svg" )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnEditNote"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/pen.svg" )
 					"toolTipText": "Anmerkungen bearbeiten"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
@@ -37,7 +34,6 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnSaveList"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/floppy-disk.svg" )
 					"toolTipText": "Geänderte Merkliste abspeichern"
 				} )
 				add( new FormComponent( "javax.swing.JToolBar$Separator" ) {
@@ -45,12 +41,10 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JToggleButton" ) {
 					name: "btnShowDetails"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/circle-info.svg" )
 					"toolTipText": "Erweiterte Film Informationen anzeigen"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnFilter"
-					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/filter.svg" )
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 0 3 1"
@@ -59,24 +53,62 @@ new FormModel {
 				name: "splitPane1"
 				"orientation": 0
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "textArea1"
+					name: "scrollPane2"
+					add( new FormComponent( "javax.swing.JTable" ) {
+						name: "tabelle"
+						"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+							add( new java.util.Vector {
+								add( null )
+								add( null )
+							} )
+							add( new java.util.Vector {
+								add( null )
+								add( null )
+							} )
+						}, new java.util.Vector {
+							add( null )
+							add( null )
+						}, new java.util.Vector {
+							add( null )
+							add( null )
+						}, new java.util.Vector {
+							add( null )
+							add( null )
+						}, new java.util.Vector {
+							add( null )
+							add( null )
+						} )
+						"selectionMode": 1
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "left"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+					"$columnCount": 2
+					"$rowCount": 3
+				} ) {
+					name: "panel2"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "textArea1"
+						} )
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) )
+					add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
+						name: "hyperlink"
+						"text": "Link zur Webseite"
+					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+						"row": 2
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "right"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label1"
-					"text": "text"
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "right"
-				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 1 3 1"
+				"value": "cell 0 1 3 2"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 600, 260 )
+			"size": new java.awt.Dimension( 900, 260 )
 		} )
 	}
 }
