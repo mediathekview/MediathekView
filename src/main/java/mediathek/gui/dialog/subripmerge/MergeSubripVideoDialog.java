@@ -197,7 +197,7 @@ public class MergeSubripVideoDialog extends JDialog {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        // Generated using JFormDesigner non-commercial license
+        // Generated using JFormDesigner Educational license - Markus Jannek
         var dialogPane = new JPanel();
         var contentPanel = new JPanel();
         var label1 = new JLabel();
@@ -219,144 +219,144 @@ public class MergeSubripVideoDialog extends JDialog {
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
-        setTitle("Untertitel zu Video hinzuf\u00fcgen"); //NON-NLS
+        setTitle("Untertitel zu Video hinzuf\u00fcgen");
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
         //======== dialogPane ========
         {
-            dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setLayout(new BorderLayout());
+          dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+          dialogPane.setLayout(new BorderLayout());
 
-            //======== contentPanel ========
-            {
+          //======== contentPanel ========
+          {
 
-                //---- label1 ----
-                label1.setText("Untertitel-Datei:"); //NON-NLS
-                label1.setHorizontalAlignment(SwingConstants.RIGHT);
+            //---- label1 ----
+            label1.setText("Untertitel-Datei:");
+            label1.setHorizontalAlignment(SwingConstants.RIGHT);
 
-                //---- tfSubripFilePath ----
-                tfSubripFilePath.setToolTipText("Pfad zur Untertiteldatei im Subrip Text Format (.srt)"); //NON-NLS
+            //---- tfSubripFilePath ----
+            tfSubripFilePath.setToolTipText("Pfad zur Untertiteldatei im Subrip Text Format (.srt)");
 
-                //---- btnSelectInputSubrip ----
-                btnSelectInputSubrip.setText("..."); //NON-NLS
+            //---- btnSelectInputSubrip ----
+            btnSelectInputSubrip.setText("...");
 
-                //---- label2 ----
-                label2.setText("Video-Datei:"); //NON-NLS
-                label2.setHorizontalAlignment(SwingConstants.RIGHT);
+            //---- label2 ----
+            label2.setText("Video-Datei:");
+            label2.setHorizontalAlignment(SwingConstants.RIGHT);
 
-                //---- tfVideoFilePath ----
-                tfVideoFilePath.setToolTipText("Pfad zu einer von ffmpeg unterst\u00fctzten Videodatei als Eingabemedium"); //NON-NLS
+            //---- tfVideoFilePath ----
+            tfVideoFilePath.setToolTipText("Pfad zu einer von ffmpeg unterst\u00fctzten Videodatei als Eingabemedium");
 
-                //---- btnSelectInputVideo ----
-                btnSelectInputVideo.setText("..."); //NON-NLS
+            //---- btnSelectInputVideo ----
+            btnSelectInputVideo.setText("...");
 
-                //---- label3 ----
-                label3.setText("Sprache:"); //NON-NLS
-                label3.setHorizontalAlignment(SwingConstants.RIGHT);
+            //---- label3 ----
+            label3.setText("Sprache:");
+            label3.setHorizontalAlignment(SwingConstants.RIGHT);
 
-                //---- cbLanguage ----
-                cbLanguage.setToolTipText("Sprache der Untertitel"); //NON-NLS
+            //---- cbLanguage ----
+            cbLanguage.setToolTipText("Sprache der Untertitel");
 
-                //---- label4 ----
-                label4.setText("Zieldatei:"); //NON-NLS
-                label4.setHorizontalAlignment(SwingConstants.RIGHT);
+            //---- label4 ----
+            label4.setText("Zieldatei:");
+            label4.setHorizontalAlignment(SwingConstants.RIGHT);
 
-                //---- btnSelectVideoOutputPath ----
-                btnSelectVideoOutputPath.setText("..."); //NON-NLS
+            //---- btnSelectVideoOutputPath ----
+            btnSelectVideoOutputPath.setText("...");
 
-                //---- busyLabel ----
-                busyLabel.setText("F\u00fchre Video und Untertitel zusammen"); //NON-NLS
+            //---- busyLabel ----
+            busyLabel.setText("F\u00fchre Video und Untertitel zusammen");
 
-                GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
-                contentPanel.setLayout(contentPanelLayout);
-                contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
+            GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
+            contentPanel.setLayout(contentPanelLayout);
+            contentPanelLayout.setHorizontalGroup(
+              contentPanelLayout.createParallelGroup()
+                .addGroup(contentPanelLayout.createSequentialGroup()
+                  .addContainerGap()
+                  .addGroup(contentPanelLayout.createParallelGroup()
+                    .addGroup(contentPanelLayout.createSequentialGroup()
+                      .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(label2, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(label1, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
+                      .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                      .addGroup(contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(label2, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
-                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(label1, GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(contentPanelLayout.createParallelGroup()
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(tfVideoFilePath)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(btnSelectInputVideo, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(tfSubripFilePath)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(btnSelectInputSubrip, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(cbLanguage, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-                                            .addGap(0, 0, Short.MAX_VALUE))))
-                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(label4, GroupLayout.PREFERRED_SIZE, 104, GroupLayout.PREFERRED_SIZE)
-                                            .addGap(6, 6, 6)
-                                            .addComponent(tfVideoOutputPath, GroupLayout.PREFERRED_SIZE, 368, GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
-                                            .addGap(20, 20, 20)
-                                            .addComponent(busyLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                                    .addGap(6, 6, 6)
-                                    .addComponent(btnSelectVideoOutputPath, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
-                            .addContainerGap())
-                );
-                contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
+                          .addComponent(tfVideoFilePath)
+                          .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                          .addComponent(btnSelectInputVideo, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnSelectInputSubrip)
-                                .addComponent(tfSubripFilePath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label1))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label3)
-                                .addComponent(cbLanguage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnSelectInputVideo)
-                                .addComponent(label2)
-                                .addComponent(tfVideoFilePath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGap(7, 7, 7)
-                                    .addComponent(label4))
-                                .addComponent(tfVideoOutputPath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnSelectVideoOutputPath))
-                            .addGap(18, 18, 18)
-                            .addComponent(busyLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-            }
-            dialogPane.add(contentPanel, BorderLayout.CENTER);
+                          .addComponent(tfSubripFilePath)
+                          .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                          .addComponent(btnSelectInputSubrip, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                          .addComponent(cbLanguage, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
+                          .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                      .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                          .addComponent(label4, GroupLayout.PREFERRED_SIZE, 104, GroupLayout.PREFERRED_SIZE)
+                          .addGap(6, 6, 6)
+                          .addComponent(tfVideoOutputPath, GroupLayout.PREFERRED_SIZE, 368, GroupLayout.PREFERRED_SIZE))
+                        .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
+                          .addGap(20, 20, 20)
+                          .addComponent(busyLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                      .addGap(6, 6, 6)
+                      .addComponent(btnSelectVideoOutputPath, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
+                  .addContainerGap())
+            );
+            contentPanelLayout.setVerticalGroup(
+              contentPanelLayout.createParallelGroup()
+                .addGroup(contentPanelLayout.createSequentialGroup()
+                  .addContainerGap()
+                  .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSelectInputSubrip)
+                    .addComponent(tfSubripFilePath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label1))
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                  .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(label3)
+                    .addComponent(cbLanguage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                  .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSelectInputVideo)
+                    .addComponent(label2)
+                    .addComponent(tfVideoFilePath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                  .addGap(18, 18, 18)
+                  .addGroup(contentPanelLayout.createParallelGroup()
+                    .addGroup(contentPanelLayout.createSequentialGroup()
+                      .addGap(7, 7, 7)
+                      .addComponent(label4))
+                    .addComponent(tfVideoOutputPath, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSelectVideoOutputPath))
+                  .addGap(18, 18, 18)
+                  .addComponent(busyLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                  .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+          }
+          dialogPane.add(contentPanel, BorderLayout.CENTER);
 
-            //======== buttonBar ========
-            {
-                buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
-                buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
+          //======== buttonBar ========
+          {
+            buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
+            buttonBar.setLayout(new GridBagLayout());
+            ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+            ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
-                //---- btnCancel ----
-                btnCancel.setText("Abbrechen"); //NON-NLS
-                buttonBar.add(btnCancel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+            //---- btnCancel ----
+            btnCancel.setText("Abbrechen");
+            buttonBar.add(btnCancel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+              GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+              new Insets(0, 0, 0, 5), 0, 0));
 
-                //---- btnMerge ----
-                btnMerge.setText("Zusammenf\u00fchren"); //NON-NLS
-                buttonBar.add(btnMerge, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
-            }
-            dialogPane.add(buttonBar, BorderLayout.SOUTH);
+            //---- btnMerge ----
+            btnMerge.setText("Zusammenf\u00fchren");
+            buttonBar.add(btnMerge, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+              GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+              new Insets(0, 0, 0, 0), 0, 0));
+          }
+          dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
@@ -365,7 +365,7 @@ public class MergeSubripVideoDialog extends JDialog {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    // Generated using JFormDesigner non-commercial license
+    // Generated using JFormDesigner Educational license - Markus Jannek
     private JTextField tfSubripFilePath;
     private JButton btnSelectInputSubrip;
     private JTextField tfVideoFilePath;
