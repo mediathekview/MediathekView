@@ -19,13 +19,14 @@
 package mediathek.gui.tabs.tab_film.filter_selection;
 
 import mediathek.tool.FilterDTO;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class FilterSelectionComboBox extends JComboBox<FilterDTO> {
-    public FilterSelectionComboBox() {
-        super(new FilterSelectionComboBoxModel());
+    public FilterSelectionComboBox(@NotNull DefaultComboBoxModel<FilterDTO> model) {
+        super(model);
 
         setMaximumSize(new Dimension(200, 100));
 
