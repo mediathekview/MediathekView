@@ -59,7 +59,6 @@ new FormModel {
 				name: "splitPane1"
 				"orientation": 0
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "scrollPane1"
 					add( new FormComponent( "javax.swing.JTextArea" ) {
 						name: "textArea1"
 					} )
