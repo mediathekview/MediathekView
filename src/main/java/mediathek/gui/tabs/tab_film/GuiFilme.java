@@ -22,7 +22,6 @@ import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.writer.FilmListWriter;
-import mediathek.gui.FilterSelectionComboBoxModel;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -33,6 +32,7 @@ import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
+import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox;
 import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
@@ -117,7 +117,7 @@ public class GuiFilme extends AGuiTabPanel {
     private final FilterConfiguration filterConfiguration = new FilterConfiguration();
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
-    protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
+    protected FilterSelectionComboBox filterSelectionComboBox = new FilterSelectionComboBox();
     protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
     protected PsetButtonsPanel psetButtonsPanel;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
@@ -127,6 +127,7 @@ public class GuiFilme extends AGuiTabPanel {
      * We perform model filtering in the background the keep UI thread alive.
      */
     private ListenableFuture<TableModel> modelFuture;
+
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         daten = aDaten;
         this.mediathekGui = mediathekGui;
@@ -782,9 +783,6 @@ public class GuiFilme extends AGuiTabPanel {
             add(saveFilmAction);
             addSeparator();
 
-            filterSelectionComboBox.setMaximumSize(new Dimension(150, 100));
-            filterSelectionComboBox.setEditable(false);
-            filterSelectionComboBox.setToolTipText("Aktiver Filter");
             add(filterSelectionComboBox);
             addSeparator();
 
