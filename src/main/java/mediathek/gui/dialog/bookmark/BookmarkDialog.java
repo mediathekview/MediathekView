@@ -6,6 +6,8 @@ package mediathek.gui.dialog.bookmark;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Tooltip;
 import javax.swing.table.*;
 
 import static mediathek.config.StandardLocations.getBookmarkFilePath;
@@ -22,7 +24,9 @@ import com.intellij.uiDesigner.core.*;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.daten.bookmark.ListeBookmark;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.javafx.bookmark.BookmarkData;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.BookmarkModel;
@@ -40,6 +44,8 @@ public class BookmarkDialog extends JDialog {
   private static final String JSON_DATEI = getBookmarkFilePath().toString();
   private List<DatenBookmark> bookmarks;
   private BookmarkModel model;
+  private int filterState;
+  private int divposition;
 
   public BookmarkDialog(Window owner) {
     super(owner);
@@ -49,10 +55,11 @@ public class BookmarkDialog extends JDialog {
     tabelle.setModel(model);
     initActions();
     initIcons();
-    taScrollPane.setVisible(false);
-    hyperlink.setVisible(false);
-    bottomPanel.revalidate();
-    bottomPanel.repaint();
+    filterState = -1;
+    btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
+    double ratio = ApplicationConfiguration.getConfiguration().getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", 0.5);
+    divposition = (int) (splitPane.getHeight() * ratio);
+
 
   }
 
@@ -218,14 +225,6 @@ public class BookmarkDialog extends JDialog {
       JOptionPane.showMessageDialog(this, "Merkliste gespeichert.", "Info", JOptionPane.INFORMATION_MESSAGE);
     });
 
-    //Info
-    btnShowDetails.addActionListener(e->{
-      taScrollPane.setVisible(true);
-      hyperlink.setVisible(true);
-      bottomPanel.revalidate();
-      bottomPanel.repaint();
-    });
-
     // Tabelle: Auswahl-Listener für Hyperlink Tooltip
     tabelle.getSelectionModel().addListSelectionListener(e -> {
       if (!e.getValueIsAdjusting()) {
@@ -233,7 +232,6 @@ public class BookmarkDialog extends JDialog {
         if (selectedRow >= 0) {
           int modelRow = tabelle.convertRowIndexToModel(selectedRow);
           DatenBookmark bookmark = model.getBookmarks().get(modelRow);
-          taDescription.setText(bookmark.getExtendedDescription());
           if (bookmark.getUrl() != null && !bookmark.getUrl().isEmpty()) {
             hyperlink.setToolTipText(bookmark.getUrl());
             hyperlink.setEnabled(true);
@@ -286,9 +284,7 @@ public class BookmarkDialog extends JDialog {
   private static List<DatenBookmark> ladeBookmarks(String pfad) {
     ObjectMapper mapper = new ObjectMapper();
     File file = new File(pfad);
-    if (!file.exists()) {
-      return new ArrayList<>();
-    }
+    if (!file.exists()) return new ArrayList<>();
     try {
       ListeBookmark liste = mapper.readValue(file, ListeBookmark.class);
       return liste.getBookmarks();
@@ -306,7 +302,24 @@ public class BookmarkDialog extends JDialog {
       e.printStackTrace();
     }
   }
-
+  /*private void btnFilterAction(ActionEvent e) {
+    if (++filterState > 2) {
+      filterState = 0;
+    }
+    switch (filterState) {
+      case 0 -> filteredBookmarkList.setPredicate(f -> true);  // show all
+      case 1 -> filteredBookmarkList.setPredicate(film -> { // show only unseen
+        return !film.getSeen();
+      });
+      case 2 ->
+        // show only seen
+          filteredBookmarkList.setPredicate(BookmarkData::getSeen);
+    }
+    btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
+    lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);
+    lblSeen.setDisable(LBLSEEN_DISABLE[FilterState]);
+    refresh();
+  }*/
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
   // Generated using JFormDesigner Educational license - Markus Jannek
   private JToolBar toolBar;
