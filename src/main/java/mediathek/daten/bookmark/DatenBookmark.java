@@ -163,18 +163,6 @@ public class DatenBookmark {
 
     @JsonIgnore
     public String getExtendedDescription() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(sender).append(" - ").append(titel);
-        if (expiry != null && !expiry.isEmpty()) {
-      sb.append(" (Verfügbar bis ").append(expiry).append(")");
-        }
-    sb.append("\n\n");
-    if (filmdata != null && filmdata.getDescription() != null) {
-      sb.append(filmdata.getDescription());
-    }
-    if (note != null && !note.isEmpty()) {
-      sb.append("\n\nAnmerkung:\n").append(note);
-    }
-    return sb.toString();
+    return filmdata.getDescription();
     }
 }

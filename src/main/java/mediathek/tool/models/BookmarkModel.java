@@ -62,7 +62,7 @@ public class BookmarkModel extends AbstractTableModel {
 
   @Override
   public boolean isCellEditable(int row, int col) {
-    return true;
+    return false;
   }
 
   public List<DatenBookmark> getBookmarks() {

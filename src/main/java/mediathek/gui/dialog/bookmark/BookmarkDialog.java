@@ -49,6 +49,11 @@ public class BookmarkDialog extends JDialog {
     tabelle.setModel(model);
     initActions();
     initIcons();
+    taScrollPane.setVisible(false);
+    hyperlink.setVisible(false);
+    bottomPanel.revalidate();
+    bottomPanel.repaint();
+
   }
 
   private void initIcons() {
@@ -63,7 +68,7 @@ public class BookmarkDialog extends JDialog {
   private void initComponents() {
     // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
     // Generated using JFormDesigner Educational license - Markus Jannek
-    toolBar1 = new JToolBar();
+    toolBar = new JToolBar();
     btnDeleteEntry = new JButton();
     btnMarkViewed = new JButton();
     btnEditNote = new JButton();
@@ -71,12 +76,12 @@ public class BookmarkDialog extends JDialog {
     btnSaveList = new JButton();
     btnShowDetails = new JToggleButton();
     btnFilter = new JButton();
-    splitPane1 = new JSplitPane();
-    scrollPane2 = new JScrollPane();
+    splitPane = new JSplitPane();
+    tableScrollPane = new JScrollPane();
     tabelle = new JTable();
-    panel2 = new JPanel();
-    scrollPane1 = new JScrollPane();
-    textArea1 = new JTextArea();
+    bottomPanel = new JPanel();
+    taScrollPane = new JScrollPane();
+    taDescription = new JTextArea();
     hyperlink = new JXHyperlink();
 
     //======== this ========
@@ -95,17 +100,17 @@ public class BookmarkDialog extends JDialog {
       "[213]" +
       "[]"));
 
-    //======== toolBar1 ========
+    //======== toolBar ========
     {
 
       //---- btnDeleteEntry ----
       btnDeleteEntry.setToolTipText("Aus der Merkliste l\u00f6schen");
-      toolBar1.add(btnDeleteEntry);
-      toolBar1.add(btnMarkViewed);
+      toolBar.add(btnDeleteEntry);
+      toolBar.add(btnMarkViewed);
 
       //---- btnEditNote ----
       btnEditNote.setToolTipText("Anmerkungen bearbeiten");
-      toolBar1.add(btnEditNote);
+      toolBar.add(btnEditNote);
 
       //======== panel1 ========
       {
@@ -119,25 +124,25 @@ public class BookmarkDialog extends JDialog {
           "[]" +
           "[]"));
       }
-      toolBar1.add(panel1);
+      toolBar.add(panel1);
 
       //---- btnSaveList ----
       btnSaveList.setToolTipText("Ge\u00e4nderte Merkliste abspeichern");
-      toolBar1.add(btnSaveList);
-      toolBar1.addSeparator();
+      toolBar.add(btnSaveList);
+      toolBar.addSeparator();
 
       //---- btnShowDetails ----
       btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen");
-      toolBar1.add(btnShowDetails);
-      toolBar1.add(btnFilter);
+      toolBar.add(btnShowDetails);
+      toolBar.add(btnFilter);
     }
-    contentPane.add(toolBar1, "cell 0 0 3 1");
+    contentPane.add(toolBar, "cell 0 0 3 1");
 
-    //======== splitPane1 ========
+    //======== splitPane ========
     {
-      splitPane1.setOrientation(JSplitPane.VERTICAL_SPLIT);
+      splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
-      //======== scrollPane2 ========
+      //======== tableScrollPane ========
       {
 
         //---- tabelle ----
@@ -151,19 +156,22 @@ public class BookmarkDialog extends JDialog {
           }
         ));
         tabelle.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        scrollPane2.setViewportView(tabelle);
+        tableScrollPane.setViewportView(tabelle);
       }
-      splitPane1.setTopComponent(scrollPane2);
+      splitPane.setTopComponent(tableScrollPane);
 
-      //======== panel2 ========
+      //======== bottomPanel ========
       {
-        panel2.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        bottomPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
 
-        //======== scrollPane1 ========
+        //======== taScrollPane ========
         {
-          scrollPane1.setViewportView(textArea1);
+
+          //---- taDescription ----
+          taDescription.setEditable(false);
+          taScrollPane.setViewportView(taDescription);
         }
-        panel2.add(scrollPane1, new GridConstraints(0, 0, 1, 1,
+        bottomPanel.add(taScrollPane, new GridConstraints(0, 0, 1, 1,
           GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -171,15 +179,15 @@ public class BookmarkDialog extends JDialog {
 
         //---- hyperlink ----
         hyperlink.setText("Link zur Webseite");
-        panel2.add(hyperlink, new GridConstraints(2, 0, 1, 1,
+        bottomPanel.add(hyperlink, new GridConstraints(2, 0, 1, 1,
           GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
           GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
           null, null, null));
       }
-      splitPane1.setBottomComponent(panel2);
+      splitPane.setBottomComponent(bottomPanel);
     }
-    contentPane.add(splitPane1, "cell 0 1 3 2");
+    contentPane.add(splitPane, "cell 0 1 3 2");
     pack();
     setLocationRelativeTo(getOwner());
     // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
@@ -210,6 +218,14 @@ public class BookmarkDialog extends JDialog {
       JOptionPane.showMessageDialog(this, "Merkliste gespeichert.", "Info", JOptionPane.INFORMATION_MESSAGE);
     });
 
+    //Info
+    btnShowDetails.addActionListener(e->{
+      taScrollPane.setVisible(true);
+      hyperlink.setVisible(true);
+      bottomPanel.revalidate();
+      bottomPanel.repaint();
+    });
+
     // Tabelle: Auswahl-Listener für Hyperlink Tooltip
     tabelle.getSelectionModel().addListSelectionListener(e -> {
       if (!e.getValueIsAdjusting()) {
@@ -217,6 +233,7 @@ public class BookmarkDialog extends JDialog {
         if (selectedRow >= 0) {
           int modelRow = tabelle.convertRowIndexToModel(selectedRow);
           DatenBookmark bookmark = model.getBookmarks().get(modelRow);
+          taDescription.setText(bookmark.getExtendedDescription());
           if (bookmark.getUrl() != null && !bookmark.getUrl().isEmpty()) {
             hyperlink.setToolTipText(bookmark.getUrl());
             hyperlink.setEnabled(true);
@@ -269,7 +286,9 @@ public class BookmarkDialog extends JDialog {
   private static List<DatenBookmark> ladeBookmarks(String pfad) {
     ObjectMapper mapper = new ObjectMapper();
     File file = new File(pfad);
-    if (!file.exists()) return new ArrayList<>();
+    if (!file.exists()) {
+      return new ArrayList<>();
+    }
     try {
       ListeBookmark liste = mapper.readValue(file, ListeBookmark.class);
       return liste.getBookmarks();
@@ -290,7 +309,7 @@ public class BookmarkDialog extends JDialog {
 
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
   // Generated using JFormDesigner Educational license - Markus Jannek
-  private JToolBar toolBar1;
+  private JToolBar toolBar;
   private JButton btnDeleteEntry;
   private JButton btnMarkViewed;
   private JButton btnEditNote;
@@ -298,12 +317,12 @@ public class BookmarkDialog extends JDialog {
   private JButton btnSaveList;
   private JToggleButton btnShowDetails;
   private JButton btnFilter;
-  private JSplitPane splitPane1;
-  private JScrollPane scrollPane2;
+  private JSplitPane splitPane;
+  private JScrollPane tableScrollPane;
   private JTable tabelle;
-  private JPanel panel2;
-  private JScrollPane scrollPane1;
-  private JTextArea textArea1;
+  private JPanel bottomPanel;
+  private JScrollPane taScrollPane;
+  private JTextArea taDescription;
   private JXHyperlink hyperlink;
   // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
