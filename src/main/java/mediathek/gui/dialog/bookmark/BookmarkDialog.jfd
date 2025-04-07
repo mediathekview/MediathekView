@@ -13,7 +13,7 @@ new FormModel {
 			"resizable": false
 			"title": "Merkliste verwalten"
 			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
-				name: "toolBar1"
+				name: "toolBar"
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnDeleteEntry"
 					"toolTipText": "Aus der Merkliste löschen"
@@ -50,10 +50,10 @@ new FormModel {
 				"value": "cell 0 0 3 1"
 			} )
 			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
-				name: "splitPane1"
+				name: "splitPane"
 				"orientation": 0
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "scrollPane2"
+					name: "tableScrollPane"
 					add( new FormComponent( "javax.swing.JTable" ) {
 						name: "tabelle"
 						"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
@@ -87,11 +87,12 @@ new FormModel {
 					"$columnCount": 2
 					"$rowCount": 3
 				} ) {
-					name: "panel2"
+					name: "bottomPanel"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPane1"
+						name: "taScrollPane"
 						add( new FormComponent( "javax.swing.JTextArea" ) {
-							name: "textArea1"
+							name: "taDescription"
+							"editable": false
 						} )
 					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) )
 					add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
