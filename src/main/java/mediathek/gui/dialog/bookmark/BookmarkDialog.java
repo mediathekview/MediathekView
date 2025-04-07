@@ -93,15 +93,13 @@ public class BookmarkDialog extends JDialog {
 
     //======== this ========
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    setResizable(false);
     setTitle("Merkliste verwalten");
     var contentPane = getContentPane();
     contentPane.setLayout(new MigLayout(
       "hidemode 3",
       // columns
       "[97,fill]" +
-      "[283,fill]" +
-      "[fill]",
+      "[789,fill]",
       // rows
       "[]" +
       "[213]" +
@@ -143,7 +141,7 @@ public class BookmarkDialog extends JDialog {
       toolBar.add(btnShowDetails);
       toolBar.add(btnFilter);
     }
-    contentPane.add(toolBar, "cell 0 0 3 1");
+    contentPane.add(toolBar, "cell 0 0 2 1");
 
     //======== splitPane ========
     {
@@ -194,7 +192,7 @@ public class BookmarkDialog extends JDialog {
       }
       splitPane.setBottomComponent(bottomPanel);
     }
-    contentPane.add(splitPane, "cell 0 1 3 2");
+    contentPane.add(splitPane, "cell 0 1 2 2");
     pack();
     setLocationRelativeTo(getOwner());
     // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
