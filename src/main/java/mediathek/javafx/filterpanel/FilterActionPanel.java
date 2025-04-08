@@ -27,7 +27,10 @@ import org.controlsfx.control.textfield.TextFields;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class sets up the GuiFilme filter dialog.
@@ -47,7 +50,6 @@ public class FilterActionPanel {
     private final EventObservableList<String> observableThemaList = new EventObservableList<>(new EventListWithEmptyFirstEntry(sourceThemaList));
     private OldSwingJavaFxFilterDialog filterDialog;
     private RangeSlider filmLengthSlider;
-    private ReadOnlyObjectProperty<String> zeitraumProperty;
     private BooleanProperty dontShowAudioVersions;
     private BooleanProperty dontShowSignLanguage;
     private BooleanProperty dontShowTrailers;
@@ -71,8 +73,8 @@ public class FilterActionPanel {
 
     private CommonViewSettingsPane viewSettingsPane;
 
-    public FilterActionPanel(@NotNull JToggleButton filterToggleBtn) {
-        this.filterConfig = new FilterConfiguration();
+    public FilterActionPanel(@NotNull JToggleButton filterToggleBtn, @NotNull FilterConfiguration filterConfig) {
+        this.filterConfig = filterConfig;
 
         setupViewSettingsPane();
         setupDeleteFilterButton();
@@ -99,40 +101,16 @@ public class FilterActionPanel {
         filmLengthSlider.highValueChangingProperty().addListener(listener);
     }
 
-    public FilmLengthSliderValues getFilmLengthSliderValues() {
-        return new FilmLengthSliderValues((long) filmLengthSlider.getLowValue(), (long) filmLengthSlider.getHighValue());
-    }
-
-    public ReadOnlyObjectProperty<String> zeitraumProperty() {
-        return zeitraumProperty;
-    }
-
-    public boolean isDontShowAudioVersions() {
-        return dontShowAudioVersions.get();
-    }
-
     public BooleanProperty dontShowAudioVersionsProperty() {
         return dontShowAudioVersions;
-    }
-
-    public boolean isDontShowSignLanguage() {
-        return dontShowSignLanguage.get();
     }
 
     public BooleanProperty dontShowSignLanguageProperty() {
         return dontShowSignLanguage;
     }
 
-    public boolean isDontShowTrailers() {
-        return dontShowTrailers.get();
-    }
-
     public BooleanProperty dontShowTrailersProperty() {
         return dontShowTrailers;
-    }
-
-    public boolean isDontShowAbos() {
-        return dontShowAbos.get();
     }
 
     public BooleanProperty dontShowAbosProperty() {
@@ -143,52 +121,24 @@ public class FilterActionPanel {
         return dontShowDuplicates;
     }
 
-    public boolean isDontShowDuplicates() {
-        return dontShowDuplicates.get();
-    }
-
-    public boolean isShowLivestreamsOnly() {
-        return showLivestreamsOnly.get();
-    }
-
     public BooleanProperty showLivestreamsOnlyProperty() {
         return showLivestreamsOnly;
-    }
-
-    public boolean isShowUnseenOnly() {
-        return showUnseenOnly.get();
     }
 
     public BooleanProperty showUnseenOnlyProperty() {
         return showUnseenOnly;
     }
 
-    public boolean isShowBookMarkedOnly() {
-        return showBookMarkedOnly.get();
-    }
-
     public BooleanProperty showBookMarkedOnlyProperty() {
         return showBookMarkedOnly;
-    }
-
-    public boolean isShowSubtitlesOnly() {
-        return showSubtitlesOnly.get();
     }
 
     public BooleanProperty showSubtitlesOnlyProperty() {
         return showSubtitlesOnly;
     }
 
-    public boolean isShowOnlyHighQuality() {
-        return showOnlyHighQuality.get();
-    }
-
     public BooleanProperty showOnlyHighQualityProperty() {
         return showOnlyHighQuality;
-    }
-
-    public boolean isShowNewOnly() {
-        return showNewOnly.get();
     }
 
     public BooleanProperty showNewOnlyProperty() {
@@ -308,8 +258,6 @@ public class FilterActionPanel {
         });
 
         filmLengthSlider = viewSettingsPane.filmLengthSliderNode._filmLengthSlider;
-
-        zeitraumProperty = viewSettingsPane.zeitraumSpinner.valueProperty();
     }
 
     private void setupThemaComboBox() {
@@ -324,7 +272,7 @@ public class FilterActionPanel {
 
     private void restoreConfigSettings() {
         viewSettingsPane.selectFilter(filterConfig.getCurrentFilter());
-        showOnlyHighQuality.set(filterConfig.isShowHdOnly());
+        showOnlyHighQuality.set(filterConfig.isShowHighQualityOnly());
         showSubtitlesOnly.set(filterConfig.isShowSubtitlesOnly());
         showNewOnly.set(filterConfig.isShowNewOnly());
         showBookMarkedOnly.set(filterConfig.isShowBookMarkedOnly());
@@ -338,29 +286,7 @@ public class FilterActionPanel {
         dontShowDuplicates.set(filterConfig.isDontShowDuplicates());
         viewSettingsPane.themaComboBox.setValue(filterConfig.getThema());
 
-        try {
-            double loadedMin = filterConfig.getFilmLengthMin();
-            if (loadedMin > filmLengthSlider.getHighValue()) {
-                filmLengthSlider.setHighValueChanging(true);
-                filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-                filmLengthSlider.setHighValueChanging(false);
-
-                filmLengthSlider.setLowValueChanging(true);
-                filmLengthSlider.setLowValue(loadedMin);
-                filmLengthSlider.setLowValueChanging(false);
-            } else {
-                filmLengthSlider.setLowValueChanging(true);
-                filmLengthSlider.setLowValue(loadedMin);
-                filmLengthSlider.setLowValueChanging(false);
-
-                filmLengthSlider.setHighValueChanging(true);
-                filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
-                filmLengthSlider.setHighValueChanging(false);
-            }
-
-        } catch (Exception exception) {
-            logger.debug("Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!", exception);
-        }
+        restoreFilmLengthSlider();
 
         try {
             viewSettingsPane.zeitraumSpinner.getValueFactory().setValue(filterConfig.getZeitraum());
@@ -371,15 +297,27 @@ public class FilterActionPanel {
         restoreSenderList();
     }
 
+    private void restoreFilmLengthSlider() {
+        try {
+            double loadedMin = filterConfig.getFilmLengthMin();
+            filmLengthSlider.setHighValueChanging(true);
+            filmLengthSlider.setHighValue(filterConfig.getFilmLengthMax());
+            filmLengthSlider.setHighValueChanging(false);
+
+            filmLengthSlider.setLowValueChanging(true);
+            filmLengthSlider.setLowValue(loadedMin);
+            filmLengthSlider.setLowValueChanging(false);
+        } catch (Exception exception) {
+            logger.debug("Beim wiederherstellen der Filter Einstellungen für die Filmlänge ist ein Fehler aufgetreten!", exception);
+        }
+    }
+
     private void restoreSenderList() {
         try {
-            Set<String> checkedChannels = filterConfig.getCheckedChannels();
-            Object[] channelArray = checkedChannels.toArray();
             final var checkModel = viewSettingsPane.senderCheckList.getCheckModel();
             checkModel.clearChecks();
             final var senderItems = viewSettingsPane.senderCheckList.getItems();
-            for (var item : channelArray) {
-                final String sender = item.toString();
+            for (var sender : filterConfig.getCheckedChannels()) {
                 if (senderItems.contains(sender)) {
                     checkModel.check(sender);
                 }
@@ -390,7 +328,7 @@ public class FilterActionPanel {
     }
 
     private void setupConfigListeners() {
-        showOnlyHighQuality.addListener((ov, oldVal, newValue) -> filterConfig.setShowHdOnly(newValue));
+        showOnlyHighQuality.addListener((ov, oldVal, newValue) -> filterConfig.setShowHighQualityOnly(newValue));
         showSubtitlesOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowSubtitlesOnly(newValue)));
         showBookMarkedOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowBookMarkedOnly(newValue)));
         showNewOnly.addListener(((ov, oldVal, newValue) -> filterConfig.setShowNewOnly(newValue)));
@@ -406,7 +344,7 @@ public class FilterActionPanel {
         filmLengthSlider.lowValueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setFilmLengthMin(newValue.doubleValue())));
         filmLengthSlider.highValueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setFilmLengthMax(newValue.doubleValue())));
 
-        zeitraumProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
+        viewSettingsPane.zeitraumSpinner.valueProperty().addListener(((ov, oldVal, newValue) -> filterConfig.setZeitraum(newValue)));
 
         checkedChannels.addListener((obs, oldList, newList) -> filterConfig.setCheckedChannels(new HashSet<>(newList)));
         themaProperty.addListener(((ov, oldVal, newValue) -> filterConfig.setThema(newValue)));

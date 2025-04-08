@@ -2,6 +2,7 @@ package mediathek.tool;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import org.apache.commons.configuration2.Configuration;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -26,7 +28,7 @@ public class FilterConfiguration {
         this(ApplicationConfiguration.getConfiguration());
     }
 
-    public FilterConfiguration(Configuration configuration) {
+    protected FilterConfiguration(Configuration configuration) {
         super();
         this.configuration = configuration;
         migrateOldFilterConfigurations();
@@ -54,7 +56,7 @@ public class FilterConfiguration {
 
                 () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MIN.getOldKey(), newFilter, Double.class, this::setFilmLengthMin),
 
-                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowHdOnly),
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowHighQualityOnly),
 
                 () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY.getOldKey(), newFilter, Boolean.class, this::setShowLivestreamsOnly),
 
@@ -97,11 +99,39 @@ public class FilterConfiguration {
         return false;
     }
 
-    public boolean isShowHdOnly() {
+    public boolean noFiltersAreSet() {
+        /*
+         * If conditions are met, no filmlength filter is set.
+         * return true if filtering is not needed, false if needed.
+         */
+        final BooleanSupplier filmLengthFilterIsNotSet = () -> {
+            var filmLengthMin = (long)getFilmLengthMin();
+            var filmLengthMax = (long)getFilmLengthMax();
+            return filmLengthMin == 0 && filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE;
+        };
+
+        return getCheckedChannels().isEmpty()
+                && getThema().isEmpty()
+                && filmLengthFilterIsNotSet.getAsBoolean()
+                && !isDontShowAbos()
+                && !isShowUnseenOnly()
+                && !isShowHighQualityOnly()
+                && !isShowSubtitlesOnly()
+                && !isShowLivestreamsOnly()
+                && !isShowNewOnly()
+                && !isShowBookMarkedOnly()
+                && !isDontShowTrailers()
+                && !isDontShowSignLanguage()
+                && !isDontShowAudioVersions()
+                && !isDontShowDuplicates()
+                && getZeitraum().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+    }
+
+    public boolean isShowHighQualityOnly() {
         return configuration.getBoolean(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getKey()), false);
     }
 
-    public FilterConfiguration setShowHdOnly(boolean showHdOnly) {
+    public FilterConfiguration setShowHighQualityOnly(boolean showHdOnly) {
         configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY.getKey()), showHdOnly);
         return this;
     }
@@ -240,7 +270,7 @@ public class FilterConfiguration {
             String json = objectMapper.writeValueAsString(newList);
             configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()), json);
 
-            LOG.info("Checked Channels gespeichert: {}", newList);
+            LOG.trace("Checked Channels gespeichert: {}", newList);
         } catch (Exception e) {
             LOG.error("Fehler beim Speichern der Checked Channels", e);
         }
@@ -374,7 +404,22 @@ public class FilterConfiguration {
     }
 
     protected enum FilterConfigurationKeys {
-        FILTER_PANEL_SHOW_HD_ONLY("filter.filter_%s.show.hd_only"), FILTER_PANEL_SHOW_SUBTITLES_ONLY("filter.filter_%s.show.subtitles_only"), FILTER_PANEL_SHOW_BOOK_MARKED_ONLY("filter.filter_%s.show.book_marked_only"), FILTER_PANEL_SHOW_NEW_ONLY("filter.filter_%s.show.new_only"), FILTER_PANEL_SHOW_UNSEEN_ONLY("filter.filter_%s.show.unseen_only"), FILTER_PANEL_SHOW_LIVESTREAMS_ONLY("filter.filter_%s.show.livestreams_only"), FILTER_PANEL_DONT_SHOW_ABOS("filter.filter_%s.dont_show.abos"), FILTER_PANEL_DONT_SHOW_TRAILERS("filter.filter_%s.dont_show.trailers"), FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE("filter.filter_%s.dont_show.sign_language"), FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.filter_%s.dont_show.audio_versions"), FILTER_PANEL_FILM_LENGTH_MIN("filter.filter_%s.film_length.min"), FILTER_PANEL_FILM_LENGTH_MAX("filter.filter_%s.film_length.max"), FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum"), FILTER_PANEL_DONT_SHOW_DUPLICATES("filter.filter_%s.dont_show_duplicates"), FILTER_PANEL_CHECKED_CHANNELS("filter.filter_%s.checked_channels"), FILTER_PANEL_THEMA("filter.filter_%s.thema");
+        FILTER_PANEL_SHOW_HD_ONLY("filter.filter_%s.show.hd_only"),
+        FILTER_PANEL_SHOW_SUBTITLES_ONLY("filter.filter_%s.show.subtitles_only"),
+        FILTER_PANEL_SHOW_BOOK_MARKED_ONLY("filter.filter_%s.show.book_marked_only"),
+        FILTER_PANEL_SHOW_NEW_ONLY("filter.filter_%s.show.new_only"),
+        FILTER_PANEL_SHOW_UNSEEN_ONLY("filter.filter_%s.show.unseen_only"),
+        FILTER_PANEL_SHOW_LIVESTREAMS_ONLY("filter.filter_%s.show.livestreams_only"),
+        FILTER_PANEL_DONT_SHOW_ABOS("filter.filter_%s.dont_show.abos"),
+        FILTER_PANEL_DONT_SHOW_TRAILERS("filter.filter_%s.dont_show.trailers"),
+        FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE("filter.filter_%s.dont_show.sign_language"),
+        FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.filter_%s.dont_show.audio_versions"),
+        FILTER_PANEL_FILM_LENGTH_MIN("filter.filter_%s.film_length.min"),
+        FILTER_PANEL_FILM_LENGTH_MAX("filter.filter_%s.film_length.max"),
+        FILTER_PANEL_ZEITRAUM("filter.filter_%s.zeitraum"),
+        FILTER_PANEL_DONT_SHOW_DUPLICATES("filter.filter_%s.dont_show_duplicates"),
+        FILTER_PANEL_CHECKED_CHANNELS("filter.filter_%s.checked_channels"),
+        FILTER_PANEL_THEMA("filter.filter_%s.thema");
         private final String key;
 
         FilterConfigurationKeys(final String key) {

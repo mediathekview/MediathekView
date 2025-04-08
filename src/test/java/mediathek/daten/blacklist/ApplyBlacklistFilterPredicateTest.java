@@ -16,16 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.filterpanel;
+package mediathek.daten.blacklist;
 
-/**
- * Store filmlength slider values.
- *
- * @param minLength in Minutes
- * @param maxLength in Minutes
- */
-public record FilmLengthSliderValues(long minLength, long maxLength) {
-    public boolean noFiltersAreSet() {
-        return minLength == 0 || maxLength == FilmLengthSlider.UNLIMITED_VALUE;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ApplyBlacklistFilterPredicateTest {
+
+    @Test
+    void mySplit() {
+        String input = "a,b,c,d";
+        var filter = new ApplyBlacklistFilterPredicate(new ListeBlacklist());
+        var result = filter.mySplit(input);
+        assertEquals("a", result[0]);
+        assertEquals("b", result[1]);
+        assertEquals("c", result[2]);
+        assertEquals("d", result[3]);
     }
 }

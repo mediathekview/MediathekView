@@ -22,7 +22,6 @@ import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.writer.FilmListWriter;
-import mediathek.gui.FilterSelectionComboBoxModel;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -33,6 +32,7 @@ import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
+import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel;
 import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
@@ -98,6 +98,7 @@ public class GuiFilme extends AGuiTabPanel {
     public final CopyUrlToClipboardAction copyHqUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY);
     public final CopyUrlToClipboardAction copyNormalUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL);
     protected final JTabbedPane psetButtonsTab = new JTabbedPane();
+    protected final FilterSelectionComboBoxModel filterSelectionComboBoxModel = new FilterSelectionComboBoxModel();
     private final BookmarkAddFilmAction bookmarkAddFilmAction = new BookmarkAddFilmAction();
     private final BookmarkRemoveFilmAction bookmarkRemoveFilmAction = new BookmarkRemoveFilmAction();
     private final BookmarkClearListAction bookmarkClearListAction = new BookmarkClearListAction();
@@ -114,10 +115,10 @@ public class GuiFilme extends AGuiTabPanel {
      * The JavaFx Film action popup panel.
      */
     private final FilterActionPanel filterActionPanel;
+    private final FilterConfiguration filterConfiguration = new FilterConfiguration();
+    private final FilmToolBar filmToolBar;
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
-    protected JComboBox<FilterDTO> filterSelectionComboBox = new JComboBox<>(new FilterSelectionComboBoxModel());
-    protected FilterVisibilityToggleButton btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
     protected PsetButtonsPanel psetButtonsPanel;
     private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     private boolean stopBeob;
@@ -126,6 +127,7 @@ public class GuiFilme extends AGuiTabPanel {
      * We perform model filtering in the background the keep UI thread alive.
      */
     private ListenableFuture<TableModel> modelFuture;
+
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         daten = aDaten;
         this.mediathekGui = mediathekGui;
@@ -150,8 +152,18 @@ public class GuiFilme extends AGuiTabPanel {
         setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
         setupPsetButtonsTab();
 
-        filterActionPanel = new FilterActionPanel(btnToggleFilterDialogVisibility);
-        add(new FilmToolBar(), BorderLayout.NORTH);
+        filmToolBar = new FilmToolBar(filterSelectionComboBoxModel,
+                bookmarkAddFilmAction,
+                bookmarkRemoveFilmAction,
+                bookmarkClearListAction,
+                manageBookmarkAction,
+                playFilmAction,
+                saveFilmAction,
+                searchField,
+                toggleFilterDialogVisibilityAction);
+        add(filmToolBar, BorderLayout.NORTH);
+
+        filterActionPanel = new FilterActionPanel(filmToolBar.getToggleFilterDialogVisibilityButton(), filterConfiguration);
 
         start_init();
 
@@ -167,6 +179,10 @@ public class GuiFilme extends AGuiTabPanel {
         MessageBus.getMessageBus().subscribe(this);
 
         setupActionListeners();
+    }
+
+    public FilterConfiguration getFilterConfiguration() {
+        return filterConfiguration;
     }
 
     public FilterActionPanel getFilterActionPanel() {
@@ -187,31 +203,22 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Handler
     public void handleTableModelChange(TableModelChangeEvent e) {
+        final Consumer<Boolean> function = (Boolean flag) -> {
+            playFilmAction.setEnabled(flag);
+            saveFilmAction.setEnabled(flag);
+            bookmarkAddFilmAction.setEnabled(flag);
+            bookmarkRemoveFilmAction.setEnabled(flag);
+            bookmarkClearListAction.setEnabled(flag);
+            manageBookmarkAction.setEnabled(flag);
+            filmToolBar.setEnabled(flag);
+        };
         if (e.active) {
-            SwingUtilities.invokeLater(() -> {
-                playFilmAction.setEnabled(false);
-                saveFilmAction.setEnabled(false);
-                bookmarkAddFilmAction.setEnabled(false);
-                bookmarkRemoveFilmAction.setEnabled(false);
-                bookmarkClearListAction.setEnabled(false);
-                manageBookmarkAction.setEnabled(false);
-                toggleFilterDialogVisibilityAction.setEnabled(false);
-                searchField.setEnabled(false);
-                filterSelectionComboBox.setEnabled(false);
-            });
+            SwingUtilities.invokeLater(() -> function.accept(false));
         } else {
             SwingUtilities.invokeLater(() -> {
-                playFilmAction.setEnabled(true);
-                saveFilmAction.setEnabled(true);
-                bookmarkAddFilmAction.setEnabled(true);
-                bookmarkRemoveFilmAction.setEnabled(true);
-                bookmarkClearListAction.setEnabled(true);
-                manageBookmarkAction.setEnabled(true);
-                toggleFilterDialogVisibilityAction.setEnabled(true);
-                searchField.setEnabled(true);
+                function.accept(true);
                 if (e.fromSearchField)
                     searchField.requestFocusInWindow();
-                filterSelectionComboBox.setEnabled(true);
             });
         }
     }
@@ -409,7 +416,7 @@ public class GuiFilme extends AGuiTabPanel {
     @Handler
     private void handleDownloadHistoryChangedEvent(DownloadHistoryChangedEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (filterActionPanel.isShowUnseenOnly()) {
+            if (filterConfiguration.isShowUnseenOnly()) {
                 MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
             } else {
                 tabelle.fireTableDataChanged(true);
@@ -510,7 +517,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
-                    filterActionPanel.isShowOnlyHighQuality() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+                    filterConfiguration.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
             DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
@@ -540,7 +547,7 @@ public class GuiFilme extends AGuiTabPanel {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             final String aufloesung;
-            if (filterActionPanel.isShowOnlyHighQuality()) {
+            if (filterConfiguration.isShowHighQualityOnly()) {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
@@ -660,7 +667,7 @@ public class GuiFilme extends AGuiTabPanel {
                 }
             });
 
-            filterActionPanel.zeitraumProperty()
+            filterActionPanel.getViewSettingsPane().zeitraumSpinner.valueProperty()
                     .addListener((ov, oV, nV) -> SwingUtilities.invokeLater(() -> {
                         if (!zeitraumTimer.isRunning())
                             zeitraumTimer.start();
@@ -709,14 +716,9 @@ public class GuiFilme extends AGuiTabPanel {
 
         var decoratedPool = daten.getDecoratedPool();
         modelFuture = decoratedPool.submit(() -> {
-            GuiModelHelper helper;
-            var searchFieldData = new SearchFieldData(searchField.getText(),
-                    searchField.getSearchMode());
-            if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                helper = new LuceneGuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
-            } else {
-                helper = new GuiFilmeModelHelper(filterActionPanel, historyController, searchFieldData);
-            }
+            var searchFieldData = new SearchFieldData(searchField.getText(), searchField.getSearchMode());
+            GuiModelHelper helper = GuiModelHelperFactory.createGuiModelHelper(
+                    historyController, searchFieldData, filterConfiguration);
             return helper.getFilteredTableModel();
         });
         Futures.addCallback(modelFuture,
@@ -749,6 +751,20 @@ public class GuiFilme extends AGuiTabPanel {
                 decoratedPool);
     }
 
+    static class GuiModelHelperFactory {
+        public static GuiModelHelper createGuiModelHelper(@NotNull SeenHistoryController historyController,
+                                                          @NotNull SearchFieldData searchFieldData,
+                                                          @NotNull FilterConfiguration filterConfig) {
+            GuiModelHelper helper;
+            if (Daten.getInstance().getListeFilmeNachBlackList() instanceof IndexedFilmList) {
+                helper = new LuceneGuiFilmeModelHelper(historyController, searchFieldData, filterConfig);
+            } else {
+                helper = new GuiFilmeModelHelper(historyController, searchFieldData, filterConfig);
+            }
+            return helper;
+        }
+    }
+
     static class NonRepeatingTimer extends Timer {
         public NonRepeatingTimer(ActionListener listener) {
             super(250, listener);
@@ -760,44 +776,7 @@ public class GuiFilme extends AGuiTabPanel {
 
     private static class FilterZeitraumEvent extends BaseEvent {}
 
-    static public class FilterVisibilityToggleButton extends JToggleButton {
-        public FilterVisibilityToggleButton(Action a) {
-            super(a);
-            setText("");
-            final boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
-            setSelected(visible);
-        }
-    }
-
-    private class FilmToolBar extends JToolBar {
-        public FilmToolBar() {
-            add(playFilmAction);
-            add(saveFilmAction);
-            addSeparator();
-
-            filterSelectionComboBox.setMaximumSize(new Dimension(150, 100));
-            filterSelectionComboBox.setEditable(false);
-            filterSelectionComboBox.setToolTipText("Aktiver Filter");
-            add(filterSelectionComboBox);
-            addSeparator();
-
-            add(new JLabel("Suche:"));
-            add(searchField);
-            addSeparator();
-
-            add(btnToggleFilterDialogVisibility);
-
-            addSeparator();
-            add(bookmarkAddFilmAction);
-            add(bookmarkRemoveFilmAction);
-            addSeparator();
-            add(bookmarkClearListAction);
-            addSeparator();
-            add(manageBookmarkAction);
-        }
-    }
-
-    private class BookmarkClearListAction extends AbstractAction {
+    public class BookmarkClearListAction extends AbstractAction {
         public BookmarkClearListAction() {
             putValue(Action.SHORT_DESCRIPTION, "Merkliste vollständig löschen");
             putValue(Action.NAME, "Merkliste vollständig löschen");
@@ -1225,7 +1204,7 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private class BookmarkAddFilmAction extends AbstractAction {
+    public class BookmarkAddFilmAction extends AbstractAction {
         public BookmarkAddFilmAction() {
             KeyStroke keyStroke;
             if (SystemUtils.IS_OS_MAC_OSX) {
@@ -1254,7 +1233,7 @@ public class GuiFilme extends AGuiTabPanel {
         }
     }
 
-    private class BookmarkRemoveFilmAction extends AbstractAction {
+    public class BookmarkRemoveFilmAction extends AbstractAction {
         public BookmarkRemoveFilmAction() {
             putValue(Action.SHORT_DESCRIPTION, "Ausgewählte Filme aus der Merkliste löschen");
             putValue(Action.NAME, "Ausgewählte Filme aus der Merkliste löschen");
