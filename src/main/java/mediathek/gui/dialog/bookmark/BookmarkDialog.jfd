@@ -82,9 +82,10 @@ new FormModel {
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "left"
 				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
-					"$columnCount": 2
-					"$rowCount": 3
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "insets 0,hidemode 3,gap 10 5"
+					"$columnConstraints": "[grow 1,fill][fill]"
+					"$rowConstraints": "[grow 1,fill][fill][grow 1,fill]"
 				} ) {
 					name: "bottomPanel"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -93,12 +94,14 @@ new FormModel {
 							name: "taDescription"
 							"editable": false
 						} )
-					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,grow"
+					} )
 					add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 						name: "hyperlink"
 						"text": "Link zur Webseite"
-					}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
-						"row": 2
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2,align left bottom,grow 0 0"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "right"
