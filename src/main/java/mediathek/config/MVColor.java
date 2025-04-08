@@ -55,7 +55,7 @@ public class MVColor {
     public static final int MVC_COLOR = 1;
     public static final int MVC_MAX = 2;
     private static final Color JTABLE_ALTERNATE_ROW_COLOR = new Color(247, 247, 247);
-    public ArrayList<MVC> liste = new ArrayList<>();
+    public final ArrayList<MVC> liste = new ArrayList<>();
 
     public MVColor() {
         liste.add(FILM_HISTORY);

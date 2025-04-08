@@ -2,9 +2,10 @@ package mediathek.tool;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mediathek.javafx.filterpanel.FilmLengthSlider;
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
+import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinner;
 import org.apache.commons.configuration2.Configuration;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class FilterConfiguration {
     protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
@@ -251,7 +251,8 @@ public class FilterConfiguration {
     }
 
     public String getZeitraum() {
-        return configuration.getString(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()), ZeitraumSpinner.UNLIMITED_VALUE);
+        return configuration.getString(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()),
+                ZeitraumSpinner.UNLIMITED_VALUE);
     }
 
     public FilterConfiguration setZeitraum(String zeitraum) {
@@ -264,13 +265,11 @@ public class FilterConfiguration {
         return parseJsonToSet(json);
     }
 
-    public FilterConfiguration setCheckedChannels(Set<String> newList) {
+    public FilterConfiguration setCheckedChannels(@NotNull Collection<String> newList) {
         try {
             var objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(newList);
             configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()), json);
-
-            LOG.trace("Checked Channels gespeichert: {}", newList);
         } catch (Exception e) {
             LOG.error("Fehler beim Speichern der Checked Channels", e);
         }
@@ -297,7 +296,7 @@ public class FilterConfiguration {
     private Set<String> parseJsonToSet(String json) {
         try {
             var objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, new TypeReference<Set<String>>() {
+            return objectMapper.readValue(json, new TypeReference<>() {
             });
         } catch (Exception e) {
             LOG.error("Fehler beim Konvertieren der alten Senderliste aus JSON", e);
@@ -345,6 +344,19 @@ public class FilterConfiguration {
         return getAvailableFilters().stream().map(FilterDTO::name).toList();
     }
 
+    public int getAvailableFilterCount() {
+        int count = 0;
+        var keys = configuration.getKeys();
+
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (key.startsWith(FILTER_PANEL_AVAILABLE_FILTERS)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public List<FilterDTO> getAvailableFilters() {
         List<String> availableFilterKeys = new ArrayList<>();
         configuration.getKeys().forEachRemaining(key -> {
@@ -352,7 +364,7 @@ public class FilterConfiguration {
                 availableFilterKeys.add(key);
             }
         });
-        return availableFilterKeys.stream().map(key -> new FilterDTO(UUID.fromString(key.split(KEY_UUID_SPLITERATOR)[1]), configuration.getProperty(key).toString())).collect(Collectors.toUnmodifiableList());
+        return availableFilterKeys.stream().map(key -> new FilterDTO(UUID.fromString(key.split(KEY_UUID_SPLITERATOR)[1]), configuration.getProperty(key).toString())).toList();
     }
 
     public String getFilterName(UUID id) {

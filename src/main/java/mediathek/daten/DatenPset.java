@@ -208,7 +208,7 @@ public class DatenPset implements Comparable<DatenPset> {
                 }
             }
             if (!listeProg.isEmpty() && ret == null) {
-                ret = listeProg.get(listeProg.size() - 1);
+                ret = listeProg.getLast();
             }
         }
         return ret;

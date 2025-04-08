@@ -1,4 +1,3 @@
 package mediathek.gui.messages
 
-class ShowSettingsDialogEvent : BaseEvent() {
-}
+class ShowSettingsDialogEvent : BaseEvent()

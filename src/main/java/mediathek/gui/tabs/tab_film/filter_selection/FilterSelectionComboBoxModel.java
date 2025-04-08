@@ -18,7 +18,6 @@
 
 package mediathek.gui.tabs.tab_film.filter_selection;
 
-import javafx.application.Platform;
 import mediathek.tool.FilterConfiguration;
 import mediathek.tool.FilterDTO;
 
@@ -34,7 +33,7 @@ public class FilterSelectionComboBoxModel extends DefaultComboBoxModel<FilterDTO
     public void setSelectedItem(Object anObject) {
         super.setSelectedItem(anObject);
         if (anObject != null) {
-            Platform.runLater(() -> filterConfiguration.setCurrentFilter((FilterDTO) anObject));
+            filterConfiguration.setCurrentFilter((FilterDTO) anObject);
         }
     }
 

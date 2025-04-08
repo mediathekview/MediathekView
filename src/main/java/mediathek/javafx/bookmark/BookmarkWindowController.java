@@ -12,11 +12,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.ContextMenuEvent;
@@ -32,8 +32,6 @@ import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.tabs.tab_film.GuiFilme;
-import mediathek.javafx.tool.JavaFxUtils;
-import mediathek.javafx.tool.TableViewColumnContextMenuHelper;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.TimerPool;
@@ -53,6 +51,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -145,6 +145,25 @@ public class BookmarkWindowController implements Initializable {
   public BookmarkWindowController() {
     listeBookmarkList = Daten.getInstance().getListeBookmarkList();
     listUpdated = false;
+  }
+
+  /**
+   * Invoke on the JavaFx thread and wait for it to return. Be very careful
+   * with this because this can cause deadlocks.
+   */
+  private void invokeInFxThreadAndWait(final Runnable run) {
+    if (Platform.isFxApplicationThread()) {
+      run.run();
+      return;
+    }
+
+    try {
+      FutureTask<Void> future = new FutureTask<>(run, null);
+      Platform.runLater(future);
+      future.get();
+    } catch (ExecutionException | InterruptedException e) {
+      logger.error("invokeInFxThreadAndWait() failed", e);
+    }
   }
 
   private static void setStageSize(Stage window) {
@@ -327,7 +346,7 @@ public class BookmarkWindowController implements Initializable {
         }
       }
       tbBookmarks.refresh();
-      JavaFxUtils.invokeInFxThreadAndWait(this::updateDisplay);
+      invokeInFxThreadAndWait(this::updateDisplay);
     });
 
     tbBookmarks.setItems(sortedBookmarkList);
@@ -562,7 +581,7 @@ public class BookmarkWindowController implements Initializable {
    * During first call a new window is created, for successive calls the existing window is reused
    */
   public void show() {
-    JavaFxUtils.invokeInFxThreadAndWait(() -> {
+    invokeInFxThreadAndWait(() -> {
       if (stage == null) {
         stage = new Stage();
         setStageSize(stage); // restore size

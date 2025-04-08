@@ -558,7 +558,7 @@ public class DialogEditDownload extends JDialog {
 
     private class BeobachterDocumentTextfeld implements DocumentListener {
 
-        int nr;
+        final int nr;
 
         public BeobachterDocumentTextfeld(int n) {
             nr = n;

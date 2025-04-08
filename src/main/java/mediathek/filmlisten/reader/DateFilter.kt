@@ -5,9 +5,8 @@ import mediathek.daten.ListeFilme
 import mediathek.tool.datum.DateUtil
 import java.time.LocalDate
 
-internal class DateFilter(listeFilme: ListeFilme, days: Long) : IDateFilter {
-    private val listeFilme: ListeFilme
-    private val cutoffDate: LocalDate
+internal class DateFilter(private val listeFilme: ListeFilme, days: Long) : IDateFilter {
+    private val cutoffDate: LocalDate = LocalDate.now().minusDays(days)
 
     private fun isBeforeOrEqual(date: LocalDate, compareToDate: LocalDate): Boolean {
         return !compareToDate.isAfter(date)
@@ -19,10 +18,5 @@ internal class DateFilter(listeFilme: ListeFilme, days: Long) : IDateFilter {
         if (film.isLivestream || isBeforeOrEqual(localDate, cutoffDate)) {
             listeFilme.add(film)
         }
-    }
-
-    init {
-        this.listeFilme = listeFilme
-        cutoffDate = LocalDate.now().minusDays(days)
     }
 }

@@ -8,7 +8,6 @@ import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -436,13 +435,10 @@ public class Main {
 
                 setupCpuAffinity();
 
-                Platform.setImplicitExit(false);
-
                 removeMediaDb();
                 deleteOldFilmDatabaseFiles();
                 deleteOldUserAgentsDatabase();
 
-                JFXHiddenApplication.launchApplication();
                 checkMemoryRequirements();
 
                 installSingleInstanceHandler();
@@ -470,6 +466,9 @@ public class Main {
             }
 
             printDirectoryPaths();
+
+            //prevent JavaFX from exiting after the last window closed
+            Platform.setImplicitExit(false);
 
             if (!isDebuggerAttached()) {
                 if (!Config.isSplashScreenDisabled()) {
@@ -616,8 +615,8 @@ public class Main {
     }
 
     private static void printDirectoryPaths() {
-        logger.trace("Programmpfad: " + GuiFunktionenProgramme.getPathToApplicationJar());
-        logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory());
+        logger.trace("Programmpfad: {}", GuiFunktionenProgramme.getPathToApplicationJar());
+        logger.info("Verzeichnis Einstellungen: {}", StandardLocations.getSettingsDirectory());
     }
 
     /**

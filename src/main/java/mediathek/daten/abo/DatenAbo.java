@@ -34,7 +34,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
-    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    public static final boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     private String[] irgendwoFilterPattern;
     private String[] themaFilterPattern;
     private String[] titelFilterPattern;

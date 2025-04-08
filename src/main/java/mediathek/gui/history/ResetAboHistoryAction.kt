@@ -3,7 +3,6 @@ package mediathek.gui.history
 import mediathek.config.Daten
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
-import javax.swing.Action
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 
@@ -19,6 +18,6 @@ class ResetAboHistoryAction(private val owner: JFrame) : AbstractAction() {
     }
 
     init {
-        putValue(Action.NAME, "Abo-Historie zurücksetzen...")
+        putValue(NAME, "Abo-Historie zurücksetzen...")
     }
 }

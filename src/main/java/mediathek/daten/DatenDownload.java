@@ -99,7 +99,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     private static final FastDateFormat sdf_datum_zeit = FastDateFormat.getInstance("dd.MM.yyyyHH:mm:ss");
     private static final FastDateFormat sdf_datum = FastDateFormat.getInstance("dd.MM.yyyy");
     private static final Logger logger = LogManager.getLogger(DatenDownload.class);
-    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    public static final boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
     public Datum datumFilm = new Datum(0);
     public DatenFilm film;
@@ -373,16 +373,13 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             writer.writeStartElement(TAG);
             writer.writeCharacters("\n");
             for (int i = 0; i < xmlMax; ++i) {
-                switch (i) {
-                    case DatenDownload.DOWNLOAD_GROESSE -> {
-                        var size = mVFilmSize.getSize();
-                        size /= FileSize.ONE_MiB;
-                        writeEntry(writer, DatenDownload.DOWNLOAD_GROESSE, Long.toString(size));
-                    }
-                    default -> {
-                        if (!arr[i].isEmpty()) {
-                            writeEntry(writer, i, arr[i]);
-                        }
+                if (i == DatenDownload.DOWNLOAD_GROESSE) {
+                    var size = mVFilmSize.getSize();
+                    size /= FileSize.ONE_MiB;
+                    writeEntry(writer, DatenDownload.DOWNLOAD_GROESSE, Long.toString(size));
+                } else {
+                    if (!arr[i].isEmpty()) {
+                        writeEntry(writer, i, arr[i]);
                     }
                 }
             }

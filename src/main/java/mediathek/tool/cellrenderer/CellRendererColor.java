@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class CellRendererColor extends DefaultTableCellRenderer {
     private static final Logger logger = LogManager.getLogger();
 

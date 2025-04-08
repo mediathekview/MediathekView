@@ -203,10 +203,10 @@ public class PanelPsetKurz extends PanelVorlage {
 
     private class ZielBeobachter implements ActionListener {
 
-        JTextField textField;
+        final JTextField textField;
         String[] arr;
-        int idx;
-        boolean file;
+        final int idx;
+        final boolean file;
 
         public ZielBeobachter(JTextField tt, String[] aarr, int iidx) {
             textField = tt;
