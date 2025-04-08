@@ -132,7 +132,7 @@ public class GuiDownloads extends AGuiTabPanel {
         super();
         daten = aDaten;
         this.mediathekGui = mediathekGui;
-        descriptionPanel = new FilmDescriptionPanel(this);
+        descriptionPanel = new FilmDescriptionPanel();
 
 
         initComponents();
@@ -144,7 +144,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupDownloadListTable();
 
-        setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
+        setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, this::getCurrentlySelectedFilm);
 
         init();
 

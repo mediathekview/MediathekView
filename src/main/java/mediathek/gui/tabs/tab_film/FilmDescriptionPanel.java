@@ -5,7 +5,6 @@ import mediathek.config.Konstanten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
-import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.CopyToClipboardAction;
 import mediathek.tool.GuiFunktionen;
@@ -25,9 +24,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class FilmDescriptionPanel extends JPanel {
-    private final AGuiTabPanel currentTab;
     private final JScrollPane scrollPane1 = new JScrollPane();
     private final JPopupMenu popupMenu = new JPopupMenu();
     private final SenderIconLabel lblIcon = new SenderIconLabel();
@@ -37,8 +37,7 @@ public class FilmDescriptionPanel extends JPanel {
     private final JXHyperlink hyperlink = new JXHyperlink();
     private DatenFilm currentFilm;
 
-    public FilmDescriptionPanel(@NotNull AGuiTabPanel currentTab) {
-        this.currentTab = currentTab;
+    public FilmDescriptionPanel() {
 
         initComponents();
 
@@ -150,11 +149,11 @@ public class FilmDescriptionPanel extends JPanel {
         add(hyperlink, new CC().cell(1, 3));
     }
 
-    public void install(@NotNull JTabbedPane tabbedPane, @NotNull JTable tabelle) {
+    public void install(@NotNull JTabbedPane tabbedPane, @NotNull JTable tabelle, @NotNull Supplier<Optional<DatenFilm>> filmSupplier) {
         tabbedPane.add("Beschreibung", this);
 
         tabelle.getSelectionModel().addListSelectionListener(e ->
-                currentTab.getCurrentlySelectedFilm().ifPresentOrElse(film -> {
+                filmSupplier.get().ifPresentOrElse(film -> {
                     showFilmDescription(film);
                     currentFilm = film;
                 }, () -> {
