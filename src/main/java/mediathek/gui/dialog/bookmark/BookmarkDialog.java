@@ -29,44 +29,28 @@ import static mediathek.config.StandardLocations.getBookmarkFilePath;
  * @author Markus
  */
 public class BookmarkDialog extends JDialog {
+
+  private static BookmarkDialog instance;
+
   enum FilterState {
-    STATE1, STATE2, STATE3
+    STATE1, STATE2, STATE3;
   }
   private static final Logger logger = LogManager.getLogger();
   private static final String JSON_DATEI = getBookmarkFilePath().toString();
   private final BookmarkModel model;
   //private int filterState; // nimm enum dafür! -> Typsicherheit
   private FilterState filterState; // Beispiel!
-
-  /*
-  Warum hast Du den komplexesten Layout Manager MigLayout genommen um den Dialog zu bauen?
-  Und dann noch vergewaltigt.
-  Ein Panel als Platzhalter in der Toolbar zu verwenden ist scheiße. Das sieht in der Größe ggf gut aus,
-  wenn man resized geht das ganze schon in die Hose.
-  Dann zig Reihen deren Logik sich mir nicht erschlossen hat. Der Splitter hat auch nicht richtig funktioniert u.a. wegen der
-  sinnlosen rows usw.
-  Ich hab das ganze nun weggeworfen und mit BorderLayout realisiert. Wenn das JTabbedPane ein/ausgebendet wird erzielt das denselben
-  Effekt und das DescriptionPanel später wird eh nicht resized.
-
-  Eigentlich besteht der Dialog nur aus 3 Teilen:
-   oben: Toolbar
-   mitte: (soll den Dialog primär ausfüllen): Tabelle
-   unten: Filmbeschreibungspanel bei Bedarf
-
-   Hier ist BorderLayout NORTH/CENTER/SOUTH deutlich einfacher anzuwenden und zu debuggen. Generiert auch weniger Code.
-   */
   public BookmarkDialog(Window owner) {
     super(owner);
+    instance = this;
     initComponents();
 
     //deine bookmarks Referenz ist überflüssig wenn man ein wenig anders herangeht. so verwirrt der code auch nicht mehr
     model = new BookmarkModel(Daten.getInstance().getListeBookmark().getBookmarks());
     tabelle.setModel(model);
     initActions();
-    initIcons();
-    //filterState = -1;
     filterState = FilterState.STATE1;
-
+tabbedPane1.remove(0);
     /*
      * Der key ist schlechter Stil. So kannst Du später nie sauber nach Referenzen suchen.
      * public static final String APPLICATION_UI_BOOKMARKLIST_DETAILS = APPLICATION_UI_BOOKMARKLIST + ".details";
@@ -79,7 +63,7 @@ public class BookmarkDialog extends JDialog {
     descriptionPanel.install(tabbedPane1, tabelle, () -> {
       int selectedRow = tabelle.getSelectedRow();
       if (selectedRow < 0) {
-        return Optional.empty(); // nichts ausgewählt
+        return Optional.empty();
       }
       int modelRow = tabelle.convertRowIndexToModel(selectedRow);
 
@@ -91,21 +75,17 @@ public class BookmarkDialog extends JDialog {
         return Optional.empty();
       }
 
-      DatenFilm datenFilm = bookmark.getDatenFilm(); // oder wie auch immer du's holst
+      DatenFilm datenFilm = bookmark.getDatenFilm();
 
       return Optional.ofNullable(datenFilm);
     });
 
   }
 
-  private void initIcons() {
-    //TODO finde ich keinen guten Stil, da Logik und setup getrennt sind, das icon kann gerne in initActions rutschen
-    btnDeleteEntry.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
-    btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
-    btnEditNote.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
-    btnSaveList.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
-    btnShowDetails.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
-    btnFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+  public static void refresh() {
+    if (instance != null) {
+      instance.getOwner().repaint();
+    }
   }
 
   private void initComponents() {
@@ -183,7 +163,7 @@ public class BookmarkDialog extends JDialog {
 
       //---- tabelle ----
       tabelle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      tabelle.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      tabelle.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
       scrollPane1.setViewportView(tabelle);
     }
     contentPane.add(scrollPane1, BorderLayout.CENTER);
@@ -193,6 +173,12 @@ public class BookmarkDialog extends JDialog {
   }
 
   private void initActions() {
+    btnDeleteEntry.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
+    btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
+    btnEditNote.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen.svg"));
+    btnSaveList.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/floppy-disk.svg"));
+    btnShowDetails.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-info.svg"));
+    btnFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
     // Löschen
     btnDeleteEntry.addActionListener(e -> {
       int selectedRow = tabelle.getSelectedRow();
@@ -303,6 +289,10 @@ public class BookmarkDialog extends JDialog {
     }
   }
 
+  public static BookmarkModel getModel(){
+    return (BookmarkModel) tabelle.getModel();
+  }
+
   /*private void btnFilterAction(ActionEvent e) {
     if (++filterState > 2) {
       filterState = 0;
@@ -322,6 +312,7 @@ public class BookmarkDialog extends JDialog {
     refresh();
   }*/
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
+
   // Generated using JFormDesigner Educational license - Markus Jannek
   private JToolBar toolBar;
   private JButton btnDeleteEntry;
@@ -337,6 +328,6 @@ public class BookmarkDialog extends JDialog {
   private JLabel taDescription;
   private JXHyperlink hyperlink;
   private JScrollPane scrollPane1;
-  private JTable tabelle;
+  private static JTable tabelle;
   // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
