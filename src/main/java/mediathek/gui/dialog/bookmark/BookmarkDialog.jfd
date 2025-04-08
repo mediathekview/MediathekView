@@ -49,13 +49,11 @@ new FormModel {
 					"minimumSize": new java.awt.Dimension( 315, 150 )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
-						"text": "Hier kommt später mal ein FilmDescriptionPanel rein. Das muss nur noch angepasst werden da es schon existiert."
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "Center"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "taDescription"
-						"text": "Simuliert deine Beschreibung"
 					}, new FormLayoutConstraints( class java.lang.String ) {
 						"value": "North"
 					} )

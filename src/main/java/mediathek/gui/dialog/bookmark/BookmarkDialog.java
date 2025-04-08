@@ -5,8 +5,11 @@
 package mediathek.gui.dialog.bookmark;
 
 import java.util.List;
+import java.util.Optional;
 import mediathek.config.Daten;
+import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
@@ -70,6 +73,29 @@ public class BookmarkDialog extends JDialog {
      * ist okay, danach kann man dann auch entspannt suchen. Der Rest ist suboptimal.
      */
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
+
+    FilmDescriptionPanel descriptionPanel = new FilmDescriptionPanel();
+
+    descriptionPanel.install(tabbedPane1, tabelle, () -> {
+      int selectedRow = tabelle.getSelectedRow();
+      if (selectedRow < 0) {
+        return Optional.empty(); // nichts ausgewählt
+      }
+      int modelRow = tabelle.convertRowIndexToModel(selectedRow);
+
+      BookmarkModel model = (BookmarkModel) tabelle.getModel();
+
+      DatenBookmark bookmark = (DatenBookmark) model.getValueAt(modelRow,BookmarkModel.BOOKMARK_REF);
+
+      if (bookmark == null) {
+        return Optional.empty();
+      }
+
+      DatenFilm datenFilm = bookmark.getDatenFilm(); // oder wie auch immer du's holst
+
+      return Optional.ofNullable(datenFilm);
+    });
+
   }
 
   private void initIcons() {
@@ -84,7 +110,7 @@ public class BookmarkDialog extends JDialog {
 
   private void initComponents() {
     // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-    // Generated using JFormDesigner non-commercial license
+    // Generated using JFormDesigner Educational license - Markus Jannek
     toolBar = new JToolBar();
     btnDeleteEntry = new JButton();
     btnMarkViewed = new JButton();
@@ -103,68 +129,62 @@ public class BookmarkDialog extends JDialog {
 
     //======== this ========
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    setTitle("Merkliste verwalten"); //NON-NLS
+    setTitle("Merkliste verwalten");
     setPreferredSize(new Dimension(800, 400));
     var contentPane = getContentPane();
     contentPane.setLayout(new BorderLayout());
 
     //======== toolBar ========
     {
-        toolBar.setFloatable(false);
+      toolBar.setFloatable(false);
 
-        //---- btnDeleteEntry ----
-        btnDeleteEntry.setToolTipText("Aus der Merkliste l\u00f6schen"); //NON-NLS
-        toolBar.add(btnDeleteEntry);
-        toolBar.add(btnMarkViewed);
+      //---- btnDeleteEntry ----
+      btnDeleteEntry.setToolTipText("Aus der Merkliste l\u00f6schen");
+      toolBar.add(btnDeleteEntry);
+      toolBar.add(btnMarkViewed);
 
-        //---- btnEditNote ----
-        btnEditNote.setToolTipText("Anmerkungen bearbeiten"); //NON-NLS
-        toolBar.add(btnEditNote);
-        toolBar.add(hSpacer1);
+      //---- btnEditNote ----
+      btnEditNote.setToolTipText("Anmerkungen bearbeiten");
+      toolBar.add(btnEditNote);
+      toolBar.add(hSpacer1);
 
-        //---- btnSaveList ----
-        btnSaveList.setToolTipText("Ge\u00e4nderte Merkliste abspeichern"); //NON-NLS
-        toolBar.add(btnSaveList);
-        toolBar.addSeparator();
+      //---- btnSaveList ----
+      btnSaveList.setToolTipText("Ge\u00e4nderte Merkliste abspeichern");
+      toolBar.add(btnSaveList);
+      toolBar.addSeparator();
 
-        //---- btnShowDetails ----
-        btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen"); //NON-NLS
-        toolBar.add(btnShowDetails);
-        toolBar.add(btnFilter);
+      //---- btnShowDetails ----
+      btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen");
+      toolBar.add(btnShowDetails);
+      toolBar.add(btnFilter);
     }
     contentPane.add(toolBar, BorderLayout.NORTH);
 
     //======== tabbedPane1 ========
     {
 
-        //======== panel1 ========
-        {
-            panel1.setMinimumSize(new Dimension(315, 150));
-            panel1.setLayout(new BorderLayout());
+      //======== panel1 ========
+      {
+        panel1.setMinimumSize(new Dimension(315, 150));
+        panel1.setLayout(new BorderLayout());
+        panel1.add(label1, BorderLayout.CENTER);
+        panel1.add(taDescription, BorderLayout.NORTH);
 
-            //---- label1 ----
-            label1.setText("Hier kommt sp\u00e4ter mal ein FilmDescriptionPanel rein. Das muss nur noch angepasst werden da es schon existiert."); //NON-NLS
-            panel1.add(label1, BorderLayout.CENTER);
-
-            //---- taDescription ----
-            taDescription.setText("Simuliert deine Beschreibung"); //NON-NLS
-            panel1.add(taDescription, BorderLayout.NORTH);
-
-            //---- hyperlink ----
-            hyperlink.setText("Link zur Webseite"); //NON-NLS
-            panel1.add(hyperlink, BorderLayout.SOUTH);
-        }
-        tabbedPane1.addTab("Beschreibung", panel1); //NON-NLS
+        //---- hyperlink ----
+        hyperlink.setText("Link zur Webseite");
+        panel1.add(hyperlink, BorderLayout.SOUTH);
+      }
+      tabbedPane1.addTab("Beschreibung", panel1);
     }
     contentPane.add(tabbedPane1, BorderLayout.SOUTH);
 
     //======== scrollPane1 ========
     {
 
-        //---- tabelle ----
-        tabelle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tabelle.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        scrollPane1.setViewportView(tabelle);
+      //---- tabelle ----
+      tabelle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      tabelle.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      scrollPane1.setViewportView(tabelle);
     }
     contentPane.add(scrollPane1, BorderLayout.CENTER);
     pack();
@@ -302,7 +322,7 @@ public class BookmarkDialog extends JDialog {
     refresh();
   }*/
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-  // Generated using JFormDesigner non-commercial license
+  // Generated using JFormDesigner Educational license - Markus Jannek
   private JToolBar toolBar;
   private JButton btnDeleteEntry;
   private JButton btnMarkViewed;
