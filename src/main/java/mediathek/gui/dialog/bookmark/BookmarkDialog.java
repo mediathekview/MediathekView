@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import mediathek.config.Daten;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.daten.bookmark.ListeBookmark;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -40,14 +41,14 @@ public class BookmarkDialog extends JDialog {
 
   private static final Logger logger = LogManager.getLogger();
   private static final String JSON_DATEI = getBookmarkFilePath().toString();
-  private List<DatenBookmark> bookmarks;
+  private ListeBookmark bookmarks;
   private BookmarkModel model;
   private int filterState;
   private int divposition;
 
   public BookmarkDialog(Window owner) {
     super(owner);
-    bookmarks = ladeBookmarks(JSON_DATEI);
+    bookmarks = Daten.getInstance().getListeBookmark();
     model = new BookmarkModel(bookmarks);
     initComponents();
     tabelle.setModel(model);
@@ -208,7 +209,7 @@ public class BookmarkDialog extends JDialog {
             "Löschen bestätigen", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
           model.getBookmarks().remove(modelRow);
-          bookmarks.remove(bookmark); // auch in Original-Liste entfernen
+          bookmarks.getBookmarks().remove(bookmark); // auch in Original-Liste entfernen
         }
       } else {
         JOptionPane.showMessageDialog(this, "Bitte erst einen Eintrag auswählen.", "Hinweis", JOptionPane.INFORMATION_MESSAGE);
@@ -217,7 +218,7 @@ public class BookmarkDialog extends JDialog {
 
     // Speichern
     btnSaveList.addActionListener(e -> {
-      speichereBookmarks(bookmarks, JSON_DATEI);
+     bookmarks.saveToFile();
       JOptionPane.showMessageDialog(this, "Merkliste gespeichert.", "Info", JOptionPane.INFORMATION_MESSAGE);
     });
 
@@ -309,14 +310,6 @@ public class BookmarkDialog extends JDialog {
     }
   }
 
-  private static void speichereBookmarks(List<DatenBookmark> bookmarks, String pfad) {
-    ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    try {
-      mapper.writeValue(new File(pfad), new ListeBookmark(bookmarks));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
   /*private void btnFilterAction(ActionEvent e) {
     if (++filterState > 2) {
       filterState = 0;
