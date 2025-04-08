@@ -15,8 +15,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.*;
-import mediathek.daten.bookmark.DatenBookmark;
-import mediathek.tool.datum.Datum;
 import net.miginfocom.swing.*;
 import org.jdesktop.swingx.*;
 

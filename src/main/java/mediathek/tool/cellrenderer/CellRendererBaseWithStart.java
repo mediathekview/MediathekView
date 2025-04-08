@@ -5,7 +5,6 @@ import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.CompoundIcon;
 import mediathek.tool.MessageBus;

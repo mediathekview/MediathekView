@@ -2,7 +2,7 @@ package mediathek.daten;
 
 import mediathek.config.Config;
 import mediathek.daten.abo.DatenAbo;
-import mediathek.daten.bookmark.DatenBookmark;
+import mediathek.gui.dialog.bookmark.DatenBookmark;
 import mediathek.tool.FileSize;
 import mediathek.tool.FilmSize;
 import mediathek.tool.GermanStringSorter;

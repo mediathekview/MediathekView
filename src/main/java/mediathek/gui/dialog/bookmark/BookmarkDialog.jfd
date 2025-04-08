@@ -3,16 +3,14 @@ JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.6" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-			"$layoutConstraints": "hidemode 3"
-			"$columnConstraints": "[97,fill][789,fill]"
-			"$rowConstraints": "[][213][]"
-		} ) {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"defaultCloseOperation": 2
 			"title": "Merkliste verwalten"
+			"preferredSize": new java.awt.Dimension( 800, 400 )
 			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
 				name: "toolBar"
+				"floatable": false
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnDeleteEntry"
 					"toolTipText": "Aus der Merkliste löschen"
@@ -24,12 +22,8 @@ new FormModel {
 					name: "btnEditNote"
 					"toolTipText": "Anmerkungen bearbeiten"
 				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-					"$layoutConstraints": "hidemode 3,alignx center"
-					"$columnConstraints": "[fill][fill]"
-					"$rowConstraints": "[][][]"
-				} ) {
-					name: "panel1"
+				add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+					name: "hSpacer1"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnSaveList"
@@ -45,73 +39,51 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnFilter"
 				} )
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 0 2 1"
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
 			} )
-			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
-				name: "splitPane"
-				"orientation": 0
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "tableScrollPane"
-					add( new FormComponent( "javax.swing.JTable" ) {
-						name: "tabelle"
-						"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
-							add( new java.util.Vector {
-								add( null )
-								add( null )
-							} )
-							add( new java.util.Vector {
-								add( null )
-								add( null )
-							} )
-						}, new java.util.Vector {
-							add( null )
-							add( null )
-						}, new java.util.Vector {
-							add( null )
-							add( null )
-						}, new java.util.Vector {
-							add( null )
-							add( null )
-						}, new java.util.Vector {
-							add( null )
-							add( null )
-						} )
-						"selectionMode": 1
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "panel1"
+					"minimumSize": new java.awt.Dimension( 315, 150 )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Hier kommt später mal ein FilmDescriptionPanel rein. Das muss nur noch angepasst werden da es schon existiert."
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
 					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "left"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-					"$layoutConstraints": "insets 0,hidemode 3,gap 10 5"
-					"$columnConstraints": "[grow 1,fill][fill]"
-					"$rowConstraints": "[grow 1,fill][fill][grow 1,fill]"
-				} ) {
-					name: "bottomPanel"
-					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "taScrollPane"
-						add( new FormComponent( "javax.swing.JTextArea" ) {
-							name: "taDescription"
-							"editable": false
-						} )
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 0,grow"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "taDescription"
+						"text": "Simuliert deine Beschreibung"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "North"
 					} )
 					add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 						name: "hyperlink"
 						"text": "Link zur Webseite"
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 2,align left bottom,grow 0 0"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
 					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "right"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Beschreibung"
 				} )
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 1 2 2"
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "South"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JTable" ) {
+					name: "tabelle"
+					"selectionMode": 0
+					"autoResizeMode": 0
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 900, 260 )
+			"size": new java.awt.Dimension( 900, 525 )
 		} )
 	}
 }
