@@ -20,6 +20,7 @@ public class DatenBookmark {
     private String expiry;
     private boolean willExpire;
   private String dauer;
+  private String description;
 
   @JsonIgnore private DatenFilm filmdata;
 
@@ -30,15 +31,16 @@ public class DatenBookmark {
     public DatenBookmark(DatenFilm filmdata) {
         this();
         this.url = filmdata.getUrlNormalQuality();
-    this.thema = filmdata.getThema();
+      this.thema = filmdata.getThema();
         this.sender = filmdata.getSender();
         this.titel = filmdata.getTitle();
-    this.sendDate = filmdata.getSendeDatum();
+      this.sendDate = filmdata.getSendeDatum();
         this.highQualityUrl = filmdata.getHighQualityUrl();
         this.urlKlein = filmdata.getLowQualityUrl();
         this.filmdata = filmdata;
     this.dauer = filmdata.getFilmLengthAsString();
         this.willExpire = false;
+        this.description = filmdata.getDescription();
     }
 
   // --- Getter/Setter für JSON & JTable-Nutzung ---
@@ -161,8 +163,11 @@ public class DatenBookmark {
     return filmdata != null && filmdata.isLivestream();
     }
 
-    @JsonIgnore
-    public String getExtendedDescription() {
-    return filmdata.getDescription();
-    }
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
 }

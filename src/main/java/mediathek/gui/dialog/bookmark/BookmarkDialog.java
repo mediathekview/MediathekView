@@ -20,11 +20,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
-import com.intellij.uiDesigner.core.*;
 import mediathek.daten.bookmark.DatenBookmark;
 import mediathek.daten.bookmark.ListeBookmark;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.javafx.bookmark.BookmarkData;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
@@ -167,7 +165,15 @@ public class BookmarkDialog extends JDialog {
 
       //======== bottomPanel ========
       {
-        bottomPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        bottomPanel.setLayout(new MigLayout(
+          "insets 0,hidemode 3,gap 10 5",
+          // columns
+          "[grow 1,fill]" +
+          "[fill]",
+          // rows
+          "[grow 1,fill]" +
+          "[fill]" +
+          "[grow 1,fill]"));
 
         //======== taScrollPane ========
         {
@@ -176,19 +182,11 @@ public class BookmarkDialog extends JDialog {
           taDescription.setEditable(false);
           taScrollPane.setViewportView(taDescription);
         }
-        bottomPanel.add(taScrollPane, new GridConstraints(0, 0, 1, 1,
-          GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
-          GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-          GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-          null, null, null));
+        bottomPanel.add(taScrollPane, "cell 0 0,grow");
 
         //---- hyperlink ----
         hyperlink.setText("Link zur Webseite");
-        bottomPanel.add(hyperlink, new GridConstraints(2, 0, 1, 1,
-          GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
-          GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-          GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-          null, null, null));
+        bottomPanel.add(hyperlink, "cell 0 2,align left bottom,grow 0 0");
       }
       splitPane.setBottomComponent(bottomPanel);
     }
@@ -222,6 +220,25 @@ public class BookmarkDialog extends JDialog {
       speichereBookmarks(bookmarks, JSON_DATEI);
       JOptionPane.showMessageDialog(this, "Merkliste gespeichert.", "Info", JOptionPane.INFORMATION_MESSAGE);
     });
+
+    // Info anzeigen
+    btnShowDetails.addActionListener(e -> {
+      if (btnShowDetails.isSelected()) {
+        int selectedRow = tabelle.getSelectedRow();
+        if (selectedRow >= 0) {
+          int modelRow = tabelle.convertRowIndexToModel(selectedRow);
+          DatenBookmark bookmark = model.getBookmarks().get(modelRow);
+          taDescription.setText(bookmark.getDescription() != null ? bookmark.getDescription() : "");
+        } else {
+          taDescription.setText("Kein Eintrag ausgewählt.");
+        }
+        taDescription.setVisible(true);
+      } else {
+        taDescription.setText("");
+        taDescription.setVisible(false);
+      }
+    });
+
 
     // Tabelle: Auswahl-Listener für Hyperlink Tooltip
     tabelle.getSelectionModel().addListSelectionListener(e -> {
