@@ -36,7 +36,6 @@ import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
-import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.javafx.filterpanel.FilterActionPanel;
 import mediathek.javafx.filterpanel.SearchControlFieldMode;
 import mediathek.javafx.tool.JavaFxUtils;
@@ -120,7 +119,6 @@ public class GuiFilme extends AGuiTabPanel {
     public ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected SearchField searchField;
     protected PsetButtonsPanel psetButtonsPanel;
-    private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     private boolean stopBeob;
     private MVFilmTable tabelle;
     /**
@@ -195,7 +193,7 @@ public class GuiFilme extends AGuiTabPanel {
      */
     private void updateBookmarkListAndRefresh(List<DatenFilm> filmList)
     {
-        var bookmarkList = Daten.getInstance().getListeBookmarkList();
+        var bookmarkList = Daten.getInstance().getListeBookmark();
         bookmarkList.checkAndBookmarkMovies(filmList);
         bookmarkList.saveToFile();
         repaint();
@@ -526,7 +524,7 @@ public class GuiFilme extends AGuiTabPanel {
     /**
      * If necessary instantiate and show the bookmark window
      */
-    public void showManageBookmarkWindow() {
+   /* public void showManageBookmarkWindow() {
         Platform.runLater(() -> {
             if (bookmarkWindowController.isEmpty()) {
                 bookmarkWindowController = Optional.of(new BookmarkWindowController());
@@ -534,7 +532,7 @@ public class GuiFilme extends AGuiTabPanel {
             }
             bookmarkWindowController.get().show();
         });
-    }
+    }*/
 
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
@@ -561,7 +559,7 @@ public class GuiFilme extends AGuiTabPanel {
      * Cleanup during shutdown
      */
     public void saveSettings() {
-        bookmarkWindowController.ifPresent(BookmarkWindowController::saveSettings);
+       /* bookmarkWindowController.ifPresent(BookmarkWindowController::saveSettings);*/
     }
 
     /**
@@ -795,7 +793,7 @@ public class GuiFilme extends AGuiTabPanel {
                     updateBookmarkListAndRefresh(list);
                 }
                 //delete leftover items which have no corresponding DatenFilm objects anymore -> outdated
-                daten.getListeBookmarkList().clear();
+                daten.getListeBookmark().clear();
                 JOptionPane.showMessageDialog(mediathekGui, "Merkliste wurde gelöscht.", Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
             }        }
     }

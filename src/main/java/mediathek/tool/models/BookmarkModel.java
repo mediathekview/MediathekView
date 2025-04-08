@@ -3,19 +3,20 @@ package mediathek.tool.models;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 import mediathek.daten.bookmark.DatenBookmark;
+import mediathek.daten.bookmark.ListeBookmark;
 
 public class BookmarkModel extends AbstractTableModel {
 
   private final String[] columnNames = { "Sender", "Thema", "Titel", "Dauer", "Sendedatum", "","","URL", "Verfügbar bis", "Notiz" };
-  private final List<DatenBookmark> bookmarks;
+  private final ListeBookmark bookmarks;
 
-  public BookmarkModel(List<DatenBookmark> bookmarks) {
+  public BookmarkModel(ListeBookmark bookmarks) {
     this.bookmarks = bookmarks;
   }
 
   @Override
   public int getRowCount() {
-    return bookmarks.size();
+    return bookmarks.getBookmarks().size();
   }
 
   @Override
@@ -30,7 +31,7 @@ public class BookmarkModel extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
-    DatenBookmark bookmark = bookmarks.get(rowIndex);
+    DatenBookmark bookmark = bookmarks.getBookmarks().get(rowIndex);
     switch (columnIndex) {
       case 0: return bookmark.getSender();
       case 1: return bookmark.getThema();
@@ -49,7 +50,7 @@ public class BookmarkModel extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int col) {
-    DatenBookmark bm = bookmarks.get(row);
+    DatenBookmark bm = bookmarks.getBookmarks().get(row);
     switch (col) {
       case 0 -> bm.setSeen((Boolean) value);
       case 1 -> bm.setTitel((String) value);
@@ -66,6 +67,6 @@ public class BookmarkModel extends AbstractTableModel {
   }
 
   public List<DatenBookmark> getBookmarks() {
-    return bookmarks;
+    return bookmarks.getBookmarks();
   }
 }
