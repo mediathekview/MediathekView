@@ -11,7 +11,7 @@ import mediathek.controller.history.AboHistoryController;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
-import mediathek.daten.bookmark.ListeBookmark;
+import mediathek.gui.dialog.bookmark.ListeBookmark;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.duplicates.FilmStatistics;
 import mediathek.tool.ReplaceList;

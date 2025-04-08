@@ -2,8 +2,8 @@ package mediathek.tool.models;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
-import mediathek.daten.bookmark.DatenBookmark;
-import mediathek.daten.bookmark.ListeBookmark;
+import mediathek.gui.dialog.bookmark.DatenBookmark;
+import mediathek.gui.dialog.bookmark.ListeBookmark;
 
 public class BookmarkModel extends AbstractTableModel {
 

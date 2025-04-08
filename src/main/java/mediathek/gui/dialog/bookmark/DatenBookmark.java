@@ -1,9 +1,8 @@
-package mediathek.daten.bookmark;
+package mediathek.gui.dialog.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import mediathek.daten.DatenFilm;
-import mediathek.gui.dialog.bookmark.BookmarkDateDiff;
 
 /**
  * Bookmark data definition used to store movies

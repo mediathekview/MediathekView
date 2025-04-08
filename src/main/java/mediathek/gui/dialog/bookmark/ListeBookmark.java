@@ -1,4 +1,4 @@
-package mediathek.daten.bookmark;
+package mediathek.gui.dialog.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,11 +41,6 @@ public class ListeBookmark {
   @JsonGetter("bookmarks")
   public List<DatenBookmark> getBookmarks() {
     return bookmarks;
-  }
-
-  @JsonIgnore
-  public int getNbOfEntries() {
-    return bookmarks.size();
   }
 
   public void clear() {
