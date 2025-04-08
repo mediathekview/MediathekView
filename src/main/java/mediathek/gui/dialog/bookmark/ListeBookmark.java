@@ -74,8 +74,11 @@ public class ListeBookmark {
         for (DatenFilm movie : addList) {
           DatenBookmark bdata = new DatenBookmark(movie);
           movie.setBookmark(bdata);
+          /* mit bookmarks.add wurde die Tabelle nicht aktualisiert wenn man bei
+           geöffnetem Dialog aus dem Filme Tab ein Bookmark hinzugefügt hat
+           */
+          BookmarkDialog.getModel().addRow(bdata);
           bdata.setSeen(!bdata.isLiveStream() && history.hasBeenSeen(movie));
-          bookmarks.add(bdata);
         }
       } catch (Exception ex) {
         logger.error("Fehler beim Laden der Verlaufsliste", ex);
@@ -83,6 +86,12 @@ public class ListeBookmark {
     } else {
       for (DatenFilm movie : movies) {
         movie.setBookmark(null);
+        DatenBookmark bdata = new DatenBookmark(movie);
+        /*
+        Versucht ein obiges äquivalent zu erzeugen jedoch wird die Tabelle nicht aktualisiert
+         */
+        BookmarkDialog.getModel().removeRow(bdata);
+        BookmarkDialog.refresh();
       }
       bookmarks.removeAll(delList);
     }

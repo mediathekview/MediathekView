@@ -30,6 +30,15 @@ public class BookmarkModel extends AbstractTableModel {
         fireTableRowsDeleted(modelIndex, modelIndex);
     }
 
+  public void removeRow(DatenBookmark bookmark) {
+    int index = bookmarks.indexOf(bookmark);
+    if (index != -1) {
+      bookmarks.remove(index);
+      fireTableRowsDeleted(index, index);
+    }
+  }
+
+
   @Override
   public int getColumnCount() {
     return columnNames.length;
@@ -76,4 +85,10 @@ public class BookmarkModel extends AbstractTableModel {
     }
     fireTableCellUpdated(row, col);
   }
+
+  public void addRow(DatenBookmark bookmark) {
+    bookmarks.add(bookmark);
+    fireTableRowsInserted(bookmarks.size() - 1, bookmarks.size() - 1);
+  }
+
 }
