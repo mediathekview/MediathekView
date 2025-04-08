@@ -131,7 +131,7 @@ public class GuiFilme extends AGuiTabPanel {
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         daten = aDaten;
         this.mediathekGui = mediathekGui;
-        descriptionPanel = new FilmDescriptionPanel(this);
+        descriptionPanel = new FilmDescriptionPanel();
 
         setLayout(new BorderLayout());
         add(filmListScrollPane, BorderLayout.CENTER);
@@ -149,7 +149,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         setupFilmListTable();
         setupFilmSelectionPropertyListener();
-        setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION);
+        setupDescriptionTab(tabelle, cbkShowDescription, ApplicationConfiguration.FILM_SHOW_DESCRIPTION, this::getCurrentlySelectedFilm);
         setupPsetButtonsTab();
 
         filmToolBar = new FilmToolBar(filterSelectionComboBoxModel,
