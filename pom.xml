@@ -639,9 +639,10 @@
                 <version>${maven-jar-plugin.version}</version>
                 <configuration>
                     <archive>
-                        <manifestEntries>
-                            <Multi-Release>true</Multi-Release>
-                        </manifestEntries>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass><![CDATA[${mainclass}]]></mainClass>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
@@ -966,29 +967,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.8.1</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1190,29 +1179,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.8.1</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1329,29 +1306,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.8.1</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
