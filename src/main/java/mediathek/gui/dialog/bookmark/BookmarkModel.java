@@ -1,7 +1,10 @@
 package mediathek.gui.dialog.bookmark;
 
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
+import mediathek.tool.MessageBus;
+import net.engio.mbassy.listener.Handler;
 
 public class BookmarkModel extends AbstractTableModel {
 
@@ -13,6 +16,7 @@ public class BookmarkModel extends AbstractTableModel {
   private final List<DatenBookmark> bookmarks;
   public BookmarkModel(List<DatenBookmark> bookmarks) {
     this.bookmarks = bookmarks;
+    MessageBus.getMessageBus().subscribe(this);
   }
 
   @Override
@@ -89,6 +93,15 @@ public class BookmarkModel extends AbstractTableModel {
   public void addRow(DatenBookmark bookmark) {
     bookmarks.add(bookmark);
     fireTableRowsInserted(bookmarks.size() - 1, bookmarks.size() - 1);
+  }
+
+  @Handler // engio mbassador annotation
+  private void handleBookmarkAddEvent(BookmarkAddEvent e) {
+    SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
+  }
+  @Handler // engio mbassador annotation
+  private void handleBookmarkRenmovreEvent(BookmarkRemoveEvent e) {
+    SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
   }
 
 }
