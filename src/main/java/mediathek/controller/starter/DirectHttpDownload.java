@@ -445,8 +445,4 @@ public class DirectHttpDownload extends Thread {
         return result;
     }
 
-    enum HttpDownloadState {
-
-        CANCEL, ERROR, DOWNLOAD
-    }
 }
