@@ -15,7 +15,6 @@ import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.gui.dialog.bookmark.ListeBookmark;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.duplicates.FilmStatistics;
-import mediathek.javafx.bookmark.BookmarkDataList;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.ReplaceList;
 import mediathek.tool.SenderListBoxModel;
@@ -62,7 +61,7 @@ public class Daten {
     private final ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
     private final ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     private final ListeBlacklist listeBlacklist = new ListeBlacklist();
-    private final BookmarkDataList listeBookmarkList;
+    private final ListeBookmark listeBookmark;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
@@ -84,7 +83,7 @@ public class Daten {
     private Daten() {
         filmeLaden = new FilmeLaden(this);
 
-        listeBookmarkList = new BookmarkDataList(this);
+        listeBookmark = new ListeBookmark(this);
 
         listePset = new ListePset();
 
@@ -234,7 +233,7 @@ public class Daten {
         listeAbo.clear();
         listeDownloads.clear();
         listeBlacklist.clear();
-        listeBookmarkList.clear();
+        listeBookmark.clear();
     }
 
     private boolean load() {
@@ -413,8 +412,8 @@ public class Daten {
         return listeBlacklist;
     }
 
-    public BookmarkDataList getListeBookmarkList() {
-        return listeBookmarkList;
+    public ListeBookmark getListeBookmark() {
+        return listeBookmark;
     }
 
     public ListeAbo getListeAbo() {
