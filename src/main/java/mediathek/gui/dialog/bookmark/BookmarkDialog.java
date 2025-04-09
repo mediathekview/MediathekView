@@ -163,7 +163,7 @@ tabbedPane1.remove(0);
 
       //---- tabelle ----
       tabelle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      tabelle.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+      tabelle.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       scrollPane1.setViewportView(tabelle);
     }
     contentPane.add(scrollPane1, BorderLayout.CENTER);
@@ -340,7 +340,6 @@ tabbedPane1.remove(0);
     refresh();
   }*/
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-
   // Generated using JFormDesigner Educational license - Markus Jannek
   private JToolBar toolBar;
   private JButton btnDeleteEntry;
