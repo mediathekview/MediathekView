@@ -5,7 +5,6 @@ import mediathek.tool.EscapeKeyHandler;
 import javax.swing.*;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class DialogLeer extends JDialog {
     public DialogLeer(java.awt.Frame parent, boolean modal) {
         super(parent, modal);

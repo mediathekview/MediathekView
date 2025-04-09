@@ -3,7 +3,6 @@ package mediathek.gui.history
 import mediathek.controller.history.SeenHistoryController
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
-import javax.swing.Action
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 
@@ -22,6 +21,6 @@ class ResetDownloadHistoryAction(private val owner: JFrame) : AbstractAction() {
     }
 
     init {
-        putValue(Action.NAME, "Download-Historie zurücksetzen...")
+        putValue(NAME, "Download-Historie zurücksetzen...")
     }
 }

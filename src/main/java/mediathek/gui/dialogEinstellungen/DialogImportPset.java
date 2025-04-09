@@ -8,7 +8,6 @@ import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 
-@SuppressWarnings("serial")
 public class DialogImportPset extends JDialog {
     public boolean ok = false;
     private final ListePset liste;

@@ -231,6 +231,27 @@ tabbedPane1.remove(0);
       hyperlink.setVisible(btnSelected);
     });
 
+    // Gesehen/Ungesehen markieren
+    btnMarkViewed.addActionListener(e -> {
+      int selectedRow = tabelle.getSelectedRow();
+      if (selectedRow != -1) {
+        int modelRow = tabelle.convertRowIndexToModel(selectedRow);
+        var bookmark = (DatenBookmark) model.getValueAt(modelRow, BookmarkModel.BOOKMARK_REF);
+        boolean isSeen = bookmark.getSeen();
+        bookmark.setSeen(!isSeen); // Toggle Zustand
+        model.fireTableRowsUpdated(modelRow, modelRow); // Tabelle updaten
+        getOwner().repaint(); // UI neu zeichnen
+
+        // Icon anpassen
+        if (bookmark.getSeen()) {
+          btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
+        } else {
+          btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye-slash.svg"));
+        }
+      } else {
+        JOptionPane.showMessageDialog(this, "Bitte erst einen Eintrag auswählen.", "Hinweis", JOptionPane.INFORMATION_MESSAGE);
+      }
+    });
 
     // Tabelle: Auswahl-Listener für Hyperlink Tooltip
     tabelle.getSelectionModel().addListSelectionListener(e -> {
@@ -241,9 +262,16 @@ tabbedPane1.remove(0);
         if (selectedRow >= 0) {
           int modelRow = tabelle.convertRowIndexToModel(selectedRow);
           var bookmark = (DatenBookmark) model.getValueAt(modelRow, BookmarkModel.BOOKMARK_REF);//bookmarks.get(modelRow);
+          boolean isSeen = bookmark.getSeen();
+          if(isSeen){
+            btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye.svg"));
+          }else{
+            btnMarkViewed.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/eye-slash.svg"));
+          }
           if (bookmark.getUrl() != null && !bookmark.getUrl().isEmpty()) {
             hyperlink.setToolTipText(bookmark.getUrl());
             hyperlink.setEnabled(true);
+
           } else {
             hyperlink.setToolTipText("");
             hyperlink.setEnabled(false);

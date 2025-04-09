@@ -5,7 +5,6 @@ import mediathek.tool.EscapeKeyHandler;
 import javax.swing.*;
 import java.awt.*;
 
-@SuppressWarnings("serial")
 public class DialogOk extends JDialog {
     public DialogOk(Frame parent, boolean modal, JPanel panel, String titel) {
         super(parent, modal);

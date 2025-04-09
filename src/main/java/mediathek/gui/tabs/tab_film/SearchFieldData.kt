@@ -1,6 +1,5 @@
 package mediathek.gui.tabs.tab_film
 
-import mediathek.javafx.filterpanel.SearchControlFieldMode
 import mediathek.tool.Filter
 import java.util.regex.Pattern
 

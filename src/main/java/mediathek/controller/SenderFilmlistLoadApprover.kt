@@ -1,7 +1,7 @@
 package mediathek.controller
 
-import mediathek.javafx.filterpanel.SenderListBoxModel
 import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.SenderListBoxModel
 import java.util.concurrent.ConcurrentHashMap
 
 /**

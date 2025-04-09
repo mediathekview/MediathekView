@@ -65,6 +65,24 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 .sorted(GermanStringSorter.getInstance()).toList();
     }
 
+    /**
+     * Search all themas within list based on sender.
+     * If sender is empty, return full list of themas.
+     * <p>
+     * This version does not sort nor return a unique list.
+     *
+     * @param sender sender name as String
+     * @return IMMUTABLE List of themas as String.
+     */
+    public List<String> getThemenUnprocessed(String sender) {
+        Stream<DatenFilm> mystream = parallelStream();
+        //if sender is empty return all themas...
+        if (!sender.isEmpty())
+            mystream = mystream.filter(f -> f.getSender().equalsIgnoreCase(sender));
+
+        return mystream.map(DatenFilm::getThema).toList();
+    }
+
     public synchronized void updateFromFilmList(@NotNull ListeFilme newFilmsList) {
         // In die vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme, die noch nicht vorhanden sind, einsortiert

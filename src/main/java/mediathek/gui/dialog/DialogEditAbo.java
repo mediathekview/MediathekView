@@ -36,7 +36,7 @@ public class DialogEditAbo extends JDialog {
     /**
      * This determines in multi edit mode, which fields should be applied to all selected abos...
      */
-    public boolean[] multiEditCbIndices = new boolean[AboTags.getEntries().size()];
+    public final boolean[] multiEditCbIndices = new boolean[AboTags.getEntries().size()];
     /**
      * Determines whether the whole edit operation was "ok" -> successful or not.
      */

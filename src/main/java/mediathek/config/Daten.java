@@ -2,6 +2,7 @@ package mediathek.config;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.SortedList;
 import com.google.common.util.concurrent.*;
 import mediathek.Main;
 import mediathek.SplashScreen;
@@ -14,7 +15,9 @@ import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.gui.dialog.bookmark.ListeBookmark;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.duplicates.FilmStatistics;
+import mediathek.tool.GermanStringSorter;
 import mediathek.tool.ReplaceList;
+import mediathek.tool.SenderListBoxModel;
 import mediathek.tool.notification.INotificationCenter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,6 +78,8 @@ public class Daten {
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
+    private EventList<String> allSenderList;
+
     private Daten() {
         filmeLaden = new FilmeLaden(this);
 
@@ -88,6 +93,8 @@ public class Daten {
         listeDownloadsButton = new ListeDownloads();
 
         starterClass = new StarterClass(this);
+
+        setupAllSendersList();
     }
 
     /**
@@ -125,9 +132,24 @@ public class Daten {
         return xmlFilePath;
     }
 
-    public EventList<FilmStatistics> getDuplicateStatistics() { return duplicateStatisticsEventList; }
+    public EventList<String> getAllSendersList() {
+        return allSenderList;
+    }
 
-    public EventList<FilmStatistics> getCommonStatistics() { return commonStatisticsEventList; }
+    private void setupAllSendersList() {
+        var sortedSenderList = new SortedList<>(SenderListBoxModel.getProvidedSenderList());
+        sortedSenderList.setComparator(GermanStringSorter.getInstance());
+
+        allSenderList = sortedSenderList;
+    }
+
+    public EventList<FilmStatistics> getDuplicateStatistics() {
+        return duplicateStatisticsEventList;
+    }
+
+    public EventList<FilmStatistics> getCommonStatistics() {
+        return commonStatisticsEventList;
+    }
 
     public StarterClass getStarterClass() {
         return starterClass;

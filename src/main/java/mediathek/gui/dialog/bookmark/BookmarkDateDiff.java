@@ -14,7 +14,7 @@ public class BookmarkDateDiff {
 
   private  LocalDate today;
   private static BookmarkDateDiff bookmarkDateComparator;
-  DateTimeFormatter dateformatter; 
+  final DateTimeFormatter dateformatter;
   
   private BookmarkDateDiff() {
     today = LocalDate.now(); 

@@ -57,7 +57,7 @@ public class FilmListReader implements AutoCloseable {
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
-    protected int DECOMPRESSOR_MEMORY_LIMIT = -1;
+    protected final int DECOMPRESSOR_MEMORY_LIMIT = -1;
     private int progress;
     private IDateFilter dateFilter;
     private String sender = "";

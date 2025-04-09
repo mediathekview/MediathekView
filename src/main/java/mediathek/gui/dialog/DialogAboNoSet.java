@@ -14,7 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-@SuppressWarnings("serial")
 public class DialogAboNoSet extends JDialog {
     public DialogAboNoSet(JFrame parent) {
         super(parent, true);

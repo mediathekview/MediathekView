@@ -14,6 +14,7 @@ import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 
+import mediathek.tool.MessageBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
@@ -83,6 +84,7 @@ public class ListeBookmark {
       } catch (Exception ex) {
         logger.error("Fehler beim Laden der Verlaufsliste", ex);
       }
+      MessageBus.getMessageBus().publishAsync(new BookmarkAddEvent());
     } else {
       for (DatenFilm movie : movies) {
         movie.setBookmark(null);
@@ -94,6 +96,7 @@ public class ListeBookmark {
         BookmarkDialog.refresh();
       }
       bookmarks.removeAll(delList);
+      MessageBus.getMessageBus().publishAsync(new BookmarkRemoveEvent());
     }
   }
 
