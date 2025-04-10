@@ -4,6 +4,8 @@
 
 package mediathek.gui.dialog.bookmark;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Optional;
 import mediathek.config.Daten;
@@ -77,6 +79,8 @@ tabbedPane1.remove(0);
       return Optional.ofNullable(datenFilm);
     });
 
+    tabelle.getColumnModel().getColumn(5).setCellRenderer(new IconRenderer());
+    tabelle.getColumnModel().getColumn(6).setCellRenderer(new IconRenderer());
   }
 
 
@@ -262,7 +266,7 @@ tabbedPane1.remove(0);
       }
     });
 
-    // Tabelle: Auswahl-Listener für Hyperlink Tooltip
+    // Tabelle
     tabelle.getSelectionModel().addListSelectionListener(e -> {
       //TODO wird mit Einbau eines FilmDescriptionPanel später (fast) überflüssig
       // davon abgesehen sind zwei listener da etwas übertrieben.

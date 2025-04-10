@@ -1,8 +1,8 @@
 package mediathek.gui.dialog.bookmark;
 
+import java.util.List;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
-import java.util.List;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
@@ -62,7 +62,8 @@ public class BookmarkModel extends AbstractTableModel {
           case 2 -> bookmark.getTitel();
           case 3 -> bookmark.getDauer();
           case 4 -> bookmark.getSendDate();
-          case 5,6 -> "";
+          case 5 -> BookmarkModel.ButtonType.PLAY;
+          case 6 -> BookmarkModel.ButtonType.DOWNLOAD;
           case 7 -> bookmark.getUrl();
           case 8 -> bookmark.getExpiry();
           case 9 -> bookmark.getNote();
@@ -100,4 +101,8 @@ public class BookmarkModel extends AbstractTableModel {
     SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
   }
 
+  public enum ButtonType {
+    PLAY,
+    DOWNLOAD
+  }
 }
