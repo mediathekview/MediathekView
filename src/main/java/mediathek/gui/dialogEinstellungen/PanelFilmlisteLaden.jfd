@@ -206,7 +206,7 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "insets 5,hidemode 3,alignx left,gapx 10"
-					"$columnConstraints": "[fill][fill][fill][fill][fill][fill]"
+					"$columnConstraints": "[fill][fill][fill][fill][fill]"
 					"$rowConstraints": "[][][][][][]"
 				} ) {
 					name: "panel1"
@@ -237,16 +237,10 @@ new FormModel {
 						"value": "cell 3 0"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox20"
-						"text": "SWR"
+						name: "checkBox29"
+						"text": "tagesschau24"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 4 0"
-					} )
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox6"
-						"text": "ZDF-tivi"
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 5 0"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "checkBox8"
@@ -273,8 +267,8 @@ new FormModel {
 						"value": "cell 3 1"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox29"
-						"text": "tagesschau24"
+						name: "checkBox21"
+						"text": "WDR"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 4 1"
 					} )
@@ -303,8 +297,8 @@ new FormModel {
 						"value": "cell 3 2"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox21"
-						"text": "WDR"
+						name: "checkBox22"
+						"text": "ZDF"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 4 2"
 					} )
@@ -333,8 +327,8 @@ new FormModel {
 						"value": "cell 3 3"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox22"
-						"text": "ZDF"
+						name: "checkBox31"
+						"text": "ZDFinfo"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 4 3"
 					} )
@@ -363,8 +357,8 @@ new FormModel {
 						"value": "cell 3 4"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox31"
-						"text": "ZDFinfo"
+						name: "checkBox32"
+						"text": "ZDFneo"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 4 4"
 					} )
@@ -387,14 +381,14 @@ new FormModel {
 						"value": "cell 2 5"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox5"
-						"text": "SRF.Podcast"
+						name: "checkBox20"
+						"text": "SWR"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 5"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "checkBox32"
-						"text": "ZDFneo"
+						name: "checkBox6"
+						"text": "ZDF-tivi"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 4 5"
 					} )

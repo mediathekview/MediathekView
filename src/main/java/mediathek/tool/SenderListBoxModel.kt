@@ -52,7 +52,7 @@ object SenderListBoxModel {
         providedSenderList.add("RBB")
         providedSenderList.add("SR")
         providedSenderList.add("SRF")
-        providedSenderList.add("SRF.Podcast")
+        //providedSenderList.add("SRF.Podcast")
         providedSenderList.add("tagesschau24")
         providedSenderList.add("SWR")
         providedSenderList.add("WDR")
