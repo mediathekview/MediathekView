@@ -48,11 +48,6 @@ public class ListeBookmark {
     bookmarks.clear();
   }
 
-  @JsonIgnore
-  public long getSeenNbOfEntries() {
-    return bookmarks.stream().filter(DatenBookmark::getSeen).count();
-  }
-
   public void checkAndBookmarkMovies(List<DatenFilm> movies) {
     List<DatenFilm> addList = new ArrayList<>();
     List<DatenBookmark> delList = new ArrayList<>();
@@ -91,16 +86,6 @@ public class ListeBookmark {
       bookmarks.removeAll(delList);
       MessageBus.getMessageBus().publishAsync(new BookmarkRemoveEvent());
     }
-  }
-
-  public void deleteEntries(List<DatenBookmark> entries) {
-    for (DatenBookmark bookmark : entries) {
-      DatenFilm movie = bookmark.getDatenFilm();
-      if (movie != null) {
-        movie.setBookmark(null);
-      }
-    }
-    bookmarks.removeAll(entries);
   }
 
   public void loadFromFile() {

@@ -30,8 +30,6 @@ import static mediathek.config.StandardLocations.getBookmarkFilePath;
  */
 public class BookmarkDialog extends JDialog {
 
-  private static BookmarkDialog instance;
-
   enum FilterState {
     STATE1, STATE2, STATE3;
   }
@@ -42,7 +40,6 @@ public class BookmarkDialog extends JDialog {
   private FilterState filterState; // Beispiel!
   public BookmarkDialog(Window owner) {
     super(owner);
-    instance = this;
     initComponents();
 
     //deine bookmarks Referenz ist überflüssig wenn man ein wenig anders herangeht. so verwirrt der code auch nicht mehr
@@ -82,11 +79,6 @@ tabbedPane1.remove(0);
 
   }
 
-  public static void refresh() {
-    if (instance != null) {
-      instance.getOwner().repaint();
-    }
-  }
 
   private void initComponents() {
     // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
@@ -315,10 +307,6 @@ tabbedPane1.remove(0);
     } catch (URISyntaxException ex) {
       logger.warn(ex);
     }
-  }
-
-  public static BookmarkModel getModel(){
-    return (BookmarkModel) tabelle.getModel();
   }
 
   /*private void btnFilterAction(ActionEvent e) {
