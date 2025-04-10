@@ -100,7 +100,7 @@ public class BookmarkModel extends AbstractTableModel {
     SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
   }
   @Handler // engio mbassador annotation
-  private void handleBookmarkRenmovreEvent(BookmarkRemoveEvent e) {
+  private void handleBookmarkRenmoveEvent(BookmarkRemoveEvent e) {
     SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
   }
 
