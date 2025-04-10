@@ -15,6 +15,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import javax.swing.*;
+import mediathek.tool.SVGIconUtilities;
 import net.miginfocom.swing.*;
 import org.jdesktop.swingx.*;
 
@@ -35,6 +36,7 @@ public class BookmarkNoteDialog extends JDialog {
   }
 
   private void initActions() {
+    btnWebDate.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/magnifying-glass.svg"));
     datePicker.getEditor().addKeyListener(new KeyAdapter() {
       @Override
       public void keyTyped(KeyEvent e) {
