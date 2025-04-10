@@ -65,36 +65,51 @@ public class BookmarkNoteDialog extends JDialog {
     btnWebDate.addActionListener(e -> btnSearchWeb(e));
 
   }
+
   private void btnSearchWeb(ActionEvent e) {
-  progress.setVisible(true);
+    progress.setVisible(true);
     status.setVisible(true);
     btnWebDate.setEnabled(false);
 
-    // Simulate the background task
-    SwingUtilities.invokeLater(() -> {
-      // Your background task logic here
-      try {
-        // Simulate delay
-        Thread.sleep(2000);
-      } catch (InterruptedException ex) {
-        ex.printStackTrace();
-      }
+    String url = data.getUrl();
+    if (url == null || url.isEmpty()) {
+      JOptionPane.showMessageDialog(this, "Keine gültige URL vorhanden.", "Fehler", JOptionPane.ERROR_MESSAGE);
       progress.setVisible(false);
       status.setVisible(false);
       btnWebDate.setEnabled(true);
+      return;
+    }
 
-      // Simulating result from search
-      String result = "01.05.2025"; // Example result from the search
+    new SearchExpirationDateTask(true, url) {
+      @Override
+      protected void done() {
+        progress.setVisible(false);
+        status.setVisible(false);
+        btnWebDate.setEnabled(true);
 
-      if (result != null) {
-        LocalDate localDate = LocalDate.parse(result, dateformatter);
-        Date date = java.sql.Date.valueOf(localDate);
-        datePicker.setDate(date);
-
-      } else {
-        JOptionPane.showMessageDialog(this, "No expiry date found.", "Warning", JOptionPane.WARNING_MESSAGE);
+        try {
+          String result = get();
+          System.out.println(result);
+          if (result != null) {
+            LocalDate localDate = LocalDate.parse(result, dateformatter);
+            Date date = java.sql.Date.valueOf(localDate);
+            datePicker.setDate(date);
+            handleChange(); // damit Speichern-Button ggf. aktiv wird
+          } else {
+            JOptionPane.showMessageDialog(BookmarkNoteDialog.this,
+                "Kein Ablaufdatum auf der Webseite gefunden.",
+                "Hinweis",
+                JOptionPane.INFORMATION_MESSAGE);
+          }
+        } catch (Exception ex) {
+          ex.printStackTrace();
+          JOptionPane.showMessageDialog(BookmarkNoteDialog.this,
+              "Fehler bei der Verarbeitung der Webseite.",
+              "Fehler",
+              JOptionPane.ERROR_MESSAGE);
+        }
       }
-    });
+    }.execute();
   }
 
   private void handleCancel() {
@@ -136,12 +151,13 @@ public class BookmarkNoteDialog extends JDialog {
   }
 
   private String getDateValue() {
-    LocalDate selectedDate = datePicker.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    if (selectedDate != null) {
-      return selectedDate.format(dateformatter);
+    if (datePicker.getDate() == null) {
+      return null;
     }
-    return null;
+    LocalDate selectedDate = datePicker.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    return selectedDate.format(dateformatter);
   }
+
 
   private void initComponents() {
     // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off

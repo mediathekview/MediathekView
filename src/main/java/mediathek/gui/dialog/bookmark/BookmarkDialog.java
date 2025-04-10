@@ -194,15 +194,17 @@ tabbedPane1.remove(0);
 
     //Notiz bearbeiten
     btnEditNote.addActionListener(e -> {
-      noteDialog.setVisible(true);
       var selectedRow = tabelle.getSelectedRow();
       if (selectedRow != -1) {
+        noteDialog.setVisible(true);
         var modelRow = tabelle.convertRowIndexToModel(selectedRow);
         var bookmark = (DatenBookmark) model.getValueAt(modelRow, BookmarkModel.BOOKMARK_REF);
         boolean changed = noteDialog.setAndShow(bookmark);
         if (changed) {
           model.fireTableRowsUpdated(modelRow, modelRow);
         }
+      } else {
+        JOptionPane.showMessageDialog(this, "Bitte erst einen Eintrag auswählen.", "Hinweis", JOptionPane.INFORMATION_MESSAGE);
       }
 
     });

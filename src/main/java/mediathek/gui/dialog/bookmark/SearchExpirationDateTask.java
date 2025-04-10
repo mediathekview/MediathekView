@@ -41,7 +41,6 @@ class SearchExpirationDateTask extends SwingWorker<String, Void> {
             Request request = new Request.Builder().url(url).get().build();
             try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
                 ResponseBody body = response.body()) {
-
                 if (response.isSuccessful() && body != null) {
                     try (BufferedReader in = new BufferedReader(
                         new InputStreamReader(body.byteStream(), StandardCharsets.UTF_8))) {
