@@ -25,9 +25,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FilterSelectionComboBox extends JComboBox<FilterDTO> {
+    public FilterSelectionComboBox() {
+        setup();
+    }
+
     public FilterSelectionComboBox(@NotNull DefaultComboBoxModel<FilterDTO> model) {
         super(model);
 
+        setup();
+    }
+
+    private void setup() {
         setMaximumSize(new Dimension(200, 100));
 
         setEditable(false);
