@@ -34,14 +34,14 @@ public class BookmarkDialog extends JDialog {
     STATE1, STATE2, STATE3;
   }
   private static final Logger logger = LogManager.getLogger();
-  private static final String JSON_DATEI = getBookmarkFilePath().toString();
   private final BookmarkModel model;
+  private BookmarkNoteDialog noteDialog;
   //private int filterState; // nimm enum dafür! -> Typsicherheit
   private FilterState filterState; // Beispiel!
   public BookmarkDialog(Window owner) {
     super(owner);
     initComponents();
-
+    noteDialog  = new BookmarkNoteDialog(owner);
     //deine bookmarks Referenz ist überflüssig wenn man ein wenig anders herangeht. so verwirrt der code auch nicht mehr
     model = new BookmarkModel(Daten.getInstance().getListeBookmark().getBookmarks());
     tabelle.setModel(model);
@@ -190,6 +190,21 @@ tabbedPane1.remove(0);
       } else {
         JOptionPane.showMessageDialog(this, "Bitte erst einen Eintrag auswählen.", "Hinweis", JOptionPane.INFORMATION_MESSAGE);
       }
+    });
+
+    //Notiz bearbeiten
+    btnEditNote.addActionListener(e -> {
+      noteDialog.setVisible(true);
+      var selectedRow = tabelle.getSelectedRow();
+      if (selectedRow != -1) {
+        var modelRow = tabelle.convertRowIndexToModel(selectedRow);
+        var bookmark = (DatenBookmark) model.getValueAt(modelRow, BookmarkModel.BOOKMARK_REF);
+        boolean changed = noteDialog.setAndShow(bookmark);
+        if (changed) {
+          model.fireTableRowsUpdated(modelRow, modelRow);
+        }
+      }
+
     });
 
     // Speichern

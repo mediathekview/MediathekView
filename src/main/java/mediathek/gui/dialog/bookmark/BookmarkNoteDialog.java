@@ -21,13 +21,13 @@ import org.jdesktop.swingx.*;
 /**
  * @author Markus
  */
-public class BorkmarkNoteDialog extends JDialog {
+public class BookmarkNoteDialog extends JDialog {
   private final DateTimeFormatter dateformatter;
   private DatenBookmark data;
   private boolean datachanged;
   private boolean hasWebURL;
 
-  public BorkmarkNoteDialog(Window owner) {
+  public BookmarkNoteDialog(Window owner) {
     super(owner);
     dateformatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     initComponents();
@@ -147,8 +147,8 @@ public class BorkmarkNoteDialog extends JDialog {
     expiry = new JLabel();
     datePicker = new JXDatePicker();
     btnWebDate = new JButton();
-    progress = new JProgressBar();
     status = new JLabel();
+    progress = new JProgressBar();
     scrollPane1 = new JScrollPane();
     note = new JTextArea();
     label2 = new JLabel();
@@ -162,17 +162,7 @@ public class BorkmarkNoteDialog extends JDialog {
       // columns
       "[fill]" +
       "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
-      "[fill]" +
+      "[54,fill]" +
       "[fill]" +
       "[fill]" +
       "[fill]" +
@@ -187,41 +177,40 @@ public class BorkmarkNoteDialog extends JDialog {
       "[]" +
       "[]" +
       "[]" +
-      "[]" +
       "[]"));
 
     //---- expiry ----
     expiry.setText("Verf\u00fcgbar bis:");
-    contentPane.add(expiry, "cell 0 1");
-    contentPane.add(datePicker, "cell 1 1");
+    contentPane.add(expiry, "cell 0 0");
+    contentPane.add(datePicker, "cell 1 0");
 
     //---- btnWebDate ----
     btnWebDate.setToolTipText("Verf\u00fcgbar bis Datum auf der Webseite suchen");
-    contentPane.add(btnWebDate, "cell 3 1");
-    contentPane.add(progress, "cell 6 1");
+    contentPane.add(btnWebDate, "cell 3 0");
 
     //---- status ----
     status.setToolTipText("Suche nach Datum l\u00e4uft");
-    contentPane.add(status, "cell 11 1");
+    contentPane.add(status, "cell 4 0");
+    contentPane.add(progress, "cell 5 0");
 
     //======== scrollPane1 ========
     {
       scrollPane1.setViewportView(note);
     }
-    contentPane.add(scrollPane1, "cell 1 2 1 5");
+    contentPane.add(scrollPane1, "cell 1 1 1 2");
 
     //---- label2 ----
     label2.setText("Notiz:");
-    contentPane.add(label2, "cell 0 4");
+    contentPane.add(label2, "cell 0 2");
 
     //---- cancelButton ----
     cancelButton.setText("Abbruch");
-    contentPane.add(cancelButton, "cell 11 9");
+    contentPane.add(cancelButton, "cell 2 8");
 
     //---- saveButton ----
     saveButton.setText("Speichern");
     saveButton.setEnabled(false);
-    contentPane.add(saveButton, "cell 12 9 6 1");
+    contentPane.add(saveButton, "cell 3 8 5 1");
     pack();
     setLocationRelativeTo(getOwner());
     // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
@@ -258,8 +247,8 @@ public class BorkmarkNoteDialog extends JDialog {
   private JLabel expiry;
   private JXDatePicker datePicker;
   private JButton btnWebDate;
-  private JProgressBar progress;
   private JLabel status;
+  private JProgressBar progress;
   private JScrollPane scrollPane1;
   private JTextArea note;
   private JLabel label2;
