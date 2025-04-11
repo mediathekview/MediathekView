@@ -29,7 +29,7 @@ default:
     - ${INSTALL4J_JAVA_HOME}/bin/java -version
     - mvn -v
     - mvn clean
-    - mvn install4j:install-license -Pinstall4j
+    #- mvn install4j:install-license -Pinstall4j # wird nicht mehr benötigt
 #    - git clone https://gitlab.com/mediathekview/mediathekview-buildres.git tmpres
 #    - mv tmpres/bin res/
 #    - rm -rf tmpres
