@@ -295,6 +295,19 @@ tabbedPane1.remove(0);
         }
       }
     });
+    btnFilter.addActionListener(e -> {
+      // Beispiel: Toggle sichtbare/unsichtbare Bookmarks
+      if (filterState == FilterState.STATE1) {
+        model.filterOnlyUnseen();
+        filterState = FilterState.STATE2;
+      } else if (filterState == FilterState.STATE2) {
+        model.filterOnlySeen();
+        filterState = FilterState.STATE3;
+      } else {
+        model.resetFilter();
+        filterState = FilterState.STATE1;
+      }
+    });
 
 
     //Hyperlink

@@ -1,5 +1,6 @@
 package mediathek.gui.dialog.bookmark;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
@@ -14,8 +15,11 @@ public class BookmarkModel extends AbstractTableModel {
      */
   public static final int BOOKMARK_REF = columnNames.length;
   private final List<DatenBookmark> bookmarks;
+  private final List<DatenBookmark> allBookmarks;
+
   public BookmarkModel(List<DatenBookmark> bookmarks) {
-    this.bookmarks = bookmarks;
+    this.allBookmarks = new ArrayList<>(bookmarks); // Original unverändert speichern
+    this.bookmarks = new ArrayList<>(bookmarks);    // Anzeige-Liste
     MessageBus.getMessageBus().subscribe(this);
   }
 
@@ -30,17 +34,10 @@ public class BookmarkModel extends AbstractTableModel {
      * @param modelIndex index from blacklist to delete
      */
     public void removeRow(int modelIndex) {
+        allBookmarks.remove(modelIndex);
         bookmarks.remove(modelIndex);
         fireTableRowsDeleted(modelIndex, modelIndex);
     }
-
-  public void removeRow(DatenBookmark bookmark) {
-    int index = bookmarks.indexOf(bookmark);
-    if (index != -1) {
-      bookmarks.remove(index);
-      fireTableRowsDeleted(index, index);
-    }
-  }
 
 
   @Override
@@ -92,13 +89,51 @@ public class BookmarkModel extends AbstractTableModel {
   }
 
   public void addRow(DatenBookmark bookmark) {
+    allBookmarks.add(bookmark);
     bookmarks.add(bookmark);
     fireTableRowsInserted(bookmarks.size() - 1, bookmarks.size() - 1);
   }
 
+  public void removeRow(DatenBookmark bookmark) {
+    allBookmarks.remove(bookmark);
+    int index = bookmarks.indexOf(bookmark);
+    if (index != -1) {
+      bookmarks.remove(index);
+      fireTableRowsDeleted(index, index);
+    }
+  }
+
+
   @Handler // engio mbassador annotation
   private void handleBookmarkEvent(BookmarkEvent e) {
     SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
+  }
+
+
+  public void filterOnlyUnseen() {
+    bookmarks.clear();
+    for (DatenBookmark b : allBookmarks) {
+      if (!b.getSeen()) {
+        bookmarks.add(b);
+      }
+    }
+    fireTableDataChanged();
+  }
+
+  public void filterOnlySeen() {
+    bookmarks.clear();
+    for (DatenBookmark b : allBookmarks) {
+      if (b.getSeen()) {
+        bookmarks.add(b);
+      }
+    }
+    fireTableDataChanged();
+  }
+
+  public void resetFilter() {
+    bookmarks.clear();
+    bookmarks.addAll(allBookmarks);
+    fireTableDataChanged();
   }
 
   public enum ButtonType {
