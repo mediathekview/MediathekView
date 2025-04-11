@@ -70,6 +70,7 @@ public class ListeBookmark {
         for (DatenFilm movie : addList) {
           DatenBookmark bdata = new DatenBookmark(movie);
           movie.setBookmark(bdata);
+          BookmarkDialog.getModel().addRow(bdata);
           bdata.setSeen(!bdata.isLiveStream() && history.hasBeenSeen(movie));
           bookmarks.add(bdata);
         }
@@ -78,13 +79,20 @@ public class ListeBookmark {
       }
       MessageBus.getMessageBus().publishAsync(new BookmarkAddEvent());
     } else {
-      for (DatenFilm movie : movies) {
-        DatenBookmark bdata = new DatenBookmark(movie);
-        movie.setBookmark(null);
+      for (DatenBookmark bdata : delList) {
+        DatenFilm movie = bdata.getDatenFilm(); 
+        if (movie != null) {
+          movie.setBookmark(null);
+        }
         bookmarks.remove(bdata);
+        if (BookmarkDialog.tabelle != null) {
+          BookmarkDialog.getModel().removeRow(bdata);
+          BookmarkDialog.refresh();
+        }
+        MessageBus.getMessageBus().publishAsync(new BookmarkRemoveEvent());
       }
+
       bookmarks.removeAll(delList);
-      MessageBus.getMessageBus().publishAsync(new BookmarkRemoveEvent());
     }
   }
 

@@ -19,7 +19,7 @@ public class ManageBookmarkAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-       BookmarkDialog dialog = new BookmarkDialog(mediathekGui);
+       BookmarkDialog dialog = BookmarkDialog.getInstance(mediathekGui);
        GuiFunktionen.centerOnScreen(dialog, true);
         dialog.setVisible(true);
     }

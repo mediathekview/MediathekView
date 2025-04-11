@@ -4,9 +4,6 @@
 
 package mediathek.gui.dialog.bookmark;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
 import java.util.Optional;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
@@ -25,8 +22,6 @@ import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import static mediathek.config.StandardLocations.getBookmarkFilePath;
-
 /**
  * @author Markus
  */
@@ -37,10 +32,11 @@ public class BookmarkDialog extends JDialog {
   }
   private static final Logger logger = LogManager.getLogger();
   private final BookmarkModel model;
+  private static BookmarkDialog instance;
   private BookmarkNoteDialog noteDialog;
   //private int filterState; // nimm enum dafür! -> Typsicherheit
   private FilterState filterState; // Beispiel!
-  public BookmarkDialog(Window owner) {
+  private BookmarkDialog(Window owner) {
     super(owner);
     initComponents();
     noteDialog  = new BookmarkNoteDialog(owner);
@@ -159,7 +155,7 @@ tabbedPane1.remove(0);
 
       //---- tabelle ----
       tabelle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      tabelle.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      tabelle.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
       scrollPane1.setViewportView(tabelle);
     }
     contentPane.add(scrollPane1, BorderLayout.CENTER);
@@ -343,6 +339,22 @@ tabbedPane1.remove(0);
     }
   }
 
+  public static BookmarkDialog getInstance(MediathekGui mediathekGui) {
+    if (instance == null) {
+      instance = new BookmarkDialog(mediathekGui);
+    }
+    return instance;
+  }
+
+  public static BookmarkModel getModel(){
+    return (BookmarkModel) tabelle.getModel();
+  }
+
+  public static void refresh() {
+    if (instance != null) {
+      instance.getOwner().repaint();
+    }
+  }
   /*private void btnFilterAction(ActionEvent e) {
     if (++filterState > 2) {
       filterState = 0;
@@ -377,6 +389,6 @@ tabbedPane1.remove(0);
   private JLabel taDescription;
   private JXHyperlink hyperlink;
   private JScrollPane scrollPane1;
-  private static JTable tabelle;
+  public static JTable tabelle;
   // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
