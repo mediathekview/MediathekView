@@ -1,7 +1,12 @@
 package mediathek.gui;
 
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import mediathek.gui.dialog.bookmark.BookmarkModel;
+import mediathek.tool.ApplicationConfiguration;
 
 /**
  * A custom menu item that combines a {@link JCheckBox} with an {@link Icon} or text label.
@@ -16,6 +21,12 @@ public class IconCheckBoxItem extends JMenuItem {
 
   /** The label component displaying either text or an icon. */
   private JLabel imageLabel;
+
+  public IconCheckBoxItem() {
+    super();
+    initComponents();
+    buildUI();
+  }
 
   /**
    * Constructs an {@code IconCheckBoxItem} with the given icon.
@@ -53,13 +64,21 @@ public class IconCheckBoxItem extends JMenuItem {
    * Builds the visual layout by combining the checkbox and image label.
    */
   private void buildUI() {
-    JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+    checkBox.setOpaque(false);
+    imageLabel.setOpaque(false);
+    imageLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
+
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     panel.setOpaque(false);
     panel.add(checkBox);
     panel.add(imageLabel);
+    panel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
     setLayout(new BorderLayout());
     add(panel, BorderLayout.CENTER);
+    setPreferredSize(new Dimension(180, 24)); // Optional
   }
+
 
   /**
    * Returns whether the checkbox is selected.
@@ -99,43 +118,9 @@ public class IconCheckBoxItem extends JMenuItem {
     return imageLabel;
   }
 
-  /**
-   * Sets the icon displayed in the label.
-   *
-   * @param icon the {@link Icon} to display
-   */
   @Override
-  public void setIcon(Icon icon) {
-    imageLabel.setIcon(icon);
+  public void addActionListener(ActionListener l){
+    checkBox.addActionListener(l);
   }
 
-  /**
-   * Returns the icon currently displayed in the label.
-   *
-   * @return the currently displayed {@link Icon}, or {@code null} if none
-   */
-  @Override
-  public Icon getIcon() {
-    return imageLabel.getIcon();
-  }
-
-  /**
-   * Sets the text displayed in the label.
-   *
-   * @param text the text to display
-   */
-  @Override
-  public void setText(String text) {
-    imageLabel.setText(text);
-  }
-
-  /**
-   * Returns the text currently displayed in the label.
-   *
-   * @return the label text, or {@code null} if none
-   */
-  @Override
-  public String getText() {
-    return imageLabel.getText();
-  }
 }

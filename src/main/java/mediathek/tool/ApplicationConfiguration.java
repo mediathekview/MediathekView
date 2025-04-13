@@ -1,9 +1,15 @@
 package mediathek.tool;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
 import mediathek.daten.Country;
+import mediathek.tool.models.BookmarkModel;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
@@ -95,6 +101,8 @@ public class ApplicationConfiguration {
      * several times in a row.
      */
     private ScheduledFuture<?> future;
+    private final Map<String, Boolean> columnVisibilityMap = new HashMap<>();
+
 
     private ApplicationConfiguration() {
         setupXmlConfiguration();
@@ -157,6 +165,36 @@ public class ApplicationConfiguration {
     private void initializeTimedEventWriting() {
         config.addEventListener(ConfigurationEvent.ANY, timerTaskListener);
     }
+
+    public void setColumnVisible(String columnId, boolean visible) {
+        columnVisibilityMap.put(columnId, visible);
+    }
+
+    public boolean isColumnVisible(String columnId) {
+        return columnVisibilityMap.getOrDefault(columnId, true); // default visible
+    }
+
+    public Map<String, Boolean> getColumnVisibilityMap() {
+        return columnVisibilityMap;
+    }
+    public void applyColumnVisibility(JTable table, BookmarkModel model) {
+        TableColumnModel columnModel = table.getColumnModel();
+        ApplicationConfiguration config = ApplicationConfiguration.getInstance();
+
+        for (int i = 0; i < model.getColumnCount(); i++) {
+            String columnName = model.getColumnName(i);
+            String columnId = "col_" + columnName; // oder eindeutiger Schlüssel
+            boolean visible = config.isColumnVisible(columnId);
+
+            TableColumn column = columnModel.getColumn(i);
+            if (!visible) {
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+                column.setPreferredWidth(0);
+            }
+        }
+    }
+
 
     private void setupXmlConfiguration() {
         config = new XMLConfiguration();

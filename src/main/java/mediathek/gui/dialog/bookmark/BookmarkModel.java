@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import mediathek.daten.DatenFilm;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 
-public class BookmarkModel extends AbstractTableModel {
+public class BookmarkModel extends BaseTableModel {
 
   private static final String[] columnNames = { "Sender", "Thema", "Titel", "Dauer", "Sendedatum", "","","URL", "Verfügbar bis", "Notiz" };
     /**
@@ -16,10 +17,10 @@ public class BookmarkModel extends AbstractTableModel {
   public static final int BOOKMARK_REF = columnNames.length;
   private final List<DatenBookmark> bookmarks;
   private final List<DatenBookmark> allBookmarks;
-
   public BookmarkModel(List<DatenBookmark> bookmarks) {
-    this.allBookmarks = new ArrayList<>(bookmarks); // Original unverändert speichern
-    this.bookmarks = new ArrayList<>(bookmarks);    // Anzeige-Liste
+    super(columnNames);
+    this.allBookmarks = new ArrayList<>(bookmarks);
+    this.bookmarks = new ArrayList<>(bookmarks);
     MessageBus.getMessageBus().subscribe(this);
   }
 
@@ -103,8 +104,7 @@ public class BookmarkModel extends AbstractTableModel {
     }
   }
 
-
-  @Handler // engio mbassador annotation
+  @Handler
   private void handleBookmarkEvent(BookmarkEvent e) {
     SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
   }

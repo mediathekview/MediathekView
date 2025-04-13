@@ -84,7 +84,7 @@ public class GuiFilme extends AGuiTabPanel {
             DatenFilm.FILM_MERKEN};
     private static final Logger logger = LogManager.getLogger();
     private static final int[] BUTTON_COLUMNS = {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN,
-            DatenFilm.FILM_MERKEN};
+        DatenFilm.FILM_MERKEN};
     public static final boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
     public final PlayFilmAction playFilmAction = new PlayFilmAction(this);
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();

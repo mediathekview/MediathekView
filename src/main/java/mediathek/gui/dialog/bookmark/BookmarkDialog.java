@@ -4,9 +4,14 @@
 
 package mediathek.gui.dialog.bookmark;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Optional;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
+import mediathek.gui.IconCheckBoxItem;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
@@ -34,8 +39,7 @@ public class BookmarkDialog extends JDialog {
   private final BookmarkModel model;
   private static BookmarkDialog instance;
   private BookmarkNoteDialog noteDialog;
-  //private int filterState; // nimm enum dafür! -> Typsicherheit
-  private FilterState filterState; // Beispiel!
+  private FilterState filterState;
   private BookmarkDialog(Window owner) {
     super(owner);
     initComponents();
@@ -43,14 +47,30 @@ public class BookmarkDialog extends JDialog {
     //deine bookmarks Referenz ist überflüssig wenn man ein wenig anders herangeht. so verwirrt der code auch nicht mehr
     model = new BookmarkModel(Daten.getInstance().getListeBookmark().getBookmarks());
     tabelle.setModel(model);
+    tabelle.getColumnModel().getColumn(5).setCellRenderer(new IconRenderer());
+    tabelle.getColumnModel().getColumn(6).setCellRenderer(new IconRenderer());
+    tabelle.getTableHeader().addMouseListener(new MouseAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          JPopupMenu menu = createColumnPopup(tabelle, model);
+          menu.show(e.getComponent(), e.getX(), e.getY());
+        }
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (e.isPopupTrigger()) {
+          JPopupMenu menu = createColumnPopup(tabelle, model);
+          menu.show(e.getComponent(), e.getX(), e.getY());
+        }
+      }
+    });
+
     initActions();
     filterState = FilterState.STATE1;
-tabbedPane1.remove(0);
-    /*
-     * Der key ist schlechter Stil. So kannst Du später nie sauber nach Referenzen suchen.
-     * public static final String APPLICATION_UI_BOOKMARKLIST_DETAILS = APPLICATION_UI_BOOKMARKLIST + ".details";
-     * ist okay, danach kann man dann auch entspannt suchen. Der Rest ist suboptimal.
-     */
+    tabbedPane1.remove(0);
+
     btnShowDetails.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
 
     FilmDescriptionPanel descriptionPanel = new FilmDescriptionPanel();
@@ -75,8 +95,6 @@ tabbedPane1.remove(0);
       return Optional.ofNullable(datenFilm);
     });
 
-    tabelle.getColumnModel().getColumn(5).setCellRenderer(new IconRenderer());
-    tabelle.getColumnModel().getColumn(6).setCellRenderer(new IconRenderer());
   }
 
 
@@ -355,6 +373,58 @@ tabbedPane1.remove(0);
       instance.getOwner().repaint();
     }
   }
+
+  public JPopupMenu createColumnPopup(JTable table, BookmarkModel model) {
+    JPopupMenu popupMenu = new JPopupMenu();
+    TableColumnModel columnModel = table.getColumnModel();
+    ApplicationConfiguration config = ApplicationConfiguration.getInstance();
+    popupMenu.add(model.showAllColumns);
+    popupMenu.add(model.hideAllColumns);
+    popupMenu.addSeparator();
+    int visitedbtnColumns = 0;
+    for (int i = 0; i < model.getColumnCount(); i++) {
+      IconCheckBoxItem item;
+      String columnName = model.getColumnName(i);
+      String columnId = "col_" + columnName;
+      boolean visible = config.isColumnVisible(columnId);
+
+      // Prüfen, ob es eine Button-Spalte ist
+      if (model.isButtonColumn(i)) {
+        Icon icon = model.getColumnIconAt(visitedbtnColumns);
+        visitedbtnColumns++;
+        item = new IconCheckBoxItem(icon); // mit Icon
+      } else {
+        item = new IconCheckBoxItem(columnName); // mit Text
+      }
+
+      item.setSelected(visible);
+      final int colIndex = i;
+
+      item.addActionListener(e -> {
+        boolean selected = item.isSelected();
+        config.setColumnVisible(columnId, selected);
+        System.out.println("Hihi");
+        TableColumn column = columnModel.getColumn(colIndex);
+        if (selected) {
+          column.setMinWidth(15);
+          column.setMaxWidth(Integer.MAX_VALUE);
+          column.setPreferredWidth(100);
+        } else {
+          column.setMinWidth(0);
+          column.setMaxWidth(0);
+          column.setPreferredWidth(0);
+        }
+
+        table.repaint();
+      });
+
+      popupMenu.add(item);
+    }
+
+    return popupMenu;
+  }
+
+
   /*private void btnFilterAction(ActionEvent e) {
     if (++filterState > 2) {
       filterState = 0;

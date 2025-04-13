@@ -9,7 +9,7 @@ import mediathek.daten.DatenFilm;
  * Prepared for Jackson JSON storage
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DatenBookmark {
+public class DatenBookmark{
 
   private String url;
   private String sender;
