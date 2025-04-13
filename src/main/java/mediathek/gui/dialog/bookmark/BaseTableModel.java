@@ -11,7 +11,7 @@ public class BaseTableModel extends AbstractTableModel {
 
   private final String[] columnNames;
   private final int[] BUTTON_COLUMNS;
-  private final String[] COLUMN_ICONS = {"icons/fontawesome/play.svg","icons/fontawesome/bookmark.svg"};
+  private final String[] COLUMN_ICONS = {"play","download","bookmark"};
   public final IconCheckBoxItem showAllColumns = new IconCheckBoxItem("Alle Spalten auswählen");
   public final IconCheckBoxItem hideAllColumns = new IconCheckBoxItem("Alle Spalten abwählen");
 
@@ -59,6 +59,10 @@ public class BaseTableModel extends AbstractTableModel {
   }
 
   public Icon getColumnIconAt(int index){
-    return SVGIconUtilities.createSVGIcon(COLUMN_ICONS[index]);
+    return SVGIconUtilities.createSVGIcon("icons/fontawesome/" + COLUMN_ICONS[index] + ".svg");
+  }
+
+  public int getNumOfButtonColums() {
+  return BUTTON_COLUMNS.length;
   }
 }

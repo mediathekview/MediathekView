@@ -6,6 +6,7 @@ package mediathek.gui.dialog.bookmark;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -18,6 +19,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.SwingErrorDialog;
+import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
@@ -32,19 +34,50 @@ import java.net.URISyntaxException;
  */
 public class BookmarkDialog extends JDialog {
 
-  enum FilterState {
-    STATE1, STATE2, STATE3;
-  }
   private static final Logger logger = LogManager.getLogger();
-  private final BookmarkModel model;
+  public static JTable tabelle;
   private static BookmarkDialog instance;
+  private final BookmarkModel model;
   private BookmarkNoteDialog noteDialog;
   private FilterState filterState;
+  /*private void btnFilterAction(ActionEvent e) {
+    if (++filterState > 2) {
+      filterState = 0;
+    }
+    switch (filterState) {
+      case 0 -> filteredBookmarkList.setPredicate(f -> true);  // show all
+      case 1 -> filteredBookmarkList.setPredicate(film -> { // show only unseen
+        return !film.getSeen();
+      });
+      case 2 ->
+        // show only seen
+          filteredBookmarkList.setPredicate(BookmarkData::getSeen);
+    }
+    btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
+    lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);
+    lblSeen.setDisable(LBLSEEN_DISABLE[FilterState]);
+    refresh();
+  }*/
+  // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
+  // Generated using JFormDesigner Educational license - Markus Jannek
+  private JToolBar toolBar;
+  private JButton btnDeleteEntry;
+  private JButton btnMarkViewed;
+  private JButton btnEditNote;
+  private JPanel hSpacer1;
+  private JButton btnSaveList;
+  private JToggleButton btnShowDetails;
+  private JButton btnFilter;
+  private JTabbedPane tabbedPane1;
+  private JPanel panel1;
+  private JLabel label1;
+  private JLabel taDescription;
+  private JXHyperlink hyperlink;
+  private JScrollPane scrollPane1;
   private BookmarkDialog(Window owner) {
     super(owner);
     initComponents();
     noteDialog  = new BookmarkNoteDialog(owner);
-    //deine bookmarks Referenz ist überflüssig wenn man ein wenig anders herangeht. so verwirrt der code auch nicht mehr
     model = new BookmarkModel(Daten.getInstance().getListeBookmark().getBookmarks());
     tabelle.setModel(model);
     tabelle.getColumnModel().getColumn(5).setCellRenderer(new IconRenderer());
@@ -95,8 +128,27 @@ public class BookmarkDialog extends JDialog {
       return Optional.ofNullable(datenFilm);
     });
 
+    restoreWindowSizeFromConfig();
+    setLocationRelativeTo(owner);
+
   }
 
+  public static BookmarkDialog getInstance(MediathekGui mediathekGui) {
+    if (instance == null) {
+      instance = new BookmarkDialog(mediathekGui);
+    }
+    return instance;
+  }
+
+  public static BookmarkModel getModel(){
+    return (BookmarkModel) tabelle.getModel();
+  }
+
+  public static void refresh() {
+    if (instance != null) {
+      instance.getOwner().repaint();
+    }
+  }
 
   private void initComponents() {
     // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
@@ -180,6 +232,24 @@ public class BookmarkDialog extends JDialog {
     pack();
     setLocationRelativeTo(getOwner());
     // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
+  }
+
+  private void restoreWindowSizeFromConfig() {
+    var config = ApplicationConfiguration.getConfiguration();
+    try {
+      config.lock(LockMode.READ);
+      final int width = config.getInt(ApplicationConfiguration.DialogBookmark.WIDTH);
+      final int height = config.getInt(ApplicationConfiguration.DialogBookmark.HEIGHT);
+      final int x = config.getInt(ApplicationConfiguration.DialogBookmark.X);
+      final int y = config.getInt(ApplicationConfiguration.DialogBookmark.Y);
+
+      setBounds(x, y, width, height);
+    } catch (NoSuchElementException ignored) {
+      //do not restore anything
+    } finally {
+      config.unlock(LockMode.READ);
+    }
+
   }
 
   private void initActions() {
@@ -357,23 +427,6 @@ public class BookmarkDialog extends JDialog {
     }
   }
 
-  public static BookmarkDialog getInstance(MediathekGui mediathekGui) {
-    if (instance == null) {
-      instance = new BookmarkDialog(mediathekGui);
-    }
-    return instance;
-  }
-
-  public static BookmarkModel getModel(){
-    return (BookmarkModel) tabelle.getModel();
-  }
-
-  public static void refresh() {
-    if (instance != null) {
-      instance.getOwner().repaint();
-    }
-  }
-
   public JPopupMenu createColumnPopup(JTable table, BookmarkModel model) {
     JPopupMenu popupMenu = new JPopupMenu();
     TableColumnModel columnModel = table.getColumnModel();
@@ -403,7 +456,6 @@ public class BookmarkDialog extends JDialog {
       item.addActionListener(e -> {
         boolean selected = item.isSelected();
         config.setColumnVisible(columnId, selected);
-        System.out.println("Hihi");
         TableColumn column = columnModel.getColumn(colIndex);
         if (selected) {
           column.setMinWidth(15);
@@ -420,45 +472,24 @@ public class BookmarkDialog extends JDialog {
 
       popupMenu.add(item);
     }
-
+    if(model.getNumOfButtonColums() > 0){
+      popupMenu.addSeparator();
+      IconCheckBoxItem showButtonsItem = new IconCheckBoxItem("Buttons anzeigen");
+      popupMenu.add(showButtonsItem);
+    }
+    popupMenu.addSeparator();
+    IconCheckBoxItem showSenderIconsItem = new IconCheckBoxItem("Sendericons anzeigen");
+    popupMenu.add(showSenderIconsItem);
+    IconCheckBoxItem showSmallSenderIconsItem = new IconCheckBoxItem("kleine Sendericons anzeigen");
+    popupMenu.add(showSmallSenderIconsItem);
+    popupMenu.addSeparator();
+JMenuItem resetItem = new JMenuItem("Spalten zurücksetzen");
+popupMenu.add(resetItem);
+popupMenu.pack();
     return popupMenu;
   }
-
-
-  /*private void btnFilterAction(ActionEvent e) {
-    if (++filterState > 2) {
-      filterState = 0;
-    }
-    switch (filterState) {
-      case 0 -> filteredBookmarkList.setPredicate(f -> true);  // show all
-      case 1 -> filteredBookmarkList.setPredicate(film -> { // show only unseen
-        return !film.getSeen();
-      });
-      case 2 ->
-        // show only seen
-          filteredBookmarkList.setPredicate(BookmarkData::getSeen);
-    }
-    btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
-    lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);
-    lblSeen.setDisable(LBLSEEN_DISABLE[FilterState]);
-    refresh();
-  }*/
-  // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-  // Generated using JFormDesigner Educational license - Markus Jannek
-  private JToolBar toolBar;
-  private JButton btnDeleteEntry;
-  private JButton btnMarkViewed;
-  private JButton btnEditNote;
-  private JPanel hSpacer1;
-  private JButton btnSaveList;
-  private JToggleButton btnShowDetails;
-  private JButton btnFilter;
-  private JTabbedPane tabbedPane1;
-  private JPanel panel1;
-  private JLabel label1;
-  private JLabel taDescription;
-  private JXHyperlink hyperlink;
-  private JScrollPane scrollPane1;
-  public static JTable tabelle;
+  enum FilterState {
+    STATE1, STATE2, STATE3;
+  }
   // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }
