@@ -1,6 +1,7 @@
 package mediathek.gui.dialog.bookmark;
 
 import javax.swing.Icon;
+import javax.swing.JMenuItem;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +11,15 @@ import mediathek.tool.SVGIconUtilities;
 public class BaseTableModel extends AbstractTableModel {
 
   private final String[] columnNames;
-  private final int[] BUTTON_COLUMNS;
-  private final String[] COLUMN_ICONS = {"play","download","bookmark"};
-  public final IconCheckBoxItem showAllColumns = new IconCheckBoxItem("Alle Spalten auswählen");
-  public final IconCheckBoxItem hideAllColumns = new IconCheckBoxItem("Alle Spalten abwählen");
+  private final int[] buttonColumns;
+  private final String[] columnIcons = {"play","download","bookmark"};
+  public IconCheckBoxItem[] columnItems;
+  public final JMenuItem showAllColumns = new JMenuItem("Alle Spalten auswählen");
+  public final JMenuItem hideAllColumns = new JMenuItem("Alle Spalten abwählen");
 
   public BaseTableModel(String[] columnNames) {
     this.columnNames = columnNames;
+    this.columnItems = new IconCheckBoxItem[columnNames.length];
     List<Integer> buttonCols = new ArrayList<>();
     for (int i = 0; i < columnNames.length; i++) {
       if (columnNames[i].equals("")) {
@@ -24,9 +27,9 @@ public class BaseTableModel extends AbstractTableModel {
       }
     }
 
-    BUTTON_COLUMNS = new int[buttonCols.size()];
+    buttonColumns = new int[buttonCols.size()];
     for (int i = 0; i < buttonCols.size(); i++) {
-      BUTTON_COLUMNS[i] = buttonCols.get(i);
+      buttonColumns[i] = buttonCols.get(i);
     }
   }
 
@@ -45,12 +48,8 @@ public class BaseTableModel extends AbstractTableModel {
     return null;
   }
 
-  public int[] getButtonColumns() {
-    return BUTTON_COLUMNS;
-  }
-
   public boolean isButtonColumn(int columnIndex) {
-    for (int buttonColumn : BUTTON_COLUMNS) {
+    for (int buttonColumn : buttonColumns) {
       if (buttonColumn == columnIndex) {
         return true;
       }
@@ -59,10 +58,15 @@ public class BaseTableModel extends AbstractTableModel {
   }
 
   public Icon getColumnIconAt(int index){
-    return SVGIconUtilities.createSVGIcon("icons/fontawesome/" + COLUMN_ICONS[index] + ".svg");
+    return SVGIconUtilities.createSVGIcon("icons/fontawesome/" + columnIcons[index] + ".svg");
   }
 
   public int getNumOfButtonColums() {
-  return BUTTON_COLUMNS.length;
+    return buttonColumns.length;
   }
+
+  public int getButtonColumnAt(int index) {
+    return buttonColumns[index];
+  }
+
 }

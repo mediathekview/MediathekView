@@ -75,8 +75,7 @@ public class IconCheckBoxItem extends JMenuItem {
     panel.add(imageLabel);
     setLayout(new BorderLayout());
     add(panel, BorderLayout.CENTER);
-    setPreferredSize(new Dimension(180, 24));
-
+    setPreferredSize(new Dimension(200, 24));
   }
 
 

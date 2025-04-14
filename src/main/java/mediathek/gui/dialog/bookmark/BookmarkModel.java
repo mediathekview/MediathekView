@@ -109,7 +109,6 @@ public class BookmarkModel extends BaseTableModel {
     SwingUtilities.invokeLater(() -> {fireTableDataChanged();});
   }
 
-
   public void filterOnlyUnseen() {
     bookmarks.clear();
     for (DatenBookmark b : allBookmarks) {

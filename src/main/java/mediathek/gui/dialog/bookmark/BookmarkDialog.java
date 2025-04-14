@@ -432,23 +432,50 @@ public class BookmarkDialog extends JDialog {
     TableColumnModel columnModel = table.getColumnModel();
     ApplicationConfiguration config = ApplicationConfiguration.getInstance();
     popupMenu.add(model.showAllColumns);
+    model.showAllColumns.addActionListener(e->{
+      for (int i = 0; i < model.getColumnCount(); i++) {
+        model.columnItems[i].setSelected(true);
+        String columnName = model.getColumnName(i);
+        String columnId = "col_" + columnName;
+        config.setColumnVisible(columnId, true);
+        TableColumn column = columnModel.getColumn(i);
+          column.setMinWidth(15);
+          column.setMaxWidth(Integer.MAX_VALUE);
+          column.setPreferredWidth(100);
+      }
+    });
+
+    model.hideAllColumns.addActionListener(e ->{
+      for (int i = 0; i < model.getColumnCount(); i++) {
+        model.columnItems[i].setSelected(false);
+        String columnName = model.getColumnName(i);
+        String columnId = "col_" + columnName;
+        config.setColumnVisible(columnId, false);
+        TableColumn column = columnModel.getColumn(i);
+        column.setMinWidth(0);
+        column.setMaxWidth(0);
+        column.setPreferredWidth(0);
+      }
+    });
     popupMenu.add(model.hideAllColumns);
     popupMenu.addSeparator();
     int visitedbtnColumns = 0;
     for (int i = 0; i < model.getColumnCount(); i++) {
-      IconCheckBoxItem item;
       String columnName = model.getColumnName(i);
       String columnId = "col_" + columnName;
+      IconCheckBoxItem item;
       boolean visible = config.isColumnVisible(columnId);
 
       // Prüfen, ob es eine Button-Spalte ist
       if (model.isButtonColumn(i)) {
         Icon icon = model.getColumnIconAt(visitedbtnColumns);
         visitedbtnColumns++;
-        item = new IconCheckBoxItem(icon); // mit Icon
+        model.columnItems[i] = new IconCheckBoxItem(icon); // mit Icon
       } else {
-        item = new IconCheckBoxItem(columnName); // mit Text
+        model.columnItems[i] = new IconCheckBoxItem(columnName); // mit Text
       }
+
+      item = model.columnItems[i];
 
       item.setSelected(visible);
       final int colIndex = i;
@@ -470,11 +497,31 @@ public class BookmarkDialog extends JDialog {
         table.repaint();
       });
 
-      popupMenu.add(item);
+      popupMenu.add(model.columnItems[i]);
     }
     if(model.getNumOfButtonColums() > 0){
       popupMenu.addSeparator();
       IconCheckBoxItem showButtonsItem = new IconCheckBoxItem("Buttons anzeigen");
+      showButtonsItem.addActionListener(e ->{
+        boolean selected = showButtonsItem.isSelected();
+        for (int i = 0; i < model.getNumOfButtonColums(); i++) {
+          int colIndex = model.getButtonColumnAt(i);
+          String columnName = model.getColumnName(colIndex);
+          String columnId = "col_" + columnName;
+          config.setColumnVisible(columnId, selected);
+          TableColumn column = columnModel.getColumn(colIndex);
+          if (selected) {
+            column.setMinWidth(15);
+            column.setMaxWidth(Integer.MAX_VALUE);
+            column.setPreferredWidth(100);
+          } else {
+            column.setMinWidth(0);
+            column.setMaxWidth(0);
+            column.setPreferredWidth(0);
+          }
+        }
+        table.repaint();
+      });
       popupMenu.add(showButtonsItem);
     }
     popupMenu.addSeparator();
