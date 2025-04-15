@@ -4,6 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import javax.swing.table.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import mediathek.config.Daten;
@@ -28,27 +29,10 @@ import java.net.URISyntaxException;
 public class BookmarkDialog extends JDialog {
 
   private static final Logger logger = LogManager.getLogger();
-  public static JTable tabelle;
   private static BookmarkDialog instance;
   private final BookmarkModel model;
   private BookmarkNoteDialog noteDialog;
   private FilterState filterState;
-  // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-  // Generated using JFormDesigner non-commercial license
-  private JToolBar toolBar;
-  private JButton btnDeleteEntry;
-  private JButton btnMarkViewed;
-  private JButton btnEditNote;
-  private JPanel hSpacer1;
-  private JButton btnSaveList;
-  private JToggleButton btnShowDetails;
-  private JButton btnFilter;
-  private JTabbedPane tabbedPane1;
-  private JPanel panel1;
-  private JLabel label1;
-  private JLabel taDescription;
-  private JXHyperlink hyperlink;
-  private JScrollPane scrollPane1;
   private BookmarkDialog(Window owner) {
     super(owner);
     initComponents();
@@ -126,8 +110,8 @@ public class BookmarkDialog extends JDialog {
   }
 
   private void initComponents() {
-    // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-    // Generated using JFormDesigner non-commercial license
+    // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+    // Generated using JFormDesigner Educational license - Markus Jannek
     toolBar = new JToolBar();
     btnDeleteEntry = new JButton();
     btnMarkViewed = new JButton();
@@ -146,7 +130,7 @@ public class BookmarkDialog extends JDialog {
 
     //======== this ========
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    setTitle("Merkliste verwalten");
+    setTitle("Merkliste verwalten"); //NON-NLS
     setPreferredSize(new Dimension(800, 400));
     var contentPane = getContentPane();
     contentPane.setLayout(new BorderLayout());
@@ -156,22 +140,22 @@ public class BookmarkDialog extends JDialog {
       toolBar.setFloatable(false);
 
       //---- btnDeleteEntry ----
-      btnDeleteEntry.setToolTipText("Aus der Merkliste l\u00f6schen");
+      btnDeleteEntry.setToolTipText("Aus der Merkliste l\u00f6schen"); //NON-NLS
       toolBar.add(btnDeleteEntry);
       toolBar.add(btnMarkViewed);
 
       //---- btnEditNote ----
-      btnEditNote.setToolTipText("Anmerkungen bearbeiten");
+      btnEditNote.setToolTipText("Anmerkungen bearbeiten"); //NON-NLS
       toolBar.add(btnEditNote);
       toolBar.add(hSpacer1);
 
       //---- btnSaveList ----
-      btnSaveList.setToolTipText("Ge\u00e4nderte Merkliste abspeichern");
+      btnSaveList.setToolTipText("Ge\u00e4nderte Merkliste abspeichern"); //NON-NLS
       toolBar.add(btnSaveList);
       toolBar.addSeparator();
 
       //---- btnShowDetails ----
-      btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen");
+      btnShowDetails.setToolTipText("Erweiterte Film Informationen anzeigen"); //NON-NLS
       toolBar.add(btnShowDetails);
       toolBar.add(btnFilter);
     }
@@ -188,10 +172,10 @@ public class BookmarkDialog extends JDialog {
         panel1.add(taDescription, BorderLayout.NORTH);
 
         //---- hyperlink ----
-        hyperlink.setText("Link zur Webseite");
+        hyperlink.setText("Link zur Webseite"); //NON-NLS
         panel1.add(hyperlink, BorderLayout.SOUTH);
       }
-      tabbedPane1.addTab("Beschreibung", panel1);
+      tabbedPane1.addTab("Beschreibung", panel1); //NON-NLS
     }
     contentPane.add(tabbedPane1, BorderLayout.SOUTH);
 
@@ -200,13 +184,22 @@ public class BookmarkDialog extends JDialog {
 
       //---- tabelle ----
       tabelle.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      tabelle.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+      tabelle.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      tabelle.setModel(new DefaultTableModel(
+        new Object[][] {
+          {null, null},
+          {null, null},
+        },
+        new String[] {
+          null, null
+        }
+      ));
       scrollPane1.setViewportView(tabelle);
     }
     contentPane.add(scrollPane1, BorderLayout.CENTER);
     pack();
     setLocationRelativeTo(getOwner());
-    // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
+    // JFormDesigner - End of component initialization  //GEN-END:initComponents
   }
 
   private void restoreWindowSizeFromConfig() {
@@ -414,9 +407,9 @@ public class BookmarkDialog extends JDialog {
         String columnId = "col_" + columnName;
         config.setColumnVisible(columnId, true);
         TableColumn column = columnModel.getColumn(i);
-          column.setMinWidth(15);
-          column.setMaxWidth(Integer.MAX_VALUE);
-          column.setPreferredWidth(100);
+        column.setMinWidth(15);
+        column.setMaxWidth(Integer.MAX_VALUE);
+        column.setPreferredWidth(100);
       }
     });
 
@@ -445,9 +438,9 @@ public class BookmarkDialog extends JDialog {
       if (model.isButtonColumn(i)) {
         Icon icon = model.getColumnIconAt(visitedbtnColumns);
         visitedbtnColumns++;
-        model.columnItems[i] = new IconCheckBoxItem(icon); // mit Icon
+        model.columnItems[i] = new IconCheckBoxItem(icon);
       } else {
-        model.columnItems[i] = new IconCheckBoxItem(columnName); // mit Text
+        model.columnItems[i] = new IconCheckBoxItem(columnName);
       }
 
       item = model.columnItems[i];
@@ -481,6 +474,7 @@ public class BookmarkDialog extends JDialog {
         boolean selected = showButtonsItem.isSelected();
         for (int i = 0; i < model.getNumOfButtonColums(); i++) {
           int colIndex = model.getButtonColumnAt(i);
+          model.columnItems[colIndex].setSelected(selected);
           String columnName = model.getColumnName(colIndex);
           String columnId = "col_" + columnName;
           config.setColumnVisible(columnId, selected);
@@ -505,13 +499,31 @@ public class BookmarkDialog extends JDialog {
     IconCheckBoxItem showSmallSenderIconsItem = new IconCheckBoxItem("kleine Sendericons anzeigen");
     popupMenu.add(showSmallSenderIconsItem);
     popupMenu.addSeparator();
-JMenuItem resetItem = new JMenuItem("Spalten zurücksetzen");
-popupMenu.add(resetItem);
-popupMenu.pack();
+    JMenuItem resetItem = new JMenuItem("Spalten zurücksetzen");
+    popupMenu.add(resetItem);
+    popupMenu.pack();
     return popupMenu;
   }
   enum FilterState {
-    STATE1, STATE2, STATE3;
+    STATE1,STATE2,STATE3
   }
-  // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner Educational license - Markus Jannek
+    private JToolBar toolBar;
+    private JButton btnDeleteEntry;
+    private JButton btnMarkViewed;
+    private JButton btnEditNote;
+    private JPanel hSpacer1;
+    private JButton btnSaveList;
+    private JToggleButton btnShowDetails;
+    private JButton btnFilter;
+    private JTabbedPane tabbedPane1;
+    private JPanel panel1;
+    private JLabel label1;
+    private JLabel taDescription;
+    private JXHyperlink hyperlink;
+    private JScrollPane scrollPane1;
+    public static JTable tabelle;
+  // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

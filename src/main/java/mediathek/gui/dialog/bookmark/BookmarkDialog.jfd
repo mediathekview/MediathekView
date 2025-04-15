@@ -75,6 +75,31 @@ new FormModel {
 					name: "tabelle"
 					"selectionMode": 0
 					"autoResizeMode": 0
+					"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+						add( new java.util.Vector {
+							add( null )
+							add( null )
+						} )
+						add( new java.util.Vector {
+							add( null )
+							add( null )
+						} )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					} )
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 9
+					}
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
