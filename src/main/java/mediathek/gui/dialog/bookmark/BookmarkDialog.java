@@ -1,7 +1,3 @@
-/*
- * Created by JFormDesigner on Sun Apr 06 14:18:54 CEST 2025
- */
-
 package mediathek.gui.dialog.bookmark;
 
 import java.awt.event.MouseAdapter;
@@ -29,9 +25,6 @@ import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- * @author Markus
- */
 public class BookmarkDialog extends JDialog {
 
   private static final Logger logger = LogManager.getLogger();
@@ -40,26 +33,8 @@ public class BookmarkDialog extends JDialog {
   private final BookmarkModel model;
   private BookmarkNoteDialog noteDialog;
   private FilterState filterState;
-  /*private void btnFilterAction(ActionEvent e) {
-    if (++filterState > 2) {
-      filterState = 0;
-    }
-    switch (filterState) {
-      case 0 -> filteredBookmarkList.setPredicate(f -> true);  // show all
-      case 1 -> filteredBookmarkList.setPredicate(film -> { // show only unseen
-        return !film.getSeen();
-      });
-      case 2 ->
-        // show only seen
-          filteredBookmarkList.setPredicate(BookmarkData::getSeen);
-    }
-    btnFilter.setTooltip(new Tooltip(BTNFILTER_TOOLTIPTEXT[FilterState]));
-    lblFilter.setText(LBLFILTER_MESSAGETEXT[FilterState]);
-    lblSeen.setDisable(LBLSEEN_DISABLE[FilterState]);
-    refresh();
-  }*/
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-  // Generated using JFormDesigner Educational license - Markus Jannek
+  // Generated using JFormDesigner non-commercial license
   private JToolBar toolBar;
   private JButton btnDeleteEntry;
   private JButton btnMarkViewed;
@@ -152,7 +127,7 @@ public class BookmarkDialog extends JDialog {
 
   private void initComponents() {
     // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-    // Generated using JFormDesigner Educational license - Markus Jannek
+    // Generated using JFormDesigner non-commercial license
     toolBar = new JToolBar();
     btnDeleteEntry = new JButton();
     btnMarkViewed = new JButton();

@@ -197,7 +197,7 @@ public class MergeSubripVideoDialog extends JDialog {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        // Generated using JFormDesigner Educational license - Markus Jannek
+        // Generated using JFormDesigner non-commercial license
         var dialogPane = new JPanel();
         var contentPanel = new JPanel();
         var label1 = new JLabel();
@@ -365,7 +365,7 @@ public class MergeSubripVideoDialog extends JDialog {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    // Generated using JFormDesigner Educational license - Markus Jannek
+    // Generated using JFormDesigner non-commercial license
     private JTextField tfSubripFilePath;
     private JButton btnSelectInputSubrip;
     private JTextField tfVideoFilePath;
