@@ -1,4 +1,4 @@
-package mediathek.gui;
+package mediathek.gui.dialog.bookmark;
 
 import java.awt.event.ActionListener;
 import javax.swing.*;

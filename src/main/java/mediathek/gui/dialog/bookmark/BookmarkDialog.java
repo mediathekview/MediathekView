@@ -9,7 +9,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
-import mediathek.gui.IconCheckBoxItem;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;

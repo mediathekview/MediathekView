@@ -5,7 +5,6 @@ import javax.swing.JMenuItem;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
-import mediathek.gui.IconCheckBoxItem;
 import mediathek.tool.SVGIconUtilities;
 
 public class BaseTableModel extends AbstractTableModel {
