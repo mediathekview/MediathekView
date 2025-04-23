@@ -316,6 +316,7 @@ public class SwingFilterDialog extends JDialog {
         btnRenameFilter.setEnabled(enable);
         btnAddNewFilter.setEnabled(enable);
         btnResetCurrentFilter.setEnabled(enable);
+        btnResetThema.setEnabled(enable);
 
         cbShowNewOnly.setEnabled(enable);
         cbShowBookMarkedOnly.setEnabled(enable);

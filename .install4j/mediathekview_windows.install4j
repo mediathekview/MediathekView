@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="10.0.9" transformSequenceNumber="10">
+<install4j version="11.0.3" transformSequenceNumber="11">
   <directoryPresets config="${project.build.directory}/res" />
   <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-win" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Liberica" release="23/23.0.2+9">
+    <jreBundles jdkProviderId="Liberica" release="24/24+37">
       <modules>
         <defaultModules set="jre" />
         <module name="jdk.incubator.vector" />
@@ -26,6 +26,7 @@
         </exclude>
       </dirEntry>
       <fileEntry mountPoint="58" file="${project.build.directory}/res/README.txt" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" />
+      <dirEntry mountPoint="58" file="${project.build.directory}/dependency" overwriteMode="1" overrideOverwriteMode="true" entryMode="subdir" subDirectory="dependency" />
     </entries>
   </files>
   <launchers>
@@ -34,6 +35,7 @@
       <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.win.64}">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
+          <scanDirectory location="dependency" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>
@@ -48,6 +50,7 @@
       <java mainClass="mediathek.Main" vmParameters="${install4j.vmparameters.win.64}" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
+          <scanDirectory location="dependency" failOnError="false" />
         </classPath>
       </java>
       <iconImageFiles>

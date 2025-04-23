@@ -144,6 +144,7 @@ public class AboutDialog extends JDialog {
 
                         //---- textPane1 ----
                         textPane1.setText("MediathekView-Client:\nChristian Franzke (derreisende77)\n\nMediathekView-Server:\nNicklas Wiegandt (nicklas2751)\nPeter W. (pidoubleyou)\nSascha Wiegandt (thesasch)\n\nServer-Administration:\nAlexander Finkh\u00e4user (alex1702)"); //NON-NLS
+                        textPane1.setEditable(false);
                         scrollPane3.setViewportView(textPane1);
                     }
                     panel2.add(scrollPane3, BorderLayout.CENTER);
@@ -159,6 +160,7 @@ public class AboutDialog extends JDialog {
 
                         //---- textPane2 ----
                         textPane2.setText("Gr\u00fcnder des Programms:\nXaver W. (xaverW)\n\nWeitere Beteiligte:\nsiedlerchr\nstyrol\nzxsd\napoleon\nhostis\npmshell\nclel\nthausherr\nklauswich"); //NON-NLS
+                        textPane2.setEditable(false);
                         scrollPane1.setViewportView(textPane2);
                     }
                     panel3.add(scrollPane1, BorderLayout.CENTER);

@@ -16,29 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.tabs.tab_film.filter_selection;
+package mediathek.controller.starter;
 
-import mediathek.tool.FilterDTO;
-import org.jetbrains.annotations.NotNull;
+public enum HttpDownloadState {
 
-import javax.swing.*;
-import java.awt.*;
-
-public class FilterSelectionComboBox extends JComboBox<FilterDTO> {
-    public FilterSelectionComboBox() {
-        setup();
-    }
-
-    public FilterSelectionComboBox(@NotNull DefaultComboBoxModel<FilterDTO> model) {
-        super(model);
-
-        setup();
-    }
-
-    private void setup() {
-        setMaximumSize(new Dimension(200, 100));
-
-        setEditable(false);
-        setToolTipText("Aktiver Filter");
-    }
+    CANCEL, ERROR, DOWNLOAD
 }

@@ -82,6 +82,13 @@
         </repository>
     </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>ej-technologies</id>
+            <url>https://maven.ej-technologies.com/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.language.version>21</jdk.language.version>
@@ -103,7 +110,6 @@
         <flatlaf.version>3.5.4</flatlaf.version>
         <guava.version>33.4.6-jre</guava.version>
         <icu4j.version>76.1</icu4j.version>
-        <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.18.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
         <javafx.version>24</javafx.version>
@@ -115,12 +121,12 @@
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <miglayout.version>11.3</miglayout.version>
@@ -132,11 +138,11 @@
 
         <mainclass>mediathek.Main</mainclass>
 
-        <install4j.version>11.0.2</install4j.version>
+        <install4j.version>11.0.3</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
-        <install4j.licenseKey>${env.LICENSE_KEY_11}</install4j.licenseKey>
-        <install4j.jdk.min-version>23</install4j.jdk.min-version>
+        <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
+        <install4j.jdk.min-version>24</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
@@ -214,6 +220,7 @@
             <groupId>com.formdev</groupId>
             <artifactId>jformdesigner-annotations</artifactId>
             <version>1.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -638,9 +645,10 @@
                 <version>${maven-jar-plugin.version}</version>
                 <configuration>
                     <archive>
-                        <manifestEntries>
-                            <Multi-Release>true</Multi-Release>
-                        </manifestEntries>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass><![CDATA[${mainclass}]]></mainClass>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
@@ -787,34 +795,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                            <manifestEntries>
-                                                <Multi-Release>true</Multi-Release>
-                                            </manifestEntries>
-                                        </transformer>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -862,34 +853,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                            <manifestEntries>
-                                                <Multi-Release>true</Multi-Release>
-                                            </manifestEntries>
-                                        </transformer>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -965,29 +939,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1062,29 +1024,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1189,29 +1139,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1328,29 +1266,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1363,9 +1289,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.sonatype.install4j</groupId>
-                        <artifactId>install4j-maven-plugin</artifactId>
-                        <version>${install4j-maven-plugin.version}</version>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
                         <executions>
                             <execution>
                                 <id>compile-installers</id>
@@ -1374,14 +1300,7 @@
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <projectFile>
-                                        ${project.build.directory}/mediathekview_${install4j.platform}.install4j
-                                    </projectFile>
-                                    <installDir>${install4j.home}</installDir>
-                                    <jvmArguments>
-                                        <arg>-Xmx2G</arg>
-                                    </jvmArguments>
-                                    <attach>true</attach>
+                                    <projectFile>${project.build.directory}/mediathekview_${install4j.platform}.install4j</projectFile>
                                 </configuration>
                             </execution>
                         </executions>

@@ -119,7 +119,6 @@ public class PanelFilmlisteLaden extends JPanel {
         senderCbList.add(checkBox2);
         senderCbList.add(checkBox3);
         senderCbList.add(checkBox4);
-        senderCbList.add(checkBox5);
         senderCbList.add(checkBox6);
         senderCbList.add(checkBox8);
         senderCbList.add(checkBox7);
@@ -281,33 +280,32 @@ public class PanelFilmlisteLaden extends JPanel {
         checkBox10 = new JCheckBox();
         checkBox12 = new JCheckBox();
         checkBox16 = new JCheckBox();
-        checkBox20 = new JCheckBox();
-        checkBox6 = new JCheckBox();
+        checkBox29 = new JCheckBox();
         checkBox8 = new JCheckBox();
         checkBox25 = new JCheckBox();
         checkBox13 = new JCheckBox();
         checkBox4 = new JCheckBox();
-        checkBox29 = new JCheckBox();
+        checkBox21 = new JCheckBox();
         checkBox27 = new JCheckBox();
         checkBox26 = new JCheckBox();
         checkBox3 = new JCheckBox();
         checkBox17 = new JCheckBox();
-        checkBox21 = new JCheckBox();
+        checkBox22 = new JCheckBox();
         checkBox9 = new JCheckBox();
         checkBox2 = new JCheckBox();
         checkBox14 = new JCheckBox();
         checkBox18 = new JCheckBox();
-        checkBox22 = new JCheckBox();
+        checkBox31 = new JCheckBox();
         checkBox23 = new JCheckBox();
         checkBox11 = new JCheckBox();
         checkBox28 = new JCheckBox();
         checkBox19 = new JCheckBox();
-        checkBox31 = new JCheckBox();
+        checkBox32 = new JCheckBox();
         checkBox24 = new JCheckBox();
         checkBox7 = new JCheckBox();
         checkBox15 = new JCheckBox();
-        checkBox5 = new JCheckBox();
-        checkBox32 = new JCheckBox();
+        checkBox20 = new JCheckBox();
+        checkBox6 = new JCheckBox();
 
         //======== this ========
         setPreferredSize(new Dimension(740, 506));
@@ -477,7 +475,6 @@ public class PanelFilmlisteLaden extends JPanel {
                         .fill().gap()
                         .fill().gap()
                         .fill().gap()
-                        .fill().gap()
                         .fill(),
                     // rows
                     new AC()
@@ -504,13 +501,9 @@ public class PanelFilmlisteLaden extends JPanel {
                 checkBox16.setText("PHOENIX"); //NON-NLS
                 panel1.add(checkBox16, new CC().cell(3, 0));
 
-                //---- checkBox20 ----
-                checkBox20.setText("SWR"); //NON-NLS
-                panel1.add(checkBox20, new CC().cell(4, 0));
-
-                //---- checkBox6 ----
-                checkBox6.setText("ZDF-tivi"); //NON-NLS
-                panel1.add(checkBox6, new CC().cell(5, 0));
+                //---- checkBox29 ----
+                checkBox29.setText("tagesschau24"); //NON-NLS
+                panel1.add(checkBox29, new CC().cell(4, 0));
 
                 //---- checkBox8 ----
                 checkBox8.setText("ARD"); //NON-NLS
@@ -528,9 +521,9 @@ public class PanelFilmlisteLaden extends JPanel {
                 checkBox4.setText("Radio Bremen TV"); //NON-NLS
                 panel1.add(checkBox4, new CC().cell(3, 1));
 
-                //---- checkBox29 ----
-                checkBox29.setText("tagesschau24"); //NON-NLS
-                panel1.add(checkBox29, new CC().cell(4, 1));
+                //---- checkBox21 ----
+                checkBox21.setText("WDR"); //NON-NLS
+                panel1.add(checkBox21, new CC().cell(4, 1));
 
                 //---- checkBox27 ----
                 checkBox27.setText("ARD-alpha"); //NON-NLS
@@ -548,9 +541,9 @@ public class PanelFilmlisteLaden extends JPanel {
                 checkBox17.setText("RBB"); //NON-NLS
                 panel1.add(checkBox17, new CC().cell(3, 2));
 
-                //---- checkBox21 ----
-                checkBox21.setText("WDR"); //NON-NLS
-                panel1.add(checkBox21, new CC().cell(4, 2));
+                //---- checkBox22 ----
+                checkBox22.setText("ZDF"); //NON-NLS
+                panel1.add(checkBox22, new CC().cell(4, 2));
 
                 //---- checkBox9 ----
                 checkBox9.setText("ARTE.DE"); //NON-NLS
@@ -568,9 +561,9 @@ public class PanelFilmlisteLaden extends JPanel {
                 checkBox18.setText("SR"); //NON-NLS
                 panel1.add(checkBox18, new CC().cell(3, 3));
 
-                //---- checkBox22 ----
-                checkBox22.setText("ZDF"); //NON-NLS
-                panel1.add(checkBox22, new CC().cell(4, 3));
+                //---- checkBox31 ----
+                checkBox31.setText("ZDFinfo"); //NON-NLS
+                panel1.add(checkBox31, new CC().cell(4, 3));
 
                 //---- checkBox23 ----
                 checkBox23.setText("ARTE.EN"); //NON-NLS
@@ -588,9 +581,9 @@ public class PanelFilmlisteLaden extends JPanel {
                 checkBox19.setText("SRF"); //NON-NLS
                 panel1.add(checkBox19, new CC().cell(3, 4));
 
-                //---- checkBox31 ----
-                checkBox31.setText("ZDFinfo"); //NON-NLS
-                panel1.add(checkBox31, new CC().cell(4, 4));
+                //---- checkBox32 ----
+                checkBox32.setText("ZDFneo"); //NON-NLS
+                panel1.add(checkBox32, new CC().cell(4, 4));
 
                 //---- checkBox24 ----
                 checkBox24.setText("ARTE.ES"); //NON-NLS
@@ -604,13 +597,13 @@ public class PanelFilmlisteLaden extends JPanel {
                 checkBox15.setText("ORF"); //NON-NLS
                 panel1.add(checkBox15, new CC().cell(2, 5));
 
-                //---- checkBox5 ----
-                checkBox5.setText("SRF.Podcast"); //NON-NLS
-                panel1.add(checkBox5, new CC().cell(3, 5));
+                //---- checkBox20 ----
+                checkBox20.setText("SWR"); //NON-NLS
+                panel1.add(checkBox20, new CC().cell(3, 5));
 
-                //---- checkBox32 ----
-                checkBox32.setText("ZDFneo"); //NON-NLS
-                panel1.add(checkBox32, new CC().cell(4, 5));
+                //---- checkBox6 ----
+                checkBox6.setText("ZDF-tivi"); //NON-NLS
+                panel1.add(checkBox6, new CC().cell(4, 5));
             }
             panel3.add(panel1);
         }
@@ -641,32 +634,31 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox checkBox10;
     private JCheckBox checkBox12;
     private JCheckBox checkBox16;
-    private JCheckBox checkBox20;
-    private JCheckBox checkBox6;
+    private JCheckBox checkBox29;
     private JCheckBox checkBox8;
     private JCheckBox checkBox25;
     private JCheckBox checkBox13;
     private JCheckBox checkBox4;
-    private JCheckBox checkBox29;
+    private JCheckBox checkBox21;
     private JCheckBox checkBox27;
     private JCheckBox checkBox26;
     private JCheckBox checkBox3;
     private JCheckBox checkBox17;
-    private JCheckBox checkBox21;
+    private JCheckBox checkBox22;
     private JCheckBox checkBox9;
     private JCheckBox checkBox2;
     private JCheckBox checkBox14;
     private JCheckBox checkBox18;
-    private JCheckBox checkBox22;
+    private JCheckBox checkBox31;
     private JCheckBox checkBox23;
     private JCheckBox checkBox11;
     private JCheckBox checkBox28;
     private JCheckBox checkBox19;
-    private JCheckBox checkBox31;
+    private JCheckBox checkBox32;
     private JCheckBox checkBox24;
     private JCheckBox checkBox7;
     private JCheckBox checkBox15;
-    private JCheckBox checkBox5;
-    private JCheckBox checkBox32;
+    private JCheckBox checkBox20;
+    private JCheckBox checkBox6;
     // End of variables declaration//GEN-END:variables
 }
