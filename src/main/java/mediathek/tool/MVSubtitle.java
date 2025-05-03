@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 
 public class MVSubtitle {
 
+    private static final String SUFFIX_ASS = "ass";
     private static final String SUFFIX_SRT = "srt";
     private static final String SUFFIX_TTML = "ttml";
     private static final String SUFFIX_VTT = "vtt";
@@ -126,12 +127,15 @@ public class MVSubtitle {
         var subtitleFileStr = GuiFunktionen.getFileNameWithoutExtension(ttmlPath.toAbsolutePath().toString());
 
         try (TimedTextMarkupLanguageParser parser = new TimedTextMarkupLanguageParser()) {
-            if (!subtitleFileStr.endsWith('.' + SUFFIX_SRT) && !subtitleFileStr.endsWith("." + SUFFIX_VTT)) {
+            if (!subtitleFileStr.endsWith("." + SUFFIX_ASS) && !subtitleFileStr.endsWith('.' + SUFFIX_SRT) && !subtitleFileStr.endsWith("." + SUFFIX_VTT)) {
+                final Path ass = Paths.get(subtitleFileStr + "." + SUFFIX_ASS);
                 final Path srt = Paths.get(subtitleFileStr + "." + SUFFIX_SRT);
                 if (parser.parse(ttmlPath)) {
                     parser.toSrt(srt);
+                    parser.toAss(ass);
                 } else if (parser.parseXmlFlash(ttmlPath)) {
                     parser.toSrt(srt);
+                    parser.toAss(ass);
                 }
                 logger.info("Untertitel-Datei wurde konvertiert.");
             }

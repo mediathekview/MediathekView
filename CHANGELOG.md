@@ -13,6 +13,7 @@
 - **FEATURE:** Thema und Sender werden nun in den Filtern gespeichert. Vielen Dank an @MarkusJannek
 - **FEATURE:** Tab Download Kontextmenüeintrag *Film (URL) abspielen* besitzt nun in eigenes Icon. @MarkusJannek
 - **FEATURE:** MV kann nun die Sender ZDFinfo und ZDFneo in der Filmliste auswerten.
+- **FEATURE:** Untertitel werden nun auch in das ASS-Format konvertiert. Vielen Dank an @Lucki.
 
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
