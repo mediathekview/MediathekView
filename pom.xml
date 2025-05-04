@@ -450,6 +450,14 @@
             <version>${log4j2.version}</version>
         </dependency>
 
+        <!-- for TimedTextMarkupParserTest -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.19.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- JUnit 5 Jupiter -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
