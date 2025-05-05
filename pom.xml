@@ -108,7 +108,7 @@
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <controlsfx.version>11.2.2</controlsfx.version>
         <flatlaf.version>3.5.4</flatlaf.version>
-        <guava.version>33.4.6-jre</guava.version>
+        <guava.version>33.4.8-jre</guava.version>
         <icu4j.version>76.1</icu4j.version>
         <jackson.version>2.18.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
@@ -133,7 +133,7 @@
         <mockito.version>5.12.0</mockito.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <picocli.version>4.7.6</picocli.version>
-        <sqlite-jdbc.version>3.48.0.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.49.1.0</sqlite-jdbc.version>
         <xz.version>1.10</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
