@@ -78,9 +78,9 @@ Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE ge
 ===========================================================    
 Starten mit zusätzlichen Parametern (Windows)
 -----------------------------------------------------------
-jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar [Pfad] [Parameter]
-jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar c:\temp
-jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
+jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -ea -cp "MediathekView.jar;./dependency/*" mediathek.Main [Pfad] [Parameter]
+jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -ea -cp "MediathekView.jar;./dependency/*" mediathek.Main C:\Temp
+jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -ea -cp "MediathekView.jar;./dependency/*" mediathek.Main Einstellungen\.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
@@ -93,7 +93,8 @@ gespeichert (beim Start ohne die Angabe eines Pfades).
 Starten im portablen Modus (MediathekView Portable)
 -----------------------------------------------------------
 Windows: MediathekView_Portable.exe
-Java: jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
+jre\bin\java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -ea -cp "MediathekView.jar;./dependency/*" mediathek.Main Einstellungen\.mediathek3
+
 
 Linux: MediathekView_Portable
-Java: jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication -jar MediathekView.jar Einstellungen/.mediathek3
+java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -ea -cp "MediathekView.jar:dependency/*" mediathek.Main Einstellungen/.mediathek3
