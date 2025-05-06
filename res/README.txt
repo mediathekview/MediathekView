@@ -70,7 +70,7 @@ Für Windows (MediathekView.exe), Linux (MediathekView) sind eigene
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
 Ansonsten kann man die Programmdatei unter Linux auch so starten:
-jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -jar MediathekView.jar
+jre/bin/java -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -ea -cp "MediathekView.jar:dependency/*" mediathek.Main
 
 Achtung: Nur wenn jre/bin mit angegeben wird, wird auch die mitgelieferte JRE genutzt!
 
