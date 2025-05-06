@@ -19,13 +19,15 @@
 package mediathek.gui.tabs.tab_film.filter.zeitraum;
 
 import mediathek.tool.FilterConfiguration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
 public class ZeitraumSpinner extends JSpinner {
     public static final String UNLIMITED_VALUE = "∞";
-    //private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     public ZeitraumSpinner() {
         super(new SpinnerNumberModel(0, 0, 365, 1));
@@ -34,12 +36,20 @@ public class ZeitraumSpinner extends JSpinner {
 
     public void restoreFilterConfig(@NotNull FilterConfiguration filterConfiguration) throws NumberFormatException {
         var zeitraumVal = filterConfiguration.getZeitraum();
-        int zeitraumValInt;
-        if (zeitraumVal.equals(ZeitraumSpinnerFormatter.INFINITE_TEXT))
-            zeitraumValInt = ZeitraumSpinnerFormatter.INFINITE_VALUE;
-        else
-            zeitraumValInt = Integer.parseInt(zeitraumVal);
-        setValue(zeitraumValInt);
+        try {
+            int zeitraumValInt;
+            if (zeitraumVal.equals(ZeitraumSpinnerFormatter.INFINITE_TEXT))
+                zeitraumValInt = ZeitraumSpinnerFormatter.INFINITE_VALUE;
+            else
+                zeitraumValInt = Integer.parseInt(zeitraumVal);
+            setValue(zeitraumValInt);
+        }
+        catch (NumberFormatException ex) {
+            logger.error("Failed to parse zeitraum value: {}", zeitraumVal, ex);
+            logger.error("Using default value: {}", ZeitraumSpinnerFormatter.INFINITE_VALUE);
+            setValue(ZeitraumSpinnerFormatter.INFINITE_VALUE);
+            filterConfiguration.setZeitraum(ZeitraumSpinnerFormatter.INFINITE_TEXT);
+        }
     }
 
     public void installFilterConfigurationChangeListener(@NotNull FilterConfiguration filterConfiguration) {
