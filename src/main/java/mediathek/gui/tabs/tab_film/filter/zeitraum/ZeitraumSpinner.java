@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class ZeitraumSpinner extends JSpinner {
-    public static final String UNLIMITED_VALUE = "∞";
     private static final Logger logger = LogManager.getLogger();
 
     public ZeitraumSpinner() {
@@ -57,7 +56,7 @@ public class ZeitraumSpinner extends JSpinner {
             var val = (int) getValue();
             String strVal;
             if (val == ZeitraumSpinnerFormatter.INFINITE_VALUE)
-                strVal = UNLIMITED_VALUE;
+                strVal = ZeitraumSpinnerFormatter.INFINITE_TEXT;
             else
                 strVal = String.valueOf(val);
 

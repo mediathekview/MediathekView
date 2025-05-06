@@ -3,7 +3,7 @@ package mediathek.tool;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
-import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinner;
+import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinnerFormatter;
 import org.apache.commons.configuration2.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -124,7 +124,7 @@ public class FilterConfiguration {
                 && !isDontShowSignLanguage()
                 && !isDontShowAudioVersions()
                 && !isDontShowDuplicates()
-                && getZeitraum().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+                && getZeitraum().equalsIgnoreCase(ZeitraumSpinnerFormatter.INFINITE_TEXT);
     }
 
     public boolean isShowHighQualityOnly() {
@@ -252,10 +252,10 @@ public class FilterConfiguration {
 
     public String getZeitraum() {
         return configuration.getString(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()),
-                ZeitraumSpinner.UNLIMITED_VALUE);
+                ZeitraumSpinnerFormatter.INFINITE_TEXT);
     }
 
-    public FilterConfiguration setZeitraum(String zeitraum) {
+    public FilterConfiguration setZeitraum(@NotNull String zeitraum) {
         configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_ZEITRAUM.getKey()), zeitraum);
         return this;
     }
