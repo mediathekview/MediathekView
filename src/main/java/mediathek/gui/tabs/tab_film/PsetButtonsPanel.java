@@ -1,6 +1,7 @@
 package mediathek.gui.tabs.tab_film;
 
 import mediathek.config.Daten;
+import mediathek.gui.actions.SettingsAction;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
@@ -9,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PsetButtonsPanel extends JPanel {
     private static final int DEFAULT_HEIGHT = 90;

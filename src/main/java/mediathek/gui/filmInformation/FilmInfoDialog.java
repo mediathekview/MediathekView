@@ -246,7 +246,7 @@ public class FilmInfoDialog extends JDialog {
         }, this::clearControls);
     }
 
-    private void prepareHyperlink(String url) {
+    private void prepareHyperlink(String url)   {
         hyperlink.setEnabled(true);
         hyperlink.setToolTipText(url);
         hyperlink.setClicked(false);
@@ -257,7 +257,7 @@ public class FilmInfoDialog extends JDialog {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        // Generated using JFormDesigner non-commercial license
+        // Generated using JFormDesigner Educational license - Markus Jannek
         var label1 = new JLabel();
         lblSender = new JLabel();
         var label2 = new JLabel();
@@ -287,137 +287,135 @@ public class FilmInfoDialog extends JDialog {
 
         //======== this ========
         setType(Window.Type.UTILITY);
-        setTitle("Filminformation"); //NON-NLS
+        setTitle("Filminformation");
         setMaximumSize(new Dimension(500, 800));
         setMinimumSize(new Dimension(320, 240));
         setPreferredSize(new Dimension(400, 500));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
-            new LC().insets("5").hideMode(3), //NON-NLS
-            // columns
-            new AC()
-                .fill().gap()
-                .grow().fill(),
-            // rows
-            new AC()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .gap()
-                .grow().fill()));
+          "insets 5,hidemode 3",
+          // columns
+          "[fill]" +
+          "[grow,fill]",
+          // rows
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[]" +
+          "[grow,fill]"));
 
         //---- label1 ----
-        label1.setText("Sender:"); //NON-NLS
-        contentPane.add(label1, new CC().cell(0, 0));
-        contentPane.add(lblSender, new CC().cell(1, 0));
+        label1.setText("Sender:");
+        contentPane.add(label1, "cell 0 0");
+        contentPane.add(lblSender, "cell 1 0");
 
         //---- label2 ----
-        label2.setText("Thema:"); //NON-NLS
-        contentPane.add(label2, new CC().cell(0, 1));
+        label2.setText("Thema:");
+        contentPane.add(label2, "cell 0 1");
 
         //---- lblThema ----
         lblThema.setPreferredSize(new Dimension(443, 32));
         lblThema.setMinimumSize(new Dimension(51, 32));
-        contentPane.add(lblThema, new CC().cell(1, 1));
+        contentPane.add(lblThema, "cell 1 1");
 
         //---- label3 ----
-        label3.setText("Titel:"); //NON-NLS
-        contentPane.add(label3, new CC().cell(0, 2));
-        contentPane.add(lblTitel, new CC().cell(1, 2));
+        label3.setText("Titel:");
+        contentPane.add(label3, "cell 0 2");
+        contentPane.add(lblTitel, "cell 1 2");
 
         //---- label4 ----
-        label4.setText("Datum:"); //NON-NLS
-        contentPane.add(label4, new CC().cell(0, 3));
+        label4.setText("Datum:");
+        contentPane.add(label4, "cell 0 3");
 
         //---- lblDate ----
-        lblDate.setText("text"); //NON-NLS
-        contentPane.add(lblDate, new CC().cell(1, 3));
+        lblDate.setText("text");
+        contentPane.add(lblDate, "cell 1 3");
 
         //---- label5 ----
-        label5.setText("Uhrzeit:"); //NON-NLS
-        contentPane.add(label5, new CC().cell(0, 4));
+        label5.setText("Uhrzeit:");
+        contentPane.add(label5, "cell 0 4");
 
         //---- lblUhrzeit ----
-        lblUhrzeit.setText("text"); //NON-NLS
-        contentPane.add(lblUhrzeit, new CC().cell(1, 4));
+        lblUhrzeit.setText("text");
+        contentPane.add(lblUhrzeit, "cell 1 4");
 
         //---- label6 ----
-        label6.setText("Dauer:"); //NON-NLS
-        contentPane.add(label6, new CC().cell(0, 5));
+        label6.setText("Dauer:");
+        contentPane.add(label6, "cell 0 5");
 
         //---- lblDuration ----
-        lblDuration.setText("text"); //NON-NLS
-        contentPane.add(lblDuration, new CC().cell(1, 5));
+        lblDuration.setText("text");
+        contentPane.add(lblDuration, "cell 1 5");
 
         //---- label7 ----
-        label7.setText("Gr\u00f6\u00dfe (MB):"); //NON-NLS
-        contentPane.add(label7, new CC().cell(0, 6));
+        label7.setText("Gr\u00f6\u00dfe (MB):");
+        contentPane.add(label7, "cell 0 6");
 
         //---- lblSize ----
-        lblSize.setText("text"); //NON-NLS
-        contentPane.add(lblSize, new CC().cell(1, 6));
+        lblSize.setText("text");
+        contentPane.add(lblSize, "cell 1 6");
 
         //---- label8 ----
-        label8.setText("HQ:"); //NON-NLS
-        contentPane.add(label8, new CC().cell(0, 7));
-        contentPane.add(cbHq, new CC().cell(1, 7));
+        label8.setText("HQ:");
+        contentPane.add(label8, "cell 0 7");
+        contentPane.add(cbHq, "cell 1 7");
 
         //---- label9 ----
-        label9.setText("Untertitel:"); //NON-NLS
-        contentPane.add(label9, new CC().cell(0, 8));
-        contentPane.add(cbSubtitle, new CC().cell(1, 8));
+        label9.setText("Untertitel:");
+        contentPane.add(label9, "cell 0 8");
+        contentPane.add(cbSubtitle, "cell 1 8");
 
         //---- label10 ----
-        label10.setText("Geo:"); //NON-NLS
-        contentPane.add(label10, new CC().cell(0, 9));
+        label10.setText("Geo:");
+        contentPane.add(label10, "cell 0 9");
 
         //---- lblGeo ----
-        lblGeo.setText("text"); //NON-NLS
-        contentPane.add(lblGeo, new CC().cell(1, 9));
+        lblGeo.setText("text");
+        contentPane.add(lblGeo, "cell 1 9");
 
         //---- label11 ----
-        label11.setText("Abo:"); //NON-NLS
-        contentPane.add(label11, new CC().cell(0, 10));
+        label11.setText("Abo:");
+        contentPane.add(label11, "cell 0 10");
 
         //---- lblAbo ----
-        lblAbo.setText("text"); //NON-NLS
-        contentPane.add(lblAbo, new CC().cell(1, 10));
+        lblAbo.setText("text");
+        contentPane.add(lblAbo, "cell 1 10");
 
         //---- hyperlink ----
-        hyperlink.setText("Link zur Website"); //NON-NLS
-        contentPane.add(hyperlink, new CC().cell(0, 11, 2, 1));
+        hyperlink.setText("Link zur Website");
+        contentPane.add(hyperlink, "cell 0 11 2 1");
 
         //---- label13 ----
-        label13.setText("Beschreibung:"); //NON-NLS
-        contentPane.add(label13, new CC().cell(0, 12, 2, 1));
+        label13.setText("Beschreibung:");
+        contentPane.add(label13, "cell 0 12 2 1");
 
         //======== descScrollPane ========
         {
 
-            //---- lblDescription ----
-            lblDescription.setMinimumSize(new Dimension(1, 100));
-            lblDescription.setPreferredSize(new Dimension(1, 100));
-            lblDescription.setMaximumSize(new Dimension(2147483647, 200));
-            descScrollPane.setViewportView(lblDescription);
+          //---- lblDescription ----
+          lblDescription.setMinimumSize(new Dimension(1, 100));
+          lblDescription.setPreferredSize(new Dimension(1, 100));
+          lblDescription.setMaximumSize(new Dimension(2147483647, 200));
+          descScrollPane.setViewportView(lblDescription);
         }
-        contentPane.add(descScrollPane, new CC().cell(0, 13, 2, 1));
+        contentPane.add(descScrollPane, "cell 0 13 2 1");
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    // Generated using JFormDesigner non-commercial license
+    // Generated using JFormDesigner Educational license - Markus Jannek
     private JLabel lblSender;
     private HtmlMultilineLabel lblThema;
     private HtmlMultilineLabel lblTitel;

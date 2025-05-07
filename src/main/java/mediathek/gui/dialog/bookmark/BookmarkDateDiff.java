@@ -1,4 +1,4 @@
-package mediathek.javafx.bookmark;
+package mediathek.gui.dialog.bookmark;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -24,8 +24,17 @@ public class BeobTableHeader extends MouseAdapter {
      */
     private final int[] button;
     private final boolean displaySenderIconMenus;
+    /**
+     * Determines whether the menu should include options for selecting/deselecting all columns.
+     */
+    private final boolean showColumnSelectionOptions;
     private final MVConfig.Configs configKey;
+    private boolean displayAll = true;
+    private boolean hideAll = true;
     private JCheckBoxMenuItem[] box;
+    private JCheckBoxMenuItem cbmiShowAllColumns;
+    private JCheckBoxMenuItem cbmiHideAllColumns;
+    private JMenuItem miResetColumns;
 
     /**
      * Context Menu for manipulation of table visual appearance from table header.
@@ -35,24 +44,37 @@ public class BeobTableHeader extends MouseAdapter {
      * @param hiddenColumns Column indices which should NOT be displayed.
      * @param bbutton Column indices which are supposed to be buttons.
      * @param displaySenderIconMenus Let user manipulate the display of sender icons.
+     * @param showColumnSelectionOptions If true, adds menu items for selecting/deselecting all columns.
      * @param configKey If not NULL, store config setting for LINEBREAK in this key.
      *                  If NULL, do not store/restore values and do not show LINEBREAK context menu entries.
      */
-    public BeobTableHeader(@NotNull MVTable tabelle, boolean[] spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, MVConfig.Configs configKey) {
+    public BeobTableHeader(@NotNull MVTable tabelle, boolean[] spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, boolean showColumnSelectionOptions, MVConfig.Configs configKey) {
         this.tabelle = tabelle;
         this.displaySenderIconMenus = displaySenderIconMenus;
         spaltenAnzeigen = spalten;
         this.hiddenColumns = hiddenColumns;
         this.configKey = configKey;
         button = bbutton;
+        this.showColumnSelectionOptions = showColumnSelectionOptions;
 
-        //dynamically query column names from table
+        // Dynamically query column names from table
         final var colModel = tabelle.getTableHeader().getColumnModel();
         final int colCount = colModel.getColumnCount();
         columns = new String[colCount];
         for (int index = 0; index < colCount; index++) {
             columns[index] = (String) colModel.getColumn(index).getHeaderValue();
         }
+
+        createStaticMenuEntries();
+    }
+
+    public BeobTableHeader(@NotNull MVTable tabelle, boolean[] spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, MVConfig.Configs configKey) {
+        this(tabelle, spalten, hiddenColumns, bbutton, displaySenderIconMenus, false, configKey);
+    }
+
+    private void createStaticMenuEntries() {
+        miResetColumns = new JMenuItem("Spalten zurücksetzen");
+        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
     }
 
     @Override
@@ -91,6 +113,16 @@ public class BeobTableHeader extends MouseAdapter {
 
     protected JPopupMenu prepareMenu() {
         JPopupMenu jPopupMenu = new JPopupMenu();
+        if (showColumnSelectionOptions) {
+            cbmiShowAllColumns = new JCheckBoxMenuItem("Alle auswählen");
+            cbmiShowAllColumns.setSelected(alleAnzeigen());
+            jPopupMenu.add(cbmiShowAllColumns);
+            cbmiHideAllColumns = new JCheckBoxMenuItem("Alle abwählen");
+            cbmiHideAllColumns.setSelected(alleVerstecken());
+            jPopupMenu.add(cbmiHideAllColumns);
+            jPopupMenu.addSeparator();
+        }
+
         // Spalten ein-ausschalten
         box = new JCheckBoxMenuItem[this.columns.length];
         for (int i = 0; i < columns.length; ++i) {
@@ -102,7 +134,7 @@ public class BeobTableHeader extends MouseAdapter {
             box[i].addActionListener(e -> setSpalten());
             jPopupMenu.add(box[i]);
         }
-        // jetzt evtl. noch die Button
+
         if (button.length > 0) {
             jPopupMenu.addSeparator();
 
@@ -147,12 +179,17 @@ public class BeobTableHeader extends MouseAdapter {
             jPopupMenu.addSeparator();
         }
 
-        // Tabellenspalten zurücksetzen
-        var miResetColumns = new JMenuItem("Spalten zurücksetzen");
-        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
         jPopupMenu.add(miResetColumns);
 
         return jPopupMenu;
+    }
+
+    private boolean alleAnzeigen() {
+        return displayAll;
+    }
+
+    private boolean alleVerstecken() {
+        return hideAll;
     }
 
     private void showMenu(MouseEvent evt) {
@@ -168,6 +205,16 @@ public class BeobTableHeader extends MouseAdapter {
         for (int i = 0; i < box.length; ++i) {
             if (box[i] != null) {
                 spaltenAnzeigen[i] = box[i].isSelected();
+                if (showColumnSelectionOptions) {
+                    if (!box[i].isSelected()) {
+                        displayAll = false;
+                        cbmiShowAllColumns.setSelected(false);
+                    }
+                    if (box[i].isSelected()) {
+                        hideAll = false;
+                        cbmiHideAllColumns.setSelected(false);
+                    }
+                }
             }
         }
         tabelle.spaltenEinAus();
@@ -178,5 +225,4 @@ public class BeobTableHeader extends MouseAdapter {
         spaltenAnzeigen[k] = anz;
         tabelle.spaltenEinAus();
     }
-
 }

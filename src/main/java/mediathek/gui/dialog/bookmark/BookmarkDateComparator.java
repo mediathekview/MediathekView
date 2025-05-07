@@ -1,4 +1,4 @@
-package mediathek.javafx.bookmark;
+package mediathek.gui.dialog.bookmark;
 
 import java.util.Comparator;
 import java.util.function.BiFunction;

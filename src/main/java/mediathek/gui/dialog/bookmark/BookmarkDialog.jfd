@@ -1,0 +1,112 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.6" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Merkliste verwalten"
+			"preferredSize": new java.awt.Dimension( 800, 400 )
+			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+				name: "toolBar"
+				"floatable": false
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnDeleteEntry"
+					"toolTipText": "Aus der Merkliste löschen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnMarkViewed"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnEditNote"
+					"toolTipText": "Anmerkungen bearbeiten"
+				} )
+				add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+					name: "hSpacer1"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnSaveList"
+					"toolTipText": "Geänderte Merkliste abspeichern"
+				} )
+				add( new FormComponent( "javax.swing.JToolBar$Separator" ) {
+					name: "separator1"
+				} )
+				add( new FormComponent( "javax.swing.JToggleButton" ) {
+					name: "btnShowDetails"
+					"toolTipText": "Erweiterte Film Informationen anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnFilter"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "panel1"
+					"minimumSize": new java.awt.Dimension( 315, 150 )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "Center"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "taDescription"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "North"
+					} )
+					add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
+						name: "hyperlink"
+						"text": "Link zur Webseite"
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "South"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Beschreibung"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "South"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JTable" ) {
+					name: "tabelle"
+					"selectionMode": 0
+					"autoResizeMode": 0
+					"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+						add( new java.util.Vector {
+							add( null )
+							add( null )
+						} )
+						add( new java.util.Vector {
+							add( null )
+							add( null )
+						} )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					}, new java.util.Vector {
+						add( null )
+						add( null )
+					} )
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 9
+					}
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 900, 525 )
+		} )
+	}
+}

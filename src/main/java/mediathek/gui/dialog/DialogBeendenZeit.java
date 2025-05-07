@@ -222,92 +222,92 @@ public class DialogBeendenZeit extends JDialog {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    // Generated using JFormDesigner non-commercial license
+    // Generated using JFormDesigner Educational license - Markus Jannek
     private void initComponents() {
-        var jLabel1 = new JLabel();
-        comboActions = new JComboBox<>();
-        btnContinue = new JButton();
-        cbShutdownComputer = new JCheckBox();
-        btnCancel = new JButton();
-        jButtonHilfe = new JButton();
-        var jLabel2 = new JLabel();
-        dateTimePicker = new DateTimePicker();
+      var jLabel1 = new JLabel();
+      comboActions = new JComboBox<>();
+      btnContinue = new JButton();
+      cbShutdownComputer = new JCheckBox();
+      btnCancel = new JButton();
+      jButtonHilfe = new JButton();
+      var jLabel2 = new JLabel();
+      dateTimePicker = new DateTimePicker();
 
-        //======== this ========
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        setTitle("Zeitverz\u00f6gerter Download-Start"); //NON-NLS
-        var contentPane = getContentPane();
+      //======== this ========
+      setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      setResizable(false);
+      setTitle("Zeitverz\u00f6gerter Download-Start"); //NON-NLS
+      var contentPane = getContentPane();
 
-        //---- jLabel1 ----
-        jLabel1.setText("Wie m\u00f6chten Sie fortfahren wenn alle Downloads fertig sind?"); //NON-NLS
+      //---- jLabel1 ----
+      jLabel1.setText("Wie m\u00f6chten Sie fortfahren wenn alle Downloads fertig sind?"); //NON-NLS
 
-        //---- btnContinue ----
-        btnContinue.setText("Weiter"); //NON-NLS
+      //---- btnContinue ----
+      btnContinue.setText("Weiter"); //NON-NLS
 
-        //---- cbShutdownComputer ----
-        cbShutdownComputer.setText("Rechner herunterfahren"); //NON-NLS
+      //---- cbShutdownComputer ----
+      cbShutdownComputer.setText("Rechner herunterfahren"); //NON-NLS
 
-        //---- btnCancel ----
-        btnCancel.setText("Abbrechen"); //NON-NLS
+      //---- btnCancel ----
+      btnCancel.setText("Abbrechen"); //NON-NLS
 
-        //---- jButtonHilfe ----
-        jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
+      //---- jButtonHilfe ----
+      jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
 
-        //---- jLabel2 ----
-        jLabel2.setText("Alle Downloads starten um: "); //NON-NLS
+      //---- jLabel2 ----
+      jLabel2.setText("Alle Downloads starten um: "); //NON-NLS
 
-        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
-        contentPane.setLayout(contentPaneLayout);
-        contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(comboActions, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                            .addGap(0, 0, Short.MAX_VALUE)
-                            .addComponent(jButtonHilfe)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnCancel)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnContinue))
-                        .addComponent(cbShutdownComputer)
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(dateTimePicker, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap())
-        );
-        contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup()
-                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(dateTimePicker, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(comboActions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(cbShutdownComputer)
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnContinue)
-                                .addComponent(btnCancel)))
-                        .addComponent(jButtonHilfe))
-                    .addContainerGap())
-        );
-        pack();
-        setLocationRelativeTo(getOwner());
+      GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+      contentPane.setLayout(contentPaneLayout);
+      contentPaneLayout.setHorizontalGroup(
+        contentPaneLayout.createParallelGroup()
+          .addGroup(contentPaneLayout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(contentPaneLayout.createParallelGroup()
+              .addComponent(jLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+              .addComponent(comboActions, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+              .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButtonHilfe)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancel)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnContinue))
+              .addComponent(cbShutdownComputer)
+              .addGroup(contentPaneLayout.createSequentialGroup()
+                .addComponent(jLabel2)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dateTimePicker, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+            .addContainerGap())
+      );
+      contentPaneLayout.setVerticalGroup(
+        contentPaneLayout.createParallelGroup()
+          .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+              .addComponent(dateTimePicker, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+              .addComponent(jLabel2))
+            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+            .addComponent(jLabel1)
+            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+            .addComponent(comboActions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+              .addGroup(contentPaneLayout.createSequentialGroup()
+                .addComponent(cbShutdownComputer)
+                .addGap(18, 18, 18)
+                .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                  .addComponent(btnContinue)
+                  .addComponent(btnCancel)))
+              .addComponent(jButtonHilfe))
+            .addContainerGap())
+      );
+      pack();
+      setLocationRelativeTo(getOwner());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
+    // Generated using JFormDesigner Educational license - Markus Jannek
     private JComboBox<String> comboActions;
     private JButton btnContinue;
     private JCheckBox cbShutdownComputer;
