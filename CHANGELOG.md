@@ -14,6 +14,7 @@
 - **FEATURE:** Tab Download Kontextmenüeintrag *Film (URL) abspielen* besitzt nun in eigenes Icon. @MarkusJannek
 - **FEATURE:** MV kann nun die Sender ZDFinfo und ZDFneo in der Filmliste auswerten.
 - **FEATURE:** Untertitel werden nun auch in das ASS-Format konvertiert. Vielen Dank an @Lucki.
+- **FEATURE:** In den PSets kann nun über den Parameter `%3_2` ein zweistelliges Jahr in den Dateinamen eingefügt werden.
 
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
