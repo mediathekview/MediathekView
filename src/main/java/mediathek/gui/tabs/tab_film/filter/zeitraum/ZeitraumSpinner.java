@@ -26,7 +26,13 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class ZeitraumSpinner extends JSpinner {
-    private static final Logger logger = LogManager.getLogger();
+    private static Logger logger;
+
+    private static Logger getLogger() {
+        if (logger == null)
+            logger = LogManager.getLogger(ZeitraumSpinner.class);
+        return logger;
+    }
 
     public ZeitraumSpinner() {
         super(new SpinnerNumberModel(0, 0, 365, 1));
@@ -44,8 +50,8 @@ public class ZeitraumSpinner extends JSpinner {
             setValue(zeitraumValInt);
         }
         catch (NumberFormatException ex) {
-            logger.error("Failed to parse zeitraum value: {}", zeitraumVal, ex);
-            logger.error("Using default value: {}", ZeitraumSpinnerFormatter.INFINITE_VALUE);
+            getLogger().error("Failed to parse zeitraum value: {}", zeitraumVal, ex);
+            getLogger().error("Using default value: {}", ZeitraumSpinnerFormatter.INFINITE_VALUE);
             setValue(ZeitraumSpinnerFormatter.INFINITE_VALUE);
             filterConfiguration.setZeitraum(ZeitraumSpinnerFormatter.INFINITE_TEXT);
         }
