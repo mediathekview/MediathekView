@@ -4,7 +4,8 @@
 - **Neuer Startparameter notwendig für Selbstbauer:** `--add-exports=java.desktop/sun.swing=ALL-UNNAMED` muss hinzugefügt werden.
 - großflächiger Rückbau von JavaFX-Komponenten, dies sollte älteren Computern zugute kommen.
 - **BUGFIX:** Filter können nicht in existierende umbenannt werden.
-- **BUGFIX:** Duplikatsuche berücksicht nur HQ-URL wenn Film auch HQ ist.
+- **FEATURE:** Filter können bei der Neuanlage direkt mit einem Namen versehen werden.
+- **BUGFIX:** Duplikatsuche berücksichtigt nur HQ-URL wenn Film auch HQ ist.
 - **BUGFIX:** Alte tagesschau24 Filme in der Liste werden nur konvertiert wenn der Sender auch angezeigt werden soll.
 - **BUGFIX:** Darkmode Anzeigefehler im Kontextmenü des Tab Filme behoben.
 - **BUGFIX:** Filterdialog im Dark Mode ändert nicht mehr die Größe.
@@ -15,6 +16,7 @@
 - **FEATURE:** MV kann nun die Sender ZDFinfo und ZDFneo in der Filmliste auswerten.
 - **FEATURE:** Untertitel werden nun auch in das ASS-Format konvertiert. Vielen Dank an @Lucki.
 - **FEATURE:** In den PSets kann nun über den Parameter `%3_2` ein zweistelliges Jahr in den Dateinamen eingefügt werden.
+- **FEATURE:** Die Senderliste kann über das Kontextmenü vertikal umgebrochen werden, um mehr Informationen darzustellen. Die Einstellung wird gespeichert und bei jedem Start wiederhergestellt.
 
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.

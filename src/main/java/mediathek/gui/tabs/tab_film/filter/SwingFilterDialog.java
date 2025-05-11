@@ -24,10 +24,12 @@ package mediathek.gui.tabs.tab_film.filter;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.jidesoft.swing.CheckBoxList;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.messages.ReloadTableDataEvent;
@@ -46,6 +48,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.VerticalLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -90,7 +93,6 @@ public class SwingFilterDialog extends JDialog {
 
         setupButtons();
         setupCheckBoxes();
-        setupSenderList();
         setupThemaComboBox();
         setupFilmLengthSlider();
         setupZeitraumSpinner();
@@ -207,7 +209,6 @@ public class SwingFilterDialog extends JDialog {
 
     private void updateThemaComboBox() {
         //update the thema list -> updates the combobox automagically
-        //use transaction list to minimize updates...
         String aktuellesThema = (String) jcbThema.getSelectedItem();
 
         var selectedSenders = filterConfig.getCheckedChannels().stream().toList();
@@ -242,33 +243,11 @@ public class SwingFilterDialog extends JDialog {
         });
     }
 
-    private void setupSenderList() {
-        //here we show all senders as a filter might be set up for them...
-        senderList.setModel(GlazedListsSwing.eventListModel(Daten.getInstance().getAllSendersList()));
-        senderList.getCheckBoxListSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                var newSelectedSenderList = ((SenderCheckBoxList) senderList).getSelectedSenders();
-                filterConfig.setCheckedChannels(newSelectedSenderList);
-
-                updateThemaComboBox();
-                MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
-            }
-        });
-
-        var contextMenu = new JPopupMenu();
-        var menuItem = new JMenuItem("Alle Senderfilter zurücksetzen");
-        menuItem.addActionListener(l -> senderList.selectNone());
-        contextMenu.add(menuItem);
-        senderList.setComponentPopupMenu(contextMenu);
-
-    }
-
     private void setupZeitraumSpinner() {
         try {
             spZeitraum.restoreFilterConfig(filterConfig);
             spZeitraum.installFilterConfigurationChangeListener(filterConfig);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to setup zeitraum spinner", e);
         }
     }
@@ -292,7 +271,7 @@ public class SwingFilterDialog extends JDialog {
 
         jcbThema.setSelectedItem(filterConfig.getThema());
 
-        ((SenderCheckBoxList) senderList).restoreFilterConfig(filterConfig);
+        ((SenderCheckBoxList) senderList).restoreFilterConfig();
         ((FilmLengthSlider) filmLengthSlider).restoreFilterConfig(filterConfig);
         spZeitraum.restoreFilterConfig(filterConfig);
     }
@@ -390,6 +369,10 @@ public class SwingFilterDialog extends JDialog {
 
     }
 
+    private void createUIComponents() {
+        cboxFilterSelection = new FilterSelectionComboBox(filterSelectionComboBoxModel);
+    }
+
     public static class ToggleVisibilityKeyHandler {
         private static final String TOGGLE_FILTER_VISIBILITY = "toggle_dialog_visibility";
         private final JRootPane rootPane;
@@ -406,7 +389,62 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private class SenderCheckBoxList extends CheckBoxList {
-        public List<String> getSelectedSenders() {
+        private static final String CONFIG_SENDERLIST_VERTICAL_WRAP = "senderlist.vertical_wrap";
+        private final JCheckBoxMenuItem miVerticalWrap = new JCheckBoxMenuItem("Senderliste vertikal umbrechen", false);
+
+        public SenderCheckBoxList() {
+            setVisibleRowCount(-1);
+
+            setupSenderList();
+            restoreVerticalWrapState();
+        }
+
+        private void restoreVerticalWrapState() {
+            if (ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_SENDERLIST_VERTICAL_WRAP, true)) {
+                miVerticalWrap.doClick();
+            }
+        }
+
+        protected void setupSenderList() {
+            //here we show all senders as a filter might be set up for them...
+            var allSenders = Daten.getInstance().getAllSendersList();
+            var filteredList = new FilterList<>(allSenders, SenderFilmlistLoadApprover::isApproved);
+            setModel(GlazedListsSwing.eventListModel(filteredList));
+            getCheckBoxListSelectionModel().addListSelectionListener(e -> {
+                if (!e.getValueIsAdjusting()) {
+                    var newSelectedSenderList = getSelectedSenders();
+                    filterConfig.setCheckedChannels(newSelectedSenderList);
+
+                    updateThemaComboBox();
+                    MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
+                }
+            });
+
+            setupContextMenu();
+        }
+
+        protected void setupContextMenu() {
+            var contextMenu = new JPopupMenu();
+            var menuItem = new JMenuItem("Alle Senderfilter zurücksetzen");
+            menuItem.addActionListener(l -> selectNone());
+            contextMenu.add(menuItem);
+            contextMenu.addSeparator();
+
+            miVerticalWrap.addActionListener(l -> {
+                boolean selected = miVerticalWrap.isSelected();
+                ApplicationConfiguration.getConfiguration().setProperty(CONFIG_SENDERLIST_VERTICAL_WRAP, selected);
+                if (selected) {
+                    setLayoutOrientation(JList.VERTICAL_WRAP);
+                } else {
+                    setLayoutOrientation(JList.VERTICAL);
+                }
+                repaint();
+            });
+            contextMenu.add(miVerticalWrap);
+            setComponentPopupMenu(contextMenu);
+        }
+
+        protected List<String> getSelectedSenders() {
             var newSelectedSenderList = new ArrayList<String>();
             final var senderListModel = getModel();
             final var cblsm = getCheckBoxListSelectionModel();
@@ -419,10 +457,10 @@ public class SwingFilterDialog extends JDialog {
             return newSelectedSenderList;
         }
 
-        public void restoreFilterConfig(@NotNull FilterConfiguration filterConfig) {
+        public void restoreFilterConfig() {
             final var checkedSenders = filterConfig.getCheckedChannels();
             final var cblsm = getCheckBoxListSelectionModel();
-            final var senderListModel = senderList.getModel();
+            final var senderListModel = getModel();
 
             selectNone();
             cblsm.setValueIsAdjusting(true);
@@ -437,17 +475,29 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private class AddNewFilterAction extends AbstractAction {
+        private static final String STR_ACTION_NAME = "Neuen Filter anlegen";
         public AddNewFilterAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
-            putValue(Action.SHORT_DESCRIPTION, "Neuen Filter anlegen");
+            putValue(Action.SHORT_DESCRIPTION, STR_ACTION_NAME);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), String.format("Filter %d", filterConfig.getAvailableFilters().size() + 1));
-            filterConfig.addNewFilter(newFilter);
-            checkDeleteCurrentFilterButtonState();
-            filterSelectionComboBoxModel.setSelectedItem(newFilter);
+            String newFilterName = (String)JOptionPane.showInputDialog(MediathekGui.ui(), "Filtername:",
+                    STR_ACTION_NAME, JOptionPane.PLAIN_MESSAGE, null, null,
+                    String.format("Filter %d", filterConfig.getAvailableFilters().size() + 1));
+            if (newFilterName != null) {
+                filterConfig.findFilterForName(newFilterName).ifPresentOrElse(f ->
+                        JOptionPane.showMessageDialog(MediathekGui.ui(),
+                        "Ein Filter mit dem gewählten Namen existiert bereits!",
+                        STR_ACTION_NAME, JOptionPane.ERROR_MESSAGE), () -> {
+                    FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), newFilterName);
+                    filterConfig.addNewFilter(newFilter);
+                    checkDeleteCurrentFilterButtonState();
+                    filterSelectionComboBoxModel.setSelectedItem(newFilter);
+                });
+
+            }
         }
     }
 
@@ -602,28 +652,26 @@ public class SwingFilterDialog extends JDialog {
         }
     }
 
-    private void createUIComponents() {
-        cboxFilterSelection = new FilterSelectionComboBox(filterSelectionComboBoxModel);
-    }
-
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
         createUIComponents();
 
-        var panel1 = new JPanel();
+        var pnlFilterCommon = new JPanel();
         btnRenameFilter = new JButton();
         btnAddNewFilter = new JButton();
         btnDeleteCurrentFilter = new JButton();
         var separator1 = new JSeparator();
         btnResetCurrentFilter = new JButton();
         var separator2 = new JSeparator();
+        var pnlShowOnly = new JPanel();
         cbShowNewOnly = new JCheckBox();
         cbShowBookMarkedOnly = new JCheckBox();
         cbShowOnlyHq = new JCheckBox();
         cbShowSubtitlesOnly = new JCheckBox();
         cbShowOnlyLivestreams = new JCheckBox();
         var separator3 = new JSeparator();
+        var pnlDontShow = new JPanel();
         cbShowUnseenOnly = new JCheckBox();
         cbDontShowAbos = new JCheckBox();
         cbDontShowSignLanguage = new JCheckBox();
@@ -631,15 +679,17 @@ public class SwingFilterDialog extends JDialog {
         cbDontShowAudioVersions = new JCheckBox();
         cbDontShowDuplicates = new JCheckBox();
         var separator4 = new JSeparator();
+        var pnlSenderlist = new JPanel();
         label3 = new JLabel();
-        var scrollPane1 = new JScrollPane();
+        var scpSenderList = new JScrollPane();
         senderList = new SenderCheckBoxList();
         var separator5 = new JSeparator();
+        var pnlThema = new JPanel();
         label4 = new JLabel();
         jcbThema = new JComboBox<>();
         btnResetThema = new JButton();
         var separator6 = new JSeparator();
-        var panel2 = new JPanel();
+        var pnlFlimlength = new JPanel();
         label5 = new JLabel();
         lblMinFilmLengthValue = new JLabel();
         var hSpacer1 = new JPanel(null);
@@ -647,6 +697,7 @@ public class SwingFilterDialog extends JDialog {
         lblMaxFilmLengthValue = new JLabel();
         filmLengthSlider = new FilmLengthSlider();
         var separator7 = new JSeparator();
+        var pnlZeitraum = new JPanel();
         label1 = new JLabel();
         spZeitraum = new ZeitraumSpinner();
         label2 = new JLabel();
@@ -659,28 +710,16 @@ public class SwingFilterDialog extends JDialog {
             new LC().fillX().insets("5").hideMode(3), //NON-NLS
             // columns
             new AC()
-                .align("left").gap() //NON-NLS
-                .grow().fill().gap()
-                .fill(),
+                .align("left"), //NON-NLS
             // rows
             new AC()
                 .gap()
                 .shrink(0).align("top").gap("0") //NON-NLS
                 .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
                 .shrink(0).gap("0") //NON-NLS
                 .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .gap("0") //NON-NLS
                 .shrink(0).gap()
-                .gap()
-                .grow().gap()
+                .grow().fill().gap()
                 .shrink(0).gap()
                 .gap()
                 .shrink(0).gap()
@@ -688,9 +727,9 @@ public class SwingFilterDialog extends JDialog {
                 .shrink(0).gap()
                 ));
 
-        //======== panel1 ========
+        //======== pnlFilterCommon ========
         {
-            panel1.setLayout(new MigLayout(
+            pnlFilterCommon.setLayout(new MigLayout(
                 new LC().fillX().insets("0").hideMode(3), //NON-NLS
                 // columns
                 new AC()
@@ -702,96 +741,151 @@ public class SwingFilterDialog extends JDialog {
                     .fill(),
                 // rows
                 new AC()
-                    .grow().fill()));
-            panel1.add(cboxFilterSelection, new CC().cell(0, 0));
-            panel1.add(btnRenameFilter, new CC().cell(1, 0).alignX("center").growX(0)); //NON-NLS
-            panel1.add(btnAddNewFilter, new CC().cell(2, 0).alignX("center").growX(0)); //NON-NLS
-            panel1.add(btnDeleteCurrentFilter, new CC().cell(3, 0).alignX("center").growX(0)); //NON-NLS
+                    .fill()));
+
+            //---- cboxFilterSelection ----
+            cboxFilterSelection.setMaximumSize(null);
+            cboxFilterSelection.setPreferredSize(null);
+            cboxFilterSelection.setMinimumSize(new Dimension(50, 10));
+            pnlFilterCommon.add(cboxFilterSelection, new CC().cell(0, 0));
+            pnlFilterCommon.add(btnRenameFilter, new CC().cell(1, 0).alignX("center").growX(0)); //NON-NLS
+            pnlFilterCommon.add(btnAddNewFilter, new CC().cell(2, 0).alignX("center").growX(0)); //NON-NLS
+            pnlFilterCommon.add(btnDeleteCurrentFilter, new CC().cell(3, 0).alignX("center").growX(0)); //NON-NLS
 
             //---- separator1 ----
             separator1.setOrientation(SwingConstants.VERTICAL);
-            panel1.add(separator1, new CC().cell(4, 0));
+            pnlFilterCommon.add(separator1, new CC().cell(4, 0));
 
             //---- btnResetCurrentFilter ----
             btnResetCurrentFilter.setToolTipText("Aktuellen Filter zur\u00fccksetzen"); //NON-NLS
-            panel1.add(btnResetCurrentFilter, new CC().cell(5, 0).alignX("center").growX(0)); //NON-NLS
+            pnlFilterCommon.add(btnResetCurrentFilter, new CC().cell(5, 0).alignX("center").growX(0)); //NON-NLS
         }
-        contentPane.add(panel1, new CC().cell(0, 0, 3, 1).growX());
-        contentPane.add(separator2, new CC().cell(0, 1, 3, 1).growX());
+        contentPane.add(pnlFilterCommon, new CC().cell(0, 0).growX());
+        contentPane.add(separator2, new CC().cell(0, 1).growX());
 
-        //---- cbShowNewOnly ----
-        cbShowNewOnly.setText("Nur neue Filme anzeigen"); //NON-NLS
-        contentPane.add(cbShowNewOnly, new CC().cell(0, 2, 3, 1));
-
-        //---- cbShowBookMarkedOnly ----
-        cbShowBookMarkedOnly.setText("Nur gemerkte Filme anzeigen"); //NON-NLS
-        contentPane.add(cbShowBookMarkedOnly, new CC().cell(0, 3, 3, 1));
-
-        //---- cbShowOnlyHq ----
-        cbShowOnlyHq.setText("Nur High Quality(HQ) Filme anzeigen"); //NON-NLS
-        contentPane.add(cbShowOnlyHq, new CC().cell(0, 4, 3, 1));
-
-        //---- cbShowSubtitlesOnly ----
-        cbShowSubtitlesOnly.setText("Nur Filme mit Untertitel anzeigen"); //NON-NLS
-        contentPane.add(cbShowSubtitlesOnly, new CC().cell(0, 5, 3, 1));
-
-        //---- cbShowOnlyLivestreams ----
-        cbShowOnlyLivestreams.setText("Nur Livestreams anzeigen"); //NON-NLS
-        contentPane.add(cbShowOnlyLivestreams, new CC().cell(0, 6, 3, 1));
-        contentPane.add(separator3, new CC().cell(0, 7, 3, 1).growX());
-
-        //---- cbShowUnseenOnly ----
-        cbShowUnseenOnly.setText("Gesehene Filme nicht anzeigen"); //NON-NLS
-        contentPane.add(cbShowUnseenOnly, new CC().cell(0, 8, 3, 1));
-
-        //---- cbDontShowAbos ----
-        cbDontShowAbos.setText("Abos nicht anzeigen"); //NON-NLS
-        contentPane.add(cbDontShowAbos, new CC().cell(0, 9, 3, 1));
-
-        //---- cbDontShowSignLanguage ----
-        cbDontShowSignLanguage.setText("Geb\u00e4rdensprache nicht anzeigen"); //NON-NLS
-        contentPane.add(cbDontShowSignLanguage, new CC().cell(0, 10, 3, 1));
-
-        //---- cbDontShowTrailers ----
-        cbDontShowTrailers.setText("Trailer/Teaser/Vorschau nicht anzeigen"); //NON-NLS
-        contentPane.add(cbDontShowTrailers, new CC().cell(0, 11, 3, 1));
-
-        //---- cbDontShowAudioVersions ----
-        cbDontShowAudioVersions.setText("H\u00f6rfassungen ausblenden"); //NON-NLS
-        contentPane.add(cbDontShowAudioVersions, new CC().cell(0, 12, 3, 1));
-
-        //---- cbDontShowDuplicates ----
-        cbDontShowDuplicates.setText("Duplikate nicht anzeigen"); //NON-NLS
-        contentPane.add(cbDontShowDuplicates, new CC().cell(0, 13, 3, 1));
-        contentPane.add(separator4, new CC().cell(0, 14, 3, 1).growX());
-
-        //---- label3 ----
-        label3.setText("Sender:"); //NON-NLS
-        contentPane.add(label3, new CC().cell(0, 15, 3, 1));
-
-        //======== scrollPane1 ========
+        //======== pnlShowOnly ========
         {
+            pnlShowOnly.setLayout(new VerticalLayout());
 
-            //---- senderList ----
-            senderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            scrollPane1.setViewportView(senderList);
+            //---- cbShowNewOnly ----
+            cbShowNewOnly.setText("Nur neue Filme anzeigen"); //NON-NLS
+            pnlShowOnly.add(cbShowNewOnly);
+
+            //---- cbShowBookMarkedOnly ----
+            cbShowBookMarkedOnly.setText("Nur gemerkte Filme anzeigen"); //NON-NLS
+            pnlShowOnly.add(cbShowBookMarkedOnly);
+
+            //---- cbShowOnlyHq ----
+            cbShowOnlyHq.setText("Nur High Quality(HQ) Filme anzeigen"); //NON-NLS
+            pnlShowOnly.add(cbShowOnlyHq);
+
+            //---- cbShowSubtitlesOnly ----
+            cbShowSubtitlesOnly.setText("Nur Filme mit Untertitel anzeigen"); //NON-NLS
+            pnlShowOnly.add(cbShowSubtitlesOnly);
+
+            //---- cbShowOnlyLivestreams ----
+            cbShowOnlyLivestreams.setText("Nur Livestreams anzeigen"); //NON-NLS
+            pnlShowOnly.add(cbShowOnlyLivestreams);
         }
-        contentPane.add(scrollPane1, new CC().cell(0, 16, 3, 1).grow().minHeight("50")); //NON-NLS
-        contentPane.add(separator5, new CC().cell(0, 17, 3, 1).growX());
+        contentPane.add(pnlShowOnly, new CC().cell(0, 2).growX());
+        contentPane.add(separator3, new CC().cell(0, 3).growX());
 
-        //---- label4 ----
-        label4.setText("Thema:"); //NON-NLS
-        contentPane.add(label4, new CC().cell(0, 18));
-
-        //---- jcbThema ----
-        jcbThema.setMaximumRowCount(6);
-        contentPane.add(jcbThema, new CC().cell(1, 18).growX().maxWidth("300")); //NON-NLS
-        contentPane.add(btnResetThema, new CC().cell(2, 18));
-        contentPane.add(separator6, new CC().cell(0, 19, 3, 1).growX());
-
-        //======== panel2 ========
+        //======== pnlDontShow ========
         {
-            panel2.setLayout(new MigLayout(
+            pnlDontShow.setLayout(new VerticalLayout());
+
+            //---- cbShowUnseenOnly ----
+            cbShowUnseenOnly.setText("Gesehene Filme nicht anzeigen"); //NON-NLS
+            pnlDontShow.add(cbShowUnseenOnly);
+
+            //---- cbDontShowAbos ----
+            cbDontShowAbos.setText("Abos nicht anzeigen"); //NON-NLS
+            pnlDontShow.add(cbDontShowAbos);
+
+            //---- cbDontShowSignLanguage ----
+            cbDontShowSignLanguage.setText("Geb\u00e4rdensprache nicht anzeigen"); //NON-NLS
+            pnlDontShow.add(cbDontShowSignLanguage);
+
+            //---- cbDontShowTrailers ----
+            cbDontShowTrailers.setText("Trailer/Teaser/Vorschau nicht anzeigen"); //NON-NLS
+            pnlDontShow.add(cbDontShowTrailers);
+
+            //---- cbDontShowAudioVersions ----
+            cbDontShowAudioVersions.setText("H\u00f6rfassungen ausblenden"); //NON-NLS
+            pnlDontShow.add(cbDontShowAudioVersions);
+
+            //---- cbDontShowDuplicates ----
+            cbDontShowDuplicates.setText("Duplikate nicht anzeigen"); //NON-NLS
+            pnlDontShow.add(cbDontShowDuplicates);
+        }
+        contentPane.add(pnlDontShow, new CC().cell(0, 4).growX());
+        contentPane.add(separator4, new CC().cell(0, 5).growX());
+
+        //======== pnlSenderlist ========
+        {
+            pnlSenderlist.setPreferredSize(new Dimension(258, 220));
+            pnlSenderlist.setLayout(new MigLayout(
+                new LC().fill().insets("0").hideMode(3), //NON-NLS
+                // columns
+                new AC()
+                    .align("left"), //NON-NLS
+                // rows
+                new AC()
+                    .gap()
+                    .grow()));
+
+            //---- label3 ----
+            label3.setText("Sender:"); //NON-NLS
+            pnlSenderlist.add(label3, new CC().cell(0, 0));
+
+            //======== scpSenderList ========
+            {
+                scpSenderList.setPreferredSize(null);
+                scpSenderList.setMaximumSize(null);
+
+                //---- senderList ----
+                senderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                senderList.setMaximumSize(null);
+                senderList.setMinimumSize(null);
+                senderList.setPreferredSize(null);
+                scpSenderList.setViewportView(senderList);
+            }
+            pnlSenderlist.add(scpSenderList, new CC().cell(0, 1).grow().minHeight("50")); //NON-NLS
+        }
+        contentPane.add(pnlSenderlist, new CC().cell(0, 6).growX());
+        contentPane.add(separator5, new CC().cell(0, 7).growX());
+
+        //======== pnlThema ========
+        {
+            pnlThema.setLayout(new MigLayout(
+                new LC().fillX().insets("0").hideMode(3), //NON-NLS
+                // columns
+                new AC()
+                    .align("left").gap() //NON-NLS
+                    .grow().fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    ));
+
+            //---- label4 ----
+            label4.setText("Thema:"); //NON-NLS
+            pnlThema.add(label4, new CC().cell(0, 0));
+
+            //---- jcbThema ----
+            jcbThema.setMaximumRowCount(6);
+            jcbThema.setMinimumSize(new Dimension(50, 10));
+            jcbThema.setPreferredSize(null);
+            jcbThema.setMaximumSize(null);
+            pnlThema.add(jcbThema, new CC().cell(1, 0).growX().maxWidth("300")); //NON-NLS
+            pnlThema.add(btnResetThema, new CC().cell(2, 0));
+        }
+        contentPane.add(pnlThema, new CC().cell(0, 8).growX());
+        contentPane.add(separator6, new CC().cell(0, 9).growX());
+
+        //======== pnlFlimlength ========
+        {
+            pnlFlimlength.setLayout(new MigLayout(
                 new LC().fill().insets("0").hideMode(3), //NON-NLS
                 // columns
                 new AC()
@@ -807,33 +901,48 @@ public class SwingFilterDialog extends JDialog {
 
             //---- label5 ----
             label5.setText("Mindestl\u00e4nge:"); //NON-NLS
-            panel2.add(label5, new CC().cell(0, 0));
+            pnlFlimlength.add(label5, new CC().cell(0, 0));
 
             //---- lblMinFilmLengthValue ----
             lblMinFilmLengthValue.setText("0"); //NON-NLS
-            panel2.add(lblMinFilmLengthValue, new CC().cell(1, 0));
-            panel2.add(hSpacer1, new CC().cell(2, 0).growX());
+            pnlFlimlength.add(lblMinFilmLengthValue, new CC().cell(1, 0));
+            pnlFlimlength.add(hSpacer1, new CC().cell(2, 0).growX());
 
             //---- label7 ----
             label7.setText("Maximall\u00e4nge:"); //NON-NLS
-            panel2.add(label7, new CC().cell(3, 0));
+            pnlFlimlength.add(label7, new CC().cell(3, 0));
 
             //---- lblMaxFilmLengthValue ----
             lblMaxFilmLengthValue.setText("100"); //NON-NLS
-            panel2.add(lblMaxFilmLengthValue, new CC().cell(4, 0));
-            panel2.add(filmLengthSlider, new CC().cell(0, 1, 5, 1).growX());
+            pnlFlimlength.add(lblMaxFilmLengthValue, new CC().cell(4, 0));
+            pnlFlimlength.add(filmLengthSlider, new CC().cell(0, 1, 5, 1).growX());
         }
-        contentPane.add(panel2, new CC().cell(0, 20, 3, 1).growX());
-        contentPane.add(separator7, new CC().cell(0, 21, 3, 1).growX());
+        contentPane.add(pnlFlimlength, new CC().cell(0, 10).growX());
+        contentPane.add(separator7, new CC().cell(0, 11).growX());
 
-        //---- label1 ----
-        label1.setText("Zeitraum:"); //NON-NLS
-        contentPane.add(label1, new CC().cell(0, 22));
-        contentPane.add(spZeitraum, new CC().cell(1, 22));
+        //======== pnlZeitraum ========
+        {
+            pnlZeitraum.setLayout(new MigLayout(
+                new LC().fillX().insets("0").hideMode(3), //NON-NLS
+                // columns
+                new AC()
+                    .align("left").gap() //NON-NLS
+                    .grow().fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    ));
 
-        //---- label2 ----
-        label2.setText("Tage"); //NON-NLS
-        contentPane.add(label2, new CC().cell(2, 22));
+            //---- label1 ----
+            label1.setText("Zeitraum:"); //NON-NLS
+            pnlZeitraum.add(label1, new CC().cell(0, 0));
+            pnlZeitraum.add(spZeitraum, new CC().cell(1, 0));
+
+            //---- label2 ----
+            label2.setText("Tage"); //NON-NLS
+            pnlZeitraum.add(label2, new CC().cell(2, 0));
+        }
+        contentPane.add(pnlZeitraum, new CC().cell(0, 12).growX());
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on

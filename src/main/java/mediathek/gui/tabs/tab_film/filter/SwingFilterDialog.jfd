@@ -5,8 +5,8 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "fillx,insets 5,hidemode 3"
-			"$columnConstraints": "[left][grow,fill][fill]"
-			"$rowConstraints": "[][shrink 0,top]0[]0[]0[]0[]0[]0[shrink 0]0[]0[]0[]0[]0[]0[]0[shrink 0][][grow][shrink 0][][shrink 0][][shrink 0][]"
+			"$columnConstraints": "[left]"
+			"$rowConstraints": "[][shrink 0,top]0[]0[shrink 0]0[]0[shrink 0][grow,fill][shrink 0][][shrink 0][][shrink 0][]"
 		} ) {
 			name: "this"
 			"type": enum java.awt.Window$Type UTILITY
@@ -14,14 +14,17 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "fillx,insets 0,hidemode 3"
 				"$columnConstraints": "[grow,fill][fill][fill][left][fill][fill]"
-				"$rowConstraints": "[grow,fill]"
+				"$rowConstraints": "[fill]"
 			} ) {
-				name: "panel1"
+				name: "pnlFilterCommon"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox" ) {
 					name: "cboxFilterSelection"
+					"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"minimumSize": new java.awt.Dimension( 50, 10 )
 					auxiliary() {
 						"JavaCodeGenerator.customCreate": true
 					}
@@ -59,7 +62,7 @@ new FormModel {
 					"value": "cell 5 0,alignx center,growx 0"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 0 3 1,growx"
+				"value": "cell 0 0,growx"
 			} )
 			add( new FormComponent( "javax.swing.JSeparator" ) {
 				name: "separator2"
@@ -67,37 +70,35 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 1 3 1,growx"
+				"value": "cell 0 1,growx"
 			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbShowNewOnly"
-				"text": "Nur neue Filme anzeigen"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
+				name: "pnlShowOnly"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbShowNewOnly"
+					"text": "Nur neue Filme anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbShowBookMarkedOnly"
+					"text": "Nur gemerkte Filme anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbShowOnlyHq"
+					"text": "Nur High Quality(HQ) Filme anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbShowSubtitlesOnly"
+					"text": "Nur Filme mit Untertitel anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbShowOnlyLivestreams"
+					"text": "Nur Livestreams anzeigen"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 2 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbShowBookMarkedOnly"
-				"text": "Nur gemerkte Filme anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 3 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbShowOnlyHq"
-				"text": "Nur High Quality(HQ) Filme anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 4 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbShowSubtitlesOnly"
-				"text": "Nur Filme mit Untertitel anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 5 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbShowOnlyLivestreams"
-				"text": "Nur Livestreams anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 6 3 1"
+				"value": "cell 0 2,growx"
 			} )
 			add( new FormComponent( "javax.swing.JSeparator" ) {
 				name: "separator3"
@@ -105,43 +106,39 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 7 3 1,growx"
+				"value": "cell 0 3,growx"
 			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbShowUnseenOnly"
-				"text": "Gesehene Filme nicht anzeigen"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
+				name: "pnlDontShow"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbShowUnseenOnly"
+					"text": "Gesehene Filme nicht anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbDontShowAbos"
+					"text": "Abos nicht anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbDontShowSignLanguage"
+					"text": "Gebärdensprache nicht anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbDontShowTrailers"
+					"text": "Trailer/Teaser/Vorschau nicht anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbDontShowAudioVersions"
+					"text": "Hörfassungen ausblenden"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbDontShowDuplicates"
+					"text": "Duplikate nicht anzeigen"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 8 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbDontShowAbos"
-				"text": "Abos nicht anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 9 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbDontShowSignLanguage"
-				"text": "Gebärdensprache nicht anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 10 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbDontShowTrailers"
-				"text": "Trailer/Teaser/Vorschau nicht anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 11 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbDontShowAudioVersions"
-				"text": "Hörfassungen ausblenden"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 12 3 1"
-			} )
-			add( new FormComponent( "javax.swing.JCheckBox" ) {
-				name: "cbDontShowDuplicates"
-				"text": "Duplikate nicht anzeigen"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 13 3 1"
+				"value": "cell 0 4,growx"
 			} )
 			add( new FormComponent( "javax.swing.JSeparator" ) {
 				name: "separator4"
@@ -149,29 +146,47 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 14 3 1,growx"
+				"value": "cell 0 5,growx"
 			} )
-			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label3"
-				"text": "Sender:"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 15 3 1"
-			} )
-			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "scrollPane1"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$columnConstraints": "[left]"
+				"$rowConstraints": "[][grow]"
+				"$layoutConstraints": "fill,insets 0,hidemode 3"
+			} ) {
+				name: "pnlSenderlist"
+				"preferredSize": new java.awt.Dimension( 258, 220 )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormComponent( "com.jidesoft.swing.CheckBoxList" ) {
-					name: "senderList"
-					"selectionMode": 0
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label3"
+					"text": "Sender:"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "scpSenderList"
+					"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 					auxiliary() {
-						"JavaCodeGenerator.variableModifiers": 1
-						"JavaCodeGenerator.customCreateCode": "new SenderCheckBoxList();"
+						"JavaCodeGenerator.variableLocal": true
 					}
+					add( new FormComponent( "com.jidesoft.swing.CheckBoxList" ) {
+						name: "senderList"
+						"selectionMode": 0
+						"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"minimumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 1
+							"JavaCodeGenerator.customCreateCode": "new SenderCheckBoxList();"
+						}
+					} )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1,grow,hmin 50"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 16 3 1,grow,hmin 50"
+				"value": "cell 0 6,growx"
 			} )
 			add( new FormComponent( "javax.swing.JSeparator" ) {
 				name: "separator5"
@@ -179,27 +194,42 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 17 3 1,growx"
+				"value": "cell 0 7,growx"
 			} )
-			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label4"
-				"text": "Thema:"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 18"
-			} )
-			add( new FormComponent( "javax.swing.JComboBox" ) {
-				name: "jcbThema"
-				"maximumRowCount": 6
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$columnConstraints": "[left][grow,fill][fill]"
+				"$rowConstraints": "[]"
+				"$layoutConstraints": "fillx,insets 0,hidemode 3"
+			} ) {
+				name: "pnlThema"
 				auxiliary() {
-					"JavaCodeGenerator.typeParameters": "String"
+					"JavaCodeGenerator.variableLocal": true
 				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label4"
+					"text": "Thema:"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "jcbThema"
+					"maximumRowCount": 6
+					"minimumSize": new java.awt.Dimension( 50, 10 )
+					"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					auxiliary() {
+						"JavaCodeGenerator.typeParameters": "String"
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0,growx,wmax 300"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "btnResetThema"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 0"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 1 18,growx,wmax 300"
-			} )
-			add( new FormComponent( "javax.swing.JButton" ) {
-				name: "btnResetThema"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 2 18"
+				"value": "cell 0 8,growx"
 			} )
 			add( new FormComponent( "javax.swing.JSeparator" ) {
 				name: "separator6"
@@ -207,14 +237,14 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 19 3 1,growx"
+				"value": "cell 0 9,growx"
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "fill,insets 0,hidemode 3"
 				"$columnConstraints": "0[fill][fill][grow,fill][fill][fill]0"
 				"$rowConstraints": "0[]0[]0"
 			} ) {
-				name: "panel2"
+				name: "pnlFlimlength"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -259,7 +289,7 @@ new FormModel {
 					"value": "cell 0 1 5 1,growx"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 20 3 1,growx"
+				"value": "cell 0 10,growx"
 			} )
 			add( new FormComponent( "javax.swing.JSeparator" ) {
 				name: "separator7"
@@ -267,27 +297,39 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 21 3 1,growx"
+				"value": "cell 0 11,growx"
 			} )
-			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label1"
-				"text": "Zeitraum:"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 22"
-			} )
-			add( new FormComponent( "mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinner" ) {
-				name: "spZeitraum"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$columnConstraints": "[left][grow,fill][fill]"
+				"$rowConstraints": "[]"
+				"$layoutConstraints": "fillx,insets 0,hidemode 3"
+			} ) {
+				name: "pnlZeitraum"
 				auxiliary() {
-					"JavaCodeGenerator.variableModifiers": 1
+					"JavaCodeGenerator.variableLocal": true
 				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "Zeitraum:"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinner" ) {
+					name: "spZeitraum"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 1
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label2"
+					"text": "Tage"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 0"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 1 22"
-			} )
-			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label2"
-				"text": "Tage"
-			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 2 22"
+				"value": "cell 0 12,growx"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
