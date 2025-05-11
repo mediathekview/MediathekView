@@ -18,6 +18,7 @@
 
 package mediathek.gui.tabs.tab_film.helpers;
 
+import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
@@ -26,6 +27,7 @@ import mediathek.tool.FilterConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -80,6 +82,10 @@ public abstract class GuiModelHelper {
 
     protected boolean noFiltersAreSet() {
         return filterConfiguration.noFiltersAreSet() && searchFieldData.isEmpty();
+    }
+
+    protected List<String> getSelectedSendersFromFilter() {
+        return filterConfiguration.getCheckedChannels().stream().filter(SenderFilmlistLoadApprover::isApproved).toList();
     }
 
     protected boolean seenCheck(DatenFilm film) {

@@ -125,7 +125,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                 if (filterConfiguration.isShowNewOnly()) {
                     addNewOnlyQuery(qb);
                 }
-                var selectedSenders = filterConfiguration.getCheckedChannels();
+                var selectedSenders = getSelectedSendersFromFilter();
                 if (!selectedSenders.isEmpty()) {
                     addSenderFilterQuery(qb, selectedSenders);
                 }

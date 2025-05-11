@@ -44,7 +44,7 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
             historyController.prepareMemoryCache();
 
         var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
-        var selectedSenders = filterConfiguration.getCheckedChannels();
+        var selectedSenders = getSelectedSendersFromFilter();
         if (!selectedSenders.isEmpty()) {
             stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
         }
