@@ -78,6 +78,7 @@ cp ../MediathekView/MediathekView.svg $LOWERAPP.svg
 
 cp ../MediathekView/MediathekView.jar usr/bin
 chmod +x usr/bin/MediathekView.jar
+cp -r ../MediathekView/dependency usr/bin/
 #cp ../MediathekView/MediathekView.sh usr/bin/$LOWERAPP
 
 cat > usr/bin/$LOWERAPP <<'EOF'
@@ -85,7 +86,7 @@ cat > usr/bin/$LOWERAPP <<'EOF'
 
 dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
-MediathekView -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -DexternalUpdateCheck -jar MediathekView.jar "$@"
+MediathekView -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -ea -cp "MediathekView.jar:dependency/*" -DexternalUpdateCheck mediathek.Main "$@"
 cd $OLDPWD
 EOF
 
