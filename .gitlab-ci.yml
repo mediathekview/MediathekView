@@ -38,7 +38,6 @@ stages:
   - deploy-nightly-lin
   - deploy-nightly-linarm
   - deploy-nightly-win
-  # - deploy-nightly-win32
   - deploy-nightly-mac
   # - deploy-nightly-mac-as
   - deploy-lin
@@ -71,14 +70,6 @@ Build and Deploy nightly Windows:
     - /skripte/deploy.sh nightly win $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
-
-# Build and Deploy nightly Windows 32bit:
-#   stage: deploy-nightly-win32
-#   script:
-#     - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
-#     - /skripte/deploy.sh nightly win32 $CI_COMMIT_SHA
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 Build and Deploy nightly Mac Intel:
   stage: deploy-nightly-mac
@@ -123,11 +114,3 @@ Build and Deploy Windows:
     - /skripte/deploy.sh release win
   rules:
     - if: $CI_COMMIT_TAG
-
-# Build and Deploy Windows 32bit:
-#   stage: deploy-win32
-#   script:
-#     - mvn -B package -P!linux_64bit,windows_32bit,install4j $MAVEN_CLI_OPTS
-#     - /skripte/deploy.sh release win32
-#   rules:
-#     - if: $CI_COMMIT_TAG
