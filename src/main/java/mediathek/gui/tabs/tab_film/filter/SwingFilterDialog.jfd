@@ -211,15 +211,11 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
-				add( new FormComponent( "javax.swing.JComboBox" ) {
+				add( new FormComponent( "mediathek.tool.swing.AutoCompletionComboBox2" ) {
 					name: "jcbThema"
-					"maximumRowCount": 6
 					"minimumSize": new java.awt.Dimension( 50, 10 )
 					"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 					"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
-					auxiliary() {
-						"JavaCodeGenerator.typeParameters": "String"
-					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0,growx,wmax 300"
 				} )
