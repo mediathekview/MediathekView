@@ -109,6 +109,10 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
     @Override
     protected void fireActionEvent() {
         if (!_preventActionEvent) {
+            final var tf = (JTextField)getEditor().getEditorComponent();
+            final var textLength = tf.getText().length();
+            if (textLength != 0)
+                tf.setCaretPosition(textLength);
             super.fireActionEvent();
         }
     }
