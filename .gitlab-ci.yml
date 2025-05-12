@@ -38,7 +38,7 @@ stages:
   - deploy-nightly-lin
   - deploy-nightly-linarm
   - deploy-nightly-win
-  - deploy-nightly-mac
+  #- deploy-nightly-mac
   # - deploy-nightly-mac-as
   - deploy-lin
   - deploy-linarm
@@ -71,13 +71,13 @@ Build and Deploy nightly Windows:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
-Build and Deploy nightly Mac Intel:
-  stage: deploy-nightly-mac
-  script:
-    - mvn -B package -P!linux_64bit,mac_intel $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh nightly mac $CI_COMMIT_SHA
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
+#Build and Deploy nightly Mac Intel:
+#  stage: deploy-nightly-mac
+#  script:
+#    - mvn -B package -P!linux_64bit,mac_intel $MAVEN_CLI_OPTS
+#    - /skripte/deploy.sh nightly mac $CI_COMMIT_SHA
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
 # Build and Deploy nightly Mac Apple Silicon:
 #   stage: deploy-nightly-mac-as
