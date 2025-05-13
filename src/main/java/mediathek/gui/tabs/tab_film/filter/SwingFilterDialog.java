@@ -891,7 +891,7 @@ public class SwingFilterDialog extends JDialog {
             pnlThema.add(label4, new CC().cell(0, 0));
 
             //---- jcbThema ----
-            jcbThema.setMinimumSize(null);
+            jcbThema.setMinimumSize(new Dimension(50, 10));
             jcbThema.setPreferredSize(null);
             jcbThema.setMaximumSize(null);
             pnlThema.add(jcbThema, new CC().cell(1, 0).growX().maxWidth("300")); //NON-NLS
