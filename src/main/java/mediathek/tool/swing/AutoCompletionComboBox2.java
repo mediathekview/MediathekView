@@ -57,7 +57,7 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
      * @return the <code>AutoCompletion</code>.
      */
     protected AutoCompletion createAutoCompletion() {
-        return new AutoCompletion(this, new NoFireOnKeyComboBoxSearchable());
+        return new AutoCompletion(this, new NoFireOnKeyComboBoxSearchable(this));
     }
 
     protected void resetCaretPosition() {
@@ -76,13 +76,13 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
     }
 
     private class NoFireOnKeyComboBoxSearchable extends ComboBoxSearchable {
-        public NoFireOnKeyComboBoxSearchable() {
-            super(AutoCompletionComboBox2.this);
+        public NoFireOnKeyComboBoxSearchable(JComboBox<?> comboBox) {
+            super(comboBox);
         }
 
         @Override
         protected void setSelectedIndex(int index, boolean incremental) {
-            Object propTableCellEditor = AutoCompletionComboBox2.this.getClientProperty("JComboBox.isTableCellEditor");
+            Object propTableCellEditor = _component.getClientProperty("JComboBox.isTableCellEditor");
             Object propNoActionOnKeyNavigation = UIManager.get("ComboBox.noActionOnKeyNavigation");
             if ((propTableCellEditor instanceof Boolean && (Boolean) propTableCellEditor) ||
                     (propNoActionOnKeyNavigation instanceof Boolean && (Boolean) propNoActionOnKeyNavigation) ||
