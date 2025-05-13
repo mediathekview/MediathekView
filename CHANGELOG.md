@@ -8,6 +8,8 @@
 - **BUGFIX:** Alte tagesschau24 Filme in der Liste werden nur konvertiert wenn der Sender auch angezeigt werden soll.
 - **BUGFIX:** Darkmode Anzeigefehler im Kontextmenü des Tab Filme behoben.
 - **BUGFIX:** Filterdialog im Dark Mode ändert nicht mehr die Größe.
+- **BUGFIX:** Das Erzeugen von (leeren) Infodateien für Livestreams über das Kontextmenü ist nun nicht mehr möglich.
+- **BUGFIX:** Die Online-Suche nach Thema ist nun für Livestreams deaktiviert.
 - **FEATURE (macOS/Windows/Linux GNOME):** Auf unterstützten Systemen nimmt MV nun das aktuelle Erscheinungsbild des Betriebssystem an, wenn es unter *Einstellungen/Allgemein/Erscheinungsbild des Betriebssystem verwenden* konfiguriert wurde.
 - **FEATURE:** Lokale Filmduplikate können nach Anwahl eines Ursprungsfilmes über das Kontextmenü *"Duplikate entfernen..."* gesucht und permanent aus der Liste entfernt werden. *WICHTIG:* Etwaige Duplikat-Markierungen bleiben bis zum Neustart ggf. erhalten da keine listenweite Duplikaterkennung nach einer Löschung gestartet wird.
 - **FEATURE:** Thema und Sender werden nun in den Filtern gespeichert. Vielen Dank an @MarkusJannek
@@ -18,7 +20,7 @@
 - **FEATURE:** Die Senderliste kann über das Kontextmenü vertikal umgebrochen werden, um mehr Informationen darzustellen. Die Einstellung wird gespeichert und bei jedem Start wiederhergestellt.
 - **FEATURE:** Filter können bei der Neuanlage direkt mit einem Namen versehen werden.
 - **FEATURE:** Thema-ComboBox kann entweder über den Mülleimer-Button zurückgesetzt werden oder über das Kontextmenü
-- 
+
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
 - **(Linux/Windows):** Die von uns gelieferten Binaries enthalten JDK 23.0.2.

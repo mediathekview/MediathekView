@@ -1416,20 +1416,22 @@ public class GuiFilme extends AGuiTabPanel {
             res.ifPresent(film -> setupHistoryContextActions(jPopupMenu, film));
 
             res.ifPresent(film -> {
-                jPopupMenu.addSeparator();
-                var miCreateInfoFile = new JMenuItem("Infodatei erzeugen...");
-                miCreateInfoFile.addActionListener(ae -> {
-                    var file = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infodatei speichern", "");
-                    if (file != null) {
-                        MVInfoFile infoFile = new MVInfoFile();
-                        try {
-                            infoFile.writeManualInfoFile(film, file.toPath());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                if (!film.isLivestream()) {
+                    jPopupMenu.addSeparator();
+                    var miCreateInfoFile = new JMenuItem("Infodatei erzeugen...");
+                    miCreateInfoFile.addActionListener(ae -> {
+                        var file = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infodatei speichern", "");
+                        if (file != null) {
+                            MVInfoFile infoFile = new MVInfoFile();
+                            try {
+                                infoFile.writeManualInfoFile(film, file.toPath());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
-                    }
-                });
-                jPopupMenu.add(miCreateInfoFile);
+                    });
+                    jPopupMenu.add(miCreateInfoFile);
+                }
             });
 
             res.ifPresent(film -> {
@@ -1616,12 +1618,14 @@ public class GuiFilme extends AGuiTabPanel {
             var set = EnumSet.allOf(OnlineSearchProviders.class);
 
             for (var item : set) {
-                var miThema = new JMenuItem(item.toString());
-                miThema.addActionListener(e -> {
-                    var url = item.getQueryUrl() + URLEncoder.encode(film.getThema(), StandardCharsets.UTF_8);
-                    tryLaunchBrowser(url);
-                });
-                mThema.add(miThema);
+                if (!film.isLivestream()){
+                    var miThema = new JMenuItem(item.toString());
+                    miThema.addActionListener(e -> {
+                        var url = item.getQueryUrl() + URLEncoder.encode(film.getThema(), StandardCharsets.UTF_8);
+                        tryLaunchBrowser(url);
+                    });
+                    mThema.add(miThema);
+                }
 
                 var miTitel = new JMenuItem(item.toString());
                 miTitel.addActionListener(e -> {
@@ -1631,7 +1635,9 @@ public class GuiFilme extends AGuiTabPanel {
                 mTitel.add(miTitel);
             }
 
-            mOnlineSearch.add(mThema);
+            if (!film.isLivestream()) {
+                mOnlineSearch.add(mThema);
+            }
             mOnlineSearch.add(mTitel);
             popupMenu.add(mOnlineSearch);
             popupMenu.addSeparator();
