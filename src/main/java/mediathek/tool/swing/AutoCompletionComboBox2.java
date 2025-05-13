@@ -55,23 +55,7 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
      * @return the <code>AutoCompletion</code>.
      */
     protected AutoCompletion createAutoCompletion() {
-        return new AutoCompletion(this, new ComboBoxSearchable(this) {
-            @Override
-            protected void setSelectedIndex(int index, boolean incremental) {
-                Object propTableCellEditor = AutoCompletionComboBox2.this.getClientProperty("JComboBox.isTableCellEditor");
-                Object propNoActionOnKeyNavigation = UIManager.get("ComboBox.noActionOnKeyNavigation");
-                if ((propTableCellEditor instanceof Boolean && (Boolean) propTableCellEditor) ||
-                        (propNoActionOnKeyNavigation instanceof Boolean && (Boolean) propNoActionOnKeyNavigation) ||
-                        _noActionOnKeyNavigation) {
-                    _preventActionEvent = true;
-                }
-                try {
-                    super.setSelectedIndex(index, incremental);
-                } finally {
-                    _preventActionEvent = false;
-                }
-            }
-        });
+        return new AutoCompletion(this, new NoFireOnKeyComboBoxSearchable());
     }
 
     /**
@@ -106,14 +90,40 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
         return _autoCompletion;
     }
 
+    protected void resetCaretPosition() {
+        final var tf = (JTextField)getEditor().getEditorComponent();
+        final var textLength = tf.getText().length();
+        if (textLength != 0)
+            tf.setCaretPosition(textLength);
+    }
+
     @Override
     protected void fireActionEvent() {
         if (!_preventActionEvent) {
-            final var tf = (JTextField)getEditor().getEditorComponent();
-            final var textLength = tf.getText().length();
-            if (textLength != 0)
-                tf.setCaretPosition(textLength);
+            resetCaretPosition();
             super.fireActionEvent();
+        }
+    }
+
+    private class NoFireOnKeyComboBoxSearchable extends ComboBoxSearchable {
+        public NoFireOnKeyComboBoxSearchable() {
+            super(AutoCompletionComboBox2.this);
+        }
+
+        @Override
+        protected void setSelectedIndex(int index, boolean incremental) {
+            Object propTableCellEditor = AutoCompletionComboBox2.this.getClientProperty("JComboBox.isTableCellEditor");
+            Object propNoActionOnKeyNavigation = UIManager.get("ComboBox.noActionOnKeyNavigation");
+            if ((propTableCellEditor instanceof Boolean && (Boolean) propTableCellEditor) ||
+                    (propNoActionOnKeyNavigation instanceof Boolean && (Boolean) propNoActionOnKeyNavigation) ||
+                    _noActionOnKeyNavigation) {
+                _preventActionEvent = true;
+            }
+            try {
+                super.setSelectedIndex(index, incremental);
+            } finally {
+                _preventActionEvent = false;
+            }
         }
     }
 }
