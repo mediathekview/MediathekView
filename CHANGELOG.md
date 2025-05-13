@@ -4,7 +4,6 @@
 - **Neuer Startparameter notwendig für Selbstbauer:** `--add-exports=java.desktop/sun.swing=ALL-UNNAMED` muss hinzugefügt werden.
 - großflächiger Rückbau von JavaFX-Komponenten, dies sollte älteren Computern zugute kommen.
 - **BUGFIX:** Filter können nicht in existierende umbenannt werden.
-- **FEATURE:** Filter können bei der Neuanlage direkt mit einem Namen versehen werden.
 - **BUGFIX:** Duplikatsuche berücksichtigt nur HQ-URL wenn Film auch HQ ist.
 - **BUGFIX:** Alte tagesschau24 Filme in der Liste werden nur konvertiert wenn der Sender auch angezeigt werden soll.
 - **BUGFIX:** Darkmode Anzeigefehler im Kontextmenü des Tab Filme behoben.
@@ -17,7 +16,9 @@
 - **FEATURE:** Untertitel werden nun auch in das ASS-Format konvertiert. Vielen Dank an @Lucki.
 - **FEATURE:** In den PSets kann nun über den Parameter `%3_2` ein zweistelliges Jahr in den Dateinamen eingefügt werden.
 - **FEATURE:** Die Senderliste kann über das Kontextmenü vertikal umgebrochen werden, um mehr Informationen darzustellen. Die Einstellung wird gespeichert und bei jedem Start wiederhergestellt.
-
+- **FEATURE:** Filter können bei der Neuanlage direkt mit einem Namen versehen werden.
+- **FEATURE:** Thema-ComboBox kann entweder über den Mülleimer-Button zurückgesetzt werden oder über das Kontextmenü
+- 
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
 - **(Linux/Windows):** Die von uns gelieferten Binaries enthalten JDK 23.0.2.
