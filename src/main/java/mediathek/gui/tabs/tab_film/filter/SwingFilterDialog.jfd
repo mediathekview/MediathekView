@@ -213,7 +213,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "mediathek.tool.swing.AutoCompletionComboBox2" ) {
 					name: "jcbThema"
-					"minimumSize": new java.awt.Dimension( 50, 10 )
+					"minimumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 					"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 					"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
