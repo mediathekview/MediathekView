@@ -19,7 +19,6 @@
 package mediathek.tool.swing;
 
 import com.jidesoft.swing.AutoCompletion;
-import com.jidesoft.swing.ComboBoxSearchable;
 
 import javax.swing.*;
 
@@ -31,8 +30,6 @@ import javax.swing.*;
  */
 public class AutoCompletionComboBox2 extends JComboBox<String> {
     protected AutoCompletion _autoCompletion;
-    protected boolean _noActionOnKeyNavigation;
-    private boolean _preventActionEvent;
 
     public AutoCompletionComboBox2() {
         initComponents();
@@ -40,15 +37,15 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
 
     protected void initComponents() {
         setEditable(true);
-        setNoActionOnKeyNavigation(true);
 
         _autoCompletion = createAutoCompletion();
         _autoCompletion.setStrict(true);
         _autoCompletion.setStrictCompletion(true);
+        setNoActionOnKeyNavigation(true);
     }
 
-    public void setNoActionOnKeyNavigation(boolean _noActionOnKeyNavigation) {
-        this._noActionOnKeyNavigation = _noActionOnKeyNavigation;
+    public void setNoActionOnKeyNavigation(boolean value) {
+        ((NoFireOnKeyComboBoxSearchable)_autoCompletion.getSearchable()).setNoActionOnKeyNavigation(value);
     }
 
     /**
@@ -69,31 +66,10 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
 
     @Override
     protected void fireActionEvent() {
-        if (!_preventActionEvent) {
+        if (!((NoFireOnKeyComboBoxSearchable)_autoCompletion.getSearchable()).isPreventActionEvent()) {
             resetCaretPosition();
             super.fireActionEvent();
         }
     }
 
-    private class NoFireOnKeyComboBoxSearchable extends ComboBoxSearchable {
-        public NoFireOnKeyComboBoxSearchable(JComboBox<?> comboBox) {
-            super(comboBox);
-        }
-
-        @Override
-        protected void setSelectedIndex(int index, boolean incremental) {
-            Object propTableCellEditor = _component.getClientProperty("JComboBox.isTableCellEditor");
-            Object propNoActionOnKeyNavigation = UIManager.get("ComboBox.noActionOnKeyNavigation");
-            if ((propTableCellEditor instanceof Boolean && (Boolean) propTableCellEditor) ||
-                    (propNoActionOnKeyNavigation instanceof Boolean && (Boolean) propNoActionOnKeyNavigation) ||
-                    _noActionOnKeyNavigation) {
-                _preventActionEvent = true;
-            }
-            try {
-                super.setSelectedIndex(index, incremental);
-            } finally {
-                _preventActionEvent = false;
-            }
-        }
-    }
 }
