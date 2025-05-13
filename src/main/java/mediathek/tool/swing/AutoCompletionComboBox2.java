@@ -26,14 +26,12 @@ import javax.swing.*;
 /**
  * An auto completion combobox.
  * <p/>
- * Since auto-complete has to listen to the key user types, it has to be editable. If you want to limit user to the list
- * available in the combobox model, you can call {@link #setStrict(boolean)} and set it to true.
  * This class is a rewrite of {@link com.jidesoft.swing.AutoCompletionComboBox} and does not send action events when keys
  * are pressed if {@link #setNoActionOnKeyNavigation(boolean)} is set to true.
  */
 public class AutoCompletionComboBox2 extends JComboBox<String> {
     protected AutoCompletion _autoCompletion;
-    boolean _noActionOnKeyNavigation;
+    protected boolean _noActionOnKeyNavigation;
     private boolean _preventActionEvent;
 
     public AutoCompletionComboBox2() {
@@ -42,7 +40,11 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
 
     protected void initComponents() {
         setEditable(true);
+        setNoActionOnKeyNavigation(true);
+
         _autoCompletion = createAutoCompletion();
+        _autoCompletion.setStrict(true);
+        _autoCompletion.setStrictCompletion(true);
     }
 
     public void setNoActionOnKeyNavigation(boolean _noActionOnKeyNavigation) {
@@ -56,38 +58,6 @@ public class AutoCompletionComboBox2 extends JComboBox<String> {
      */
     protected AutoCompletion createAutoCompletion() {
         return new AutoCompletion(this, new NoFireOnKeyComboBoxSearchable());
-    }
-
-    /**
-     * Sets the strict property. If true, it will not allow user to type in anything that is not in the known item list.
-     * If false, user can type in whatever he/she wants. If the text can match with a item in the known item list, it
-     * will still auto-complete.
-     *
-     * @param strict true or false.
-     */
-    public void setStrict(boolean strict) {
-        getAutoCompletion().setStrict(strict);
-    }
-
-    /**
-     * Sets the strict completion property. If true, in case insensitive searching, it will always use the exact item in
-     * the Searchable to replace whatever user types. For example, when Searchable has an item "Arial" and user types in
-     * "AR", if this flag is true, it will auto-completed as "Arial". If false, it will be auto-completed as "ARial". Of
-     * course, this flag will only make a difference if Searchable is case insensitive.
-     *
-     * @param strictCompletion true or false.
-     */
-    public void setStrictCompletion(boolean strictCompletion) {
-        getAutoCompletion().setStrictCompletion(strictCompletion);
-    }
-
-    /**
-     * Gets the underlying AutoCompletion class.
-     *
-     * @return the underlying AutoCompletion.
-     */
-    public AutoCompletion getAutoCompletion() {
-        return _autoCompletion;
     }
 
     protected void resetCaretPosition() {

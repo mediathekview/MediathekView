@@ -226,10 +226,15 @@ public class SwingFilterDialog extends JDialog {
         jcbThema.setSelectedItem(aktuellesThema);
     }
 
+    private JPopupMenu createPopupMenu() {
+        var popupMenu = new JPopupMenu();
+        popupMenu.add(new ResetThemaButtonAction());
+        return popupMenu;
+    }
+
     private void setupThemaComboBox() {
-        jcbThema.setNoActionOnKeyNavigation(true);
-        jcbThema.setStrict(true);
-        jcbThema.setStrictCompletion(true);
+        jcbThema.setComponentPopupMenu(createPopupMenu());
+
         var model = GlazedListsSwing.eventComboBoxModel(new EventListWithEmptyFirstEntry(sourceThemaList));
         jcbThema.setModel(model);
         //otherwise stored filter will not be accepted as entry may not be in list
@@ -480,6 +485,7 @@ public class SwingFilterDialog extends JDialog {
 
     private class AddNewFilterAction extends AbstractAction {
         private static final String STR_ACTION_NAME = "Neuen Filter anlegen";
+
         public AddNewFilterAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
             putValue(Action.SHORT_DESCRIPTION, STR_ACTION_NAME);
@@ -487,14 +493,14 @@ public class SwingFilterDialog extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String newFilterName = (String)JOptionPane.showInputDialog(MediathekGui.ui(), "Filtername:",
+            String newFilterName = (String) JOptionPane.showInputDialog(MediathekGui.ui(), "Filtername:",
                     STR_ACTION_NAME, JOptionPane.PLAIN_MESSAGE, null, null,
                     String.format("Filter %d", filterConfig.getAvailableFilters().size() + 1));
             if (newFilterName != null) {
                 filterConfig.findFilterForName(newFilterName).ifPresentOrElse(f ->
                         JOptionPane.showMessageDialog(MediathekGui.ui(),
-                        "Ein Filter mit dem gewählten Namen existiert bereits!",
-                        STR_ACTION_NAME, JOptionPane.ERROR_MESSAGE), () -> {
+                                "Ein Filter mit dem gewählten Namen existiert bereits!",
+                                STR_ACTION_NAME, JOptionPane.ERROR_MESSAGE), () -> {
                     FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), newFilterName);
                     filterConfig.addNewFilter(newFilter);
                     checkDeleteCurrentFilterButtonState();
@@ -525,15 +531,23 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private class ResetThemaAction extends AbstractAction {
+        protected static final String STR_RESET_THEMA = "Thema zurücksetzen";
+
         public ResetThemaAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
-            putValue(Action.SHORT_DESCRIPTION, "Thema zurücksetzen");
+            putValue(Action.SHORT_DESCRIPTION, STR_RESET_THEMA);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             filterConfig.setThema("");
             jcbThema.setSelectedIndex(0);
+        }
+    }
+
+    private class ResetThemaButtonAction extends ResetThemaAction {
+        public ResetThemaButtonAction() {
+            putValue(Action.NAME, STR_RESET_THEMA);
         }
     }
 
