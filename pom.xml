@@ -107,7 +107,7 @@
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <controlsfx.version>11.2.2</controlsfx.version>
-        <flatlaf.version>3.5.4</flatlaf.version>
+        <flatlaf.version>3.6</flatlaf.version>
         <glazedlists.version>1.11.0</glazedlists.version>
         <guava.version>33.4.8-jre</guava.version>
         <icu4j.version>76.1</icu4j.version>

@@ -27,6 +27,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.jidesoft.swing.CheckBoxList;
+import com.jidesoft.swing.JideSplitButton;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.controller.SenderFilmlistLoadApprover;
@@ -78,6 +79,10 @@ public class SwingFilterDialog extends JDialog {
      * The "base" thema list
      */
     private final EventList<String> sourceThemaList = new BasicEventList<>();
+    private final RenameFilterAction renameFilterAction = new RenameFilterAction();
+    private final DeleteCurrentFilterAction deleteCurrentFilterAction = new DeleteCurrentFilterAction();
+    private final AddNewFilterAction addNewFilterAction = new AddNewFilterAction();
+    private final ResetCurrentFilterAction resetCurrentFilterAction = new ResetCurrentFilterAction();
 
     public SwingFilterDialog(@NotNull Window owner, @NotNull FilterSelectionComboBoxModel model,
                              @NotNull JToggleButton filterToggleButton,
@@ -88,6 +93,9 @@ public class SwingFilterDialog extends JDialog {
         this.filterConfig = filterConfig;
 
         initComponents();
+
+        btnSplit.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/ellipsis-vertical.svg"));
+        populateSplitButton();
 
         ToggleVisibilityKeyHandler handler = new ToggleVisibilityKeyHandler(this);
         handler.installHandler(filterToggleButton.getAction());
@@ -110,11 +118,16 @@ public class SwingFilterDialog extends JDialog {
         Daten.getInstance().getFilmeLaden().addAdListener(new FilmeLadenListener());
     }
 
+    private void populateSplitButton() {
+        btnSplit.add(renameFilterAction);
+        btnSplit.add(addNewFilterAction);
+        btnSplit.add(deleteCurrentFilterAction);
+        btnSplit.addSeparator();
+        btnSplit.add(resetCurrentFilterAction);
+    }
+
     private void setupButtons() {
-        btnRenameFilter.setAction(new RenameFilterAction());
-        setupDeleteCurrentFilterButton();
-        setupResetCurrentFilterButton();
-        btnAddNewFilter.setAction(new AddNewFilterAction());
+        checkDeleteCurrentFilterButtonState();
         btnResetThema.setAction(new ResetThemaAction());
     }
 
@@ -262,7 +275,7 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private void checkDeleteCurrentFilterButtonState() {
-        btnDeleteCurrentFilter.setEnabled(filterConfig.getAvailableFilterCount() > 1);
+        deleteCurrentFilterAction.setEnabled(filterConfig.getAvailableFilterCount() > 1);
     }
 
     private void restoreConfigSettings() {
@@ -285,25 +298,14 @@ public class SwingFilterDialog extends JDialog {
         spZeitraum.restoreFilterConfig(filterConfig);
     }
 
-    private void setupResetCurrentFilterButton() {
-        btnResetCurrentFilter.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/recycle.svg"));
-        btnResetCurrentFilter.addActionListener(e -> {
-            filterConfig.clearCurrentFilter();
-            restoreConfigSettings();
-        });
-    }
-
-    private void setupDeleteCurrentFilterButton() {
-        checkDeleteCurrentFilterButtonState();
-        btnDeleteCurrentFilter.setAction(new DeleteCurrentFilterAction());
-    }
-
     private void enableControls(boolean enable) {
         cboxFilterSelection.setEnabled(enable);
 
-        btnRenameFilter.setEnabled(enable);
-        btnAddNewFilter.setEnabled(enable);
-        btnResetCurrentFilter.setEnabled(enable);
+        btnSplit.setEnabled(enable);
+        renameFilterAction.setEnabled(enable);
+        addNewFilterAction.setEnabled(enable);
+        resetCurrentFilterAction.setEnabled(enable);
+
         btnResetThema.setEnabled(enable);
 
         cbShowNewOnly.setEnabled(enable);
@@ -349,7 +351,7 @@ public class SwingFilterDialog extends JDialog {
             enableControls(enable);
 
             if (e.active) {
-                btnDeleteCurrentFilter.setEnabled(false);
+                deleteCurrentFilterAction.setEnabled(false);
             } else {
                 checkDeleteCurrentFilterButtonState();
             }
@@ -394,6 +396,25 @@ public class SwingFilterDialog extends JDialog {
             final var inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0), TOGGLE_FILTER_VISIBILITY);
             rootPane.getActionMap().put(TOGGLE_FILTER_VISIBILITY, action);
+        }
+    }
+
+    private class ResetCurrentFilterAction extends AbstractAction {
+        public ResetCurrentFilterAction() {
+            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/recycle.svg"));
+            putValue(Action.SHORT_DESCRIPTION, "Aktuellen Filter zurücksetzen");
+            putValue(Action.NAME, "Aktuellen Filter zurücksetzen"+"...");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            var result = JOptionPane.showConfirmDialog(MediathekGui.ui(),
+                    "Sind Sie sicher dass Sie den Filter zurücksetzen möchten?", "Filter zurücksetzen",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                filterConfig.clearCurrentFilter();
+                restoreConfigSettings();
+            }
         }
     }
 
@@ -489,6 +510,7 @@ public class SwingFilterDialog extends JDialog {
         public AddNewFilterAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
             putValue(Action.SHORT_DESCRIPTION, STR_ACTION_NAME);
+            putValue(Action.NAME, STR_ACTION_NAME + "...");
         }
 
         @Override
@@ -512,9 +534,12 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private class DeleteCurrentFilterAction extends AbstractAction {
+        private static final String STR_DELETE_CURRENT_FILTER = "Aktuellen Filter löschen";
+
         public DeleteCurrentFilterAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
-            putValue(Action.SHORT_DESCRIPTION, "Aktuellen Filter löschen");
+            putValue(Action.SHORT_DESCRIPTION, STR_DELETE_CURRENT_FILTER);
+            putValue(Action.NAME, STR_DELETE_CURRENT_FILTER+"...");
         }
 
         @Override
@@ -552,9 +577,12 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private class RenameFilterAction extends AbstractAction {
+        private static final String STR_RENAME_FILTER = "Filter umbenennen";
+
         public RenameFilterAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
-            putValue(Action.SHORT_DESCRIPTION, "Filter umbenennen");
+            putValue(Action.SHORT_DESCRIPTION, STR_RENAME_FILTER);
+            putValue(Action.NAME, STR_RENAME_FILTER + "...");
         }
 
         @Override
@@ -676,11 +704,7 @@ public class SwingFilterDialog extends JDialog {
         createUIComponents();
 
         var pnlFilterCommon = new JPanel();
-        btnRenameFilter = new JButton();
-        btnAddNewFilter = new JButton();
-        btnDeleteCurrentFilter = new JButton();
-        var separator1 = new JSeparator();
-        btnResetCurrentFilter = new JButton();
+        btnSplit = new JideSplitButton();
         var separator2 = new JSeparator();
         var pnlShowOnly = new JPanel();
         cbShowNewOnly = new JCheckBox();
@@ -752,10 +776,6 @@ public class SwingFilterDialog extends JDialog {
                 // columns
                 new AC()
                     .grow().fill().gap()
-                    .fill().gap()
-                    .fill().gap()
-                    .align("left").gap() //NON-NLS
-                    .fill().gap()
                     .fill(),
                 // rows
                 new AC()
@@ -766,17 +786,12 @@ public class SwingFilterDialog extends JDialog {
             cboxFilterSelection.setPreferredSize(null);
             cboxFilterSelection.setMinimumSize(new Dimension(50, 10));
             pnlFilterCommon.add(cboxFilterSelection, new CC().cell(0, 0));
-            pnlFilterCommon.add(btnRenameFilter, new CC().cell(1, 0).alignX("center").growX(0)); //NON-NLS
-            pnlFilterCommon.add(btnAddNewFilter, new CC().cell(2, 0).alignX("center").growX(0)); //NON-NLS
-            pnlFilterCommon.add(btnDeleteCurrentFilter, new CC().cell(3, 0).alignX("center").growX(0)); //NON-NLS
 
-            //---- separator1 ----
-            separator1.setOrientation(SwingConstants.VERTICAL);
-            pnlFilterCommon.add(separator1, new CC().cell(4, 0));
-
-            //---- btnResetCurrentFilter ----
-            btnResetCurrentFilter.setToolTipText("Aktuellen Filter zur\u00fccksetzen"); //NON-NLS
-            pnlFilterCommon.add(btnResetCurrentFilter, new CC().cell(5, 0).alignX("center").growX(0)); //NON-NLS
+            //======== btnSplit ========
+            {
+                btnSplit.setAlwaysDropdown(true);
+            }
+            pnlFilterCommon.add(btnSplit, new CC().cell(1, 0));
         }
         contentPane.add(pnlFilterCommon, new CC().cell(0, 0).growX());
         contentPane.add(separator2, new CC().cell(0, 1).growX());
@@ -968,10 +983,7 @@ public class SwingFilterDialog extends JDialog {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     // Generated using JFormDesigner non-commercial license
     private FilterSelectionComboBox cboxFilterSelection;
-    private JButton btnRenameFilter;
-    private JButton btnAddNewFilter;
-    private JButton btnDeleteCurrentFilter;
-    private JButton btnResetCurrentFilter;
+    private JideSplitButton btnSplit;
     private JCheckBox cbShowNewOnly;
     private JCheckBox cbShowBookMarkedOnly;
     private JCheckBox cbShowOnlyHq;

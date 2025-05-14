@@ -13,7 +13,7 @@ new FormModel {
 			"title": "Filter"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "fillx,insets 0,hidemode 3"
-				"$columnConstraints": "[grow,fill][fill][fill][left][fill][fill]"
+				"$columnConstraints": "[grow,fill][fill]"
 				"$rowConstraints": "[fill]"
 			} ) {
 				name: "pnlFilterCommon"
@@ -31,35 +31,11 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btnRenameFilter"
+				add( new FormContainer( "com.jidesoft.swing.JideSplitButton", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "btnSplit"
+					"alwaysDropdown": true
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 0,alignx center,growx 0"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btnAddNewFilter"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 2 0,alignx center,growx 0"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btnDeleteCurrentFilter"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 3 0,alignx center,growx 0"
-				} )
-				add( new FormComponent( "javax.swing.JSeparator" ) {
-					name: "separator1"
-					"orientation": 1
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 4 0"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "btnResetCurrentFilter"
-					"toolTipText": "Aktuellen Filter zurücksetzen"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 5 0,alignx center,growx 0"
+					"value": "cell 1 0"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 0,growx"
