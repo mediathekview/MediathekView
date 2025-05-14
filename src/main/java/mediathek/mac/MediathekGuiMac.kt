@@ -30,10 +30,6 @@ import kotlin.io.path.absolutePathString
 class MediathekGuiMac : MediathekGui() {
     private val powerManager = OsxPowerManager()
 
-    override fun useAlternateRowColors(): Boolean {
-        return true
-    }
-
     override fun addQuitMenuItem() {
         //using native handler instead
     }

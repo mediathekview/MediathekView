@@ -21,11 +21,6 @@ public class MediathekGuiX11 extends MediathekGui {
     }
 
     @Override
-    protected boolean useAlternateRowColors() {
-        return true;
-    }
-
-    @Override
     protected void createDarkModeToggleButton() {
         // we are using a menu item here
     }

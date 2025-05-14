@@ -338,7 +338,7 @@ public class MediathekGui extends JFrame {
      * @return true when alternating row colors should be used, false otherwise.
      */
     protected boolean useAlternateRowColors() {
-        return false;
+        return true;
     }
 
     public void setupAlternatingRowColors() {
