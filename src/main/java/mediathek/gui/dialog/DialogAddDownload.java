@@ -407,6 +407,8 @@ public class DialogAddDownload extends JDialog {
         waitForFileSizeFutures();
 
         setupResolutionButtons();
+        setupInfoFileCreationCheckBox();
+
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
     }
@@ -768,10 +770,20 @@ public class DialogAddDownload extends JDialog {
         active_pSet = listeSpeichern.get(jComboBoxPset.getSelectedIndex());
 
         prepareResolutionButtons();
-        jCheckBoxInfodatei.setSelected(active_pSet.shouldCreateInfofile());
 
         prepareSubtitleCheckbox();
         setNameFilm();
+    }
+
+    private void setupInfoFileCreationCheckBox() {
+        //disable for Livestreams as they do not contain useful data, even if pset wants it...
+        final boolean isLivestream = film.isLivestream();
+        jCheckBoxInfodatei.setEnabled(!isLivestream);
+        if (!isLivestream) {
+            jCheckBoxInfodatei.setSelected(active_pSet.shouldCreateInfofile());
+        }
+        else
+            jCheckBoxInfodatei.setSelected(false);
     }
 
     private void prepareResolutionButtons() {
