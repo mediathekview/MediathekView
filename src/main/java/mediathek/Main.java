@@ -429,8 +429,12 @@ public class Main {
                     checkJVMSettings();
 
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    if (!VersionHelpers.IsWindows10OrGreater())
-                        logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
+                    if (!VersionHelpers.IsWindows10OrGreater()) {
+                        JOptionPane.showMessageDialog(null,
+                                "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
+                                Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+                        System.exit(1);
+                    }
                 }
 
                 setupCpuAffinity();
