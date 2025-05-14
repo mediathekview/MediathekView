@@ -91,11 +91,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.language.version>21</jdk.language.version>
-        <kotlin.language.target>21</kotlin.language.target>
-        <jvm.target.version>21</jvm.target.version>
+        <jdk.language.version>23</jdk.language.version>
+        <jvm.target.version>23</jvm.target.version>
+        <kotlin.language.target>23</kotlin.language.target>
 
-        <kotlin.version>2.1.10</kotlin.version>
+        <kotlin.version>2.1.21</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
@@ -1083,7 +1083,6 @@
                 </os>
             </activation>
             <properties>
-                <jvm.target.version>21</jvm.target.version>
                 <javafx.platform>mac</javafx.platform>
             </properties>
             <dependencies>
