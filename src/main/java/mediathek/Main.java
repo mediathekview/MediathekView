@@ -69,7 +69,8 @@ public class Main {
             try {
                 var oldFilmList = StandardLocations.getSettingsDirectory().resolve(Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
-            } catch (IOException ignored) {
+            }
+            catch (IOException ignored) {
             }
         }
     }
@@ -85,7 +86,8 @@ public class Main {
                 logger.info("Moving old unsupported media database to trash.");
                 mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
             }
-        } catch (IOException ignored) {
+        }
+        catch (IOException ignored) {
         }
     }
 
@@ -120,7 +122,8 @@ public class Main {
         final PatternLayout consolePattern;
         if (Config.isEnhancedLoggingEnabled() || Config.isDebugModeEnabled()) {
             consolePattern = PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build();
-        } else {
+        }
+        else {
             consolePattern = PatternLayout.newBuilder().withPattern(". %msg%n").build();
         }
 
@@ -223,11 +226,13 @@ public class Main {
                     try {
                         SettingsMigrator migrator = new SettingsMigrator(settingsFile);
                         migrator.migrate();
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         logger.error("settings migration error", e);
                     }
                 }
-            } else
+            }
+            else
                 logger.trace("nothing to migrate");
         }
     }
@@ -235,7 +240,8 @@ public class Main {
     private static void printPortableModeInfo() {
         if (Config.isPortableMode()) {
             logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-        } else
+        }
+        else
             logger.info("Configuring for non-portable mode");
     }
 
@@ -262,7 +268,8 @@ public class Main {
                     }
                 }
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             logger.error("OS X Application image could not be loaded", ex);
         }
     }
@@ -322,8 +329,8 @@ public class Main {
         }
 
         message += "</ul><br/>" +
-                    "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
-                    "</html>";
+                "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
+                "</html>";
         return message;
     }
 
@@ -374,6 +381,15 @@ public class Main {
             var settings = StandardLocations.getSettingsDirectory().resolve("flatlaf");
             logger.info("Registering {} as custom FlatLaf config folder", settings);
             FlatLaf.registerCustomDefaultsSource(settings.toFile());
+        }
+    }
+
+    private static void checkWindows10OrGreater() {
+        if (!VersionHelpers.IsWindows10OrGreater()) {
+            JOptionPane.showMessageDialog(null,
+                    "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
     }
 
@@ -429,12 +445,7 @@ public class Main {
                     checkJVMSettings();
 
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    if (!VersionHelpers.IsWindows10OrGreater()) {
-                        JOptionPane.showMessageDialog(null,
-                                "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
-                                Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-                        System.exit(1);
-                    }
+                    checkWindows10OrGreater();
                 }
 
                 setupCpuAffinity();
@@ -451,7 +462,8 @@ public class Main {
 
                 printJvmParameters();
                 printArguments(args);
-            } catch (CommandLine.ParameterException ex) {
+            }
+            catch (CommandLine.ParameterException ex) {
                 try (var err = cmd.getErr()) {
                     var errStr = ex.getMessage() + "\n\n" + ex.getCommandLine().getUsageMessage();
                     JOptionPane.showMessageDialog(null,
@@ -464,7 +476,8 @@ public class Main {
                     }
                     System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 logger.error("Command line parse error:", ex);
                 System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
             }
@@ -539,7 +552,8 @@ public class Main {
             if (migrator.needsMigration()) {
                 migrator.migrate();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error("migrateSeenHistory", e);
             splashScreen.ifPresent(SplashScreen::close);
             SwingErrorDialog.showExceptionMessage(null,
@@ -606,6 +620,7 @@ public class Main {
             logger.error("Got an error deleting old database directory", ex);
         }
     }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteSettingsDirectory() {
         try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
@@ -613,7 +628,8 @@ public class Main {
                     .map(Path::toFile)
                     //.peek(System.out::println)
                     .forEach(File::delete);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.error("Got an error deleting settings directory", ex);
         }
     }
@@ -691,16 +707,19 @@ public class Main {
 
         if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
-        } else if (SystemUtils.IS_OS_WINDOWS) {
+        }
+        else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
-        } else if (SystemUtils.IS_OS_LINUX) {
+        }
+        else if (SystemUtils.IS_OS_LINUX) {
             window = new MediathekGuiX11();
-        } else {
+        }
+        else {
             JOptionPane.showMessageDialog(null,
                     """
                             Sie führen MediathekView auf einem nicht unterstützten Betriebssystem aus.
                             Es werden nur macOS, Windows und Linux unterstützt.
-
+                            
                             Das Programm wird beendet, da die Funktionsfähigkeit nicht gewährleistet werden kann.""",
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.ERROR_MESSAGE);

@@ -132,47 +132,47 @@ public class SwingFilterDialog extends JDialog {
     }
 
     private void setupCheckBoxes() {
-        cbShowNewOnly.addActionListener(l -> {
+        cbShowNewOnly.addActionListener(_ -> {
             filterConfig.setShowNewOnly(cbShowNewOnly.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbShowBookMarkedOnly.addActionListener(l -> {
+        cbShowBookMarkedOnly.addActionListener(_ -> {
             filterConfig.setShowBookMarkedOnly(cbShowBookMarkedOnly.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbShowOnlyHq.addActionListener(l -> {
+        cbShowOnlyHq.addActionListener(_ -> {
             filterConfig.setShowHighQualityOnly(cbShowOnlyHq.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbShowSubtitlesOnly.addActionListener(l -> {
+        cbShowSubtitlesOnly.addActionListener(_ -> {
             filterConfig.setShowSubtitlesOnly(cbShowSubtitlesOnly.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbShowOnlyLivestreams.addActionListener(l -> {
+        cbShowOnlyLivestreams.addActionListener(_ -> {
             filterConfig.setShowLivestreamsOnly(cbShowOnlyLivestreams.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbShowUnseenOnly.addActionListener(l -> {
+        cbShowUnseenOnly.addActionListener(_ -> {
             filterConfig.setShowUnseenOnly(cbShowUnseenOnly.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbDontShowAbos.addActionListener(l -> {
+        cbDontShowAbos.addActionListener(_ -> {
             filterConfig.setDontShowAbos(cbDontShowAbos.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbDontShowSignLanguage.addActionListener(l -> {
+        cbDontShowSignLanguage.addActionListener(_ -> {
             filterConfig.setDontShowSignLanguage(cbDontShowSignLanguage.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbDontShowTrailers.addActionListener(l -> {
+        cbDontShowTrailers.addActionListener(_ -> {
             filterConfig.setDontShowTrailers(cbDontShowTrailers.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbDontShowAudioVersions.addActionListener(l -> {
+        cbDontShowAudioVersions.addActionListener(_ -> {
             filterConfig.setDontShowAudioVersions(cbDontShowAudioVersions.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
-        cbDontShowDuplicates.addActionListener(l -> {
+        cbDontShowDuplicates.addActionListener(_ -> {
             filterConfig.setDontShowDuplicates(cbDontShowDuplicates.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
@@ -187,7 +187,7 @@ public class SwingFilterDialog extends JDialog {
         lblMinFilmLengthValue.setText(String.valueOf(slider.getLowValue()));
         lblMaxFilmLengthValue.setText(slider.getHighValueText());
 
-        slider.addChangeListener(l -> {
+        slider.addChangeListener(_ -> {
             lblMinFilmLengthValue.setText(String.valueOf(slider.getLowValue()));
             lblMaxFilmLengthValue.setText(slider.getHighValueText());
 
@@ -208,10 +208,11 @@ public class SwingFilterDialog extends JDialog {
     private List<String> getThemaList(@NotNull java.util.List<String> selectedSenders) {
         List<String> finalList = new ArrayList<>();
 
-        final var blackList = Daten.getInstance().getListeFilmeNachBlackList();
+        var blackList = Daten.getInstance().getListeFilmeNachBlackList();
         if (selectedSenders.isEmpty()) {
             finalList.addAll(blackList.getThemenUnprocessed(""));
-        } else {
+        }
+        else {
             for (String sender : selectedSenders) {
                 finalList.addAll(blackList.getThemenUnprocessed(sender));
             }
@@ -256,7 +257,7 @@ public class SwingFilterDialog extends JDialog {
             sourceThemaList.add(thema);
         }
         jcbThema.setSelectedItem(thema);
-        jcbThema.addActionListener(l -> {
+        jcbThema.addActionListener(_ -> {
             var sel = (String) jcbThema.getSelectedItem();
             if (sel != null) {
                 filterConfig.setThema(sel);
@@ -269,7 +270,8 @@ public class SwingFilterDialog extends JDialog {
         try {
             spZeitraum.restoreFilterConfig(filterConfig);
             spZeitraum.installFilterConfigurationChangeListener(filterConfig);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error("Failed to setup zeitraum spinner", e);
         }
     }
@@ -352,14 +354,15 @@ public class SwingFilterDialog extends JDialog {
 
             if (e.active) {
                 deleteCurrentFilterAction.setEnabled(false);
-            } else {
+            }
+            else {
                 checkDeleteCurrentFilterButtonState();
             }
         });
     }
 
     private void restoreDialogVisibility() {
-        final boolean visible = config.getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
+        boolean visible = config.getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
         setVisible(visible);
     }
 
@@ -372,9 +375,11 @@ public class SwingFilterDialog extends JDialog {
             final int y = config.getInt(ApplicationConfiguration.FilterDialog.Y);
 
             setBounds(x, y, width, height);
-        } catch (NoSuchElementException ignored) {
+        }
+        catch (NoSuchElementException ignored) {
             //do not restore anything
-        } finally {
+        }
+        finally {
             config.unlock(LockMode.READ);
         }
 
@@ -403,7 +408,7 @@ public class SwingFilterDialog extends JDialog {
         public ResetCurrentFilterAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/recycle.svg"));
             putValue(Action.SHORT_DESCRIPTION, "Aktuellen Filter zurücksetzen");
-            putValue(Action.NAME, "Aktuellen Filter zurücksetzen"+"...");
+            putValue(Action.NAME, "Aktuellen Filter zurücksetzen" + "...");
         }
 
         @Override
@@ -456,16 +461,17 @@ public class SwingFilterDialog extends JDialog {
         protected void setupContextMenu() {
             var contextMenu = new JPopupMenu();
             var menuItem = new JMenuItem("Alle Senderfilter zurücksetzen");
-            menuItem.addActionListener(l -> selectNone());
+            menuItem.addActionListener(_ -> selectNone());
             contextMenu.add(menuItem);
             contextMenu.addSeparator();
 
-            miVerticalWrap.addActionListener(l -> {
+            miVerticalWrap.addActionListener(_ -> {
                 boolean selected = miVerticalWrap.isSelected();
                 ApplicationConfiguration.getConfiguration().setProperty(CONFIG_SENDERLIST_VERTICAL_WRAP, selected);
                 if (selected) {
                     setLayoutOrientation(JList.VERTICAL_WRAP);
-                } else {
+                }
+                else {
                     setLayoutOrientation(JList.VERTICAL);
                 }
                 repaint();
@@ -519,7 +525,7 @@ public class SwingFilterDialog extends JDialog {
                     STR_ACTION_NAME, JOptionPane.PLAIN_MESSAGE, null, null,
                     String.format("Filter %d", filterConfig.getAvailableFilters().size() + 1));
             if (newFilterName != null) {
-                filterConfig.findFilterForName(newFilterName).ifPresentOrElse(f ->
+                filterConfig.findFilterForName(newFilterName).ifPresentOrElse(_ ->
                         JOptionPane.showMessageDialog(MediathekGui.ui(),
                                 "Ein Filter mit dem gewählten Namen existiert bereits!",
                                 STR_ACTION_NAME, JOptionPane.ERROR_MESSAGE), () -> {
@@ -539,7 +545,7 @@ public class SwingFilterDialog extends JDialog {
         public DeleteCurrentFilterAction() {
             putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
             putValue(Action.SHORT_DESCRIPTION, STR_DELETE_CURRENT_FILTER);
-            putValue(Action.NAME, STR_DELETE_CURRENT_FILTER+"...");
+            putValue(Action.NAME, STR_DELETE_CURRENT_FILTER + "...");
         }
 
         @Override
@@ -594,7 +600,7 @@ public class SwingFilterDialog extends JDialog {
                     final var fName = s.trim();
                     if (!fName.equals(fltName)) {
                         var existingFilter = filterConfig.findFilterForName(fName);
-                        existingFilter.ifPresentOrElse(f -> {
+                        existingFilter.ifPresentOrElse(_ -> {
                             //if a filter already exists we cannot rename...
                             JOptionPane.showMessageDialog(MediathekGui.ui(),
                                     String.format("Filter %s existiert bereits.\nAktion wird abgebrochen", fName),
@@ -610,9 +616,11 @@ public class SwingFilterDialog extends JDialog {
                             config.unlock(LockMode.WRITE);
                             logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
                         });
-                    } else
+                    }
+                    else
                         logger.warn("New and old filter name are identical...doing nothing");
-                } else {
+                }
+                else {
                     JOptionPane.showMessageDialog(MediathekGui.ui(), "Filtername darf nicht leer sein!",
                             Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
                     logger.warn("Rename filter text was empty...doing nothing");
@@ -661,7 +669,8 @@ public class SwingFilterDialog extends JDialog {
                 config.setProperty(ApplicationConfiguration.FilterDialog.HEIGHT, dims.height);
                 config.setProperty(ApplicationConfiguration.FilterDialog.X, loc.x);
                 config.setProperty(ApplicationConfiguration.FilterDialog.Y, loc.y);
-            } finally {
+            }
+            finally {
                 config.unlock(LockMode.WRITE);
             }
         }
