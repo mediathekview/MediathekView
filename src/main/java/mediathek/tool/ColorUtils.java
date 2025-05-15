@@ -66,10 +66,10 @@ public class ColorUtils {
             int r1 = ((rgb & 0xff0000) >> 16);
             int g1 = ((rgb & 0xff00) >> 8);
             int b1 = (rgb & 0xff);
-            a += (a1 * ratio);
-            r += (r1 * ratio);
-            g += (g1 * ratio);
-            b += (b1 * ratio);
+            a += (int) (a1 * ratio);
+            r += (int) (r1 * ratio);
+            g += (int) (g1 * ratio);
+            b += (int) (b1 * ratio);
         }
 
         return new Color(a << 24 | r << 16 | g << 8 | b);
