@@ -23,6 +23,7 @@
 - **FEATURE:** Filter können bei der Neuanlage direkt mit einem Namen versehen werden.
 - **FEATURE:** Thema-ComboBox kann entweder über den Mülleimer-Button zurückgesetzt werden oder über das Kontextmenü
 - **FEATURE:** Die verschiedenen Buttons zur Filterverwaltung wurden nun in einem Menübutton zusammengeführt um den Platzbedarf zu reduzieren.
+- **FEATURE:** Die Filmlänge kann nun im Filterdialog bis 240 Minuten ausgewählt werden.
 
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
