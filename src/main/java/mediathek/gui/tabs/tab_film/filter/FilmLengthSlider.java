@@ -28,16 +28,18 @@ import javax.swing.*;
 import java.util.Hashtable;
 
 public class FilmLengthSlider extends RangeSlider {
-    public final static int UNLIMITED_VALUE = 110;
     private static final Logger logger = LogManager.getLogger();
+    private static final int MAX_FILM_LENGTH = 240;
+    private static final int TICK_SPACING = 30;
+    public final static int UNLIMITED_VALUE = MAX_FILM_LENGTH;
 
     public FilmLengthSlider() {
-        super(0, 110);
+        super(0, MAX_FILM_LENGTH);
         setPaintLabels(true);
         setPaintTicks(true);
         setPaintTrack(true);
-        setMajorTickSpacing(10);
-        setLabelTable(new TestTable());
+        setMajorTickSpacing(TICK_SPACING);
+        setLabelTable(new FilmlengthLabelTable());
     }
 
     public void restoreFilterConfig(@NotNull FilterConfiguration filterConfig) {
@@ -62,20 +64,12 @@ public class FilmLengthSlider extends RangeSlider {
         return res;
     }
 
-    private static class TestTable extends Hashtable<Integer, JComponent> {
-        public TestTable() {
-            put(0, new JLabel("0"));
-            put(10, new JLabel("10"));
-            put(20, new JLabel("20"));
-            put(30, new JLabel("30"));
-            put(40, new JLabel("40"));
-            put(50, new JLabel("50"));
-            put(60, new JLabel("60"));
-            put(70, new JLabel("70"));
-            put(80, new JLabel("80"));
-            put(90, new JLabel("90"));
-            put(100, new JLabel("100"));
-            put(110, new JLabel("∞"));
+    private static class FilmlengthLabelTable extends Hashtable<Integer, JComponent> {
+        public FilmlengthLabelTable() {
+            for (int i = 0; i < MAX_FILM_LENGTH; i += TICK_SPACING) {
+                put(i, new JLabel(String.valueOf(i)));
+            }
+            put(MAX_FILM_LENGTH, new JLabel("∞"));
         }
     }
 }

@@ -193,7 +193,7 @@ new FormModel {
 					"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 					"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 0,growx,wmax 300"
+					"value": "cell 1 0,growx"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnResetThema"
