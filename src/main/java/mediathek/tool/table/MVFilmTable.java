@@ -192,8 +192,6 @@ public class MVFilmTable extends MVTable {
             setSortable(DatenFilm.FILM_ABSPIELEN, false);
             setSortable(DatenFilm.FILM_AUFZEICHNEN, false);
             setSortable(DatenFilm.FILM_GEO, false);
-            setSortable(DatenFilm.FILM_ABSPIELEN, false);
-            setSortable(DatenFilm.FILM_AUFZEICHNEN, false);
             setSortable(DatenFilm.FILM_MERKEN, false);
 
             //compare to FilmSize->int instead of String
