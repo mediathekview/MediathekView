@@ -122,8 +122,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
             }
 
             stream.filter(createPredicate()).forEachOrdered(filteredList::add);
-
-            setupNewEntries();
         }
     }
 
@@ -159,22 +157,10 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         }
 
-        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(f -> true);
+        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(_ -> true);
         filterList.clear();
 
         return pred;
-    }
-
-    /**
-     * Detect if there are new entried in the blacklist filtered film list.
-     */
-    private void setupNewEntries() {
-        //are there new film entries?
-        final Daten daten = Daten.getInstance();
-        daten.getListeFilmeNachBlackList().stream()
-                .filter(DatenFilm::isNew)
-                .findAny()
-                .ifPresent(ignored -> daten.getListeFilmeNachBlackList().neueFilme = true);
     }
 
     /**

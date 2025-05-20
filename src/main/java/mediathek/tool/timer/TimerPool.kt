@@ -24,17 +24,20 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 object TimerPool {
     private val logger: Logger = LogManager.getLogger()
+    @JvmStatic
+    var repeatingTimerFuture: ScheduledFuture<*>
 
     @JvmStatic
     val timerPool: ScheduledExecutorService = Executors.newScheduledThreadPool(0, TimerPoolThreadFactory())
 
     init {
         logger.trace("Initializing timer pool...")
-        timerPool.scheduleWithFixedDelay({ MessageBus.messageBus.publishAsync(TimerEvent()) }, 4, 1, TimeUnit.SECONDS)
+        repeatingTimerFuture = timerPool.scheduleWithFixedDelay({ MessageBus.messageBus.publishAsync(TimerEvent()) }, 4, 1, TimeUnit.SECONDS)
     }
 
 }

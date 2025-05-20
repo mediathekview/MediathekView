@@ -16,10 +16,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class ListeFilme extends ArrayList<DatenFilm> {
-    public static final String FILMLISTE = "Filmliste";
     private static final String PCS_METADATA = "metaData";
     protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    public boolean neueFilme;
     private FilmListMetaData metaData = new FilmListMetaData();
 
     public FilmListMetaData getMetaData() {
@@ -97,12 +95,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             film.init();
             add(film);
         });
-    }
-
-    @Override
-    public synchronized void clear() {
-        super.clear();
-        neueFilme = false;
     }
 
     /**
