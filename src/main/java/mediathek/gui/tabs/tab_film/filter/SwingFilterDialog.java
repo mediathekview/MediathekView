@@ -94,6 +94,8 @@ public class SwingFilterDialog extends JDialog {
 
         initComponents();
 
+        setupRoundControls();
+
         btnSplit.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/ellipsis-vertical.svg"));
         populateSplitButton();
 
@@ -116,6 +118,12 @@ public class SwingFilterDialog extends JDialog {
         MessageBus.getMessageBus().subscribe(this);
 
         Daten.getInstance().getFilmeLaden().addAdListener(new FilmeLadenListener());
+    }
+
+    private void setupRoundControls() {
+        cboxFilterSelection.putClientProperty("JComponent.roundRect", true);
+        jcbThema.putClientProperty("JComponent.roundRect", true);
+        spZeitraum.putClientProperty("JComponent.roundRect", true);
     }
 
     private void populateSplitButton() {
