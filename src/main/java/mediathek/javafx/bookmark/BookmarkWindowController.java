@@ -34,7 +34,7 @@ import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.TimerPool;
+import mediathek.tool.timer.TimerPool;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;

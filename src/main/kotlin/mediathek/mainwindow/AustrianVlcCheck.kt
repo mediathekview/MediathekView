@@ -4,7 +4,7 @@ import mediathek.config.Konstanten
 import mediathek.daten.Country
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.TimerPool
+import mediathek.tool.timer.TimerPool
 import org.apache.logging.log4j.LogManager
 import java.awt.Font
 import java.util.concurrent.TimeUnit

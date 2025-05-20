@@ -38,7 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
@@ -65,7 +65,7 @@ public class Daten {
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
-    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(Executors.newVirtualThreadPerTaskExecutor());
     /**
      * "the" final list of films after all filtering is done.
      * Defaults to no lucene index unless changed at startup.

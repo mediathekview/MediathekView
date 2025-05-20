@@ -41,6 +41,7 @@ import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
+import mediathek.tool.timer.TimerPool;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
 import net.engio.mbassy.listener.Handler;
@@ -400,28 +401,26 @@ public class MediathekGui extends JFrame {
     /**
      * Check if we encountered invalid regexps and warn user if necessary.
      * This needs to be delayed unfortunately as we can see result only after table has been filled.
-     * So we simply wait 30 seconds until we check.
+     * So we simply wait 15 seconds until we check.
      */
     private void checkInvalidRegularExpressions() {
-        TimerPool.getTimerPool().schedule(() -> {
-            if (Filter.regExpErrorsOccured()) {
-                final var regexStr = Filter.regExpErrorList.stream()
-                        .reduce("", (p, e) ->
-                                p + "\n" + e);
-                final var message = String.format("""
-                        Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.
-                        Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!
-                                                
-                        Nachfolgende Ausdrücke sind fehlerbehaftet: %s
-                        """, regexStr);
-                Filter.regExpErrorList.clear();
+        if (Filter.regExpErrorsOccured()) {
+            final var regexStr = Filter.regExpErrorList.stream()
+                    .reduce("", (p, e) ->
+                            p + "\n" + e);
+            Filter.regExpErrorList.clear();
 
-                JOptionPane.showMessageDialog(this,
-                        message,
-                        Konstanten.PROGRAMMNAME,
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        }, 15, TimeUnit.SECONDS);
+            final var message = String.format(
+                    "<html>Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.<br/>" +
+                            "<b>Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!</b><br/><br/>" +
+                            "Nachfolgende Ausdrücke sind fehlerbehaftet: <br/>%s</html>", regexStr);
+
+            TimerPool.getTimerPool().schedule(() -> SwingUtilities.invokeLater(
+                    () -> JOptionPane.showMessageDialog(this,
+                            message,
+                            Konstanten.PROGRAMMNAME,
+                            JOptionPane.ERROR_MESSAGE)), 15, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -495,7 +494,7 @@ public class MediathekGui extends JFrame {
                 popupMenu = new PopupMenu();
 
             MenuItem miLoadNewFilmlist = new MenuItem("Neue Filmliste laden");
-            miLoadNewFilmlist.addActionListener(e -> performFilmListLoadOperation(false));
+            miLoadNewFilmlist.addActionListener(_ -> performFilmListLoadOperation(false));
 
             popupMenu.addSeparator();
             popupMenu.add(miLoadNewFilmlist);
@@ -987,7 +986,7 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showDuplicateStatisticsAction);
         var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
-        mi.addActionListener(e -> {
+        mi.addActionListener(_ -> {
             FilmDuplicateOverviewDialog dlg = new FilmDuplicateOverviewDialog(this);
             dlg.setVisible(true);
         });
@@ -1070,7 +1069,7 @@ public class MediathekGui extends JFrame {
         JMenu devMenu = new JMenu("Entwickler");
 
         JMenuItem miGc = new JMenuItem("GC ausführen");
-        miGc.addActionListener(e -> System.gc());
+        miGc.addActionListener(_ -> System.gc());
 
         devMenu.add(miGc);
 
@@ -1217,8 +1216,7 @@ public class MediathekGui extends JFrame {
         }
         var taskList = timerPool.shutdownNow();
         if (!taskList.isEmpty()) {
-            logger.trace("timerPool taskList was not empty");
-            logger.trace(taskList.toString());
+            logger.trace("timerPool taskList was not empty: {}", taskList.toString());
         }
 
         logger.trace("Leaving shutdownTimerPool()");

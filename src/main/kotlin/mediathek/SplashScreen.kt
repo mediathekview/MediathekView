@@ -1,8 +1,8 @@
 package mediathek
 
 import mediathek.config.Konstanten
-import mediathek.tool.TimerPool.timerPool
 import mediathek.tool.UIProgressState
+import mediathek.tool.timer.TimerPool.timerPool
 import org.apache.commons.lang3.SystemUtils
 import org.jdesktop.swingx.StackLayout
 import java.awt.Color
