@@ -44,6 +44,17 @@ object SenderFilmlistLoadApprover {
     }
 
     /**
+     * Approve that all senders may be loaded from filmlist.
+     * This will overwrite any manual approvals.
+     */
+    @JvmStatic
+    fun approveAll() {
+        senderSet.clear()
+        senderSet.addAll(SenderListBoxModel.providedSenderList)
+        config.setProperty(SENDER_KEY, senderSet)
+    }
+
+    /**
      * Deny a sender from being loaded.
      */
     @JvmStatic

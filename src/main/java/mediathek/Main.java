@@ -5,6 +5,7 @@ import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
+import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
@@ -504,6 +505,8 @@ public class Main {
 
             loadConfigurationData();
 
+            activateNewSenders();
+
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
             Daten.getInstance().getListeBookmarkList().loadFromFile();
@@ -517,6 +520,29 @@ public class Main {
 
             startGuiMode();
         });
+    }
+
+    /**
+     * Activate all senders when MediathekView adds additional ones.
+     * For newer versions configKey must be adapted.
+     */
+    private static void activateNewSenders() {
+        final String configKey = "newSendersActivated.fourteen.three";
+        var alreadyActivated = ApplicationConfiguration.getConfiguration().getBoolean(configKey, false);
+        if (!alreadyActivated) {
+            splashScreen.ifPresent(s -> s.setVisible(false));
+            var res = JOptionPane.showConfirmDialog(null,
+                    "<html>Diese Version unterstützt neue Sender, die in den Einstellungen aktiviert werden müssen.<br/>" +
+                            "Soll MediathekView einmalig alle Sender aktivieren?</html>",
+                    Konstanten.PROGRAMMNAME, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (res == JOptionPane.YES_OPTION) {
+                logger.info("Activating new senders...");
+                SenderFilmlistLoadApprover.approveAll();
+                ApplicationConfiguration.getConfiguration().setProperty(configKey, true);
+            }
+
+            splashScreen.ifPresent(s -> s.setVisible(true));
+        }
     }
 
     /**
