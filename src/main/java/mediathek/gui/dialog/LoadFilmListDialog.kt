@@ -9,6 +9,8 @@ import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FilmListUpdateType
 import mediathek.tool.GuiFunktionen
 import org.apache.commons.configuration2.sync.LockMode
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
 import java.awt.Frame
 import java.awt.event.ComponentAdapter
@@ -20,7 +22,7 @@ import javax.swing.JScrollPane
 
 class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true) {
     private val contentPanel: PanelFilmlisteLaden
-
+    private val logger: Logger = LogManager.getLogger()
     private val btnContentPanel = ButtonPanel()
 
     private fun createButtonPanel() {
@@ -35,6 +37,9 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
         btn.addActionListener {
             val filmeLaden = Daten.getInstance().filmeLaden
             val immerNeuLaden = contentPanel.hasSenderSelectionChanged()
+            if (immerNeuLaden && !contentPanel.jCheckBoxUpdate.isSelected) {
+                logger.trace("Sender list was changed loading full list...")
+            }
 
             if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
                 //easy, just load
@@ -43,7 +48,8 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
                 //manual or extend
                 val strUrl = contentPanel.jTextFieldUrl.text
                 if (strUrl.contains("mediathekview.de", true)) {
-                    JOptionPane.showMessageDialog(this, """
+                    JOptionPane.showMessageDialog(
+                        this, """
                         Bitte vermeiden Sie das Laden der Filmliste von unseren Servern über eine manuell eingegebene URL.
                         
                         Sie umgehen damit unter Umständen Mechanismen, die eine Lastverteilung auf unseren Servern ermöglichen
@@ -51,7 +57,8 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
                         
                         Nutzen Sie diese Möglichkeit NUR, wenn der reguläre Download OHNE manuelle Adresse nicht funktioniert.
                         Sie können sicher sein, dass wir einen Fehler schnellstmöglich beheben werden.
-                    """.trimIndent(), Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE)
+                    """.trimIndent(), Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE
+                    )
                 }
                 if (contentPanel.jCheckBoxUpdate.isSelected)
                     filmeLaden.updateFilmlist(strUrl)
@@ -73,10 +80,10 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
             val x = config.getInt(ApplicationConfiguration.LoadFilmListDialog.X)
             val y = config.getInt(ApplicationConfiguration.LoadFilmListDialog.Y)
             setBounds(x, y, width, height)
-        } catch (ignored: NoSuchElementException) {
+        } catch (_: NoSuchElementException) {
             pack()
             if (width < 100 || height < 100) {
-                setSize(640,480)
+                setSize(640, 480)
             }
             GuiFunktionen.centerOnScreen(this, false)
         } finally {

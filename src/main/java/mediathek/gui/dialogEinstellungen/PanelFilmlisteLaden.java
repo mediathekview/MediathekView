@@ -1,5 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
+import ca.odell.glazedlists.swing.GlazedListsSwing;
+import com.jidesoft.swing.CheckBoxList;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -23,22 +25,11 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PanelFilmlisteLaden extends JPanel {
-    private final List<JCheckBox> senderCbList = new ArrayList<>();
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-
-    private void initReloadButton() {
-        btnReloadFilmlist.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
-        btnReloadFilmlist.addActionListener(l -> {
-            final var daten = Daten.getInstance();
-            daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
-            daten.getFilmeLaden().loadFilmlist("", false);
-        });
-    }
+    private boolean warningDialogShown;
+    private boolean senderSelectionChanged;
 
     public PanelFilmlisteLaden(boolean inSettingsDialog) {
         super();
@@ -65,12 +56,8 @@ public class PanelFilmlisteLaden extends JPanel {
         }
 
         setupSenderList();
-        //load initial settings
-        senderCbList.forEach(cb -> cb.setSelected(SenderFilmlistLoadApprover.isApproved(cb.getText())));
-        //now add the item listeners for update
-        senderCbList.forEach(cb -> cb.addItemListener(this::senderSelectionItemHandler));
 
-        jRadioButtonManuell.addChangeListener(e -> {
+        jRadioButtonManuell.addChangeListener(_ -> {
             final var selected = jRadioButtonManuell.isSelected();
             jTextFieldUrl.setEnabled(selected);
             jButtonDateiAuswaehlen.setEnabled(selected);
@@ -81,8 +68,58 @@ public class PanelFilmlisteLaden extends JPanel {
         var enableDuplicateEvaluation = config.getBoolean(
                 ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
         cbEvaluateDuplicates.setSelected(enableDuplicateEvaluation);
-        cbEvaluateDuplicates.addActionListener(e -> config.setProperty(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES,
-                        cbEvaluateDuplicates.isSelected()));
+        cbEvaluateDuplicates.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES,
+                cbEvaluateDuplicates.isSelected()));
+    }
+
+    private void initReloadButton() {
+        btnReloadFilmlist.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
+        btnReloadFilmlist.addActionListener(_ -> {
+            final var daten = Daten.getInstance();
+            daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
+            daten.getFilmeLaden().loadFilmlist("", hasSenderSelectionChanged());
+        });
+    }
+
+    private void setupSenderList() {
+        var model = GlazedListsSwing.eventComboBoxModelWithThreadProxyList(SenderListBoxModel.getProvidedSenderList());
+        senderCheckBoxList.setModel(model);
+
+        final var cblsm = senderCheckBoxList.getCheckBoxListSelectionModel();
+        //load initial settings
+        for (int i = 0; i < model.getSize(); i++) {
+            var item = model.getElementAt(i);
+            if (SenderFilmlistLoadApprover.isApproved(item)) {
+                cblsm.addSelectionInterval(i, i);
+            }
+            else {
+                cblsm.removeSelectionInterval(i, i);
+            }
+        }
+
+        //now add the item listeners for update
+        cblsm.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                for (int i = 0; i < model.getSize(); i++) {
+                    var item = model.getElementAt(i);
+                    if (cblsm.isSelectedIndex(i)) {
+                        SenderFilmlistLoadApprover.approve(item);
+                    }
+                    else {
+                        SenderFilmlistLoadApprover.deny(item);
+                    }
+                }
+
+                senderSelectionChanged = true;
+                SwingUtilities.invokeLater(() -> {
+                    if (!warningDialogShown) {
+                        var msg = "<html>Bei Änderungen an den Sendern <b>muss</b> zwingend ein Neustart durchgeführt werden.</html>";
+                        JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
+                        warningDialogShown = true;
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -95,80 +132,21 @@ public class PanelFilmlisteLaden extends JPanel {
     }
 
     private void setupCheckBoxes() {
-        cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,true));
-        cbSign.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE,cbSign.isSelected()));
+        cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true));
+        cbSign.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, cbSign.isSelected()));
 
-        cbAudio.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION,true));
-        cbAudio.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION,cbAudio.isSelected()));
+        cbAudio.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true));
+        cbAudio.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, cbAudio.isSelected()));
 
-        cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER,true));
-        cbTrailer.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_TRAILER,cbTrailer.isSelected()));
+        cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER, true));
+        cbTrailer.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_TRAILER, cbTrailer.isSelected()));
 
         cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true));
-        cbLivestreams.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
+        cbLivestreams.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
 
         jCheckBoxUpdate.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, false));
-        jCheckBoxUpdate.addActionListener(e -> config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected()));
+        jCheckBoxUpdate.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected()));
     }
-
-    /**
-     * Simplify sender checkbox handling.
-     */
-    private void setupSenderList() {
-        senderCbList.add(checkBox1);
-        senderCbList.add(checkBox2);
-        senderCbList.add(checkBox3);
-        senderCbList.add(checkBox4);
-        senderCbList.add(checkBox6);
-        senderCbList.add(checkBox8);
-        senderCbList.add(checkBox7);
-        senderCbList.add(checkBox9);
-        senderCbList.add(checkBox10);
-        senderCbList.add(checkBox11);
-        senderCbList.add(checkBox12);
-        senderCbList.add(checkBox13);
-        senderCbList.add(checkBox14);
-        senderCbList.add(checkBox15);
-        senderCbList.add(checkBox16);
-        senderCbList.add(checkBox17);
-        senderCbList.add(checkBox18);
-        senderCbList.add(checkBox19);
-        senderCbList.add(checkBox20);
-        senderCbList.add(checkBox21);
-        senderCbList.add(checkBox22);
-        senderCbList.add(checkBox23);
-        senderCbList.add(checkBox24);
-        senderCbList.add(checkBox25);
-        senderCbList.add(checkBox26);
-        senderCbList.add(checkBox27);
-        senderCbList.add(checkBox28);
-        senderCbList.add(checkBox29);
-        senderCbList.add(checkBox31);
-        senderCbList.add(checkBox32);
-    }
-
-    private boolean warningDialogShown;
-
-    private void senderSelectionItemHandler(ItemEvent e) {
-        var cb = (JCheckBox)e.getSource();
-        var selected = cb.isSelected();
-        var sender = cb.getText();
-        if (selected)
-            SenderFilmlistLoadApprover.approve(sender);
-        else
-            SenderFilmlistLoadApprover.deny(sender);
-
-        senderSelectionChanged = true;
-        SwingUtilities.invokeLater(() -> {
-            if (!warningDialogShown) {
-                var msg = "<html>Bei Änderungen an den Sendern <b>muss</b> zwingend ein Neustart durchgeführt werden.</html>";
-                JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
-                warningDialogShown = true;
-            }
-        });
-    }
-
-    private boolean senderSelectionChanged;
 
     public boolean hasSenderSelectionChanged() {
         return senderSelectionChanged;
@@ -178,8 +156,8 @@ public class PanelFilmlisteLaden extends JPanel {
         initRadio();
 
         jButtonDateiAuswaehlen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        jButtonDateiAuswaehlen.addActionListener(e -> {
-            var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Filmliste laden", "");
+        jButtonDateiAuswaehlen.addActionListener(_ -> {
+            var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(), "Filmliste laden", "");
             if (loadFile != null) {
                 jTextFieldUrl.setText(loadFile.getAbsolutePath());
             }
@@ -276,36 +254,8 @@ public class PanelFilmlisteLaden extends JPanel {
         cbAudio = new JCheckBox();
         cbLivestreams = new JCheckBox();
         panel1 = new JPanel();
-        checkBox1 = new JCheckBox();
-        checkBox10 = new JCheckBox();
-        checkBox12 = new JCheckBox();
-        checkBox16 = new JCheckBox();
-        checkBox29 = new JCheckBox();
-        checkBox8 = new JCheckBox();
-        checkBox25 = new JCheckBox();
-        checkBox13 = new JCheckBox();
-        checkBox4 = new JCheckBox();
-        checkBox21 = new JCheckBox();
-        checkBox27 = new JCheckBox();
-        checkBox26 = new JCheckBox();
-        checkBox3 = new JCheckBox();
-        checkBox17 = new JCheckBox();
-        checkBox22 = new JCheckBox();
-        checkBox9 = new JCheckBox();
-        checkBox2 = new JCheckBox();
-        checkBox14 = new JCheckBox();
-        checkBox18 = new JCheckBox();
-        checkBox31 = new JCheckBox();
-        checkBox23 = new JCheckBox();
-        checkBox11 = new JCheckBox();
-        checkBox28 = new JCheckBox();
-        checkBox19 = new JCheckBox();
-        checkBox32 = new JCheckBox();
-        checkBox24 = new JCheckBox();
-        checkBox7 = new JCheckBox();
-        checkBox15 = new JCheckBox();
-        checkBox20 = new JCheckBox();
-        checkBox6 = new JCheckBox();
+        var scrollPane1 = new JScrollPane();
+        senderCheckBoxList = new CheckBoxList();
 
         //======== this ========
         setPreferredSize(new Dimension(740, 506));
@@ -471,139 +421,23 @@ public class PanelFilmlisteLaden extends JPanel {
                     new LC().insets("5").hideMode(3).alignX("left").gridGapX("10"), //NON-NLS
                     // columns
                     new AC()
-                        .fill().gap()
-                        .fill().gap()
-                        .fill().gap()
-                        .fill().gap()
-                        .fill(),
+                        .grow().fill(),
                     // rows
                     new AC()
-                        .gap()
-                        .gap()
-                        .gap()
-                        .gap()
-                        .gap()
                         ));
 
-                //---- checkBox1 ----
-                checkBox1.setText("3Sat"); //NON-NLS
-                panel1.add(checkBox1, new CC().cell(0, 0));
+                //======== scrollPane1 ========
+                {
 
-                //---- checkBox10 ----
-                checkBox10.setText("ARTE.FR"); //NON-NLS
-                panel1.add(checkBox10, new CC().cell(1, 0));
-
-                //---- checkBox12 ----
-                checkBox12.setText("HR"); //NON-NLS
-                panel1.add(checkBox12, new CC().cell(2, 0));
-
-                //---- checkBox16 ----
-                checkBox16.setText("PHOENIX"); //NON-NLS
-                panel1.add(checkBox16, new CC().cell(3, 0));
-
-                //---- checkBox29 ----
-                checkBox29.setText("tagesschau24"); //NON-NLS
-                panel1.add(checkBox29, new CC().cell(4, 0));
-
-                //---- checkBox8 ----
-                checkBox8.setText("ARD"); //NON-NLS
-                panel1.add(checkBox8, new CC().cell(0, 1));
-
-                //---- checkBox25 ----
-                checkBox25.setText("ARTE.IT"); //NON-NLS
-                panel1.add(checkBox25, new CC().cell(1, 1));
-
-                //---- checkBox13 ----
-                checkBox13.setText("KiKA"); //NON-NLS
-                panel1.add(checkBox13, new CC().cell(2, 1));
-
-                //---- checkBox4 ----
-                checkBox4.setText("Radio Bremen TV"); //NON-NLS
-                panel1.add(checkBox4, new CC().cell(3, 1));
-
-                //---- checkBox21 ----
-                checkBox21.setText("WDR"); //NON-NLS
-                panel1.add(checkBox21, new CC().cell(4, 1));
-
-                //---- checkBox27 ----
-                checkBox27.setText("ARD-alpha"); //NON-NLS
-                panel1.add(checkBox27, new CC().cell(0, 2));
-
-                //---- checkBox26 ----
-                checkBox26.setText("ARTE.PL"); //NON-NLS
-                panel1.add(checkBox26, new CC().cell(1, 2));
-
-                //---- checkBox3 ----
-                checkBox3.setText("MDR"); //NON-NLS
-                panel1.add(checkBox3, new CC().cell(2, 2));
-
-                //---- checkBox17 ----
-                checkBox17.setText("RBB"); //NON-NLS
-                panel1.add(checkBox17, new CC().cell(3, 2));
-
-                //---- checkBox22 ----
-                checkBox22.setText("ZDF"); //NON-NLS
-                panel1.add(checkBox22, new CC().cell(4, 2));
-
-                //---- checkBox9 ----
-                checkBox9.setText("ARTE.DE"); //NON-NLS
-                panel1.add(checkBox9, new CC().cell(0, 3));
-
-                //---- checkBox2 ----
-                checkBox2.setText("BR"); //NON-NLS
-                panel1.add(checkBox2, new CC().cell(1, 3));
-
-                //---- checkBox14 ----
-                checkBox14.setText("NDR"); //NON-NLS
-                panel1.add(checkBox14, new CC().cell(2, 3));
-
-                //---- checkBox18 ----
-                checkBox18.setText("SR"); //NON-NLS
-                panel1.add(checkBox18, new CC().cell(3, 3));
-
-                //---- checkBox31 ----
-                checkBox31.setText("ZDFinfo"); //NON-NLS
-                panel1.add(checkBox31, new CC().cell(4, 3));
-
-                //---- checkBox23 ----
-                checkBox23.setText("ARTE.EN"); //NON-NLS
-                panel1.add(checkBox23, new CC().cell(0, 4));
-
-                //---- checkBox11 ----
-                checkBox11.setText("DW"); //NON-NLS
-                panel1.add(checkBox11, new CC().cell(1, 4));
-
-                //---- checkBox28 ----
-                checkBox28.setText("ONE"); //NON-NLS
-                panel1.add(checkBox28, new CC().cell(2, 4));
-
-                //---- checkBox19 ----
-                checkBox19.setText("SRF"); //NON-NLS
-                panel1.add(checkBox19, new CC().cell(3, 4));
-
-                //---- checkBox32 ----
-                checkBox32.setText("ZDFneo"); //NON-NLS
-                panel1.add(checkBox32, new CC().cell(4, 4));
-
-                //---- checkBox24 ----
-                checkBox24.setText("ARTE.ES"); //NON-NLS
-                panel1.add(checkBox24, new CC().cell(0, 5));
-
-                //---- checkBox7 ----
-                checkBox7.setText("Funk.net"); //NON-NLS
-                panel1.add(checkBox7, new CC().cell(1, 5));
-
-                //---- checkBox15 ----
-                checkBox15.setText("ORF"); //NON-NLS
-                panel1.add(checkBox15, new CC().cell(2, 5));
-
-                //---- checkBox20 ----
-                checkBox20.setText("SWR"); //NON-NLS
-                panel1.add(checkBox20, new CC().cell(3, 5));
-
-                //---- checkBox6 ----
-                checkBox6.setText("ZDF-tivi"); //NON-NLS
-                panel1.add(checkBox6, new CC().cell(4, 5));
+                    //---- senderCheckBoxList ----
+                    senderCheckBoxList.setMaximumSize(null);
+                    senderCheckBoxList.setMinimumSize(new Dimension(100, 50));
+                    senderCheckBoxList.setPreferredSize(null);
+                    senderCheckBoxList.setLayoutOrientation(JList.VERTICAL_WRAP);
+                    senderCheckBoxList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                    scrollPane1.setViewportView(senderCheckBoxList);
+                }
+                panel1.add(scrollPane1, new CC().cell(0, 0));
             }
             panel3.add(panel1);
         }
@@ -630,35 +464,6 @@ public class PanelFilmlisteLaden extends JPanel {
     private JCheckBox cbAudio;
     private JCheckBox cbLivestreams;
     private JPanel panel1;
-    private JCheckBox checkBox1;
-    private JCheckBox checkBox10;
-    private JCheckBox checkBox12;
-    private JCheckBox checkBox16;
-    private JCheckBox checkBox29;
-    private JCheckBox checkBox8;
-    private JCheckBox checkBox25;
-    private JCheckBox checkBox13;
-    private JCheckBox checkBox4;
-    private JCheckBox checkBox21;
-    private JCheckBox checkBox27;
-    private JCheckBox checkBox26;
-    private JCheckBox checkBox3;
-    private JCheckBox checkBox17;
-    private JCheckBox checkBox22;
-    private JCheckBox checkBox9;
-    private JCheckBox checkBox2;
-    private JCheckBox checkBox14;
-    private JCheckBox checkBox18;
-    private JCheckBox checkBox31;
-    private JCheckBox checkBox23;
-    private JCheckBox checkBox11;
-    private JCheckBox checkBox28;
-    private JCheckBox checkBox19;
-    private JCheckBox checkBox32;
-    private JCheckBox checkBox24;
-    private JCheckBox checkBox7;
-    private JCheckBox checkBox15;
-    private JCheckBox checkBox20;
-    private JCheckBox checkBox6;
+    private CheckBoxList senderCheckBoxList;
     // End of variables declaration//GEN-END:variables
 }
