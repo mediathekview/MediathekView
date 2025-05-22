@@ -12,7 +12,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.*
 import kotlin.system.exitProcess
-import kotlin.use
 
 /**
  * Database based seen history controller.
@@ -106,7 +105,7 @@ class SeenHistoryController : AutoCloseable {
      */
     fun prepareMemoryCache() {
         connection!!.createStatement().use { st ->
-            st.executeQuery("SELECT url as url FROM seen_history").use { rs ->
+            st.executeQuery("SELECT DISTINCT(url) as url FROM seen_history").use { rs ->
                 while (rs.next()) {
                     val url = rs.getString(1)
                     urlCache.add(url)
