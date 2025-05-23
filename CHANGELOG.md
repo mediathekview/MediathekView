@@ -13,6 +13,7 @@
 - **BUGFIX:** Die Online-Suche nach Thema ist nun für Livestreams deaktiviert.
 - **BUGFIX:** *Aktuellen Filter zurücksetzen* fragt nun zur Sicherheit ab ob man auch wirklich zurücksetzen möchte.
 - **BUGFIX:** Spalte *Merkliste* und *Geo* waren sortierbar obwohl hier keine Sortierung vorgesehen war.
+- **BUGFIX:** Es werden beim Optimieren der History nun alle Duplikate rein basierend auf der URL beseitigt.
 - **FEATURE (macOS/Windows/Linux GNOME):** Auf unterstützten Systemen nimmt MV nun das aktuelle Erscheinungsbild des Betriebssystem an, wenn es unter *Einstellungen/Allgemein/Erscheinungsbild des Betriebssystem verwenden* konfiguriert wurde.
 - **FEATURE:** Lokale Filmduplikate können nach Anwahl eines Ursprungsfilmes über das Kontextmenü *"Duplikate entfernen..."* gesucht und permanent aus der Liste entfernt werden. *WICHTIG:* Etwaige Duplikat-Markierungen bleiben bis zum Neustart ggf. erhalten da keine listenweite Duplikaterkennung nach einer Löschung gestartet wird.
 - **FEATURE:** Thema und Sender werden nun in den Filtern gespeichert. Vielen Dank an @MarkusJannek
