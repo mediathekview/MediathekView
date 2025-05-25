@@ -272,10 +272,7 @@ public class MediathekGui extends JFrame {
             }, Daten.getInstance().getDecoratedPool());
         }
 
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
-            MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
-        }
+        resetTabPlacement();
 
         //setup Raven Notification library
         Notifications.getInstance().setJFrame(this);
@@ -290,6 +287,11 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    protected void resetTabPlacement() {
+        // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
+        MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
     }
 
     private void performAustrianVlcCheck() {
