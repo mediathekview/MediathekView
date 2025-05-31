@@ -103,9 +103,20 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @param sender String with sender name
      * @return DatenFilm object if found or null
      */
-    public synchronized DatenFilm getFilmByUrlAndSender(final String url, final String sender) {
+    public synchronized DatenFilm getFilmByUrlAndSender(@NotNull String url, @NotNull String sender) {
         return parallelStream()
                 .filter(f -> f.getSender().equalsIgnoreCase(sender))
+                .filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url))
+                .findAny()
+                .orElse(null);
+    }
+
+    /**
+     * Find movie with given url
+     * @param url    String wiht URL
+     * @return DatenFilm object if found or null
+     */public synchronized DatenFilm getFilmByUrl(@NotNull String url) {
+        return parallelStream()
                 .filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url))
                 .findAny()
                 .orElse(null);
