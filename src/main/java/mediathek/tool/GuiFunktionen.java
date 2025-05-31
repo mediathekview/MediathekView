@@ -127,7 +127,11 @@ public class GuiFunktionen {
         return new Dimension(new_width, new_height);
     }
 
-    public static void copyToClipboard(String s) {
+    /**
+     * Copy string to system clipboard.
+     * @param s the data for the clipboard.
+     */
+    public static void copyToClipboard(@NotNull String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }
 
