@@ -37,9 +37,9 @@ class TableViewColumnContextMenuHelper {
         this.tableView = tableView;
         tableView.setTableMenuButtonVisible(true);
 
-        tableView.skinProperty().addListener(event -> {
+        tableView.skinProperty().addListener(_ -> {
             tableView.tableMenuButtonVisibleProperty()
-                    .addListener((observable, oldValue, newValue) -> {
+                    .addListener((_, _, newValue) -> {
                         if (newValue) {
                             registerListeners();
                         }
@@ -80,12 +80,13 @@ class TableViewColumnContextMenuHelper {
         // When the menu is already shown clicking the + button hides it.
         if (tableContextMenu != null) {
             tableContextMenu.hide();
-        } else {
+        }
+        else {
             getMenuButton().ifPresent(buttonNode -> {
                 // Show the menu
                 // rebuilds the menu each time it is opened
                 tableContextMenu = createContextMenu();
-                tableContextMenu.setOnHidden(event -> tableContextMenu = null);
+                tableContextMenu.setOnHidden(_ -> tableContextMenu = null);
                 tableContextMenu.show(buttonNode, Side.BOTTOM, 0, 0);
                 // Repositioning the menu to be aligned by its right side (keeping
                 // inside the table view)
@@ -113,7 +114,7 @@ class TableViewColumnContextMenuHelper {
         // adds listener to the label to change the size so the user
         // can click anywhere in the menu items area and not just on the
         // text to activate its onAction
-        contextMenu.focusedProperty().addListener(event -> selectAllLabel
+        contextMenu.focusedProperty().addListener(_ -> selectAllLabel
                 .setPrefWidth(contextMenu.getWidth() * 0.75));
 
         final CustomMenuItem selectAllMenuItem = new CustomMenuItem(
@@ -135,7 +136,7 @@ class TableViewColumnContextMenuHelper {
         // adds listener to the label to change the size so the user
         // can click anywhere in the menu items area and not just on the
         // text to activate its onAction
-        contextMenu.focusedProperty().addListener(event -> deselectAllLabel
+        contextMenu.focusedProperty().addListener(_ -> deselectAllLabel
                 .setPrefWidth(contextMenu.getWidth() * 0.75));
 
         final CustomMenuItem deselectAllMenuItem = new CustomMenuItem(
@@ -163,7 +164,7 @@ class TableViewColumnContextMenuHelper {
         // can click anywhere in the menu items area and not just on the
         // text to activate its onAction
         contextMenu.focusedProperty().addListener(
-                event -> checkBox.setPrefWidth(contextMenu.getWidth() * 0.75));
+                _ -> checkBox.setPrefWidth(contextMenu.getWidth() * 0.75));
         // the context menu item's state controls its bound column's visibility
         checkBox.selectedProperty().bindBidirectional(column.visibleProperty());
 

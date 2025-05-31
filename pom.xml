@@ -106,7 +106,6 @@
         <commons-configuration2.version>2.11.0</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <controlsfx.version>11.2.2</controlsfx.version>
         <flatlaf.version>3.6</flatlaf.version>
         <glazedlists.version>1.11.0</glazedlists.version>
         <guava.version>33.4.8-jre</guava.version>
@@ -164,19 +163,6 @@
     </properties>
 
     <dependencies>
-        <!-- keep until Bookmark JavaFX code is gone! Then remove... -->
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>${controlsfx.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>

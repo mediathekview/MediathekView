@@ -34,9 +34,3 @@
 #colUrl {
   -fx-text-fill: darkgrey;
 }
-
-.Expiry {
-  -fx-text-fill: red;
-  -fx-font-weight: bold;
-}
-
