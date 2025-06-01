@@ -15,6 +15,8 @@ default:
   tags:
     - mvrunner1
   before_script:
+    - export UBUNTU_MIRROR=${UBUNTU_MIRROR:-http://mirror.hetzner.com/ubuntu}
+    - sed -i "s|http://archive.ubuntu.com/ubuntu|$UBUNTU_MIRROR|g" /etc/apt/sources.list
     - apt-get update -qq
     - apt-get install -y -qq openjdk-21-jre-headless ssh lib32ncurses6 lib32z1 wget tar file gnupg2 git-lfs > /dev/null
     - source /private/ENVS
