@@ -29,6 +29,7 @@
 - **FEATURE:** Die verschiedenen Buttons zur Filterverwaltung wurden nun in einem Menübutton zusammengeführt um den Platzbedarf zu reduzieren.
 - **FEATURE:** Die Filmlänge kann nun im Filterdialog bis 240 Minuten ausgewählt werden.
 - **FEATURE:** MediathekView fragt einmalig beim Start, ob alle Sender aktiviert werden sollen, da neue Sender hinzugefügt wurden.
+- **FEATURE:** Lucene-Index um `wochentag` und `startzeit` der Filme erweitert.
 - **FEATURE(macOS):** MV prüft beim Start, ob eine Intel-Version des Programms auf einem modernen Mac mit Apple Silicon CPU betrieben wird. In diesem Fall wird eine Warnung angezeigt dass es eine performantere Alternative gibt.
 
 # **14.2.0**
