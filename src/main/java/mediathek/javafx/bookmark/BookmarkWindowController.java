@@ -60,7 +60,6 @@ import static javafx.scene.input.MouseButton.PRIMARY;
 public class BookmarkWindowController implements Initializable {
 
   private static final Logger logger = LogManager.getLogger();
-  private final BookmarkDataList listeBookmarkList;
   private FilterState filterState = FilterState.UNDEFINED;
   private Stage stage;
   private FilteredList<BookmarkData> filteredBookmarkList;
@@ -116,7 +115,6 @@ public class BookmarkWindowController implements Initializable {
   private Hyperlink hyperLink;
 
   public BookmarkWindowController() {
-    listeBookmarkList = Daten.getInstance().getListeBookmarkList();
     listUpdated = false;
     // needed for JIconFonts to work properly
     Font.loadFont(BookmarkWindowController.class.getResourceAsStream("/mediathek/res/programm/fxml/fontawesome-webfont.ttf"), 16);
@@ -182,7 +180,7 @@ public class BookmarkWindowController implements Initializable {
     var items = selModel.getSelectedItems();
 
     if (!items.isEmpty()) {
-      listeBookmarkList.deleteEntries(items);
+      Daten.getInstance().getListeBookmarkList().deleteEntries(items);
       updateDisplay();
       selModel.clearSelection();
 
@@ -300,7 +298,7 @@ public class BookmarkWindowController implements Initializable {
 
   private void setupTableView() {
     // create filtered and sortable list
-    var observableList = listeBookmarkList.getObervableList();
+    var observableList = Daten.getInstance().getListeBookmarkList().getObervableList();
     filteredBookmarkList = new FilteredList<>(observableList, _ -> true);
     SortedList<BookmarkData> sortedBookmarkList = new SortedList<>(filteredBookmarkList);
     sortedBookmarkList.comparatorProperty().bind(tbBookmarks.comparatorProperty());
@@ -626,7 +624,8 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void updateDisplay() {
-    lblCount.setText(String.format("Einträge: %d / %d", filteredBookmarkList.size(), listeBookmarkList.getNbOfEntries()));
+    lblCount.setText(String.format("Einträge: %d / %d", filteredBookmarkList.size(),
+            Daten.getInstance().getListeBookmarkList().getNbOfEntries()));
     btnSaveList.setDisable(!listUpdated);
     if (listUpdated) {
       scheduleBookmarkSave();
@@ -638,7 +637,7 @@ public class BookmarkWindowController implements Initializable {
    */
   private void saveBookMarkList() {
     if (listUpdated) {
-      listeBookmarkList.saveToFile();
+      Daten.getInstance().getListeBookmarkList().saveToFile();
       btnSaveList.setDisable(true);
     }
     listUpdated = false;
