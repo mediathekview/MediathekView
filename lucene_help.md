@@ -20,6 +20,7 @@ MediathekView bietet die folgenden *tags* (Achtung: hier sind **immer** Kleinbuc
 | neu           | Boolean | *true*, wenn der Film neu in die Liste aufgenommen wurde, ansonsten nicht definiert. |
 | länge         | int     | Filmlänge in Sekunden, **0** wenn keine Information vorhanden ist. |
 | größe         | int     | Filmgröße in Megabytes, **0** wenn keine Information vorhanden ist. |
+| wochentag     | String  | (**14.3**) Wochentag des Sendedatums (Montag, Dienstag,...)  |
 
 Es ist nicht möglich, Filme anhand von URLs bzw. Teilsegmenten davon zu suchen. 
 
