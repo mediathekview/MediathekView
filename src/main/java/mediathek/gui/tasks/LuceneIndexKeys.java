@@ -51,6 +51,10 @@ public class LuceneIndexKeys {
      */
     public static final String SENDE_DATUM = "sendedatum";
     /**
+     * Wochentag (Montag, Dienstag,...) des Sendedatums. String.
+     */
+    public static final String SENDE_WOCHENTAG = "wochentag";
+    /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String NEW = "neu";
