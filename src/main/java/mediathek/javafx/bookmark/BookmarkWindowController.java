@@ -739,15 +739,12 @@ public class BookmarkWindowController implements Initializable {
     }
   }
 
-  private void setStageEvents() {
-    stage.setOnHiding(_ -> {
-      if (listUpdated) { // Save pending changes on hiding
-        cancelBookmarkSave();
-        saveBookMarkList();
-        listUpdated = false;
-      }
-    });
-  }
+    private void setStageEvents() {
+        stage.setOnHiding(_ -> {
+            cancelBookmarkSave();
+            saveBookMarkList();
+        });
+    }
 
   /**
    * Returns true if the current table selection contains unseen items
