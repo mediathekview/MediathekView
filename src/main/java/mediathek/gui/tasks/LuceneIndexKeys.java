@@ -70,4 +70,8 @@ public class LuceneIndexKeys {
      * Boolean Key ist nur vorhanden, wenn Film als Duplikat klassifiziert wurde. Dann "true".
      */
     public static final String DUPLICATE = "duplicate";
+    /**
+     * Startzeit des Films HH:mm:ss. String.
+     */
+    public static final String START_TIME = "startzeit";
 }

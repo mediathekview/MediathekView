@@ -87,9 +87,17 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         doc.add(new StringField(LuceneIndexKeys.DUPLICATE, Boolean.toString(film.isDuplicate()), Field.Store.NO));
 
         addSendeDatum(doc, film);
+        addSendeZeit(doc, film);
         addWochentag(doc, film);
 
         writer.addDocument(doc);
+    }
+
+    private void addSendeZeit(@NotNull Document doc, @NotNull DatenFilm film) {
+        var startzeit = film.getSendeZeit();
+        if (!startzeit.isEmpty()) {
+            doc.add(new StringField(LuceneIndexKeys.START_TIME, startzeit, Field.Store.NO));
+        }
     }
 
     private void addWochentag(@NotNull Document doc, @NotNull DatenFilm film) {
