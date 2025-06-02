@@ -120,14 +120,14 @@ public class BookmarkWindowController implements Initializable {
     Font.loadFont(BookmarkWindowController.class.getResourceAsStream("/mediathek/res/programm/fxml/fontawesome-webfont.ttf"), 16);
   }
 
-  private static void setStageSize(Stage window) {
+  private void setStageSize() {
     Configuration config = ApplicationConfiguration.getConfiguration();
     try {
       config.lock(LockMode.READ);
-      window.setWidth(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640));
-      window.setHeight(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480));
-      window.setX(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0));
-      window.setY(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0));
+      stage.setWidth(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".width", 640));
+      stage.setHeight(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".heigth", 480));
+      stage.setX(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.x", 0));
+      stage.setY(config.getInt(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".location.y", 0));
     }
     finally {
       config.unlock(LockMode.READ);
@@ -566,6 +566,18 @@ public class BookmarkWindowController implements Initializable {
     }
   }
 
+  private Stage createStage() {
+    Stage stage = new Stage();
+    stage.setTitle("Merkliste verwalten");
+    stage.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
+    stage.setOnHiding(_ -> {
+      cancelBookmarkSave();
+      saveBookMarkList();
+    });
+
+    return stage;
+  }
+
   /**
    * Display Window on screen
    * During first call a new window is created, for successive calls the existing window is reused
@@ -573,11 +585,9 @@ public class BookmarkWindowController implements Initializable {
   public void show() {
     Platform.runLater(() -> {
       if (stage == null) {
-        stage = new Stage();
-        setStageSize(stage); // restore size
-        setStageEvents();
-        stage.setTitle("Merkliste verwalten");
-        stage.getIcons().add(new Image("/mediathek/res/MediathekView.png"));
+        stage = createStage();
+        setStageSize(); // restore size
+
         try {
           FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mediathek/res/programm/fxml/bookmarkWindow.fxml"));
           fxmlLoader.setController(this);
@@ -737,13 +747,6 @@ public class BookmarkWindowController implements Initializable {
       config.unlock(LockMode.WRITE);
     }
   }
-
-    private void setStageEvents() {
-        stage.setOnHiding(_ -> {
-            cancelBookmarkSave();
-            saveBookMarkList();
-        });
-    }
 
   /**
    * Returns true if the current table selection contains unseen items
