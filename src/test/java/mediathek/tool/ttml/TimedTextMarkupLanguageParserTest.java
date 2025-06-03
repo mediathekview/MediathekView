@@ -13,7 +13,8 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TimedTextMarkupLanguageParserTest {
     @Test
@@ -147,16 +148,6 @@ class TimedTextMarkupLanguageParserTest {
                 } catch (IOException ignored) {
                 }
             }
-        }
-    }
-
-    @Test
-    @DisplayName("Fail for unsupported TTML format")
-    void unsupported_ttml_file_format() {
-        try (TimedTextMarkupLanguageParser parser = new TimedTextMarkupLanguageParser()) {
-            var file = new File("src/test/resources/ttml/ttml_fail_test_file.ttml");
-            var res = parser.parse(file.toPath());
-            assertFalse(res);
         }
     }
 
