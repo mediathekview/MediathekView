@@ -109,7 +109,7 @@ class MediathekGuiMac : MediathekGui {
                     JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE)
                 }
             }
-        } catch (e: IllegalArgumentException) {
+        } catch (e: Throwable) {
             logger.error("Failed to query processor brand", e)
         }
 
