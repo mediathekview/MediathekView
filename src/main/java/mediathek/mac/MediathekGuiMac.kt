@@ -2,9 +2,6 @@ package mediathek.mac
 
 import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.util.SystemInfo
-import com.sun.jna.Memory
-import com.sun.jna.platform.mac.SystemB
-import com.sun.jna.ptr.IntByReference
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
@@ -29,6 +26,7 @@ import java.awt.Taskbar
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.io.IOException
+import java.lang.foreign.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.swing.JOptionPane
@@ -44,20 +42,48 @@ class MediathekGuiMac : MediathekGui {
         TimerPool.timerPool.schedule({ checkForCorrectArchitecture() }, 15, TimeUnit.SECONDS)
     }
 
-    @Throws(IllegalStateException::class)
-    private fun getProcessorBrand(): String {
-        val name = "machdep.cpu.brand_string" // Common name for processor type/brand on macOS
+    @Throws(Throwable::class)
+    private fun processorBrand(): String {
+        val linker = Linker.nativeLinker()
+        val sysctl = linker.defaultLookup().find("sysctlbyname").orElseThrow()
+        val sysctlbyname = linker.downcallHandle(
+            sysctl, FunctionDescriptor.of(
+                ValueLayout.JAVA_INT,  // return type
+                ValueLayout.ADDRESS,  // name (const char *)
+                ValueLayout.ADDRESS,  // oldp (void *)
+                ValueLayout.ADDRESS,  // oldlenp (size_t *)
+                ValueLayout.ADDRESS,  // newp (const void *)
+                ValueLayout.JAVA_LONG // newlen (size_t)
+            )
+        )
 
-        // First call to get the size
-        val size = IntByReference(0)
-        var ret = SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)
-        check(ret == 0) { "size query failed" }
+        val sysctlName = "machdep.cpu.brand_string"
 
-        val buffer = Memory(size.value.toLong())
-        // Second call to get the actual value
-        ret = SystemB.INSTANCE.sysctlbyname(name, buffer, size, null, 0)
-        check(ret == 0) { "value query failed" }
-        return buffer.getString(0)
+        Arena.ofConfined().use { arena ->
+            // Allocate memory for the size output
+            val sizePtr = arena.allocate(ValueLayout.JAVA_LONG)
+            // First call: get the size of the result buffer
+            var res = sysctlbyname.invoke(
+                arena.allocateFrom(sysctlName), MemorySegment.NULL,
+                sizePtr, MemorySegment.NULL, 0L
+            ) as Int
+            if (res != 0) {
+                throw RuntimeException("sysctlbyname failed to get size")
+            }
+
+            val len = sizePtr.get(ValueLayout.JAVA_LONG, 0)
+            val buffer = arena.allocate(len)
+            // Second call: get the actual value
+            res = sysctlbyname.invoke(
+                arena.allocateFrom(sysctlName), buffer, sizePtr, MemorySegment.NULL,
+                0L
+            ) as Int
+            if (res != 0) {
+                throw RuntimeException("sysctlbyname failed to get value")
+            }
+
+            return buffer.getString(0)
+        }
     }
 
     /**
@@ -68,7 +94,7 @@ class MediathekGuiMac : MediathekGui {
         logger.trace("Checking for correct JVM architecture on macOS...")
         try {
             val jvmBinaryArch = SystemUtils.OS_ARCH.lowercase(Locale.getDefault())
-            val isAppleSilicon = getProcessorBrand().lowercase().contains("apple")
+            val isAppleSilicon = processorBrand().lowercase().contains("apple")
             //println("isAppleSilicon: $isAppleSilicon")
             val isJVMIntel = jvmBinaryArch == "x86_64" || jvmBinaryArch == "amd64"
             //println("isJVMIntel: $isJVMIntel")
