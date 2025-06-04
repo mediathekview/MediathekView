@@ -2,6 +2,9 @@ package mediathek.mac
 
 import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.util.SystemInfo
+import com.sun.jna.Memory
+import com.sun.jna.platform.mac.SystemB
+import com.sun.jna.ptr.IntByReference
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
@@ -16,6 +19,7 @@ import mediathek.tool.notification.MacNotificationCenter
 import mediathek.tool.threads.IndicatorThread
 import mediathek.tool.timer.TimerPool
 import net.engio.mbassy.listener.Handler
+import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
@@ -37,7 +41,23 @@ class MediathekGuiMac : MediathekGui {
     private val powerManager = OsxPowerManager()
 
     constructor() : super() {
-        TimerPool.timerPool.schedule({checkForCorrectArchitecture()}, 15, TimeUnit.SECONDS)
+        TimerPool.timerPool.schedule({ checkForCorrectArchitecture() }, 15, TimeUnit.SECONDS)
+    }
+
+    @Throws(IllegalStateException::class)
+    private fun getProcessorBrand(): String {
+        val name = "machdep.cpu.brand_string" // Common name for processor type/brand on macOS
+
+        // First call to get the size
+        val size = IntByReference(0)
+        var ret = SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)
+        check(ret == 0) { "size query failed" }
+
+        val buffer = Memory(size.value.toLong())
+        // Second call to get the actual value
+        ret = SystemB.INSTANCE.sysctlbyname(name, buffer, size, null, 0)
+        check(ret == 0) { "value query failed" }
+        return buffer.getString(0)
     }
 
     /**
@@ -46,23 +66,27 @@ class MediathekGuiMac : MediathekGui {
      */
     private fun checkForCorrectArchitecture() {
         logger.trace("Checking for correct JVM architecture on macOS...")
-        val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
-        val osArch = System.getProperty("os.arch").lowercase(Locale.getDefault()) // native arch
-        val jvmBinaryArch = System.getProperty("os.arch").lowercase(Locale.getDefault())
+        try {
+            val jvmBinaryArch = SystemUtils.OS_ARCH.lowercase(Locale.getDefault())
+            val isAppleSilicon = getProcessorBrand().lowercase().contains("apple")
+            //println("isAppleSilicon: $isAppleSilicon")
+            val isJVMIntel = jvmBinaryArch == "x86_64" || jvmBinaryArch == "amd64"
+            //println("isJVMIntel: $isJVMIntel")
 
-        val isAppleSilicon = osName.contains("mac") && osArch.contains("aarch64")
-        val isJVMIntel = jvmBinaryArch == "x86_64" || jvmBinaryArch == "amd64"
-
-        if (isAppleSilicon && isJVMIntel) {
-            logger.warn("⚠️ Running an Intel JVM on Apple Silicon. Consider using a native ARM64 JVM for better performance.")
-            SwingUtilities.invokeLater {
-                val msg = "<html>Ihr Mac hat eine moderne Apple Silicon CPU.<br/>" +
-                        "Sie nutzen jedoch eine MediathekView Version für Intel Prozessoren.<br/><br/>" +
-                        "Um die Geschwindigkeit des Programms erheblich zu verbessern laden Sie bitte<br/>" +
-                        "die passende <b>MediathekView für Apple Silicon</b> herunter.</html>"
-                JOptionPane.showMessageDialog(this,msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE)
+            if (isAppleSilicon && isJVMIntel) {
+                logger.warn("⚠️ Running an Intel JVM on Apple Silicon. Consider using a native ARM64 JVM for better performance.")
+                SwingUtilities.invokeLater {
+                    val msg = "<html>Ihr Mac hat eine moderne Apple Silicon CPU.<br/>" +
+                            "Sie nutzen jedoch eine MediathekView Version für Intel Prozessoren.<br/><br/>" +
+                            "Um die Geschwindigkeit des Programms erheblich zu verbessern laden Sie bitte<br/>" +
+                            "die passende <b>MediathekView für Apple Silicon</b> herunter.</html>"
+                    JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE)
+                }
             }
+        } catch (e: IllegalArgumentException) {
+            logger.error("Failed to query processor brand", e)
         }
+
     }
 
     override fun resetTabPlacement() {
@@ -76,6 +100,7 @@ class MediathekGuiMac : MediathekGui {
     override fun addSettingsMenuItem() {
         //using native handler instead
     }
+
     override fun setToolBarProperties() {
         //not used on macOS
     }
@@ -88,7 +113,7 @@ class MediathekGuiMac : MediathekGui {
         private class MacFullWindowPlaceHolder : JPanel() {
             init {
                 layout = FlowLayout()
-                putClientProperty( FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen" )
+                putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen")
             }
         }
 
@@ -98,6 +123,7 @@ class MediathekGuiMac : MediathekGui {
             add(commonToolBar, BorderLayout.CENTER)
         }
     }
+
     override fun installToolBar() {
         contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
     }

@@ -1,5 +1,6 @@
 # **14.3.0**
 - **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten kann das Programm nicht starten.
+- **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
 - interne Geschwindigkeitsverbesserungen.
 - Filter-Dialog vollständig nach Swing portiert -> u.a. verbesserte Darstellung im Dunkelmodus
 - **Neuer Startparameter notwendig für Selbstbauer:** `--add-exports=java.desktop/sun.swing=ALL-UNNAMED` muss hinzugefügt werden.
