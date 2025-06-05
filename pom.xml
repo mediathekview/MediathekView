@@ -102,7 +102,6 @@
         <maven.compiler.target>${jvm.target.version}</maven.compiler.target>
 
         <annotations.version>24.1.0</annotations.version>
-        <assertj-core.version>3.26.3</assertj-core.version>
         <commons-configuration2.version>2.11.0</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
@@ -447,13 +446,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
 
