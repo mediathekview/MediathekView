@@ -1,6 +1,5 @@
 package mediathek.tool
 
-import mediathek.mac.MacFileUtils
 import mediathek.windows.WindowsFileUtils
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
@@ -20,7 +19,8 @@ object FileUtils {
     @JvmStatic
     fun moveToTrash(filePath: Path) {
         if (SystemUtils.IS_OS_MAC_OSX) {
-            MacFileUtils.moveToTrash(filePath.toFile())
+            //MacFileUtils.moveToTrash(filePath.toFile())
+            Files.deleteIfExists(filePath)
         }
         else if (SystemUtils.IS_OS_WINDOWS) {
             WindowsFileUtils.moveToTrash(filePath.toFile())
