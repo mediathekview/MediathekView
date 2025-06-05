@@ -41,6 +41,7 @@ public class DeleteLocalFilmlistAction extends AbstractAction {
                             Weitere Informationen finden Sie in der Logdatei.
                             Das Programm wird nun beendet.""",
                     Konstanten.PROGRAMMNAME,JOptionPane.ERROR_MESSAGE);
+            MediathekGui.ui().quitApplication();
         }
     }
 }
