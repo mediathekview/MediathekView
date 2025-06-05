@@ -11,7 +11,6 @@ import javax.swing.JFrame
 internal class TaskbarIndicatorThread(parent: MediathekGuiWindows) : IndicatorThread() {
     private val parent: JFrame
     private val setThreadExecutionState: MethodHandle?
-    private val arena = Arena.ofAuto()
 
     private fun disableStandby() {
         val res = setThreadExecutionState?.invoke(WinFlags.ES_CONTINUOUS or WinFlags.ES_SYSTEM_REQUIRED) ?: 0
@@ -54,7 +53,7 @@ internal class TaskbarIndicatorThread(parent: MediathekGuiWindows) : IndicatorTh
         this.parent = parent
 
         val linker = Linker.nativeLinker()
-        val kernel32 = SymbolLookup.libraryLookup("kernel32.dll", arena)
+        val kernel32 = SymbolLookup.libraryLookup("kernel32.dll", Arena.global())
         setThreadExecutionState = linker.downcallHandle(
             kernel32.find("SetThreadExecutionState").orElseThrow(),
             FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT)

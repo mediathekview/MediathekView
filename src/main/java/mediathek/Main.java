@@ -2,7 +2,6 @@ package mediathek;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
 import mediathek.controller.SenderFilmlistLoadApprover;
@@ -16,6 +15,7 @@ import mediathek.tool.affinity.Affinity;
 import mediathek.tool.dns.IPvPreferenceMode;
 import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
+import mediathek.windows.WindowsVersionHelper;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
@@ -386,11 +386,16 @@ public class Main {
     }
 
     private static void checkWindows10OrGreater() {
-        if (!VersionHelpers.IsWindows10OrGreater()) {
-            JOptionPane.showMessageDialog(null,
-                    "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
-                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
+        try {
+            if (!WindowsVersionHelper.IsWindows10OrGreater()) {
+                JOptionPane.showMessageDialog(null,
+                        "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
+                        Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
+        }
+        catch (Throwable ex) {
+            logger.error("Error while checking Windows version", ex);
         }
     }
 
