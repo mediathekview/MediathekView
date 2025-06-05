@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2025 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.gui.tabs.tab_film;
 
 import com.formdev.flatlaf.util.ScaledImageIcon;
@@ -5,7 +23,6 @@ import mediathek.config.Konstanten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
-import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.CopyToClipboardAction;
 import mediathek.tool.GuiFunktionen;
@@ -25,9 +42,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class FilmDescriptionPanel extends JPanel {
-    private final AGuiTabPanel currentTab;
+    private static final Logger logger = LogManager.getLogger();
     private final JScrollPane scrollPane1 = new JScrollPane();
     private final JPopupMenu popupMenu = new JPopupMenu();
     private final SenderIconLabel lblIcon = new SenderIconLabel();
@@ -37,13 +56,12 @@ public class FilmDescriptionPanel extends JPanel {
     private final JXHyperlink hyperlink = new JXHyperlink();
     private DatenFilm currentFilm;
 
-    public FilmDescriptionPanel(@NotNull AGuiTabPanel currentTab) {
-        this.currentTab = currentTab;
+    public FilmDescriptionPanel() {
 
         initComponents();
 
 
-        hyperlink.addActionListener(l -> {
+        hyperlink.addActionListener(_ -> {
             if (!hyperlink.getToolTipText().isEmpty()) {
                 var toolTipText = hyperlink.getToolTipText();
                 if (Desktop.isDesktopSupported()) {
@@ -51,16 +69,19 @@ public class FilmDescriptionPanel extends JPanel {
                     if (d.isSupported(Desktop.Action.BROWSE)) {
                         try {
                             d.browse(new URI(toolTipText));
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex) {
                             SwingErrorDialog.showExceptionMessage(
                                     MediathekGui.ui(),
                                     "Es trat ein Fehler beim Öffnen des Links auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
                                     ex);
                         }
-                    } else {
+                    }
+                    else {
                         openUrl(toolTipText);
                     }
-                } else {
+                }
+                else {
                     openUrl(toolTipText);
                 }
             }
@@ -73,7 +94,7 @@ public class FilmDescriptionPanel extends JPanel {
 
     private void createPopupMenu() {
         var item = new JMenuItem("Beschreibung ändern...");
-        item.addActionListener(l -> {
+        item.addActionListener(_ -> {
             DialogFilmBeschreibung dialog = new DialogFilmBeschreibung(MediathekGui.ui(), currentFilm);
             dialog.setVisible(true);
         });
@@ -81,11 +102,11 @@ public class FilmDescriptionPanel extends JPanel {
         popupMenu.addSeparator();
 
         item = new JMenuItem("Beschreibung in Zwischenablage kopieren");
-        item.addActionListener(l -> GuiFunktionen.copyToClipboard(currentFilm.getDescription()));
+        item.addActionListener(_ -> GuiFunktionen.copyToClipboard(currentFilm.getDescription()));
         popupMenu.add(item);
 
         item = new JMenuItem("Filmbasisinformationen in Zwischenablage kopieren");
-        item.addActionListener(l -> {
+        item.addActionListener(_ -> {
             String sb = currentFilm.getSender() +
                     " - " +
                     currentFilm.getThema() +
@@ -98,11 +119,12 @@ public class FilmDescriptionPanel extends JPanel {
 
         popupMenu.addSeparator();
         item = new JMenuItem("Auswahl kopieren");
-        item.addActionListener(l -> {
+        item.addActionListener(_ -> {
             final var selected = (textArea.getSelectionEnd() - textArea.getSelectionStart()) > 0;
             if (!selected) {
                 JOptionPane.showMessageDialog(this, "Kein Text markiert!", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-            } else {
+            }
+            else {
                 var text = textArea.getSelectedText();
                 GuiFunktionen.copyToClipboard(text);
             }
@@ -150,17 +172,20 @@ public class FilmDescriptionPanel extends JPanel {
         add(hyperlink, new CC().cell(1, 3));
     }
 
-    public void install(@NotNull JTabbedPane tabbedPane, @NotNull JTable tabelle) {
-        tabbedPane.add("Beschreibung", this);
+    private void setCurrentFilm(@Nullable DatenFilm film) {
+        if (film == null) {
+            setAllFieldsEmpty();
+        }
+        else {
+            showFilmDescription(film);
+        }
+        currentFilm = film;
+    }
 
-        tabelle.getSelectionModel().addListSelectionListener(e ->
-                currentTab.getCurrentlySelectedFilm().ifPresentOrElse(film -> {
-                    showFilmDescription(film);
-                    currentFilm = film;
-                }, () -> {
-                    setAllFieldsEmpty();
-                    currentFilm = null;
-                }));
+    public void install(@NotNull JTabbedPane tabbedPane, @NotNull JTable tabelle, @NotNull Supplier<Optional<DatenFilm>> filmSupplier) {
+        tabbedPane.add("Beschreibung", this);
+        tabelle.getSelectionModel().addListSelectionListener(_ ->
+                filmSupplier.get().ifPresentOrElse(this::setCurrentFilm, () -> setCurrentFilm(null)));
     }
 
     private void setAllFieldsEmpty() {
@@ -178,12 +203,11 @@ public class FilmDescriptionPanel extends JPanel {
     private void openUrl(String url) {
         try {
             UrlHyperlinkAction.openURL(url);
-        } catch (URISyntaxException ex) {
+        }
+        catch (URISyntaxException ex) {
             logger.warn(ex);
         }
     }
-
-    private static final Logger logger = LogManager.getLogger();
 
     private void showFilmDescription(@NotNull DatenFilm film) {
         lblThema.setText(film.getThema());
@@ -196,8 +220,8 @@ public class FilmDescriptionPanel extends JPanel {
             JPopupMenu popup = new JPopupMenu();
             popup.add(new CopyToClipboardAction(film.getWebsiteUrl()));
             hyperlink.setComponentPopupMenu(popup);
-        } catch (Exception e) {
-            //logger
+        }
+        catch (Exception e) {
             hyperlink.setText("Link nicht verfügbar");
         }
         hyperlink.setToolTipText(film.getWebsiteUrl());
@@ -226,14 +250,19 @@ public class FilmDescriptionPanel extends JPanel {
         public void setSender(@Nullable String sender) {
             if (sender == null) {
                 setIcon(null);
-            } else {
+            }
+            else {
                 MVSenderIconCache.get(sender).ifPresentOrElse(icon -> {
                     var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
                     var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
                     var origIcon = new ScaledImageIcon(icon, destDim.width, destDim.height);
+                    setText("");
                     setIcon(origIcon);
                     sizeToIcon(origIcon);
-                }, () -> setIcon(null));
+                }, () -> {
+                    setIcon(null);
+                    setText(sender);
+                });
             }
         }
     }

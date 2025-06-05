@@ -2,9 +2,6 @@ package mediathek.javafx.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -31,7 +28,6 @@ import java.util.List;
  */
 public class BookmarkDataList {
     private static final Logger logger = LogManager.getLogger();
-    private static final int BOOKMARK_THRESHOLD = 2500;
     private final ObservableList<BookmarkData> bookmarks;
 
     public BookmarkDataList(@NotNull Daten daten) {
@@ -76,16 +72,6 @@ public class BookmarkDataList {
     }
 
     /**
-     * Get number of Films marked as seen
-     *
-     * @return number
-     */
-    @JsonIgnore
-    public long getSeenNbOfEntries() {
-        return bookmarks.stream().filter(BookmarkData::getSeen).count();
-    }
-
-    /**
      * Add given film(s) to List if not yet in list
      * otherwise remove them from list
      * Note: if one of the given films is not bookmarked all are bookmarked
@@ -100,7 +86,8 @@ public class BookmarkDataList {
             if (!data.isBookmarked()) {
                 add = true;
                 addlist.add(data);
-            } else {
+            }
+            else {
                 BookmarkData movie = findMovieInList(data);
                 if (movie != null) {
                     dellist.add(movie);
@@ -118,10 +105,12 @@ public class BookmarkDataList {
                     bdata.setSeen(!bdata.isLiveStream() && history.hasBeenSeen(movie));
                     bookmarks.add(bdata);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 logger.error("history produced error", ex);
             }
-        } else { // delete existing bookmarks
+        }
+        else { // delete existing bookmarks
             for (DatenFilm movie : movies) {  // delete references
                 movie.setBookmark(null);
             }
@@ -149,23 +138,19 @@ public class BookmarkDataList {
      */
     public void loadFromFile() {
         var filePath = StandardLocations.getBookmarkFilePath();
-        try (JsonParser parser = new MappingJsonFactory().createParser(filePath.toFile())) {
-            JsonToken jToken;
-            while ((jToken = parser.nextToken()) != null) {
-                if (jToken == JsonToken.START_ARRAY) {
-                    while (parser.nextToken() != JsonToken.END_ARRAY) {
-                        BookmarkData obj = parser.readValueAs(BookmarkData.class);
-                        bookmarks.add(obj);
-                    }
-                }
+
+        try {
+            var objectMapper = new ObjectMapper();
+            var wrapper = objectMapper.readValue(filePath.toFile(), BookmarksWrapper.class);
+            var bookmarkList = wrapper.getBookmarks();
+            if (bookmarkList != null) {
+                bookmarks.addAll(bookmarkList);
+                bookmarkList.clear();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error("Could not read bookmarks from file {}, error {} => file ignored", filePath.toString(), e.getMessage());
         }
-
-        //sanity check if someone added way too many bookmarks
-        if (bookmarks.size() > BOOKMARK_THRESHOLD)
-            logger.warn("Bookmark entries exceed threshold: {}", bookmarks.size());
     }
 
     public synchronized void saveToFile() {
@@ -175,7 +160,8 @@ public class BookmarkDataList {
             var objectMapper = new ObjectMapper().writerWithDefaultPrettyPrinter();
             objectMapper.writeValue(filePath.toFile(), this);
             logger.trace("Bookmarks written");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             logger.error("Could not save bookmarks to {}", filePath, e);
         }
     }
@@ -225,16 +211,32 @@ public class BookmarkDataList {
      * Executed in background
      */
     private void updateBookMarksFromFilmList() {
+        if (bookmarks.isEmpty())
+            return;
+
         ListeFilme listefilme = Daten.getInstance().getListeFilme();
 
-        for (var data : bookmarks) {
-            var filmdata = listefilme.getFilmByUrlAndSender(data.getUrl(), data.getSender());
-            if (filmdata != null) {
-                data.setDatenFilm(filmdata);
-                filmdata.setBookmark(data);   // Link backwards
-            } else {
-                data.setDatenFilm(null);
+        for (var bookmark : bookmarks) {
+            var film = listefilme.getFilmByUrl(bookmark.getUrl());
+            bookmark.setDatenFilm(film);
+            if (film != null) {
+                film.setBookmark(bookmark);   // Link backwards
             }
+        }
+    }
+
+    /**
+     * Internal wrapper for reading bookmarks with object mapper
+     */
+    private static class BookmarksWrapper {
+        private List<BookmarkData> bookmarks;
+
+        public List<BookmarkData> getBookmarks() {
+            return bookmarks;
+        }
+
+        public void setBookmarks(List<BookmarkData> bookmarks) {
+            this.bookmarks = bookmarks;
         }
     }
 }

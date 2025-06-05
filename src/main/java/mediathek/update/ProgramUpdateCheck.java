@@ -10,7 +10,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.NetUtils;
-import mediathek.tool.TimerPool;
+import mediathek.tool.timer.TimerPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

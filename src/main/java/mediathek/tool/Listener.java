@@ -13,8 +13,8 @@ public abstract class Listener implements EventListener {
 
     private static final EventListenerList listeners = new EventListenerList();
     private static final Logger logger = LogManager.getLogger(Listener.class);
-    public int[] mvEreignis;
-    public String klasse;
+    public final int[] mvEreignis;
+    public final String klasse;
 
     public Listener(int eereignis, String kklasse) {
         mvEreignis = new int[]{eereignis};

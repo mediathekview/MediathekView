@@ -1,6 +1,6 @@
 package mediathek.tool;
 
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinnerFormatter;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class FilterConfigTest {
             false),
         arguments(
             "isDontShowTrailers", (Supplier<Boolean>) filterConfig::isDontShowTrailers, false),
-        arguments("isShowHdOnly", (Supplier<Boolean>) filterConfig::isShowHdOnly, false),
+        arguments("isShowHdOnly", (Supplier<Boolean>) filterConfig::isShowHighQualityOnly, false),
         arguments(
             "isShowLivestreamsOnly",
             (Supplier<Boolean>) filterConfig::isShowLivestreamsOnly,
@@ -51,7 +51,7 @@ class FilterConfigTest {
         arguments(
             "getZeitraum",
             (Supplier<String>) filterConfig::getZeitraum,
-            ZeitraumSpinner.UNLIMITED_VALUE));
+                ZeitraumSpinnerFormatter.INFINITE_TEXT));
   }
 
   @DisplayName(
@@ -106,7 +106,7 @@ class FilterConfigTest {
     assertThat(config.isShowNewOnly()).isTrue();
     assertThat(config.getFilmLengthMax()).isEqualTo(42d);
     assertThat(config.isShowLivestreamsOnly()).isFalse();
-    assertThat(config.getZeitraum()).isEqualTo(ZeitraumSpinner.UNLIMITED_VALUE);
+    assertThat(config.getZeitraum()).isEqualTo(ZeitraumSpinnerFormatter.INFINITE_TEXT);
 
     config.setCurrentFilter(secondFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(secondFilterID);
@@ -149,7 +149,7 @@ class FilterConfigTest {
     assertThat(config.isShowNewOnly()).isTrue();
     assertThat(config.getFilmLengthMax()).isEqualTo(42d);
     assertThat(config.isShowLivestreamsOnly()).isFalse();
-    assertThat(config.getZeitraum()).isEqualTo(ZeitraumSpinner.UNLIMITED_VALUE);
+    assertThat(config.getZeitraum()).isEqualTo(ZeitraumSpinnerFormatter.INFINITE_TEXT);
 
     config.setCurrentFilter(secondFilterID);
     assertThat(config.getCurrentFilterID()).isEqualTo(secondFilterID);
@@ -188,7 +188,7 @@ class FilterConfigTest {
     assertThat(config.isDontShowTrailers()).isTrue();
     assertThat(config.getFilmLengthMax()).isEqualTo(85d);
     assertThat(config.getFilmLengthMin()).isEqualTo(23d);
-    assertThat(config.isShowHdOnly()).isTrue();
+    assertThat(config.isShowHighQualityOnly()).isTrue();
     assertThat(config.isShowLivestreamsOnly()).isFalse();
     assertThat(config.isShowNewOnly()).isTrue();
     assertThat(config.isShowSubtitlesOnly()).isTrue();

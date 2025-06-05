@@ -5,10 +5,10 @@ import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
+import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.javafx.tool.JFXHiddenApplication;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -53,6 +53,7 @@ public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
     private static final Logger logger = LogManager.getLogger(Main.class);
     public static Optional<SplashScreen> splashScreen = Optional.empty();
+    public static SingleInstance SINGLE_INSTANCE_WATCHER;
 
     static {
         // set up log4j callback registry
@@ -69,7 +70,8 @@ public class Main {
             try {
                 var oldFilmList = StandardLocations.getSettingsDirectory().resolve(Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
-            } catch (IOException ignored) {
+            }
+            catch (IOException ignored) {
             }
         }
     }
@@ -85,7 +87,8 @@ public class Main {
                 logger.info("Moving old unsupported media database to trash.");
                 mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
             }
-        } catch (IOException ignored) {
+        }
+        catch (IOException ignored) {
         }
     }
 
@@ -120,7 +123,8 @@ public class Main {
         final PatternLayout consolePattern;
         if (Config.isEnhancedLoggingEnabled() || Config.isDebugModeEnabled()) {
             consolePattern = PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build();
-        } else {
+        }
+        else {
             consolePattern = PatternLayout.newBuilder().withPattern(". %msg%n").build();
         }
 
@@ -223,11 +227,13 @@ public class Main {
                     try {
                         SettingsMigrator migrator = new SettingsMigrator(settingsFile);
                         migrator.migrate();
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         logger.error("settings migration error", e);
                     }
                 }
-            } else
+            }
+            else
                 logger.trace("nothing to migrate");
         }
     }
@@ -235,7 +241,8 @@ public class Main {
     private static void printPortableModeInfo() {
         if (Config.isPortableMode()) {
             logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath);
-        } else
+        }
+        else
             logger.info("Configuring for non-portable mode");
     }
 
@@ -262,22 +269,10 @@ public class Main {
                     }
                 }
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             logger.error("OS X Application image could not be loaded", ex);
         }
-    }
-
-    private static void setupFlatLaf() {
-        var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
-        LookAndFeel laf;
-
-        if (darkMode) {
-            laf = DarkModeFactory.getLookAndFeel();
-        }
-        else {
-            laf = LightModeFactory.getLookAndFeel();
-        }
-        FlatLaf.setup(laf);
     }
 
     /**
@@ -335,8 +330,8 @@ public class Main {
         }
 
         message += "</ul><br/>" +
-                    "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
-                    "</html>";
+                "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
+                "</html>";
         return message;
     }
 
@@ -390,6 +385,15 @@ public class Main {
         }
     }
 
+    private static void checkWindows10OrGreater() {
+        if (!VersionHelpers.IsWindows10OrGreater()) {
+            JOptionPane.showMessageDialog(null,
+                    "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
+                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -432,7 +436,7 @@ public class Main {
                 setupDockIcon();
 
                 registerFlatLafCustomization();
-                setupFlatLaf();
+                DarkModeSetup.setup();
 
                 if (SystemUtils.IS_OS_LINUX) {
                     checkUiScaleSetting();
@@ -442,19 +446,15 @@ public class Main {
                     checkJVMSettings();
 
                 if (SystemUtils.IS_OS_WINDOWS) {
-                    if (!VersionHelpers.IsWindows10OrGreater())
-                        logger.warn("This Operating System configuration is too old and will be unsupported in the next updates.");
+                    checkWindows10OrGreater();
                 }
 
                 setupCpuAffinity();
-
-                Platform.setImplicitExit(false);
 
                 removeMediaDb();
                 deleteOldFilmDatabaseFiles();
                 deleteOldUserAgentsDatabase();
 
-                JFXHiddenApplication.launchApplication();
                 checkMemoryRequirements();
 
                 installSingleInstanceHandler();
@@ -463,7 +463,8 @@ public class Main {
 
                 printJvmParameters();
                 printArguments(args);
-            } catch (CommandLine.ParameterException ex) {
+            }
+            catch (CommandLine.ParameterException ex) {
                 try (var err = cmd.getErr()) {
                     var errStr = ex.getMessage() + "\n\n" + ex.getCommandLine().getUsageMessage();
                     JOptionPane.showMessageDialog(null,
@@ -476,12 +477,16 @@ public class Main {
                     }
                     System.exit(cmd.getCommandSpec().exitCodeOnInvalidInput());
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 logger.error("Command line parse error:", ex);
                 System.exit(cmd.getCommandSpec().exitCodeOnExecutionException());
             }
 
             printDirectoryPaths();
+
+            //prevent JavaFX from exiting after the last window closed
+            Platform.setImplicitExit(false);
 
             if (!isDebuggerAttached()) {
                 if (!Config.isSplashScreenDisabled()) {
@@ -500,6 +505,8 @@ public class Main {
 
             loadConfigurationData();
 
+            activateNewSenders();
+
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
             Daten.getInstance().getListeBookmarkList().loadFromFile();
@@ -513,6 +520,37 @@ public class Main {
 
             startGuiMode();
         });
+    }
+
+    /**
+     * Activate all senders when MediathekView adds additional ones.
+     * For newer versions configKey must be adapted.
+     */
+    private static void activateNewSenders() {
+        var alreadyActivated = ApplicationConfiguration.getConfiguration().getBoolean(Konstanten.NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY, false);
+        if (!alreadyActivated) {
+            splashScreen.ifPresent(s -> s.setVisible(false));
+            var op = new JOptionPane(
+                    "<html>Diese Version unterstützt neue Sender, die in den Einstellungen aktiviert werden müssen.<br/>" +
+                            "Soll MediathekView einmalig alle Sender aktivieren?</html>", JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.YES_NO_OPTION);
+            var dialog = op.createDialog(Konstanten.PROGRAMMNAME);
+            dialog.setAlwaysOnTop(true);
+            dialog.setModal(true);
+            dialog.setResizable(true);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setVisible(true);
+            var res = op.getValue();
+            if (res != null) {
+                if ((int) res == JOptionPane.YES_OPTION) {
+                    logger.info("Activating new senders...");
+                    SenderFilmlistLoadApprover.approveAll();
+                }
+                ApplicationConfiguration.getConfiguration().setProperty(Konstanten.NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY, true);
+            }
+
+            splashScreen.ifPresent(s -> s.setVisible(true));
+        }
     }
 
     /**
@@ -548,7 +586,8 @@ public class Main {
             if (migrator.needsMigration()) {
                 migrator.migrate();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             logger.error("migrateSeenHistory", e);
             splashScreen.ifPresent(SplashScreen::close);
             SwingErrorDialog.showExceptionMessage(null,
@@ -615,6 +654,7 @@ public class Main {
             logger.error("Got an error deleting old database directory", ex);
         }
     }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void deleteSettingsDirectory() {
         try (var walk = Files.walk(StandardLocations.getSettingsDirectory())) {
@@ -622,17 +662,16 @@ public class Main {
                     .map(Path::toFile)
                     //.peek(System.out::println)
                     .forEach(File::delete);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.error("Got an error deleting settings directory", ex);
         }
     }
 
     private static void printDirectoryPaths() {
-        logger.trace("Programmpfad: " + GuiFunktionenProgramme.getPathToApplicationJar());
-        logger.info("Verzeichnis Einstellungen: " + StandardLocations.getSettingsDirectory());
+        logger.trace("Programmpfad: {}", GuiFunktionenProgramme.getPathToApplicationJar());
+        logger.info("Verzeichnis Einstellungen: {}", StandardLocations.getSettingsDirectory());
     }
-
-    public static SingleInstance SINGLE_INSTANCE_WATCHER;
 
     /**
      * Prevent startup of multiple instances of the app.
@@ -702,16 +741,19 @@ public class Main {
 
         if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
-        } else if (SystemUtils.IS_OS_WINDOWS) {
+        }
+        else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
-        } else if (SystemUtils.IS_OS_LINUX) {
+        }
+        else if (SystemUtils.IS_OS_LINUX) {
             window = new MediathekGuiX11();
-        } else {
+        }
+        else {
             JOptionPane.showMessageDialog(null,
                     """
                             Sie führen MediathekView auf einem nicht unterstützten Betriebssystem aus.
                             Es werden nur macOS, Windows und Linux unterstützt.
-
+                            
                             Das Programm wird beendet, da die Funktionsfähigkeit nicht gewährleistet werden kann.""",
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.ERROR_MESSAGE);
@@ -719,5 +761,43 @@ public class Main {
         }
 
         return window;
+    }
+
+    static class DarkModeSetup {
+        private static LookAndFeel getCurrentLookAndFeel(boolean darkMode) {
+            LookAndFeel laf;
+            if (darkMode) {
+                laf = DarkModeFactory.getLookAndFeel();
+            }
+            else {
+                laf = LightModeFactory.getLookAndFeel();
+            }
+
+            return laf;
+        }
+
+        private static void setupFlatLaf() {
+            var darkMode = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false);
+            FlatLaf.setup(getCurrentLookAndFeel(darkMode));
+        }
+
+        public static void setup() {
+            if (DarkModeDetector.hasDarkModeDetectionSupport()) {
+                logger.trace("setting up dark mode system laf");
+                var useSystemMode = ApplicationConfiguration
+                        .getConfiguration()
+                        .getBoolean(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, false);
+                if (useSystemMode) {
+                    FlatLaf.setup(getCurrentLookAndFeel(DarkModeDetector.isDarkMode()));
+                }
+                else {
+                    setupFlatLaf();
+                }
+            }
+            else {
+                logger.trace("dark mode detection not supported, using config");
+                setupFlatLaf();
+            }
+        }
     }
 }

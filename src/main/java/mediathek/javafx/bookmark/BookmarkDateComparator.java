@@ -15,8 +15,8 @@ public class BookmarkDateComparator implements Comparator<String> {
   public int compare(String str1, String str2) {
     BiFunction<Integer, Integer, Integer> cmprange = (i1, i2) -> {
       for ( int i = i1; i < i2; i++) {
-        int s1 = (int)str1.charAt(i);
-        int s2 = (int)str2.charAt(i);
+        int s1 = str1.charAt(i);
+        int s2 = str2.charAt(i);
         if (s1 != s2) {
           return s1 - s2;
         }

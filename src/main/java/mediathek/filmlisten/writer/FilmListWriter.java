@@ -28,13 +28,15 @@ import java.util.stream.Collectors;
 
 public class FilmListWriter {
 
-    private static final Logger logger = LogManager.getLogger(FilmListWriter.class);
+    private static final String FILMLISTE = "Filmliste";
+    private static final Logger logger = LogManager.getLogger();
     private static final String TAG_JSON_LIST = "X";
     private final boolean readable;
     private String sender = "";
     private String thema = "";
     private boolean compressSenderTag = true;
     private boolean compressThemaTag = true;
+    private boolean decompressUrls;
 
     public FilmListWriter(boolean readable) {
         this.readable = readable;
@@ -63,7 +65,7 @@ public class FilmListWriter {
     private void writeFormatHeader(JsonGenerator jg, ListeFilme listeFilme) throws IOException {
         final var meta = listeFilme.getMetaData();
 
-        jg.writeArrayFieldStart(ListeFilme.FILMLISTE);
+        jg.writeArrayFieldStart(FILMLISTE);
         jg.writeString(""); //ListeFilme.FILMLISTE_DATUM_NR unused in newer versions
         jg.writeString(meta.getDatum());
         jg.writeString(meta.getVersion());
@@ -72,7 +74,7 @@ public class FilmListWriter {
         jg.writeEndArray();
     }
 
-    public void writeFilmList(String datei, ListeFilme listeFilme, IProgressListener listener) {
+    public void writeFilmList(String datei, ListeFilme listeFilme, IProgressListener progressListener) {
         MessageBus.getMessageBus().publishAsync(new FilmListWriteStartEvent());
 
         try {
@@ -116,15 +118,15 @@ public class FilmListWriter {
 
                 for (DatenFilm datenFilm : listeFilme) {
                     writeEntry(datenFilm, jg);
-                    if (listener != null) {
-                        listener.progress(curEntry / filmEntries);
+                    if (progressListener != null) {
+                        progressListener.progress(curEntry / filmEntries);
                         curEntry++;
                     }
                 }
                 jg.writeEndObject();
 
-                if (listener != null)
-                    listener.progress(1d);
+                if (progressListener != null)
+                    progressListener.progress(1d);
 
                 long end = System.nanoTime();
 
@@ -210,8 +212,6 @@ public class FilmListWriter {
         this.decompressUrls = decompressUrls;
     }
 
-    private boolean decompressUrls;
-
     private void skipEntry(JsonGenerator jg) throws IOException {
         jg.writeString("");
     }
@@ -273,7 +273,7 @@ public class FilmListWriter {
      * Is not used anywhere but necessary for compatibility
      */
     private void writeFormatDescription(JsonGenerator jg) throws IOException {
-        jg.writeArrayFieldStart(ListeFilme.FILMLISTE);
+        jg.writeArrayFieldStart(FILMLISTE);
         jg.writeString("");
         jg.writeEndArray();
     }

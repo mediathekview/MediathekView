@@ -1,6 +1,6 @@
 package mediathek.tool.cellrenderer;
 
-import mediathek.tool.TimerPool;
+import mediathek.tool.timer.TimerPool;
 
 import javax.swing.*;
 import java.util.concurrent.ConcurrentHashMap;

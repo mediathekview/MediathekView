@@ -98,10 +98,12 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
             case "RBB" -> getIcon(WIKI_BASE_URL + "/7/79/Rbb_Logo_2017.08.svg/320px-Rbb_Logo_2017.08.svg.png", "/mediathek/res/sender/rbb.png");
             case "SR" -> getIcon(WIKI_BASE_URL + "/8/83/SR_Dachmarke.svg/602px-SR_Dachmarke.svg.png", "/mediathek/res/sender/sr.png");
             case "SRF" -> getIcon(WIKI_BASE_URL + "/8/84/Schweizer_Radio_und_Fernsehen_Logo.svg/559px-Schweizer_Radio_und_Fernsehen_Logo.svg.png", "/mediathek/res/sender/srf.png");
-            case "SRF.Podcast" -> getLocalImageIcon("/mediathek/res/sender/srf-podcast.png");
+            //case "SRF.Podcast" -> null;
             case "SWR" -> getIcon(WIKI_BASE_URL + "/6/6f/SWR_Dachmarke.svg/320px-SWR_Dachmarke.svg.png", "/mediathek/res/sender/swr.png");
             case "WDR" -> getIcon(WIKI_BASE_URL + "/9/9b/WDR_Dachmarke.svg/320px-WDR_Dachmarke.svg.png", "/mediathek/res/sender/wdr.png");
             case "ZDF" -> getIcon(WIKI_BASE_URL + "/c/c1/ZDF_logo.svg/200px-ZDF_logo.svg.png", "/mediathek/res/sender/zdf.png");
+            //case "ZDFinfo" -> null;
+            //case "ZDFneo" -> null;
             case "ZDF-tivi" -> getLocalImageIcon("/mediathek/res/sender/zdf-tivi.png");
             case "PHOENIX" -> getIcon(WIKI_BASE_URL + "/d/de/Phoenix_Logo_2018_ohne_Claim.svg/640px-Phoenix_Logo_2018_ohne_Claim.svg.png", "/mediathek/res/sender/phoenix.png");
             case "Funk.net" -> getIcon(WIKI_BASE_URL + "/9/99/Funk_Logo.svg/454px-Funk_Logo.svg.png", "/mediathek/res/sender/funk_net.png");

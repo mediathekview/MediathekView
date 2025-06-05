@@ -7,7 +7,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.daten.ListeFilme;
 import mediathek.gui.messages.BlacklistChangedEvent;
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinnerFormatter;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
@@ -122,8 +122,6 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
             }
 
             stream.filter(createPredicate()).forEachOrdered(filteredList::add);
-
-            setupNewEntries();
         }
     }
 
@@ -159,22 +157,10 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
         }
 
-        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(f -> true);
+        final Predicate<DatenFilm> pred = filterList.stream().reduce(Predicate::and).orElse(_ -> true);
         filterList.clear();
 
         return pred;
-    }
-
-    /**
-     * Detect if there are new entried in the blacklist filtered film list.
-     */
-    private void setupNewEntries() {
-        //are there new film entries?
-        final Daten daten = Daten.getInstance();
-        daten.getListeFilmeNachBlackList().stream()
-                .filter(DatenFilm::isNew)
-                .findAny()
-                .ifPresent(ignored -> daten.getListeFilmeNachBlackList().neueFilme = true);
     }
 
     /**
@@ -203,8 +189,8 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
 
     private void calculateZeitraumBoundaries() {
         try {
-            var strZeitraum = MediathekGui.ui().tabFilme.getFilterActionPanel().zeitraumProperty().get();
-            if (strZeitraum.equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE))
+            var strZeitraum = MediathekGui.ui().tabFilme.getFilterConfiguration().getZeitraum();
+            if (strZeitraum.equalsIgnoreCase(ZeitraumSpinnerFormatter.INFINITE_TEXT))
                 days_lower_boundary = 0;
             else {
                 var days_ms = TimeUnit.MILLISECONDS.convert(Long.parseLong(strZeitraum), TimeUnit.DAYS);
@@ -231,7 +217,8 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         calculateZeitraumBoundaries();
         calculateMinimumFilmLength();
 
-        blacklistIsActive = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
+        var config = ApplicationConfiguration.getConfiguration();
+        blacklistIsActive = config.getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false);
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         doNotShowGeoBlockedFilms = ApplicationConfiguration.getInstance().getBlacklistDoNotShowGeoblockedFilms();
 

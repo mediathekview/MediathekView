@@ -25,6 +25,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -176,6 +177,12 @@ public class FilmeLaden {
         fillHash(daten.getListeFilme());
     }
 
+    private void displayLogInfo(@NotNull ListeFilme listeFilme) {
+        logger.info("Alte Liste erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
+        logger.info("  Anzahl Filme: {}", listeFilme.size());
+        logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
+    }
+
     public boolean loadFilmlist(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         ListeFilme listeFilme = daten.getListeFilme();
@@ -185,9 +192,8 @@ public class FilmeLaden {
 
         logger.trace("loadFilmlist(String,boolean)");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
-        logger.info("  Anzahl Filme: {}", listeFilme.size());
-        logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
+        displayLogInfo(listeFilme);
+
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -222,9 +228,8 @@ public class FilmeLaden {
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         logger.debug("Filme laden (Update), start");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().getMetaData().getGenerationDateTimeAsString());
-        logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
-        logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
+        displayLogInfo(daten.getListeFilme());
+
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -234,7 +239,7 @@ public class FilmeLaden {
 
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
-            logger.info("Filmliste laden von: " + dateiUrl);
+            logger.info("Filmliste laden von: {}", dateiUrl);
             final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
             if (dateiUrl.isEmpty()) {
                 dateiUrl = StandardLocations.getFilmListUrl(FilmListDownloadType.FULL);
@@ -353,16 +358,15 @@ public class FilmeLaden {
     /**
      * Search through history and mark new films.
      */
-    private void findAndMarkNewFilms(ListeFilme listeFilme) {
-        listeFilme.neueFilme = false;
-
+    private void findAndMarkNewFilms(@NotNull ListeFilme listeFilme) {
+        //reset all current new films to false
         listeFilme.parallelStream()
-                .peek(film -> film.setNew(false))
+                .filter(DatenFilm::isNew)
+                .forEach(film -> film.setNew(false));
+        // mark new entries
+        listeFilme.parallelStream()
                 .filter(film -> !hashSet.contains(film.getUrlNormalQuality()))
-                .forEach(film -> {
-                    film.setNew(true);
-                    listeFilme.neueFilme = true;
-                });
+                .forEach(film -> film.setNew(true));
 
         hashSet.clear();
     }

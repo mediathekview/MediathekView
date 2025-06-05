@@ -99,7 +99,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 switch (columnModelIndex) {
                     case DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_URL -> {
                         var textArea = createTextArea(value.toString());
-                        applyColorSettings(textArea, datenFilm, isBookMarked);
+                        applyColorSettings(textArea, datenFilm, isBookMarked, isSelected);
                         return textArea;
                     }
                 }
@@ -128,7 +128,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
             }
 
-            applyColorSettings(this, datenFilm, isBookMarked);
+            applyColorSettings(this, datenFilm, isBookMarked, isSelected);
         } catch (Exception ex) {
             logger.error("Fehler", ex);
         }
@@ -151,7 +151,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
     private final java.util.List<Color> bgList = new ArrayList<>();
 
-    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isBookMarked) {
+    private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isBookMarked, boolean isSelected) {
         bgList.clear();
 
         bgList.add(c.getBackground());
@@ -160,7 +160,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             bgList.add(MVColor.FILM_HISTORY.color);
         }
 
-        if (datenFilm.isNew()) {
+        if (datenFilm.isNew() && !isSelected) {
             c.setForeground(MVColor.getNewColor());
         }
         if (isBookMarked) {

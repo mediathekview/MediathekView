@@ -2,7 +2,7 @@ package mediathek.controller;
 
 import mediathek.daten.DatenDownload;
 import mediathek.tool.FileUtils;
-import mediathek.tool.TimerPool;
+import mediathek.tool.timer.TimerPool;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

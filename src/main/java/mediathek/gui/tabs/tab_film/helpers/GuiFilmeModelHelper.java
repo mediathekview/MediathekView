@@ -18,82 +18,67 @@
 
 package mediathek.gui.tabs.tab_film.helpers;
 
-import javafx.collections.ObservableList;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPattern;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStageFilterNoPatternWithDescription;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilter;
-import mediathek.gui.tabs.tab_film.searchfilters.FinalStagePatternFilterWithDescription;
-import mediathek.javafx.filterpanel.FilterActionPanel;
-import mediathek.tool.Filter;
+import mediathek.tool.FilterConfiguration;
 import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
 
 public class GuiFilmeModelHelper extends GuiModelHelper {
     private TModelFilm filmModel;
-    private String[] arrIrgendwo;
 
-    public GuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
-                               @NotNull SeenHistoryController historyController,
-                               @NotNull SearchFieldData searchFieldData) {
-        super(filterActionPanel, historyController, searchFieldData);
+    public GuiFilmeModelHelper(@NotNull SeenHistoryController historyController,
+                               @NotNull SearchFieldData searchFieldData,
+                               @NotNull FilterConfiguration filterConfiguration) {
+        super(historyController, searchFieldData, filterConfiguration);
     }
 
     private void performTableFiltering() {
-        arrIrgendwo = searchFieldData.evaluateThemaTitel();
-
         calculateFilmLengthSliderValues();
 
-        final String filterThema = getFilterThema();
-        final ObservableList<String> selectedSenders = filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
-
-        if (filterActionPanel.isShowUnseenOnly())
+        if (filterConfiguration.isShowUnseenOnly())
             historyController.prepareMemoryCache();
 
         var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
+        var selectedSenders = getSelectedSendersFromFilter();
         if (!selectedSenders.isEmpty()) {
-            //ObservableList.contains() is insanely slow...this speeds up to factor 250!
-            Set<String> senderSet = new HashSet<>(selectedSenders.size());
-            senderSet.addAll(selectedSenders);
-            stream = stream.filter(f -> senderSet.contains(f.getSender()));
+            stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
         }
-        if (filterActionPanel.isShowNewOnly())
+        if (filterConfiguration.isShowNewOnly())
             stream = stream.filter(DatenFilm::isNew);
-        if (filterActionPanel.isShowBookMarkedOnly())
+        if (filterConfiguration.isShowBookMarkedOnly())
             stream = stream.filter(DatenFilm::isBookmarked);
-        if (filterActionPanel.isShowLivestreamsOnly())
+        if (filterConfiguration.isShowLivestreamsOnly())
             stream = stream.filter(DatenFilm::isLivestream);
-        if (filterActionPanel.isShowOnlyHighQuality())
+        if (filterConfiguration.isShowHighQualityOnly())
             stream = stream.filter(DatenFilm::isHighQuality);
-        if (filterActionPanel.isDontShowTrailers())
+        if (filterConfiguration.isDontShowTrailers())
             stream = stream.filter(film -> !film.isTrailerTeaser());
-        if (filterActionPanel.isDontShowSignLanguage())
+        if (filterConfiguration.isDontShowSignLanguage())
             stream = stream.filter(film -> !film.isSignLanguage());
-        if (filterActionPanel.isDontShowAudioVersions())
+        if (filterConfiguration.isDontShowAudioVersions())
             stream = stream.filter(film -> !film.isAudioVersion());
-        if (filterActionPanel.isDontShowAbos())
+        if (filterConfiguration.isDontShowAbos())
             stream = stream.filter(film -> film.getAbo() == null);
-        if (filterActionPanel.isDontShowDuplicates()) {
+        if (filterConfiguration.isDontShowDuplicates()) {
             stream = stream.filter(film -> !film.isDuplicate());
         }
-        if (filterActionPanel.isShowSubtitlesOnly()) {
-            stream = stream.filter(this::subtitleCheck);
+        if (filterConfiguration.isShowSubtitlesOnly()) {
+            stream = stream.filter(DatenFilm::hasAnySubtitles);
         }
 
-        stream = applyCommonFilters(stream, filterThema);
+        stream = applyCommonFilters(stream, filterConfiguration.getThema());
 
         //final stage filtering...
+        String[] arrIrgendwo = searchFieldData.evaluateThemaTitel();
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         if (!searchFieldEmpty) {
-            stream = stream.filter(createFinalStageFilter());
+            stream = stream.filter(FinalStageFilterFactory
+                    .createFinalStageFilter(searchFieldData.searchThroughDescriptions(), arrIrgendwo));
         }
 
         var list = stream.toList();
@@ -103,32 +88,8 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
         filmModel = new TModelFilm(list.size());
         filmModel.addAll(list);
 
-        if (filterActionPanel.isShowUnseenOnly())
+        if (filterConfiguration.isShowUnseenOnly())
             historyController.emptyMemoryCache();
-    }
-
-    private Predicate<DatenFilm> createFinalStageFilter() {
-        //if arrIrgendwo contains more than one search fields fall back to "old" pattern search
-        //otherwise use more optimized search
-        boolean isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.length > 1;
-        Predicate<DatenFilm> filter;
-        if (searchFieldData.searchThroughDescriptions()) {
-            if (isPattern)
-                filter = new FinalStagePatternFilterWithDescription(arrIrgendwo);
-            else
-                filter = new FinalStageFilterNoPatternWithDescription(arrIrgendwo);
-        }
-        else {
-            if (isPattern)
-                filter = new FinalStagePatternFilter(arrIrgendwo);
-            else
-                filter = new FinalStageFilterNoPattern(arrIrgendwo);
-        }
-        return filter;
-    }
-
-    private boolean subtitleCheck(DatenFilm film) {
-        return film.hasSubtitle() || film.hasBurnedInSubtitles();
     }
 
     @Override
@@ -148,4 +109,5 @@ public class GuiFilmeModelHelper extends GuiModelHelper {
 
         return filmModel;
     }
+
 }

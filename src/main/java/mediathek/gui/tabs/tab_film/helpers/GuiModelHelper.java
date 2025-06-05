@@ -18,31 +18,33 @@
 
 package mediathek.gui.tabs.tab_film.helpers;
 
+import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
-import mediathek.javafx.filterpanel.FilmLengthSlider;
-import mediathek.javafx.filterpanel.FilterActionPanel;
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
+import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
+import mediathek.tool.FilterConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.TableModel;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public abstract class GuiModelHelper {
-    protected SliderRange sliderRange;
-    protected long maxLength;
-    protected FilterActionPanel filterActionPanel;
-    protected SeenHistoryController historyController;
-    protected SearchFieldData searchFieldData;
+    private final static long UNLIMITED_LENGTH_IN_SECONDS = TimeUnit.SECONDS.convert(FilmLengthSlider.UNLIMITED_VALUE, TimeUnit.MINUTES);
+    protected final SeenHistoryController historyController;
+    protected final SearchFieldData searchFieldData;
+    protected final FilterConfiguration filterConfiguration;
+    private long minLengthInSeconds;
+    private long maxLengthInSeconds = UNLIMITED_LENGTH_IN_SECONDS;
 
-    protected GuiModelHelper(@NotNull FilterActionPanel filterActionPanel,
-                          @NotNull SeenHistoryController historyController,
-                          @NotNull SearchFieldData searchFieldData) {
-        this.filterActionPanel = filterActionPanel;
+    protected GuiModelHelper(@NotNull SeenHistoryController historyController,
+                             @NotNull SearchFieldData searchFieldData,
+                             @NotNull FilterConfiguration filterConfiguration) {
         this.historyController = historyController;
         this.searchFieldData = searchFieldData;
+        this.filterConfiguration = filterConfiguration;
     }
 
     /**
@@ -53,7 +55,7 @@ public abstract class GuiModelHelper {
     public abstract TableModel getFilteredTableModel();
 
     protected boolean maxLengthCheck(DatenFilm film) {
-        return film.getFilmLength() < sliderRange.maxLengthInSeconds();
+        return film.getFilmLength() < maxLengthInSeconds;
     }
 
     protected boolean minLengthCheck(DatenFilm film) {
@@ -61,17 +63,17 @@ public abstract class GuiModelHelper {
         if (filmLength == 0)
             return true; // always show entries with length 0, which are internally "no length"
         else
-            return filmLength >= sliderRange.minLengthInSeconds();
+            return filmLength >= minLengthInSeconds;
     }
 
     public Stream<DatenFilm> applyCommonFilters(Stream<DatenFilm> stream, final String filterThema) {
         if (!filterThema.isEmpty()) {
             stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
         }
-        if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
+        if (maxLengthInSeconds < UNLIMITED_LENGTH_IN_SECONDS) {
             stream = stream.filter(this::maxLengthCheck);
         }
-        if (filterActionPanel.isShowUnseenOnly()) {
+        if (filterConfiguration.isShowUnseenOnly()) {
             stream = stream.filter(this::seenCheck);
         }
         //perform min length filtering after all others may have reduced the available entries...
@@ -79,39 +81,22 @@ public abstract class GuiModelHelper {
     }
 
     protected boolean noFiltersAreSet() {
-        return filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().isEmpty()
-                && getFilterThema().isEmpty()
-                && searchFieldData.isEmpty()
-                && filterActionPanel.getFilmLengthSliderValues().noFiltersAreSet()
-                && !filterActionPanel.isDontShowAbos()
-                && !filterActionPanel.isShowUnseenOnly()
-                && !filterActionPanel.isShowOnlyHighQuality()
-                && !filterActionPanel.isShowSubtitlesOnly()
-                && !filterActionPanel.isShowLivestreamsOnly()
-                && !filterActionPanel.isShowNewOnly()
-                && !filterActionPanel.isShowBookMarkedOnly()
-                && !filterActionPanel.isDontShowTrailers()
-                && !filterActionPanel.isDontShowSignLanguage()
-                && !filterActionPanel.isDontShowAudioVersions()
-                && !filterActionPanel.isDontShowDuplicates()
-                && filterActionPanel.zeitraumProperty().get().equalsIgnoreCase(ZeitraumSpinner.UNLIMITED_VALUE);
+        return filterConfiguration.noFiltersAreSet() && searchFieldData.isEmpty();
+    }
+
+    protected List<String> getSelectedSendersFromFilter() {
+        return filterConfiguration.getCheckedChannels().stream().filter(SenderFilmlistLoadApprover::isApproved).toList();
     }
 
     protected boolean seenCheck(DatenFilm film) {
         return !historyController.hasBeenSeenFromCache(film);
     }
 
+    /**
+     * Convert slider values for faster user later.
+     */
     protected void calculateFilmLengthSliderValues() {
-        var sliderVals = filterActionPanel.getFilmLengthSliderValues();
-        maxLength = sliderVals.maxLength();
-        var minLengthInSeconds = TimeUnit.SECONDS.convert(sliderVals.minLength(), TimeUnit.MINUTES);
-        var maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
-        sliderRange = new SliderRange(minLengthInSeconds, maxLengthInSeconds);
-    }
-
-    protected String getFilterThema() {
-        String filterThema = filterActionPanel.getViewSettingsPane().themaComboBox.getSelectionModel().getSelectedItem();
-
-        return filterThema == null ? "" : filterThema;
+        minLengthInSeconds = TimeUnit.SECONDS.convert((long)filterConfiguration.getFilmLengthMin(), TimeUnit.MINUTES);
+        maxLengthInSeconds = TimeUnit.SECONDS.convert((long)filterConfiguration.getFilmLengthMax(), TimeUnit.MINUTES);
     }
 }

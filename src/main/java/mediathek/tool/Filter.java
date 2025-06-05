@@ -5,7 +5,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.abo.DatenAbo;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -36,9 +35,9 @@ public class Filter {
         String senderExistiert = aboExistiert.getSender();
         String themaExistiert = aboExistiert.getThema();
 
-        String[] titelExistiert = StringUtils.split(aboExistiert.getTitle().toLowerCase(), ",");
-        String[] themaTitelExistiert = StringUtils.split(aboExistiert.getThemaTitel().toLowerCase(), ",");
-        String[] irgendwoExistiert = StringUtils.split(aboExistiert.getIrgendwo().toLowerCase(), ",");
+        String[] titelExistiert = aboExistiert.getTitle().toLowerCase().split(",");
+        String[] themaTitelExistiert = aboExistiert.getThemaTitel().toLowerCase().split(",");
+        String[] irgendwoExistiert = aboExistiert.getIrgendwo().toLowerCase().split(",");
 
         // Abos sollen sich nicht nur in der Länge unterscheiden
         String themaPruefen = aboPruefen.getThema();
@@ -280,8 +279,8 @@ public class Filter {
     static class PatternCacheLoader extends CacheLoader<String, Pattern> {
 
         @Override
-        public Pattern load(@NotNull String pattern) throws IllegalArgumentException {
-            logger.trace("COMPILING PATTERN: " + pattern);
+        public @NotNull Pattern load(@NotNull String pattern) throws IllegalArgumentException {
+            logger.trace("COMPILING PATTERN: {}", pattern);
             final String regexPattern = pattern.substring(2);
 
             return Pattern.compile(regexPattern,

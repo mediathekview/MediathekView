@@ -88,6 +88,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_REF = 39;
     public static final String TAG = "Downlad";
     public static final int MAX_ELEM = 40;
+    public static final boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     private static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
             "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
             "Datum", "Zeit", "Dauer", "HD", "UT",
@@ -99,7 +100,8 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     private static final FastDateFormat sdf_datum_zeit = FastDateFormat.getInstance("dd.MM.yyyyHH:mm:ss");
     private static final FastDateFormat sdf_datum = FastDateFormat.getInstance("dd.MM.yyyy");
     private static final Logger logger = LogManager.getLogger(DatenDownload.class);
-    public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    private static final String TWO_LETTER_YEAR_PARAMETER = "%3_2";
+    private static final String FOUR_LETTER_YEAR_PARAMETER = "%3";
     public String[] arr;
     public Datum datumFilm = new Datum(0);
     public DatenFilm film;
@@ -163,8 +165,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         init();
     }
 
-    public DatenDownload(@NotNull DatenPset pSet, @NotNull DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle)
-    {
+    public DatenDownload(@NotNull DatenPset pSet, @NotNull DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle) {
         this(pSet, film, quelle, abo, name, pfad, aufloesung);
         arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
@@ -275,6 +276,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
     /**
      * Remove all query parameters from url, e.g. ?explicit=true
+     *
      * @param url the original url
      * @return filtered url string
      */
@@ -286,8 +288,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                     uri.getPath(),
                     null, // Ignore the query part of the input url
                     uri.getFragment()).toString();
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             logger.error("Failed to parse url, returning unmodified", e);
             return url;
         }
@@ -373,16 +374,13 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             writer.writeStartElement(TAG);
             writer.writeCharacters("\n");
             for (int i = 0; i < xmlMax; ++i) {
-                switch (i) {
-                    case DatenDownload.DOWNLOAD_GROESSE -> {
-                        var size = mVFilmSize.getSize();
-                        size /= FileSize.ONE_MiB;
-                        writeEntry(writer, DatenDownload.DOWNLOAD_GROESSE, Long.toString(size));
-                    }
-                    default -> {
-                        if (!arr[i].isEmpty()) {
-                            writeEntry(writer, i, arr[i]);
-                        }
+                if (i == DatenDownload.DOWNLOAD_GROESSE) {
+                    var size = mVFilmSize.getSize();
+                    size /= FileSize.ONE_MiB;
+                    writeEntry(writer, DatenDownload.DOWNLOAD_GROESSE, Long.toString(size));
+                } else {
+                    if (!arr[i].isEmpty()) {
+                        writeEntry(writer, i, arr[i]);
                     }
                 }
             }
@@ -847,7 +845,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
 
         replStr = StringUtils.replace(replStr, "%1", getDMY(DMYTag.DAY, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
         replStr = StringUtils.replace(replStr, "%2", getDMY(DMYTag.MONTH, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%3", getDMY(DMYTag.YEAR, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
+        replStr = replaceYearParameter(replStr, film);
         replStr = StringUtils.replace(replStr, "%4", getHMS(HMSTag.HOUR, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
         replStr = StringUtils.replace(replStr, "%5", getHMS(HMSTag.MINUTE, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
         replStr = StringUtils.replace(replStr, "%6", getHMS(HMSTag.SECOND, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
@@ -871,6 +869,23 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                 + '.' + GuiFunktionen.getSuffixFromUrl(downloadUrl));
 
         return replStr;
+    }
+
+    /**
+     * Replace year parameter either with four digit year or two digit year.
+     * @param replStr the original string
+     * @param film the film object
+     * @return the processed string
+     */
+    private String replaceYearParameter(String replStr, DatenFilm film) {
+        var datum = film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum();
+        var year = getDMY(DMYTag.YEAR, datum);
+        if (replStr.contains(TWO_LETTER_YEAR_PARAMETER)) {
+            // two-digit year
+            year = year.substring(2);
+            return StringUtils.replace(replStr, TWO_LETTER_YEAR_PARAMETER, year);
+        } else
+            return StringUtils.replace(replStr, FOUR_LETTER_YEAR_PARAMETER, year);
     }
 
     private String getHash(String pfad) {

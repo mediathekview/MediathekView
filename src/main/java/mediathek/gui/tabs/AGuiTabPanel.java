@@ -15,11 +15,12 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.IntConsumer;
+import java.util.function.Supplier;
 
 public abstract class AGuiTabPanel extends JPanel {
     protected Daten daten;
     protected MediathekGui mediathekGui;
-    protected JTabbedPane descriptionTab = new JTabbedPane();
+    protected final JTabbedPane descriptionTab = new JTabbedPane();
     protected FilmDescriptionPanel descriptionPanel;
 
     /**
@@ -39,8 +40,9 @@ public abstract class AGuiTabPanel extends JPanel {
     }
 
     protected void setupDescriptionTab(@NotNull JTable table, @NotNull JCheckBoxMenuItem cbmi,
-                                       @NotNull String configKey) {
-        descriptionPanel.install(descriptionTab, table);
+                                       @NotNull String configKey,
+                                       @NotNull Supplier<Optional<DatenFilm>> datenFilmSupplier) {
+        descriptionPanel.install(descriptionTab, table, datenFilmSupplier);
         descriptionTab.putClientProperty("JTabbedPane.tabClosable", true);
         descriptionTab.putClientProperty("JTabbedPane.tabCloseCallback",
                 (IntConsumer) tabIndex -> {

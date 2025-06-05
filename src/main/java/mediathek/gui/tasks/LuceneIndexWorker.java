@@ -28,6 +28,7 @@ import mediathek.tool.FileUtils;
 import mediathek.tool.LuceneDefaultAnalyzer;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.datum.DateUtil;
+import mediathek.tool.datum.DatumFilm;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.document.*;
@@ -39,11 +40,15 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class LuceneIndexWorker extends SwingWorker<Void, Void> {
     private static final Logger logger = LogManager.getLogger();
     private final JProgressBar progressBar;
     private final JLabel progLabel;
+    private final DateFormat weekdayFormatter = new SimpleDateFormat("EEEE", Locale.GERMAN);
     private int oldProgress;
 
     public LuceneIndexWorker(@NotNull JLabel progLabel, @NotNull JProgressBar progressBar) {
@@ -82,8 +87,25 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
         doc.add(new StringField(LuceneIndexKeys.DUPLICATE, Boolean.toString(film.isDuplicate()), Field.Store.NO));
 
         addSendeDatum(doc, film);
+        addSendeZeit(doc, film);
+        addWochentag(doc, film);
 
         writer.addDocument(doc);
+    }
+
+    private void addSendeZeit(@NotNull Document doc, @NotNull DatenFilm film) {
+        var startzeit = film.getSendeZeit();
+        if (!startzeit.isEmpty()) {
+            doc.add(new StringField(LuceneIndexKeys.START_TIME, startzeit, Field.Store.NO));
+        }
+    }
+
+    private void addWochentag(@NotNull Document doc, @NotNull DatenFilm film) {
+        var date = film.getDatumFilm();
+        if (date != DatumFilm.UNDEFINED_FILM_DATE) {
+            String strDate = weekdayFormatter.format(date);
+            doc.add(new TextField(LuceneIndexKeys.SENDE_WOCHENTAG, strDate, Field.Store.NO));
+        }
     }
 
     private void addSendeDatum(@NotNull Document doc, @NotNull DatenFilm film) {
@@ -135,14 +157,16 @@ public class LuceneIndexWorker extends SwingWorker<Void, Void> {
             }
             reader = DirectoryReader.open(filmListe.getLuceneDirectory());
             filmListe.setReader(reader);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.error("Lucene film index most probably damaged, deleting it.");
             try {
                 var indexPath = StandardLocations.getFilmIndexPath();
                 if (Files.exists(indexPath)) {
                     FileUtils.deletePathRecursively(indexPath);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 logger.error("Unable to delete lucene index path", e);
             }
             SwingUtilities.invokeLater(() -> {

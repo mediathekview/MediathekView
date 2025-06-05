@@ -1,3 +1,39 @@
+# **14.3.0**
+- **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten kann das Programm nicht starten.
+- **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
+- Java 24 wird auf allen Plattformen genutzt.
+- interne Geschwindigkeitsverbesserungen.
+- Filter-Dialog vollständig nach Swing portiert -> u.a. verbesserte Darstellung im Dunkelmodus
+- **Neuer Startparameter notwendig für Selbstbauer:** `--add-exports=java.desktop/sun.swing=ALL-UNNAMED` muss hinzugefügt werden.
+- großflächiger Rückbau von JavaFX-Komponenten, dies sollte älteren Computern zugute kommen.
+- **BUGFIX:** Filter können nicht in existierende umbenannt werden.
+- **BUGFIX:** Duplikatsuche berücksichtigt nur HQ-URL wenn Film auch HQ ist.
+- **BUGFIX:** Alte tagesschau24 Filme in der Liste werden nur konvertiert wenn der Sender auch angezeigt werden soll.
+- **BUGFIX:** Darkmode Anzeigefehler im Kontextmenü des Tab Filme behoben.
+- **BUGFIX:** Filterdialog im Dark Mode ändert nicht mehr die Größe.
+- **BUGFIX:** Das Erzeugen von (leeren) Infodateien für Livestreams über das Kontextmenü ist nun nicht mehr möglich.
+- **BUGFIX:** Die Online-Suche nach Thema ist nun für Livestreams deaktiviert.
+- **BUGFIX:** *Aktuellen Filter zurücksetzen* fragt nun zur Sicherheit ab ob man auch wirklich zurücksetzen möchte.
+- **BUGFIX:** Spalte *Merkliste* und *Geo* waren sortierbar obwohl hier keine Sortierung vorgesehen war.
+- **BUGFIX:** Es werden beim Optimieren der History nun alle Duplikate rein basierend auf der URL beseitigt.
+- **BUGFIX:** Bookmarks, die nicht mehr in der Filmliste existieren zeigen nun keinen Download-Button mehr an, ein Download war nicht möglich.
+- **BUGFIX:** Filmbeschreibung stell nun der Sender ohne Icon korrekt dar.
+- **FEATURE (macOS/Windows/Linux GNOME):** Auf unterstützten Systemen nimmt MV nun das aktuelle Erscheinungsbild des Betriebssystem an, wenn es unter *Einstellungen/Allgemein/Erscheinungsbild des Betriebssystem verwenden* konfiguriert wurde.
+- **FEATURE:** Lokale Filmduplikate können nach Anwahl eines Ursprungsfilmes über das Kontextmenü *"Duplikate entfernen..."* gesucht und permanent aus der Liste entfernt werden. *WICHTIG:* Etwaige Duplikat-Markierungen bleiben bis zum Neustart ggf. erhalten da keine listenweite Duplikaterkennung nach einer Löschung gestartet wird.
+- **FEATURE:** Thema und Sender werden nun in den Filtern gespeichert. Vielen Dank an @MarkusJannek
+- **FEATURE:** Tab Download Kontextmenüeintrag *Film (URL) abspielen* besitzt nun in eigenes Icon. @MarkusJannek
+- **FEATURE:** MV kann nun die Sender ZDFinfo und ZDFneo in der Filmliste auswerten.
+- **FEATURE:** Untertitel werden nun auch in das ASS-Format konvertiert. Vielen Dank an @Lucki.
+- **FEATURE:** In den PSets kann nun über den Parameter `%3_2` ein zweistelliges Jahr in den Dateinamen eingefügt werden.
+- **FEATURE:** Die Senderliste kann über das Kontextmenü vertikal umgebrochen werden, um mehr Informationen darzustellen. Die Einstellung wird gespeichert und bei jedem Start wiederhergestellt.
+- **FEATURE:** Filter können bei der Neuanlage direkt mit einem Namen versehen werden.
+- **FEATURE:** Thema-ComboBox kann entweder über den Mülleimer-Button zurückgesetzt werden oder über das Kontextmenü
+- **FEATURE:** Die verschiedenen Buttons zur Filterverwaltung wurden nun in einem Menübutton zusammengeführt um den Platzbedarf zu reduzieren.
+- **FEATURE:** Die Filmlänge kann nun im Filterdialog bis 240 Minuten ausgewählt werden.
+- **FEATURE:** MediathekView fragt einmalig beim Start, ob alle Sender aktiviert werden sollen, da neue Sender hinzugefügt wurden.
+- **FEATURE:** Lucene-Index um `wochentag` und `startzeit` der Filme erweitert.
+- **FEATURE(macOS):** MV prüft beim Start, ob eine Intel-Version des Programms auf einem modernen Mac mit Apple Silicon CPU betrieben wird. In diesem Fall wird eine Warnung angezeigt dass es eine performantere Alternative gibt.
+
 # **14.2.0**
 - **(macOS):** Dies ist die letzte Version, die mit macOS 10.15 Catalina lauffähig ist. Zukünftig wird mindestens macOS 11 vorausgesetzt.
 - **(Linux/Windows):** Die von uns gelieferten Binaries enthalten JDK 23.0.2.

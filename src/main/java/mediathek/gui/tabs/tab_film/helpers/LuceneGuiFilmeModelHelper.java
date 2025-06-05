@@ -19,16 +19,15 @@
 package mediathek.gui.tabs.tab_film.helpers;
 
 import com.google.common.base.Stopwatch;
-import javafx.collections.ObservableList;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
+import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinnerFormatter;
 import mediathek.gui.tasks.LuceneIndexKeys;
-import mediathek.javafx.filterpanel.FilterActionPanel;
-import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.FilterConfiguration;
 import mediathek.tool.LuceneDefaultAnalyzer;
 import mediathek.tool.SwingErrorDialog;
 import mediathek.tool.models.TModelFilm;
@@ -63,10 +62,10 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
 
     private final Analyzer analyzer = LuceneDefaultAnalyzer.buildAnalyzer();
 
-    public LuceneGuiFilmeModelHelper(@NotNull FilterActionPanel filterActionPanel,
-                                     @NotNull SeenHistoryController historyController,
-                                     @NotNull SearchFieldData searchFieldData) {
-        super(filterActionPanel, historyController, searchFieldData);
+    public LuceneGuiFilmeModelHelper(@NotNull SeenHistoryController historyController,
+                                     @NotNull SearchFieldData searchFieldData,
+                                     @NotNull FilterConfiguration filterConfiguration) {
+        super(historyController, searchFieldData, filterConfiguration);
     }
 
     private TModelFilm performTableFiltering() {
@@ -74,7 +73,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
         try {
             calculateFilmLengthSliderValues();
 
-            if (filterActionPanel.isShowUnseenOnly())
+            if (filterConfiguration.isShowUnseenOnly())
                 historyController.prepareMemoryCache();
 
             String searchText = searchFieldData.searchFieldText();
@@ -93,40 +92,40 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                 BooleanQuery.Builder qb = new BooleanQuery.Builder();
                 qb.add(initialQuery, BooleanClause.Occur.MUST);
 
-                //Zeitraum filter on demand...
-                if (!filterActionPanel.zeitraumProperty().get().equals(ZeitraumSpinner.UNLIMITED_VALUE)) {
+                //Zeitraum filter on demand …
+                if (!filterConfiguration.getZeitraum().equalsIgnoreCase(ZeitraumSpinnerFormatter.INFINITE_TEXT)) {
                     try {
                         qb.add(createZeitraumQuery(), BooleanClause.Occur.FILTER);
                     } catch (Exception ex) {
                         logger.error("Unable to add zeitraum filter", ex);
                     }
                 }
-                if (filterActionPanel.isShowLivestreamsOnly()) {
+                if (filterConfiguration.isShowLivestreamsOnly()) {
                     addLivestreamQuery(qb);
                 }
-                if (filterActionPanel.isShowOnlyHighQuality()) {
+                if (filterConfiguration.isShowHighQualityOnly()) {
                     addHighQualityOnlyQuery(qb);
                 }
-                if (filterActionPanel.isDontShowTrailers()) {
+                if (filterConfiguration.isDontShowTrailers()) {
                     addNoTrailerTeaserQuery(qb);
                 }
-                if (filterActionPanel.isDontShowAudioVersions()) {
+                if (filterConfiguration.isDontShowAudioVersions()) {
                     addNoAudioVersionQuery(qb);
                 }
-                if (filterActionPanel.isDontShowSignLanguage()) {
+                if (filterConfiguration.isDontShowSignLanguage()) {
                     addNoSignLanguageQuery(qb);
                 }
-                if (filterActionPanel.isDontShowDuplicates()) {
+                if (filterConfiguration.isDontShowDuplicates()) {
                     addNoDuplicatesQuery(qb);
                 }
 
-                if (filterActionPanel.isShowSubtitlesOnly()) {
+                if (filterConfiguration.isShowSubtitlesOnly()) {
                     addSubtitleOnlyQuery(qb);
                 }
-                if (filterActionPanel.isShowNewOnly()) {
+                if (filterConfiguration.isShowNewOnly()) {
                     addNewOnlyQuery(qb);
                 }
-                final ObservableList<String> selectedSenders = filterActionPanel.getViewSettingsPane().senderCheckList.getCheckModel().getCheckedItems();
+                var selectedSenders = getSelectedSendersFromFilter();
                 if (!selectedSenders.isEmpty()) {
                     addSenderFilterQuery(qb, selectedSenders);
                 }
@@ -160,19 +159,19 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
                         .filter(film -> filmNrSet.contains(film.getFilmNr()));
             }
 
-            if (filterActionPanel.isShowBookMarkedOnly())
+            if (filterConfiguration.isShowBookMarkedOnly())
                 stream = stream.filter(DatenFilm::isBookmarked);
-            if (filterActionPanel.isDontShowAbos())
+            if (filterConfiguration.isDontShowAbos())
                 stream = stream.filter(film -> film.getAbo() == null);
 
-            var resultList = applyCommonFilters(stream, getFilterThema()).toList();
+            var resultList = applyCommonFilters(stream, filterConfiguration.getThema()).toList();
             logger.trace("Resulting filmlist size after all filters applied: {}", resultList.size());
 
             //adjust initial capacity
             var filmModel = new TModelFilm(resultList.size());
             filmModel.addAll(resultList);
 
-            if (filterActionPanel.isShowUnseenOnly())
+            if (filterConfiguration.isShowUnseenOnly())
                 historyController.emptyMemoryCache();
 
             return filmModel;
@@ -184,7 +183,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
         }
     }
 
-    private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull List<String> selectedSenders) {
+    private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull Collection<String> selectedSenders) {
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         for (var sender : selectedSenders) {
             // sender must be lowercase as StandardAnalyzer converts it to lower during indexing
@@ -236,7 +235,8 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private Query createZeitraumQuery() throws ParseException {
-        var numDays = Integer.parseInt(filterActionPanel.zeitraumProperty().get());
+
+        var numDays = Integer.parseInt(filterConfiguration.getZeitraum());
         var toDate = LocalDateTime.now();
         var fromDate = toDate.minusDays(numDays);
         var utcZone = ZoneId.of("UTC");

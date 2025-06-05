@@ -126,7 +126,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             filmLength = 0;
         }
         else {
-            final String[] split = StringUtils.split(dauer, ':');
+            final String[] split = dauer.split(":");
 
             try {
                 filmLength += Integer.parseInt(split[0]) * 3600; //hour
@@ -381,6 +381,14 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return dataMap.containsKey(MapKeys.SUBTITLE_URL);
     }
 
+    /**
+     * Return if the film has any sort of subtitle available.
+     * @return true if any subtitle is available.
+     */
+    public boolean hasAnySubtitles() {
+        return hasSubtitle() || hasBurnedInSubtitles();
+    }
+
     //TODO This function might not be necessary as getUrlNormalOrRequested does almost the same
     public String getUrlFuerAufloesung(FilmResolution.Enum resolution) {
         return switch (resolution) {
@@ -414,6 +422,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
      */
     public boolean isHighQuality() {
         return dataMap.containsKey(MapKeys.HIGH_QUALITY_URL);
+    }
+
+    public boolean hasLowQuality() {
+        return dataMap.containsKey(MapKeys.LOW_QUALITY_URL);
     }
 
     @Override

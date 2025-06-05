@@ -51,6 +51,10 @@ public class LuceneIndexKeys {
      */
     public static final String SENDE_DATUM = "sendedatum";
     /**
+     * Wochentag (Montag, Dienstag,...) des Sendedatums. String.
+     */
+    public static final String SENDE_WOCHENTAG = "wochentag";
+    /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
     public static final String NEW = "neu";
@@ -66,4 +70,8 @@ public class LuceneIndexKeys {
      * Boolean Key ist nur vorhanden, wenn Film als Duplikat klassifiziert wurde. Dann "true".
      */
     public static final String DUPLICATE = "duplicate";
+    /**
+     * Startzeit des Films HH:mm:ss. String.
+     */
+    public static final String START_TIME = "startzeit";
 }

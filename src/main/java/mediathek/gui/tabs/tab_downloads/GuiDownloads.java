@@ -90,24 +90,24 @@ public class GuiDownloads extends AGuiTabPanel {
     private final FinishedDownloadsInfoLabel finishedDownloadsInfoLabel = new FinishedDownloadsInfoLabel(startInfoProperty);
     private final FailedDownloadsInfoLabel failedDownloadsInfoLabel = new FailedDownloadsInfoLabel(startInfoProperty);
     private final DownloadsConfigPanel dlConfigPanel = new DownloadsConfigPanel();
-    protected StartAllDownloadsAction startAllDownloadsAction = new StartAllDownloadsAction(this);
-    protected StartAllDownloadsTimedAction startAllDownloadsTimedAction = new StartAllDownloadsTimedAction(this);
-    protected StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
-    protected StopAllWaitingDownloadsAction stopAllWaitingDownloadsAction = new StopAllWaitingDownloadsAction(this);
-    protected RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
-    protected CleanupDownloadListAction cleanupDownloadListAction = new CleanupDownloadListAction(this);
-    protected PlayDownloadAction playDownloadAction = new PlayDownloadAction(this);
-    protected StopDownloadsAction stopDownloadsAction = new StopDownloadsAction(this);
-    protected StartDownloadsAction startDownloadsAction = new StartDownloadsAction(this);
-    protected DeferDownloadsAction deferDownloadsAction = new DeferDownloadsAction(this);
-    protected AdvanceDownloadsAction advanceDownloadsAction = new AdvanceDownloadsAction(this);
-    protected DeleteDownloadsAction deleteDownloadsAction = new DeleteDownloadsAction(this);
-    protected EditDownloadAction editDownloadAction = new EditDownloadAction(this);
-    protected DeleteDownloadAction deleteDownloadAction = new DeleteDownloadAction(this);
-    protected OpenTargetFolderAction openTargetFolderAction = new OpenTargetFolderAction(this);
-    protected ToggleFilterPanelAction toggleFilterPanelAction = new ToggleFilterPanelAction();
-    protected MergeSubtitleWithVideoAction mergeSubtitleWithVideoAction = new MergeSubtitleWithVideoAction(MediathekGui.ui());
-    protected JToolBar swingToolBar = new JToolBar();
+    protected final StartAllDownloadsAction startAllDownloadsAction = new StartAllDownloadsAction(this);
+    protected final StartAllDownloadsTimedAction startAllDownloadsTimedAction = new StartAllDownloadsTimedAction(this);
+    protected final StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
+    protected final StopAllWaitingDownloadsAction stopAllWaitingDownloadsAction = new StopAllWaitingDownloadsAction(this);
+    protected final RefreshDownloadListAction refreshDownloadListAction = new RefreshDownloadListAction(this);
+    protected final CleanupDownloadListAction cleanupDownloadListAction = new CleanupDownloadListAction(this);
+    protected final PlayDownloadAction playDownloadAction = new PlayDownloadAction(this);
+    protected final StopDownloadsAction stopDownloadsAction = new StopDownloadsAction(this);
+    protected final StartDownloadsAction startDownloadsAction = new StartDownloadsAction(this);
+    protected final DeferDownloadsAction deferDownloadsAction = new DeferDownloadsAction(this);
+    protected final AdvanceDownloadsAction advanceDownloadsAction = new AdvanceDownloadsAction(this);
+    protected final DeleteDownloadsAction deleteDownloadsAction = new DeleteDownloadsAction(this);
+    protected final EditDownloadAction editDownloadAction = new EditDownloadAction(this);
+    protected final DeleteDownloadAction deleteDownloadAction = new DeleteDownloadAction(this);
+    protected final OpenTargetFolderAction openTargetFolderAction = new OpenTargetFolderAction(this);
+    protected final ToggleFilterPanelAction toggleFilterPanelAction = new ToggleFilterPanelAction();
+    protected final MergeSubtitleWithVideoAction mergeSubtitleWithVideoAction = new MergeSubtitleWithVideoAction(MediathekGui.ui());
+    protected final JToolBar swingToolBar = new JToolBar();
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -132,7 +132,7 @@ public class GuiDownloads extends AGuiTabPanel {
         super();
         daten = aDaten;
         this.mediathekGui = mediathekGui;
-        descriptionPanel = new FilmDescriptionPanel(this);
+        descriptionPanel = new FilmDescriptionPanel();
 
 
         initComponents();
@@ -144,7 +144,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         setupDownloadListTable();
 
-        setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION);
+        setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, this::getCurrentlySelectedFilm);
 
         init();
 
@@ -1242,6 +1242,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.addSeparator();
 
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
+            itemPlayer.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-play.svg"));
             itemPlayer.addActionListener(e -> {
                 final int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {

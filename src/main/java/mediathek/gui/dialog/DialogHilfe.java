@@ -5,7 +5,6 @@ import mediathek.tool.EscapeKeyHandler;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
-@SuppressWarnings("serial")
 public class DialogHilfe extends JDialog {
 
     public DialogHilfe(JFrame parent, boolean modal, String text) {

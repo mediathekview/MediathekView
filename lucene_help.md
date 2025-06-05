@@ -20,9 +20,25 @@ MediathekView bietet die folgenden *tags* (Achtung: hier sind **immer** Kleinbuc
 | neu           | Boolean | *true*, wenn der Film neu in die Liste aufgenommen wurde, ansonsten nicht definiert. |
 | länge         | int     | Filmlänge in Sekunden, **0** wenn keine Information vorhanden ist. |
 | größe         | int     | Filmgröße in Megabytes, **0** wenn keine Information vorhanden ist. |
+| wochentag     | String  | (**14.3**) Wochentag des Sendedatums (Montag, Dienstag,...)  |
+| startzeit     | String  | (**14.3**) Startzeit des Films im Format `HH:mm:ss` |
 
+### Abfrage der Startzeit
+Genaue Zeiten können wie folgt abgefragt werden:
+```
+startzeit:"14:35:12"
+```
+Zeiträume werden wie folgt abgefragt:
+```
+startzeit:[10:00:00 TO 15:00:00]
+```
+
+
+
+### Einschränkungen
 Es ist nicht möglich, Filme anhand von URLs bzw. Teilsegmenten davon zu suchen. 
 
+## Weiterführende Links
 Um sich mit der Abfragesyntax vertraut zu machen sind nachfolgende Links empfohlen:
 
 1. [Lucene Query Syntax](https://ci-builds.apache.org/job/Lucene/job/Lucene-Artifacts-main/javadoc/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package.description)

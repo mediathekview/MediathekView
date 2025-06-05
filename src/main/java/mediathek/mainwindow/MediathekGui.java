@@ -3,8 +3,6 @@ package mediathek.mainwindow;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import javafx.application.Platform;
-import javafx.stage.Stage;
 import mediathek.Main;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
@@ -37,14 +35,13 @@ import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
-import mediathek.javafx.tool.JFXHiddenApplication;
-import mediathek.javafx.tool.JavaFxUtils;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NullNotificationCenter;
 import mediathek.tool.threads.IndicatorThread;
+import mediathek.tool.timer.TimerPool;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
 import net.engio.mbassy.listener.Handler;
@@ -54,6 +51,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import raven.toast.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
@@ -115,29 +113,29 @@ public class MediathekGui extends JFrame {
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
-    public EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
-    public ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
-    public ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
+    public final EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
+    public final ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
+    public final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
     /**
      * this property keeps track how many items are currently selected in the active table view
      */
-    public ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
+    public final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
     /**
      * Used for status bar progress.
      */
-    public JLabel progressLabel = new JLabel();
+    public final JLabel progressLabel = new JLabel();
     /**
      * Used for status bar progress.
      */
-    public JProgressBar progressBar = new JProgressBar();
+    public final JProgressBar progressBar = new JProgressBar();
     /**
      * the global configuration for this app.
      */
-    protected Configuration config = ApplicationConfiguration.getConfiguration();
-    protected JToolBar commonToolBar = new JToolBar();
-    protected ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
+    protected final Configuration config = ApplicationConfiguration.getConfiguration();
+    protected final JToolBar commonToolBar = new JToolBar();
+    protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     protected FontManager fontManager;
-    protected ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
+    protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private ProgramUpdateCheck programUpdateChecker;
@@ -205,8 +203,6 @@ public class MediathekGui extends JFrame {
         installToolBar();
 
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.FINISHED));
-
-        workaroundJavaFxInitializationBug();
 
         subscribeTableModelChangeEvent();
 
@@ -276,10 +272,10 @@ public class MediathekGui extends JFrame {
             }, Daten.getInstance().getDecoratedPool());
         }
 
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
-            MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
-        }
+        resetTabPlacement();
+
+        //setup Raven Notification library
+        Notifications.getInstance().setJFrame(this);
 
         performAustrianVlcCheck();
     }
@@ -291,6 +287,11 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    protected void resetTabPlacement() {
+        // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
+        MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
     }
 
     private void performAustrianVlcCheck() {
@@ -340,7 +341,7 @@ public class MediathekGui extends JFrame {
      * @return true when alternating row colors should be used, false otherwise.
      */
     protected boolean useAlternateRowColors() {
-        return false;
+        return true;
     }
 
     public void setupAlternatingRowColors() {
@@ -402,28 +403,26 @@ public class MediathekGui extends JFrame {
     /**
      * Check if we encountered invalid regexps and warn user if necessary.
      * This needs to be delayed unfortunately as we can see result only after table has been filled.
-     * So we simply wait 30 seconds until we check.
+     * So we simply wait 15 seconds until we check.
      */
     private void checkInvalidRegularExpressions() {
-        TimerPool.getTimerPool().schedule(() -> {
-            if (Filter.regExpErrorsOccured()) {
-                final var regexStr = Filter.regExpErrorList.stream()
-                        .reduce("", (p, e) ->
-                                p + "\n" + e);
-                final var message = String.format("""
-                        Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.
-                        Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!
-                                                
-                        Nachfolgende Ausdrücke sind fehlerbehaftet: %s
-                        """, regexStr);
-                Filter.regExpErrorList.clear();
+        if (Filter.regExpErrorsOccured()) {
+            final var regexStr = Filter.regExpErrorList.stream()
+                    .reduce("", (p, e) ->
+                            p + "\n" + e);
+            Filter.regExpErrorList.clear();
 
-                JOptionPane.showMessageDialog(this,
-                        message,
-                        Konstanten.PROGRAMMNAME,
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        }, 15, TimeUnit.SECONDS);
+            final var message = String.format(
+                    "<html>Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.<br/>" +
+                            "<b>Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!</b><br/><br/>" +
+                            "Nachfolgende Ausdrücke sind fehlerbehaftet: <br/>%s</html>", regexStr);
+
+            TimerPool.getTimerPool().schedule(() -> SwingUtilities.invokeLater(
+                    () -> JOptionPane.showMessageDialog(this,
+                            message,
+                            Konstanten.PROGRAMMNAME,
+                            JOptionPane.ERROR_MESSAGE)), 15, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -497,7 +496,7 @@ public class MediathekGui extends JFrame {
                 popupMenu = new PopupMenu();
 
             MenuItem miLoadNewFilmlist = new MenuItem("Neue Filmliste laden");
-            miLoadNewFilmlist.addActionListener(e -> performFilmListLoadOperation(false));
+            miLoadNewFilmlist.addActionListener(_ -> performFilmListLoadOperation(false));
 
             popupMenu.addSeparator();
             popupMenu.add(miLoadNewFilmlist);
@@ -549,27 +548,6 @@ public class MediathekGui extends JFrame {
 
     protected void addFontMenu() {
         jMenuBar.add(fontMenu);
-    }
-
-    /**
-     * JavaFX seems to need at least one window shown in order to function without further problems.
-     * This is imminent on macOS, but seems to affect windows as well.
-     */
-    protected void workaroundJavaFxInitializationBug() {
-        JavaFxUtils.invokeInFxThreadAndWait(() -> {
-            /*
-            For some unknown reason JavaFX seems to get confused on macOS when no stage was at least once
-            really visible. This will cause swing/javafx mixed windows to have focus trouble and/or use 100%
-            cpu when started in background.
-            Workaround for now is to open a native javafx stage, display it for the shortest time possible and
-            then close it as we don´t need it. On my machine this fixes the focus and cpu problems.
-             */
-            var window = new Stage();
-            window.setWidth(10d);
-            window.setHeight(10d);
-            window.show();
-            window.hide();
-        });
     }
 
     private void createMemoryMonitor() {
@@ -1010,7 +988,7 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showDuplicateStatisticsAction);
         var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
-        mi.addActionListener(e -> {
+        mi.addActionListener(_ -> {
             FilmDuplicateOverviewDialog dlg = new FilmDuplicateOverviewDialog(this);
             dlg.setVisible(true);
         });
@@ -1093,7 +1071,7 @@ public class MediathekGui extends JFrame {
         JMenu devMenu = new JMenu("Entwickler");
 
         JMenuItem miGc = new JMenuItem("GC ausführen");
-        miGc.addActionListener(e -> System.gc());
+        miGc.addActionListener(_ -> System.gc());
 
         devMenu.add(miGc);
 
@@ -1187,7 +1165,7 @@ public class MediathekGui extends JFrame {
         logger.trace("Save Tab Filme data.");
         tabFilme.tabelleSpeichern();
         tabFilme.saveSettings();  // needs thread pools active!
-        tabFilme.getFilterActionPanel().getFilterDialog().dispose();
+        tabFilme.swingFilterDialog.dispose();
 
         logger.trace("Save Tab Download data.");
         tabDownloads.tabelleSpeichern();
@@ -1201,10 +1179,6 @@ public class MediathekGui extends JFrame {
         logger.trace("Shutdown pools.");
         shutdownTimerPool();
         waitForCommonPoolToComplete();
-
-        //shutdown JavaFX
-        logger.trace("Shutdown JavaFX.");
-        shutdownJavaFx();
 
         //close main window
         logger.trace("Close main window.");
@@ -1231,33 +1205,26 @@ public class MediathekGui extends JFrame {
         return true;
     }
 
-    /**
-     * Gracefully shutdown the JavaFX environment.
-     */
-    private void shutdownJavaFx() {
-        //causes system hang on Sonoma 14.1
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            JavaFxUtils.invokeInFxThreadAndWait(() -> JFXHiddenApplication.getPrimaryStage().close());
-        }
-
-        Platform.exit();
-    }
-
     private void shutdownTimerPool() {
         logger.trace("Entering shutdownTimerPool()");
 
         var timerPool = TimerPool.getTimerPool();
-        timerPool.shutdown();
         try {
-            if (!timerPool.awaitTermination(3, TimeUnit.SECONDS))
-                logger.warn("Time out occured before pool final termination");
+            TimerPool.getRepeatingTimerFuture().cancel(true);
+            timerPool.shutdown();
+            if (!timerPool.awaitTermination(500, TimeUnit.MILLISECONDS)) {
+                if (Config.isDebugModeEnabled()) {
+                    logger.warn("Time out occured before pool final termination");
+                }
+            }
         } catch (InterruptedException e) {
             logger.error("timerPool shutdown exception", e);
         }
         var taskList = timerPool.shutdownNow();
-        if (!taskList.isEmpty()) {
-            logger.trace("timerPool taskList was not empty");
-            logger.trace(taskList.toString());
+        if (Config.isDebugModeEnabled()) {
+            if (!taskList.isEmpty()) {
+                logger.trace("timerPool taskList was not empty: {}", taskList.toString());
+            }
         }
 
         logger.trace("Leaving shutdownTimerPool()");

@@ -57,7 +57,7 @@ public class FilmListReader implements AutoCloseable {
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
-    protected int DECOMPRESSOR_MEMORY_LIMIT = -1;
+    protected final int DECOMPRESSOR_MEMORY_LIMIT = -1;
     private int progress;
     private IDateFilter dateFilter;
     private String sender = "";
@@ -398,7 +398,6 @@ public class FilmListReader implements AutoCloseable {
             } else
                 processFromFile(source, listeFilme);
 
-            convertTagesschau24(listeFilme);
         } catch (MalformedURLException | URISyntaxException ex) {
             logger.warn(ex);
         }
@@ -437,20 +436,6 @@ public class FilmListReader implements AutoCloseable {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();
         }
-    }
-
-    /**
-     * Convert ARD films with thema tagesschau24 to sender tagesschau24.
-     * @param list source film list
-     */
-    protected void convertTagesschau24(@NotNull ListeFilme list) {
-       var films = list.parallelStream()
-                .filter(f -> f.getSender().equalsIgnoreCase("ARD"))
-                .filter(f -> f.getThema().equalsIgnoreCase("tagesschau24"))
-               .toList();
-       for (var film : films) {
-           film.setSender("tagesschau24");
-       }
     }
 
     private String buildClientInfo()

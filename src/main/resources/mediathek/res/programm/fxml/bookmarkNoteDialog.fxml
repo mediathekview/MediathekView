@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import org.controlsfx.glyphfont.Glyph?>
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="190.0" minWidth="400.0" prefHeight="233.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
-    <DatePicker fx:id="fxDate" layoutX="125.0" layoutY="25.0" onAction="#handleChange" AnchorPane.leftAnchor="95.0" AnchorPane.topAnchor="25.0" />
-    <Label fx:id="fxExpiry" layoutX="18.0" layoutY="30.0" text="Verfügbar bis:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="30.0" />
-    <TextArea fx:id="fxNote" layoutX="17.0" layoutY="65.0" prefHeight="53.0" prefWidth="375.0" promptText="Notiz" wrapText="true" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="95.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="65.0" />
-    <Label layoutX="15.0" layoutY="72.0" text="Notiz:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="69.0" />
-    <ProgressIndicator fx:id="fxProgress" layoutX="487.0" layoutY="22.0" prefHeight="33.0" prefWidth="32.0" visible="false" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="22.0" />
-    <Label fx:id="fxStatus" layoutX="330.0" layoutY="29.0" prefHeight="18.0" prefWidth="146.0" text="Suche nach Datum läuft" visible="false" AnchorPane.leftAnchor="330.0" AnchorPane.topAnchor="29.0" />
-    <Button fx:id="btnWebDate" ellipsisString="" layoutX="290.0" layoutY="25.0" mnemonicParsing="false" onAction="#btnSearchWeb" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="25.0">
-      <graphic>
-          <Glyph fontFamily="FontAwesome" icon="SEARCH" />
-      </graphic>
-        <tooltip>
-            <Tooltip text="Verfügbar bis Datum auf der Webseite suchen" />
-        </tooltip>
-    </Button>
-   <ButtonBar layoutX="5.0" layoutY="351.0" prefHeight="40.0" prefWidth="514.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="15.0">
-     <buttons>
-          <Button fx:id="CancelButton" cancelButton="true" mnemonicParsing="false" onAction="#handleCancel" onMouseClicked="#handleCancel" text="Abbruch" textAlignment="CENTER">
-              <padding>
-                  <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
-              </padding>
-          </Button>
-          <Button fx:id="SaveButton" contentDisplay="CENTER" defaultButton="true" disable="true" mnemonicParsing="false" onAction="#handleSave" text="Speichern" textAlignment="CENTER">
-            <padding>
-                <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
-            </padding>
-          </Button>
-     </buttons>
-   </ButtonBar>
-</AnchorPane>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
+    <TextArea fx:id="fxNote" prefHeight="200.0" prefWidth="200.0" promptText="Notiz" wrapText="true" VBox.vgrow="ALWAYS"/>
+    <ButtonBar prefHeight="40.0" prefWidth="514.0">
+        <buttons>
+            <Button fx:id="CancelButton" cancelButton="true" mnemonicParsing="false" onAction="#handleCancel"
+                    onMouseClicked="#handleCancel" text="Abbruch" textAlignment="CENTER">
+                <padding>
+                    <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
+                </padding>
+            </Button>
+            <Button fx:id="SaveButton" contentDisplay="CENTER" defaultButton="true"
+                    mnemonicParsing="false" onAction="#handleSave" text="Speichern" textAlignment="CENTER">
+                <padding>
+                    <Insets bottom="5.0" left="15.0" right="15.0" top="5.0"/>
+                </padding>
+            </Button>
+        </buttons>
+    </ButtonBar>
+</VBox>

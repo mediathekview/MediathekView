@@ -12,7 +12,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.*
 import kotlin.system.exitProcess
-import kotlin.use
 
 /**
  * Database based seen history controller.
@@ -106,7 +105,7 @@ class SeenHistoryController : AutoCloseable {
      */
     fun prepareMemoryCache() {
         connection!!.createStatement().use { st ->
-            st.executeQuery("SELECT url as url FROM seen_history").use { rs ->
+            st.executeQuery("SELECT DISTINCT(url) as url FROM seen_history").use { rs ->
                 while (rs.next()) {
                     val url = rs.getString(1)
                     urlCache.add(url)
@@ -280,7 +279,28 @@ class SeenHistoryController : AutoCloseable {
         connection!!.autoCommit = false
         try {
             connection!!.createStatement().use { statement ->
-                statement.executeUpdate("CREATE TABLE temp_history AS SELECT DISTINCT datum,thema,titel,url FROM seen_history ORDER BY datum")
+                // get all rows with unique urls
+                val code = "CREATE TABLE temp_history AS\n" +
+                        "SELECT\n" +
+                        "    datum,\n" +
+                        "    thema,\n" +
+                        "    titel,\n" +
+                        "    url\n" +
+                        "FROM (\n" +
+                        "    SELECT\n" +
+                        "        datum,\n" +
+                        "        thema,\n" +
+                        "        titel,\n" +
+                        "        url,\n" +
+                        "        ROW_NUMBER() OVER (PARTITION BY url ORDER BY datum DESC) as rn\n" +
+                        "    FROM\n" +
+                        "        seen_history\n" +
+                        ") AS ranked_seen_history\n" +
+                        "WHERE\n" +
+                        "    rn = 1 \n" +
+                        "ORDER BY\n" +
+                        "    datum;"
+                statement.executeUpdate(code)
                 statement.executeUpdate("DELETE FROM seen_history")
                 statement.executeUpdate("INSERT INTO seen_history(datum,thema,titel,url) SELECT datum,thema,titel,url FROM temp_history")
                 statement.executeUpdate("DROP TABLE temp_history")
@@ -306,7 +326,7 @@ class SeenHistoryController : AutoCloseable {
             }
         }
         connection!!.createStatement().use { statement ->
-            statement.executeQuery("SELECT COUNT(*) FROM (SELECT DISTINCT datum,thema,titel,url FROM seen_history)").use {
+            statement.executeQuery("SELECT COUNT(*) FROM (SELECT DISTINCT url FROM seen_history)").use {
                 it.next()
                 distinct = it.getLong(1)
             }

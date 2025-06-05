@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>14.2.0</version>
+    <version>14.3.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -82,13 +82,20 @@
         </repository>
     </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>ej-technologies</id>
+            <url>https://maven.ej-technologies.com/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.language.version>21</jdk.language.version>
-        <kotlin.language.target>21</kotlin.language.target>
-        <jvm.target.version>21</jvm.target.version>
+        <jdk.language.version>23</jdk.language.version>
+        <jvm.target.version>23</jvm.target.version>
+        <kotlin.language.target>23</kotlin.language.target>
 
-        <kotlin.version>2.1.10</kotlin.version>
+        <kotlin.version>2.1.21</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
@@ -99,52 +106,58 @@
         <commons-configuration2.version>2.11.0</commons-configuration2.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <controlsfx.version>11.2.1</controlsfx.version>
-        <flatlaf.version>3.5.4</flatlaf.version>
-        <guava.version>33.4.0-jre</guava.version>
+        <flatlaf.version>3.6</flatlaf.version>
+        <glazedlists.version>1.11.0</glazedlists.version>
+        <guava.version>33.4.8-jre</guava.version>
         <icu4j.version>76.1</icu4j.version>
-        <install4j-maven-plugin.version>1.1.2</install4j-maven-plugin.version>
         <jackson.version>2.18.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
-        <javafx.version>23.0.1</javafx.version>
+        <javax-activation.version>1.2.0</javax-activation.version>
+        <javafx.version>24</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
-        <jna.version>5.16.0</jna.version>
+        <jfreechart.version>1.5.5</jfreechart.version>
+        <jide-oss.version>3.7.15</jide-oss.version>
+        <jlibnotify.version>1.1.5</jlibnotify.version>
+        <jna.version>5.17.0</jna.version>
         <junit.jupiter.version>5.10.3</junit.jupiter.version>
-        <lucene.version>10.1.0</lucene.version>
+        <lucene.version>10.2.0</lucene.version>
+        <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
         <log4j2.version>2.24.3</log4j2.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <mbassador.version>1.3.2</mbassador.version>
         <miglayout.version>11.3</miglayout.version>
         <mockito.version>5.12.0</mockito.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
-        <picocli.version>4.7.6</picocli.version>
-        <sqlite-jdbc.version>3.48.0.0</sqlite-jdbc.version>
+        <picocli.version>4.7.7</picocli.version>
+        <sqlite-jdbc.version>3.49.1.0</sqlite-jdbc.version>
+        <swingx.version>1.6.5-1</swingx.version>
         <xz.version>1.10</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
 
-        <install4j.version>10.0.9</install4j.version>
+        <install4j.version>11.0.3</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
-        <install4j.licenseKey>${env.LICENSE_KEY_10}</install4j.licenseKey>
-        <install4j.jdk.min-version>22</install4j.jdk.min-version>
+        <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
+        <install4j.jdk.min-version>24</install4j.jdk.min-version>
 
         <!-- VM Parameters Windows x64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
-            -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector -DexternalUpdateCheck
+            -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck
         </install4j.vmparameters.win.64>
         <!-- VM Parameters Linux 64bit Intel and ARM -->
         <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
-            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
+            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
             -DexternalUpdateCheck
         </install4j.vmparameters.linux.64>
     </properties>
@@ -159,7 +172,7 @@
         <dependency>
             <groupId>com.github.lgooddatepicker</groupId>
             <artifactId>LGoodDatePicker</artifactId>
-            <version>11.2.1</version>
+            <version>${lgooddatepicker.version}</version>
         </dependency>
 
         <dependency>
@@ -188,13 +201,13 @@
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.5.5</version>
+            <version>${jfreechart.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>
             <artifactId>swingx-all</artifactId>
-            <version>1.6.5-1</version>
+            <version>${swingx.version}</version>
         </dependency>
 
         <dependency>
@@ -220,13 +233,13 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>jide-oss</artifactId>
-            <version>3.7.15</version>
+            <version>${jide-oss.version}</version>
         </dependency>
 
         <dependency>
             <groupId>es.blackleg</groupId>
             <artifactId>jlibnotify</artifactId>
-            <version>1.1.5</version>
+            <version>${jlibnotify.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.java.dev.jna</groupId>
@@ -266,7 +279,7 @@
         <dependency>
             <groupId>com.sun.activation</groupId>
             <artifactId>javax.activation</artifactId>
-            <version>1.2.0</version>
+            <version>${javax-activation.version}</version>
         </dependency>
 
         <dependency>
@@ -313,19 +326,6 @@
             <version>${jackson.version}</version>
         </dependency>
 
-        <!-- Gui-Elemente -->
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>${controlsfx.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-core</artifactId>
@@ -356,21 +356,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.miglayout</groupId>
-            <artifactId>miglayout-javafx</artifactId>
-            <version>${miglayout.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>com.github.jiconfont</groupId>
@@ -386,7 +371,7 @@
         <dependency>
             <groupId>net.engio</groupId>
             <artifactId>mbassador</artifactId>
-            <version>1.3.2</version>
+            <version>${mbassador.version}</version>
         </dependency>
 
         <dependency>
@@ -422,7 +407,7 @@
         <dependency>
             <groupId>com.glazedlists</groupId>
             <artifactId>glazedlists</artifactId>
-            <version>1.11.0</version>
+            <version>${glazedlists.version}</version>
         </dependency>
 
         <!-- Logging -->
@@ -435,6 +420,14 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j2.version}</version>
+        </dependency>
+
+        <!-- for TimedTextMarkupParserTest -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.19.0</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- JUnit 5 Jupiter -->
@@ -632,9 +625,10 @@
                 <version>${maven-jar-plugin.version}</version>
                 <configuration>
                     <archive>
-                        <manifestEntries>
-                            <Multi-Release>true</Multi-Release>
-                        </manifestEntries>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass><![CDATA[${mainclass}]]></mainClass>
+                        </manifest>
                     </archive>
                 </configuration>
             </plugin>
@@ -781,34 +775,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                            <manifestEntries>
-                                                <Multi-Release>true</Multi-Release>
-                                            </manifestEntries>
-                                        </transformer>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -832,6 +809,43 @@
                 <javafx.platform>win</javafx.platform>
                 <install4j.platform>windows</install4j.platform>
             </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-base</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-controls</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-swing</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-fxml</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-graphics</artifactId>
+                    <version>${javafx.version}</version>
+                    <classifier>${javafx.platform}</classifier>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -856,34 +870,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                            <manifestEntries>
-                                                <Multi-Release>true</Multi-Release>
-                                            </manifestEntries>
-                                        </transformer>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -959,29 +956,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1056,29 +1041,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                            <exclude>*:*:*:mac</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1096,7 +1069,6 @@
                 </os>
             </activation>
             <properties>
-                <jvm.target.version>21</jvm.target.version>
                 <javafx.platform>mac</javafx.platform>
             </properties>
             <dependencies>
@@ -1183,50 +1155,18 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <version>${maven-assembly-plugin.version}</version>
-                        <configuration>
-                            <finalName>MediathekView-${project.version}-mac</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <descriptors>
-                                <descriptor>src/assembly/dep_mac.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>create-archive</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -1322,29 +1262,17 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>shade</goal>
+                                    <goal>copy-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <artifactSet>
-                                        <excludes>
-                                            <exclude>res/*</exclude>
-                                            <exclude>*:*:*:linux</exclude>
-                                            <exclude>*:*:*:win</exclude>
-                                        </excludes>
-                                    </artifactSet>
-                                    <shadedArtifactAttached>false</shadedArtifactAttached>
-                                    <transformers>
-                                        <transformer
-                                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>${mainclass}</mainClass>
-                                        </transformer>
-                                    </transformers>
+                                    <!-- configure the plugin here -->
                                 </configuration>
                             </execution>
                         </executions>
@@ -1357,9 +1285,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.sonatype.install4j</groupId>
-                        <artifactId>install4j-maven-plugin</artifactId>
-                        <version>${install4j-maven-plugin.version}</version>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
                         <executions>
                             <execution>
                                 <id>compile-installers</id>
@@ -1368,14 +1296,7 @@
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <projectFile>
-                                        ${project.build.directory}/mediathekview_${install4j.platform}.install4j
-                                    </projectFile>
-                                    <installDir>${install4j.home}</installDir>
-                                    <jvmArguments>
-                                        <arg>-Xmx2G</arg>
-                                    </jvmArguments>
-                                    <attach>true</attach>
+                                    <projectFile>${project.build.directory}/mediathekview_${install4j.platform}.install4j</projectFile>
                                 </configuration>
                             </execution>
                         </executions>

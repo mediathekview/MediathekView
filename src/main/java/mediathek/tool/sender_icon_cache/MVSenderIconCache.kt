@@ -6,7 +6,7 @@ import com.google.common.cache.LoadingCache
 import mediathek.gui.messages.SenderIconStyleChangedEvent
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
-import mediathek.tool.TimerPool
+import mediathek.tool.timer.TimerPool
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import java.util.*

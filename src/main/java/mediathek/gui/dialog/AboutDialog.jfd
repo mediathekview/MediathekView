@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.6" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -70,6 +70,7 @@ new FormModel {
 							add( new FormComponent( "javax.swing.JTextPane" ) {
 								name: "textPane1"
 								"text": "MediathekView-Client:\nChristian Franzke (derreisende77)\n\nMediathekView-Server:\nNicklas Wiegandt (nicklas2751)\nPeter W. (pidoubleyou)\nSascha Wiegandt (thesasch)\n\nServer-Administration:\nAlexander Finkhäuser (alex1702)"
+								"editable": false
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -90,6 +91,7 @@ new FormModel {
 							add( new FormComponent( "javax.swing.JTextPane" ) {
 								name: "textPane2"
 								"text": "Gründer des Programms:\nXaver W. (xaverW)\n\nWeitere Beteiligte:\nsiedlerchr\nstyrol\nzxsd\napoleon\nhostis\npmshell\nclel\nthausherr\nklauswich"
+								"editable": false
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}

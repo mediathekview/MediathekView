@@ -16,10 +16,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class ListeFilme extends ArrayList<DatenFilm> {
-    public static final String FILMLISTE = "Filmliste";
     private static final String PCS_METADATA = "metaData";
     protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    public boolean neueFilme;
     private FilmListMetaData metaData = new FilmListMetaData();
 
     public FilmListMetaData getMetaData() {
@@ -65,6 +63,24 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 .sorted(GermanStringSorter.getInstance()).toList();
     }
 
+    /**
+     * Search all themas within list based on sender.
+     * If sender is empty, return full list of themas.
+     * <p>
+     * This version does not sort nor return a unique list.
+     *
+     * @param sender sender name as String
+     * @return IMMUTABLE List of themas as String.
+     */
+    public List<String> getThemenUnprocessed(String sender) {
+        Stream<DatenFilm> mystream = parallelStream();
+        //if sender is empty return all themas...
+        if (!sender.isEmpty())
+            mystream = mystream.filter(f -> f.getSender().equalsIgnoreCase(sender));
+
+        return mystream.map(DatenFilm::getThema).toList();
+    }
+
     public synchronized void updateFromFilmList(@NotNull ListeFilme newFilmsList) {
         // In die vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme, die noch nicht vorhanden sind, einsortiert
@@ -81,21 +97,26 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         });
     }
 
-    @Override
-    public synchronized void clear() {
-        super.clear();
-        neueFilme = false;
-    }
-
     /**
      * Find movie with given url and sendername
      * @param url    String wiht URL
      * @param sender String with sender name
      * @return DatenFilm object if found or null
      */
-    public synchronized DatenFilm getFilmByUrlAndSender(final String url, final String sender) {
+    public synchronized DatenFilm getFilmByUrlAndSender(@NotNull String url, @NotNull String sender) {
         return parallelStream()
                 .filter(f -> f.getSender().equalsIgnoreCase(sender))
+                .filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url))
+                .findAny()
+                .orElse(null);
+    }
+
+    /**
+     * Find movie with given url
+     * @param url    String wiht URL
+     * @return DatenFilm object if found or null
+     */public synchronized DatenFilm getFilmByUrl(@NotNull String url) {
+        return parallelStream()
                 .filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url))
                 .findAny()
                 .orElse(null);

@@ -1,7 +1,7 @@
 package mediathek.controller
 
-import mediathek.javafx.filterpanel.SenderListBoxModel
 import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.SenderListBoxModel
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -41,6 +41,17 @@ object SenderFilmlistLoadApprover {
             senderSet.add(sender)
             config.setProperty(SENDER_KEY, senderSet)
         }
+    }
+
+    /**
+     * Approve that all senders may be loaded from filmlist.
+     * This will overwrite any manual approvals.
+     */
+    @JvmStatic
+    fun approveAll() {
+        senderSet.clear()
+        senderSet.addAll(SenderListBoxModel.providedSenderList)
+        config.setProperty(SENDER_KEY, senderSet)
     }
 
     /**

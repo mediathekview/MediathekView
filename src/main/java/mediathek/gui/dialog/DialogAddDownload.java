@@ -47,6 +47,7 @@ import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public class DialogAddDownload extends JDialog {
     private static final Logger logger = LogManager.getLogger();
@@ -139,13 +140,10 @@ public class DialogAddDownload extends JDialog {
             }
         }
         if (!pfade.isEmpty()) {
-            s = pfade.getFirst();
-            for (int i = 1; i < Math.min(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD, pfade.size()); ++i) {
-                final var pfad = pfade.get(i);
-                if (!pfad.isEmpty()) {
-                    s += "<>" + pfad;
-                }
-            }
+            s = pfade.stream()
+                    .filter(pfad -> !pfad.isEmpty())
+                    .limit(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD)
+                    .collect(Collectors.joining("<>"));
         }
         MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
     }
@@ -407,6 +405,8 @@ public class DialogAddDownload extends JDialog {
         waitForFileSizeFutures();
 
         setupResolutionButtons();
+        setupInfoFileCreationCheckBox();
+
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
     }
@@ -768,10 +768,20 @@ public class DialogAddDownload extends JDialog {
         active_pSet = listeSpeichern.get(jComboBoxPset.getSelectedIndex());
 
         prepareResolutionButtons();
-        jCheckBoxInfodatei.setSelected(active_pSet.shouldCreateInfofile());
 
         prepareSubtitleCheckbox();
         setNameFilm();
+    }
+
+    private void setupInfoFileCreationCheckBox() {
+        //disable for Livestreams as they do not contain useful data, even if pset wants it...
+        final boolean isLivestream = film.isLivestream();
+        jCheckBoxInfodatei.setEnabled(!isLivestream);
+        if (!isLivestream) {
+            jCheckBoxInfodatei.setSelected(active_pSet.shouldCreateInfofile());
+        }
+        else
+            jCheckBoxInfodatei.setSelected(false);
     }
 
     private void prepareResolutionButtons() {

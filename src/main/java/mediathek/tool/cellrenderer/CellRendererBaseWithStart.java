@@ -42,7 +42,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     private final FlatSVGIcon liveStreamIconSelected;
     private final FlatSVGIcon audioDescription;
     private final FlatSVGIcon audioDescriptionSelected;
-    protected FlatSVGIcon.ColorFilter whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
+    protected final FlatSVGIcon.ColorFilter whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
 
     public CellRendererBaseWithStart() {
         MessageBus.getMessageBus().subscribe(this);

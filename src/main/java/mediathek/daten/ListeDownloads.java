@@ -43,11 +43,6 @@ import java.util.stream.Collectors;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
     private static final Logger logger = LogManager.getLogger(ListeDownloads.class);
-    private final Daten daten;
-
-    public ListeDownloads(Daten daten_) {
-        this.daten = daten_;
-    }
 
     public synchronized void addMitNummer(DatenDownload e) {
         add(e);
@@ -58,7 +53,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
         logger.info("Filme in Downloads eintragen");
-        var listeFilme = daten.getListeFilme();
+        var listeFilme = Daten.getInstance().getListeFilme();
         this.stream().filter(d -> d.film == null)
                 .forEach(d ->
                 {
@@ -349,6 +344,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
         var todayDateStr = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now());
 
+        var daten = Daten.getInstance();
         final var listeAbo = daten.getListeAbo();
         final var listeBlacklist = daten.getListeBlacklist();
         final var aboHistoryController = daten.getAboHistoryController();

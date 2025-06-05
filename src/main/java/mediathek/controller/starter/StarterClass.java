@@ -200,9 +200,9 @@ public class StarterClass {
         Daten.getInstance().notificationCenter().displayNotification(msg);
     }
 
-    private static void writeSpotlightComment(DatenDownload datenDownload, DirectHttpDownload.HttpDownloadState state) {
+    private static void writeSpotlightComment(DatenDownload datenDownload, HttpDownloadState state) {
         //we don´t write comments if download was cancelled...
-        if (state != DirectHttpDownload.HttpDownloadState.CANCEL) {
+        if (state != HttpDownloadState.CANCEL) {
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
                 final SpotlightCommentWriter writer = new SpotlightCommentWriter();
                 writer.writeComment(datenDownload);
@@ -210,7 +210,7 @@ public class StarterClass {
         }
     }
 
-    public static void finalizeDownload(DatenDownload datenDownload, Start start, DirectHttpDownload.HttpDownloadState state) {
+    public static void finalizeDownload(DatenDownload datenDownload, Start start, HttpDownloadState state) {
         deleteIfEmpty(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
         setFileSize(datenDownload);
 
@@ -219,9 +219,9 @@ public class StarterClass {
         }
 
 
-        fertigmeldung(datenDownload, start, state == DirectHttpDownload.HttpDownloadState.CANCEL);
+        fertigmeldung(datenDownload, start, state == HttpDownloadState.CANCEL);
 
-        if (state == DirectHttpDownload.HttpDownloadState.CANCEL) {
+        if (state == HttpDownloadState.CANCEL) {
             datenDownload.resetDownload();
         } else {
             start.restSekunden = -1;

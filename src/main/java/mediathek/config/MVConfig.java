@@ -32,8 +32,6 @@ public class MVConfig {
             GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
         }
 
-        MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-
         logger.debug("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
     }
 
@@ -147,7 +145,6 @@ public class MVConfig {
         SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN("Blacklist-Zukunft-nicht-anzeigen"),
         SYSTEM_BLACKLIST_AUCH_ABO("Blacklist-auch-Abo"),
         SYSTEM_BLACKLIST_START_ON("Blacklist-Start-ausgeschaltet", Boolean.FALSE.toString()),
-        SYSTEM_BLACKLIST_ON("Blacklist-ausgeschaltet", Boolean.FALSE.toString()),
         SYSTEM_BLACKLIST_IST_WHITELIST("Blacklist-ist-Whitelist"),
         SYSTEM_BLACKLIST_FILMLAENGE("Blacklist-Filmlaenge", "0"),
         // Download

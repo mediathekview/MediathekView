@@ -102,8 +102,8 @@ public class PanelEinstellungenErweitert extends JPanel {
 
     static private class BeobDoc implements DocumentListener {
 
-        MVConfig.Configs config;
-        JTextField txt;
+        final MVConfig.Configs config;
+        final JTextField txt;
 
         public BeobDoc(MVConfig.Configs config, JTextField txt) {
             this.config = config;
@@ -133,9 +133,9 @@ public class PanelEinstellungenErweitert extends JPanel {
 
     static private class BeobPfad implements ActionListener {
 
-        MVConfig.Configs config;
-        String title;
-        JTextField textField;
+        final MVConfig.Configs config;
+        final String title;
+        final JTextField textField;
 
         public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
             this.config = config;

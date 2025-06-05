@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mediathek.config.Konstanten;
 import mediathek.config.StandardLocations;
 import mediathek.daten.Country;
+import mediathek.tool.timer.TimerPool;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
@@ -18,8 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.NoSuchElementException;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,6 +30,7 @@ public class ApplicationConfiguration {
     public static final String TOOLBAR_BLACKLIST_ICON_WITH_TEXT = "toolbar.blacklist_icon.text";
 
     public static final String APPLICATION_DARK_MODE = "application.dark_mode";
+    public static final String APPLICATION_USE_SYSTEM_DARK_MODE = "application.use_system_dark_mode";
     public static final String APPLICATION_USER_AGENT = "application.user_agent";
     public static final String APPLICATION_USE_MODERN_SEARCH = "application.use.modern_search";
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER =
@@ -74,6 +76,7 @@ public class ApplicationConfiguration {
     public static final String CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check";
     public static final String CLI_CLIENT_DOWNLOAD_LIST_FORMAT = "cli.client.download_list_format";
     public static final String BLACKLIST_FILTER_DUPLICATES = "blacklist.filter_duplicates";
+    public static final String BLACKLIST_IS_ON = "blacklist.is_on";
     private static final String GEO_LOCATION = "geo.location";
     private static final String BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked";
     /**
@@ -81,10 +84,6 @@ public class ApplicationConfiguration {
      */
     private static final Logger logger = LogManager.getLogger();
     private static final ObjectMapper mapper = new ObjectMapper();
-    /**
-     * A custom small thread scheduler exclusively for config changes.
-     */
-    private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
     private final TimerTaskListener timerTaskListener = new TimerTaskListener();
     private XMLConfiguration config;
     private FileHandler handler;
@@ -306,15 +305,22 @@ public class ApplicationConfiguration {
      */
     private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
         private void launchWriterTask() {
-            future = executor.schedule(() -> {
-                try {
-                    logger.trace("Writing app configuration file");
-                    handler.save();
-                } catch (ConfigurationException e) {
-                    logger.error("writing app config file:", e);
-                }
+            try {
+                future = TimerPool.getTimerPool().schedule(() -> {
+                    try {
+                        logger.trace("Writing app configuration file");
+                        handler.save();
+                    }
+                    catch (ConfigurationException e) {
+                        logger.error("writing app config file:", e);
+                    }
+                    future = null;
+                }, 5, TimeUnit.SECONDS);
+            }
+            catch (RejectedExecutionException ex) {
+                logger.error("TimerPool: can't schedule timer task", ex);
                 future = null;
-            }, 5, TimeUnit.SECONDS);
+            }
         }
 
         @Override

@@ -1,4 +1,4 @@
 package mediathek.gui.messages;
 
-public class BlacklistChangedEvent extends BaseEvent {
+public class BlacklistChangedEvent extends ReloadTableDataEvent {
 }

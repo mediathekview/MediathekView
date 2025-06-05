@@ -2,6 +2,7 @@ package mediathek.config;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.SortedList;
 import com.google.common.util.concurrent.*;
 import mediathek.Main;
 import mediathek.SplashScreen;
@@ -14,12 +15,14 @@ import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.duplicates.FilmStatistics;
 import mediathek.javafx.bookmark.BookmarkDataList;
+import mediathek.tool.GermanStringSorter;
 import mediathek.tool.ReplaceList;
+import mediathek.tool.SenderListBoxModel;
 import mediathek.tool.notification.INotificationCenter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
@@ -35,7 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
@@ -62,7 +65,7 @@ public class Daten {
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
-    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(ForkJoinPool.commonPool());
+    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(Executors.newVirtualThreadPerTaskExecutor());
     /**
      * "the" final list of films after all filtering is done.
      * Defaults to no lucene index unless changed at startup.
@@ -75,6 +78,8 @@ public class Daten {
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
     private ListenableFuture<AboHistoryController> aboHistoryFuture;
+    private EventList<String> allSenderList;
+
     private Daten() {
         filmeLaden = new FilmeLaden(this);
 
@@ -84,10 +89,12 @@ public class Daten {
 
         listeAbo = new ListeAbo();
 
-        listeDownloads = new ListeDownloads(this);
-        listeDownloadsButton = new ListeDownloads(this);
+        listeDownloads = new ListeDownloads();
+        listeDownloadsButton = new ListeDownloads();
 
         starterClass = new StarterClass(this);
+
+        setupAllSendersList();
     }
 
     /**
@@ -125,9 +132,24 @@ public class Daten {
         return xmlFilePath;
     }
 
-    public EventList<FilmStatistics> getDuplicateStatistics() { return duplicateStatisticsEventList; }
+    public EventList<String> getAllSendersList() {
+        return allSenderList;
+    }
 
-    public EventList<FilmStatistics> getCommonStatistics() { return commonStatisticsEventList; }
+    private void setupAllSendersList() {
+        var sortedSenderList = new SortedList<>(SenderListBoxModel.getProvidedSenderList());
+        sortedSenderList.setComparator(GermanStringSorter.getInstance());
+
+        allSenderList = sortedSenderList;
+    }
+
+    public EventList<FilmStatistics> getDuplicateStatistics() {
+        return duplicateStatisticsEventList;
+    }
+
+    public EventList<FilmStatistics> getCommonStatistics() {
+        return commonStatisticsEventList;
+    }
 
     public StarterClass getStarterClass() {
         return starterClass;
