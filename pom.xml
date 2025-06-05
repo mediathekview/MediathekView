@@ -117,7 +117,6 @@
         <jfreechart.version>1.5.5</jfreechart.version>
         <jide-oss.version>3.7.15</jide-oss.version>
         <jlibnotify.version>1.1.5</jlibnotify.version>
-        <jna.version>5.17.0</jna.version>
         <junit.jupiter.version>5.10.3</junit.jupiter.version>
         <lucene.version>10.2.0</lucene.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
@@ -255,18 +254,6 @@
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
             <version>${picocli.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-jpms</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform-jpms</artifactId>
-            <version>${jna.version}</version>
         </dependency>
 
         <dependency>
