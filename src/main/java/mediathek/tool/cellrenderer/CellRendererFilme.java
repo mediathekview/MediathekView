@@ -51,7 +51,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         selectedBookmarkIcon.setColorFilter(whiteColorFilter);
 
         selectedBookmarkIconHighlighted = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
-        selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(color -> Color.ORANGE));
+        selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(_ -> Color.ORANGE));
 
         normalBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
     }

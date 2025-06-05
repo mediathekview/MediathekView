@@ -1,7 +1,6 @@
 package mediathek.javafx.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -52,23 +51,6 @@ public class BookmarkDataList {
     @JsonGetter("bookmarks")
     public ObservableList<BookmarkData> getObervableList() {
         return bookmarks;
-    }
-
-    /**
-     * Get size of bookmark list
-     *
-     * @return number of stored movies
-     */
-    @JsonIgnore
-    public int getNbOfEntries() {
-        return bookmarks.size();
-    }
-
-    /**
-     * Delete Bookmarklist
-     */
-    public void clear() {
-        bookmarks.clear();
     }
 
     /**

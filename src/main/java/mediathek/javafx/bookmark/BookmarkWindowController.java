@@ -635,7 +635,7 @@ public class BookmarkWindowController implements Initializable {
 
   private void updateDisplay() {
     lblCount.setText(String.format("Einträge: %d / %d", filteredBookmarkList.size(),
-            Daten.getInstance().getListeBookmarkList().getNbOfEntries()));
+            Daten.getInstance().getListeBookmarkList().getObervableList().size()));
     btnSaveList.setDisable(!listUpdated);
     if (listUpdated) {
       scheduleBookmarkSave();
