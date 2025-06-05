@@ -299,7 +299,7 @@ public class BookmarkWindowController implements Initializable {
   private void setupTableView() {
     // create filtered and sortable list
     var observableList = Daten.getInstance().getListeBookmarkList().getObervableList();
-    filteredBookmarkList = new FilteredList<>(observableList, _ -> true);
+    filteredBookmarkList = new FilteredList<>(observableList, null);
     SortedList<BookmarkData> sortedBookmarkList = new SortedList<>(filteredBookmarkList);
     sortedBookmarkList.comparatorProperty().bind(tbBookmarks.comparatorProperty());
 
@@ -534,7 +534,7 @@ public class BookmarkWindowController implements Initializable {
   private void updateFilterState() {
     filterState = filterState.next();
     switch (filterState) {
-      case ALL -> filteredBookmarkList.setPredicate(_ -> true);
+      case ALL -> filteredBookmarkList.setPredicate(null);
       case UNSEEN -> filteredBookmarkList.setPredicate(BookmarkData::getNotSeen);
       case SEEN -> filteredBookmarkList.setPredicate(BookmarkData::getSeen);
     }
