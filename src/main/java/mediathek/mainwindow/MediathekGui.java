@@ -882,8 +882,7 @@ public class MediathekGui extends JFrame {
             try {
                 progressIndicatorThread = createProgressIndicatorThread();
                 progressIndicatorThread.start();
-            } catch (Exception e) {
-                logger.warn("progressIndicatorThread creation failed", e);
+            } catch (Exception _) {
             }
         }
     }
