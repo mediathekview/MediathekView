@@ -1,6 +1,7 @@
 # **14.4.0**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
 - **BUGFIX:** Das Programm wird im Fehlerfall nach Filmliste löschen nun beendet.
+- **BUGFIX:** Im Darkmode werden im Abo anlegen Dialog zu dunkle Blautöne verwendet.
 
 # **14.3.0**
 - **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten kann das Programm nicht starten.
