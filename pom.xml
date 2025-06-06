@@ -883,6 +883,17 @@
             </properties>
             <dependencies>
                 <dependency>
+                    <groupId>es.blackleg</groupId>
+                    <artifactId>jlibnotify</artifactId>
+                    <version>${jlibnotify.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>junit</groupId>
+                            <artifactId>junit</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-base</artifactId>
                     <version>${javafx.version}</version>
@@ -968,6 +979,16 @@
             </properties>
             <dependencies>
                 <dependency>
+                    <groupId>es.blackleg</groupId>
+                    <artifactId>jlibnotify</artifactId>
+                    <version>${jlibnotify.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>junit</groupId>
+                            <artifactId>junit</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency> <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-base</artifactId>
                     <version>${javafx.version}</version>
