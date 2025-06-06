@@ -30,6 +30,9 @@ public class MacFileUtils {
     private static final int kFSPathMakeRefDoNotFollowLeafSymlink = 0x01;
 
 
+    /// Moves a file to the Finder trash.
+    /// **Uses the macOS Carbon framework.**
+    /// @param files List of files to be deleted.
     public static void moveToTrash(File... files) throws IOException {
         List<String> failed = new ArrayList<>();
 
