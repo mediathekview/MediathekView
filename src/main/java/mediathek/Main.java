@@ -99,14 +99,10 @@ public class Main {
      * CAUTION: At least some UI MUST BE INITILIZED, otherwise on macOS VM will crash in native code!!!!
      */
     private static void removeMediaDb() {
-        try {
-            var mediaDbPath = StandardLocations.getSettingsDirectory().resolve("mediadb.txt");
-            if (Files.exists(mediaDbPath)) {
-                logger.info("Moving old unsupported media database to trash.");
-                mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
-            }
-        }
-        catch (IOException ignored) {
+        var mediaDbPath = StandardLocations.getSettingsDirectory().resolve("mediadb.txt");
+        if (Files.exists(mediaDbPath)) {
+            logger.info("Moving old unsupported media database to trash.");
+            FileUtils.moveToTrash(mediaDbPath);
         }
     }
 

@@ -14,18 +14,18 @@ object FileUtils {
     /**
      * Move a file to the OS trash if supported, otherwise delete it.
      * @param filePath the pathe to the file to be deleted.
-     * @throws IOException any occuring exception.
      */
-    @Throws(IOException::class)
     @JvmStatic
     fun moveToTrash(filePath: Path) {
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            MacFileUtils.moveToTrash(filePath.toFile())
-        }
-        else if (SystemUtils.IS_OS_WINDOWS) {
-            WindowsFileUtils.moveToTrash(filePath.toFile())
-        }
-        else {
+        try {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                MacFileUtils.moveToTrash(filePath.toFile())
+            } else if (SystemUtils.IS_OS_WINDOWS) {
+                WindowsFileUtils.moveToTrash(filePath.toFile())
+            } else {
+                Files.deleteIfExists(filePath)
+            }
+        } catch (_: IOException) {
             Files.deleteIfExists(filePath)
         }
     }
