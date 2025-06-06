@@ -21,65 +21,54 @@ package mediathek.mac;
 import java.io.File;
 import java.io.IOException;
 import java.lang.foreign.*;
-import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MacFileUtils {
 
-    private static final SymbolLookup symbols = SymbolLookup.loaderLookup();
     private static final int FSREF_SIZE = 80;
     private static final int kFSPathMakeRefDoNotFollowLeafSymlink = 0x01;
-    private static final MethodHandle FSPathMakeRefWithOptions;
-    private static final MethodHandle FSMoveObjectToTrashSync;
 
-    static {
-        Linker linker = Linker.nativeLinker();
-        FSPathMakeRefWithOptions = linker.downcallHandle(
-                symbols.find("FSPathMakeRefWithOptions").orElseThrow(),
-                FunctionDescriptor.of(ValueLayout.JAVA_INT, // return int
-                        ValueLayout.ADDRESS, // const char* source
-                        ValueLayout.JAVA_INT, // int options
-                        ValueLayout.ADDRESS, // FSRef* fsref
-                        ValueLayout.ADDRESS) // Byte* isDirectory (nullable)
-        );
-
-        FSMoveObjectToTrashSync = linker.downcallHandle(
-                symbols.find("FSMoveObjectToTrashSync").orElseThrow(),
-                FunctionDescriptor.of(ValueLayout.JAVA_INT, // return int
-                        ValueLayout.ADDRESS, // FSRef* source
-                        ValueLayout.ADDRESS, // FSRef* target (nullable)
-                        ValueLayout.JAVA_INT) // int options
-        );
-
-    }
 
     public static void moveToTrash(File... files) throws IOException {
         List<String> failed = new ArrayList<>();
 
         try (var arena = Arena.ofConfined()) {
+            Linker linker = Linker.nativeLinker();
+            //Carbon framework needs to be explicitely loaded...
+            SymbolLookup cfLookup = SymbolLookup.libraryLookup("/System/Library/Frameworks/Carbon.framework/Carbon", Arena.global());
+
+            var msfsp1 = cfLookup.find("FSPathMakeRefWithOptions").orElseThrow(() -> new RuntimeException("FSPathMakeRefWithOptions not found"));
+            var FSPathMakeRefWithOptions = linker.downcallHandle(msfsp1,
+                    FunctionDescriptor.of(ValueLayout.JAVA_INT, // return int
+                            ValueLayout.ADDRESS, // const char* source
+                            ValueLayout.JAVA_INT, // int options
+                            ValueLayout.ADDRESS, // FSRef* fsref
+                            ValueLayout.ADDRESS) // Byte* isDirectory (nullable)
+            );
+
+            var FSMoveObjectToTrashSync = linker.downcallHandle(
+                    cfLookup.find("FSMoveObjectToTrashSync").orElseThrow(() -> new RuntimeException("FSMoveObjectToTrashSync not found")),
+                    FunctionDescriptor.of(ValueLayout.JAVA_INT, // return int
+                            ValueLayout.ADDRESS, // FSRef* source
+                            ValueLayout.ADDRESS, // FSRef* target (nullable)
+                            ValueLayout.JAVA_INT) // int options
+            );
+
             for (File src : files) {
+                /*if (!src.exists())
+                    continue;*/
                 var fsref = arena.allocate(FSREF_SIZE);
                 var path = arena.allocateFrom(src.getAbsolutePath());
 
-                int status = (int) FSPathMakeRefWithOptions.invoke(
-                        path,
-                        kFSPathMakeRefDoNotFollowLeafSymlink,
-                        fsref,
-                        MemorySegment.NULL
-                );
-
+                int status = (int) FSPathMakeRefWithOptions.invoke(path, kFSPathMakeRefDoNotFollowLeafSymlink,
+                        fsref, MemorySegment.NULL);
                 if (status != 0) {
                     failed.add(src + " (FSRefMakeRefWithOptions: " + status + ")");
                     continue;
                 }
 
-                status = (int) FSMoveObjectToTrashSync.invoke(
-                        fsref,
-                        MemorySegment.NULL,
-                        0
-                );
-
+                status = (int) FSMoveObjectToTrashSync.invoke(fsref, MemorySegment.NULL, 0);
                 if (status != 0) {
                     failed.add(src + " (FSMoveObjectToTrashSync: " + status + ")");
                 }
