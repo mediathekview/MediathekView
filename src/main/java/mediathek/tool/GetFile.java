@@ -16,42 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.mac;
+package mediathek.tool;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
- * Prevents system sleep on macOS
+ * @author emil
  */
-public class OsxPowerManager {
-    private Process caffeinateProcess = null;
-    private static final Logger logger = LogManager.getLogger(OsxPowerManager.class);
+public class GetFile {
 
-    public void disablePowerManagement() {
-        //we already have pm disabled..
-        if (caffeinateProcess != null)
-            return;
+    private static final Logger logger = LogManager.getLogger();
 
-        try {
-            ProcessBuilder pb = new ProcessBuilder("/usr/bin/caffeinate");
-            caffeinateProcess = pb.start();
-            logger.trace("power management disabled");
-        }
-        catch (IOException e) {
-            caffeinateProcess = null;
-            logger.error("disabling power management failed", e);
-        }
-    }
-
-    public void enablePowerManagement() {
-            if (caffeinateProcess != null) {
-                caffeinateProcess.destroy();
+    public static String getHilfeSuchen(String pfad) {
+        StringBuilder ret = new StringBuilder();
+        try (var is = Objects.requireNonNull(GetFile.class.getResource(pfad)).openStream();
+             InputStreamReader in = new InputStreamReader(is, StandardCharsets.UTF_8);
+             BufferedReader br = new BufferedReader(in)) {
+            String strLine;
+            while ((strLine = br.readLine()) != null) {
+                ret.append('\n').append(strLine);
             }
-
-            caffeinateProcess = null;
-            logger.trace("power management enabled");
+        } catch (IOException ex) {
+            logger.error("getHilfeSuchen()", ex);
+        }
+        return ret.toString();
     }
 }

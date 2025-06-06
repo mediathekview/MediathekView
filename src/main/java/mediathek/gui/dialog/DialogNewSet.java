@@ -1,8 +1,9 @@
 package mediathek.gui.dialog;
 
 import mediathek.config.Daten;
-import mediathek.file.GetFile;
+import mediathek.config.Konstanten;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.GetFile;
 import mediathek.tool.SVGIconUtilities;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ public class DialogNewSet extends JDialog {
                    für den Download und das Abspielen der Filme.
                 """);
         jCheckBoxMorgen.setSelected(true);
-        jCheckBoxMorgen.addActionListener(e -> morgen = jCheckBoxMorgen.isSelected());
+        jCheckBoxMorgen.addActionListener(_ -> morgen = jCheckBoxMorgen.isSelected());
 
         jTextArea1.setText("""
 
@@ -46,15 +47,15 @@ public class DialogNewSet extends JDialog {
                 (Wenn Sie die Einstellungen nicht verändert haben
                  ist das die Empfehlung)""".indent(3));
 
-        jButtonAdd.addActionListener(e -> {
+        jButtonAdd.addActionListener(_ -> {
             ok = true;
             beenden();
         });
-        jButtonAbbrechen.addActionListener(e -> {
+        jButtonAbbrechen.addActionListener(_ -> {
             ok = false;
             beenden();
         });
-        jButtonReplace.addActionListener(e -> {
+        jButtonReplace.addActionListener(_ -> {
             int ret = JOptionPane.showConfirmDialog(parent, "Alle Sets zurücksetzen?", "Alle Sets zurücksetzen!", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 Daten.listePset.clear();
@@ -63,7 +64,7 @@ public class DialogNewSet extends JDialog {
             }
         });
         jButtonSetHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonSetHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
+        jButtonSetHelp.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
 
         EscapeKeyHandler.installHandler(this, () -> {
             ok = false;

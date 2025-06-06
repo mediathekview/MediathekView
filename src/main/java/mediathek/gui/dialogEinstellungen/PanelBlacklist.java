@@ -5,7 +5,6 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.blacklist.BlacklistRule;
-import mediathek.file.GetFile;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.dialog.DialogHilfe;
@@ -55,7 +54,7 @@ public class PanelBlacklist extends JPanel {
 
         jTableBlacklist.setModel(tableModel);
 
-        tableModel.addTableModelListener(l -> jButtonTabelleLoeschen.setEnabled(tableModel.getRowCount() != 0));
+        tableModel.addTableModelListener(_ -> jButtonTabelleLoeschen.setEnabled(tableModel.getRowCount() != 0));
         jTableBlacklist.getSelectionModel().addListSelectionListener(l -> {
             if (!l.getValueIsAdjusting()) {
                 jButtonAendern.setEnabled(jTableBlacklist.getSelectionModel().getSelectedItemsCount() == 1);
@@ -99,7 +98,7 @@ public class PanelBlacklist extends JPanel {
         setupTableFilter();
 
         lblNumEntries.setText(Integer.toString(jTableBlacklist.getRowCount()));
-        jTableBlacklist.getModel().addTableModelListener(e -> lblNumEntries.setText(Integer.toString(jTableBlacklist.getRowCount())));
+        jTableBlacklist.getModel().addTableModelListener(_ -> lblNumEntries.setText(Integer.toString(jTableBlacklist.getRowCount())));
     }
 
     private static final Logger logger = LogManager.getLogger();
@@ -114,7 +113,7 @@ public class PanelBlacklist extends JPanel {
             }
         });
         jTableBlacklist.setRowSorter(sorter);
-        btnFilterTable.addActionListener(l -> {
+        btnFilterTable.addActionListener(_ -> {
             String text = tfFilter.getText();
             if(text.isEmpty()) {
                 sorter.setRowFilter(null);
@@ -175,38 +174,38 @@ public class PanelBlacklist extends JPanel {
         });
 
         jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)));
-        jRadioButtonWhitelist.addActionListener(e -> {
+        jRadioButtonWhitelist.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
             notifyBlacklistChanged();
         });
-        jRadioButtonBlacklist.addActionListener(e -> {
+        jRadioButtonBlacklist.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
             notifyBlacklistChanged();
         });
-        jCheckBoxZukunftNichtAnzeigen.addActionListener(e -> {
+        jCheckBoxZukunftNichtAnzeigen.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
             notifyBlacklistChanged();
         });
-        jCheckBoxAbo.addActionListener(e -> {
+        jCheckBoxAbo.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
             // bei den Downloads melden
             // damit die Änderungen im Eigenschaftendialog auch übernommen werden
             Listener.notify(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
         });
-        jCheckBoxStart.addActionListener(e -> {
+        jCheckBoxStart.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
             Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
         });
-        jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
+        jCheckBoxBlacklistEingeschaltet.addActionListener(_ -> {
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, jCheckBoxBlacklistEingeschaltet.isSelected());
             notifyBlacklistChanged();
         });
-        jButtonHinzufuegen.addActionListener(e -> onAddBlacklistRule());
+        jButtonHinzufuegen.addActionListener(_ -> onAddBlacklistRule());
 
-        jButtonAendern.addActionListener(e -> onChangeBlacklistRule());
+        jButtonAendern.addActionListener(_ -> onChangeBlacklistRule());
 
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
-        jButtonTabelleLoeschen.addActionListener(e -> {
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
+        jButtonTabelleLoeschen.addActionListener(_ -> {
             int ret = JOptionPane.showConfirmDialog(parentComponent,
                     "<html>Möchten Sie wirklich <b>alle Regeln</b> dauerhaft löschen?</html>",
                     "Blacklist Regeln", JOptionPane.YES_NO_OPTION);
@@ -214,7 +213,7 @@ public class PanelBlacklist extends JPanel {
                 tableModel.removeAll();
             }
         });
-        jComboBoxSender.addActionListener(e -> comboThemaLaden());
+        jComboBoxSender.addActionListener(_ -> comboThemaLaden());
 
         var documentListener = new DocumentListener() {
             @Override
@@ -267,7 +266,7 @@ public class PanelBlacklist extends JPanel {
         if (jSliderMinuten.getValue() == 0) {
             jTextFieldMinuten.setText("alles");
         }
-        jSliderMinuten.addChangeListener(e -> {
+        jSliderMinuten.addChangeListener(_ -> {
             jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
             if (jSliderMinuten.getValue() == 0) {
                 jTextFieldMinuten.setText("alles");
@@ -416,7 +415,7 @@ public class PanelBlacklist extends JPanel {
             else
                 menuText = "Zeile löschen";
             JMenuItem item = new JMenuItem(menuText);
-            item.addActionListener(l -> onRemoveBlacklistRules());
+            item.addActionListener(_ -> onRemoveBlacklistRules());
             jPopupMenu.add(item);
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());

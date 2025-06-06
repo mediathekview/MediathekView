@@ -2,15 +2,12 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.formdev.flatlaf.util.ScaledImageIcon;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.daten.Country;
-import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.BlacklistChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MessageBus;
-import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.*;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -60,33 +57,33 @@ public class PanelEinstellungenGeo extends JPanel {
             case OTHER -> jRadioButtonSonst.setSelected(true);
             default -> jRadioButtonDe.setSelected(true);
         }
-        jRadioButtonDe.addActionListener(e -> {
+        jRadioButtonDe.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setGeographicLocation(Country.DE);
             filterBlacklistAndNotifyChanges();
         });
-        radioButtonFR.addActionListener(e -> {
+        radioButtonFR.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setGeographicLocation(Country.FR);
             filterBlacklistAndNotifyChanges();
         });
-        jRadioButtonCH.addActionListener(e -> {
+        jRadioButtonCH.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setGeographicLocation(Country.CH);
             filterBlacklistAndNotifyChanges();
         });
-        jRadioButtonAt.addActionListener(e -> {
+        jRadioButtonAt.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setGeographicLocation(Country.AT);
             filterBlacklistAndNotifyChanges();
         });
-        jRadioButtonEu.addActionListener(e -> {
+        jRadioButtonEu.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setGeographicLocation(Country.EU);
             filterBlacklistAndNotifyChanges();
         });
-        jRadioButtonSonst.addActionListener(e -> {
+        jRadioButtonSonst.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setGeographicLocation(Country.OTHER);
             filterBlacklistAndNotifyChanges();
         });
 
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_GEO)).setVisible(true));
     }
 
     /**

@@ -1,11 +1,12 @@
 package mediathek.gui.dialog
 
 import mediathek.config.Daten
-import mediathek.file.GetFile
+import mediathek.config.Konstanten
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
+import mediathek.tool.GetFile
 import mediathek.tool.SVGIconUtilities
+import mediathek.tool.swing.AppTerminationIndefiniteProgress
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.util.*
@@ -182,7 +183,7 @@ class DialogBeenden(parent: JFrame, shouldDownloadAndQuit: Boolean) : JDialog(pa
         })
 
         jButtonHilfe.addActionListener {
-            DialogHilfe(parent, true, GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).isVisible = true
+            DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN)).isVisible = true
         }
 
         jButtonHilfe.isEnabled = false
