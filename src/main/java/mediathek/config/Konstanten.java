@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class Konstanten {
     public static final String NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY = "newSendersActivated.fourteen.three";
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(14, 4, 0);
+    public static final Version MVVERSION = new Version(14, 3, 1);
 
     public static final ApplicationType APPLICATION_TYPE = ApplicationType.NIGHTLY;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";

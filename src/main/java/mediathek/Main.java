@@ -408,9 +408,10 @@ public class Main {
         try {
             if (!WindowsVersionHelper.IsWindows10OrGreater()) {
                 JOptionPane.showMessageDialog(null,
-                        "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
-                        Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-                System.exit(1);
+                        "<html>MediathekView benötigt mindestens Windows 10 zum Start.<br/>" +
+                                "<b>Die Nutzung erfolgt auf eigenes Risiko ohne Support!!</b><br/><br/>" +
+                                "Die nächste MV-Version wird nicht mehr unter diesem Betriebssystem starten!</html>",
+                        Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
             }
         }
         catch (Throwable ex) {
