@@ -18,6 +18,7 @@
 
 package mediathek.gui.tabs.tab_film;
 
+import mediathek.gui.actions.DeleteBookmarksAction;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox;
@@ -37,7 +38,7 @@ public class FilmToolBar extends JToolBar {
     public FilmToolBar(@NotNull FilterSelectionComboBoxModel filterModel,
                        @NotNull GuiFilme.BookmarkAddFilmAction bookmarkAddFilmAction,
                        @NotNull GuiFilme.BookmarkRemoveFilmAction bookmarkRemoveFilmAction,
-                       @NotNull GuiFilme.BookmarkClearListAction bookmarkClearListAction,
+                       @NotNull DeleteBookmarksAction bookmarkClearListAction,
                        @NotNull ManageBookmarkAction manageBookmarkAction,
                        @NotNull PlayFilmAction playFilmAction,
                        @NotNull GuiFilme.SaveFilmAction saveFilmAction,

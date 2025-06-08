@@ -20,6 +20,7 @@ import mediathek.daten.*;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmlisten.writer.FilmListWriter;
+import mediathek.gui.actions.DeleteBookmarksAction;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -97,7 +98,7 @@ public class GuiFilme extends AGuiTabPanel {
     protected final FilterSelectionComboBoxModel filterSelectionComboBoxModel = new FilterSelectionComboBoxModel();
     private final BookmarkAddFilmAction bookmarkAddFilmAction = new BookmarkAddFilmAction();
     private final BookmarkRemoveFilmAction bookmarkRemoveFilmAction = new BookmarkRemoveFilmAction();
-    private final BookmarkClearListAction bookmarkClearListAction = new BookmarkClearListAction();
+    private final DeleteBookmarksAction deleteBookmarksAction = new DeleteBookmarksAction(MediathekGui.ui());
     private final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(MediathekGui.ui());
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
@@ -148,7 +149,7 @@ public class GuiFilme extends AGuiTabPanel {
         filmToolBar = new FilmToolBar(filterSelectionComboBoxModel,
                 bookmarkAddFilmAction,
                 bookmarkRemoveFilmAction,
-                bookmarkClearListAction,
+                deleteBookmarksAction,
                 manageBookmarkAction,
                 playFilmAction,
                 saveFilmAction,
@@ -204,7 +205,7 @@ public class GuiFilme extends AGuiTabPanel {
             saveFilmAction.setEnabled(flag);
             bookmarkAddFilmAction.setEnabled(flag);
             bookmarkRemoveFilmAction.setEnabled(flag);
-            bookmarkClearListAction.setEnabled(flag);
+            deleteBookmarksAction.setEnabled(flag);
             manageBookmarkAction.setEnabled(flag);
             filmToolBar.setEnabled(flag);
         };
@@ -737,31 +738,6 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     private static class FilterZeitraumEvent extends BaseEvent {}
-
-    public class BookmarkClearListAction extends AbstractAction {
-        public BookmarkClearListAction() {
-            putValue(Action.SHORT_DESCRIPTION, "Merkliste vollständig löschen");
-            putValue(Action.NAME, "Merkliste vollständig löschen");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createToolBarIcon("icons/fontawesome/file-circle-xmark.svg"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            var res = JOptionPane.showConfirmDialog(mediathekGui,
-                    "Möchten Sie wirklich die Merkliste vollständig löschen?", Konstanten.PROGRAMMNAME, JOptionPane.YES_NO_OPTION);
-            if (res == JOptionPane.YES_OPTION) {
-                var daten = Daten.getInstance();
-                var list = daten.getListeFilmeNachBlackList().parallelStream()
-                        .filter(DatenFilm::isBookmarked).toList();
-                if (!list.isEmpty()) {
-                    updateBookmarkListAndRefresh(list);
-                }
-                //delete leftover items which have no corresponding DatenFilm objects anymore -> outdated
-                daten.getListeBookmarkList().getObervableList().clear();
-                JOptionPane.showMessageDialog(mediathekGui, "Merkliste wurde gelöscht.", Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-    }
 
     public class ToggleFilterDialogVisibilityAction extends AbstractAction {
         public ToggleFilterDialogVisibilityAction() {
