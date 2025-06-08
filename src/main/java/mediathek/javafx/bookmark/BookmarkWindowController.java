@@ -4,8 +4,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -60,9 +58,7 @@ import static javafx.scene.input.MouseButton.PRIMARY;
 public class BookmarkWindowController implements Initializable {
 
   private static final Logger logger = LogManager.getLogger();
-  private FilterState filterState = FilterState.UNDEFINED;
   private Stage stage;
-  private FilteredList<BookmarkData> filteredBookmarkList;
   private MenuItem playitem;
   private MenuItem loaditem;
   private MenuItem deleteitem;
@@ -81,8 +77,6 @@ public class BookmarkWindowController implements Initializable {
   private Button btnMarkViewed;
   @FXML
   private ToggleButton btnShowDetails;
-  @FXML
-  private Button btnFilter;
   @FXML
   private Button btnEditNote;
   @FXML
@@ -105,8 +99,6 @@ public class BookmarkWindowController implements Initializable {
   private TableColumn<BookmarkData, String> colNote;
   @FXML
   private Label lblCount;
-  @FXML
-  private Label lblFilter;
   @FXML
   private TextArea taDescription;
   @FXML
@@ -297,11 +289,7 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void setupTableView() {
-    // create filtered and sortable list
     var observableList = Daten.getInstance().getListeBookmarkList().getObervableList();
-    filteredBookmarkList = new FilteredList<>(observableList, null);
-    SortedList<BookmarkData> sortedBookmarkList = new SortedList<>(filteredBookmarkList);
-    sortedBookmarkList.comparatorProperty().bind(tbBookmarks.comparatorProperty());
 
     observableList.addListener((ListChangeListener.Change<? extends BookmarkData> c) -> {
       while (c.next()) {
@@ -314,7 +302,7 @@ public class BookmarkWindowController implements Initializable {
       updateDisplay();
     });
 
-    tbBookmarks.setItems(sortedBookmarkList);
+    tbBookmarks.setItems(observableList);
     tbBookmarks.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     // Add listener to set button and context item state depending on selection
@@ -357,7 +345,6 @@ public class BookmarkWindowController implements Initializable {
 
     hyperLink.setOnAction(this::hyperLinkSelected);
 
-    btnFilterAction (null);
     var config = ApplicationConfiguration.getConfiguration();
     btnShowDetails.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".details", true));
     divposition = config.getDouble(ApplicationConfiguration.APPLICATION_UI_BOOKMARKLIST + ".divider", spSplitPane.getDividerPositions()[0]);
@@ -385,9 +372,6 @@ public class BookmarkWindowController implements Initializable {
 
       btnShowDetails.setOnAction(this::btnShowDetailsAction);
       btnShowDetails.setGraphic(new IconNode(FontAwesome.INFO_CIRCLE));
-
-      btnFilter.setOnAction(this::btnFilterAction);
-      btnFilter.setGraphic(new IconNode(FontAwesome.FILTER));
     }
     catch (Exception e) {
       logger.error("Could not load fontawesome font", e);
@@ -530,24 +514,6 @@ public class BookmarkWindowController implements Initializable {
     spSplitPane.setDividerPositions(newposition);
   }
 
-  private void updateFilterState() {
-    filterState = filterState.next();
-    switch (filterState) {
-      case ALL -> filteredBookmarkList.setPredicate(null);
-      case UNSEEN -> filteredBookmarkList.setPredicate(BookmarkData::getNotSeen);
-      case SEEN -> filteredBookmarkList.setPredicate(BookmarkData::getSeen);
-    }
-  }
-
-  @FXML
-  private void btnFilterAction(ActionEvent e) {
-    updateFilterState();
-
-    btnFilter.setTooltip(new Tooltip(filterState.tooltipText()));
-    lblFilter.setText(filterState.messageText());
-    refresh();
-  }
-
   private void tbviewOnContextRequested(ContextMenuEvent event) {
     if (!tbBookmarks.getSelectionModel().getSelectedItems().isEmpty()) { // Do not show row context menu if nothing is selected
       cellContextMenu.show(tbBookmarks, event.getScreenX(), event.getScreenY());
@@ -633,8 +599,7 @@ public class BookmarkWindowController implements Initializable {
   }
 
   private void updateDisplay() {
-    lblCount.setText(String.format("Einträge: %d / %d", filteredBookmarkList.size(),
-            Daten.getInstance().getListeBookmarkList().getObervableList().size()));
+    lblCount.setText(String.format("Einträge: %d", Daten.getInstance().getListeBookmarkList().getObervableList().size()));
     btnSaveList.setDisable(!listUpdated);
     if (listUpdated) {
       scheduleBookmarkSave();
