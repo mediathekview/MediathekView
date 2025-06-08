@@ -74,7 +74,7 @@ public class SeenHistoryMigratorTest {
             rs.next();
             var count = rs.getInt(1);
             //we must have one return
-            assertEquals(count, 1);
+            assertEquals(1, count);
             rs.close();
 
             testSql = "SELECT COUNT(*) as total FROM seen_history";
@@ -82,7 +82,7 @@ public class SeenHistoryMigratorTest {
             rs.next();
             count = rs.getInt(1);
             // there must be 8 entries in db
-            assertEquals(count, 8);
+            assertEquals(8, count);
             rs.close();
         }
     }

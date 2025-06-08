@@ -2,7 +2,6 @@
 package mediathek.daten;
 
 import mediathek.config.Konstanten;
-import mediathek.file.GetFile;
 import mediathek.tool.NetUtils;
 import mediathek.tool.http.MVHttpClient;
 import mediathek.tool.models.NonEditableTableModel;
@@ -26,6 +25,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ListePsetVorlagen extends ArrayList<String[]> {
     private static final String BS_WIN_32 = "Windows-32Bit";
@@ -107,7 +107,7 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
             // dann nehmen wir halt die im jar-File
             // liefert das Standard Programmset für das entsprechende BS
             // Standardgruppen laden
-            listePset = ListePsetVorlagen.importPset(GetFile.getLocalPsetTemplate(), true);
+            listePset = ListePsetVorlagen.importPset(getLocalPsetTemplate(), true);
         }
 
         if (replaceMuster && listePset != null) {
@@ -115,6 +115,27 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
             ListePset.progMusterErsetzen(parent, listePset);
         }
         return listePset;
+    }
+
+    private static @NotNull String getProgramSetTemplateFromLocalResources() throws IllegalStateException {
+        if (SystemUtils.IS_OS_LINUX)
+            return "/mediathek/file/pset_linux.xml";
+        else if (SystemUtils.IS_OS_MAC_OSX)
+            return "/mediathek/file/pset_mac.xml";
+        else if (SystemUtils.IS_OS_WINDOWS)
+            return "/mediathek/file/pset_windows.xml";
+        else
+            throw new IllegalStateException("Unsupported OS");
+    }
+
+    private static InputStreamReader getLocalPsetTemplate() {
+        try {
+            final String pfad = getProgramSetTemplateFromLocalResources();
+            return new InputStreamReader(Objects.requireNonNull(ListePsetVorlagen.class.getResource(pfad)).openStream(), StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            logger.error("getLocalPsetTemplate()",ex);
+        }
+        return null;
     }
 
     public boolean loadListOfSets() {

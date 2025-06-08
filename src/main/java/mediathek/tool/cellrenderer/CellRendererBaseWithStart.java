@@ -6,9 +6,9 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
 import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.CompoundIcon;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.swing.CompoundIcon;
 import org.apache.commons.configuration2.Configuration;
 import org.jetbrains.annotations.NotNull;
 

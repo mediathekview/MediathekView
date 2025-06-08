@@ -1,15 +1,12 @@
 package mediathek.gui.dialog;
 
+import mediathek.config.Konstanten;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.daten.FilmResolution;
-import mediathek.file.GetFile;
-import mediathek.tool.ApplicationConfiguration;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.*;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,15 +62,15 @@ public class DialogEditDownload extends JDialog {
         orgProgArray = this.datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, this.datenDownload, false);
         mVPanelDownloadZiel.setBorder(BorderFactory.createLineBorder(new Color(204, 204, 204)));
-        jRadioButtonResHd.addActionListener(e -> changeRes());
-        jRadioButtonResHi.addActionListener(e -> changeRes());
-        jRadioButtonResLo.addActionListener(e -> changeRes());
-        jButtonOk.addActionListener(e -> {
+        jRadioButtonResHd.addActionListener(_ -> changeRes());
+        jRadioButtonResHi.addActionListener(_ -> changeRes());
+        jRadioButtonResLo.addActionListener(_ -> changeRes());
+        jButtonOk.addActionListener(_ -> {
             if (check()) {
                 dispose();
             }
         });
-        jButtonAbbrechen.addActionListener(e -> dispose());
+        jButtonAbbrechen.addActionListener(_ -> dispose());
         getRootPane().setDefaultButton(jButtonOk);
 
         EscapeKeyHandler.installHandler(this, this::dispose);
@@ -426,11 +423,11 @@ public class DialogEditDownload extends JDialog {
                             JButton jButtonReset = new JButton("");
                             jButtonReset.setToolTipText("Reset");
                             jButtonReset.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
-                            jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
+                            jButtonReset.addActionListener(_ -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                             JButton jButtonHelp = new JButton("");
                             jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
                             jButtonHelp.setToolTipText("Hilfe anzeigen");
-                            jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
+                            jButtonHelp.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
 
                             gc.gridy = 0;
                             gc.gridx = 0;

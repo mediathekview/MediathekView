@@ -16,17 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool.ttml
+package mediathek.windows
 
-import java.util.*
-
-internal class Subtitle {
-    @JvmField
-    var begin: Date? = null
-    @JvmField
-    var end: Date? = null
-    @JvmField
-    val listOfStrings: List<StyledString> = ArrayList()
-    @JvmField
-    var region: String? = null
+object WinFlags {
+    const val ES_CONTINUOUS: Int = Int.MIN_VALUE
+    const val ES_SYSTEM_REQUIRED: Int = 1
 }

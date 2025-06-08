@@ -1,7 +1,6 @@
 package mediathek.javafx.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -55,34 +54,17 @@ public class BookmarkDataList {
     }
 
     /**
-     * Get size of bookmark list
-     *
-     * @return number of stored movies
-     */
-    @JsonIgnore
-    public int getNbOfEntries() {
-        return bookmarks.size();
-    }
-
-    /**
-     * Delete Bookmarklist
-     */
-    public void clear() {
-        bookmarks.clear();
-    }
-
-    /**
      * Add given film(s) to List if not yet in list
      * otherwise remove them from list
      * Note: if one of the given films is not bookmarked all are bookmarked
      *
      * @param movies: list of movies to be added
      */
-    public void checkAndBookmarkMovies(List<DatenFilm> movies) {
+    public void checkAndBookmarkMovies(@NotNull List<DatenFilm> movies) {
         ArrayList<DatenFilm> addlist = new ArrayList<>();
         ArrayList<BookmarkData> dellist = new ArrayList<>();
         boolean add = false;
-        for (DatenFilm data : movies) {
+        for (var data : movies) {
             if (!data.isBookmarked()) {
                 add = true;
                 addlist.add(data);
@@ -98,7 +80,7 @@ public class BookmarkDataList {
         if (add) {
             // Check if history list is known
             try (var history = new SeenHistoryController()) {
-                for (DatenFilm movie : addlist) {
+                for (var movie : addlist) {
                     BookmarkData bdata = new BookmarkData(movie);
                     movie.setBookmark(bdata); // Link backwards
                     // Set seen marker if in history and not livestream
@@ -111,7 +93,7 @@ public class BookmarkDataList {
             }
         }
         else { // delete existing bookmarks
-            for (DatenFilm movie : movies) {  // delete references
+            for (var movie : movies) {  // delete references
                 movie.setBookmark(null);
             }
             bookmarks.removeAll(dellist);
@@ -119,18 +101,18 @@ public class BookmarkDataList {
     }
 
     /**
-     * Delete given bookmarks from list and remove reference in film list)
+     * Delete given bookmarkList from list and remove reference in film list)
      *
-     * @param bookmarks The list of bookmarks.
+     * @param bookmarkList The list of bookmarkList.
      */
-    public void deleteEntries(ObservableList<BookmarkData> bookmarks) {
-        for (BookmarkData bookmark : bookmarks) {  // delete references
-            DatenFilm movie = bookmark.getDatenFilm();
+    public void deleteEntries(@NotNull List<BookmarkData> bookmarkList) {
+        for (var bookmark : bookmarkList) {  // delete references
+            var movie = bookmark.getDatenFilm();
             if (movie != null) {
                 movie.setBookmark(null);
             }
         }
-        this.bookmarks.removeAll(bookmarks);
+        bookmarks.removeAll(bookmarkList);
     }
 
     /**
@@ -172,7 +154,7 @@ public class BookmarkDataList {
      * @param seen: True if movies are seen
      * @param list: List of movies
      */
-    public void updateSeen(boolean seen, List<DatenFilm> list) {
+    public void updateSeen(boolean seen, @NotNull List<DatenFilm> list) {
         list.stream()
                 .filter(DatenFilm::isBookmarked)
                 .forEachOrdered((movie) -> {
@@ -182,7 +164,7 @@ public class BookmarkDataList {
                 });
     }
 
-    public void updateSeen(boolean seen, DatenFilm film) {
+    public void updateSeen(boolean seen, @NotNull DatenFilm film) {
         if (film.isBookmarked()) {
             var bookmark = film.getBookmark();
             if (bookmark != null) {
@@ -194,7 +176,7 @@ public class BookmarkDataList {
     /**
      * Find Movie in list
      */
-    private BookmarkData findMovieInList(DatenFilm movie) {
+    private BookmarkData findMovieInList(@NotNull DatenFilm movie) {
         BookmarkData result = null;
         for (var data : bookmarks) {
             if (data.getDatenFilm() != null && data.getDatenFilm().equals(movie)) {
@@ -234,7 +216,7 @@ public class BookmarkDataList {
         public List<BookmarkData> getBookmarks() {
             return bookmarks;
         }
-
+        @SuppressWarnings("unused")
         public void setBookmarks(List<BookmarkData> bookmarks) {
             this.bookmarks = bookmarks;
         }

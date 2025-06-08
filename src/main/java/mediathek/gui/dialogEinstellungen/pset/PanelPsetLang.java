@@ -27,7 +27,6 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.FilmResolution;
 import mediathek.daten.ListePset;
-import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramSetChangedEvent;
@@ -141,7 +140,7 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgPraefix.setEnabled(false);
         jTextFieldProgSuffix.setEnabled(false);
 
-        jButtonProgPfad.addActionListener(e -> {
+        jButtonProgPfad.addActionListener(_ -> {
             String initialFile = "";
             if (!jTextFieldProgPfad.getText().isEmpty()) {
                 initialFile = jTextFieldProgPfad.getText();
@@ -152,12 +151,12 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonProgPlus.addActionListener(e -> {
+        jButtonProgPlus.addActionListener(_ -> {
             DatenProg prog = new DatenProg();
             progNeueZeile(prog);
         });
 
-        jButtonProgMinus.addActionListener(e -> {
+        jButtonProgMinus.addActionListener(_ -> {
             final int[] rows = tabelleProgramme.getSelectedRows();
             if (rows.length > 0) {
                 DatenPset pSet = getPset();
@@ -181,7 +180,7 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonProgDuplizieren.addActionListener(e -> {
+        jButtonProgDuplizieren.addActionListener(_ -> {
             final int rows = tabelleProgramme.getSelectedRow();
             if (rows != -1) {
                 int row = tabelleProgramme.convertRowIndexToModel(rows);
@@ -192,11 +191,11 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonProgAuf.addActionListener(e -> progAufAb(true));
-        jButtonProgAb.addActionListener(e -> progAufAb(false));
+        jButtonProgAuf.addActionListener(_ -> progAufAb(true));
+        jButtonProgAb.addActionListener(_ -> progAufAb(false));
 
         jButtonProgPfad.setEnabled(false);
-        jCheckBoxRestart.addActionListener(e -> {
+        jCheckBoxRestart.addActionListener(_ -> {
             if (!stopBeob) {
                 int rows = tabelleProgramme.getSelectedRow();
                 if (rows != -1) {
@@ -207,7 +206,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
         });
-        jCheckBoxRemoteDownload.addActionListener(e -> {
+        jCheckBoxRemoteDownload.addActionListener(_ -> {
             if (!stopBeob) {
                 final int rows = tabelleProgramme.getSelectedRow();
                 if (rows != -1) {
@@ -220,7 +219,7 @@ public class PanelPsetLang extends PanelVorlage {
         });
 
         //Pset
-        jButtonAbspielen.addActionListener(e -> {
+        jButtonAbspielen.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.setAbspielen();
@@ -228,7 +227,7 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyProgramSetChanged();
             }
         });
-        jCheckBoxSpeichern.addActionListener(e -> {
+        jCheckBoxSpeichern.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.setSpeichern(jCheckBoxSpeichern.isSelected());
@@ -236,7 +235,7 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyProgramSetChanged();
             }
         });
-        jCheckBoxButton.addActionListener(e -> {
+        jCheckBoxButton.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.setButton(jCheckBoxButton.isSelected());
@@ -244,7 +243,7 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyProgramSetChanged();
             }
         });
-        jCheckBoxAbo.addActionListener(e -> {
+        jCheckBoxAbo.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.setAbo(jCheckBoxAbo.isSelected());
@@ -252,47 +251,47 @@ public class PanelPsetLang extends PanelVorlage {
                 notifyProgramSetChanged();
             }
         });
-        jCheckBoxLaenge.addActionListener(e -> {
+        jCheckBoxLaenge.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN] = Boolean.toString(jCheckBoxLaenge.isSelected());
                 nurtabellePset();
             }
         });
-        jCheckBoxField.addActionListener(e -> {
+        jCheckBoxField.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN] = Boolean.toString(jCheckBoxField.isSelected());
                 nurtabellePset();
             }
         });
-        jCheckBoxThema.addActionListener(e -> {
+        jCheckBoxThema.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN] = Boolean.toString(jCheckBoxThema.isSelected());
                 nurtabellePset();
             }
         });
-        jSpinnerLaenge.addChangeListener(e -> {
+        jSpinnerLaenge.addChangeListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_MAX_LAENGE] = String.valueOf(((Number) jSpinnerLaenge.getModel().getValue()).intValue());
             }
         });
-        jSpinnerField.addChangeListener(e -> {
+        jSpinnerField.addChangeListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD] = String.valueOf(((Number) jSpinnerField.getModel().getValue()).intValue());
             }
         });
-        jCheckBoxInfodatei.addActionListener(e -> {
+        jCheckBoxInfodatei.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
                 nurtabellePset();
             }
         });
-        jCheckBoxSubtitle.addActionListener(e -> {
+        jCheckBoxSubtitle.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
@@ -301,7 +300,7 @@ public class PanelPsetLang extends PanelVorlage {
         });
 
         jCheckBoxSpotlight.setEnabled(SystemUtils.IS_OS_MAC_OSX);
-        jCheckBoxSpotlight.addActionListener(e -> {
+        jCheckBoxSpotlight.addActionListener(_ -> {
             DatenPset pset = getPset();
             if (pset != null) {
                 pset.arr[DatenPset.PROGRAMMSET_SPOTLIGHT] = Boolean.toString(jCheckBoxSpotlight.isSelected());
@@ -309,9 +308,9 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonGruppeNeu.addActionListener(e -> setNeu());
-        jButtonGruppeLoeschen.addActionListener(e -> setLoeschen());
-        jButtonGruppeFarbe.addActionListener(e -> {
+        jButtonGruppeNeu.addActionListener(_ -> setNeu());
+        jButtonGruppeLoeschen.addActionListener(_ -> setLoeschen());
+        jButtonGruppeFarbe.addActionListener(_ -> {
             DatenPset pSet = getPset();
             if (pSet != null) {
                 var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
@@ -322,7 +321,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
         });
-        jButtonGruppeStandardfarbe.addActionListener(e -> {
+        jButtonGruppeStandardfarbe.addActionListener(_ -> {
             DatenPset pSet = getPset();
             if (pSet != null) {
                 pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
@@ -331,10 +330,10 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonGruppeAuf.addActionListener(e -> setAufAb(true));
-        jButtonGruppeAb.addActionListener(e -> setAufAb(false));
+        jButtonGruppeAuf.addActionListener(_ -> setAufAb(true));
+        jButtonGruppeAb.addActionListener(_ -> setAufAb(false));
 
-        jButtonGruppeDuplizieren.addActionListener(e -> {
+        jButtonGruppeDuplizieren.addActionListener(_ -> {
             final int row = tabellePset.getSelectedRow();
             if (row != -1) {
                 var gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
@@ -346,9 +345,9 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jButtonExport.addActionListener(e -> setExport());
+        jButtonExport.addActionListener(_ -> setExport());
 
-        jButtonGruppePfad.addActionListener(e -> {
+        jButtonGruppePfad.addActionListener(_ -> {
             var initialFile = "";
             if (!tfGruppeZielPfad.getText().isEmpty()) {
                 initialFile = tfGruppeZielPfad.getText();
@@ -392,11 +391,11 @@ public class PanelPsetLang extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(tfGruppeZielPfad);
         tfGruppeZielPfad.setComponentPopupMenu(handler.getPopupMenu());
 
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, modalHilfe, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true));
-        jRadioButtonAufloesungKlein.addActionListener(e -> setAufloesung());
-        jRadioButtonAufloesungNormal.addActionListener(e -> setAufloesung());
-        jRadioButtonAufloesungHD.addActionListener(e -> setAufloesung());
-        jButtonPruefen.addActionListener(e -> programmePruefen());
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, modalHilfe, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_PRGRAMME)).setVisible(true));
+        jRadioButtonAufloesungKlein.addActionListener(_ -> setAufloesung());
+        jRadioButtonAufloesungNormal.addActionListener(_ -> setAufloesung());
+        jRadioButtonAufloesungHD.addActionListener(_ -> setAufloesung());
+        jButtonPruefen.addActionListener(_ -> programmePruefen());
 
 
         tabelleProgramme.getSelectionModel().addListSelectionListener(e -> {

@@ -1,3 +1,9 @@
+# **14.3.1**
+- Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
+- **BUGFIX:** Fehler in der Verarbeitung von *Filmliste löschen* wurde behoben.
+- **BUGFIX:** Im Darkmode werden im Abo anlegen Dialog zu dunkle Blautöne verwendet.
+- **BUGFIX(windows):** MV verweigert unter Windows Versionen <10 nicht mehr den Start, warnt aber dass die nächste Version nicht mehr starten wird.
+
 # **14.3.0**
 - **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten kann das Programm nicht starten.
 - **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.

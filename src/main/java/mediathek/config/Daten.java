@@ -233,7 +233,7 @@ public class Daten {
         listeAbo.clear();
         listeDownloads.clear();
         listeBlacklist.clear();
-        listeBookmarkList.clear();
+        listeBookmarkList.getObervableList().clear();
     }
 
     private boolean load() {

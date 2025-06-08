@@ -757,7 +757,7 @@ public class GuiFilme extends AGuiTabPanel {
                     updateBookmarkListAndRefresh(list);
                 }
                 //delete leftover items which have no corresponding DatenFilm objects anymore -> outdated
-                daten.getListeBookmarkList().clear();
+                daten.getListeBookmarkList().getObervableList().clear();
                 JOptionPane.showMessageDialog(mediathekGui, "Merkliste wurde gelöscht.", Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
             }        }
     }

@@ -1,8 +1,9 @@
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.tool.GetFile;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.lang3.SystemUtils;
@@ -18,10 +19,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class PanelProgrammPfade extends JPanel {
-    public JDialog dialog;
+    private static final Logger logger = LogManager.getLogger();
+    private static final Color COLOR_PINK = new Color(255, 200, 200);
     private final boolean vlc, ffmpeg;
     private final JFrame parentComponent;
-    private static final Logger logger = LogManager.getLogger();
 
     public PanelProgrammPfade(JFrame parentFrame, boolean vvlc, boolean fffmpeg) {
         initComponents();
@@ -55,16 +56,16 @@ public class PanelProgrammPfade extends JPanel {
 
         jButtonVlcPfad.addActionListener(new BeobPfad(jTextFieldVlc));
         jButtonFFmpegPfad.addActionListener(new BeobPfad(jTextFieldFFmpeg));
-        jButtonVlcSuchen.addActionListener(e -> {
+        jButtonVlcSuchen.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, "");
             jTextFieldVlc.setText(GuiFunktionenProgramme.getMusterPfadVlc());
         });
 
-        jButtonFFmpegSuchen.addActionListener(e -> {
+        jButtonFFmpegSuchen.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, "");
             jTextFieldFFmpeg.setText(GuiFunktionenProgramme.getMusterPfadFFmpeg());
         });
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true));
     }
 
     private void check() {
@@ -73,26 +74,32 @@ public class PanelProgrammPfade extends JPanel {
 
         try {
             if (jTextFieldVlc.getText().isEmpty()) {
-                jTextFieldVlc.setBackground(new Color(255, 200, 200));
-            } else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC)).exists()) {
-                jTextFieldVlc.setBackground(new Color(255, 200, 200));
-            } else {
+                jTextFieldVlc.setBackground(COLOR_PINK);
+            }
+            else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC)).exists()) {
+                jTextFieldVlc.setBackground(COLOR_PINK);
+            }
+            else {
                 jTextFieldVlc.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             }
-        } catch (Exception ex) {
-            jTextFieldVlc.setBackground(new Color(255, 200, 200));
+        }
+        catch (Exception ex) {
+            jTextFieldVlc.setBackground(COLOR_PINK);
         }
 
         try {
             if (jTextFieldFFmpeg.getText().isEmpty()) {
-                jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
-            } else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG)).exists()) {
-                jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
-            } else {
+                jTextFieldFFmpeg.setBackground(COLOR_PINK);
+            }
+            else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG)).exists()) {
+                jTextFieldFFmpeg.setBackground(COLOR_PINK);
+            }
+            else {
                 jTextFieldFFmpeg.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             }
-        } catch (Exception ex) {
-            jTextFieldFFmpeg.setBackground(new Color(255, 200, 200));
+        }
+        catch (Exception ex) {
+            jTextFieldFFmpeg.setBackground(COLOR_PINK);
         }
     }
 
@@ -132,25 +139,29 @@ public class PanelProgrammPfade extends JPanel {
                 if (chooser.getFile() != null) {
                     try {
                         textField.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         logger.error(ex);
                     }
                 }
-            } else {
+            }
+            else {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
                 if (textField.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
-                } else {
+                }
+                else {
                     chooser.setCurrentDirectory(new File(textField.getText()));
                 }
                 returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         logger.error(ex);
                     }
                 }

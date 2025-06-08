@@ -1,5 +1,6 @@
 package mediathek.daten;
 
+import com.google.common.hash.HashCode;
 import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
 import org.jetbrains.annotations.NotNull;
@@ -84,10 +85,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public synchronized void updateFromFilmList(@NotNull ListeFilme newFilmsList) {
         // In die vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme, die noch nicht vorhanden sind, einsortiert
-        final HashSet<String> hashNewFilms = new HashSet<>(newFilmsList.size() + 1, 1);
+        var hashNewFilms = new HashSet<HashCode>(newFilmsList.size() + 1, 1);
+        newFilmsList.forEach(newFilm -> hashNewFilms.add(newFilm.getSha256()));
 
-        newFilmsList.forEach(newFilm -> hashNewFilms.add(newFilm.getUniqueHash()));
-        this.removeIf(currentFilm -> hashNewFilms.contains(currentFilm.getUniqueHash()));
+        this.removeIf(currentFilm -> hashNewFilms.contains(currentFilm.getSha256()));
 
         hashNewFilms.clear();
 
@@ -115,7 +116,8 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * Find movie with given url
      * @param url    String wiht URL
      * @return DatenFilm object if found or null
-     */public synchronized DatenFilm getFilmByUrl(@NotNull String url) {
+     */
+    public synchronized DatenFilm getFilmByUrl(@NotNull String url) {
         return parallelStream()
                 .filter(f -> f.getUrlNormalQuality().equalsIgnoreCase(url))
                 .findAny()

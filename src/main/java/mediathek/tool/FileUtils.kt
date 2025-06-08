@@ -1,6 +1,8 @@
 package mediathek.tool
 
-import com.sun.jna.platform.FileUtils
+import mediathek.mac.MacFileUtils
+import mediathek.windows.WindowsFileUtils
+import org.apache.commons.lang3.SystemUtils
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -12,13 +14,20 @@ object FileUtils {
     /**
      * Move a file to the OS trash if supported, otherwise delete it.
      * @param filePath the pathe to the file to be deleted.
-     * @throws IOException any occuring exception.
      */
-    @Throws(IOException::class)
     @JvmStatic
     fun moveToTrash(filePath: Path) {
-        val fileUtils = FileUtils.getInstance()
-        if (fileUtils.hasTrash()) fileUtils.moveToTrash(filePath.toFile()) else Files.deleteIfExists(filePath)
+        try {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                MacFileUtils.moveToTrash(filePath.toFile())
+            } else if (SystemUtils.IS_OS_WINDOWS) {
+                WindowsFileUtils.moveToTrash(filePath.toFile())
+            } else {
+                Files.deleteIfExists(filePath)
+            }
+        } catch (_: IOException) {
+            Files.deleteIfExists(filePath)
+        }
     }
 
     const val ONE_KB: Long = 1024

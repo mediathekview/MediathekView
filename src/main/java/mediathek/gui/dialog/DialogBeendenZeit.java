@@ -2,11 +2,12 @@ package mediathek.gui.dialog;
 
 import com.github.lgooddatepicker.components.DateTimePicker;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
-import mediathek.file.GetFile;
-import mediathek.tool.AppTerminationIndefiniteProgress;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.GetFile;
 import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.swing.AppTerminationIndefiniteProgress;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,15 +90,15 @@ public class DialogBeendenZeit extends JDialog {
         });
 
         comboActions.setModel(getComboBoxModel());
-        comboActions.addActionListener(e -> setCbShutdownCoputer());
+        comboActions.addActionListener(_ -> setCbShutdownCoputer());
 
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         setCbShutdownCoputer();
 
-        cbShutdownComputer.addActionListener(e -> shutdown = cbShutdownComputer.isSelected());
+        cbShutdownComputer.addActionListener(_ -> shutdown = cbShutdownComputer.isSelected());
 
-        btnContinue.addActionListener(e -> {
+        btnContinue.addActionListener(_ -> {
             final String strSelectedItem = Objects.requireNonNull(comboActions.getSelectedItem()).toString();
 
             switch (strSelectedItem) {
@@ -116,7 +117,7 @@ public class DialogBeendenZeit extends JDialog {
             }
         });
 
-        btnCancel.addActionListener(e -> escapeHandler());
+        btnCancel.addActionListener(_ -> escapeHandler());
 
         getRootPane().setDefaultButton(btnContinue);
         pack();

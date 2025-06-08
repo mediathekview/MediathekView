@@ -1,5 +1,7 @@
 package mediathek.daten;
 
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import mediathek.config.Config;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.javafx.bookmark.BookmarkData;
@@ -409,10 +411,15 @@ public class DatenFilm implements Comparable<DatenFilm> {
     /**
      * Return a unique index for comparison during updating the filmlist from diff.
      *
-     * @return a unique "hash" string
+     * @return a unique hash
      */
-    public String getUniqueHash() {
-        return (getSender() + getThema()).toLowerCase() + getUrlNormalQuality() + getWebsiteUrl();
+    public HashCode getSha256() {
+        return Hashing.sha256().newHasher()
+                .putUnencodedChars(getSender())
+                .putUnencodedChars(getThema())
+                .putUnencodedChars(getUrlNormalQuality())
+                .putUnencodedChars(getWebsiteUrl())
+                .hash();
     }
 
     /**

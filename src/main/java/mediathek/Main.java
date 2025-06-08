@@ -1,8 +1,25 @@
+/*
+ * Copyright (c) 2025 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import com.sun.jna.platform.win32.VersionHelpers;
 import javafx.application.Platform;
 import mediathek.config.*;
 import mediathek.controller.SenderFilmlistLoadApprover;
@@ -16,6 +33,7 @@ import mediathek.tool.affinity.Affinity;
 import mediathek.tool.dns.IPvPreferenceMode;
 import mediathek.tool.migrator.SettingsMigrator;
 import mediathek.windows.MediathekGuiWindows;
+import mediathek.windows.WindowsVersionHelper;
 import mediathek.x11.MediathekGuiX11;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
@@ -81,14 +99,10 @@ public class Main {
      * CAUTION: At least some UI MUST BE INITILIZED, otherwise on macOS VM will crash in native code!!!!
      */
     private static void removeMediaDb() {
-        try {
-            var mediaDbPath = StandardLocations.getSettingsDirectory().resolve("mediadb.txt");
-            if (Files.exists(mediaDbPath)) {
-                logger.info("Moving old unsupported media database to trash.");
-                mediathek.tool.FileUtils.moveToTrash(mediaDbPath);
-            }
-        }
-        catch (IOException ignored) {
+        var mediaDbPath = StandardLocations.getSettingsDirectory().resolve("mediadb.txt");
+        if (Files.exists(mediaDbPath)) {
+            logger.info("Moving old unsupported media database to trash.");
+            FileUtils.moveToTrash(mediaDbPath);
         }
     }
 
@@ -247,10 +261,15 @@ public class Main {
     }
 
     private static void setupCpuAffinity() {
-        final int numCpus = Config.getNumCpus();
-        if (numCpus != 0) {
-            var affinity = Affinity.getAffinityImpl();
-            affinity.setDesiredCpuAffinity(numCpus);
+        try {
+            final int numCpus = Config.getNumCpus();
+            if (numCpus != 0) {
+                var affinity = Affinity.getAffinityImpl();
+                affinity.setDesiredCpuAffinity(numCpus);
+            }
+        }
+        catch (Exception e) {
+            logger.error("Failed to set cpu affinity", e);
         }
     }
 
@@ -386,11 +405,17 @@ public class Main {
     }
 
     private static void checkWindows10OrGreater() {
-        if (!VersionHelpers.IsWindows10OrGreater()) {
-            JOptionPane.showMessageDialog(null,
-                    "MediathekView benötigt mindestens Windows 10 zum Start.\nDas Programm wird nun beendet.",
-                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
+        try {
+            if (!WindowsVersionHelper.IsWindows10OrGreater()) {
+                JOptionPane.showMessageDialog(null,
+                        "<html>MediathekView benötigt mindestens Windows 10 zum Start.<br/>" +
+                                "<b>Die Nutzung erfolgt auf eigenes Risiko ohne Support!!</b><br/><br/>" +
+                                "Die nächste MV-Version wird nicht mehr unter diesem Betriebssystem starten!</html>",
+                        Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        catch (Throwable ex) {
+            logger.error("Error while checking Windows version", ex);
         }
     }
 
