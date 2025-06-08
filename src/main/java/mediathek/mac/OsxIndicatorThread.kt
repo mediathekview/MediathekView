@@ -38,6 +38,7 @@ internal class OsxIndicatorThread : IndicatorThread() {
                 //if icon was already drawn, don´ do it again
                 if (oldPercentage != percentage) {
                     taskbar.setProgressValue(percentage)
+                    taskbar.setIconBadge(percentage.toString())
                 }
                 oldPercentage = percentage
                 TimeUnit.MILLISECONDS.sleep(500)
@@ -46,6 +47,7 @@ internal class OsxIndicatorThread : IndicatorThread() {
         } finally {
             //reset the application dock icon
             taskbar.setProgressValue(-1)
+            taskbar.setIconBadge(null)
             oldPercentage = 0
         }
     }
