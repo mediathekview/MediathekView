@@ -1,3 +1,8 @@
+# **14.4.0**
+- **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten wird das Programm nicht fehlerfrei laufen.
+- **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
+- **FEATURE:** Die Merkliste kann über das Hilfe-Menü vollständig gelöscht werden.
+
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
 - **BUGFIX:** Fehler in der Verarbeitung von *Filmliste löschen* wurde behoben.

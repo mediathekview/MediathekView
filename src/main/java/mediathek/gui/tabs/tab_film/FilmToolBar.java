@@ -83,7 +83,7 @@ public class FilmToolBar extends JToolBar {
         toggleFilterDialogVisibilityAction.setEnabled(enabled);
     }
 
-    static class FilterVisibilityToggleButton extends JToggleButton {
+    public static class FilterVisibilityToggleButton extends JToggleButton {
         public FilterVisibilityToggleButton(Action a) {
             super(a);
             setText("");

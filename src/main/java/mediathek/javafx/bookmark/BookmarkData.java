@@ -8,6 +8,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import mediathek.daten.DatenFilm;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,15 +26,50 @@ public class BookmarkData {
     @JsonIgnore
     private DatenFilm filmdata;
     private String note;
+    private LocalDate availableUntil;
+    /// will be added from [BookmarkDataList#checkAndBookmarkMovies(List)]
+    private LocalDate bookmarkAdded;
+    /// The SHA256 hashcode from the film object used to create the bookmark.
+    /// This is the *correct* way to store film object info as it will be unique.
+    ///
+    /// Must be converted back to [com.google.common.hash.HashCode].
+    /// Will erase [BookmarkData#url] as it is unneeded then.
+    private String filmHashCode;
 
     public BookmarkData() {
         seen = new SimpleBooleanProperty(false);
+        //availableUntil = LocalDate.now();
     }
-
     public BookmarkData(DatenFilm film) {
         this();
         this.url = film.getUrlNormalQuality();
         this.filmdata = film;
+    }
+
+    @SuppressWarnings("unused")
+    public LocalDate getBookmarkAdded() {
+        return bookmarkAdded;
+    }
+
+    public void setBookmarkAdded(LocalDate bookmarkAdded) {
+        this.bookmarkAdded = bookmarkAdded;
+    }
+
+    public String getFilmHashCode() {
+        return filmHashCode;
+    }
+
+    public void setFilmHashCode(String filmHashCode) {
+        this.filmHashCode = filmHashCode;
+        this.url = null; // remove Url if we use the hashcode.
+    }
+
+    public LocalDate getAvailableUntil() {
+        return availableUntil;
+    }
+
+    public void setAvailableUntil(LocalDate availableUntil) {
+        this.availableUntil = availableUntil;
     }
 
     public String getUrl() {
@@ -47,26 +84,26 @@ public class BookmarkData {
         return this.note;
     }
 
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     @JsonIgnore
     public Optional<String> getNoteOptional() {
         return Optional.ofNullable(note);
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public boolean getSeen() {
         return this.seen.get();
     }
 
+    public void setSeen(boolean seen) {
+        this.seen.set(seen);
+    }
+
     @JsonIgnore
     public boolean getNotSeen() {
         return !this.seen.get();
-    }
-
-    public void setSeen(boolean seen) {
-        this.seen.set(seen);
     }
 
     @JsonIgnore
@@ -77,11 +114,6 @@ public class BookmarkData {
     @JsonIgnore
     public boolean isNotInFilmList() {
         return this.filmdata == null;
-    }
-
-    @JsonIgnore
-    public boolean isLiveStream() {
-        return (this.filmdata != null) ? this.filmdata.isLivestream() : false;
     }
 
     @JsonIgnore

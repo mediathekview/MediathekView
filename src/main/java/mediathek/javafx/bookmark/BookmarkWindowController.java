@@ -325,13 +325,12 @@ public class BookmarkWindowController implements Initializable {
       boolean multipleSelected = items.size() > 1;
 
       btnDeleteEntry.setDisable(disable);
-      btnMarkViewed.setDisable(disable || onlyLifeStreamSelected());
+      btnMarkViewed.setDisable(disable);
       disable = disable || multipleSelected; // allow only for single selection
       btnEditNote.setDisable(disable);
       playitem.setDisable(disable);
       edititem.setDisable(disable);
       loaditem.setDisable(disable);
-      viewitem.setDisable(onlyLifeStreamSelected());
       webitem.setDisable(disable || selModel.getSelectedItem().getWebUrl() == null);
 
       // Update buttons: Check if not seen in selection and adapt button text
@@ -757,27 +756,12 @@ public class BookmarkWindowController implements Initializable {
   private boolean isUnSeenSelected() {
     boolean unSeen = false;
     for (BookmarkData data: tbBookmarks.getSelectionModel().getSelectedItems()) {
-      if (!data.getSeen() && !data.isLiveStream()) {
+      if (!data.getSeen()) {
         unSeen = true;
         break;
       }
     }
     return unSeen;
-  }
-
-  /**
-   * Returns true if the current table selection contains only livestreams
-   * @return boolean
-   */
-  private boolean onlyLifeStreamSelected() {
-    boolean lifestream = true;
-    for (BookmarkData data: tbBookmarks.getSelectionModel().getSelectedItems()) {
-      if (!data.isLiveStream()) {
-        lifestream = false;
-        break;
-      }
-    }
-    return lifestream;
   }
 
   /**

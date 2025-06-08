@@ -1028,7 +1028,9 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.add(new ResetSettingsAction(this, daten));
         jMenuHilfe.add(new ResetDownloadHistoryAction(this));
         jMenuHilfe.add(new ResetAboHistoryAction(this));
+        jMenuHilfe.addSeparator();
         jMenuHilfe.add(new DeleteLocalFilmlistAction(this));
+        jMenuHilfe.add(new DeleteBookmarksAction(this));
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetFilterDialogPosition(this));
         jMenuHilfe.addSeparator();
