@@ -242,7 +242,7 @@ public class FilterConfiguration {
     }
 
     public double getFilmLengthMax() {
-        return configuration.getDouble(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getKey()), 110.0d);
+        return configuration.getDouble(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_FILM_LENGTH_MAX.getKey()), FilmLengthSlider.UNLIMITED_VALUE);
     }
 
     public FilterConfiguration setFilmLengthMax(double filmLengthMax) {
