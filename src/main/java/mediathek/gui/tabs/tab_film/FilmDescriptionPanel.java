@@ -32,8 +32,6 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,12 +39,10 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class FilmDescriptionPanel extends JPanel {
-    private static final Logger logger = LogManager.getLogger();
     private final JScrollPane scrollPane1 = new JScrollPane();
     private final JPopupMenu popupMenu = new JPopupMenu();
     private final SenderIconLabel lblIcon = new SenderIconLabel();
@@ -201,12 +197,7 @@ public class FilmDescriptionPanel extends JPanel {
     }
 
     private void openUrl(String url) {
-        try {
             UrlHyperlinkAction.openURL(url);
-        }
-        catch (URISyntaxException ex) {
-            logger.warn(ex);
-        }
     }
 
     private void showFilmDescription(@NotNull DatenFilm film) {

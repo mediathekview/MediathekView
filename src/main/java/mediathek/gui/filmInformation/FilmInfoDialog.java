@@ -20,8 +20,6 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.sync.LockMode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
@@ -31,7 +29,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,7 +38,6 @@ import java.util.stream.Collectors;
  */
 public class FilmInfoDialog extends JDialog {
     private static final Dimension DEFAULT_SENDER_DIMENSION = new Dimension(64, 64);
-    private static final Logger logger = LogManager.getLogger();
     private Optional<DatenFilm> currentFilmOptional = Optional.empty();
     private final JPopupMenu popupMenu = new JPopupMenu();
 
@@ -62,7 +58,7 @@ public class FilmInfoDialog extends JDialog {
 
     private void setupDescriptionPopupMenu() {
         var item = new JMenuItem("Auswahl kopieren");
-        item.addActionListener(l -> {
+        item.addActionListener(_ -> {
             final var selected = (lblDescription.getSelectionEnd() - lblDescription.getSelectionStart()) > 0;
             if (!selected) {
                 JOptionPane.showMessageDialog(this, "Kein Text markiert!", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
@@ -144,16 +140,8 @@ public class FilmInfoDialog extends JDialog {
         }
     }
 
-    private void openUrl(String url) {
-        try {
-            UrlHyperlinkAction.openURL(url);
-        } catch (URISyntaxException ex) {
-            logger.warn(ex);
-        }
-    }
-
     private void setupHyperlink() {
-        hyperlink.addActionListener(l -> {
+        hyperlink.addActionListener(_ -> {
             if (!hyperlink.getToolTipText().isEmpty()) {
                 var toolTipText = hyperlink.getToolTipText();
                 if (Desktop.isDesktopSupported()) {
@@ -168,10 +156,10 @@ public class FilmInfoDialog extends JDialog {
                                     ex);
                         }
                     } else {
-                        openUrl(toolTipText);
+                        UrlHyperlinkAction.openURL(toolTipText);
                     }
                 } else {
-                    openUrl(toolTipText);
+                    UrlHyperlinkAction.openURL(toolTipText);
                 }
             }
         });

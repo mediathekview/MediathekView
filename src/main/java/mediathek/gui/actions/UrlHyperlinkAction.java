@@ -15,7 +15,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 public class UrlHyperlinkAction extends AbstractAction {
 
@@ -64,16 +63,15 @@ public class UrlHyperlinkAction extends AbstractAction {
 
     private static final Logger logger = LogManager.getLogger(UrlHyperlinkAction.class);
 
-    public static void openURI(@NotNull URI uri) throws URISyntaxException {
+    public static void openURI(@NotNull URI uri) {
         openURL(uri.toString());
     }
     /**
      * Try to open a browser window.
      *
      * @param url     URL to be opened. Here in string format.
-     * @throws URISyntaxException when URL is malformed.
      */
-    public static void openURL(String url) throws URISyntaxException {
+    public static void openURL(String url) {
         boolean launchFailed = false;
 
         if (SystemUtils.IS_OS_MAC_OSX) {
@@ -81,7 +79,7 @@ public class UrlHyperlinkAction extends AbstractAction {
                 logger.trace("trying to launch macOS default web browser");
                 launchMacDefaultBrowser(url);
             } catch (IOException e) {
-                logger.error("Failed to launch default macOS web browser, using custom...");
+                logger.error("Failed to launch default macOS web browser, using custom...", e);
                 launchFailed = true;
             }
         } else if (SystemUtils.IS_OS_LINUX) {
@@ -89,7 +87,7 @@ public class UrlHyperlinkAction extends AbstractAction {
                 logger.trace("trying to use xdg-open to start web browser");
                 launchApplication("xdg-open", url);
             } catch (IOException e) {
-                logger.error("Failed to launch web browser with xdg-open");
+                logger.error("Failed to launch web browser with xdg-open", e);
                 launchFailed = true;
             }
         } else {
@@ -100,8 +98,8 @@ public class UrlHyperlinkAction extends AbstractAction {
                     if (d.isSupported(Desktop.Action.BROWSE)) {
                         d.browse(new URI(url));
                     }
-                } catch (IOException e) {
-                    logger.error("Failed to launch java desktop supported web browser, using custom...");
+                } catch (Exception e) {
+                    logger.error("Failed to launch java desktop supported web browser, using custom...", e);
                     launchFailed = true;
                 }
             } else {
@@ -117,9 +115,6 @@ public class UrlHyperlinkAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
             openURL(e.getActionCommand());
-        } catch (URISyntaxException ignored) {
-        }
     }
 }

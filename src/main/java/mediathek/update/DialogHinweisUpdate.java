@@ -26,17 +26,12 @@ import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URISyntaxException;
 
 public class DialogHinweisUpdate extends JDialog {
-
-    private static final Logger logger = LogManager.getLogger();
 
     public DialogHinweisUpdate(JFrame parent, String ttext) {
         super(parent, true);
@@ -45,17 +40,10 @@ public class DialogHinweisUpdate extends JDialog {
 
         EscapeKeyHandler.installHandler(this, this::dispose);
 
-        jButtonOk.addActionListener(e -> dispose());
+        jButtonOk.addActionListener(_ -> dispose());
         jTextArea1.setText(ttext);
 
-        hyperLink.addActionListener(l -> {
-            try {
-                UrlHyperlinkAction.openURL(Konstanten.ADRESSE_DOWNLOAD);
-            } catch (URISyntaxException ex) {
-                logger.error(ex);
-            }
-        });
-        //setSize(450,getHeight());
+        hyperLink.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_DOWNLOAD));
         pack();
     }
 

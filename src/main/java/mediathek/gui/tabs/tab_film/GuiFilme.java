@@ -63,7 +63,6 @@ import java.awt.print.PrinterException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -938,29 +937,9 @@ public class GuiFilme extends AGuiTabPanel {
             var luceneBtn = new JButton();
             luceneBtn.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
             luceneBtn.setToolTipText("Lucene Query Syntax Hilfe");
-            luceneBtn.addActionListener(_ -> {
-                if (Desktop.isDesktopSupported()) {
-                    var desktop = Desktop.getDesktop();
-                    if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                        try {
-                            desktop.browse(Konstanten.LUCENE_CLIENT_HELP_URL.uri());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        showError();
-                    }
-                } else {
-                    showError();
-                }
-            });
+            luceneBtn.addActionListener(_ -> UrlHyperlinkAction.openURI(Konstanten.LUCENE_CLIENT_HELP_URL.uri()));
             searchToolbar.add(luceneBtn);
             putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT, searchToolbar);
-        }
-
-        private void showError() {
-            JOptionPane.showMessageDialog(this, "Es konnte kein Browser geöffnet werden.",
-                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
         }
 
         @Override
@@ -1602,7 +1581,7 @@ public class GuiFilme extends AGuiTabPanel {
                     var miThema = new JMenuItem(item.toString());
                     miThema.addActionListener(_ -> {
                         var url = item.getQueryUrl() + URLEncoder.encode(film.getThema(), StandardCharsets.UTF_8);
-                        tryLaunchBrowser(url);
+                        UrlHyperlinkAction.openURL(url);
                     });
                     mThema.add(miThema);
                 }
@@ -1610,7 +1589,7 @@ public class GuiFilme extends AGuiTabPanel {
                 var miTitel = new JMenuItem(item.toString());
                 miTitel.addActionListener(_ -> {
                     var url = item.getQueryUrl() + URLEncoder.encode(film.getTitle(), StandardCharsets.UTF_8);
-                    tryLaunchBrowser(url);
+                    UrlHyperlinkAction.openURL(url);
                 });
                 mTitel.add(miTitel);
             }
@@ -1621,14 +1600,6 @@ public class GuiFilme extends AGuiTabPanel {
             mOnlineSearch.add(mTitel);
             popupMenu.add(mOnlineSearch);
             popupMenu.addSeparator();
-        }
-
-        private void tryLaunchBrowser(String url) {
-            try {
-                UrlHyperlinkAction.openURL(url);
-            } catch (URISyntaxException ex) {
-                logger.error("Failed to launch online search for url {}", url);
-            }
         }
 
         private class BeobHistory implements ActionListener {

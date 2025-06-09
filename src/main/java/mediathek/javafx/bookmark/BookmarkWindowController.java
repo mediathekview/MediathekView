@@ -40,7 +40,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ScheduledFuture;
@@ -205,12 +204,7 @@ public class BookmarkWindowController implements Initializable {
   private void hyperLinkSelected(Event e) {
     String url = tbBookmarks.getSelectionModel().getSelectedItem().getWebUrl();
     if (url != null) {
-      try {
           UrlHyperlinkAction.openURL(url);
-      }
-      catch (URISyntaxException ex) {
-        logger.error("Hyperlink Syntax exception", ex);
-      }
     }
   }
 
