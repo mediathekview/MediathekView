@@ -3,6 +3,7 @@
 - **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
 - **FEATURE:** Die Merkliste kann über das Hilfe-Menü vollständig gelöscht werden.
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
+- **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
