@@ -91,9 +91,9 @@ public class Konstanten {
     public static final String PFAD_HILFETEXT_GEO = "/mediathek/file/hilfetext_geo.txt";
     public static final String PFAD_HILFETEXT_BLACKLIST = "/mediathek/file/hilfetext_blacklist.txt";
     public static final String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_pset.txt";
-    public static final String PFAD_HILFETEXT_STANDARD_PSET = "hilfetext_standardPset.txt";
-    public static final String PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG = "hilfetext_editDownloadProg.txt";
-    public static final String PFAD_HILFETEXT_RESET = "hilfetext_reset.txt";
-    public static final String PFAD_HILFETEXT_RESET_SET = "hilfetext_reset_set.txt";
-    public static final String PFAD_HILFETEXT_DIALOG_ADD_ABO = "hilfetext_dialog_add_abo.txt";
+    public static final String PFAD_HILFETEXT_STANDARD_PSET = "/mediathek/file/hilfetext_standardPset.txt";
+    public static final String PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG = "/mediathek/file/hilfetext_editDownloadProg.txt";
+    public static final String PFAD_HILFETEXT_RESET = "/mediathek/file/hilfetext_reset.txt";
+    public static final String PFAD_HILFETEXT_RESET_SET = "/mediathek/file/hilfetext_reset_set.txt";
+    public static final String PFAD_HILFETEXT_DIALOG_ADD_ABO = "/mediathek/file/hilfetext_dialog_add_abo.txt";
 }
