@@ -1,5 +1,6 @@
 package mediathek.tool;
 
+import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
 import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinnerFormatter;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.junit.jupiter.api.Assertions;
@@ -44,7 +45,7 @@ class FilterConfigTest {
                 arguments(
                         "isShowSubtitlesOnly", (Supplier<Boolean>) filterConfig::isShowSubtitlesOnly, false),
                 arguments("isShowUnseenOnly", (Supplier<Boolean>) filterConfig::isShowUnseenOnly, false),
-                arguments("getFilmLengthMax", (Supplier<Double>) filterConfig::getFilmLengthMax, 110.0d),
+                arguments("getFilmLengthMax", (Supplier<Double>) filterConfig::getFilmLengthMax, (double)FilmLengthSlider.UNLIMITED_VALUE),
                 arguments("getFilmLengthMin", (Supplier<Double>) filterConfig::getFilmLengthMin, 0.0d),
                 arguments(
                         "getZeitraum",
