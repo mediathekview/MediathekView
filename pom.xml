@@ -500,6 +500,23 @@
         <finalName>MediathekView</finalName>
         <plugins>
             <plugin>
+                <groupId>net.codecrete.windows-api</groupId>
+                <artifactId>windowsapi-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>windows-api</goal>
+                        </goals>
+                        <configuration>
+                            <functions>
+                                <function>SHFileOperationW</function>
+                            </functions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>${maven-enforcer-plugin.version}</version>
