@@ -618,6 +618,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass><![CDATA[${mainclass}]]></mainClass>
+                            <classpathPrefix>dependency/</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>
