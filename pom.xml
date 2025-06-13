@@ -909,6 +909,39 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -941,6 +974,39 @@
                                     <sourceFile>${project.basedir}/scripte/aria2-remote.sh</sourceFile>
                                     <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh
                                     </destinationFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
