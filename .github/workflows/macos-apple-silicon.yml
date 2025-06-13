@@ -35,7 +35,7 @@ jobs:
         run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode > target/mac/mac_dev_cert_with_password.p12
 
       - name: Build macOS app
-        run: mvn -B package -Pmac_apple_silicon,install4j-mac-apple-silicon
+        run: mvn -B package -Pmac_apple_silicon,install4j-mac-apple-silicon -DskipTests
         env:
           INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
           MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
@@ -47,11 +47,11 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          echo "${{ secrets.SERVER_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
       - name: Upload .dmg via scp
         run: |
           FILE=$(ls target/media/*.dmg)
-          scp "$FILE" ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/test.dmg
+          scp "$FILE" ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/test.dmg
