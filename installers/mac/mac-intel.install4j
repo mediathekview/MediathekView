@@ -5,7 +5,7 @@
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <codeSigning macEnabled="true" macPkcs12File="./mac_dev_cert_with_password.p12" macNotarize="true" macApiIssuer="69a6de78-5a3d-47e3-e053-5b8c7c11a4d1" macApiKey="WA422TZX7G" macApiPrivateKey="../../../../../testuser/Nextcloud/MV_Apple_Intel_Build/AuthKey_WA422TZX7G.p8">
+    <codeSigning macEnabled="true" macPkcs12File="./mac_dev_cert_with_password.p12" macNotarize="true" macApiIssuer="69a6de78-5a3d-47e3-e053-5b8c7c11a4d1" macApiKey="WA422TZX7G" macApiPrivateKey="./AuthKey_WA422TZX7G.p8">
       <macAdditionalBinaries>
         <entry>*.dylib</entry>
         <entry>*.so</entry>
