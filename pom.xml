@@ -1249,10 +1249,10 @@
             <id>install4j-mac-apple-silicon</id>
             <properties>
                 <install4j.home>/Applications/install4j.app</install4j.home>
-                <install4j.macKeystorePassword>${{ secrets.MAC_KEYSTORE_PASSWORD }}</install4j.macKeystorePassword>
+                <install4j.macKeystorePassword>${env.MAC_KEYSTORE_PASSWORD}</install4j.macKeystorePassword>
                 <install4j.disableNotarization>true</install4j.disableNotarization>
                 <install4j.disableSigning>true</install4j.disableSigning>
-                <install4j.license>${{ secrets.INSTALL4J_11_LICENSE_KEY }}</install4j.license>
+                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
                 <plugins>
