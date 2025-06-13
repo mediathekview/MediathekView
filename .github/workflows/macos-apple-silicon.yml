@@ -40,19 +40,22 @@ jobs:
           INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
           MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
 
-      - name: Set release date
-        id: release_date
-        run: echo "DATE=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
-
-      - name: Upload .dmg to S3
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.S3_REGION }}
+      - name: Configure AWS CLI for MinIO
+        run: |
+          mkdir -p ~/.aws
+          cat > ~/.aws/credentials <<EOF
+          [default]
+          aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          
+          cat > ~/.aws/config <<EOF
+          [default]
+          region = ${{ secrets.MINIO_REGION || 'us-east-1' }}
+          output = json
+          EOF
 
       - name: Upload artifact to S3
         run: |
-          FILE=$(ls target/media/*.dmg)
           DATE=$(date +'%Y-%m-%d')
-          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp "$FILE" "s3://${{ secrets.S3_BUCKET }}/snapshot-$DATE.dmg"
+          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp target/media/MediathekView-latest-apple-silicon.dmg "s3://${{ secrets.S3_BUCKET }}/snapshot-$DATE.dmg"
