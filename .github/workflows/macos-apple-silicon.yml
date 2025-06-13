@@ -39,3 +39,19 @@ jobs:
         env:
           INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
           MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
+
+      - name: Set release date
+        id: release_date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
+#      - name: Create GitHub Release
+#        uses: softprops/action-gh-release@v2
+#        with:
+#          tag_name: snapshot-${{ steps.release_date.outputs.DATE }}
+#          name: Daily Snapshot ${{ steps.release_date.outputs.DATE }}
+#          body: |
+#            This is the daily macOS Apple Silicon snapshot with install4j build for ${{ steps.release_date.outputs.DATE }}.
+#          prerelease: true
+#          files: /Users/runner/work/MediathekView/MediathekView/target/media/*.dmg
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
