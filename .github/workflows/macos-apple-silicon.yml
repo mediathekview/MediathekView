@@ -55,4 +55,4 @@ jobs:
         run: |
           FILE=$(ls target/media/*.dmg)
           DATE=$(date +'%Y-%m-%d')
-          aws s3 cp "$FILE" "s3://${{ secrets.S3_BUCKET }}/snapshot-$DATE.dmg" --acl public-read
+          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp "$FILE" "s3://${{ secrets.S3_BUCKET }}/snapshot-$DATE.dmg"
