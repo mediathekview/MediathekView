@@ -62,11 +62,6 @@
         </repository>
 
         <repository>
-            <id>install4j repo</id>
-            <url>https://maven.ej-technologies.com/repository</url>
-        </repository>
-
-        <repository>
             <id>oss.sonatype.org-snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
@@ -144,7 +139,7 @@
 
         <mainclass>mediathek.Main</mainclass>
 
-        <install4j.version>11.0.3</install4j.version>
+        <install4j.version>11.0.4</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
@@ -658,7 +653,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>filter-install4j</id>
+                        <id>copy-install4j-installers</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -1267,6 +1262,29 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>copy-install4j-mac-installers</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/installers/mac</directory>
+                                            <targetPath>${basedir}/target/mac</targetPath>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -1287,6 +1305,39 @@
                                 </goals>
                                 <configuration>
                                     <projectFile>${project.build.directory}/mediathekview_${install4j.platform}.install4j</projectFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>install4j-mac-apple-silicon</id>
+            <properties>
+                <install4j.home>/Applications/install4j.app</install4j.home>
+                <install4j.macKeystorePassword>${{ secrets.MAC_KEYSTORE_PASSWORD }}</install4j.macKeystorePassword>
+                <install4j.disableNotarization>true</install4j.disableNotarization>
+                <install4j.disableSigning>true</install4j.disableSigning>
+                <install4j.license>${{ secrets.INSTALL4J_LICENSE }}</install4j.license>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-installer-mac-apple-silicon</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <projectFile>
+                                        ${project.build.directory}/mac/mac-apple-silicon.install4j
+                                    </projectFile>
                                 </configuration>
                             </execution>
                         </executions>

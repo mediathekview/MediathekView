@@ -25,7 +25,7 @@ default:
     - ssh-keyscan -p 60002 dw2.mvorg.de >> ~/.ssh/known_hosts
     - ssh-keyscan -p 60002 116.202.81.23 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_11_0_3.tar.gz -O install4j.tar.gz
+    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_11_0_4.tar.gz -O install4j.tar.gz
     - tar -zxf install4j.tar.gz
     - java -version
     - ${INSTALL4J_JAVA_HOME}/bin/java -version
