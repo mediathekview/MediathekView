@@ -44,14 +44,15 @@ jobs:
         id: release_date
         run: echo "DATE=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      - name: Upload .dmg to S3
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.S3_REGION }}
 
-      - name: Upload .dmg via scp
+      - name: Upload artifact to S3
         run: |
           FILE=$(ls target/media/*.dmg)
-          scp "$FILE" ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/test.dmg
+          DATE=$(date +'%Y-%m-%d')
+          aws s3 cp "$FILE" "s3://${{ secrets.S3_BUCKET }}/snapshot-$DATE.dmg" --acl public-read
