@@ -32,8 +32,7 @@ jobs:
         run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode > target/mac/mac_dev_cert_with_password.p12
 
       - name: Build macOS app
-        with:
-          env:
-            INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
-            MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
         run: mvn -B package -Pmac_apple_silicon,install4j-mac-apple-silicon
+        env:
+          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
+          MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
