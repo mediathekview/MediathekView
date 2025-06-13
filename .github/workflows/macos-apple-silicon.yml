@@ -71,3 +71,73 @@ jobs:
         run: |
           DATE=$(date +'%Y-%m-%d')
           aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp target/media/MediathekView-latest-apple-silicon.dmg "s3://${{ secrets.S3_BUCKET }}/MediathekView-apple-silicon-snapshot-$DATE.dmg"
+
+
+  build-macos-intel:
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'liberica'
+          java-version: '24'
+          java-package: jdk
+          cache: 'maven'
+
+      - name: Restore install4j from cache
+        id: cache-download
+        uses: actions/cache@v4
+        with:
+          path: download/install4j.dmg
+          key: download-cache-v1  # Change key if the file content changes
+
+      - name: Download install4j if not cached
+        if: steps.cache-download.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p download
+          curl -L -o download/install4j.dmg https://download.ej-technologies.com/install4j/install4j_macos_11_0_4.dmg
+
+      - name: Install install4j
+        run: |
+          hdiutil attach download/install4j.dmg
+          cp -r /Volumes/install4j/install4j.app /Applications/install4j.app
+          hdiutil detach /Volumes/install4j*
+
+      - name: First build
+        run: mvn install
+
+      - name: Restore AuthKey
+        run: echo "${{ secrets.AUTHKEY_WA422TZX7G }}" | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
+
+      - name: Restore dev cert
+        run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode > target/mac/mac_dev_cert_with_password.p12
+
+      - name: Build macOS app
+        run: mvn -B package -Pmac_intel,install4j-mac-intel -DskipTests
+        env:
+          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
+          MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
+
+      - name: Configure AWS CLI for MinIO
+        run: |
+          mkdir -p ~/.aws
+          cat > ~/.aws/credentials <<EOF
+          [default]
+          aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EOF
+          
+          cat > ~/.aws/config <<EOF
+          [default]
+          region = ${{ secrets.MINIO_REGION || 'us-east-1' }}
+          output = json
+          EOF
+
+      - name: Upload artifact to S3
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp target/media/MediathekView-latest-mac-intel.dmg "s3://${{ secrets.S3_BUCKET }}/MediathekView-mac-intel-snapshot-$DATE.dmg"
