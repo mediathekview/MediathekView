@@ -1,7 +1,9 @@
 # **14.4.0**
+- Das Programm verwendet nun kein JavaFX mehr.
 - **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten wird das Programm nicht fehlerfrei laufen.
 - **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
 - **FEATURE:** Die Merkliste kann über das Hilfe-Menü vollständig gelöscht werden.
+- **FEATURE:** Dialog *Merkliste verwalten* wurde völlig neu geschrieben.
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 
