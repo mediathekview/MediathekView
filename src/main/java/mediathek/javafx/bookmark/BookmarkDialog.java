@@ -100,6 +100,8 @@ public class BookmarkDialog extends JDialog {
         installListener();
 
         restoreBounds();
+
+        addNoteAction.setEnabled(selectionModel.getSelected().size() == 1 && !selectionModel.getSelected().isEmpty());
     }
 
     private void installTableContextMenu() {
@@ -243,8 +245,7 @@ public class BookmarkDialog extends JDialog {
         selectionModel = new DefaultEventSelectionModel<>(sortedList);
         selectionModel.addListSelectionListener(l -> {
             if (!l.getValueIsAdjusting()) {
-                var numSelections = selectionModel.getSelected().size();
-                addNoteAction.setEnabled(numSelections == 1);
+                addNoteAction.setEnabled(selectionModel.getSelected().size() == 1 && !selectionModel.getSelected().isEmpty());
                 updateInfoTabs();
             }
         });
