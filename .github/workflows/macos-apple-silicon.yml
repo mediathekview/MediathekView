@@ -1,4 +1,4 @@
-name: build-macos-apple-silicon
+name: build-macos-apps
 
 on: workflow_dispatch
 
@@ -74,7 +74,7 @@ jobs:
 
 
   build-macos-intel:
-    needs: build-macos-apple-silicon
+    #needs: build-macos-apple-silicon
     runs-on: macos-13
 
     steps:
