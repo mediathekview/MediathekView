@@ -18,15 +18,27 @@ jobs:
           java-package: jdk
           cache: 'maven'
 
+      - name: Restore install4j from cache
+        id: cache-download
+        uses: actions/cache@v4
+        with:
+          path: download/install4j.dmg
+          key: download-cache-v1  # Change key if the file content changes
+
+      - name: Download install4j if not cached
+        if: steps.cache-download.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p download
+          curl -L -o download/install4j.dmg https://download.ej-technologies.com/install4j/install4j_macos_11_0_4.dmg
+
       - name: Install install4j
         run: |
-          curl -L -o install4j.dmg https://download.ej-technologies.com/install4j/install4j_macos_11_0_4.dmg
-          hdiutil attach install4j.dmg
+          hdiutil attach download/install4j.dmg
           cp -r /Volumes/install4j/install4j.app /Applications/install4j.app
           hdiutil detach /Volumes/install4j*
 
       - name: First build
-        run: mvn clean install
+        run: mvn install
 
       - name: Restore AuthKey
         run: echo "${{ secrets.AUTHKEY_WA422TZX7G }}" | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8

@@ -1250,7 +1250,7 @@
             <properties>
                 <install4j.home>/Applications/install4j.app</install4j.home>
                 <install4j.macKeystorePassword>${env.MAC_KEYSTORE_PASSWORD}</install4j.macKeystorePassword>
-                <install4j.disableNotarization>true</install4j.disableNotarization>
+                <install4j.disableNotarization>false</install4j.disableNotarization>
                 <install4j.disableSigning>false</install4j.disableSigning>
                 <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
             </properties>
