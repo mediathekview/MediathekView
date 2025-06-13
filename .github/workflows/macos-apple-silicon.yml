@@ -1,4 +1,4 @@
-name: Build MV preview for Apple Silicon macOS
+name: build-macos-apple-silicon
 
 on: workflow_dispatch
 
