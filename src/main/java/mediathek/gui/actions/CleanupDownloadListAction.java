@@ -1,7 +1,8 @@
 package mediathek.gui.actions;
 
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
-import mediathek.tool.SVGIconUtilities;
+import mediathek.swing.IconUtils;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,7 @@ public class CleanupDownloadListAction extends AbstractAction {
         this.guiDownloads = guiDownloads;
         putValue(Action.NAME, "Liste säubern");
         putValue(Action.SHORT_DESCRIPTION, "Liste säubern");
-        putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg"));
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.ERASER));
     }
 
     @Override

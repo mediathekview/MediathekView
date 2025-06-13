@@ -109,10 +109,10 @@
         <glazedlists.version>1.11.0</glazedlists.version>
         <guava.version>33.4.8-jre</guava.version>
         <icu4j.version>76.1</icu4j.version>
+        <ikonli.version>12.4.0</ikonli.version>
         <jackson.version>2.18.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
         <javax-activation.version>1.2.0</javax-activation.version>
-        <javafx.version>24</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jfreechart.version>1.5.5</jfreechart.version>
         <jide-oss.version>3.7.15</jide-oss.version>
@@ -138,7 +138,7 @@
         <mockito.version>5.12.0</mockito.version>
         <okhttp.version>5.0.0-alpha.14</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
-        <sqlite-jdbc.version>3.49.1.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.50.1.0</sqlite-jdbc.version>
         <swingx.version>1.6.5-1</swingx.version>
         <xz.version>1.10</xz.version>
 
@@ -152,16 +152,34 @@
 
         <!-- VM Parameters Windows x64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
-            -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck
+            -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector
+            --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck
         </install4j.vmparameters.win.64>
         <!-- VM Parameters Linux 64bit Intel and ARM -->
         <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
-            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
+            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules
+            jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens
+            java.desktop/sun.awt.X11=ALL-UNNAMED
             -DexternalUpdateCheck
         </install4j.vmparameters.linux.64>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-swing</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome6-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-materialdesign2-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
@@ -361,11 +379,6 @@
 
         <dependency>
             <groupId>com.github.jiconfont</groupId>
-            <artifactId>jiconfont-javafx</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jiconfont</groupId>
             <artifactId>jiconfont-font_awesome</artifactId>
             <version>4.7.0.1</version>
         </dependency>
@@ -527,7 +540,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
-
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -566,7 +578,6 @@
                     <jvmTarget>${jdk.language.version}</jvmTarget>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -614,7 +625,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven-jar-plugin.version}</version>
@@ -623,6 +633,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass><![CDATA[${mainclass}]]></mainClass>
+                            <classpathPrefix>dependency/</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>
@@ -680,6 +691,26 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                            <excludeArtifactIds>
+                                sqlite-jdbc,mockito-core,mockito-junit-jupiter,junit-jupiter-api,junit-jupiter-params,junit-jupiter-engine,kotlin-test-junit,byte-buddy,byte-buddy-agent,junit-platform-commons,junit-platform-engine,kotlin-test
+                            </excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -693,41 +724,8 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>win</javafx.platform>
                 <install4j.platform>windows</install4j.platform>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -770,17 +768,33 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -801,46 +815,8 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>win</javafx.platform>
                 <install4j.platform>windows</install4j.platform>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -865,17 +841,33 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -894,41 +886,8 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>linux</javafx.platform>
                 <install4j.platform>linux</install4j.platform>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -944,24 +903,8 @@
                                 </goals>
                                 <configuration>
                                     <sourceFile>${project.basedir}/scripte/aria2-remote.sh</sourceFile>
-                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh</destinationFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- configure the plugin here -->
+                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh
+                                    </destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
@@ -979,41 +922,8 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>linux-aarch64</javafx.platform>
                 <install4j.platform>arm</install4j.platform>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -1029,24 +939,8 @@
                                 </goals>
                                 <configuration>
                                     <sourceFile>${project.basedir}/scripte/aria2-remote.sh</sourceFile>
-                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh</destinationFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- configure the plugin here -->
+                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh
+                                    </destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1063,46 +957,6 @@
                     <arch>x86_64</arch>
                 </os>
             </activation>
-            <properties>
-                <javafx.platform>mac</javafx.platform>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -1150,17 +1004,34 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/aarch64/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1176,40 +1047,6 @@
                     <arch>aarch64</arch>
                 </os>
             </activation>
-            <properties>
-                <javafx.platform>mac-aarch64</javafx.platform>
-                <javafx.sdk>${project.basedir}/javafx_sdk/mac/aarch64/javafx-sdk/lib</javafx.sdk>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -1257,17 +1094,34 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/x86_64/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1291,7 +1145,9 @@
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <projectFile>${project.build.directory}/mediathekview_${install4j.platform}.install4j</projectFile>
+                                    <projectFile>
+                                        ${project.build.directory}/mediathekview_${install4j.platform}.install4j
+                                    </projectFile>
                                 </configuration>
                             </execution>
                         </executions>

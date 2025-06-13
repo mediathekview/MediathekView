@@ -22,6 +22,7 @@ import mediathek.gui.messages.*;
 import mediathek.gui.tabs.AGuiTabPanel;
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.IconUtils;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.datum.Datum;
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -271,7 +273,7 @@ public class GuiDownloads extends AGuiTabPanel {
         updateFilterVisibility(visible);
 
         setSplitDividerLocation();
-        jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, e -> {
+        jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, _ -> {
             if (jPanelFilterExtern.isVisible()) {
                 config.setProperty(ApplicationConfiguration.APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION, jSplitPane1.getDividerLocation());
             }
@@ -308,9 +310,9 @@ public class GuiDownloads extends AGuiTabPanel {
                 popupMenu = new PopupMenu();
 
             MenuItem miStartAllDownloads = new MenuItem("Alle Downloads starten");
-            miStartAllDownloads.addActionListener(e -> starten(true));
+            miStartAllDownloads.addActionListener(_ -> starten(true));
             MenuItem miStopAllDownloads = new MenuItem("Alle Downloads stoppen");
-            miStopAllDownloads.addActionListener(e -> stoppen(true));
+            miStopAllDownloads.addActionListener(_ -> stoppen(true));
             popupMenu.add(miStartAllDownloads);
             popupMenu.add(miStopAllDownloads);
 
@@ -320,14 +322,6 @@ public class GuiDownloads extends AGuiTabPanel {
 
     @Override
     public void installMenuEntries(JMenu menu) {
-        JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
-        miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
-
-        JMenuItem miMarkFilmAsUnseen = new JMenuItem("Filme als ungesehen markieren");
-        miMarkFilmAsUnseen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
-
         menu.add(startAllDownloadsAction);
         menu.add(startAllDownloadsTimedAction);
         menu.add(stopAllDownloadsAction);
@@ -346,8 +340,8 @@ public class GuiDownloads extends AGuiTabPanel {
         menu.addSeparator();
         menu.add(cbShowDownloadDescription);
         menu.addSeparator();
-        menu.add(miMarkFilmAsSeen);
-        menu.add(miMarkFilmAsUnseen);
+        menu.add(markFilmAsSeenAction);
+        menu.add(markFilmAsUnseenAction);
         menu.add(playDownloadAction);
     }
 
@@ -420,7 +414,7 @@ public class GuiDownloads extends AGuiTabPanel {
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL},
                 true, MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
 
-        btnClear.addActionListener(e -> {
+        btnClear.addActionListener(_ -> {
             cbDisplayCategories.setSelectedIndex(0);
             cbView.setSelectedIndex(0);
         });
@@ -512,7 +506,7 @@ public class GuiDownloads extends AGuiTabPanel {
     @Override
     protected void setupShowFilmDescriptionMenuItem() {
         cbShowDownloadDescription.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
-        cbShowDownloadDescription.addActionListener(e -> {
+        cbShowDownloadDescription.addActionListener(_ -> {
             boolean visible = cbShowDownloadDescription.isSelected();
             makeDescriptionTabVisible(visible);
             config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, visible);
@@ -1069,7 +1063,7 @@ public class GuiDownloads extends AGuiTabPanel {
         public ToggleFilterPanelAction() {
             putValue(Action.NAME, "Filter anzeigen/ausblenden");
             putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen/ausblenden");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.FILTER));
         }
 
         @Override
@@ -1175,13 +1169,13 @@ public class GuiDownloads extends AGuiTabPanel {
             itemStarten.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg"));
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
-            itemStarten.addActionListener(e -> filmStartenWiederholenStoppen(false, true, true, false));
+            itemStarten.addActionListener(_ -> filmStartenWiederholenStoppen(false, true, true, false));
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
-            itemStoppen.addActionListener(e -> filmStartenWiederholenStoppen(false, false, true, false));
+            itemStoppen.addActionListener(_ -> filmStartenWiederholenStoppen(false, false, true, false));
 
             jPopupMenu.addSeparator();
             jPopupMenu.add(advanceDownloadsAction);
@@ -1195,7 +1189,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
             jPopupMenu.add(itemWartendeStoppen);
-            itemWartendeStoppen.addActionListener(e -> stopAllWaitingDownloads());
+            itemWartendeStoppen.addActionListener(_ -> stopAllWaitingDownloads());
 
             jPopupMenu.add(refreshDownloadListAction);
             jPopupMenu.add(cleanupDownloadListAction);
@@ -1225,8 +1219,8 @@ public class GuiDownloads extends AGuiTabPanel {
                     itemDelAbo.setEnabled(false);
                 } else {
                     // dann können wir auch ändern
-                    itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
-                    itemChangeAbo.addActionListener(e -> {
+                    itemDelAbo.addActionListener(_ -> daten.getListeAbo().aboLoeschen(datenAbo));
+                    itemChangeAbo.addActionListener(_ -> {
                         DialogEditAbo dialog = new DialogEditAbo(mediathekGui, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.successful()) {
@@ -1242,8 +1236,8 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.addSeparator();
 
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
-            itemPlayer.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-play.svg"));
-            itemPlayer.addActionListener(e -> {
+            itemPlayer.setIcon(IconUtils.of(FontAwesomeSolid.PLAY_CIRCLE));
+            itemPlayer.addActionListener(_ -> {
                 final int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {
                     final Optional<DatenPset> optPSetPlay = Optional.ofNullable(Daten.listePset.getPsetAbspielen());
@@ -1274,7 +1268,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(itemPlayer);
 
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
-            itemUrl.addActionListener(e -> {
+            itemUrl.addActionListener(_ -> {
                 int nr1 = tabelle.rowAtPoint(p);
                 if (nr1 != -1) {
                     GuiFunktionen.copyToClipboard(

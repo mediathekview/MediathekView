@@ -39,8 +39,9 @@ import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinner;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.AutoCompletionComboBox2;
+import mediathek.swing.IconUtils;
 import mediathek.tool.*;
-import mediathek.tool.swing.AutoCompletionComboBox2;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -52,6 +53,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
@@ -414,7 +416,7 @@ public class SwingFilterDialog extends JDialog {
 
     private class ResetCurrentFilterAction extends AbstractAction {
         public ResetCurrentFilterAction() {
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/recycle.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.of(FontAwesomeSolid.RECYCLE));
             putValue(Action.SHORT_DESCRIPTION, "Aktuellen Filter zurücksetzen");
             putValue(Action.NAME, "Aktuellen Filter zurücksetzen" + "...");
         }

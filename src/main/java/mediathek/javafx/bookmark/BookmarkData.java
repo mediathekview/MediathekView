@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import mediathek.daten.DatenFilm;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,8 @@ import java.util.Optional;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookmarkData {
     @JsonProperty("seen")
-    private final BooleanProperty seen;
+    private boolean seen;
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private String url;
     @JsonIgnore
     private DatenFilm filmdata;
@@ -37,13 +39,59 @@ public class BookmarkData {
     private String filmHashCode;
 
     public BookmarkData() {
-        seen = new SimpleBooleanProperty(false);
+        seen = false;
         //availableUntil = LocalDate.now();
     }
+
     public BookmarkData(DatenFilm film) {
         this();
         this.url = film.getUrlNormalQuality();
         this.filmdata = film;
+    }
+
+    @JsonIgnore
+    public String getSender() {
+        if (filmdata != null) {
+            return filmdata.getSender();
+        }
+        else
+            return "NO SENDER";
+    }
+
+    @JsonIgnore
+    public String getThema() {
+        if (filmdata != null) {
+            return filmdata.getThema();
+        }
+        else
+            return "NO THEMA";
+    }
+
+    @JsonIgnore
+    public String getTitle() {
+        if (filmdata != null) {
+            return filmdata.getTitle();
+        }
+        else
+            return "NO TITLE";
+    }
+
+    @JsonIgnore
+    public int getDauer() {
+        if (filmdata != null) {
+            return filmdata.getFilmLength();
+        }
+        else
+            return -1;
+    }
+
+    @JsonIgnore
+    public Date getSendedatum() {
+        if (filmdata != null) {
+            return filmdata.getDatumFilm();
+        }
+        else
+            return null;
     }
 
     @SuppressWarnings("unused")
@@ -52,7 +100,9 @@ public class BookmarkData {
     }
 
     public void setBookmarkAdded(LocalDate bookmarkAdded) {
+        LocalDate oldDate = this.bookmarkAdded;
         this.bookmarkAdded = bookmarkAdded;
+        support.firePropertyChange("bookmarkAdded", oldDate, bookmarkAdded);
     }
 
     public String getFilmHashCode() {
@@ -60,8 +110,10 @@ public class BookmarkData {
     }
 
     public void setFilmHashCode(String filmHashCode) {
+        String oldHash = this.filmHashCode;
         this.filmHashCode = filmHashCode;
         this.url = null; // remove Url if we use the hashcode.
+        support.firePropertyChange("hashCode", oldHash, filmHashCode);
     }
 
     public LocalDate getAvailableUntil() {
@@ -69,15 +121,28 @@ public class BookmarkData {
     }
 
     public void setAvailableUntil(LocalDate availableUntil) {
+        LocalDate oldDate = this.availableUntil;
         this.availableUntil = availableUntil;
+        support.firePropertyChange("availableUntil", oldDate, availableUntil);
     }
 
     public String getUrl() {
         return this.url;
     }
 
+    @JsonIgnore
+    public String getNormalQualityUrl() {
+        if (filmdata != null) {
+            return filmdata.getUrlNormalQuality();
+        }
+        else
+            return null;
+    }
+
     public void setUrl(String url) {
+        String oldUrl = this.url;
         this.url = url;
+        support.firePropertyChange("url", oldUrl, url);
     }
 
     public String getNote() {
@@ -85,7 +150,17 @@ public class BookmarkData {
     }
 
     public void setNote(String note) {
+        String oldNote = this.note;
         this.note = note;
+        support.firePropertyChange("note", oldNote, note);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        support.addPropertyChangeListener(l);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        support.removePropertyChangeListener(l);
     }
 
     @JsonIgnore
@@ -94,21 +169,18 @@ public class BookmarkData {
     }
 
     public boolean getSeen() {
-        return this.seen.get();
+        return this.seen;
     }
 
     public void setSeen(boolean seen) {
-        this.seen.set(seen);
+        boolean oldSeen = this.seen;
+        this.seen = seen;
+        support.firePropertyChange("seen", oldSeen, seen);
     }
 
     @JsonIgnore
     public boolean getNotSeen() {
-        return !this.seen.get();
-    }
-
-    @JsonIgnore
-    public BooleanProperty getSeenProperty() {
-        return seen;
+        return !this.seen;
     }
 
     @JsonIgnore
@@ -123,27 +195,14 @@ public class BookmarkData {
 
     @JsonIgnore
     public void setDatenFilm(DatenFilm filmdata) {
+        DatenFilm oldFilm = this.filmdata;
         this.filmdata = filmdata;
+        support.firePropertyChange("datenFilm", oldFilm, filmdata);
     }
 
     @JsonIgnore
     public String getWebUrl() {
         return (this.filmdata != null) ? this.filmdata.getWebsiteUrl() : null;
-    }
-
-    @JsonIgnore
-    public String getFormattedNote() {
-        return note != null && !note.isEmpty() ? String.format("\n\nNotiz:\n%s", note) : "";
-    }
-
-    @JsonIgnore
-    public String getExtendedDescription() {
-        if (filmdata == null) {
-            return "Es wurde kein Filmobjekt mehr in der Filmliste gefunden. --> Ungültiger Eintrag!";
-        }
-        else {
-            return String.format("%s - %s\n\n%s%s", filmdata.getSender(), filmdata.getTitle(), filmdata.getDescription(), getFormattedNote());
-        }
     }
 
     @JsonIgnore

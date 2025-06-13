@@ -11,8 +11,6 @@ import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -36,8 +34,9 @@ import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
-import mediathek.javafx.bookmark.BookmarkWindowController;
+import mediathek.javafx.bookmark.BookmarkDialog;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.IconUtils;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
 import mediathek.tool.datum.DatumFilm;
@@ -51,6 +50,8 @@ import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -113,7 +114,6 @@ public class GuiFilme extends AGuiTabPanel {
     public final ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected final SearchField searchField;
     protected PsetButtonsPanel psetButtonsPanel;
-    private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     private boolean stopBeob;
     private MVFilmTable tabelle;
     /**
@@ -193,11 +193,6 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     @Handler
-    private void handleBookmarkDeleteRepaintEvent(BookmarkDeleteRepaintEvent e) {
-        SwingUtilities.invokeLater(this::repaint);
-    }
-
-    @Handler
     public void handleTableModelChange(TableModelChangeEvent e) {
         final Consumer<Boolean> function = (Boolean flag) -> {
             playFilmAction.setEnabled(flag);
@@ -274,21 +269,12 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void installMenuEntries(JMenu menu) {
-        JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
-        miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
-
-        JMenuItem miMarkFilmAsUnseen = new JMenuItem("Filme als ungesehen markieren");
-        miMarkFilmAsUnseen.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
-
         menu.add(playFilmAction);
         menu.add(saveFilmAction);
         menu.add(bookmarkAddFilmAction);
         menu.addSeparator();
-        menu.add(miMarkFilmAsSeen);
-        menu.add(miMarkFilmAsUnseen);
+        menu.add(markFilmAsSeenAction);
+        menu.add(markFilmAsUnseenAction);
         menu.addSeparator();
         menu.add(mediathekGui.toggleBlacklistAction);
         menu.add(mediathekGui.editBlacklistAction);
@@ -516,15 +502,15 @@ public class GuiFilme extends AGuiTabPanel {
      * If necessary instantiate and show the bookmark window
      */
     public void showManageBookmarkWindow() {
-        //init JavaFX when needed...
-        var fxPanel = new JFXPanel();
-        Platform.runLater(() -> {
-            if (bookmarkWindowController.isEmpty()) {
-                bookmarkWindowController = Optional.of(new BookmarkWindowController());
-            }
-            bookmarkWindowController.ifPresent(BookmarkWindowController::show);
-        });
+        if (bookmarkDialog == null) {
+            bookmarkDialog = new BookmarkDialog(mediathekGui);
+            bookmarkDialog.setVisible(true);
+        }
+        else {
+            bookmarkDialog.setVisible(true);
+        }
     }
+    public JDialog bookmarkDialog;
 
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
@@ -545,13 +531,6 @@ public class GuiFilme extends AGuiTabPanel {
             filmSelection.ifPresent(
                     film -> daten.getStarterClass().urlMitProgrammStarten(pSet, film, aufloesung));
         }
-    }
-
-    /**
-     * Cleanup during shutdown
-     */
-    public void saveSettings() {
-        bookmarkWindowController.ifPresent(BookmarkWindowController::saveSettings);
     }
 
     /**
@@ -742,7 +721,7 @@ public class GuiFilme extends AGuiTabPanel {
         public ToggleFilterDialogVisibilityAction() {
             putValue(Action.NAME, "Filterdialog anzeigen");
             putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.FILTER));
             putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
         }
 
@@ -1103,7 +1082,7 @@ public class GuiFilme extends AGuiTabPanel {
         public SaveFilmAction() {
             putValue(Action.SHORT_DESCRIPTION, "Film downloaden");
             putValue(Action.NAME, "Film downloaden");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD));
             KeyStroke keyStroke;
             if (SystemUtils.IS_OS_MAC_OSX) {
                 keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey());
@@ -1129,7 +1108,7 @@ public class GuiFilme extends AGuiTabPanel {
             putValue(Action.ACCELERATOR_KEY, keyStroke);
             putValue(Action.SHORT_DESCRIPTION, "Ausgewählte Filme in der Merkliste speichern");
             putValue(Action.NAME, "Ausgewählte Filme merken");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createToolBarIcon("icons/fontawesome/file-circle-plus.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_PLUS));
         }
 
         @Override
@@ -1151,7 +1130,7 @@ public class GuiFilme extends AGuiTabPanel {
         public BookmarkRemoveFilmAction() {
             putValue(Action.SHORT_DESCRIPTION, "Ausgewählte Filme aus der Merkliste löschen");
             putValue(Action.NAME, "Ausgewählte Filme aus der Merkliste löschen");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createToolBarIcon("icons/fontawesome/file-circle-minus.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_MINUS));
         }
 
         @Override

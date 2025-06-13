@@ -4,10 +4,14 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.swing.IconUtils;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -20,41 +24,36 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
     private static final Logger logger = LogManager.getLogger(CellRendererDownloads.class);
-    private final FlatSVGIcon film_start_tab;
-    private final Icon film_start_sw_tab;
+    private final FontIcon film_start_tab;
+    private final FontIcon film_start_sw_tab;
     private final Border emptyBorder = BorderFactory.createEmptyBorder(3,2,3,2);
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
-    private final FlatSVGIcon download_stop_tab;
-    private final FlatSVGIcon download_stop_sw_tab;
+    private final FontIcon download_stop_tab;
+    private final FontIcon download_stop_sw_tab;
     private final FlatSVGIcon download_start_tab;
     private final Icon download_start_sw_tab;
-    private final FlatSVGIcon download_clear_tab_selected;
-    private final Icon download_clear_sw_tab;
-    private final FlatSVGIcon download_del_tab_selected;
-    private final Icon download_del_sw_tab;
+    private final FontIcon download_clear_tab_selected;
+    private final FontIcon download_clear_sw_tab;
+    private final FontIcon download_del_tab_selected;
+    private final FontIcon download_del_sw_tab;
     private final JProgressBar progressBar = new JProgressBar(0, 1000);
 
     public CellRendererDownloads() {
-        var whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
+        download_stop_tab = FontIcon.of(FontAwesomeSolid.STOP, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        download_stop_sw_tab = IconUtils.of(FontAwesomeSolid.STOP);
 
-        download_stop_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
-        download_stop_tab.setColorFilter(whiteColorFilter);
-        download_stop_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
         download_start_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg");
-        download_start_tab.setColorFilter(whiteColorFilter);
+        download_start_tab.setColorFilter(new FlatSVGIcon.ColorFilter(_ -> Color.WHITE));
         download_start_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg");
-        download_clear_tab_selected = SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg");
-        download_clear_tab_selected.setColorFilter(whiteColorFilter);
-        download_clear_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/eraser.svg");
+        download_clear_tab_selected = FontIcon.of(FontAwesomeSolid.ERASER, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        download_clear_sw_tab = IconUtils.of(FontAwesomeSolid.ERASER);
 
-        download_del_tab_selected = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg");
-        download_del_tab_selected.setColorFilter(whiteColorFilter);
-        download_del_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg");
+        download_del_tab_selected = FontIcon.of(FontAwesomeRegular.TRASH_ALT, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        download_del_sw_tab = IconUtils.of(FontAwesomeRegular.TRASH_ALT);
 
-        film_start_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
-        film_start_tab.setColorFilter(whiteColorFilter);
-        film_start_sw_tab = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
+        film_start_tab = FontIcon.of(FontAwesomeSolid.PLAY, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        film_start_sw_tab = IconUtils.of(FontAwesomeSolid.PLAY);
 
         panel = new JPanel(new BorderLayout());
         panel.add(progressBar);

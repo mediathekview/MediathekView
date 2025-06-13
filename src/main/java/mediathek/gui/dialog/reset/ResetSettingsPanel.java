@@ -6,11 +6,11 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.MultilineLabel;
 import mediathek.tool.GetFile;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
-import mediathek.tool.swing.MultilineLabel;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;

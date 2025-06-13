@@ -6,10 +6,12 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.daten.FilmResolution;
+import mediathek.swing.IconUtils;
 import mediathek.tool.*;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -422,12 +424,12 @@ public class DialogEditDownload extends JDialog {
 
                             JButton jButtonReset = new JButton("");
                             jButtonReset.setToolTipText("Reset");
-                            jButtonReset.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
+                            jButtonReset.setIcon(IconUtils.of(FontAwesomeSolid.REDO_ALT));
                             jButtonReset.addActionListener(_ -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                             JButton jButtonHelp = new JButton("");
                             jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
                             jButtonHelp.setToolTipText("Hilfe anzeigen");
-                            jButtonHelp.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
+                            jButtonHelp.addActionListener(_ -> new DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
 
                             gc.gridy = 0;
                             gc.gridx = 0;

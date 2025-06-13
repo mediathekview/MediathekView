@@ -35,6 +35,7 @@ import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
+import mediathek.javafx.bookmark.IconOnlyButton;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.notification.GenericNotificationCenter;
@@ -88,6 +89,21 @@ public class MediathekGui extends JFrame {
      */
     private static MediathekGui ui;
     public final LoadFilmListAction loadFilmListAction;
+    public final EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
+    public final ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
+    public final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
+    /**
+     * this property keeps track how many items are currently selected in the active table view
+     */
+    public final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
+    /**
+     * Used for status bar progress.
+     */
+    public final JLabel progressLabel = new JLabel();
+    /**
+     * Used for status bar progress.
+     */
+    public final JProgressBar progressBar = new JProgressBar();
     /**
      * Number of active downloads
      */
@@ -96,6 +112,13 @@ public class MediathekGui extends JFrame {
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
     protected final SettingsAction settingsAction = new SettingsAction();
+    /**
+     * the global configuration for this app.
+     */
+    protected final Configuration config = ApplicationConfiguration.getConfiguration();
+    protected final JToolBar commonToolBar = new JToolBar();
+    protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
+    protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
     final JMenu fontMenu = new JMenu("Schrift");
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
@@ -113,29 +136,7 @@ public class MediathekGui extends JFrame {
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
-    public final EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
-    public final ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
-    public final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
-    /**
-     * this property keeps track how many items are currently selected in the active table view
-     */
-    public final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
-    /**
-     * Used for status bar progress.
-     */
-    public final JLabel progressLabel = new JLabel();
-    /**
-     * Used for status bar progress.
-     */
-    public final JProgressBar progressBar = new JProgressBar();
-    /**
-     * the global configuration for this app.
-     */
-    protected final Configuration config = ApplicationConfiguration.getConfiguration();
-    protected final JToolBar commonToolBar = new JToolBar();
-    protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     protected FontManager fontManager;
-    protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private ProgramUpdateCheck programUpdateChecker;
@@ -178,7 +179,8 @@ public class MediathekGui extends JFrame {
         Main.splashScreen.ifPresent(s -> s.update(UIProgressState.WAIT_FOR_HISTORY_DATA));
         try {
             daten.waitForHistoryDataLoadingToComplete();
-        } catch (ExecutionException | InterruptedException e) {
+        }
+        catch (ExecutionException | InterruptedException e) {
             logger.error("waitForHistoryDataLoadingToComplete()", e);
         }
 
@@ -249,7 +251,8 @@ public class MediathekGui extends JFrame {
                     SwingUtilities.invokeAndWait(() -> tabDownloads.starten(true));
                     return true;
 
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     logger.error("Auto DL and Quit: error starting downloads", e);
                     return false;
                 }
@@ -259,7 +262,8 @@ public class MediathekGui extends JFrame {
                 public void onSuccess(Boolean result) {
                     try {
                         SwingUtilities.invokeAndWait(() -> quitApplication(true));
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         logger.error("Auto DL and Quit: Error in callback...", e);
                     }
                 }
@@ -332,12 +336,13 @@ public class MediathekGui extends JFrame {
 
     protected void setupScrollBarWidth() {
         // win and linux users complain about scrollbars being too small...
-        UIManager.put( "ScrollBar.width", 16 );
+        UIManager.put("ScrollBar.width", 16);
     }
 
     /**
      * Check if alternate row colors in table should be used.
      * Overridden in subclasses for the different OSes.
+     *
      * @return true when alternating row colors should be used, false otherwise.
      */
     protected boolean useAlternateRowColors() {
@@ -381,20 +386,19 @@ public class MediathekGui extends JFrame {
             commonToolBar.add(new JButton(toggleBlacklistAction));
         }
         else {
-            commonToolBar.add(toggleBlacklistAction);
+            commonToolBar.add(new IconOnlyButton(toggleBlacklistAction));
         }
     }
 
     protected void createCommonToolBar() {
-        commonToolBar.add(loadFilmListAction);
-        commonToolBar.add(showFilmInformationAction);
+        commonToolBar.add(new IconOnlyButton(loadFilmListAction));
+        commonToolBar.add(new IconOnlyButton(showFilmInformationAction));
         createToggleBlacklistButton();
         commonToolBar.addSeparator();
-        commonToolBar.add(editBlacklistAction);
-        commonToolBar.add(manageAboAction);
-        //commonToolBar.add(manageBookmarkAction);
+        commonToolBar.add(new IconOnlyButton(editBlacklistAction));
+        commonToolBar.add(new IconOnlyButton(manageAboAction));
         commonToolBar.addSeparator();
-        commonToolBar.add(settingsAction);
+        commonToolBar.add(new IconOnlyButton(settingsAction));
         createDarkModeToggleButton();
 
         setToolBarProperties();
@@ -435,14 +439,16 @@ public class MediathekGui extends JFrame {
         if (notificationCenter != null) {
             try {
                 notificationCenter.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 logger.error("Failed to close old notification center", e);
             }
         }
 
         if (!showNotifications) {
             daten.setNotificationCenter(new NullNotificationCenter());
-        } else {
+        }
+        else {
             daten.setNotificationCenter(getNotificationCenter());
         }
     }
@@ -466,7 +472,8 @@ public class MediathekGui extends JFrame {
             var center = daten.notificationCenter();
             if (center != null)
                 center.close();
-        } catch (Exception ignored) {
+        }
+        catch (Exception ignored) {
         }
     }
 
@@ -495,11 +502,8 @@ public class MediathekGui extends JFrame {
             if (popupMenu == null)
                 popupMenu = new PopupMenu();
 
-            MenuItem miLoadNewFilmlist = new MenuItem("Neue Filmliste laden");
-            miLoadNewFilmlist.addActionListener(_ -> performFilmListLoadOperation(false));
-
             popupMenu.addSeparator();
-            popupMenu.add(miLoadNewFilmlist);
+            popupMenu.add(new NoIconAwtMenuItem(loadFilmListAction));
 
             taskbar.setMenu(popupMenu);
         }
@@ -632,7 +636,8 @@ public class MediathekGui extends JFrame {
             public void progress(ListenerFilmeLadenEvent event) {
                 if (event.max == 0 || event.progress == event.max) {
                     progressBar.setIndeterminate(true);
-                } else {
+                }
+                else {
                     progressBar.setIndeterminate(false);
                     progressBar.setMinimum(0);
                     progressBar.setMaximum(event.max);
@@ -680,10 +685,12 @@ public class MediathekGui extends JFrame {
                 height = MIN_WINDOW_HEIGHT;
 
             setBounds(x, y, width, height);
-        } catch (NoSuchElementException e) {
+        }
+        catch (NoSuchElementException e) {
             //in case of any error, just make the window maximized
             setExtendedState(JFrame.MAXIMIZED_BOTH);
-        } finally {
+        }
+        finally {
             config.unlock(LockMode.READ);
         }
     }
@@ -692,7 +699,8 @@ public class MediathekGui extends JFrame {
         if (Config.isStartMaximized() ||
                 ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, true)) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
-        } else
+        }
+        else
             restoreSizeFromConfig();
 
         SwingUtilities.invokeLater(() -> addComponentListener(new WindowLocationConfigSaverListener()));
@@ -743,7 +751,8 @@ public class MediathekGui extends JFrame {
             public void windowClosing(WindowEvent evt) {
                 if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
                     setVisible(false);
-                } else {
+                }
+                else {
                     quitApplication();
                 }
             }
@@ -762,7 +771,8 @@ public class MediathekGui extends JFrame {
         if (newState) {
             programUpdateChecker = new ProgramUpdateCheck();
             programUpdateChecker.start();
-        } else {
+        }
+        else {
             endProgramUpdateChecker();
         }
     }
@@ -778,7 +788,8 @@ public class MediathekGui extends JFrame {
         final var useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false);
         if (tray == null && useTray) {
             tray = new MVTray().systemTray();
-        } else if (tray != null && !useTray) {
+        }
+        else if (tray != null && !useTray) {
             tray.beenden();
             tray = null;
         }
@@ -848,7 +859,8 @@ public class MediathekGui extends JFrame {
         if (!icon) {
             setTabIcon(tabFilme, null);
             setTabIcon(tabDownloads, null);
-        } else {
+        }
+        else {
             //setup icons for each tab here
             setTabIcon(tabFilme, Icons.ICON_TAB_FILM);
             setTabIcon(tabDownloads, Icons.ICON_TAB_DOWNLOAD);
@@ -882,7 +894,8 @@ public class MediathekGui extends JFrame {
             try {
                 progressIndicatorThread = createProgressIndicatorThread();
                 progressIndicatorThread.start();
-            } catch (Exception _) {
+            }
+            catch (Exception _) {
             }
         }
     }
@@ -1092,7 +1105,8 @@ public class MediathekGui extends JFrame {
             // Dialog zum Laden der Filme anzeigen
             LoadFilmListDialog dlg = new LoadFilmListDialog(this);
             dlg.setVisible(true);
-        } else {
+        }
+        else {
             // Filme werden automatisch geladen
             FilmeLaden filmeLaden = new FilmeLaden(daten);
             filmeLaden.loadFilmlist("", false);
@@ -1165,7 +1179,6 @@ public class MediathekGui extends JFrame {
         // Tabelleneinstellungen merken
         logger.trace("Save Tab Filme data.");
         tabFilme.tabelleSpeichern();
-        tabFilme.saveSettings();  // needs thread pools active!
         tabFilme.swingFilterDialog.dispose();
 
         logger.trace("Save Tab Download data.");
@@ -1184,6 +1197,9 @@ public class MediathekGui extends JFrame {
         //close main window
         logger.trace("Close main window.");
         dispose();
+
+        logger.trace("Write bookmarks");
+        daten.getListeBookmarkList().saveToFile();
 
         //write all settings if not done already...
         logger.trace("Write app config.");
@@ -1218,7 +1234,8 @@ public class MediathekGui extends JFrame {
                     logger.warn("Time out occured before pool final termination");
                 }
             }
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             logger.error("timerPool shutdown exception", e);
         }
         var taskList = timerPool.shutdownNow();
@@ -1262,6 +1279,13 @@ public class MediathekGui extends JFrame {
      */
     protected void shutdownComputer() {
         //default is none
+    }
+
+    static class NoIconAwtMenuItem extends MenuItem {
+        public NoIconAwtMenuItem(@NotNull Action action) {
+            super((String) action.getValue(Action.NAME));
+            addActionListener(action);
+        }
     }
 
 }

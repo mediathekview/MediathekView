@@ -5,12 +5,15 @@ import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Country;
 import mediathek.daten.DatenFilm;
+import mediathek.swing.CompoundIcon;
+import mediathek.swing.IconUtils;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
-import mediathek.tool.swing.CompoundIcon;
 import org.apache.commons.configuration2.Configuration;
 import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,50 +29,44 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     public static final String ICON_POSITION_RIGHT = "ui.list.iconposition_right";
     private static final EnumSet<Country> euCountryList = EnumSet.of(Country.DE, Country.AT, Country.FR);
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
-    protected final FlatSVGIcon lockedIcon;
-    protected final FlatSVGIcon lockedIconSelected;
-    protected final FlatSVGIcon unlockedIcon;
-    protected final FlatSVGIcon unlockedIconSelected;
+    protected final FontIcon lockedIcon;
+    protected final FontIcon lockedIconSelected;
+    protected final FontIcon unlockedIcon;
+    protected final FontIcon unlockedIconSelected;
     /**
      * Temporary storage for the icons that will be assembled to a compound icon.
      */
     private final List<Icon> iconList = new ArrayList<>();
-    private final FlatSVGIcon subtitleIcon;
-    private final FlatSVGIcon subtitleIconSelected;
+    private final FontIcon subtitleIcon;
+    private final FontIcon subtitleIconSelected;
     private final FlatSVGIcon highQualityIcon;
     private final FlatSVGIcon highQualityIconSelected;
-    private final FlatSVGIcon liveStreamIcon;
-    private final FlatSVGIcon liveStreamIconSelected;
-    private final FlatSVGIcon audioDescription;
-    private final FlatSVGIcon audioDescriptionSelected;
-    protected final FlatSVGIcon.ColorFilter whiteColorFilter = new FlatSVGIcon.ColorFilter(color -> Color.WHITE);
+    private final FontIcon liveStreamIcon;
+    private final FontIcon liveStreamIconSelected;
+    private final FontIcon audioDescription;
+    private final FontIcon audioDescriptionSelected;
 
     public CellRendererBaseWithStart() {
         MessageBus.getMessageBus().subscribe(this);
 
-        lockedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock.svg");
-        lockedIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock.svg");
-        lockedIconSelected.setColorFilter(whiteColorFilter);
+        lockedIcon = IconUtils.of(FontAwesomeSolid.LOCK);
+        lockedIconSelected = FontIcon.of(FontAwesomeSolid.LOCK, IconUtils.DEFAULT_SIZE, Color.WHITE);
 
-        unlockedIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock-open.svg");
-        unlockedIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/lock-open.svg");
-        unlockedIconSelected.setColorFilter(whiteColorFilter);
+        unlockedIcon = IconUtils.of(FontAwesomeSolid.LOCK_OPEN);
+        unlockedIconSelected = FontIcon.of(FontAwesomeSolid.LOCK_OPEN, IconUtils.DEFAULT_SIZE, Color.WHITE);
 
-        subtitleIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
-        subtitleIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/closed-captioning.svg");
-        subtitleIconSelected.setColorFilter(whiteColorFilter);
+        subtitleIcon = IconUtils.of(FontAwesomeSolid.CLOSED_CAPTIONING);
+        subtitleIconSelected = FontIcon.of(FontAwesomeSolid.CLOSED_CAPTIONING, IconUtils.DEFAULT_SIZE, Color.WHITE);
 
         highQualityIcon = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
         highQualityIconSelected = SVGIconUtilities.createSVGIcon("icons/derreisende77/high-quality.svg");
-        highQualityIconSelected.setColorFilter(whiteColorFilter);
+        highQualityIconSelected.setColorFilter(new FlatSVGIcon.ColorFilter(_ -> Color.WHITE));
 
-        liveStreamIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
-        liveStreamIconSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/tower-cell.svg");
-        liveStreamIconSelected.setColorFilter(whiteColorFilter);
+        liveStreamIcon = IconUtils.of(FontAwesomeSolid.BROADCAST_TOWER);
+        liveStreamIconSelected = FontIcon.of(FontAwesomeSolid.BROADCAST_TOWER, IconUtils.DEFAULT_SIZE, Color.WHITE);
 
-        audioDescription = SVGIconUtilities.createSVGIcon("icons/fontawesome/audio-description.svg");
-        audioDescriptionSelected = SVGIconUtilities.createSVGIcon("icons/fontawesome/audio-description.svg");
-        audioDescriptionSelected.setColorFilter(whiteColorFilter);
+        audioDescription = IconUtils.of(FontAwesomeSolid.AUDIO_DESCRIPTION);
+        audioDescriptionSelected = FontIcon.of(FontAwesomeSolid.AUDIO_DESCRIPTION, IconUtils.DEFAULT_SIZE, Color.WHITE);
     }
 
     protected void drawGeolocationIcons(@NotNull DatenFilm film, boolean isSelected) {

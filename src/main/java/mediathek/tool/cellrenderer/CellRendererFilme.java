@@ -1,18 +1,19 @@
 package mediathek.tool.cellrenderer;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
+import mediathek.swing.IconUtils;
 import mediathek.tool.ColorUtils;
-import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,40 +21,30 @@ import java.util.ArrayList;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
-    private final FlatSVGIcon selectedStopIcon;
-    private final FlatSVGIcon normalStopIcon;
+    private final FontIcon selectedStopIcon;
+    private final FontIcon normalStopIcon;
     private final SeenHistoryController history = new SeenHistoryController();
-    private final FlatSVGIcon selectedDownloadIcon;
-    private final FlatSVGIcon normalDownloadIcon;
-    private final FlatSVGIcon selectedPlayIcon;
-    private final FlatSVGIcon normalPlayIcon;
-    private final FlatSVGIcon selectedBookmarkIcon;
-    private final FlatSVGIcon normalBookmarkIcon;
-    private final FlatSVGIcon selectedBookmarkIconHighlighted;
+    private final FontIcon selectedDownloadIcon;
+    private final FontIcon normalDownloadIcon;
+    private final FontIcon selectedPlayIcon;
+    private final FontIcon normalPlayIcon;
+    private final FontIcon selectedBookmarkIcon;
+    private final FontIcon normalBookmarkIcon;
+    private final FontIcon selectedBookmarkIconHighlighted;
 
     public CellRendererFilme() {
-        selectedDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
-        selectedDownloadIcon.setColorFilter(whiteColorFilter);
+        selectedDownloadIcon = FontIcon.of(FontAwesomeSolid.DOWNLOAD, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        normalDownloadIcon = IconUtils.of(FontAwesomeSolid.DOWNLOAD);
 
-        normalDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
+        selectedPlayIcon = FontIcon.of(FontAwesomeSolid.PLAY, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        normalPlayIcon = IconUtils.of(FontAwesomeSolid.PLAY);
 
-        selectedPlayIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
-        selectedPlayIcon.setColorFilter(whiteColorFilter);
+        selectedStopIcon = FontIcon.of(FontAwesomeSolid.STOP, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        normalStopIcon = IconUtils.of(FontAwesomeSolid.STOP);
 
-        normalPlayIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
-
-        selectedStopIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
-        selectedStopIcon.setColorFilter(whiteColorFilter);
-
-        normalStopIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
-
-        selectedBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
-        selectedBookmarkIcon.setColorFilter(whiteColorFilter);
-
-        selectedBookmarkIconHighlighted = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
-        selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(_ -> Color.ORANGE));
-
-        normalBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
+        selectedBookmarkIcon = FontIcon.of(FontAwesomeSolid.BOOKMARK, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        selectedBookmarkIconHighlighted = FontIcon.of(FontAwesomeSolid.BOOKMARK, IconUtils.DEFAULT_SIZE, Color.ORANGE);
+        normalBookmarkIcon = IconUtils.of(FontAwesomeSolid.BOOKMARK);
     }
 
     private JTextArea createTextArea(String content) {

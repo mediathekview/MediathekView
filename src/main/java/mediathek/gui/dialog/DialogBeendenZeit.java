@@ -4,10 +4,10 @@ import com.github.lgooddatepicker.components.DateTimePicker;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
+import mediathek.swing.AppTerminationIndefiniteProgress;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GetFile;
 import mediathek.tool.SVGIconUtilities;
-import mediathek.tool.swing.AppTerminationIndefiniteProgress;
 
 import javax.swing.*;
 import java.awt.*;

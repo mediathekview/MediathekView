@@ -20,7 +20,6 @@ package mediathek;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import javafx.application.Platform;
 import mediathek.config.*;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.controller.history.SeenHistoryMigrator;
@@ -509,9 +508,6 @@ public class Main {
             }
 
             printDirectoryPaths();
-
-            //prevent JavaFX from exiting after the last window closed
-            Platform.setImplicitExit(false);
 
             if (!isDebuggerAttached()) {
                 if (!Config.isSplashScreenDisabled()) {

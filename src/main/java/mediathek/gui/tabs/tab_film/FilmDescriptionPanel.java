@@ -168,7 +168,7 @@ public class FilmDescriptionPanel extends JPanel {
         add(hyperlink, new CC().cell(1, 3));
     }
 
-    private void setCurrentFilm(@Nullable DatenFilm film) {
+    public void setCurrentFilm(@Nullable DatenFilm film) {
         if (film == null) {
             setAllFieldsEmpty();
         }

@@ -1,7 +1,8 @@
 package mediathek.gui.actions;
 
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
-import mediathek.tool.SVGIconUtilities;
+import mediathek.swing.IconUtils;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,7 @@ public class DeferDownloadsAction extends AbstractAction {
         this.guiDownloads = guiDownloads;
         putValue(Action.NAME, "Downloads zurückstellen");
         putValue(Action.SHORT_DESCRIPTION, "Downloads zurückstellen");
-        putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/clock.svg"));
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeRegular.CLOCK));
     }
 
     @Override

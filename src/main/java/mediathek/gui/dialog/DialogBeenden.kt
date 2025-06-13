@@ -3,10 +3,10 @@ package mediathek.gui.dialog
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.mainwindow.MediathekGui
+import mediathek.swing.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
 import mediathek.tool.SVGIconUtilities
-import mediathek.tool.swing.AppTerminationIndefiniteProgress
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.util.*
