@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark;
+package mediathek.gui.bookmark;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.ObservableElementList;
@@ -28,10 +28,12 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
+import mediathek.gui.bookmark.renderer.*;
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
-import mediathek.javafx.bookmark.renderer.*;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.IconOnlyButton;
 import mediathek.swing.IconUtils;
+import mediathek.swing.NoIconMenuItem;
 import mediathek.swing.table.GlazedSortKeysPersister;
 import mediathek.swing.table.IconHeaderCellRenderer;
 import mediathek.swing.table.TableUtils;

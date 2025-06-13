@@ -16,22 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark.renderer;
-
-import mediathek.tool.datum.DateUtil;
+package mediathek.swing;
 
 import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDate;
 
-public class AddedAtCellRenderer extends CenteredCellRenderer {
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        var date = (LocalDate) value;
-        if (date != null) {
-            setText(date.format(DateUtil.FORMATTER));
-        }
-        return this;
+public class NoIconMenuItem extends JMenuItem {
+    public NoIconMenuItem(Action action) {
+        super(action);
+        setIcon(null);
     }
 }

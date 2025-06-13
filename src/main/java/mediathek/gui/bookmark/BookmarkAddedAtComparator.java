@@ -16,23 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark.renderer;
+package mediathek.gui.bookmark;
 
-import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
+import java.util.Comparator;
 
-public class SeenCellRenderer extends NoteCellRenderer implements TableCellRenderer {
+public class BookmarkAddedAtComparator implements Comparator<BookmarkData> {
+
     @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        if (table == null) {
-            return this;
+    public int compare(BookmarkData o1, BookmarkData o2) {
+        var o1ba = o1.getBookmarkAdded();
+        var o2ba = o2.getBookmarkAdded();
+        if (o1ba == null || o2ba == null) {
+            return 0;
         }
-
-        performSelectionDrawing(table, isSelected, row);
-
-        boolean seen = (boolean) value;
-        checkBox.setSelected(seen);
-        return this;
+        return o1ba.compareTo(o2ba);
     }
 }

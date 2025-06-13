@@ -16,19 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark;
+package mediathek.gui.bookmark.renderer;
 
-import java.util.Comparator;
+import mediathek.tool.datum.DateUtil;
 
-public class BookmarkAddedAtComparator implements Comparator<BookmarkData> {
+import javax.swing.*;
+import java.awt.*;
+import java.time.LocalDate;
 
+public class AddedAtCellRenderer extends CenteredCellRenderer {
     @Override
-    public int compare(BookmarkData o1, BookmarkData o2) {
-        var o1ba = o1.getBookmarkAdded();
-        var o2ba = o2.getBookmarkAdded();
-        if (o1ba == null || o2ba == null) {
-            return 0;
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        var date = (LocalDate) value;
+        if (date != null) {
+            setText(date.format(DateUtil.FORMATTER));
         }
-        return o1ba.compareTo(o2ba);
+        return this;
     }
 }

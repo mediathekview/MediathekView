@@ -23,8 +23,8 @@ import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel;
-import mediathek.javafx.bookmark.IconOnlyButton;
-import mediathek.javafx.bookmark.IconOnlyToggleButton;
+import mediathek.swing.IconOnlyButton;
+import mediathek.swing.IconOnlyToggleButton;
 import mediathek.tool.ApplicationConfiguration;
 import org.jetbrains.annotations.NotNull;
 

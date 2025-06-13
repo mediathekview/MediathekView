@@ -16,30 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark;
-
-import mediathek.swing.IconUtils;
+package mediathek.gui.bookmark.renderer;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
-public class IconOnlyButton extends JButton {
-    public IconOnlyButton(Action action) {
-        super(action);
-
-        setHideActionText(true);
-
-        setDisabledIcon(IconUtils.generateDisabledIcon(action));
-    }
-
+public class CenteredCellRenderer extends DefaultTableCellRenderer {
     @Override
-    public void updateUI() {
-        super.updateUI();
-        var action = getAction();
-        if (action != null) {
-            var icon = IconUtils.generateDisabledIcon(action);
-            if (icon != null) {
-                setDisabledIcon(icon);
-            }
-        }
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        setHorizontalAlignment(JLabel.CENTER);
+        return this;
     }
 }

@@ -16,13 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark;
+package mediathek.swing;
 
 import javax.swing.*;
 
-public class NoIconMenuItem extends JMenuItem {
-    public NoIconMenuItem(Action action) {
+public class IconOnlyToggleButton extends JToggleButton {
+    public IconOnlyToggleButton(Action action) {
         super(action);
-        setIcon(null);
+        setHideActionText(true);
+        setDisabledIcon(IconUtils.generateDisabledIcon(action));
+    }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        var action = getAction();
+        if (action != null) {
+            var icon = IconUtils.generateDisabledIcon(action);
+            if (icon != null) {
+                setDisabledIcon(icon);
+            }
+        }
     }
 }

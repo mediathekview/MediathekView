@@ -22,6 +22,7 @@ import mediathek.gui.actions.DeleteBookmarksAction;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
@@ -34,7 +35,6 @@ import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
-import mediathek.javafx.bookmark.BookmarkDialog;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.swing.IconUtils;
 import mediathek.tool.*;

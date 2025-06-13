@@ -16,16 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark;
-
-import mediathek.swing.IconUtils;
+package mediathek.swing;
 
 import javax.swing.*;
 
-public class IconOnlyToggleButton extends JToggleButton {
-    public IconOnlyToggleButton(Action action) {
+public class IconOnlyButton extends JButton {
+    public IconOnlyButton(Action action) {
         super(action);
+
         setHideActionText(true);
+
         setDisabledIcon(IconUtils.generateDisabledIcon(action));
     }
 

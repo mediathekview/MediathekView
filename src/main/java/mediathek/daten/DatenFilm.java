@@ -4,7 +4,7 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import mediathek.config.Config;
 import mediathek.daten.abo.DatenAbo;
-import mediathek.javafx.bookmark.BookmarkData;
+import mediathek.gui.bookmark.BookmarkData;
 import mediathek.tool.FileSize;
 import mediathek.tool.FilmSize;
 import mediathek.tool.GermanStringSorter;

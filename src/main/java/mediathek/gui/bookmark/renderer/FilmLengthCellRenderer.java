@@ -16,17 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark.renderer;
+package mediathek.gui.bookmark.renderer;
+
+import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
-public class CenteredCellRenderer extends DefaultTableCellRenderer {
+public class FilmLengthCellRenderer extends CenteredCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        setHorizontalAlignment(JLabel.CENTER);
+        long length = (int) value;
+        if (length >= 0) {
+            var duration = TimeUnit.MILLISECONDS.convert(length, TimeUnit.SECONDS);
+            var durationStr = DurationFormatUtils.formatDuration(duration, "HH:mm:ss", true);
+            setText(durationStr);
+        }
+        else
+            setText(null);
         return this;
     }
 }

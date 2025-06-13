@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.javafx.bookmark.renderer;
+package mediathek.gui.bookmark.renderer;
 
 import javax.swing.*;
 import javax.swing.plaf.UIResource;
