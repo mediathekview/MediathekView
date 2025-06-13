@@ -26,10 +26,10 @@ jobs:
           hdiutil detach /Volumes/install4j*
 
       - name: Restore AuthKey
-        run: echo "${{ secrets.AUTHKEY_WA422TZX7G }}" | base64 --decode -i xxx -o AuthKey_WA422TZX7G.p8
+        run: echo "${{ secrets.AUTHKEY_WA422TZX7G }}" | base64 --decode > AuthKey_WA422TZX7G.p8
 
       - name: Restore dev cert
-        run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode -i xxx -o mac_dev_cert_with_password.p12
+        run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode > mac_dev_cert_with_password.p12
 
       - name: Build macOS app
         run: mvn -B package -Pmac_apple_silicon,install4j-mac-apple-silicon
