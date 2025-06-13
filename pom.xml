@@ -71,18 +71,12 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
         <repository>
             <id>Maven2</id>
             <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>ej-technologies</id>
-            <url>https://maven.ej-technologies.com/repository</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

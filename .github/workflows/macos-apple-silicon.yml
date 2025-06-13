@@ -70,4 +70,4 @@ jobs:
       - name: Upload artifact to S3
         run: |
           DATE=$(date +'%Y-%m-%d')
-          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp target/media/MediathekView-latest-apple-silicon.dmg "s3://${{ secrets.S3_BUCKET }}/snapshot-$DATE.dmg"
+          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp target/media/MediathekView-latest-apple-silicon.dmg "s3://${{ secrets.S3_BUCKET }}/MediathekView-apple-silicon-snapshot-$DATE.dmg"
