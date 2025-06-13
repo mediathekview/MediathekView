@@ -791,6 +791,9 @@
                                                 <exclude>**/native/Linux-Android/**</exclude>
                                                 <exclude>**/native/Linux-Musl/**</exclude>
                                                 <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/aarch64/**</exclude>
+                                                <exclude>**/native/Windows/armv7/**</exclude>
+                                                <exclude>**/native/Windows/x86/**</exclude>
                                                 <exclude>META-INF/MANIFEST.MF</exclude>
                                             </excludes>
                                         </filter>
@@ -864,6 +867,9 @@
                                                 <exclude>**/native/Linux-Android/**</exclude>
                                                 <exclude>**/native/Linux-Musl/**</exclude>
                                                 <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/armv7/**</exclude>
+                                                <exclude>**/native/Windows/x86/**</exclude>
+                                                <exclude>**/native/Windows/x86_64/**</exclude>
                                                 <exclude>META-INF/MANIFEST.MF</exclude>
                                             </excludes>
                                         </filter>
