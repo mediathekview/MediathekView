@@ -1,0 +1,29 @@
+name: Build MV preview for Apple Silicon macOS
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'liberica'
+          java-version: '24'
+          java-package: jdk
+          cache: 'maven'
+
+      - name: Install install4j
+        run: |
+          curl -L -o install4j.dmg https://download.ej-technologies.com/install4j/install4j_macos_11_0_4.dmg
+          hdiutil attach install4j.dmg
+          cp -r /Volumes/install4j/install4j.app /Applications/install4j.app
+          hdiutil detach /Volumes/install4j*
+
+      - name: Build macOS app
+        run: mvn -B package -Pmac_apple_silicon,install4j-mac-apple-silicon
