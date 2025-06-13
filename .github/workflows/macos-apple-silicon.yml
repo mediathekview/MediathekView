@@ -74,6 +74,7 @@ jobs:
 
 
   build-macos-intel:
+    needs: build-macos-apple-silicon
     runs-on: macos-13
 
     steps:
