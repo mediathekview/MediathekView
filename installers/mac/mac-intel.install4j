@@ -55,7 +55,7 @@
   <launchers>
     <launcher name="MediathekView" id="59" icnsFile="./MediathekView.icns" customMacBundleIdentifier="true" macBundleIdentifier="org.mediathekview.MediathekView">
       <executable name="MediathekView" iconSet="true" redirectStderr="false" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-ea -Xdock:name=&quot;MediathekView&quot; -Dfile.encoding=UTF-8 -DOSX_OFFICIAL_APP=true -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED" arguments="-e" allowVMPassthroughParameters="false">
+      <java mainClass="mediathek.Main" vmParameters="-ea -Xdock:name=&quot;MediathekView&quot; -Dfile.encoding=UTF-8 -DOSX_OFFICIAL_APP=true -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED" arguments="-e -s" allowVMPassthroughParameters="false">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
           <scanDirectory location="dependency" failOnError="false" />
