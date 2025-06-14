@@ -66,16 +66,18 @@ jobs:
           sudo rm -rf /Applications/install4j.app || true
           sudo cp -r download/install4j.app /Applications/install4j.app
 
-      - name: Initial Maven install
-        run: mvn install
+#      - name: Initial Maven install
+#        run: mvn install
 
       - name: Restore AuthKey
         run: |
+          mkdir -p target/mac
           echo "${{ secrets.AUTHKEY_WA422TZX7G }}" \
             | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
 
       - name: Restore dev certificate
         run: |
+          mkdir -p target/mac
           echo "${{ secrets.MAC_DEV_CERT_2025 }}" \
             | base64 --decode > target/mac/mac_dev_cert_with_password.p12
 
