@@ -714,25 +714,56 @@
             </activation>
             <properties>
                 <install4j.platform>windows</install4j.platform>
+                <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg_new.zip</windows.ffmpeg.url>
+                <windows.ffmpeg.md5>ef173fd7a3b684c71e445702a8f510f3</windows.ffmpeg.md5>
+                <windows.ffmpeg.outdir>${project.build.directory}/res</windows.ffmpeg.outdir>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <version>1.7.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
-                                <id>download-ffmpeg-exe-amd64-from-server</id>
+                                <id>fetch-unpack-clean-ffmpeg</id>
                                 <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
+                                <goals><goal>exec</goal></goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg_new.zip</url>
-                                    <unpack>true</unpack>
-                                    <outputDirectory>${project.build.directory}/res</outputDirectory>
-                                    <md5>ef173fd7a3b684c71e445702a8f510f3</md5>
+                                    <executable>powershell</executable>
+                                    <arguments>
+                                        <argument>-NoProfile</argument>
+                                        <argument>-ExecutionPolicy</argument>
+                                        <argument>Bypass</argument>
+                                        <argument>-Command</argument>
+                                        <argument>
+                                            <![CDATA[
+                      $url    = '${windows.ffmpeg.url}'
+                      $md5exp = '${windows.ffmpeg.md5}'
+                      $outDir = '${windows.ffmpeg.outdir}'
+                      $zip    = Join-Path $outDir 'ffmpeg_new.zip'
+
+                      # ensure output dir
+                      New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+
+                      Write-Host "→ Downloading $url"
+                      # use native curl.exe for a console progress bar
+                      curl.exe -L $url -o $zip --progress-bar
+
+                      # verify checksum
+                      $md5got = (Get-FileHash -Algorithm MD5 -Path $zip).Hash.ToLower()
+                      if ($md5got -ne $md5exp) {
+                        throw "MD5 mismatch: expected $md5exp, got $md5got"
+                      }
+
+                      Write-Host "→ Unpacking $zip → $outDir"
+                      Expand-Archive -Path $zip -DestinationPath $outDir -Force
+
+                      Write-Host "→ Deleting $zip"
+                      Remove-Item -Path $zip -Force
+                    ]]>
+                                        </argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
