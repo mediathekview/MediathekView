@@ -163,12 +163,17 @@ jobs:
       - name: Upload to S3
         env:
           MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_BUCKET:      ${{ secrets.S3_BUCKET }}
+        shell: pwsh
         run: |
-          $date = Get-Date -Format yyyy-MM-dd
-          aws --endpoint-url "https://${MINIO_ENDPOINT}" s3 cp `
+          $date     = Get-Date -Format yyyy-MM-dd
+          $endpoint = "https://$env:MINIO_ENDPOINT"
+          $bucket   = $env:S3_BUCKET
+        
+          aws --endpoint-url $endpoint s3 cp `
             target\media\MediathekView-latest-win-aarch64.exe `
-            "s3://${S3_BUCKET}/MediathekView-latest-win-aarch64-snapshot-$date.exe"
-          aws --endpoint-url "https://${MINIO_ENDPOINT}" s3 cp `
+            "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.exe"
+        
+          aws --endpoint-url $endpoint s3 cp `
             target\media\MediathekView-latest-win-aarch64.zip `
-            "s3://${S3_BUCKET}/MediathekView-latest-win-aarch64-snapshot-$date.zip"
+            "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.zip"
