@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    name: Build macOS ${{ matrix.arch }}
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
@@ -65,9 +66,6 @@ jobs:
         run: |
           sudo rm -rf /Applications/install4j.app || true
           sudo cp -r download/install4j.app /Applications/install4j.app
-
-#      - name: Initial Maven install
-#        run: mvn install
 
       - name: Restore AuthKey
         run: |
@@ -145,7 +143,7 @@ jobs:
           } else {
             Write-Host "→ Downloading install4j $env:INSTALL4J_VERSION for Windows"
             curl.exe -L `
-              "https://download.ej-technologies.com/install4j/install4j_windows_${env:INSTALL4J_VERSION}.zip" `
+              "https://download.ej-technologies.com/install4j/install4j_windows-arm64_${env:INSTALL4J_VERSION}.zip" `
               -o download/install4j.zip
             Expand-Archive download/install4j.zip -DestinationPath download
             # rename the extracted folder to 'install4j'

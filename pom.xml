@@ -960,7 +960,7 @@
         <profile>
             <id>install4j-win-aarch64</id>
             <properties>
-                <install4j.home>C:\Program Files\install4j11</install4j.home>
+                <install4j.home>download\install4j</install4j.home>
                 <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
