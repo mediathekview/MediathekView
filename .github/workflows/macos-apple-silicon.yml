@@ -1,6 +1,9 @@
 name: build-macos-apps
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   build-macos-apple-silicon:
