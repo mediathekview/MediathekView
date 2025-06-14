@@ -522,6 +522,9 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -537,7 +540,6 @@
                         <configuration>
                             <sourceDirs>
                                 <source>src/main/kotlin</source>
-                                <source>src/main/java</source>
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
@@ -1153,6 +1155,7 @@
                                     <executable>bash</executable>
                                     <arguments>
                                         <argument>-lc</argument>
+                                        <!--suppress UnresolvedMavenProperty -->
                                         <argument>
                                             <![CDATA[
                 set -e
@@ -1269,6 +1272,7 @@
                                     <executable>bash</executable>
                                     <arguments>
                                         <argument>-lc</argument>
+                                        <!--suppress UnresolvedMavenProperty -->
                                         <argument>
                                             <![CDATA[
 set -e

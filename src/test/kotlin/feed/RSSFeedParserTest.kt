@@ -14,7 +14,7 @@ internal class RSSFeedParserTest {
                 Assertions.assertNotNull(feed)
                 //println(feed);
                 Assertions.assertNotNull(feed!!.messages)
-                Assertions.assertFalse(feed.messages.isEmpty)
+                Assertions.assertFalse(feed.messages.isEmpty())
                 for (message in feed.messages) {
                     //println(message);
                     Assertions.assertNotNull(message)
