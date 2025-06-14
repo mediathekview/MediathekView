@@ -111,7 +111,7 @@ jobs:
             target/media/${{ matrix.dmg_file }} \
             "s3://${S3_BUCKET}/MediathekView-latest-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
 
-  build-windows:
+  build-windows-arm64:
     name: Build Windows ARM64
     runs-on: windows-11-arm
 
@@ -185,3 +185,78 @@ jobs:
           aws --endpoint-url $endpoint s3 cp `
             target\media\MediathekView-latest-win-aarch64.zip `
             "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.zip"
+
+  build-windows-amd64:
+    name: Build Windows AMD64
+    runs-on: windows-latest
+
+    env:
+      INSTALL4J_VERSION: '11_0_4'
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Set up Java 24 (Liberica) & cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: liberica
+          java-version: '24'
+          java-package: jdk
+          cache: maven
+
+      - name: Cache install4j
+        uses: actions/cache@v4
+        with:
+          path: download/install4j
+          key: install4j-windows-amd64-${{ env.INSTALL4J_VERSION }}
+          restore-keys: install4j-windows-amd64-
+
+      - name: Download or reuse install4j.zip
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path download -Force | Out-Null
+          if (Test-Path download\install4j) {
+            Write-Host "✔︎ Cached install4j"
+          } else {
+            Write-Host "→ Downloading install4j $env:INSTALL4J_VERSION for Windows"
+            curl.exe -L `
+              "https://download.ej-technologies.com/install4j/install4j_windows-x64_${env:INSTALL4J_VERSION}.zip" `
+              -o download/install4j.zip
+            Expand-Archive download/install4j.zip -DestinationPath download
+            # rename the extracted folder to 'install4j'
+            $folder = Get-ChildItem download -Directory | Where-Object Name -like 'install4j*' | Select-Object -First 1
+            Rename-Item -Path $folder.FullName -NewName 'install4j'
+          }
+
+      - name: Install install4j
+        run: |
+          echo "${{ github.workspace }}\download\install4j\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+
+      - name: Build Windows AMD64 app
+        run: mvn -B package -P windows_64bit,install4j-win-amd64 -DskipTests
+        env:
+          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
+
+      - name: Upload to S3
+        env:
+          MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+        shell: pwsh
+        run: |
+          $date     = Get-Date -Format yyyy-MM-dd
+          $endpoint = "https://$env:MINIO_ENDPOINT"
+          $bucket   = $env:S3_BUCKET
+          
+          aws --endpoint-url $endpoint s3 cp `
+            target\media\MediathekView-latest-win-amd64.exe `
+            "s3://$bucket/MediathekView-latest-win-amd64-snapshot-$date.exe"
+          
+          aws --endpoint-url $endpoint s3 cp `
+            target\media\MediathekView-latest-win-amd64.zip `
+            "s3://$bucket/MediathekView-latest-win-amd64-snapshot-$date.zip"

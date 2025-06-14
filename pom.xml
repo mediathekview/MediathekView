@@ -821,14 +821,65 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>copy-install4j-win-amd64-installers</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/installers/windows-amd64</directory>
+                                            <targetPath>${basedir}/target</targetPath>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>install4j-win-amd64</id>
+            <properties>
+                <install4j.home>download\install4j</install4j.home>
+                <!--suppress UnresolvedMavenProperty -->
+                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-installer-win-amd64</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <projectFile>
+                                        ${project.build.directory}/mediathekview-windows-amd64.install4j
+                                    </projectFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
 
         <profile>
-            <!-- Does not include ffmpeg and install4j is also not ready.
-                For local test purposes only.
-            -->
             <id>windows-aarch64</id>
             <activation>
                 <os>
