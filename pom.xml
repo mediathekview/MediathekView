@@ -865,32 +865,37 @@
                                         <argument>-Command</argument>
                                         <argument>
                                             <![CDATA[
-                      $url    = '${windows.ffmpeg.url}'
-                      $md5exp = '${windows.ffmpeg.md5}'
-                      $outDir = '${windows.bin.dir}'
-                      $zip    = Join-Path $outDir 'ffmpeg.zip'
+              $url    = '${windows.ffmpeg.url}'
+              $md5exp = '${windows.ffmpeg.md5}'
+              $outDir = '${windows.bin.dir}'
+              $zip    = Join-Path $outDir 'ffmpeg.zip'
 
-                      New-Item -ItemType Directory -Path $outDir -Force | Out-Null
-                      Write-Host "→ Downloading $url"
-                      Invoke-WebRequest -Uri $url -OutFile $zip -UseBasicParsing
+              # ensure output dir exists
+              New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
-                      $md5got = (Get-FileHash -Algorithm MD5 -Path $zip).Hash.ToLower()
-                      if ($md5got -ne $md5exp) {
-                        throw "MD5 mismatch: expected $md5exp, got $md5got"
-                      }
+              Write-Host "→ Downloading $url"
+              # use Windows-native curl.exe for a console progress bar
+              curl.exe -L $url -o $zip --progress-bar
 
-                      Write-Host "→ Unpacking $zip → $outDir"
-                      Expand-Archive -Path $zip -DestinationPath $outDir -Force
+              # verify checksum
+              $md5got = (Get-FileHash -Algorithm MD5 -Path $zip).Hash.ToLower()
+              if ($md5got -ne $md5exp) {
+                throw "MD5 mismatch: expected $md5exp, got $md5got"
+              }
 
-                      Write-Host "→ Deleting $zip"
-                      Remove-Item -Path $zip -Force
-                    ]]>
+              Write-Host "→ Unpacking $zip → $outDir"
+              Expand-Archive -Path $zip -DestinationPath $outDir -Force
+
+              Write-Host "→ Deleting $zip"
+              Remove-Item -Path $zip -Force
+            ]]>
                                         </argument>
                                     </arguments>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
