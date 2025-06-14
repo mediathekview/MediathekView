@@ -107,7 +107,7 @@ jobs:
           DATE=$(date +'%Y-%m-%d')
           aws --endpoint-url "https://${MINIO_ENDPOINT}" s3 cp \
             target/media/${{ matrix.dmg_file }} \
-            "s3://${S3_BUCKET}/MediathekView-${{ matrix.dmg_suffix }}-snapshot-$DATE.dmg"
+            "s3://${S3_BUCKET}/MediathekView-latest-${{ matrix.dmg_suffix }}-snapshot-$DATE.dmg"
 
   build-windows:
     name: Build Windows ARM64
