@@ -1,4 +1,4 @@
-name: build-macos-apps
+name: build-nightly-apps
 
 on:
   schedule:
