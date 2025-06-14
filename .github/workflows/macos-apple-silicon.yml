@@ -28,8 +28,10 @@ jobs:
       INSTALL4J_VERSION: '11_0_4'
 
     steps:
-      - name: Checkout code
+      - name: Checkout develop branch
         uses: actions/checkout@v4
+        with:
+          ref: develop
 
       - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
@@ -117,7 +119,10 @@ jobs:
       INSTALL4J_VERSION: '11_0_4'
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
 
       - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
