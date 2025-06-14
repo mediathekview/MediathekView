@@ -1271,25 +1271,31 @@
                                         <argument>-lc</argument>
                                         <argument>
                                             <![CDATA[
-                set -e
-                mkdir -p "${bin.dir}"
-                for pair in \
-                  "common/mv_shutdown_helper:3c8254ce318ef41da00517199c5a5e85" \
-                  "apple_silicon/ffmpeg:59529684989790fb73c956f813c9be13" \
-                  "apple_silicon/ffprobe:cca2b80ca82a1fd6f96763ba2ecbe691"
-                do
-                  IFS=":" read -r path md5 <<< "$pair"
-                  url="${binaries.base}/${path}"
-                  dest="${bin.dir}/$(basename "$path")"
-                  echo "→ Downloading $url"
-                  curl -fL "$url" -o "$dest"
-                  actual=$(md5 -q "$dest")
-                  if [[ "$actual" != "$md5" ]]; then
-                    echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
-                    exit 1
-                  fi
-                done
-                ]]>
+set -e
+mkdir -p "${bin.dir}"
+for pair in \
+  "common/mv_shutdown_helper:3c8254ce318ef41da00517199c5a5e85" \
+  "apple_silicon/ffmpeg:59529684989790fb73c956f813c9be13" \
+  "apple_silicon/ffprobe:cca2b80ca82a1fd6f96763ba2ecbe691"
+do
+  IFS=":" read -r path md5 <<< "$pair"
+  url="${binaries.base}/${path}"
+  dest="${bin.dir}/$(basename "$path")"
+
+  # if file exists and checksum matches, skip download
+  if [[ -f "$dest" && "$(md5 -q "$dest")" == "$md5" ]]; then
+    echo "→ Using cached $dest"
+  else
+    echo "→ Downloading $url"
+    curl -fL "$url" -o "$dest"
+    actual=$(md5 -q "$dest")
+    if [[ "$actual" != "$md5" ]]; then
+      echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
+      exit 1
+    fi
+  fi
+done
+]]>
                                         </argument>
                                     </arguments>
                                 </configuration>
