@@ -120,6 +120,7 @@
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <mbassador.version>1.3.2</mbassador.version>
@@ -787,7 +788,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -896,7 +897,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -1023,7 +1024,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -1092,7 +1093,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -1186,7 +1187,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -1309,9 +1310,10 @@ done
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
@@ -1366,6 +1368,7 @@ done
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>install4j</id>
             <build>
