@@ -85,7 +85,7 @@
         <kotlin.language.target>23</kotlin.language.target>
 
         <kotlin.version>2.1.21</kotlin.version>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jvm.target.version}</maven.compiler.target>
