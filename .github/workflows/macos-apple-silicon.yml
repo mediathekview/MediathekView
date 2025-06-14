@@ -254,9 +254,9 @@ jobs:
           $bucket   = $env:S3_BUCKET
           
           aws --endpoint-url $endpoint s3 cp `
-            target\media\MediathekView-latest-win-amd64.exe `
-            "s3://$bucket/MediathekView-latest-win-amd64-snapshot-$date.exe"
+            target\media\MediathekView-latest-windows-amd64.exe `
+            "s3://$bucket/MediathekView-latest-windows-amd64-snapshot-$date.exe"
           
           aws --endpoint-url $endpoint s3 cp `
-            target\media\MediathekView-latest-win-amd64.zip `
-            "s3://$bucket/MediathekView-latest-win-amd64-snapshot-$date.zip"
+            target\media\MediathekView-latest-windows-amd64.zip `
+            "s3://$bucket/MediathekView-latest-windows-amd64-snapshot-$date.zip"
