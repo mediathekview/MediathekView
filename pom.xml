@@ -139,18 +139,12 @@
         <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
         <install4j.jdk.min-version>24</install4j.jdk.min-version>
 
-        <!-- VM Parameters Windows x64 -->
-        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
-            -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector
-            --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck
-        </install4j.vmparameters.win.64>
+        <!-- @formatter:off -->
+        <!-- VM Parameters Windows x64 and aarch64 -->
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
         <!-- VM Parameters Linux 64bit Intel and ARM -->
-        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
-            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules
-            jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens
-            java.desktop/sun.awt.X11=ALL-UNNAMED
-            -DexternalUpdateCheck
-        </install4j.vmparameters.linux.64>
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
+        <!-- @formatter:on -->
     </properties>
 
     <dependencies>
@@ -728,7 +722,9 @@
                             <execution>
                                 <id>fetch-unpack-clean-ffmpeg</id>
                                 <phase>package</phase>
-                                <goals><goal>exec</goal></goals>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
                                 <configuration>
                                     <executable>powershell</executable>
                                     <arguments>
@@ -961,6 +957,7 @@
             <id>install4j-win-aarch64</id>
             <properties>
                 <install4j.home>download\install4j</install4j.home>
+                <!--suppress UnresolvedMavenProperty -->
                 <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
@@ -1389,9 +1386,11 @@
             <id>install4j-mac-apple-silicon</id>
             <properties>
                 <install4j.home>/Applications/install4j.app</install4j.home>
+                <!--suppress UnresolvedMavenProperty -->
                 <install4j.macKeystorePassword>${env.MAC_KEYSTORE_PASSWORD}</install4j.macKeystorePassword>
                 <install4j.disableNotarization>false</install4j.disableNotarization>
                 <install4j.disableSigning>false</install4j.disableSigning>
+                <!--suppress UnresolvedMavenProperty -->
                 <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
@@ -1422,9 +1421,11 @@
             <id>install4j-mac-intel</id>
             <properties>
                 <install4j.home>/Applications/install4j.app</install4j.home>
+                <!--suppress UnresolvedMavenProperty -->
                 <install4j.macKeystorePassword>${env.MAC_KEYSTORE_PASSWORD}</install4j.macKeystorePassword>
                 <install4j.disableNotarization>false</install4j.disableNotarization>
                 <install4j.disableSigning>false</install4j.disableSigning>
+                <!--suppress UnresolvedMavenProperty -->
                 <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
