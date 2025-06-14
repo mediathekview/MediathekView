@@ -133,9 +133,11 @@ public class MVSubtitle {
                 if (parser.parse(ttmlPath)) {
                     parser.toSrt(srt);
                     parser.toAss(ass);
+                    logger.trace("Used EBU TTML parser for conversion");
                 } else if (parser.parseXmlFlash(ttmlPath)) {
                     parser.toSrt(srt);
                     parser.toAss(ass);
+                    logger.trace("Used Flash XML parser for conversion");
                 }
                 logger.info("Untertitel-Datei wurde konvertiert.");
             }

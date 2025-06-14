@@ -347,6 +347,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
      * @param ttmlFilePath the TTML file to parse
      */
     public boolean parse(Path ttmlFilePath) {
+        logger.trace("Parsing TTML file with EBU parser");
         boolean ret;
         try {
             doc = getDocumentBuilder().parse(ttmlFilePath.toFile());
@@ -356,10 +357,12 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
             if (metaData != null) {
                 final Node versionNode = metaData.item(0);
                 if (versionNode == null || !versionNode.getTextContent().equalsIgnoreCase("v1.0")) {
-                    throw new Exception("Unknown TTML file version");
+                    logger.warn("EBU version not found or incorrect version.");
+                    return false;
                 }
             } else {
-                throw new Exception("Unknown File Format");
+                logger.warn("EBU document version tag not found.");
+                return false;
             }
 
             buildAlignmentMap();
@@ -381,6 +384,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
      * @return true if successful
      */
     public boolean parseXmlFlash(Path ttmlFilePath) {
+        logger.trace("Parsing TTML file with Flash parser");
         boolean ret;
         try {
             doc = getDocumentBuilder().parse(ttmlFilePath.toFile());
@@ -399,14 +403,17 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                         final String s = xmlns.getNodeValue();
                         if (!s.equals("http://www.w3.org/2006/04/ttaf1")
                                 && !s.equals("http://www.w3.org/ns/ttml")) {
-                            throw new Exception("Unknown TTML file version");
+                            logger.warn("Invalid namespace.");
+                            return false;
                         }
                     }
                 } else {
-                    throw new Exception("Unknown File Format");
+                    logger.warn("Missing attributes.");
+                    return false;
                 }
             } else {
-                throw new Exception("Unknown File Format");
+                logger.warn("Missing metadata tag.");
+                return false;
             }
             if (colorNote != null) {
                 if (colorNote.getLength() == 0) {

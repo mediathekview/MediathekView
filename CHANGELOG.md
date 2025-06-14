@@ -6,6 +6,7 @@
 - **FEATURE:** Dialog *Merkliste verwalten* wurde völlig neu geschrieben. Siehe [folgenden Eintrag](https://forum.mediathekview.de/topic/6338/sneak-peak-zum-neuen-merklistendialog-und-frage-an-die-nutzer).
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
+- **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
