@@ -1018,47 +1018,50 @@
                     <arch>x86_64</arch>
                 </os>
             </activation>
+            <properties>
+                <binaries.base>https://s3.mvorg.de/res/dev/mac/bin</binaries.base>
+                <bin.dir>${project.build.directory}/bin</bin.dir>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <version>1.7.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
-                                <id>download-shutdown-helper-from-server</id>
+                                <id>download-mac-intel-binaries</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>wget</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-intel-ffmpeg-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffmpeg</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>438891fe3a1077081aa400c1df18590c</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-intel-ffprobe-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffprobe</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>5226b0b358243c5757108e107dc546bf</md5>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>-lc</argument>
+                                        <argument>
+                                            <![CDATA[
+                set -e
+                mkdir -p "${bin.dir}"
+                for pair in \
+                  "common/mv_shutdown_helper:3c8254ce318ef41da00517199c5a5e85" \
+                  "intel/ffmpeg:438891fe3a1077081aa400c1df18590c" \
+                  "intel/ffprobe:5226b0b358243c5757108e107dc546bf"
+                do
+                  IFS=":" read -r path md5 <<< "$pair"
+                  url="${binaries.base}/${path}"
+                  dest="${bin.dir}/$(basename "$path")"
+                  echo "→ Downloading $url"
+                  curl -fL "$url" -o "$dest"
+                  actual=$(md5 -q "$dest")
+                  if [[ "$actual" != "$md5" ]]; then
+                    echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
+                    exit 1
+                  fi
+                done
+                ]]>
+                                        </argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1131,47 +1134,50 @@
                     <arch>aarch64</arch>
                 </os>
             </activation>
+            <properties>
+                <binaries.base>https://s3.mvorg.de/res/dev/mac/bin</binaries.base>
+                <bin.dir>${project.build.directory}/bin</bin.dir>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <version>1.7.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
                         <executions>
                             <execution>
-                                <id>download-shutdown-helper-from-server</id>
+                                <id>download-mac-apple-silicon-binaries</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>wget</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-apple-silicon-ffmpeg-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/apple_silicon/ffmpeg</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>59529684989790fb73c956f813c9be13</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-apple-silicon-ffprobe-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/apple_silicon/ffprobe</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>cca2b80ca82a1fd6f96763ba2ecbe691</md5>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>-lc</argument>
+                                        <argument>
+                                            <![CDATA[
+                set -e
+                mkdir -p "${bin.dir}"
+                for pair in \
+                  "common/mv_shutdown_helper:3c8254ce318ef41da00517199c5a5e85" \
+                  "apple_silicon/ffmpeg:59529684989790fb73c956f813c9be13" \
+                  "apple_silicon/ffprobe:cca2b80ca82a1fd6f96763ba2ecbe691"
+                do
+                  IFS=":" read -r path md5 <<< "$pair"
+                  url="${binaries.base}/${path}"
+                  dest="${bin.dir}/$(basename "$path")"
+                  echo "→ Downloading $url"
+                  curl -fL "$url" -o "$dest"
+                  actual=$(md5 -q "$dest")
+                  if [[ "$actual" != "$md5" ]]; then
+                    echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
+                    exit 1
+                  fi
+                done
+                ]]>
+                                        </argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
