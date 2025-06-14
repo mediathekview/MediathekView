@@ -6,142 +6,105 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-macos-apple-silicon:
-    runs-on: macos-latest
+  build:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - arch: apple-silicon
+            runner: macos-latest
+            mvn_profile: mac_apple_silicon
+            dmg_suffix: apple-silicon
+            dmg_file: MediathekView-latest-apple-silicon.dmg
+          - arch: intel
+            runner: macos-13
+            mvn_profile: mac_intel
+            dmg_suffix: mac-intel
+            dmg_file: MediathekView-latest-mac-intel.dmg
+
+    env:
+      # bump this when you upgrade install4j
+      INSTALL4J_VERSION: '11_0_4'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
-          distribution: 'liberica'
+          distribution: liberica
           java-version: '24'
           java-package: jdk
-          cache: 'maven'
+          cache: maven
 
-      - name: Restore install4j from cache
-        id: cache-download
+      - name: Cache extracted install4j.app
+        id: cache-install4j-app
         uses: actions/cache@v4
         with:
-          path: download/install4j.dmg
-          key: download-cache-v1  # Change key if the file content changes
+          path: download/install4j.app
+          key: install4j-app-${{ matrix.arch }}-${{ env.INSTALL4J_VERSION }}
+          restore-keys: |
+            install4j-app-${{ matrix.arch }}-
 
-      - name: Download install4j if not cached
-        if: steps.cache-download.outputs.cache-hit != 'true'
+      - name: Restore or download & extract install4j
         run: |
           mkdir -p download
-          curl -L -o download/install4j.dmg https://download.ej-technologies.com/install4j/install4j_macos_11_0_4.dmg
+          if [ -d download/install4j.app ]; then
+            echo "✔︎ Using cached install4j.app"
+          else
+            echo "→ Downloading install4j ${INSTALL4J_VERSION}"
+            curl -L -o download/install4j.dmg \
+              https://download.ej-technologies.com/install4j/install4j_macos_${INSTALL4J_VERSION}.dmg
+            hdiutil attach download/install4j.dmg
+            cp -r /Volumes/install4j/install4j.app download/install4j.app
+            hdiutil detach /Volumes/install4j*
+          fi
 
       - name: Install install4j
         run: |
-          hdiutil attach download/install4j.dmg
-          cp -r /Volumes/install4j/install4j.app /Applications/install4j.app
-          hdiutil detach /Volumes/install4j*
+          sudo rm -rf /Applications/install4j.app || true
+          sudo cp -r download/install4j.app /Applications/install4j.app
 
-      - name: First build
+      - name: Initial Maven install
         run: mvn install
 
       - name: Restore AuthKey
-        run: echo "${{ secrets.AUTHKEY_WA422TZX7G }}" | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
+        run: |
+          echo "${{ secrets.AUTHKEY_WA422TZX7G }}" \
+            | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
 
-      - name: Restore dev cert
-        run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode > target/mac/mac_dev_cert_with_password.p12
+      - name: Restore dev certificate
+        run: |
+          echo "${{ secrets.MAC_DEV_CERT_2025 }}" \
+            | base64 --decode > target/mac/mac_dev_cert_with_password.p12
 
       - name: Build macOS app
-        run: mvn -B package -Pmac_apple_silicon,install4j-mac-apple-silicon -DskipTests
+        run: mvn -B package -P${{ matrix.mvn_profile }},install4j-mac-${{ matrix.arch }} -DskipTests
         env:
           INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
-          MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
+          MAC_KEYSTORE_PASSWORD:       ${{ secrets.MAC_KEYSTORE_PASSWORD }}
 
       - name: Configure AWS CLI for MinIO
         run: |
           mkdir -p ~/.aws
           cat > ~/.aws/credentials <<EOF
           [default]
-          aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_access_key_id     = ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           EOF
-          
           cat > ~/.aws/config <<EOF
           [default]
-          region = ${{ secrets.MINIO_REGION || 'us-east-1' }}
+          region = ${MINIO_REGION:-us-east-1}
           output = json
           EOF
 
       - name: Upload artifact to S3
-        run: |
-          DATE=$(date +'%Y-%m-%d')
-          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp target/media/MediathekView-latest-apple-silicon.dmg "s3://${{ secrets.S3_BUCKET }}/MediathekView-apple-silicon-snapshot-$DATE.dmg"
-
-
-  build-macos-intel:
-    #needs: build-macos-apple-silicon
-    runs-on: macos-13
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'liberica'
-          java-version: '24'
-          java-package: jdk
-          cache: 'maven'
-
-      - name: Restore install4j from cache
-        id: cache-download
-        uses: actions/cache@v4
-        with:
-          path: download/install4j.dmg
-          key: download-cache-v1  # Change key if the file content changes
-
-      - name: Download install4j if not cached
-        if: steps.cache-download.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p download
-          curl -L -o download/install4j.dmg https://download.ej-technologies.com/install4j/install4j_macos_11_0_4.dmg
-
-      - name: Install install4j
-        run: |
-          hdiutil attach download/install4j.dmg
-          cp -r /Volumes/install4j/install4j.app /Applications/install4j.app
-          hdiutil detach /Volumes/install4j*
-
-      - name: First build
-        run: mvn install
-
-      - name: Restore AuthKey
-        run: echo "${{ secrets.AUTHKEY_WA422TZX7G }}" | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
-
-      - name: Restore dev cert
-        run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode > target/mac/mac_dev_cert_with_password.p12
-
-      - name: Build macOS app
-        run: mvn -B package -Pmac_intel,install4j-mac-intel -DskipTests
         env:
-          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
-          MAC_KEYSTORE_PASSWORD: ${{ secrets.MAC_KEYSTORE_PASSWORD }}
-
-      - name: Configure AWS CLI for MinIO
-        run: |
-          mkdir -p ~/.aws
-          cat > ~/.aws/credentials <<EOF
-          [default]
-          aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          EOF
-          
-          cat > ~/.aws/config <<EOF
-          [default]
-          region = ${{ secrets.MINIO_REGION || 'us-east-1' }}
-          output = json
-          EOF
-
-      - name: Upload artifact to S3
+          MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.S3_BUCKET }}
         run: |
           DATE=$(date +'%Y-%m-%d')
-          aws --endpoint-url https://${{ secrets.MINIO_ENDPOINT }} s3 cp target/media/MediathekView-latest-mac-intel.dmg "s3://${{ secrets.S3_BUCKET }}/MediathekView-mac-intel-snapshot-$DATE.dmg"
+          aws --endpoint-url "https://${MINIO_ENDPOINT}" s3 cp \
+            target/media/${{ matrix.dmg_file }} \
+            "s3://${S3_BUCKET}/MediathekView-${{ matrix.dmg_suffix }}-snapshot-$DATE.dmg"
