@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build macOS ${{ matrix.arch }}
+    name: Build macOS ${{ matrix.arch }} nightly
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
@@ -112,7 +112,7 @@ jobs:
             "s3://${S3_BUCKET}/MediathekView-latest-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
 
   build-windows-arm64:
-    name: Build Windows ARM64
+    name: Build Windows ARM64 nightly
     runs-on: windows-11-arm
 
     env:
@@ -187,7 +187,7 @@ jobs:
             "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.zip"
 
   build-windows-amd64:
-    name: Build Windows AMD64
+    name: Build Windows AMD64 nightly
     runs-on: windows-latest
 
     env:
