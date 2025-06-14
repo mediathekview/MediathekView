@@ -830,7 +830,7 @@
             <!-- Does not include ffmpeg and install4j is also not ready.
                 For local test purposes only.
             -->
-            <id>windows_arm64</id>
+            <id>windows-aarch64</id>
             <activation>
                 <os>
                     <family>windows</family>
@@ -838,7 +838,6 @@
                 </os>
             </activation>
             <properties>
-                <install4j.platform>windows</install4j.platform>
                 <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip</windows.ffmpeg.url>
                 <windows.ffmpeg.md5>3812b8f3c99cf33278dad42a79bff973</windows.ffmpeg.md5>
                 <windows.bin.dir>${project.build.directory}/res/bin</windows.bin.dir>
@@ -928,6 +927,59 @@
                                             </excludes>
                                         </filter>
                                     </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>copy-install4j-win-aarch64-installers</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/installers/windows-aarch64</directory>
+                                            <targetPath>${basedir}/target</targetPath>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>install4j-win-aarch64</id>
+            <properties>
+                <install4j.home>C:\Program Files\install4j11</install4j.home>
+                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-installer-win-aarch64</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <projectFile>
+                                        ${project.build.directory}/mediathekview-windows-aarch64.install4j
+                                    </projectFile>
                                 </configuration>
                             </execution>
                         </executions>
