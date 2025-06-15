@@ -38,6 +38,7 @@ import mediathek.swing.table.GlazedSortKeysPersister;
 import mediathek.swing.table.IconHeaderCellRenderer;
 import mediathek.swing.table.TableUtils;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.EscapeKeyHandler;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
@@ -87,6 +88,8 @@ public class BookmarkDialog extends JDialog {
         setTitle("Merkliste verwalten");
         setModal(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        EscapeKeyHandler.installHandler(this, this::dispose);
 
         setupToolBar();
 

@@ -18,9 +18,10 @@
 
 package mediathek.gui.bookmark;
 
+import mediathek.tool.EscapeKeyHandler;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 public class BookmarkEditNoteDialog extends JDialog {
     private final JTextArea textArea;
@@ -30,6 +31,7 @@ public class BookmarkEditNoteDialog extends JDialog {
         super(owner, "Notiz eingeben", true);
         setLayout(new BorderLayout(10, 10));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        EscapeKeyHandler.installHandler(this, this::dispose);
 
         textArea = new JTextArea(10, 40);
         textArea.setLineWrap(true);
@@ -46,9 +48,6 @@ public class BookmarkEditNoteDialog extends JDialog {
         });
 
         cancelButton.addActionListener(_ -> dispose());
-
-        getRootPane().registerKeyboardAction(_ -> dispose(),
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(okButton);
