@@ -16,17 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool.ttml
+package mediathek.tool.ttml;
 
-import java.util.*
+import java.nio.file.Path;
 
-internal class Subtitle {
-    @JvmField
-    var begin: Date? = null
-    @JvmField
-    var end: Date? = null
-    @JvmField
-    val listOfStrings: List<StyledString> = ArrayList()
-    @JvmField
-    var region: String? = null
+public interface ITtmlParser {
+    boolean parse(Path ttmlFilePath);
 }

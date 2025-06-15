@@ -16,6 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool.ttml
+package mediathek.tool.ttml;
 
-internal data class StyledString(var text: String = "", var color: String = "", var backgroundColor: String = "")
+import java.nio.file.Path;
+
+public interface ITtmlExporter {
+    void write(TimedTextMarkupLanguageParser parser, Path destinationPath);
+}

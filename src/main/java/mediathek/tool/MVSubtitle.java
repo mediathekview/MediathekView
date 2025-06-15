@@ -2,7 +2,11 @@ package mediathek.tool;
 
 import mediathek.daten.DatenDownload;
 import mediathek.tool.http.MVHttpClient;
-import mediathek.tool.ttml.TimedTextMarkupLanguageParser;
+import mediathek.tool.ttml.ITtmlExporter;
+import mediathek.tool.ttml.exporters.AdvancedSubstationAlphaExporter;
+import mediathek.tool.ttml.exporters.SubripTextExporter;
+import mediathek.tool.ttml.parsers.EbuTimedTextMarkupLanguageParser;
+import mediathek.tool.ttml.parsers.XmlTimedTextMarkupLanguageParser;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -126,19 +130,25 @@ public class MVSubtitle {
     private void convertSubtitle(@NotNull Path ttmlPath) {
         var subtitleFileStr = GuiFunktionen.getFileNameWithoutExtension(ttmlPath.toAbsolutePath().toString());
 
-        try (TimedTextMarkupLanguageParser parser = new TimedTextMarkupLanguageParser()) {
+        try (EbuTimedTextMarkupLanguageParser ebuParser = new EbuTimedTextMarkupLanguageParser();
+             XmlTimedTextMarkupLanguageParser xmlParser = new XmlTimedTextMarkupLanguageParser()) {
             if (!subtitleFileStr.endsWith("." + SUFFIX_ASS) && !subtitleFileStr.endsWith('.' + SUFFIX_SRT) && !subtitleFileStr.endsWith("." + SUFFIX_VTT)) {
                 final Path ass = Paths.get(subtitleFileStr + "." + SUFFIX_ASS);
                 final Path srt = Paths.get(subtitleFileStr + "." + SUFFIX_SRT);
-                if (parser.parse(ttmlPath)) {
-                    parser.toSrt(srt);
-                    parser.toAss(ass);
+                if (ebuParser.parse(ttmlPath)) {
                     logger.trace("Used EBU TTML parser for conversion");
-                } else if (parser.parseXmlFlash(ttmlPath)) {
-                    parser.toSrt(srt);
-                    parser.toAss(ass);
+                } else if (xmlParser.parse(ttmlPath)) {
                     logger.trace("Used Flash XML parser for conversion");
+                } else {
+                    throw new RuntimeException("Could not parse TTML file: " + ttmlPath.toString());
                 }
+
+                ITtmlExporter exporter;
+                exporter = new AdvancedSubstationAlphaExporter();
+                exporter.write(ebuParser, ass);
+
+                exporter = new SubripTextExporter();
+                exporter.write(ebuParser, srt);
                 logger.info("Untertitel-Datei wurde konvertiert.");
             }
         } catch (Exception ex) {
