@@ -22,6 +22,10 @@ MediathekView bietet die folgenden *tags* (Achtung: hier sind **immer** Kleinbuc
 | größe         | int     | Filmgröße in Megabytes, **0** wenn keine Information vorhanden ist. |
 | wochentag     | String  | (**14.3**) Wochentag des Sendedatums (Montag, Dienstag,...)  |
 | startzeit     | String  | (**14.3**) Startzeit des Films im Format `HH:mm:ss` |
+| season        | int     | (**14.4**) erkannte Season für einzelne Sender; unbekannt = 0 |
+| episode       | int     | (**14.4**) erkannte Episode für einzelne Sender; unbekannt = 0 |
+
+`season` und `episode` werden für die Sender 3Sat, ARD, ARD-alpha, BR, HR, MDR, NDR, RBB, WDR und ZDF gesucht.
 
 ### Abfrage der Startzeit
 Genaue Zeiten können wie folgt abgefragt werden:
