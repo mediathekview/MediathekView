@@ -29,6 +29,7 @@ import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -39,9 +40,9 @@ import java.util.Optional;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookmarkData {
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     @JsonProperty("seen")
     private boolean seen;
-    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private String url;
     @JsonIgnore
     private DatenFilm filmdata;
@@ -55,6 +56,9 @@ public class BookmarkData {
     /// Must be converted back to [com.google.common.hash.HashCode].
     /// Will erase [BookmarkData#url] as it is unneeded then.
     private String filmHashCode;
+    private String originalSender;
+    private String originalTitle;
+    private String originalThema;
 
     public BookmarkData() {
         seen = false;
@@ -65,6 +69,33 @@ public class BookmarkData {
         this();
         this.url = film.getUrlNormalQuality();
         this.filmdata = film;
+        this.originalSender = film.getSender();
+        this.originalTitle = film.getTitle();
+        this.originalThema = film.getThema();
+    }
+
+    public String getOriginalSender() {
+        return originalSender;
+    }
+
+    public void setOriginalSender(String originalSender) {
+        this.originalSender = originalSender;
+    }
+
+    public String getOriginalThema() {
+        return originalThema;
+    }
+
+    public void setOriginalThema(String originalThema) {
+        this.originalThema = originalThema;
+    }
+
+    public String getOriginalTitle() {
+        return originalTitle;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
     }
 
     @JsonIgnore
@@ -73,7 +104,7 @@ public class BookmarkData {
             return filmdata.getSender();
         }
         else
-            return "NO SENDER";
+            return Objects.requireNonNullElse(originalSender, "NO SENDER");
     }
 
     @JsonIgnore
@@ -82,7 +113,7 @@ public class BookmarkData {
             return filmdata.getThema();
         }
         else
-            return "NO THEMA";
+            return Objects.requireNonNullElse(originalThema, "NO THEMA");
     }
 
     @JsonIgnore
@@ -91,7 +122,7 @@ public class BookmarkData {
             return filmdata.getTitle();
         }
         else
-            return "NO TITLE";
+            return Objects.requireNonNullElse(originalTitle, "NO TITLE");
     }
 
     @JsonIgnore
@@ -148,6 +179,12 @@ public class BookmarkData {
         return this.url;
     }
 
+    public void setUrl(String url) {
+        String oldUrl = this.url;
+        this.url = url;
+        support.firePropertyChange("url", oldUrl, url);
+    }
+
     @JsonIgnore
     public String getNormalQualityUrl() {
         if (filmdata != null) {
@@ -155,12 +192,6 @@ public class BookmarkData {
         }
         else
             return null;
-    }
-
-    public void setUrl(String url) {
-        String oldUrl = this.url;
-        this.url = url;
-        support.firePropertyChange("url", oldUrl, url);
     }
 
     public String getNote() {
