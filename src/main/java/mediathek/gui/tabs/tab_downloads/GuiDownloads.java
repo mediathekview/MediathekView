@@ -617,7 +617,7 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         }
         DatenDownload datenDownloadKopy = datenDownload.getCopy();
-        DialogEditDownload dialog = new DialogEditDownload(mediathekGui, true, datenDownloadKopy, gestartet, tabelle.getColumnModel());
+        DialogEditDownload dialog = new DialogEditDownload(mediathekGui, datenDownloadKopy, gestartet, tabelle.getColumnModel());
         dialog.setVisible(true);
         if (dialog.ok) {
             datenDownload.aufMichKopieren(datenDownloadKopy);
