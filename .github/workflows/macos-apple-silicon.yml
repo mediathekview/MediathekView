@@ -10,6 +10,7 @@ jobs:
     name: Build macOS ${{ matrix.arch }} nightly
     runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false # do not cancel other jobs when one fails
       matrix:
         include:
           - arch: apple-silicon
