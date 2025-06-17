@@ -92,4 +92,12 @@ public class LuceneIndexKeys {
      * Startzeit des Films HH:mm:ss. String.
      */
     public static final String START_TIME = "startzeit";
+    /**
+     * Season. Integer. 0 wenn nicht vorhanden.
+     */
+    public static final String SEASON = "season";
+    /**
+     * Episode. Integer. 0 wenn nicht vorhanden.
+     */
+    public static final String EPISODE = "episode";
 }

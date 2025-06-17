@@ -56,8 +56,11 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     private static final Map<String, PointsConfig> PARSER_CONFIG_MAP = new HashMap<>();
     private static final HashSet<String> INTEREST_SET = new HashSet<>(List.of(LuceneIndexKeys.ID));
     static {
+        //INFO IntPoints MUST be registered here
         PARSER_CONFIG_MAP.put(LuceneIndexKeys.FILM_SIZE, new PointsConfig(new DecimalFormat(), Integer.class));
         PARSER_CONFIG_MAP.put(LuceneIndexKeys.FILM_LENGTH, new PointsConfig(new DecimalFormat(), Integer.class));
+        PARSER_CONFIG_MAP.put(LuceneIndexKeys.EPISODE, new PointsConfig(new DecimalFormat(), Integer.class));
+        PARSER_CONFIG_MAP.put(LuceneIndexKeys.SEASON, new PointsConfig(new DecimalFormat(), Integer.class));
     }
 
     private final Analyzer analyzer = LuceneDefaultAnalyzer.buildAnalyzer();

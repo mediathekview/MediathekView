@@ -199,6 +199,8 @@ public class FilmInfoDialog extends JDialog {
         hyperlink.setEnabled(false);
         hyperlink.setComponentPopupMenu(null);
         lblDescription.setText("");
+        lblSeason.setText("");
+        lblEpisode.setText("");
     }
 
     private void updateTextFields() {
@@ -231,6 +233,19 @@ public class FilmInfoDialog extends JDialog {
 
             lblDescription.setText(currentFilm.getDescription().trim());
             SwingUtilities.invokeLater(() -> descScrollPane.getVerticalScrollBar().setValue(0));
+
+            if (currentFilm.getSeason() != 0) {
+                lblSeason.setText(String.valueOf(currentFilm.getSeason()));
+            }
+            else  {
+                lblSeason.setText("");
+            }
+            if (currentFilm.getEpisode() != 0) {
+                lblEpisode.setText(String.valueOf(currentFilm.getEpisode()));
+            }
+            else  {
+                lblEpisode.setText("");
+            }
         }, this::clearControls);
     }
 
@@ -250,6 +265,10 @@ public class FilmInfoDialog extends JDialog {
         lblSender = new JLabel();
         var label2 = new JLabel();
         lblThema = new HtmlMultilineLabel();
+        var label12 = new JLabel();
+        lblSeason = new JLabel();
+        var label14 = new JLabel();
+        lblEpisode = new JLabel();
         var label3 = new JLabel();
         lblTitel = new HtmlMultilineLabel();
         var label4 = new JLabel();
@@ -275,14 +294,14 @@ public class FilmInfoDialog extends JDialog {
 
         //======== this ========
         setType(Window.Type.UTILITY);
-        setTitle("Filminformation"); //NON-NLS
+        setTitle("Filminformation");
         setMaximumSize(new Dimension(500, 800));
         setMinimumSize(new Dimension(320, 240));
         setPreferredSize(new Dimension(400, 500));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
-            new LC().insets("5").hideMode(3), //NON-NLS
+            new LC().insets("5").hideMode(3),
             // columns
             new AC()
                 .fill().gap()
@@ -302,15 +321,17 @@ public class FilmInfoDialog extends JDialog {
                 .gap()
                 .gap()
                 .gap()
+                .gap()
+                .gap()
                 .grow().fill()));
 
         //---- label1 ----
-        label1.setText("Sender:"); //NON-NLS
+        label1.setText("Sender:");
         contentPane.add(label1, new CC().cell(0, 0));
         contentPane.add(lblSender, new CC().cell(1, 0));
 
         //---- label2 ----
-        label2.setText("Thema:"); //NON-NLS
+        label2.setText("Thema:");
         contentPane.add(label2, new CC().cell(0, 1));
 
         //---- lblThema ----
@@ -318,76 +339,92 @@ public class FilmInfoDialog extends JDialog {
         lblThema.setMinimumSize(new Dimension(51, 32));
         contentPane.add(lblThema, new CC().cell(1, 1));
 
+        //---- label12 ----
+        label12.setText("Season:");
+        contentPane.add(label12, new CC().cell(0, 2));
+
+        //---- lblSeason ----
+        lblSeason.setText("text");
+        contentPane.add(lblSeason, new CC().cell(1, 2).growX());
+
+        //---- label14 ----
+        label14.setText("Episode:");
+        contentPane.add(label14, new CC().cell(0, 3));
+
+        //---- lblEpisode ----
+        lblEpisode.setText("text");
+        contentPane.add(lblEpisode, new CC().cell(1, 3).growX());
+
         //---- label3 ----
-        label3.setText("Titel:"); //NON-NLS
-        contentPane.add(label3, new CC().cell(0, 2));
-        contentPane.add(lblTitel, new CC().cell(1, 2));
+        label3.setText("Titel:");
+        contentPane.add(label3, new CC().cell(0, 4));
+        contentPane.add(lblTitel, new CC().cell(1, 4));
 
         //---- label4 ----
-        label4.setText("Datum:"); //NON-NLS
-        contentPane.add(label4, new CC().cell(0, 3));
+        label4.setText("Datum:");
+        contentPane.add(label4, new CC().cell(0, 5));
 
         //---- lblDate ----
-        lblDate.setText("text"); //NON-NLS
-        contentPane.add(lblDate, new CC().cell(1, 3));
+        lblDate.setText("text");
+        contentPane.add(lblDate, new CC().cell(1, 5));
 
         //---- label5 ----
-        label5.setText("Uhrzeit:"); //NON-NLS
-        contentPane.add(label5, new CC().cell(0, 4));
+        label5.setText("Uhrzeit:");
+        contentPane.add(label5, new CC().cell(0, 6));
 
         //---- lblUhrzeit ----
-        lblUhrzeit.setText("text"); //NON-NLS
-        contentPane.add(lblUhrzeit, new CC().cell(1, 4));
+        lblUhrzeit.setText("text");
+        contentPane.add(lblUhrzeit, new CC().cell(1, 6));
 
         //---- label6 ----
-        label6.setText("Dauer:"); //NON-NLS
-        contentPane.add(label6, new CC().cell(0, 5));
+        label6.setText("Dauer:");
+        contentPane.add(label6, new CC().cell(0, 7));
 
         //---- lblDuration ----
-        lblDuration.setText("text"); //NON-NLS
-        contentPane.add(lblDuration, new CC().cell(1, 5));
+        lblDuration.setText("text");
+        contentPane.add(lblDuration, new CC().cell(1, 7));
 
         //---- label7 ----
-        label7.setText("Gr\u00f6\u00dfe (MB):"); //NON-NLS
-        contentPane.add(label7, new CC().cell(0, 6));
+        label7.setText("Gr\u00f6\u00dfe (MB):");
+        contentPane.add(label7, new CC().cell(0, 8));
 
         //---- lblSize ----
-        lblSize.setText("text"); //NON-NLS
-        contentPane.add(lblSize, new CC().cell(1, 6));
+        lblSize.setText("text");
+        contentPane.add(lblSize, new CC().cell(1, 8));
 
         //---- label8 ----
-        label8.setText("HQ:"); //NON-NLS
-        contentPane.add(label8, new CC().cell(0, 7));
-        contentPane.add(cbHq, new CC().cell(1, 7));
+        label8.setText("HQ:");
+        contentPane.add(label8, new CC().cell(0, 9));
+        contentPane.add(cbHq, new CC().cell(1, 9));
 
         //---- label9 ----
-        label9.setText("Untertitel:"); //NON-NLS
-        contentPane.add(label9, new CC().cell(0, 8));
-        contentPane.add(cbSubtitle, new CC().cell(1, 8));
+        label9.setText("Untertitel:");
+        contentPane.add(label9, new CC().cell(0, 10));
+        contentPane.add(cbSubtitle, new CC().cell(1, 10));
 
         //---- label10 ----
-        label10.setText("Geo:"); //NON-NLS
-        contentPane.add(label10, new CC().cell(0, 9));
+        label10.setText("Geo:");
+        contentPane.add(label10, new CC().cell(0, 11));
 
         //---- lblGeo ----
-        lblGeo.setText("text"); //NON-NLS
-        contentPane.add(lblGeo, new CC().cell(1, 9));
+        lblGeo.setText("text");
+        contentPane.add(lblGeo, new CC().cell(1, 11));
 
         //---- label11 ----
-        label11.setText("Abo:"); //NON-NLS
-        contentPane.add(label11, new CC().cell(0, 10));
+        label11.setText("Abo:");
+        contentPane.add(label11, new CC().cell(0, 12));
 
         //---- lblAbo ----
-        lblAbo.setText("text"); //NON-NLS
-        contentPane.add(lblAbo, new CC().cell(1, 10));
+        lblAbo.setText("text");
+        contentPane.add(lblAbo, new CC().cell(1, 12));
 
         //---- hyperlink ----
-        hyperlink.setText("Link zur Website"); //NON-NLS
-        contentPane.add(hyperlink, new CC().cell(0, 11, 2, 1));
+        hyperlink.setText("Link zur Website");
+        contentPane.add(hyperlink, new CC().cell(0, 13, 2, 1));
 
         //---- label13 ----
-        label13.setText("Beschreibung:"); //NON-NLS
-        contentPane.add(label13, new CC().cell(0, 12, 2, 1));
+        label13.setText("Beschreibung:");
+        contentPane.add(label13, new CC().cell(0, 14, 2, 1));
 
         //======== descScrollPane ========
         {
@@ -398,7 +435,7 @@ public class FilmInfoDialog extends JDialog {
             lblDescription.setMaximumSize(new Dimension(2147483647, 200));
             descScrollPane.setViewportView(lblDescription);
         }
-        contentPane.add(descScrollPane, new CC().cell(0, 13, 2, 1));
+        contentPane.add(descScrollPane, new CC().cell(0, 15, 2, 1));
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
@@ -408,6 +445,8 @@ public class FilmInfoDialog extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private JLabel lblSender;
     private HtmlMultilineLabel lblThema;
+    private JLabel lblSeason;
+    private JLabel lblEpisode;
     private HtmlMultilineLabel lblTitel;
     private JLabel lblDate;
     private JLabel lblUhrzeit;
