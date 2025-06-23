@@ -2,7 +2,7 @@
 - Das Programm verwendet nun kein JavaFX mehr.
 - **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten wird das Programm nicht fehlerfrei laufen.
 - **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
-- **FEATURE:** Die Merkliste kann über das Hilfe-Menü vollständig gelöscht werden.
+- **FEATURE:** Die Merkliste kann nun auch über das Hilfe-Menü vollständig gelöscht werden.
 - **FEATURE:** Dialog *Merkliste verwalten* wurde völlig neu geschrieben. Siehe [folgenden Eintrag](https://forum.mediathekview.de/topic/6338/sneak-peak-zum-neuen-merklistendialog-und-frage-an-die-nutzer).
 - **FEATURE:** MV versucht für verschiedene Sender Season und Episode zu erkennen. Diese Informationen werden im Filminformationen-Dialog dargestellt.
 - **FEATURE:** `season` und `episode` können mit der Lucene Suche verwendet werden.
@@ -10,7 +10,7 @@
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.
-- **BUGFIX:** *Download ändern*-Dialog zeit nun die richtigen Text zu den Datenfeldern an.
+- **BUGFIX:** *Download ändern*-Dialog zeigt nun die richtigen Text zu den Datenfeldern an.
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
