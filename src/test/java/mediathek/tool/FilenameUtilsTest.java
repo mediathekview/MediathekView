@@ -1,7 +1,6 @@
 package mediathek.tool;
 
 import com.ibm.icu.text.Transliterator;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,23 +18,24 @@ class FilenameUtilsTest {
     void trailing_test_without_leading_whitespace() {
         var testStr = "betrifft: ...";
         var result = FilenameUtils.removeWindowsTrailingDots(testStr);
-        Assertions.assertEquals("betrifft:", result);
-
+        assertEquals("betrifft:", result);
     }
 
     @Test
     void test_remove_starting_dots() {
         var testStr = "....Paula";
-        var result = StringUtils.stripStart(testStr, ".");
-        Assertions.assertEquals("Paula", result);
+        final var expected = "Paula";
+
+        var result = FilenameUtils.stripStartingDots(testStr);
+        assertEquals(expected, result);
     }
 
     @Test
     void test_remove_starting_dots_with_leading_whitespace() {
         // this should not modify string as we have whitespace at beginning
         var testStr = " ....Paula";
-        var result = StringUtils.stripStart(testStr, ".");
-        Assertions.assertEquals(testStr, result);
+        var result = FilenameUtils.stripStartingDots(testStr);
+        assertEquals(testStr, result);
     }
 
     @Test
