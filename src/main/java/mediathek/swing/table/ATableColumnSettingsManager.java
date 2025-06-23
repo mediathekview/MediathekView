@@ -18,7 +18,6 @@
 
 package mediathek.swing.table;
 
-import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,20 +44,18 @@ import java.util.Optional;
  * mgr.installContextMenu();
  * dialog.addWindowListener(e -> mgr.save());
  */
-public abstract class ATableColumnSettingsManager<E> {
+public abstract class ATableColumnSettingsManager {
     private static final Logger LOG = LogManager.getLogger();
     private static final String COLUMN_SETTINGS = ".colummn-settings";
     protected final JTable table;
     protected final List<TableColumn> allColumns = new ArrayList<>();
     protected final List<ColumnSetting> lastSettings = new ArrayList<>();
-    protected final TableComparatorChooser<E> comparatorChooser;
     private final ObjectMapper mapper = new ObjectMapper();
     private final String configPrefix;
 
-    public ATableColumnSettingsManager(JTable table, String configPrefix, TableComparatorChooser<E> comparatorChooser) {
+    public ATableColumnSettingsManager(JTable table, String configPrefix) {
         this.table = table;
         this.configPrefix = configPrefix;
-        this.comparatorChooser = comparatorChooser;
 
         // Initialize from table's current model
         var columnModel = table.getColumnModel();
@@ -176,7 +173,11 @@ public abstract class ATableColumnSettingsManager<E> {
      */
     public abstract void installContextMenu();
 
-    // Helper to check if a column is currently visible
+    /**
+     * Helper to check if a column is currently visible.
+     * @param col The column to be tested.
+     * @return true if column is in model, false otherwise.
+     */
     protected boolean isInModel(TableColumn col) {
         var columnModel = table.getColumnModel();
         for (int i = 0; i < columnModel.getColumnCount(); i++) {

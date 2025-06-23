@@ -30,10 +30,12 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.util.Optional;
 
-public class BookmarkTableColumnSettingsManager<E> extends ATableColumnSettingsManager<E> {
-    public BookmarkTableColumnSettingsManager(JTable table, String configPrefix, TableComparatorChooser<E> comparatorChooser)
-    {
-        super(table, configPrefix, comparatorChooser);
+public class BookmarkTableColumnSettingsManager<E> extends ATableColumnSettingsManager {
+    protected final TableComparatorChooser<E> comparatorChooser;
+
+    public BookmarkTableColumnSettingsManager(JTable table, String configPrefix, TableComparatorChooser<E> comparatorChooser) {
+        super(table, configPrefix);
+        this.comparatorChooser = comparatorChooser;
     }
 
     private JCheckBoxMenuItem createMenuItem(String columnName, boolean visible) {

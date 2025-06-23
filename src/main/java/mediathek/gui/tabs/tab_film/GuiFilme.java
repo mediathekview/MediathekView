@@ -160,7 +160,7 @@ public class GuiFilme extends AGuiTabPanel {
                 filmToolBar.getToggleFilterDialogVisibilityButton(),
                 filterConfiguration);
 
-        start_init();
+        setupTable();
 
         zeitraumTimer = new NonRepeatingTimer(_ -> {
             // reset sender filter first
@@ -351,7 +351,7 @@ public class GuiFilme extends AGuiTabPanel {
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
     }
 
-    private void start_init() {
+    private void setupTable() {
         setupKeyMapping();
 
         tabelle.setModel(new TModelFilm());

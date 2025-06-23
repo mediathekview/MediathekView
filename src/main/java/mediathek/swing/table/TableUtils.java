@@ -34,9 +34,8 @@ public class TableUtils {
             // prepare the renderer component so we can ask its preferred size
             var comp = renderer.getTableCellRendererComponent(
                     table, col.getHeaderValue(), false, false, -1, i);
-            int width = comp.getPreferredSize().width;
             // add a bit of padding so it’s not jam-packed
-            col.setMinWidth(width + padding);
+            col.setMinWidth(comp.getPreferredSize().width + padding);
         }
     }
 }
