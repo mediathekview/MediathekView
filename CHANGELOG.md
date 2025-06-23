@@ -6,6 +6,7 @@
 - **FEATURE:** Dialog *Merkliste verwalten* wurde völlig neu geschrieben. Siehe [folgenden Eintrag](https://forum.mediathekview.de/topic/6338/sneak-peak-zum-neuen-merklistendialog-und-frage-an-die-nutzer).
 - **FEATURE:** MV versucht für verschiedene Sender Season und Episode zu erkennen. Diese Informationen werden im Filminformationen-Dialog dargestellt.
 - **FEATURE:** `season` und `episode` können mit der Lucene Suche verwendet werden.
+- **FEATURE:** multi-threaded Lucene-Indizierung für verbesserte Performance auf Multicore-Systemen.
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.

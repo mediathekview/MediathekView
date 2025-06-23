@@ -15,178 +15,202 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package mediathek.gui.tasks
 
-package mediathek.gui.tasks;
+import com.google.common.base.Stopwatch
+import mediathek.config.Daten
+import mediathek.config.StandardLocations.getFilmIndexPath
+import mediathek.daten.DatenFilm
+import mediathek.daten.IndexedFilmList
+import mediathek.mainwindow.MediathekGui
+import mediathek.tool.FileUtils.deletePathRecursively
+import mediathek.tool.LuceneDefaultAnalyzer
+import mediathek.tool.SwingErrorDialog
+import mediathek.tool.datum.DateUtil
+import mediathek.tool.datum.DatumFilm
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.apache.lucene.document.*
+import org.apache.lucene.index.DirectoryReader
+import org.apache.lucene.index.IndexWriter
+import org.apache.lucene.index.IndexWriterConfig
+import java.io.IOException
+import java.nio.file.Files
+import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
+import javax.swing.JLabel
+import javax.swing.JProgressBar
+import javax.swing.SwingUtilities
+import javax.swing.SwingWorker
 
-import com.google.common.base.Stopwatch;
-import mediathek.config.Daten;
-import mediathek.config.StandardLocations;
-import mediathek.daten.DatenFilm;
-import mediathek.daten.IndexedFilmList;
-import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.FileUtils;
-import mediathek.tool.LuceneDefaultAnalyzer;
-import mediathek.tool.SwingErrorDialog;
-import mediathek.tool.datum.DateUtil;
-import mediathek.tool.datum.DatumFilm;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.lucene.document.*;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.jetbrains.annotations.NotNull;
+class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: JProgressBar) :
+    SwingWorker<Void?, Void?>() {
 
-import javax.swing.*;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+    init {
+        SwingUtilities.invokeLater {
+            val ui = MediathekGui.ui()
+            ui.toggleBlacklistAction.setEnabled(false)
+            ui.editBlacklistAction.setEnabled(false)
+            ui.loadFilmListAction.setEnabled(false)
 
-public class LuceneIndexWorker extends SwingWorker<Void, Void> {
-    private static final Logger logger = LogManager.getLogger();
-    private final JProgressBar progressBar;
-    private final JLabel progLabel;
-    private final DateFormat weekdayFormatter = new SimpleDateFormat("EEEE", Locale.GERMAN);
-    private int oldProgress;
-
-    public LuceneIndexWorker(@NotNull JLabel progLabel, @NotNull JProgressBar progressBar) {
-        this.progressBar = progressBar;
-        this.progLabel = progLabel;
-
-        SwingUtilities.invokeLater(() -> {
-            final var ui = MediathekGui.ui();
-            ui.toggleBlacklistAction.setEnabled(false);
-            ui.editBlacklistAction.setEnabled(false);
-            ui.loadFilmListAction.setEnabled(false);
-
-            progLabel.setText("Blacklist anwenden");
-            progressBar.setIndeterminate(true);
-        });
+            progLabel.setText("Blacklist anwenden")
+            progressBar.setIndeterminate(true)
+        }
     }
 
-    private void indexFilm(@NotNull IndexWriter writer, @NotNull DatenFilm film) throws IOException {
-        var doc = new Document();
+    @Throws(IOException::class)
+    private fun createIndexDocument(film: DatenFilm): Document {
+        val doc = Document()
         // store fields for debugging, otherwise they should stay disabled
-        doc.add(new StringField(LuceneIndexKeys.ID, Integer.toString(film.getFilmNr()), Field.Store.YES));
-        doc.add(new StringField(LuceneIndexKeys.NEW, Boolean.toString(film.isNew()), Field.Store.NO));
-        doc.add(new TextField(LuceneIndexKeys.SENDER, film.getSender(), Field.Store.NO));
-        doc.add(new TextField(LuceneIndexKeys.TITEL, film.getTitle(), Field.Store.NO));
-        doc.add(new TextField(LuceneIndexKeys.THEMA, film.getThema(), Field.Store.NO));
-        doc.add(new IntPoint(LuceneIndexKeys.FILM_LENGTH, film.getFilmLength()));
-        doc.add(new IntPoint(LuceneIndexKeys.FILM_SIZE, film.getFileSize().toInteger()));
+        doc.add(StringField(LuceneIndexKeys.ID, film.filmNr.toString(), Field.Store.YES))
+        doc.add(StringField(LuceneIndexKeys.NEW, film.isNew.toString(), Field.Store.NO))
+        doc.add(TextField(LuceneIndexKeys.SENDER, film.sender, Field.Store.NO))
+        doc.add(TextField(LuceneIndexKeys.TITEL, film.title, Field.Store.NO))
+        doc.add(TextField(LuceneIndexKeys.THEMA, film.thema, Field.Store.NO))
+        doc.add(IntPoint(LuceneIndexKeys.FILM_LENGTH, film.filmLength))
+        doc.add(IntPoint(LuceneIndexKeys.FILM_SIZE, film.fileSize.toInteger()))
 
-        doc.add(new TextField(LuceneIndexKeys.BESCHREIBUNG, film.getDescription(), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.LIVESTREAM, Boolean.toString(film.isLivestream()), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.HIGH_QUALITY, Boolean.toString(film.isHighQuality()), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.SUBTITLE, Boolean.toString(film.hasSubtitle() || film.hasBurnedInSubtitles()), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.TRAILER_TEASER, Boolean.toString(film.isTrailerTeaser()), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.AUDIOVERSION, Boolean.toString(film.isAudioVersion()), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.SIGN_LANGUAGE, Boolean.toString(film.isSignLanguage()), Field.Store.NO));
-        doc.add(new StringField(LuceneIndexKeys.DUPLICATE, Boolean.toString(film.isDuplicate()), Field.Store.NO));
-        doc.add(new IntPoint(LuceneIndexKeys.SEASON, film.getSeason()));
-        doc.add(new IntPoint(LuceneIndexKeys.EPISODE, film.getEpisode()));
+        doc.add(TextField(LuceneIndexKeys.BESCHREIBUNG, film.description, Field.Store.NO))
+        doc.add(StringField(LuceneIndexKeys.LIVESTREAM, film.isLivestream.toString(), Field.Store.NO))
+        doc.add(StringField(LuceneIndexKeys.HIGH_QUALITY, film.isHighQuality.toString(), Field.Store.NO))
+        doc.add(
+            StringField(
+                LuceneIndexKeys.SUBTITLE,
+                (film.hasSubtitle() || film.hasBurnedInSubtitles()).toString(),
+                Field.Store.NO
+            )
+        )
+        doc.add(StringField(LuceneIndexKeys.TRAILER_TEASER, film.isTrailerTeaser.toString(), Field.Store.NO))
+        doc.add(StringField(LuceneIndexKeys.AUDIOVERSION, film.isAudioVersion.toString(), Field.Store.NO))
+        doc.add(StringField(LuceneIndexKeys.SIGN_LANGUAGE, film.isSignLanguage.toString(), Field.Store.NO))
+        doc.add(StringField(LuceneIndexKeys.DUPLICATE, film.isDuplicate.toString(), Field.Store.NO))
+        doc.add(IntPoint(LuceneIndexKeys.SEASON, film.season))
+        doc.add(IntPoint(LuceneIndexKeys.EPISODE, film.episode))
 
-        addSendeDatum(doc, film);
-        addSendeZeit(doc, film);
-        addWochentag(doc, film);
+        addSendeDatum(doc, film)
+        addSendeZeit(doc, film)
+        addWochentag(doc, film)
 
-        writer.addDocument(doc);
+        return doc
     }
 
-    private void addSendeZeit(@NotNull Document doc, @NotNull DatenFilm film) {
-        var startzeit = film.getSendeZeit();
+    private fun addSendeZeit(doc: Document, film: DatenFilm) {
+        val startzeit = film.sendeZeit
         if (!startzeit.isEmpty()) {
-            doc.add(new StringField(LuceneIndexKeys.START_TIME, startzeit, Field.Store.NO));
+            doc.add(StringField(LuceneIndexKeys.START_TIME, startzeit, Field.Store.NO))
         }
     }
 
-    private void addWochentag(@NotNull Document doc, @NotNull DatenFilm film) {
-        var date = film.getDatumFilm();
-        if (date != DatumFilm.UNDEFINED_FILM_DATE) {
-            String strDate = weekdayFormatter.format(date);
-            doc.add(new TextField(LuceneIndexKeys.SENDE_WOCHENTAG, strDate, Field.Store.NO));
+    private fun addWochentag(doc: Document, film: DatenFilm) {
+        val date = film.datumFilm
+        if (date !== DatumFilm.UNDEFINED_FILM_DATE) {
+            val strDate = FORMATTER.format(date.zonedDateTime)
+            doc.add(TextField(LuceneIndexKeys.SENDE_WOCHENTAG, strDate, Field.Store.NO))
         }
     }
 
-    private void addSendeDatum(@NotNull Document doc, @NotNull DatenFilm film) {
-        String sendeDatumStr = DateTools.timeToString(DateUtil.convertFilmDateToLuceneDate(film),
-                DateTools.Resolution.DAY);
-        doc.add(new StringField(LuceneIndexKeys.SENDE_DATUM, sendeDatumStr, Field.Store.NO));
+    private fun addSendeDatum(doc: Document, film: DatenFilm) {
+        val sendeDatumStr = DateTools.timeToString(
+            DateUtil.convertFilmDateToLuceneDate(film),
+            DateTools.Resolution.DAY
+        )
+        doc.add(StringField(LuceneIndexKeys.SENDE_DATUM, sendeDatumStr, Field.Store.NO))
     }
 
-    @Override
-    protected Void doInBackground() {
-        var filmListe = (IndexedFilmList) Daten.getInstance().getListeFilmeNachBlackList();
-        SwingUtilities.invokeLater(() -> {
-            progLabel.setText("Indiziere Filme");
-            progressBar.setMinimum(0);
-            progressBar.setMaximum(100);
-            progressBar.setValue(0);
-            progressBar.setIndeterminate(false);
-        });
+    private fun createIndexWriter(liste: IndexedFilmList): IndexWriter {
+        val indexWriterConfig = IndexWriterConfig(LuceneDefaultAnalyzer.buildAnalyzer())
+        indexWriterConfig.ramBufferSizeMB = 256.0
+        val writer = IndexWriter(liste.luceneDirectory, indexWriterConfig)
+        //for safety delete all entries
+        writer.deleteAll()
+        writer.commit()
+        return writer
+    }
 
-        //index filmlist after blacklist only
-        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(LuceneDefaultAnalyzer.buildAnalyzer());
-        indexWriterConfig.setRAMBufferSizeMB(256d);
+    override fun doInBackground(): Void? {
+        try {
+            SwingUtilities.invokeLater {
+                progLabel.setText("Indiziere Filme")
+                progressBar.isIndeterminate = false
+                progressBar.minimum = 0
+                progressBar.maximum = 100
+                progressBar.value = 0
+            }
 
-        try (var writer = new IndexWriter(filmListe.getLuceneDirectory(), indexWriterConfig)) {
-            var totalSize = (float) filmListe.size();
+            //index filmlist after blacklist only
+            val filmListe = Daten.getInstance().listeFilmeNachBlackList as IndexedFilmList
+            createIndexWriter(filmListe).use { writer ->
+                val watch = Stopwatch.createStarted()
+                val counter = AtomicInteger(0)
+                val totalCount = filmListe.size
+                var oldProgress = 0
 
-            int counter = 0;
-            Stopwatch watch = Stopwatch.createStarted();
-            //for safety delete all entries
-            writer.deleteAll();
-
-            for (var film : filmListe) {
-                counter++;
-                indexFilm(writer, film);
-
-                final var progress = (int) (100.0f * (counter / totalSize));
-                if (progress != oldProgress) {
-                    oldProgress = progress;
-                    SwingUtilities.invokeLater(() -> progressBar.setValue(progress));
+                val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+                for (film in filmListe) {
+                    executor.submit {
+                        try {
+                            val doc = createIndexDocument(film)
+                            writer.addDocument(doc)
+                            val progress = (counter.incrementAndGet() * 100) / totalCount
+                            if (progress > oldProgress) {
+                                SwingUtilities.invokeLater { progressBar.value = progress }
+                                oldProgress = progress
+                            }
+                        } catch (ex: IOException) {
+                            ex.printStackTrace()
+                        }
+                    }
                 }
-            }
-            writer.commit();
-            watch.stop();
-            logger.trace("Lucene index creation took {}", watch);
+                SwingUtilities.invokeLater { progressBar.value = 100 }
+                executor.shutdown()
+                executor.awaitTermination(5, TimeUnit.MINUTES)
 
-            var reader = filmListe.getReader();
-            if (reader != null) {
-                reader.close();
+                SwingUtilities.invokeLater {
+                    progressBar.isIndeterminate = true
+                    progLabel.setText("Schreibe Index")
+                }
+                writer.commit()
+                watch.stop()
+                LOG.trace("Lucene index creation took {}", watch)
+
+                filmListe.reader?.close()
+                filmListe.reader = DirectoryReader.open(filmListe.luceneDirectory)
             }
-            reader = DirectoryReader.open(filmListe.getLuceneDirectory());
-            filmListe.setReader(reader);
-        }
-        catch (Exception ex) {
-            logger.error("Lucene film index most probably damaged, deleting it.");
+        } catch (ex: Exception) {
+            LOG.error("Lucene film index most probably damaged, deleting it.")
             try {
-                var indexPath = StandardLocations.getFilmIndexPath();
+                val indexPath = getFilmIndexPath()
                 if (Files.exists(indexPath)) {
-                    FileUtils.deletePathRecursively(indexPath);
+                    deletePathRecursively(indexPath)
                 }
+            } catch (e: IOException) {
+                LOG.error("Unable to delete lucene index path", e)
             }
-            catch (IOException e) {
-                logger.error("Unable to delete lucene index path", e);
+            SwingUtilities.invokeLater {
+                SwingErrorDialog.showExceptionMessage(
+                    MediathekGui.ui(),
+                    "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
+                    ex
+                )
+                MediathekGui.ui().quitApplication()
             }
-            SwingUtilities.invokeLater(() -> {
-                SwingErrorDialog.showExceptionMessage(MediathekGui.ui(),
-                        "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.", ex);
-                MediathekGui.ui().quitApplication();
-            });
         }
 
-        return null;
+        return null
     }
 
-    @Override
-    protected void done() {
-        final var ui = MediathekGui.ui();
-        ui.toggleBlacklistAction.setEnabled(true);
-        ui.editBlacklistAction.setEnabled(true);
-        ui.loadFilmListAction.setEnabled(true);
+    override fun done() {
+        val ui = MediathekGui.ui()
+        ui.toggleBlacklistAction.setEnabled(true)
+        ui.editBlacklistAction.setEnabled(true)
+        ui.loadFilmListAction.setEnabled(true)
     }
 
+    companion object {
+        private val LOG: Logger = LogManager.getLogger()
+        private val FORMATTER = DateTimeFormatter.ofPattern("EEEE", Locale.GERMAN)
+    }
 }
