@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 80 64" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xml:space="preserve" xmlns:serif="http://www.serif.com/"
+     style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-37.7953,-37.9212)">
+        <g id="BR-6" transform="matrix(0.209014,0,0,0.209014,14.762,26.0701)">
+            <g id="Ebene-1" serif:id="Ebene 1">
+                <g id="BR-61" serif:id="BR-6">
+                    <path id="path6-6" d="M492.3,361.6L492.3,362.9L435,362.9L325,206.9L325,205.7L356.4,205.7C395.2,205.7 417.6,181.2 417.6,150.6C417.6,120 395.1,97.5 356.4,97.5L328.6,97.5L294,57.9L294,56.7L358.5,56.7C425.7,56.7 466.7,91.4 466.7,148.5C466.7,194.2 440.4,223.9 398.2,232.2L492.3,361.6Z" style="fill:rgb(0,106,255);fill-rule:nonzero;"/>
+                    <path id="path8-1" d="M246.9,197.2C280.6,189.1 298,164.8 298,133.2C298,87.3 261.3,56.7 193.9,56.7L110.2,56.7L110.2,362.8L202,362.8C275.7,362.8 316.3,325.9 316.3,272.5C316.4,232.2 293.1,204.7 246.9,197.2ZM200.1,322L157.2,322L157.2,97.5L191.9,97.5C230.8,97.5 249,115.7 249,141.6C249,169 228.4,189.2 187.8,191.4L187.8,213.9C240.7,215.9 267.4,232.1 267.4,267.6C267.4,301.7 242.8,322 200.1,322Z" style="fill:rgb(0,106,255);fill-rule:nonzero;"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

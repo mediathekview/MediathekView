@@ -18,7 +18,6 @@
 
 package mediathek.gui.tabs.tab_film;
 
-import com.formdev.flatlaf.util.ScaledImageIcon;
 import mediathek.config.Konstanten;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.actions.UrlHyperlinkAction;
@@ -27,7 +26,6 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.CopyToClipboardAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.SwingErrorDialog;
-import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -222,39 +220,4 @@ public class FilmDescriptionPanel extends JPanel {
         lblIcon.setSender(film.getSender());
     }
 
-    static class SenderIconLabel extends JLabel {
-        private static final Dimension ICON_DIMENSION = new Dimension(96, 96);
-
-        public SenderIconLabel() {
-            setText("");
-            setIcon(null);
-        }
-
-        private void sizeToIcon(@NotNull Icon icon) {
-            int height = icon.getIconHeight();
-            int width = icon.getIconWidth();
-
-            Dimension d = new Dimension(width, height);
-            setPreferredSize(d);
-        }
-
-        public void setSender(@Nullable String sender) {
-            if (sender == null) {
-                setIcon(null);
-            }
-            else {
-                MVSenderIconCache.get(sender).ifPresentOrElse(icon -> {
-                    var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-                    var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
-                    var origIcon = new ScaledImageIcon(icon, destDim.width, destDim.height);
-                    setText("");
-                    setIcon(origIcon);
-                    sizeToIcon(origIcon);
-                }, () -> {
-                    setIcon(null);
-                    setText(sender);
-                });
-            }
-        }
-    }
 }

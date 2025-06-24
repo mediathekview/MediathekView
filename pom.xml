@@ -94,6 +94,7 @@
         <commons-configuration2.version>2.11.0</commons-configuration2.version>
         <commons-io.version>2.19.0</commons-io.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
+        <coroutines.version>1.10.2</coroutines.version>
         <flatlaf.version>3.6</flatlaf.version>
         <glazedlists.version>1.11.0</glazedlists.version>
         <guava.version>33.4.8-jre</guava.version>
@@ -129,6 +130,7 @@
         <mockito.version>5.12.0</mockito.version>
         <okhttp.version>5.0.0-alpha.16</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
+        <retrofit.version>3.0.0</retrofit.version>
         <sqlite-jdbc.version>3.50.1.0</sqlite-jdbc.version>
         <swingx.version>1.6.5-1</swingx.version>
         <xz.version>1.10</xz.version>
@@ -150,6 +152,28 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>${coroutines.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-swing</artifactId>
+            <version>${coroutines.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-swing</artifactId>
