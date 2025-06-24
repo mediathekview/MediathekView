@@ -93,8 +93,8 @@ jobs:
           mkdir -p ~/.aws
           cat > ~/.aws/credentials <<EOF
           [default]
-          aws_access_key_id     = ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key_id     = ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          aws_secret_access_key = ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
           EOF
           cat > ~/.aws/config <<EOF
           [default]
@@ -104,11 +104,11 @@ jobs:
 
       - name: Upload artifact to S3
         env:
-          MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-          S3_BUCKET:      ${{ secrets.S3_BUCKET }}
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
         run: |
           DATE=$(date +'%Y-%m-%d')
-          aws --endpoint-url "https://${MINIO_ENDPOINT}" s3 cp \
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp \
             target/media/${{ matrix.dmg_file }} \
             "s3://${S3_BUCKET}/MediathekView-latest-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
 
@@ -168,15 +168,15 @@ jobs:
 
       - name: Upload to S3
         env:
-          MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-          S3_BUCKET:      ${{ secrets.S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
         shell: pwsh
         run: |
           $date     = Get-Date -Format yyyy-MM-dd
-          $endpoint = "https://$env:MINIO_ENDPOINT"
+          $endpoint = "https://$env:S3_ENDPOINT"
           $bucket   = $env:S3_BUCKET
         
           aws --endpoint-url $endpoint s3 cp `
@@ -243,15 +243,15 @@ jobs:
 
       - name: Upload to S3
         env:
-          MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-          S3_BUCKET:      ${{ secrets.S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
         shell: pwsh
         run: |
           $date     = Get-Date -Format yyyy-MM-dd
-          $endpoint = "https://$env:MINIO_ENDPOINT"
+          $endpoint = "https://$env:S3_ENDPOINT"
           $bucket   = $env:S3_BUCKET
           
           aws --endpoint-url $endpoint s3 cp `
