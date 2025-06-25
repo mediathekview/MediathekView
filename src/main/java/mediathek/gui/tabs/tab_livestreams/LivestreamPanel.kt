@@ -30,13 +30,16 @@ import mediathek.gui.tabs.tab_livestreams.services.StreamService
 import mediathek.swing.OverlayPanel
 import mediathek.tool.GermanStringSorter
 import mediathek.tool.http.MVHttpClient
+import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import java.awt.BorderLayout
+import java.awt.Desktop
 import java.awt.Rectangle
 import java.awt.event.*
+import java.net.URI
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.swing.*
@@ -104,7 +107,10 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount == 2) {
                     val selected = list.selectedValue ?: return
-                    UrlHyperlinkAction.openURL(selected.streamUrl)
+                    if (SystemUtils.IS_OS_MAC_OSX_CATALINA)
+                        UrlHyperlinkAction.openURL(selected.streamUrl)
+                    else
+                        Desktop.getDesktop().browse(URI(selected.streamUrl))
                 }
             }
         })
