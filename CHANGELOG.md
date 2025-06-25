@@ -12,6 +12,7 @@
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.
 - **BUGFIX:** *Download ändern*-Dialog zeigt nun die richtigen Text zu den Datenfeldern an.
+- **BUGFIX:** MediathekView passt einmalig auf Nachfrage die vorhandenen Filter auf die neue max. Filmlänge von 240 Minuten an.
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.

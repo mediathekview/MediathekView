@@ -25,6 +25,7 @@ import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -527,6 +528,7 @@ public class Main {
             loadConfigurationData();
 
             activateNewSenders();
+            activateNewMaxFilmLength();
 
             migrateSeenHistory();
             Daten.getInstance().launchHistoryDataLoading();
@@ -541,6 +543,47 @@ public class Main {
 
             startGuiMode();
         });
+    }
+
+    private static void activateNewMaxFilmLength() {
+        var alreadyActivated = ApplicationConfiguration.getConfiguration().getBoolean(Konstanten.NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY, false);
+        if (!alreadyActivated) {
+            splashScreen.ifPresent(s -> s.setVisible(false));
+            var op = new JOptionPane(
+                    "<html>Die maximale Filterlänge wurde <b>von 120 auf 240 Minuten</b> erhöht.<br/>" +
+                            "Die Filter wurden damals nicht automatisch angepasst.<br/><br/>" +
+                            "Soll MediathekView einmalig alle Filter anpassen?</html>", JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.YES_NO_OPTION);
+            var dialog = op.createDialog(Konstanten.PROGRAMMNAME);
+            dialog.setAlwaysOnTop(true);
+            dialog.setModal(true);
+            dialog.setResizable(true);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setVisible(true);
+            var res = op.getValue();
+            if (res != null) {
+                if ((int) res == JOptionPane.YES_OPTION) {
+                    logger.info("Evaluating max film length for new maximum...");
+                    var filterConfig = new FilterConfiguration();
+                    var activeFilter = filterConfig.getCurrentFilter();
+
+                    var allFilters = filterConfig.getAvailableFilters();
+                    for (var filter : allFilters) {
+                        var curFilter = filterConfig.setCurrentFilter(filter);
+                        var maxFilmLength = curFilter.getFilmLengthMax();
+                        if (maxFilmLength == 120.0) {
+                            logger.info("Patched max film length in filter: {}", filterConfig.getFilterName(curFilter.getCurrentFilterID()));
+                            curFilter.setFilmLengthMax(FilmLengthSlider.UNLIMITED_VALUE);
+                        }
+                    }
+                    //(re)set the previously used filter
+                    filterConfig.setCurrentFilter(activeFilter);
+
+                }
+                ApplicationConfiguration.getConfiguration().setProperty(Konstanten.NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY, true);
+            }
+            splashScreen.ifPresent(s -> s.setVisible(true));
+        }
     }
 
     /**
