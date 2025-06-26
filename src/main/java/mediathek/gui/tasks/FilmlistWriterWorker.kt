@@ -35,7 +35,10 @@ class FilmlistWriterWorker(progLabel: JLabel, private val progressBar: JProgress
 
     override fun propertyChange(evt: PropertyChangeEvent) {
         if (evt.propertyName.equals("progress", ignoreCase = true)) {
-            SwingUtilities.invokeLater { progressBar.value = evt.newValue as Int }
+            val newValue = evt.newValue as Int
+            val oldValue = evt.oldValue as Int
+            if (newValue >= oldValue + 1)
+                SwingUtilities.invokeLater { progressBar.value = newValue }
         }
     }
 }

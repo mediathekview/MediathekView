@@ -57,6 +57,7 @@ import raven.toast.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -68,6 +69,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntConsumer;
 
 import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK;
 
@@ -134,6 +136,8 @@ public class MediathekGui extends JFrame {
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     private final ShowDuplicateStatisticsAction showDuplicateStatisticsAction = new ShowDuplicateStatisticsAction(this);
+    private final LivestreamPanel tabLivestreams = new LivestreamPanel();
+    private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabLivestreams);
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -829,8 +833,12 @@ public class MediathekGui extends JFrame {
     }
 
     protected void installLivestreamsTab() {
-        var panel = new LivestreamPanel();
-        tabbedPane.addTab("zapp Livestreams", panel);
+        var show = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS, true);
+        tabLivestreams.putClientProperty("JTabbedPane.tabClosable", true);
+        tabLivestreams.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) _ -> toggleZappLivestreamsTabAction.actionPerformed(null));
+        if (show) {
+            tabbedPane.addTab("zapp Livestreams", tabLivestreams);
+        }
     }
 
     /**
@@ -993,6 +1001,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void createViewMenu() {
+        tabFilme.installViewMenuEntry(jMenuAnsicht);
+        jMenuAnsicht.add(toggleZappLivestreamsTabAction);
         jMenuAnsicht.addSeparator();
         if (!SystemUtils.IS_OS_MAC_OSX) {
             jMenuAnsicht.add(showMemoryMonitorAction);
@@ -1080,7 +1090,6 @@ public class MediathekGui extends JFrame {
 
         createFontMenu();
         createViewMenu();
-        tabFilme.installViewMenuEntry(jMenuAnsicht);
 
         createAboMenu();
         if (Config.isDebugModeEnabled())
@@ -1292,6 +1301,34 @@ public class MediathekGui extends JFrame {
         public NoIconAwtMenuItem(@NotNull Action action) {
             super((String) action.getValue(Action.NAME));
             addActionListener(action);
+        }
+    }
+
+    public class ToggleZappLivestreamsTabAction extends AbstractAction {
+        private final LivestreamPanel livestreamPanel;
+        private static final String TAB_TITLE = "Zapp Livestream Tab ein-/ausblenden";
+
+        public ToggleZappLivestreamsTabAction(LivestreamPanel livestreamPanel) {
+            this.livestreamPanel = livestreamPanel;
+            putValue(Action.NAME, TAB_TITLE);
+        }
+
+        private void toggleTab() {
+            var tabIndex = tabbedPane.indexOfComponent(livestreamPanel);
+            if (tabIndex == -1) {
+                //install tab
+                tabbedPane.add("Zapp Livestreams", livestreamPanel);
+                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS, true);
+            }
+            else {
+                tabbedPane.remove(tabIndex);
+                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS, false);
+            }
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            toggleTab();
         }
     }
 

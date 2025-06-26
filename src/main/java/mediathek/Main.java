@@ -460,6 +460,7 @@ public class Main {
 
                 setupDockIcon();
 
+                UIManager.put("TabbedPane.showTabSeparators", true);
                 registerFlatLafCustomization();
                 DarkModeSetup.setup();
 

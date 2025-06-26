@@ -54,6 +54,9 @@ public class FilmListReader implements AutoCloseable {
     private static final int PROGRESS_MAX = 100;
     private static final Logger logger = LogManager.getLogger(FilmListReader.class);
     private static final String THEMA_LIVE = "Livestream";
+    private static final String PLAYLIST_SUFFIX = ".m3u8";
+    private static final String SENDER_RBTV = "rbtv";
+    private static final String SENDER_RADIO_BREMEN = "Radio Bremen TV";
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
@@ -141,8 +144,8 @@ public class FilmListReader implements AutoCloseable {
             sender = parsedSender;
         }
 
-        if (datenFilm.getSender().equalsIgnoreCase("rbtv")) {
-            datenFilm.setSender("Radio Bremen TV");
+        if (datenFilm.getSender().equalsIgnoreCase(SENDER_RBTV)) {
+            datenFilm.setSender(SENDER_RADIO_BREMEN);
         }
     }
 
@@ -380,7 +383,7 @@ public class FilmListReader implements AutoCloseable {
      * @param datenFilm the film to check.
      */
     private void checkPlayList(@NotNull DatenFilm datenFilm) {
-        if (datenFilm.getUrlNormalQuality().endsWith(".m3u8"))
+        if (datenFilm.getUrlNormalQuality().endsWith(PLAYLIST_SUFFIX))
             datenFilm.setPlayList(true);
     }
 
@@ -425,6 +428,7 @@ public class FilmListReader implements AutoCloseable {
                         counter.incrementAndGet();
                     });
                 });
+
         stopwatch.stop();
         logger.info("Season and episode detection took: {}", stopwatch);
         logger.info("Number of detected seasons and episodes: {}", counter.get());
@@ -487,7 +491,7 @@ public class FilmListReader implements AutoCloseable {
 
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
-            if (response.isSuccessful() && body != null) {
+            if (response.isSuccessful()) {
                 final var endRequest = response.request();
                 if (Config.isEnhancedLoggingEnabled()) {
                     logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url().toString());
@@ -549,8 +553,10 @@ public class FilmListReader implements AutoCloseable {
     }
 
     class ProgressMonitor implements InputStreamProgressMonitor {
+        private static final long MIN_TIME_BETWEEN_UPDATES_MS = 500;
         private final String sourceString;
         private int oldProgress;
+        private long lastUpdate;
 
         public ProgressMonitor(String source) {
             sourceString = source;
@@ -558,9 +564,16 @@ public class FilmListReader implements AutoCloseable {
 
         @Override
         public void progress(long bytesRead, long size) {
-            final int iProgress = (int) (bytesRead * 100 / size);
-            if (iProgress != oldProgress) {
+            if (size <= 0) {
+                return;
+            }
+
+            int iProgress = (int) (bytesRead * 100 / size);
+            long now = System.currentTimeMillis();
+
+            if (iProgress >= oldProgress + 1 || now - lastUpdate > MIN_TIME_BETWEEN_UPDATES_MS) {
                 oldProgress = iProgress;
+                lastUpdate = now;
                 notifyProgress(sourceString, iProgress);
             }
         }
