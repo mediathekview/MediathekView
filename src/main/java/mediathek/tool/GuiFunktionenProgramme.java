@@ -221,6 +221,10 @@ public class GuiFunktionenProgramme {
 
         var path = System.getenv("PATH");
         path = path + File.pathSeparatorChar + getBinaryPath().toAbsolutePath();
+        if (SystemUtils.IS_OS_WINDOWS) {
+            // add VLC "standard" path to path logic on windows
+            path += File.pathSeparatorChar + "C:\\Program Files\\VideoLAN\\VLC";
+        }
         // on windows (mostly during coding) binaries do only exist in res\bin directory :(
         if (SystemUtils.IS_OS_WINDOWS)
             path = path + File.pathSeparatorChar +  getResBinaryPath().toAbsolutePath();
@@ -266,7 +270,7 @@ public class GuiFunktionenProgramme {
                         .get().build();
                 try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
                      ResponseBody body = response.body()) {
-                    if (response.isSuccessful() && body != null) {
+                    if (response.isSuccessful()) {
                         try (InputStream is = body.byteStream();
                              BufferedInputStream bis = new BufferedInputStream(is)) {
                             final byte[] buffer = new byte[64 * 1024];

@@ -27,8 +27,10 @@ import mediathek.config.Konstanten
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.tabs.tab_livestreams.services.ShowService
 import mediathek.gui.tabs.tab_livestreams.services.StreamService
+import mediathek.mainwindow.MediathekGui
 import mediathek.swing.OverlayPanel
 import mediathek.tool.GermanStringSorter
+import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.http.MVHttpClient
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
@@ -107,9 +109,21 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.clickCount == 2) {
                     val selected = list.selectedValue ?: return
-                    if (SystemUtils.IS_OS_MAC_OSX_CATALINA)
-                        UrlHyperlinkAction.openURL(selected.streamUrl)
-                    else
+                    if (!SystemUtils.IS_OS_MAC_OSX) {
+                        try {
+                            //windows, linux
+                            val vlcPath = GuiFunktionenProgramme.findExecutableOnPath("vlc")
+                            val pb = ProcessBuilder(vlcPath.toAbsolutePath().toString(), selected.streamUrl)
+                            pb.start()
+                        }
+                        catch (_: IllegalStateException) {
+                            JOptionPane.showMessageDialog(MediathekGui.ui(),
+                                "<html>Es konnte kein VLC auf dem System gefunden werden.<br/>" +
+                                        "Es wird versucht, den Stream über den Browser zu öffnen.</html>")
+                            UrlHyperlinkAction.openURL(selected.streamUrl)
+                        }
+                    }
+                    else // macOS can safely open it via java
                         Desktop.getDesktop().browse(URI(selected.streamUrl))
                 }
             }
