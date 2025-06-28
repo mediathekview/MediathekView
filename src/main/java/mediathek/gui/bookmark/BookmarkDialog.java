@@ -28,6 +28,7 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
+import mediathek.gui.bookmark.dialog.BookmarkEditNoteDialog;
 import mediathek.gui.bookmark.renderer.*;
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
@@ -287,6 +288,9 @@ public class BookmarkDialog extends JDialog {
         columnModel.getColumn(COLUMN_DAUER).setCellRenderer(new FilmLengthCellRenderer());
         //sendedatum column
         columnModel.getColumn(COLUMN_SENDEDATUM).setCellRenderer(new CenteredCellRenderer());
+        //verfügbar bis
+        columnModel.getColumn(COLUMN_AVAILABLE_UNTIL).setCellRenderer(new AvailableUntilCellRenderer());
+
         var colNote = columnModel.getColumn(COLUMN_NOTIZ);
         colNote.setCellRenderer(new NoteCellRenderer());
         colNote.setHeaderRenderer(new IconHeaderCellRenderer(IconUtils.of(MaterialDesignN.NOTE), "Notiz vorhanden"));
@@ -384,13 +388,16 @@ public class BookmarkDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             var bm = selectionModel.getSelected().getFirst();
-            BookmarkEditNoteDialog dialog = new BookmarkEditNoteDialog(BookmarkDialog.this, bm.getNote());
+            var dialog = new BookmarkEditNoteDialog(BookmarkDialog.this, bm);
             dialog.setVisible(true);
             if (dialog.isOkPressed()) {
                 var notizText = dialog.getNotiz();
                 if (notizText.isBlank())
                     notizText = null;
                 bm.setNote(notizText);
+
+                var availableDate = dialog.getAvailableUntilDate();
+                bm.setAvailableUntil(availableDate);
                 Daten.getInstance().getListeBookmarkList().saveToFile();
                 updateInfoTabs();
             }
