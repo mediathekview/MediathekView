@@ -33,6 +33,7 @@ import net.miginfocom.layout.AC
 import net.miginfocom.layout.CC
 import net.miginfocom.layout.LC
 import net.miginfocom.swing.MigLayout
+import org.jdesktop.swingx.JXBusyLabel
 import org.jdesktop.swingx.JXDatePicker
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC
 import java.awt.BorderLayout
@@ -52,6 +53,7 @@ class BookmarkEditNoteDialog(
     private val textArea = JTextArea()
     private val okButton = JButton("OK")
     private val cancelButton = JButton("Abbrechen")
+    private val busyIndicator = JXBusyLabel()
 
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(job + Dispatchers.Swing)
@@ -69,6 +71,8 @@ class BookmarkEditNoteDialog(
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
         initComponents()
+        enableBusyIndicator(false)
+
         rootPane.defaultButton = okButton
         EscapeKeyHandler.installHandler(this) { dispose() }
 
@@ -81,6 +85,7 @@ class BookmarkEditNoteDialog(
         btnSearch.addActionListener {
             coroutineScope.launch {
                 btnSearch.isEnabled = false
+                enableBusyIndicator(true)
                 try {
                     val result = withContext(Dispatchers.IO) {
                         fetchExpiryDate(bm.datenFilm.sender, bm.datenFilm.websiteUrl)
@@ -92,11 +97,17 @@ class BookmarkEditNoteDialog(
                     }
                 } finally {
                     btnSearch.isEnabled = true
+                    enableBusyIndicator(false)
                 }
             }
         }
 
         SwingUtilities.invokeLater { textArea.requestFocusInWindow() }
+    }
+
+    private fun enableBusyIndicator(value: Boolean) {
+        busyIndicator.isBusy = value
+        busyIndicator.isVisible = value
     }
 
     override fun dispose() {
@@ -132,16 +143,23 @@ class BookmarkEditNoteDialog(
     private fun fetchExpiryDate(sender: String, websiteUrl: String): LocalDate? {
         val normalizedSender = normalizeSender(sender)
         return when {
-            "arte" in normalizedSender -> ArteExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }.orElse(null)
-            normalizedSender == "3sat" -> ThreeSatExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }.orElse(null)
-            normalizedSender in ARD_SENDERS -> ArdMediathekExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }.orElse(null)
+            "arte" in normalizedSender -> ArteExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }
+                .orElse(null)
+
+            normalizedSender == "3sat" -> ThreeSatExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }
+                .orElse(null)
+
+            normalizedSender in ARD_SENDERS -> ArdMediathekExpiryHelper.getExpiryInfo(websiteUrl)
+                .map { it.expiryDate() }.orElse(null)
+
             normalizedSender == "orf" -> OrfExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }.orElse(null)
             else -> null
         }
     }
 
     private fun showNotFoundMessage() {
-        JOptionPane.showMessageDialog(this,
+        JOptionPane.showMessageDialog(
+            this,
             "Das Ablaufdatum wurde nicht gefunden.",
             Konstanten.PROGRAMMNAME,
             JOptionPane.WARNING_MESSAGE
@@ -153,15 +171,21 @@ class BookmarkEditNoteDialog(
 
     private fun initComponents() {
         val dialogPane = JPanel(BorderLayout())
-        val contentPanel = JPanel(MigLayout(
-            LC().insets("dialog").hideMode(3),
-            AC().fill().gap().fill().gap().fill().gap().grow().fill(),
-            AC().gap().grow().align("top")
-        ))
+        val contentPanel = JPanel(
+            MigLayout(
+                LC().insets("dialog").hideMode(3),
+                AC().fill().gap()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill().gap().grow().fill(),
+                AC().gap().grow().align("top")
+            )
+        )
 
         contentPanel.add(JLabel("Verfügbar bis:"), CC().cell(0, 0))
         contentPanel.add(datePicker, CC().cell(1, 0))
         contentPanel.add(btnSearch, CC().cell(2, 0))
+        contentPanel.add(busyIndicator, CC().cell(3, 0))
 
         contentPanel.add(JLabel("Notiz:"), CC().cell(0, 1))
 
@@ -171,13 +195,15 @@ class BookmarkEditNoteDialog(
         }
         textArea.lineWrap = true
         textArea.wrapStyleWord = true
-        contentPanel.add(scrollPane, CC().cell(1, 1, 3, 1).grow())
+        contentPanel.add(scrollPane, CC().cell(1, 1, 4, 1).grow())
 
-        val buttonBar = JPanel(MigLayout(
-            LC().insets("dialog").alignX("right"),
-            AC().size("button").fill().gap().size("button").fill(),
-            AC()
-        ))
+        val buttonBar = JPanel(
+            MigLayout(
+                LC().insets("dialog").alignX("right"),
+                AC().size("button").fill().gap().size("button").fill(),
+                AC()
+            )
+        )
 
         buttonBar.add(okButton, CC().cell(0, 0))
         buttonBar.add(cancelButton, CC().cell(1, 0))
