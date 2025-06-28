@@ -4,6 +4,7 @@ import mediathek.daten.DatenFilm;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +31,11 @@ public class DateUtil {
                 .toLocalDate();
     }
 
-    public static Date convertToDate(LocalDate ld) {
+    public static Date convertToDate(@NotNull Instant instant) {
+        return Date.from(instant.atZone(MV_DEFAULT_TIMEZONE).toInstant());
+    }
+
+    public static Date convertToDate(@NotNull LocalDate ld) {
         return Date.from(ld.atStartOfDay(MV_DEFAULT_TIMEZONE).toInstant());
     }
 }

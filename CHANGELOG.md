@@ -8,6 +8,7 @@
 - **FEATURE:** `season` und `episode` können mit der Lucene Suche verwendet werden.
 - **FEATURE:** multi-threaded Lucene-Indizierung für verbesserte Performance auf Multicore-Systemen.
 - **FEATURE:** Die zapp-Android-Livestreams inklusive Senderinformationen sind nun im Tab *zapp Livestreams* in der App verfügbar. Per Doppelklick auf den Eintrag wird der Stream im Browser geöffnet. Sendungen mit einer Laufzeit von weniger als 5 Minuten werden durch einen orangenen Fortschrittbalken kenntlich gemacht. Das Tab kann über das Menü *Anzeige* ein- und ausgeblendet werden.
+- **FEATURE:** In der Merkliste kann die Verfügbarkeit für ARTE(alle Sprachen), die Sender der ARD-Mediathek, 3Sat und ORF gesucht werden.
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.

@@ -75,22 +75,26 @@ public class IconUtils {
     public static ImageIcon generateDisabledIcon(@NotNull Action action) {
         FontIcon normalIcon = (FontIcon) action.getValue(Action.SMALL_ICON);
         if (normalIcon != null) {
-            BufferedImage img = new BufferedImage(normalIcon.getIconWidth(), normalIcon.getIconHeight(),
-                    BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 = img.createGraphics();
-            try {
-                normalIcon.paintIcon(null, g2, 0, 0);
-            }
-            finally {
-                g2.dispose();
-            }
-
-            var disabledImg = GrayFilter.createDisabledImage(img);
-            return new ImageIcon(disabledImg);
+            return generateDisabledIcon(normalIcon);
         }
         else {
             return null;
         }
+    }
+
+    public static ImageIcon generateDisabledIcon(@NotNull Icon normalIcon) {
+        BufferedImage img = new BufferedImage(normalIcon.getIconWidth(), normalIcon.getIconHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = img.createGraphics();
+        try {
+            normalIcon.paintIcon(null, g2, 0, 0);
+        }
+        finally {
+            g2.dispose();
+        }
+
+        var disabledImg = GrayFilter.createDisabledImage(img);
+        return new ImageIcon(disabledImg);
     }
 
     public static FontIcon windowBarSpecificToolbarIcon(Ikon ikon) {
