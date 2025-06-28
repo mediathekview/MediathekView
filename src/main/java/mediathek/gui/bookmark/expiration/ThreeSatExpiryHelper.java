@@ -48,8 +48,7 @@ public class ThreeSatExpiryHelper {
                 return Optional.of(new ExpiryInfo(date));
             }
         }
-        catch (Exception e) {
-            System.err.println("Fehler beim Abruf/Parsing: " + e.getMessage());
+        catch (Exception _) {
         }
 
         return Optional.empty();

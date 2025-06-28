@@ -14,6 +14,7 @@ import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.CopyToClipboardAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.SwingErrorDialog;
+import mediathek.tool.datum.DateUtil;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -38,8 +39,9 @@ import java.util.stream.Collectors;
  */
 public class FilmInfoDialog extends JDialog {
     private static final Dimension DEFAULT_SENDER_DIMENSION = new Dimension(64, 64);
-    private Optional<DatenFilm> currentFilmOptional = Optional.empty();
     private final JPopupMenu popupMenu = new JPopupMenu();
+    private Optional<DatenFilm> currentFilmOptional = Optional.empty();
+    private FilmAvailableUntilWorker currentWorker;
 
     public FilmInfoDialog(Window owner) {
         super(owner);
@@ -201,6 +203,7 @@ public class FilmInfoDialog extends JDialog {
         lblDescription.setText("");
         lblSeason.setText("");
         lblEpisode.setText("");
+        lblAvailableUntil.setText("");
     }
 
     private void updateTextFields() {
@@ -220,7 +223,8 @@ public class FilmInfoDialog extends JDialog {
             lblSize.setText(currentFilm.getFileSize().toString());
             if (currentFilm.countrySet.isEmpty()) {
                 lblGeo.setText("");
-            } else {
+            }
+            else {
                 var txt = currentFilm.countrySet.stream().map(Country::toString).collect(Collectors.joining("-"));
                 lblGeo.setText(txt);
             }
@@ -237,14 +241,26 @@ public class FilmInfoDialog extends JDialog {
             if (currentFilm.getSeason() != 0) {
                 lblSeason.setText(String.valueOf(currentFilm.getSeason()));
             }
-            else  {
+            else {
                 lblSeason.setText("");
             }
             if (currentFilm.getEpisode() != 0) {
                 lblEpisode.setText(String.valueOf(currentFilm.getEpisode()));
             }
-            else  {
+            else {
                 lblEpisode.setText("");
+            }
+
+            if (currentWorker != null && !currentWorker.isDone()) {
+                currentWorker.cancel(true);
+            }
+            var availableUntil = currentFilm.getAvailableUntil();
+            if (availableUntil == null) {
+                currentWorker = new FilmAvailableUntilWorker(currentFilm, lblAvailableUntil);
+                currentWorker.execute();
+            }
+            else {
+                lblAvailableUntil.setText(DateUtil.FORMATTER.format(availableUntil));
             }
         }, this::clearControls);
     }
@@ -265,10 +281,6 @@ public class FilmInfoDialog extends JDialog {
         lblSender = new JLabel();
         var label2 = new JLabel();
         lblThema = new HtmlMultilineLabel();
-        var label12 = new JLabel();
-        lblSeason = new JLabel();
-        var label14 = new JLabel();
-        lblEpisode = new JLabel();
         var label3 = new JLabel();
         lblTitel = new HtmlMultilineLabel();
         var label4 = new JLabel();
@@ -283,6 +295,12 @@ public class FilmInfoDialog extends JDialog {
         cbHq = new DisabledCheckBox();
         var label9 = new JLabel();
         cbSubtitle = new DisabledCheckBox();
+        var label12 = new JLabel();
+        lblSeason = new JLabel();
+        var label14 = new JLabel();
+        lblEpisode = new JLabel();
+        var label15 = new JLabel();
+        lblAvailableUntil = new JLabel();
         var label10 = new JLabel();
         lblGeo = new JLabel();
         var label11 = new JLabel();
@@ -323,6 +341,7 @@ public class FilmInfoDialog extends JDialog {
                 .gap()
                 .gap()
                 .gap()
+                .gap()
                 .grow().fill()));
 
         //---- label1 ----
@@ -339,92 +358,100 @@ public class FilmInfoDialog extends JDialog {
         lblThema.setMinimumSize(new Dimension(51, 32));
         contentPane.add(lblThema, new CC().cell(1, 1));
 
-        //---- label12 ----
-        label12.setText("Season:");
-        contentPane.add(label12, new CC().cell(0, 2));
-
-        //---- lblSeason ----
-        lblSeason.setText("text");
-        contentPane.add(lblSeason, new CC().cell(1, 2).growX());
-
-        //---- label14 ----
-        label14.setText("Episode:");
-        contentPane.add(label14, new CC().cell(0, 3));
-
-        //---- lblEpisode ----
-        lblEpisode.setText("text");
-        contentPane.add(lblEpisode, new CC().cell(1, 3).growX());
-
         //---- label3 ----
         label3.setText("Titel:");
-        contentPane.add(label3, new CC().cell(0, 4));
-        contentPane.add(lblTitel, new CC().cell(1, 4));
+        contentPane.add(label3, new CC().cell(0, 2));
+        contentPane.add(lblTitel, new CC().cell(1, 2));
 
         //---- label4 ----
         label4.setText("Datum:");
-        contentPane.add(label4, new CC().cell(0, 5));
+        contentPane.add(label4, new CC().cell(0, 3));
 
         //---- lblDate ----
         lblDate.setText("text");
-        contentPane.add(lblDate, new CC().cell(1, 5));
+        contentPane.add(lblDate, new CC().cell(1, 3));
 
         //---- label5 ----
         label5.setText("Uhrzeit:");
-        contentPane.add(label5, new CC().cell(0, 6));
+        contentPane.add(label5, new CC().cell(0, 4));
 
         //---- lblUhrzeit ----
         lblUhrzeit.setText("text");
-        contentPane.add(lblUhrzeit, new CC().cell(1, 6));
+        contentPane.add(lblUhrzeit, new CC().cell(1, 4));
 
         //---- label6 ----
         label6.setText("Dauer:");
-        contentPane.add(label6, new CC().cell(0, 7));
+        contentPane.add(label6, new CC().cell(0, 5));
 
         //---- lblDuration ----
         lblDuration.setText("text");
-        contentPane.add(lblDuration, new CC().cell(1, 7));
+        contentPane.add(lblDuration, new CC().cell(1, 5));
 
         //---- label7 ----
         label7.setText("Gr\u00f6\u00dfe (MB):");
-        contentPane.add(label7, new CC().cell(0, 8));
+        contentPane.add(label7, new CC().cell(0, 6));
 
         //---- lblSize ----
         lblSize.setText("text");
-        contentPane.add(lblSize, new CC().cell(1, 8));
+        contentPane.add(lblSize, new CC().cell(1, 6));
 
         //---- label8 ----
         label8.setText("HQ:");
-        contentPane.add(label8, new CC().cell(0, 9));
-        contentPane.add(cbHq, new CC().cell(1, 9));
+        contentPane.add(label8, new CC().cell(0, 7));
+        contentPane.add(cbHq, new CC().cell(1, 7));
 
         //---- label9 ----
         label9.setText("Untertitel:");
-        contentPane.add(label9, new CC().cell(0, 10));
-        contentPane.add(cbSubtitle, new CC().cell(1, 10));
+        contentPane.add(label9, new CC().cell(0, 8));
+        contentPane.add(cbSubtitle, new CC().cell(1, 8));
+
+        //---- label12 ----
+        label12.setText("Season:");
+        contentPane.add(label12, new CC().cell(0, 9));
+
+        //---- lblSeason ----
+        lblSeason.setText("text");
+        contentPane.add(lblSeason, new CC().cell(1, 9).growX());
+
+        //---- label14 ----
+        label14.setText("Episode:");
+        contentPane.add(label14, new CC().cell(0, 10));
+
+        //---- lblEpisode ----
+        lblEpisode.setText("text");
+        contentPane.add(lblEpisode, new CC().cell(1, 10).growX());
+
+        //---- label15 ----
+        label15.setText("Verf\u00fcgbar bis:");
+        contentPane.add(label15, new CC().cell(0, 11));
+
+        //---- lblAvailableUntil ----
+        lblAvailableUntil.setText("text");
+        contentPane.add(lblAvailableUntil, new CC().cell(1, 11));
 
         //---- label10 ----
         label10.setText("Geo:");
-        contentPane.add(label10, new CC().cell(0, 11));
+        contentPane.add(label10, new CC().cell(0, 12));
 
         //---- lblGeo ----
         lblGeo.setText("text");
-        contentPane.add(lblGeo, new CC().cell(1, 11));
+        contentPane.add(lblGeo, new CC().cell(1, 12));
 
         //---- label11 ----
         label11.setText("Abo:");
-        contentPane.add(label11, new CC().cell(0, 12));
+        contentPane.add(label11, new CC().cell(0, 13));
 
         //---- lblAbo ----
         lblAbo.setText("text");
-        contentPane.add(lblAbo, new CC().cell(1, 12));
+        contentPane.add(lblAbo, new CC().cell(1, 13));
 
         //---- hyperlink ----
         hyperlink.setText("Link zur Website");
-        contentPane.add(hyperlink, new CC().cell(0, 13, 2, 1));
+        contentPane.add(hyperlink, new CC().cell(0, 14, 2, 1));
 
         //---- label13 ----
         label13.setText("Beschreibung:");
-        contentPane.add(label13, new CC().cell(0, 14, 2, 1));
+        contentPane.add(label13, new CC().cell(0, 15, 2, 1));
 
         //======== descScrollPane ========
         {
@@ -435,7 +462,7 @@ public class FilmInfoDialog extends JDialog {
             lblDescription.setMaximumSize(new Dimension(2147483647, 200));
             descScrollPane.setViewportView(lblDescription);
         }
-        contentPane.add(descScrollPane, new CC().cell(0, 15, 2, 1));
+        contentPane.add(descScrollPane, new CC().cell(0, 16, 2, 1));
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents  @formatter:on
@@ -445,8 +472,6 @@ public class FilmInfoDialog extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private JLabel lblSender;
     private HtmlMultilineLabel lblThema;
-    private JLabel lblSeason;
-    private JLabel lblEpisode;
     private HtmlMultilineLabel lblTitel;
     private JLabel lblDate;
     private JLabel lblUhrzeit;
@@ -454,6 +479,9 @@ public class FilmInfoDialog extends JDialog {
     private JLabel lblSize;
     private DisabledCheckBox cbHq;
     private DisabledCheckBox cbSubtitle;
+    private JLabel lblSeason;
+    private JLabel lblEpisode;
+    private JLabel lblAvailableUntil;
     private JLabel lblGeo;
     private JLabel lblAbo;
     private JXHyperlink hyperlink;

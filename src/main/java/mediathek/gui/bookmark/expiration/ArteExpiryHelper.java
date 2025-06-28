@@ -88,8 +88,7 @@ public class ArteExpiryHelper {
             }
 
         }
-        catch (Exception e) {
-            System.err.println("Fehler beim Abruf/Parsing: " + e.getMessage());
+        catch (Exception _) {
         }
         return Optional.empty();
     }

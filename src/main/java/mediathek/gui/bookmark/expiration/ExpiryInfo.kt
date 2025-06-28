@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package mediathek.gui.bookmark.expiration
 
-package mediathek.gui.bookmark.expiration;
+import java.time.LocalDate
 
-import java.time.LocalDate;
-
-public record ExpiryInfo(LocalDate expiryDate) {}
+@JvmRecord
+data class ExpiryInfo(val expiryDate: LocalDate?) 

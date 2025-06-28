@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Optional;
@@ -65,6 +66,8 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Stores all URLs, some keys may not exist.
      */
     private final EnumMap<MapKeys, Object> dataMap = new EnumMap<>(MapKeys.class);
+    /// The date until this film will be available. is set by the film info search worker.
+    LocalDate availableUntil;
     /**
      * film date stored IN SECONDS!!!
      */
@@ -100,6 +103,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.filmLength = other.filmLength;
         this.season = other.season;
         this.episode = other.episode;
+        this.availableUntil = other.availableUntil;
     }
 
     /**
@@ -112,6 +116,14 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static boolean isCompressedUrl(@NotNull String requestedUrl) {
         final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         return indexPipe != -1;
+    }
+
+    public @Nullable LocalDate getAvailableUntil() {
+        return availableUntil;
+    }
+
+    public void setAvailableUntil(@Nullable LocalDate availableUntil) {
+        this.availableUntil = availableUntil;
     }
 
     /**

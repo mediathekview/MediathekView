@@ -21,10 +21,7 @@ package mediathek.gui.bookmark
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
-import mediathek.gui.bookmark.expiration.ArdMediathekExpiryHelper
-import mediathek.gui.bookmark.expiration.ArteExpiryHelper
-import mediathek.gui.bookmark.expiration.OrfExpiryHelper
-import mediathek.gui.bookmark.expiration.ThreeSatExpiryHelper
+import mediathek.gui.bookmark.expiration.SenderExpirationService
 import mediathek.swing.IconUtils
 import mediathek.swing.JIkonliSafeButton
 import mediathek.tool.EscapeKeyHandler
@@ -58,14 +55,6 @@ class BookmarkEditNoteDialog(
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(job + Dispatchers.Swing)
 
-    companion object {
-        private val ARD_SENDERS = setOf(
-            "ard", "ardalpha", "br", "funknet", "hr", "mdr", "ndr",
-            "one", "phoenix", "radiobremntv", "rbb", "sr", "swr",
-            "tagesschau24", "wdr"
-        )
-    }
-
     init {
         title = "Notiz hinzufügen"
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -88,7 +77,7 @@ class BookmarkEditNoteDialog(
                 enableBusyIndicator(true)
                 try {
                     val result = withContext(Dispatchers.IO) {
-                        fetchExpiryDate(bm.datenFilm.sender, bm.datenFilm.websiteUrl)
+                        SenderExpirationService.fetchExpiryDate(bm.datenFilm.sender, bm.datenFilm.websiteUrl)
                     }
                     if (result != null) {
                         datePicker.date = DateUtil.convertToDate(result)
@@ -140,23 +129,6 @@ class BookmarkEditNoteDialog(
 
     fun isOkPressed(): Boolean = okPressed
 
-    private fun fetchExpiryDate(sender: String, websiteUrl: String): LocalDate? {
-        val normalizedSender = normalizeSender(sender)
-        return when {
-            "arte" in normalizedSender -> ArteExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }
-                .orElse(null)
-
-            normalizedSender == "3sat" -> ThreeSatExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }
-                .orElse(null)
-
-            normalizedSender in ARD_SENDERS -> ArdMediathekExpiryHelper.getExpiryInfo(websiteUrl)
-                .map { it.expiryDate() }.orElse(null)
-
-            normalizedSender == "orf" -> OrfExpiryHelper.getExpiryInfo(websiteUrl).map { it.expiryDate() }.orElse(null)
-            else -> null
-        }
-    }
-
     private fun showNotFoundMessage() {
         JOptionPane.showMessageDialog(
             this,
@@ -165,9 +137,6 @@ class BookmarkEditNoteDialog(
             JOptionPane.WARNING_MESSAGE
         )
     }
-
-    private fun normalizeSender(sender: String) =
-        sender.trim().lowercase().replace(Regex("[^a-z0-9]"), "")
 
     private fun initComponents() {
         val dialogPane = JPanel(BorderLayout())
