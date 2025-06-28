@@ -111,6 +111,23 @@ public class BookmarkDialog extends JDialog {
 
     private void installTableContextMenu() {
         table.addMouseListener(new MouseAdapter() {
+            private JPopupMenu createPopupMenu() {
+                JPopupMenu popup = new JPopupMenu();
+                JMenuItem menuItem = new NoIconMenuItem(addNoteAction);
+                popup.add(menuItem);
+                menuItem = new NoIconMenuItem(removeNoteAction);
+                popup.add(menuItem);
+                popup.addSeparator();
+                menuItem = new NoIconMenuItem(markSeenAction);
+                popup.add(menuItem);
+                menuItem = new NoIconMenuItem(markUnseenAction);
+                popup.add(menuItem);
+                popup.addSeparator();
+                menuItem = new NoIconMenuItem(deleteBookmarkAction);
+                popup.add(menuItem);
+                return popup;
+            }
+
             private void showPopup(MouseEvent e) {
                 if (!e.isPopupTrigger())
                     return;
@@ -126,22 +143,7 @@ public class BookmarkDialog extends JDialog {
                     return;
                 }
 
-                JPopupMenu popup = new JPopupMenu();
-                JMenuItem menuItem = new NoIconMenuItem(addNoteAction);
-                popup.add(menuItem);
-                //if (numSelectedItems >= 1) {
-                menuItem = new NoIconMenuItem(removeNoteAction);
-                popup.add(menuItem);
-                popup.addSeparator();
-                menuItem = new NoIconMenuItem(markSeenAction);
-                popup.add(menuItem);
-                menuItem = new NoIconMenuItem(markUnseenAction);
-                popup.add(menuItem);
-                popup.addSeparator();
-                menuItem = new NoIconMenuItem(deleteBookmarkAction);
-                popup.add(menuItem);
-                //}
-
+                var popup = createPopupMenu();
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
 
