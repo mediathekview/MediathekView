@@ -111,6 +111,8 @@ public class GuiDownloads extends AGuiTabPanel {
     private final FailedDownloadsInfoLabel failedDownloadsInfoLabel = new FailedDownloadsInfoLabel(startInfoProperty);
     private final DownloadsConfigPanel dlConfigPanel = new DownloadsConfigPanel();
     private final JButton btnClear = new JButton();
+    private final JPanel jPanelFilterExtern = new JPanel();
+    private final JSplitPane jSplitPane1 = new JSplitPane();
     private boolean onlyAbos;
     private boolean onlyDownloads;
     private boolean onlyWaiting;
@@ -124,8 +126,6 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     private TModelDownload model;
     private MVDownloadsTable tabelle;
-    private JSplitPane jSplitPane1;
-    private JPanel jPanelFilterExtern;
     private JComboBox<String> cbDisplayCategories;
     private JComboBox<String> cbView;
     private JScrollPane downloadListScrollPane;
@@ -969,8 +969,6 @@ public class GuiDownloads extends AGuiTabPanel {
     }
 
     private void initComponents() {
-        jSplitPane1 = new JSplitPane();
-        jPanelFilterExtern = new JPanel();
         var panel3 = new JPanel();
         var label1 = new JLabel();
         cbDisplayCategories = new JComboBox<>();
