@@ -190,7 +190,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         for (var sender : selectedSenders) {
             // sender must be lowercase as StandardAnalyzer converts it to lower during indexing
-            TermQuery term = new TermQuery(new Term(LuceneIndexKeys.SENDER, sender.toLowerCase()));
+            TermQuery term = new TermQuery(new Term(LuceneIndexKeys.SENDER, sender.toLowerCase(Locale.ROOT)));
             booleanQuery.add(term, BooleanClause.Occur.SHOULD);
         }
 

@@ -15,6 +15,7 @@
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.
 - **BUGFIX:** *Download ändern*-Dialog zeigt nun die richtigen Text zu den Datenfeldern an.
 - **BUGFIX:** MediathekView passt einmalig auf Nachfrage die vorhandenen Filter auf die neue max. Filmlänge von 240 Minuten an.
+- **BUGFIX:** Auswahl "Radio Bremen TV" in der Senderliste liefert nun Ergebnisse bei Nutzung Lucene.
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.

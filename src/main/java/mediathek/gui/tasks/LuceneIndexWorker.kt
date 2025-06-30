@@ -67,7 +67,7 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
         // store fields for debugging, otherwise they should stay disabled
         doc.add(StringField(LuceneIndexKeys.ID, film.filmNr.toString(), Field.Store.YES))
         doc.add(StringField(LuceneIndexKeys.NEW, film.isNew.toString(), Field.Store.NO))
-        doc.add(TextField(LuceneIndexKeys.SENDER, film.sender, Field.Store.NO))
+        doc.add(StringField(LuceneIndexKeys.SENDER, film.sender.lowercase(Locale.ROOT), Field.Store.NO))
         doc.add(TextField(LuceneIndexKeys.TITEL, film.title, Field.Store.NO))
         doc.add(TextField(LuceneIndexKeys.THEMA, film.thema, Field.Store.NO))
         doc.add(IntPoint(LuceneIndexKeys.FILM_LENGTH, film.filmLength))
