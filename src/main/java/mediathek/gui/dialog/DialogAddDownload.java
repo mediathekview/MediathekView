@@ -22,6 +22,7 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jdesktop.swingx.JXBusyLabel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +56,8 @@ public class DialogAddDownload extends JDialog {
     private static final String KEY_LABEL_FOREGROUND = "Label.foreground";
     private static final String KEY_TEXTFIELD_BACKGROUND = "TextField.background";
     private static final String TITLED_BORDER_STRING = "Download-Qualität";
+    private static int MINIMUM_WIDTH = 660;
+    private static int MINIMUM_HEIGHT = 420;
     private final DatenFilm film;
     private final Optional<FilmResolution.Enum> requestedResolution;
     private final ListePset listeSpeichern = Daten.listePset.getListeSpeichern();
@@ -90,13 +93,45 @@ public class DialogAddDownload extends JDialog {
         this.active_pSet = pSet;
 
         setupUI();
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            pack();
-        }
-        restoreWindowSizeFromConfig();
+
+        setupMinimumSizeForOs();
+        restoreWindowSizeFromConfig();        //only install on windows and linux, macOS works...
+        installMinResizePreventer();
+
         setLocationRelativeTo(parent);
 
         addComponentListener(new DialogPositionComponentListener());
+    }
+
+    private void setupMinimumSizeForOs() {
+        if (SystemUtils.IS_OS_MAC_OSX)
+            MINIMUM_HEIGHT = 430;
+        else if (SystemUtils.IS_OS_LINUX) {
+            MINIMUM_HEIGHT = 520;
+            MINIMUM_WIDTH = 800;
+        }
+        var minDim = new Dimension(MINIMUM_WIDTH, MINIMUM_HEIGHT);
+        setMinimumSize(minDim);
+    }
+
+    /// Prevents that a dialog can be resized smaller than its minimum dimensions.
+    /// Needed on Windows, but not macOS and Linux.
+    private void installMinResizePreventer() {
+        if (!SystemUtils.IS_OS_WINDOWS)
+            return;
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension min = getMinimumSize();
+                Dimension size = getSize();
+                int w = Math.max(size.width, min.width);
+                int h = Math.max(size.height, min.height);
+                if (w != size.width || h != size.height) {
+                    setSize(w, h);
+                }
+            }
+        });
     }
 
     public static void setModelPfad(String pfad, JComboBox<String> jcb) {
@@ -152,15 +187,17 @@ public class DialogAddDownload extends JDialog {
         var config = ApplicationConfiguration.getConfiguration();
         try {
             config.lock(LockMode.READ);
-            final int width = config.getInt(ApplicationConfiguration.AddDownloadDialog.WIDTH);
-            final int height = config.getInt(ApplicationConfiguration.AddDownloadDialog.HEIGHT);
-            final int x = config.getInt(ApplicationConfiguration.AddDownloadDialog.X);
-            final int y = config.getInt(ApplicationConfiguration.AddDownloadDialog.Y);
+            int width = Math.max(config.getInt(ApplicationConfiguration.AddDownloadDialog.WIDTH), MINIMUM_WIDTH);
+            int height = Math.max(config.getInt(ApplicationConfiguration.AddDownloadDialog.HEIGHT), MINIMUM_HEIGHT);
+            int x = config.getInt(ApplicationConfiguration.AddDownloadDialog.X);
+            int y = config.getInt(ApplicationConfiguration.AddDownloadDialog.Y);
 
             setBounds(x, y, width, height);
-        } catch (NoSuchElementException ignored) {
+        }
+        catch (NoSuchElementException ignored) {
             //do not restore anything
-        } finally {
+        }
+        finally {
             config.unlock(LockMode.READ);
         }
 
@@ -190,11 +227,12 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHoch.addActionListener(listener);
         jRadioButtonAufloesungHoch.setSelected(true);
 
-        btnRequestLiveInfo.addActionListener(l -> handleRequestLiveFilmInfo());
+        btnRequestLiveInfo.addActionListener(_ -> handleRequestLiveFilmInfo());
     }
 
     /**
      * Return only the first part of the long codec name.
+     *
      * @param stream The video stream from ffprobe.
      * @return First entry of long codec name.
      */
@@ -262,8 +300,7 @@ public class DialogAddDownload extends JDialog {
                 SwingUtilities.invokeLater(() -> resetBusyLabelAndButton());
             }
 
-            private int safe_process_bit_rate(Integer in)
-            {
+            private int safe_process_bit_rate(Integer in) {
                 int bits;
                 try {
                     bits = in / 1000;
@@ -333,7 +370,8 @@ public class DialogAddDownload extends JDialog {
                     var err_msg = msg[msg.length - 1].trim();
                     if (err_msg.startsWith(ERR_MSG_PART)) {
                         final_str = err_msg.substring(ERR_MSG_PART.length());
-                    } else {
+                    }
+                    else {
                         final_str = MSG_UNKNOWN_ERROR;
                     }
                 }
@@ -379,18 +417,18 @@ public class DialogAddDownload extends JDialog {
         launchResolutionFutures();
 
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
-        jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
+        jCheckBoxStarten.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
 
         setupZielButton();
 
-        jButtonOk.addActionListener(e -> {
+        jButtonOk.addActionListener(_ -> {
             if (check()) {
                 saveComboPfad(jComboBoxPfad, orgPfad);
                 saveDownload();
             }
         });
 
-        jButtonAbbrechen.addActionListener(e -> dispose());
+        jButtonAbbrechen.addActionListener(_ -> dispose());
 
         setupPSetComboBox();
         setupSenderTextField();
@@ -513,10 +551,11 @@ public class DialogAddDownload extends JDialog {
 
         if (active_pSet != null) {
             jComboBoxPset.setSelectedItem(active_pSet.getName());
-        } else {
+        }
+        else {
             active_pSet = listeSpeichern.get(jComboBoxPset.getSelectedIndex());
         }
-        jComboBoxPset.addActionListener(e -> setupResolutionButtons());
+        jComboBoxPset.addActionListener(_ -> setupResolutionButtons());
     }
 
     private void setupSenderTextField() {
@@ -547,7 +586,8 @@ public class DialogAddDownload extends JDialog {
                     nameGeaendert = true;
                     if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
                         jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                    } else {
+                    }
+                    else {
                         jTextFieldName.setBackground(UIManager.getDefaults().getColor(KEY_TEXTFIELD_BACKGROUND));
                     }
                 }
@@ -585,7 +625,8 @@ public class DialogAddDownload extends JDialog {
                         final var editor = jComboBoxPfad.getEditor().getEditorComponent();
                         if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
                             editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                        } else {
+                        }
+                        else {
                             editor.setBackground(UIManager.getColor(KEY_TEXTFIELD_BACKGROUND));
                         }
                     }
@@ -599,12 +640,12 @@ public class DialogAddDownload extends JDialog {
     private void setupZielButton() {
         jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonZiel.setText("");
-        jButtonZiel.addActionListener(l -> {
+        jButtonZiel.addActionListener(_ -> {
             var initialDirectory = "";
             if (!Objects.requireNonNull(jComboBoxPfad.getSelectedItem()).toString().isEmpty()) {
                 initialDirectory = jComboBoxPfad.getSelectedItem().toString();
             }
-            var directory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(),"Film speichern",initialDirectory);
+            var directory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(), "Film speichern", initialDirectory);
             if (directory != null) {
                 var selectedDirectory = directory.getAbsolutePath();
                 jComboBoxPfad.addItem(selectedDirectory);
@@ -617,7 +658,7 @@ public class DialogAddDownload extends JDialog {
     private void setupDeleteHistoryButton() {
         jButtonDelHistory.setText("");
         jButtonDelHistory.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
-        jButtonDelHistory.addActionListener(e -> {
+        jButtonDelHistory.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
         });
@@ -629,7 +670,8 @@ public class DialogAddDownload extends JDialog {
             hqFuture.get();
             hochFuture.get();
             kleinFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
+        }
+        catch (InterruptedException | ExecutionException e) {
             logger.error("Error occured while waiting for file size futures", e);
         }
         finally {
@@ -641,7 +683,7 @@ public class DialogAddDownload extends JDialog {
     private void setupPfadSpeichernCheckBox() {
         final Configuration config = ApplicationConfiguration.getConfiguration();
         jCheckBoxPfadSpeichern.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true));
-        jCheckBoxPfadSpeichern.addActionListener(e ->
+        jCheckBoxPfadSpeichern.addActionListener(_ ->
                 config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, jCheckBoxPfadSpeichern.isSelected()));
     }
 
@@ -658,7 +700,8 @@ public class DialogAddDownload extends JDialog {
                 jButtonZiel.setEnabled(false);
                 jTextFieldName.setText("");
                 jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{""}));
-            } else {
+            }
+            else {
                 jTextFieldName.setEnabled(true);
                 jComboBoxPfad.setEnabled(true);
                 jButtonZiel.setEnabled(true);
@@ -690,12 +733,14 @@ public class DialogAddDownload extends JDialog {
                 if (path == null) {
                     //there is no way to determine usable space...
                     usableSpace = 0;
-                } else {
+                }
+                else {
                     final FileStore fileStore = Files.getFileStore(path);
                     usableSpace = fileStore.getUsableSpace();
                 }
-            } catch (Exception ex) {
-                logger.error("getFreeDiskSpace Failed",ex);
+            }
+            catch (Exception ex) {
+                logger.error("getFreeDiskSpace Failed", ex);
             }
         }
         return usableSpace;
@@ -713,11 +758,12 @@ public class DialogAddDownload extends JDialog {
         }
 
         try {
-            var filmBorder = (TitledBorder)jPanelSize.getBorder();
+            var filmBorder = (TitledBorder) jPanelSize.getBorder();
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
                 filmBorder.setTitle(TITLED_BORDER_STRING + " [ Freier Speicherplatz: " + FileUtils.humanReadableByteCountBinary(usableSpace) + " ]");
-            } else {
+            }
+            else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }
             //border needs to be repainted after update...
@@ -746,7 +792,8 @@ public class DialogAddDownload extends JDialog {
                     }
                 }
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.error("calculateAndCheckDiskSpace()", ex);
         }
     }
@@ -788,9 +835,11 @@ public class DialogAddDownload extends JDialog {
         requestedResolution.ifPresent(it -> highQualityMandated = it == FilmResolution.Enum.HIGH_QUALITY);
         if (highQualityMandated || isHighQualityRequested()) {
             jRadioButtonAufloesungHd.setSelected(true);
-        } else if (isLowQualityRequested()) {
+        }
+        else if (isLowQualityRequested()) {
             jRadioButtonAufloesungKlein.setSelected(true);
-        } else {
+        }
+        else {
             jRadioButtonAufloesungHoch.setSelected(true);
         }
     }
@@ -798,7 +847,8 @@ public class DialogAddDownload extends JDialog {
     private void prepareSubtitleCheckbox() {
         if (!film.hasSubtitle()) {
             jCheckBoxSubtitle.setEnabled(false);
-        } else {
+        }
+        else {
             jCheckBoxSubtitle.setSelected(active_pSet.shouldDownloadSubtitle());
         }
     }
@@ -811,9 +861,11 @@ public class DialogAddDownload extends JDialog {
     private FilmResolution.Enum getFilmResolution() {
         if (jRadioButtonAufloesungHd.isSelected()) {
             return FilmResolution.Enum.HIGH_QUALITY;
-        } else if (jRadioButtonAufloesungKlein.isSelected()) {
+        }
+        else if (jRadioButtonAufloesungKlein.isSelected()) {
             return FilmResolution.Enum.LOW;
-        } else {
+        }
+        else {
             return FilmResolution.Enum.NORMAL;
         }
     }
@@ -821,9 +873,11 @@ public class DialogAddDownload extends JDialog {
     private String getFilmSize() {
         if (jRadioButtonAufloesungHd.isSelected()) {
             return dateiGroesse_HQ;
-        } else if (jRadioButtonAufloesungKlein.isSelected()) {
+        }
+        else if (jRadioButtonAufloesungKlein.isSelected()) {
             return dateiGroesse_Klein;
-        } else {
+        }
+        else {
             return dateiGroesse_Hoch;
         }
     }
@@ -835,13 +889,15 @@ public class DialogAddDownload extends JDialog {
         if (datenDownload != null) {
             if (pfad.isEmpty() || name.isEmpty()) {
                 MVMessageDialog.showMessageDialog(this, "Pfad oder Name ist leer", "Fehlerhafter Pfad/Name!", JOptionPane.ERROR_MESSAGE);
-            } else {
+            }
+            else {
                 if (!pfad.substring(pfad.length() - 1).equals(File.separator)) {
                     pfad += File.separator;
                 }
                 if (GuiFunktionenProgramme.checkPathWriteable(pfad)) {
                     ok = true;
-                } else {
+                }
+                else {
                     MVMessageDialog.showMessageDialog(this, "Pfad ist nicht beschreibbar", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -849,8 +905,7 @@ public class DialogAddDownload extends JDialog {
         return ok;
     }
 
-    private void addDownloadToQueue()
-    {
+    private void addDownloadToQueue() {
         Daten.getInstance().getListeDownloads().addMitNummer(datenDownload);
         MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
 
@@ -897,275 +952,366 @@ public class DialogAddDownload extends JDialog {
                 config.setProperty(ApplicationConfiguration.AddDownloadDialog.HEIGHT, dims.height);
                 config.setProperty(ApplicationConfiguration.AddDownloadDialog.X, loc.x);
                 config.setProperty(ApplicationConfiguration.AddDownloadDialog.Y, loc.y);
-            } finally {
+            }
+            finally {
                 config.unlock(LockMode.WRITE);
             }
         }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
-
-        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        jButtonOk = new javax.swing.JButton();
-        jButtonAbbrechen = new javax.swing.JButton();
-        jCheckBoxStarten = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jCheckBoxInfodatei = new javax.swing.JCheckBox();
-        jCheckBoxPfadSpeichern = new javax.swing.JCheckBox();
-        jCheckBoxSubtitle = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jTextFieldName = new javax.swing.JTextField();
-        javax.swing.JLabel jLabelSet = new javax.swing.JLabel();
+        panel2 = new JPanel();
+        panel1 = new JPanel();
+        jButtonOk = new JButton();
+        jButtonAbbrechen = new JButton();
+        jCheckBoxStarten = new JCheckBox();
+        var jPanel1 = new JPanel();
+        var jPanel2 = new JPanel();
+        jCheckBoxInfodatei = new JCheckBox();
+        jCheckBoxPfadSpeichern = new JCheckBox();
+        jCheckBoxSubtitle = new JCheckBox();
+        var jPanel7 = new JPanel();
+        var jLabel1 = new JLabel();
+        jTextFieldName = new JTextField();
+        var jLabelSet = new JLabel();
         jComboBoxPset = new javax.swing.JComboBox<>();
-        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
+        var jLabel4 = new JLabel();
+        var jPanel4 = new JPanel();
         jComboBoxPfad = new javax.swing.JComboBox<>();
-        javax.swing.Box.Filler filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
-        jButtonZiel = new javax.swing.JButton();
-        javax.swing.Box.Filler filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
-        jButtonDelHistory = new javax.swing.JButton();
-        jPanelSize = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        btnRequestLiveInfo = new javax.swing.JButton();
-        lblBusyIndicator = new org.jdesktop.swingx.JXBusyLabel();
-        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
-        lblStatus = new javax.swing.JLabel();
-        lblAudioInfo = new javax.swing.JLabel();
-        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
-        jRadioButtonAufloesungHd = new javax.swing.JRadioButton();
-        jRadioButtonAufloesungHoch = new javax.swing.JRadioButton();
-        jRadioButtonAufloesungKlein = new javax.swing.JRadioButton();
-        jTextFieldSender = new javax.swing.JTextField();
+        jButtonZiel = new JButton();
+        jButtonDelHistory = new JButton();
+        jPanelSize = new JPanel();
+        var jPanel3 = new JPanel();
+        btnRequestLiveInfo = new JButton();
+        lblBusyIndicator = new JXBusyLabel();
+        var jPanel5 = new JPanel();
+        lblStatus = new JLabel();
+        lblAudioInfo = new JLabel();
+        var jPanel6 = new JPanel();
+        jRadioButtonAufloesungHd = new JRadioButton();
+        jRadioButtonAufloesungHoch = new JRadioButton();
+        jRadioButtonAufloesungKlein = new JRadioButton();
+        jTextFieldSender = new JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        //======== this ========
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Film speichern");
-        setMinimumSize(new java.awt.Dimension(646, 372));
+        setMinimumSize(new Dimension(660, 420));
+        setPreferredSize(new Dimension(660, 420));
+        var contentPane = getContentPane();
 
-        jButtonOk.setText("Ok");
+        //======== panel2 ========
+        {
 
-        jButtonAbbrechen.setText("Abbrechen");
+            //======== panel1 ========
+            {
 
-        jCheckBoxStarten.setSelected(true);
-        jCheckBoxStarten.setText("Download sofort starten");
+                //---- jButtonOk ----
+                jButtonOk.setText("Ok");
 
-        jPanel2.setLayout(new java.awt.GridLayout(2, 2));
+                //---- jButtonAbbrechen ----
+                jButtonAbbrechen.setText("Abbrechen");
 
-        jCheckBoxInfodatei.setText("Lege Infodatei an");
-        jCheckBoxInfodatei.setToolTipText("Erzeugt eine Infodatei im Format \"Infodatei.txt\"");
-        jPanel2.add(jCheckBoxInfodatei);
+                GroupLayout panel1Layout = new GroupLayout(panel1);
+                panel1.setLayout(panel1Layout);
+                panel1Layout.setHorizontalGroup(
+                    panel1Layout.createParallelGroup()
+                        .addGroup(panel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(jButtonOk, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButtonAbbrechen)
+                            .addContainerGap())
+                );
+                panel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButtonAbbrechen, jButtonOk});
+                panel1Layout.setVerticalGroup(
+                    panel1Layout.createParallelGroup()
+                        .addGroup(panel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButtonOk)
+                                .addComponent(jButtonAbbrechen))
+                            .addContainerGap())
+                );
+            }
 
-        jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
-        jPanel2.add(jCheckBoxPfadSpeichern);
+            //---- jCheckBoxStarten ----
+            jCheckBoxStarten.setSelected(true);
+            jCheckBoxStarten.setText("Download sofort starten");
 
-        jCheckBoxSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
-        jPanel2.add(jCheckBoxSubtitle);
-
-        jPanel7.setMaximumSize(new java.awt.Dimension(606, 32767));
-
-        jLabel1.setText("Zielpfad:");
-
-        jLabelSet.setText("Set:");
-
-        jLabel4.setText("Dateiname:");
-
-        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
-
-        jComboBoxPfad.setEditable(true);
-        jPanel4.add(jComboBoxPfad);
-        jPanel4.add(filler1);
-
-        jButtonZiel.setText("F");
-        jButtonZiel.setToolTipText("Zielpfad auswählen");
-        jPanel4.add(jButtonZiel);
-        jPanel4.add(filler2);
-
-        jButtonDelHistory.setText("H");
-        jButtonDelHistory.setToolTipText("History löschen");
-        jPanel4.add(jButtonDelHistory);
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelSet)
-                            .addComponent(jLabel1))
-                        .addGap(20, 20, 20)
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBoxPset, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldName)))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelSet)
-                    .addComponent(jComboBoxPset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel4)
-                    .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanelSize.setBorder(javax.swing.BorderFactory.createTitledBorder("Download-Qualität"));
-
-        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-
-        btnRequestLiveInfo.setText("Codec-Details abrufen...");
-        jPanel3.add(btnRequestLiveInfo);
-        jPanel3.add(lblBusyIndicator);
-
-        jPanel5.setLayout(new java.awt.GridLayout(2, 1));
-
-        lblStatus.setText("status");
-        jPanel5.add(lblStatus);
-
-        lblAudioInfo.setText("audio");
-        jPanel5.add(lblAudioInfo);
-
-        jPanel3.add(jPanel5);
-
-        buttonGroup1.add(jRadioButtonAufloesungHd);
-        jRadioButtonAufloesungHd.setText("Höchste/Hoch");
-        jPanel6.add(jRadioButtonAufloesungHd);
-
-        buttonGroup1.add(jRadioButtonAufloesungHoch);
-        jRadioButtonAufloesungHoch.setText("Mittel");
-        jPanel6.add(jRadioButtonAufloesungHoch);
-
-        buttonGroup1.add(jRadioButtonAufloesungKlein);
-        jRadioButtonAufloesungKlein.setText("Niedrig");
-        jPanel6.add(jRadioButtonAufloesungKlein);
-
-        javax.swing.GroupLayout jPanelSizeLayout = new javax.swing.GroupLayout(jPanelSize);
-        jPanelSize.setLayout(jPanelSizeLayout);
-        jPanelSizeLayout.setHorizontalGroup(
-            jPanelSizeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelSizeLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelSizeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
-                    .addGroup(jPanelSizeLayout.createSequentialGroup()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanelSizeLayout.setVerticalGroup(
-            jPanelSizeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelSizeLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jTextFieldSender.setEditable(false);
-        jTextFieldSender.setFont(jTextFieldSender.getFont().deriveFont(jTextFieldSender.getFont().getStyle() | java.awt.Font.BOLD));
-        jTextFieldSender.setText(" ARD: Tatort, ...");
-        jTextFieldSender.setBorder(javax.swing.BorderFactory.createTitledBorder("Film"));
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextFieldSender, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelSize, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+            GroupLayout panel2Layout = new GroupLayout(panel2);
+            panel2.setLayout(panel2Layout);
+            panel2Layout.setHorizontalGroup(
+                panel2Layout.createParallelGroup()
+                    .addGroup(panel2Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(jCheckBoxStarten)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 264, Short.MAX_VALUE)
-                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAbbrechen)))
-                .addContainerGap())
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+            );
+            panel2Layout.setVerticalGroup(
+                panel2Layout.createParallelGroup()
+                    .addGroup(panel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panel2Layout.createParallelGroup()
+                            .addComponent(jCheckBoxStarten)
+                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+            );
+        }
+
+        //======== jPanel1 ========
+        {
+
+            //======== jPanel2 ========
+            {
+                jPanel2.setLayout(new GridLayout(2, 2));
+
+                //---- jCheckBoxInfodatei ----
+                jCheckBoxInfodatei.setText("Lege Infodatei an");
+                jCheckBoxInfodatei.setToolTipText("Erzeugt eine Infodatei im Format \"Infodatei.txt\"");
+                jPanel2.add(jCheckBoxInfodatei);
+
+                //---- jCheckBoxPfadSpeichern ----
+                jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
+                jPanel2.add(jCheckBoxPfadSpeichern);
+
+                //---- jCheckBoxSubtitle ----
+                jCheckBoxSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
+                jPanel2.add(jCheckBoxSubtitle);
+            }
+
+            //======== jPanel7 ========
+            {
+                jPanel7.setMaximumSize(new Dimension(606, 32767));
+
+                //---- jLabel1 ----
+                jLabel1.setText("Zielpfad:");
+
+                //---- jLabelSet ----
+                jLabelSet.setText("Set:");
+
+                //---- jLabel4 ----
+                jLabel4.setText("Dateiname:");
+
+                //======== jPanel4 ========
+                {
+                    jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.X_AXIS));
+
+                    //---- jComboBoxPfad ----
+                    jComboBoxPfad.setEditable(true);
+                    jPanel4.add(jComboBoxPfad);
+
+                    //---- jButtonZiel ----
+                    jButtonZiel.setText("F");
+                    jButtonZiel.setToolTipText("Zielpfad ausw\u00e4hlen");
+                    jPanel4.add(jButtonZiel);
+
+                    //---- jButtonDelHistory ----
+                    jButtonDelHistory.setText("H");
+                    jButtonDelHistory.setToolTipText("History l\u00f6schen");
+                    jPanel4.add(jButtonDelHistory);
+                }
+
+                GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
+                jPanel7.setLayout(jPanel7Layout);
+                jPanel7Layout.setHorizontalGroup(
+                    jPanel7Layout.createParallelGroup()
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(jPanel7Layout.createParallelGroup()
+                                .addGroup(jPanel7Layout.createSequentialGroup()
+                                    .addGroup(jPanel7Layout.createParallelGroup()
+                                        .addComponent(jLabelSet)
+                                        .addComponent(jLabel1))
+                                    .addGap(20, 20, 20)
+                                    .addGroup(jPanel7Layout.createParallelGroup()
+                                        .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jComboBoxPset)))
+                                .addGroup(jPanel7Layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jTextFieldName)))
+                            .addContainerGap())
+                );
+                jPanel7Layout.setVerticalGroup(
+                    jPanel7Layout.createParallelGroup()
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabelSet)
+                                .addComponent(jComboBoxPset, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel7Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                .addComponent(jLabel4)
+                                .addComponent(jTextFieldName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addContainerGap())
+                );
+            }
+
+            GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                jPanel1Layout.createParallelGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup()
+                            .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                            .addComponent(jPanel7, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+            );
+            jPanel1Layout.setVerticalGroup(
+                jPanel1Layout.createParallelGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+        }
+
+        //======== jPanelSize ========
+        {
+            jPanelSize.setBorder(new TitledBorder("Download-Qualit\u00e4t"));
+
+            //======== jPanel3 ========
+            {
+                jPanel3.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+                //---- btnRequestLiveInfo ----
+                btnRequestLiveInfo.setText("Codec-Details abrufen...");
+                jPanel3.add(btnRequestLiveInfo);
+                jPanel3.add(lblBusyIndicator);
+
+                //======== jPanel5 ========
+                {
+                    jPanel5.setLayout(new GridLayout(2, 1));
+
+                    //---- lblStatus ----
+                    lblStatus.setText("status");
+                    jPanel5.add(lblStatus);
+
+                    //---- lblAudioInfo ----
+                    lblAudioInfo.setText("audio");
+                    jPanel5.add(lblAudioInfo);
+                }
+                jPanel3.add(jPanel5);
+            }
+
+            //======== jPanel6 ========
+            {
+                jPanel6.setLayout(new FlowLayout());
+
+                //---- jRadioButtonAufloesungHd ----
+                jRadioButtonAufloesungHd.setText("H\u00f6chste/Hoch");
+                jPanel6.add(jRadioButtonAufloesungHd);
+
+                //---- jRadioButtonAufloesungHoch ----
+                jRadioButtonAufloesungHoch.setText("Mittel");
+                jPanel6.add(jRadioButtonAufloesungHoch);
+
+                //---- jRadioButtonAufloesungKlein ----
+                jRadioButtonAufloesungKlein.setText("Niedrig");
+                jPanel6.add(jRadioButtonAufloesungKlein);
+            }
+
+            GroupLayout jPanelSizeLayout = new GroupLayout(jPanelSize);
+            jPanelSize.setLayout(jPanelSizeLayout);
+            jPanelSizeLayout.setHorizontalGroup(
+                jPanelSizeLayout.createParallelGroup()
+                    .addGroup(jPanelSizeLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelSizeLayout.createParallelGroup()
+                            .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                            .addGroup(jPanelSizeLayout.createSequentialGroup()
+                                .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
+            );
+            jPanelSizeLayout.setVerticalGroup(
+                jPanelSizeLayout.createParallelGroup()
+                    .addGroup(jPanelSizeLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(8, Short.MAX_VALUE))
+            );
+        }
+
+        //---- jTextFieldSender ----
+        jTextFieldSender.setEditable(false);
+        jTextFieldSender.setFont(jTextFieldSender.getFont().deriveFont(jTextFieldSender.getFont().getStyle() | Font.BOLD));
+        jTextFieldSender.setText(" ARD: Tatort, ...");
+        jTextFieldSender.setBorder(new TitledBorder("Film"));
+
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(contentPaneLayout.createParallelGroup()
+                        .addComponent(panel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextFieldSender)
+                        .addComponent(jPanelSize, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, jButtonAbbrechen, jButtonOk);
-
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTextFieldSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxStarten, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButtonOk)
-                        .addComponent(jButtonAbbrechen)))
-                .addContainerGap())
+        contentPaneLayout.setVerticalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jTextFieldSender, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanelSize, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
         pack();
+        setLocationRelativeTo(getOwner());
+
+        //---- buttonGroup1 ----
+        var buttonGroup1 = new ButtonGroup();
+        buttonGroup1.add(jRadioButtonAufloesungHd);
+        buttonGroup1.add(jRadioButtonAufloesungHoch);
+        buttonGroup1.add(jRadioButtonAufloesungKlein);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnRequestLiveInfo;
-    private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonDelHistory;
-    private javax.swing.JButton jButtonOk;
-    private javax.swing.JButton jButtonZiel;
-    private javax.swing.JCheckBox jCheckBoxInfodatei;
-    private javax.swing.JCheckBox jCheckBoxPfadSpeichern;
-    private javax.swing.JCheckBox jCheckBoxStarten;
-    private javax.swing.JCheckBox jCheckBoxSubtitle;
-    private javax.swing.JComboBox<String> jComboBoxPfad;
-    private javax.swing.JComboBox<String> jComboBoxPset;
-    private javax.swing.JPanel jPanelSize;
-    private javax.swing.JRadioButton jRadioButtonAufloesungHd;
-    private javax.swing.JRadioButton jRadioButtonAufloesungHoch;
-    private javax.swing.JRadioButton jRadioButtonAufloesungKlein;
-    private javax.swing.JTextField jTextFieldName;
-    private javax.swing.JTextField jTextFieldSender;
-    private javax.swing.JLabel lblAudioInfo;
-    private org.jdesktop.swingx.JXBusyLabel lblBusyIndicator;
-    private javax.swing.JLabel lblStatus;
+    // Generated using JFormDesigner non-commercial license
+    private JPanel panel2;
+    private JPanel panel1;
+    private JButton jButtonOk;
+    private JButton jButtonAbbrechen;
+    private JCheckBox jCheckBoxStarten;
+    private JCheckBox jCheckBoxInfodatei;
+    private JCheckBox jCheckBoxPfadSpeichern;
+    private JCheckBox jCheckBoxSubtitle;
+    private JTextField jTextFieldName;
+    private JComboBox<String> jComboBoxPset;
+    private JComboBox<String> jComboBoxPfad;
+    private JButton jButtonZiel;
+    private JButton jButtonDelHistory;
+    private JPanel jPanelSize;
+    private JButton btnRequestLiveInfo;
+    private JXBusyLabel lblBusyIndicator;
+    private JLabel lblStatus;
+    private JLabel lblAudioInfo;
+    private JRadioButton jRadioButtonAufloesungHd;
+    private JRadioButton jRadioButtonAufloesungHoch;
+    private JRadioButton jRadioButtonAufloesungKlein;
+    private JTextField jTextFieldSender;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,0 +1,216 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, par l {comp panel2:::::x, comp jPanel1::t:::x, comp jTextFieldSender::l:::x, comp jPanelSize::l:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jTextFieldSender:::p::p, space :::p, comp jPanel1:::p::p, space :::p, comp jPanelSize:::p::p, space :::p, comp panel2:::p::p, space :::x}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Film speichern"
+			"minimumSize": new java.awt.Dimension( 660, 420 )
+			"preferredSize": new java.awt.Dimension( 660, 420 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, comp jCheckBoxStarten:::p::p, space :::x, comp panel1:::p::p, space :::p}}"
+				"$verticalGroup": "par l {seq {space :::p, par l {comp jCheckBoxStarten:::p::p, comp panel1:::p::p}, space :::p}}"
+			} ) {
+				name: "panel2"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, comp jButtonOk:1::p:93:p, space :::p, comp jButtonAbbrechen:1::p::p, space :::p}}"
+					"$verticalGroup": "par l {seq {space :::p, par b {comp jButtonOk::b:p::p, comp jButtonAbbrechen::b:p::p}, space :::p}}"
+				} ) {
+					name: "panel1"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonOk"
+						"text": "Ok"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonAbbrechen"
+						"text": "Abbrechen"
+					} )
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxStarten"
+					"selected": true
+					"text": "Download sofort starten"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel2::::636:x, comp jPanel7:::::x}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jPanel7:::p::p, space :p:12:p, comp jPanel2:::p::p, space :::x}}"
+			} ) {
+				name: "jPanel1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 2
+					"rows": 2
+				} ) {
+					name: "jPanel2"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxInfodatei"
+						"text": "Lege Infodatei an"
+						"toolTipText": "Erzeugt eine Infodatei im Format \"Infodatei.txt\""
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxPfadSpeichern"
+						"text": "Zielpfad speichern"
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxSubtitle"
+						"text": "Untertitel speichern: \"Filmname.xxx\""
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {par l {comp jLabelSet::l:p::p, comp jLabel1::l:p::p}, space :p:20:p, par l {comp jPanel4:::::x, comp jComboBoxPset:::::x}}, seq l {comp jLabel4:::p::p, space :::p, comp jTextFieldName:::::x:2}}, space :::p}}"
+					"$verticalGroup": "par l {seq {space :::p, par b {comp jLabelSet::b:p::p, comp jComboBoxPset::b:p::p}, space u:p::p, par t {comp jPanel4:::p::p, comp jLabel1:::p::p}, space :::p, par c {comp jLabel4::c:p::p, comp jTextFieldName::c:p::p}, space :::p}}"
+				} ) {
+					name: "jPanel7"
+					"maximumSize": new java.awt.Dimension( 606, 32767 )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel1"
+						"text": "Zielpfad:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "jTextFieldName"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabelSet"
+						"text": "Set:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "jComboBoxPset"
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new javax.swing.JComboBox<>();"
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel4"
+						"text": "Dateiname:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+						name: "jPanel4"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "jComboBoxPfad"
+							"editable": true
+							auxiliary() {
+								"JavaCodeGenerator.customCreateCode": "new javax.swing.JComboBox<>();"
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonZiel"
+							"text": "F"
+							"toolTipText": "Zielpfad auswählen"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonDelHistory"
+							"text": "H"
+							"toolTipText": "History löschen"
+						} )
+					} )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3::::626:x, seq l {comp jPanel6:::p::p, space :0:0:x}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::p, comp jPanel3:::p::p, space ::8:x}}"
+			} ) {
+				name: "jPanelSize"
+				"border": new javax.swing.border.TitledBorder( "Download-Qualität" )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+					"alignment": 0
+				} ) {
+					name: "jPanel3"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnRequestLiveInfo"
+						"text": "Codec-Details abrufen..."
+					} )
+					add( new FormComponent( "org.jdesktop.swingx.JXBusyLabel" ) {
+						name: "lblBusyIndicator"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+						"columns": 1
+						"rows": 2
+					} ) {
+						name: "jPanel5"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lblStatus"
+							"text": "status"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lblAudioInfo"
+							"text": "audio"
+						} )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+					name: "jPanel6"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonAufloesungHd"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "Höchste/Hoch"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonAufloesungHoch"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "Mittel"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonAufloesungKlein"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "Niedrig"
+					} )
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "jTextFieldSender"
+				"editable": false
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+				"text": " ARD: Tatort, ..."
+				"border": new javax.swing.border.TitledBorder( "Film" )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 662, 430 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 650 )
+		} )
+	}
+}

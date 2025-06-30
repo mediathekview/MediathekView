@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="11.0.3" transformSequenceNumber="11">
   <directoryPresets config="${project.basedir}/.install4j" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="${project.version}" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="${install4j.jdk.min-version}">
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="${compiler:sys.shortName}-${compiler:sys.version}-linux" compression="9" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="14.4.0" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="24">
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Liberica" release="24/24+37">
+    <jreBundles jdkProviderId="Liberica" release="24/24.0.1+11">
       <modules>
         <defaultModules set="jre" />
         <module name="jdk.incubator.vector" />
