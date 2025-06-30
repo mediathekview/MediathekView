@@ -63,7 +63,7 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
         PARSER_CONFIG_MAP.put(LuceneIndexKeys.SEASON, new PointsConfig(new DecimalFormat(), Integer.class));
     }
 
-    private final Analyzer analyzer = LuceneDefaultAnalyzer.buildAnalyzer();
+    private final Analyzer analyzer = LuceneDefaultAnalyzer.buildPerFieldAnalyzer();
 
     public LuceneGuiFilmeModelHelper(@NotNull SeenHistoryController historyController,
                                      @NotNull SearchFieldData searchFieldData,

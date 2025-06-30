@@ -121,7 +121,7 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
     }
 
     private fun createIndexWriter(liste: IndexedFilmList): IndexWriter {
-        val indexWriterConfig = IndexWriterConfig(LuceneDefaultAnalyzer.buildAnalyzer())
+        val indexWriterConfig = IndexWriterConfig(LuceneDefaultAnalyzer.buildPerFieldAnalyzer())
         indexWriterConfig.ramBufferSizeMB = 256.0
         val writer = IndexWriter(liste.luceneDirectory, indexWriterConfig)
         //for safety delete all entries
