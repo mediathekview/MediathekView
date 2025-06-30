@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.6" encoding: "UTF-8"
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -187,7 +187,7 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
-				add( new FormComponent( "mediathek.tool.swing.AutoCompletionComboBox2" ) {
+				add( new FormComponent( "mediathek.swing.AutoCompletionComboBox2" ) {
 					name: "jcbThema"
 					"minimumSize": new java.awt.Dimension( 50, 10 )
 					"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
