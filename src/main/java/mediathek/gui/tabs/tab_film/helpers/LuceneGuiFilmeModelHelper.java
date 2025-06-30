@@ -187,6 +187,10 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull Collection<String> selectedSenders) {
+        if (selectedSenders.isEmpty()) {
+            return; // Kein Filter hinzufügen, wenn keine Sender ausgewählt sind
+        }
+
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         for (var sender : selectedSenders) {
             // sender must be lowercase as StandardAnalyzer converts it to lower during indexing
