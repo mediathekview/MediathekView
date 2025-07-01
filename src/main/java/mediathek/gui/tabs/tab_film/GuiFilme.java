@@ -24,8 +24,8 @@ import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.gui.dialog.DialogAboNoSet;
-import mediathek.gui.dialog.DialogAddDownload;
-import mediathek.gui.dialog.DialogAddMoreDownload;
+import mediathek.gui.dialog.add_download.DialogAddDownloadWithCoroutines;
+import mediathek.gui.dialog.add_download.DialogAddMoreDownload;
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
@@ -493,7 +493,7 @@ public class GuiFilme extends AGuiTabPanel {
             // dann alle Downloads im Dialog abfragen
             Optional<FilmResolution.Enum> res =
                     filterConfiguration.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
-            DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
+            var dialog = new DialogAddDownloadWithCoroutines(mediathekGui, datenFilm, pSet, res);
             dialog.setVisible(true);
         }
     }

@@ -32,7 +32,7 @@ public class FilenameUtils {
     public static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH = "[:\\\\*|<>]";
     private static final Logger logger = LogManager.getLogger();
 
-    public static String checkDateiname(final String name, final boolean isPath) {
+    public static String checkFilenameForIllegalCharacters(final String name, final boolean isPath) {
         // dient nur zur Anzeige für Probleme (Textfeld wird rot)
         String ret = name;
         boolean isWindowsPath = false;
@@ -41,7 +41,7 @@ public class FilenameUtils {
         if (SystemUtils.IS_OS_WINDOWS) {
             splitChar = "\\\\";
         } else {
-            splitChar = "/";
+            splitChar = File.separator;
         }
 
         if (SystemUtils.IS_OS_WINDOWS) {
