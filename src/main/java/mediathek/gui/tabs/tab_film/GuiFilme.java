@@ -436,7 +436,7 @@ public class GuiFilme extends AGuiTabPanel {
                 return;
             }
             else {
-                addAllWithDefaults = result.addAll();
+                addAllWithDefaults = result.addAllWithDefaults();
                 pfad = result.path();
                 info = result.info();
                 subtitle = result.subtitle();

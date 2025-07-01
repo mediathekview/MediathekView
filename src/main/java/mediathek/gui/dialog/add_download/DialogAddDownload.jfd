@@ -13,27 +13,39 @@ new FormModel {
 			"minimumSize": new java.awt.Dimension( 660, 420 )
 			"preferredSize": new java.awt.Dimension( 660, 420 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, comp jCheckBoxStarten:::p::p, space :::x, comp panel1:::p::p, space :::p}}"
-				"$verticalGroup": "par l {seq {space :::p, par l {comp jCheckBoxStarten:::p::p, comp panel1:::p::p}, space :::p}}"
+				"$horizontalGroup": "par l {seq t {comp panel1:::::x, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp panel1:::p::p, space :::p}}"
 			} ) {
 				name: "panel2"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, comp jButtonOk:1::p:93:p, space :::p, comp jButtonAbbrechen:1::p::p, space :::p}}"
-					"$verticalGroup": "par l {seq {space :::p, par b {comp jButtonOk::b:p::p, comp jButtonAbbrechen::b:p::p}, space :::p}}"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "insets 0,hidemode 3,alignx right,gap 5 5"
+					"$columnConstraints": "[fill][fill][fill]"
+					"$rowConstraints": "[fill]"
 				} ) {
 					name: "panel1"
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "jButtonOk"
-						"text": "Speichern"
+						name: "btnQueueDownload"
+						"text": "In die Warteschlange"
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnDownloadImmediately"
+						"text": "Sofort laden"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonAbbrechen"
@@ -41,19 +53,13 @@ new FormModel {
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 0"
 					} )
-				} )
-				add( new FormComponent( "javax.swing.JCheckBox" ) {
-					name: "jCheckBoxStarten"
-					"selected": true
-					"text": "Download sofort starten"
-					auxiliary() {
-						"JavaCodeGenerator.variableModifiers": 4
-					}
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel2::::824:x, comp jPanel7:::::x}, space :::p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel2::::654:x, comp jPanel7:::::x}, space :::p}}"
 				"$verticalGroup": "par l {seq l {space :::p, comp jPanel7:::p::p, space :p:12:p, comp jPanel2:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel1"
@@ -169,8 +175,8 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3::::814:x, seq l {comp jPanel6:::p::p, space :0:0:x}}, space :::p}}"
-				"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::p, comp jPanel3:::p::p, space ::9:x}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3::::644:x, seq l {comp jPanel6:::p::p, space :0:0:x}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::p, comp jPanel3:::p::p, space ::66:x}}"
 			} ) {
 				name: "jPanelSize"
 				"border": new javax.swing.border.TitledBorder( "Download-Qualität" )

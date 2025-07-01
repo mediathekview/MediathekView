@@ -45,7 +45,7 @@ public class DialogAddMoreDownload extends JDialog {
 
     public boolean wasCancelled() { return cancel; }
 
-    public record DialogResult(boolean addAll, boolean info, boolean subtitle, String path) {}
+    public record DialogResult(boolean addAllWithDefaults, boolean info, boolean subtitle, String path) {}
 
     public DialogResult showDialog() {
         setVisible(true);

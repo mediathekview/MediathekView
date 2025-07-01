@@ -39,7 +39,6 @@ import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Frame
-import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
@@ -147,7 +146,7 @@ class DialogAddDownloadWithCoroutines(
     }
 
     init {
-        getRootPane().setDefaultButton(jButtonOk)
+        getRootPane().setDefaultButton(btnDownloadImmediately)
         EscapeKeyHandler.installHandler(this) { this.dispose() }
 
         setupUI()
@@ -167,7 +166,7 @@ class DialogAddDownloadWithCoroutines(
             }
         }
 
-        jButtonOk.requestFocus()
+        btnDownloadImmediately.requestFocus()
     }
 
     override fun dispose() {
@@ -186,23 +185,11 @@ class DialogAddDownloadWithCoroutines(
             calculateAndCheckDiskSpace()
         }
 
-        jCheckBoxStarten.apply {
-            setSelected(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN).toBoolean())
-            addActionListener {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, jCheckBoxStarten.isSelected.toString())
-            }
-        }
-
         setupZielButton()
 
-        jButtonOk.addActionListener { _: ActionEvent? ->
-            if (check()) {
-                saveComboPfad(jComboBoxPfad, orgPfad)
-                saveDownload()
-            }
-        }
-
-        jButtonAbbrechen.addActionListener { _: ActionEvent? -> dispose() }
+        btnDownloadImmediately.addActionListener { prepareDownload(true) }
+        btnQueueDownload.addActionListener { prepareDownload(false) }
+        jButtonAbbrechen.addActionListener { dispose() }
 
         setupPSetComboBox()
         setupSenderTextField()
@@ -220,10 +207,17 @@ class DialogAddDownloadWithCoroutines(
         nameGeaendert = false
     }
 
+    private fun prepareDownload(startAutomatically: Boolean) {
+        if (check()) {
+            saveComboPfad(jComboBoxPfad, orgPfad)
+            saveDownload(startAutomatically)
+        }
+    }
+
     /**
      * Store download in list and start immediately if requested.
      */
-    private fun saveDownload() {
+    private fun saveDownload(startAutomatically: Boolean) {
         datenDownload = DatenDownload(
             activeProgramSet,
             film,
@@ -238,7 +232,7 @@ class DialogAddDownloadWithCoroutines(
             arr[DatenDownload.DOWNLOAD_SUBTITLE] = jCheckBoxSubtitle.isSelected.toString()
         }
 
-        addDownloadToQueue()
+        addDownloadToQueue(startAutomatically)
         dispose()
     }
 
@@ -347,11 +341,11 @@ class DialogAddDownloadWithCoroutines(
         }
     }
 
-    private fun addDownloadToQueue() {
+    private fun addDownloadToQueue(startAutomatically: Boolean) {
         Daten.getInstance().listeDownloads.addMitNummer(datenDownload)
         messageBus.publishAsync(DownloadListChangedEvent())
 
-        if (jCheckBoxStarten.isSelected) {
+        if (startAutomatically) {
             datenDownload.startDownload()
         }
     }
@@ -704,7 +698,7 @@ class DialogAddDownloadWithCoroutines(
         cbPathTextComponent.isOpaque = true
 
         cbPathTextComponent.document.addDocumentListener(object : DocumentListener {
-            private val MAX_PATH_LENGTH = 50
+            private val MAX_PATH_LENGTH = 40
 
             override fun insertUpdate(e: DocumentEvent?) = tus()
             override fun removeUpdate(e: DocumentEvent?) = tus()
