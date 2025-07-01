@@ -10,6 +10,7 @@
 - **FEATURE:** Die zapp-Android-Livestreams inklusive Senderinformationen sind nun im Tab *zapp Livestreams* in der App verfügbar. Per Doppelklick auf den Eintrag wird der Stream im Browser geöffnet. Sendungen mit einer Laufzeit von weniger als 5 Minuten werden durch einen orangenen Fortschrittbalken kenntlich gemacht. Das Tab kann über das Menü *Anzeige* ein- und ausgeblendet werden.
 - **FEATURE:** In der Merkliste kann die Verfügbarkeit für ARTE(alle Sprachen), die Sender der ARD-Mediathek, 3Sat und ORF gesucht werden.
 - **FEATURE:** Im Dialog *Filminformation* wird die Verfügbarkeit für den selektierten Film automatisch online abgefragt und bei Erfolg dargestellt.
+- **FEATURE:** Dialog *Filme speichern* bietet nun klar ersichtliche Handlungsoptionen, wie mit Downloads zu verfahren ist.
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.
@@ -17,6 +18,7 @@
 - **BUGFIX:** MediathekView passt einmalig auf Nachfrage die vorhandenen Filter auf die neue max. Filmlänge von 240 Minuten an.
 - **BUGFIX:** Auswahl "Radio Bremen TV" in der Senderliste liefert nun Ergebnisse bei Nutzung Lucene.
 - **BUGFIX:** Die minimale Dialoggröße des Dialog *Film speichern* sollte nun auf allen Plattformen richtig gesetzt werden.
+- **BUGFIX:** *Download sofort starten* Checkbox wurde aus dem *Filme speichern* Dialog entfernt und in *Einstellungen/Download* eingefügt.
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
