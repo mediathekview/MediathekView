@@ -16,16 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.bookmark.expiration;
+package mediathek.gui.expiration;
 
 
+import mediathek.config.Konstanten;
+import mediathek.tool.http.MVHttpClient;
+import okhttp3.Request;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ThreeSatExpiryHelper {
@@ -34,18 +37,26 @@ public class ThreeSatExpiryHelper {
     private static final Pattern TEXT_DATE_PATTERN = Pattern.compile(
             "(Verfügbar bis:?)\\s*(?:bis\\s*)?(\\d{2}\\.\\d{2}\\.\\d{4})"
     );
+    private static final Logger LOG = LogManager.getLogger();
 
     public static Optional<ExpiryInfo> getExpiryInfo(String url) {
-        try {
-            Document doc = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0")
-                    .get();
+        final Request request = new Request.Builder().url(url).get()
+                .header("User-Agent", Konstanten.JSOUP_USER_AGENT)
+                .build();
 
-            String body = doc.body().text();
-            Matcher m = TEXT_DATE_PATTERN.matcher(body);
-            if (m.find()) {
-                LocalDate date = LocalDate.parse(m.group(2), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-                return Optional.of(new ExpiryInfo(date));
+        try (var response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                var doc = Jsoup.parse(response.body().string());
+                var body = doc.body().text();
+
+                var m = TEXT_DATE_PATTERN.matcher(body);
+                if (m.find()) {
+                    LocalDate date = LocalDate.parse(m.group(2), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                    return Optional.of(new ExpiryInfo(date));
+                }
+            }
+            else {
+                LOG.error("Could not fetch expiry data from {}", url);
             }
         }
         catch (Exception _) {

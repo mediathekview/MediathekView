@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.bookmark.expiration
+package mediathek.gui.expiration
 
 import java.time.LocalDate
 

@@ -19,7 +19,7 @@
 package mediathek.gui.filmInformation;
 
 import mediathek.daten.DatenFilm;
-import mediathek.gui.bookmark.expiration.SenderExpirationService;
+import mediathek.gui.expiration.SenderExpirationService;
 import mediathek.tool.datum.DateUtil;
 import org.jetbrains.annotations.NotNull;
 

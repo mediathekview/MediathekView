@@ -24,6 +24,7 @@ import okhttp3.HttpUrl;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
+    public static final String JSOUP_USER_AGENT = "Mozilla/5.0";
     public static final String ZAPP_API_URL = "https://api.zapp.mediathekview.de/";
     public static final String NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY = "newSendersActivated.fourteen.three";
     public static final String NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY = "newFilmlengthActivated.fourteen.three";

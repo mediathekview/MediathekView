@@ -21,7 +21,7 @@ package mediathek.gui.bookmark
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
-import mediathek.gui.bookmark.expiration.SenderExpirationService
+import mediathek.gui.expiration.SenderExpirationService
 import mediathek.swing.IconUtils
 import mediathek.swing.JIkonliSafeButton
 import mediathek.tool.EscapeKeyHandler

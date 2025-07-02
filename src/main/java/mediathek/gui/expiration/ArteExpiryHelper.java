@@ -16,13 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.bookmark.expiration;
+package mediathek.gui.expiration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mediathek.config.Konstanten;
 import mediathek.tool.datum.DateUtil;
+import mediathek.tool.http.MVHttpClient;
+import okhttp3.Request;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.time.Instant;
@@ -37,6 +41,7 @@ import java.util.regex.Pattern;
 public class ArteExpiryHelper {
 
     private static final ObjectMapper JSON = new ObjectMapper();
+    private static final Logger LOG = LogManager.getLogger();
 
     // Mehrsprachiges Pattern für DE, EN, FR, ES, IT, PL
     private static final Pattern TEXT_DATE_PATTERN = Pattern.compile(
@@ -44,52 +49,58 @@ public class ArteExpiryHelper {
     );
 
     public static Optional<ExpiryInfo> getExpiryInfo(String url) {
-        try {
-            Document doc = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0")
-                    .get();
+        final Request request = new Request.Builder().url(url).get()
+                .header("User-Agent", Konstanten.JSOUP_USER_AGENT)
+                .build();
 
-            // 1) JSON-LD durchsuchen
-            Elements scripts = doc.select("script[type=application/ld+json]");
-            for (var script : scripts) {
-                JsonNode root = JSON.readTree(script.html());
-                Optional<ExpiryInfo> info = searchRecursiveForDate(root);
-                if (info.isPresent())
-                    return info;
-            }
+        try (var response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                var doc = Jsoup.parse(response.body().string());
+                // 1) JSON-LD durchsuchen
+                Elements scripts = doc.select("script[type=application/ld+json]");
+                for (var script : scripts) {
+                    JsonNode root = JSON.readTree(script.html());
+                    Optional<ExpiryInfo> info = searchRecursiveForDate(root);
+                    if (info.isPresent())
+                        return info;
+                }
 
-            // 2) API endpoint via data-configuration
-            var video = doc.selectFirst("video[data-configuration], video[data-href]");
-            if (video != null) {
-                String cfgUrl = video.hasAttr("data-configuration")
-                        ? video.attr("data-configuration")
-                        : video.attr("data-href");
-                if (!cfgUrl.isBlank()) {
-                    JsonNode root2 = JSON.readTree(
-                            Jsoup.connect(cfgUrl).ignoreContentType(true).execute().body()
-                    );
-                    JsonNode avail = root2.path("availability").path("availabilityEnds");
-                    if (!avail.isMissingNode() && !avail.asText().isBlank()) {
-                        Instant expiry = Instant.parse(avail.asText());
-                        return Optional.of(buildInfo(expiry));
+                // 2) API endpoint via data-configuration
+                var video = doc.selectFirst("video[data-configuration], video[data-href]");
+                if (video != null) {
+                    String cfgUrl = video.hasAttr("data-configuration")
+                            ? video.attr("data-configuration")
+                            : video.attr("data-href");
+                    if (!cfgUrl.isBlank()) {
+                        JsonNode root2 = JSON.readTree(
+                                Jsoup.connect(cfgUrl).ignoreContentType(true).execute().body()
+                        );
+                        JsonNode avail = root2.path("availability").path("availabilityEnds");
+                        if (!avail.isMissingNode() && !avail.asText().isBlank()) {
+                            Instant expiry = Instant.parse(avail.asText());
+                            return Optional.of(buildInfo(expiry));
+                        }
                     }
                 }
-            }
 
-            // 3) Sichtbarer Text-Hinweis mehrsprachig
-            String bodyText = doc.body().text();
-            Matcher m = TEXT_DATE_PATTERN.matcher(bodyText);
-            if (m.find()) {
-                String rawDate = m.group(2); // DD/MM/YYYY
-                LocalDate date = LocalDate.parse(rawDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                ZonedDateTime z = date.atTime(23, 59).atZone(ZoneId.of("Europe/Paris"));
-                Instant expiry = z.toInstant();
-                return Optional.of(buildInfo(expiry));
+                // 3) Sichtbarer Text-Hinweis mehrsprachig
+                String bodyText = doc.body().text();
+                Matcher m = TEXT_DATE_PATTERN.matcher(bodyText);
+                if (m.find()) {
+                    String rawDate = m.group(2); // DD/MM/YYYY
+                    LocalDate date = LocalDate.parse(rawDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    ZonedDateTime z = date.atTime(23, 59).atZone(ZoneId.of("Europe/Paris"));
+                    Instant expiry = z.toInstant();
+                    return Optional.of(buildInfo(expiry));
+                }
             }
-
+            else {
+                LOG.error("Could not fetch expiry data from {}", url);
+            }
         }
         catch (Exception _) {
         }
+
         return Optional.empty();
     }
 

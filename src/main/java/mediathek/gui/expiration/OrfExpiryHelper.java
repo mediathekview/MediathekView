@@ -16,15 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.bookmark.expiration;
+package mediathek.gui.expiration;
 
+import mediathek.config.Konstanten;
+import mediathek.tool.http.MVHttpClient;
+import okhttp3.Request;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OrfExpiryHelper {
@@ -32,29 +35,35 @@ public class OrfExpiryHelper {
     // Neues Pattern: "Verfügbarkeit bis 28.7.2025, 8:45 Uhr"
     private static final Pattern EXPIRY_PATTERN = Pattern.compile(
             "Verfügbarkeit\\s*bis\\s*(\\d{1,2})\\.(\\d{1,2})\\.(\\d{4}),\\s*(\\d{1,2}):(\\d{2})\\s*Uhr",
-            Pattern.CASE_INSENSITIVE
-    );
+            Pattern.CASE_INSENSITIVE);
+    private static final Logger LOG = LogManager.getLogger();
 
     public static Optional<ExpiryInfo> getExpiryInfo(String url) {
-        try {
-            Document doc = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0")
-                    .get();
-            String text = doc.body().text();
+        final Request request = new Request.Builder().url(url).get()
+                .header("User-Agent", Konstanten.JSOUP_USER_AGENT)
+                .build();
 
-            Matcher m = EXPIRY_PATTERN.matcher(text);
-            if (m.find()) {
-                int day = Integer.parseInt(m.group(1));
-                int month = Integer.parseInt(m.group(2));
-                int year = Integer.parseInt(m.group(3));
+        try (var response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                var doc = Jsoup.parse(response.body().string());
+                var text = doc.body().text();
 
-                LocalDate ldt = LocalDate.of(year, Month.of(month), day);
+                var m = EXPIRY_PATTERN.matcher(text);
+                if (m.find()) {
+                    int day = Integer.parseInt(m.group(1));
+                    int month = Integer.parseInt(m.group(2));
+                    int year = Integer.parseInt(m.group(3));
 
-                return Optional.of(new ExpiryInfo(ldt));
+                    return Optional.of(new ExpiryInfo(LocalDate.of(year, Month.of(month), day)));
+                }
+            }
+            else {
+                LOG.error("Could not fetch expiry data from {}", url);
             }
         }
         catch (Exception _) {
         }
+
         return Optional.empty();
     }
 }
