@@ -18,7 +18,7 @@
 - **BUGFIX:** MediathekView passt einmalig auf Nachfrage die vorhandenen Filter auf die neue max. Filmlänge von 240 Minuten an.
 - **BUGFIX:** Auswahl "Radio Bremen TV" in der Senderliste liefert nun Ergebnisse bei Nutzung Lucene.
 - **BUGFIX:** Die minimale Dialoggröße des Dialog *Film speichern* sollte nun auf allen Plattformen richtig gesetzt werden.
-- **BUGFIX:** *Download sofort starten* Checkbox wurde aus dem *Filme speichern* Dialog entfernt und in *Einstellungen/Download* eingefügt.
+- **BUGFIX:** Download-Dialoge bieten nun direkt Auswahlmöglichkeit, wie damit zu verfahren ist (sofort laden/Warteschlange), anstatt eine CheckBox zu verwenden.
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.

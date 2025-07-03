@@ -1,11 +1,11 @@
-JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {par l {comp jPanelExtra::t:::x, seq t {space :0:0:x, comp btnOk:::p::p, space :::p, comp btnCancel:::p::p, space s:::p, comp btnChange:::p::p}}, space :::p}}"
-			"$verticalGroup": "par l {seq l {space :::p, comp jPanelExtra:::p::p, space :::p, par b {comp btnChange::b:p::p, comp btnCancel::b:p::p, comp btnOk::b:p::p}, space ::2:x}}"
+			"$horizontalGroup": "par l {seq {par l {comp jPanelExtra::t:::x, seq t {space :::p, comp btnChange:::p::p, space ::177:x, comp btnQueueDownloads:::p::p, space s:::p, comp btnStartImmediately:::p::p, space :::p, comp btnCancel:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanelExtra:::p::p, space :::p, par b {comp btnCancel::b:p::p, comp btnStartImmediately::b:p::p, comp btnQueueDownloads::b:p::p, comp btnChange::b:p::p}, space ::7:x}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
@@ -13,7 +13,7 @@ new FormModel {
 			"modal": true
 			"resizable": false
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, par l {seq {comp jComboBoxPath:::p:450:p, space :::p, comp jButtonPath:::p::p, space :::x, comp jButtonDelPath:::p::p}, comp jPanel1:::::x}, space :::p}}"
+				"$horizontalGroup": "par l {seq l {space :::p, comp jLabel1:::p::p, space :::p, par l {seq {comp jComboBoxPath:::p:450:p, space :::p, comp jButtonPath:::p::p, space ::107:x, comp jButtonDelPath:::p::p}, comp jPanel1:::::x}, space :::p}}"
 				"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel1::b:p::p, comp jComboBoxPath::b:p::p, comp jButtonDelPath::b:p::p, comp jButtonPath::b:p::p}, space u:::p, comp jPanel1:::p::p, space :::x}}"
 			} ) {
 				name: "jPanelExtra"
@@ -65,10 +65,6 @@ new FormModel {
 						name: "chkSubtitle"
 						"text": "Untertitel speichern: \"Filmname.xxx\""
 					} )
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "chkStart"
-						"text": "Download sofort starten"
-					} )
 				} )
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
@@ -81,11 +77,15 @@ new FormModel {
 				"text": "Abbrechen"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
-				name: "btnOk"
-				"text": "Speichern"
+				name: "btnStartImmediately"
+				"text": "Sofort starten"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnQueueDownloads"
+				"text": "In die Warteschlange"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 730, 230 )
+			"size": new java.awt.Dimension( 730, 205 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}

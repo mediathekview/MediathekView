@@ -34,23 +34,14 @@ import javax.swing.text.JTextComponent;
 import java.util.Objects;
 
 public class DialogAddMoreDownload extends JDialog {
+    private final DatenPset pSet;
+    private final String orgPfad;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
     private boolean addAll;
     private boolean cancel;
     private boolean info;
     private boolean subtitle;
-
-    private final DatenPset pSet;
-    private final String orgPfad;
-    private final Configuration config = ApplicationConfiguration.getConfiguration();
-
-    public boolean wasCancelled() { return cancel; }
-
-    public record DialogResult(boolean addAllWithDefaults, boolean info, boolean subtitle, String path) {}
-
-    public DialogResult showDialog() {
-        setVisible(true);
-        return new DialogResult(addAll, info, subtitle, getPath());
-    }
+    private boolean startImmediately;
 
     public DialogAddMoreDownload(JFrame parent, DatenPset pSet) {
         super(parent);
@@ -60,36 +51,39 @@ public class DialogAddMoreDownload extends JDialog {
 
         chkSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
         subtitle = chkSubtitle.isSelected();
-        chkSubtitle.addActionListener(l -> subtitle = chkSubtitle.isSelected());
+        chkSubtitle.addActionListener(_ -> subtitle = chkSubtitle.isSelected());
 
         chkInfo.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
         info = chkInfo.isSelected();
-        chkInfo.addActionListener(l -> info = chkInfo.isSelected());
-
-        chkStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
-        chkStart.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(chkStart.isSelected())));
+        chkInfo.addActionListener(_ -> info = chkInfo.isSelected());
 
         jCheckBoxPfadSpeichern.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true));
-        jCheckBoxPfadSpeichern.addActionListener(e -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, jCheckBoxPfadSpeichern.isSelected()));
+        jCheckBoxPfadSpeichern.addActionListener(_ -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, jCheckBoxPfadSpeichern.isSelected()));
 
-        btnChange.addActionListener(l -> beenden());
-        btnOk.addActionListener(e -> {
+        btnChange.addActionListener(_ -> dispose());
+        btnStartImmediately.addActionListener(_ -> {
             addAll = true;
-            beenden();
+            startImmediately = true;
+            dispose();
         });
-        btnCancel.addActionListener(l -> {
+        btnQueueDownloads.addActionListener(_ -> {
+            addAll = true;
+            startImmediately = false;
+            dispose();
+        });
+        btnCancel.addActionListener(_ -> {
             cancel = true;
-            beenden();
+            dispose();
         });
 
         jButtonPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        jButtonPath.addActionListener(l -> {
+        jButtonPath.addActionListener(_ -> {
             var initialDirectory = "";
             var cbItem = Objects.requireNonNull(jComboBoxPath.getSelectedItem()).toString();
             if (!cbItem.isEmpty()) {
                 initialDirectory = cbItem;
             }
-            var selectedDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(),"Film speichern",initialDirectory);
+            var selectedDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(), "Film speichern", initialDirectory);
             if (selectedDirectory != null) {
                 final String absolutePath = selectedDirectory.getAbsolutePath();
                 jComboBoxPath.addItem(absolutePath);
@@ -99,7 +93,7 @@ public class DialogAddMoreDownload extends JDialog {
 
 
         jButtonDelPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
-        jButtonDelPath.addActionListener(e -> {
+        jButtonDelPath.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{pSet.getZielPfad()}));
         });
@@ -107,40 +101,25 @@ public class DialogAddMoreDownload extends JDialog {
         DialogAddDownloadWithCoroutines.setModelPfad(pSet.getZielPfad(), jComboBoxPath);
         orgPfad = pSet.getZielPfad();
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setOpaque(true);
-        ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            private void tus() {
-                String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
-                var editor = jComboBoxPath.getEditor().getEditorComponent();
-                if (!s.equals(FilenameUtils.checkFilenameForIllegalCharacters(s, true))) {
-                    editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                } else {
-                    editor.setBackground(UIManager.getDefaults().getColor("TextField.background"));
-                }
-            }
-        });
+        ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getDocument().addDocumentListener(new IllegalFilenameListener());
 
         EscapeKeyHandler.installHandler(this, () -> {
             cancel = true;
-            beenden();
+            dispose();
         });
 
+        getRootPane().setDefaultButton(btnStartImmediately);
+
         pack();
+    }
+
+    public boolean wasCancelled() {
+        return cancel;
+    }
+
+    public DialogResult showDialog() {
+        setVisible(true);
+        return new DialogResult(addAll, info, subtitle, getPath(), startImmediately);
     }
 
     private String getPath() {
@@ -151,11 +130,43 @@ public class DialogAddMoreDownload extends JDialog {
         return path;
     }
 
-    private void beenden() {
+    @Override
+    public void dispose() {
         DialogAddDownloadWithCoroutines.saveComboPfad(jComboBoxPath, orgPfad);
-        dispose();
+        super.dispose();
     }
 
+    public record DialogResult(boolean addAllWithDefaults, boolean info, boolean subtitle, String path, boolean startImmediately) {
+    }
+
+    private class IllegalFilenameListener implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        private void tus() {
+            String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
+            var editor = jComboBoxPath.getEditor().getEditorComponent();
+            if (!s.equals(FilenameUtils.checkFilenameForIllegalCharacters(s, true))) {
+                editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
+            }
+            else {
+                editor.setBackground(UIManager.getDefaults().getColor("TextField.background"));
+            }
+        }
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -174,14 +185,14 @@ public class DialogAddMoreDownload extends JDialog {
         chkInfo = new JCheckBox();
         jCheckBoxPfadSpeichern = new JCheckBox();
         chkSubtitle = new JCheckBox();
-        chkStart = new JCheckBox();
         btnChange = new JButton();
         btnCancel = new JButton();
-        btnOk = new JButton();
+        btnStartImmediately = new JButton();
+        btnQueueDownloads = new JButton();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Alle Downloads starten"); //NON-NLS
+        setTitle("Alle Downloads starten");
         setModal(true);
         setResizable(false);
         var contentPane = getContentPane();
@@ -191,7 +202,7 @@ public class DialogAddMoreDownload extends JDialog {
             jPanelExtra.setBorder(new EtchedBorder());
 
             //---- jLabel1 ----
-            jLabel1.setText("Speicherpfad:"); //NON-NLS
+            jLabel1.setText("Speicherpfad:");
 
             //---- jComboBoxPath ----
             jComboBoxPath.setEditable(true);
@@ -200,32 +211,28 @@ public class DialogAddMoreDownload extends JDialog {
             }));
 
             //---- jButtonDelPath ----
-            jButtonDelPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); //NON-NLS
-            jButtonDelPath.setToolTipText("History l\u00f6schen"); //NON-NLS
+            jButtonDelPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png")));
+            jButtonDelPath.setToolTipText("History l\u00f6schen");
 
             //---- jButtonPath ----
-            jButtonPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); //NON-NLS
-            jButtonPath.setToolTipText("Zielpfad ausw\u00e4hlen"); //NON-NLS
+            jButtonPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
+            jButtonPath.setToolTipText("Zielpfad ausw\u00e4hlen");
 
             //======== jPanel1 ========
             {
                 jPanel1.setLayout(new VerticalLayout(5));
 
                 //---- chkInfo ----
-                chkInfo.setText("Infodatei anlegen: \"Filmname.txt\""); //NON-NLS
+                chkInfo.setText("Infodatei anlegen: \"Filmname.txt\"");
                 jPanel1.add(chkInfo);
 
                 //---- jCheckBoxPfadSpeichern ----
-                jCheckBoxPfadSpeichern.setText("Zielpfad speichern"); //NON-NLS
+                jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
                 jPanel1.add(jCheckBoxPfadSpeichern);
 
                 //---- chkSubtitle ----
-                chkSubtitle.setText("Untertitel speichern: \"Filmname.xxx\""); //NON-NLS
+                chkSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
                 jPanel1.add(chkSubtitle);
-
-                //---- chkStart ----
-                chkStart.setText("Download sofort starten"); //NON-NLS
-                jPanel1.add(chkStart);
             }
 
             GroupLayout jPanelExtraLayout = new GroupLayout(jPanelExtra);
@@ -241,7 +248,7 @@ public class DialogAddMoreDownload extends JDialog {
                                 .addComponent(jComboBoxPath, GroupLayout.PREFERRED_SIZE, 450, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonPath)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
                                 .addComponent(jButtonDelPath))
                             .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
@@ -262,14 +269,17 @@ public class DialogAddMoreDownload extends JDialog {
         }
 
         //---- btnChange ----
-        btnChange.setText("Einzeln anlegen"); //NON-NLS
-        btnChange.setToolTipText("Die Sammelaktion wird abgebrochen und Sie k\u00f6nnen im Anschlu\u00df die Einstellungen f\u00fcr jeden Download einzeln festlegen."); //NON-NLS
+        btnChange.setText("Einzeln anlegen");
+        btnChange.setToolTipText("Die Sammelaktion wird abgebrochen und Sie k\u00f6nnen im Anschlu\u00df die Einstellungen f\u00fcr jeden Download einzeln festlegen.");
 
         //---- btnCancel ----
-        btnCancel.setText("Abbrechen"); //NON-NLS
+        btnCancel.setText("Abbrechen");
 
-        //---- btnOk ----
-        btnOk.setText("Speichern"); //NON-NLS
+        //---- btnStartImmediately ----
+        btnStartImmediately.setText("Sofort starten");
+
+        //---- btnQueueDownloads ----
+        btnQueueDownloads.setText("In die Warteschlange");
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
@@ -279,12 +289,14 @@ public class DialogAddMoreDownload extends JDialog {
                     .addGroup(contentPaneLayout.createParallelGroup()
                         .addComponent(jPanelExtra, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                            .addGap(0, 0, Short.MAX_VALUE)
-                            .addComponent(btnOk)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnCancel)
+                            .addContainerGap()
+                            .addComponent(btnChange)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                            .addComponent(btnQueueDownloads)
                             .addGap(18, 18, 18)
-                            .addComponent(btnChange)))
+                            .addComponent(btnStartImmediately)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnCancel)))
                     .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
@@ -294,10 +306,11 @@ public class DialogAddMoreDownload extends JDialog {
                     .addComponent(jPanelExtra, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnChange)
                         .addComponent(btnCancel)
-                        .addComponent(btnOk))
-                    .addContainerGap(2, Short.MAX_VALUE))
+                        .addComponent(btnStartImmediately)
+                        .addComponent(btnQueueDownloads)
+                        .addComponent(btnChange))
+                    .addContainerGap(7, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -310,9 +323,9 @@ public class DialogAddMoreDownload extends JDialog {
     private JCheckBox chkInfo;
     private JCheckBox jCheckBoxPfadSpeichern;
     private JCheckBox chkSubtitle;
-    private JCheckBox chkStart;
     private JButton btnChange;
     private JButton btnCancel;
-    private JButton btnOk;
+    private JButton btnStartImmediately;
+    private JButton btnQueueDownloads;
     // End of variables declaration//GEN-END:variables
 }
