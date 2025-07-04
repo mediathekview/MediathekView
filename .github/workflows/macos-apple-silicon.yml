@@ -1,4 +1,4 @@
-name: build-nightly-apps
+name: build-macos-apple-silicon
 
 on:
   schedule:
