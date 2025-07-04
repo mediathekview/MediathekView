@@ -34,16 +34,6 @@ jobs:
         with:
           ref: develop
 
-      - name: Extract Version from pom.xml
-        id: version
-        run: |
-          VERSION=$(xmllint --xpath "/*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
-          echo "Extracted Version: $VERSION"
-          echo "MV_VERSION=$VERSION" >> "$GITHUB_ENV"
-
-      - name: Use Extracted Version
-        run: echo "The version is $MV_VERSION"
-
       - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
@@ -118,12 +108,9 @@ jobs:
           S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
         run: |
           DATE=$(date +'%Y-%m-%d')
-          FILE_NAME="MediathekView-${MV_VERSION}-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
-          # Hash erzeugen
-          shasum -a 512 "target/media/${{ matrix.dmg_file }}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"
-          
-          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${{ matrix.dmg_file }}" "s3://${S3_BUCKET}/${FILE_NAME}"
-          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${FILE_NAME}.sha512" "s3://${S3_BUCKET}/${FILE_NAME}.sha512"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp \
+            target/media/${{ matrix.dmg_file }} \
+            "s3://${S3_BUCKET}/MediathekView-latest-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
 
   build-windows-arm64:
     name: Build Windows ARM64 nightly
@@ -137,14 +124,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: develop
-
-      - name: Extract Version from pom.xml
-        shell: pwsh
-        run: |
-          [xml]$pom = Get-Content pom.xml
-          $version = $pom.project.version
-          echo "Version: $version"
-          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
       - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
@@ -200,24 +179,15 @@ jobs:
           $endpoint = "https://$env:S3_ENDPOINT"
           $bucket   = $env:S3_BUCKET
         
-#          aws --endpoint-url $endpoint s3 cp `
-#            target\media\MediathekView-latest-win-aarch64.exe `
-#            "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.exe"
-        
-#          aws --endpoint-url $endpoint s3 cp `
-#            target\media\MediathekView-latest-win-aarch64.zip `
-#            "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.zip"
-
           aws --endpoint-url $endpoint s3 cp `
             target\media\MediathekView-latest-win-aarch64.exe `
-            "s3://$bucket/MediathekView-$env:MV_VERSION-win-aarch64-snapshot-$date.exe"
-  
+            "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.exe"
+        
           aws --endpoint-url $endpoint s3 cp `
             target\media\MediathekView-latest-win-aarch64.zip `
-            "s3://$bucket/MediathekView-$env:MV_VERSION-win-aarch64-snapshot-$date.zip"
+            "s3://$bucket/MediathekView-latest-win-aarch64-snapshot-$date.zip"
 
-
-build-windows-amd64:
+  build-windows-amd64:
     name: Build Windows AMD64 nightly
     runs-on: windows-latest
 
@@ -229,14 +199,6 @@ build-windows-amd64:
         uses: actions/checkout@v4
         with:
           ref: develop
-
-      - name: Extract Version from pom.xml
-        shell: pwsh
-        run: |
-          [xml]$pom = Get-Content pom.xml
-          $version = $pom.project.version
-          echo "Version: $version"
-          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
       - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
@@ -292,18 +254,10 @@ build-windows-amd64:
           $endpoint = "https://$env:S3_ENDPOINT"
           $bucket   = $env:S3_BUCKET
           
-#          aws --endpoint-url $endpoint s3 cp `
-#            target\media\MediathekView-latest-windows-amd64.exe `
-#            "s3://$bucket/MediathekView-latest-windows-amd64-snapshot-$date.exe"
-          
-#          aws --endpoint-url $endpoint s3 cp `
-#            target\media\MediathekView-latest-windows-amd64.zip `
-#            "s3://$bucket/MediathekView-latest-windows-amd64-snapshot-$date.zip"
-
           aws --endpoint-url $endpoint s3 cp `
             target\media\MediathekView-latest-windows-amd64.exe `
-            "s3://$bucket/MediathekView-$env:MV_VERSION-windows-amd64-snapshot-$date.exe"
-  
+            "s3://$bucket/MediathekView-latest-windows-amd64-snapshot-$date.exe"
+          
           aws --endpoint-url $endpoint s3 cp `
             target\media\MediathekView-latest-windows-amd64.zip `
-            "s3://$bucket/MediathekView-$env:MV_VERSION-windows-amd64-snapshot-$date.zip"
+            "s3://$bucket/MediathekView-latest-windows-amd64-snapshot-$date.zip"
