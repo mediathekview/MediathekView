@@ -118,7 +118,7 @@ jobs:
           S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
         run: |
           DATE=$(date +'%Y-%m-%d')
-          FILE_NAME="MediathekView-${MV_VERSION}-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
+          FILE_NAME="MediathekView-${MV_VERSION}-${{ matrix.dmg_suffix }}-notarized-$DATE.dmg"
 
           shasum -a 512 "target/media/${{ matrix.dmg_file }}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"          
           aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${{ matrix.dmg_file }}" "s3://${S3_BUCKET}/${FILE_NAME}"
@@ -201,8 +201,8 @@ jobs:
           $bucket   = $env:S3_BUCKET
           $version  = $env:MV_VERSION
       
-          $exeName = "MediathekView-$version-win-aarch64-snapshot-$date.exe"
-          $zipName = "MediathekView-$version-win-aarch64-snapshot-$date.zip"
+          $exeName = "MediathekView-$version-win-aarch64-$date.exe"
+          $zipName = "MediathekView-$version-win-aarch64-$date.zip"
       
           # SHA512 generieren
           Get-FileHash target\media\MediathekView-latest-win-aarch64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
@@ -292,8 +292,8 @@ jobs:
           $bucket   = $env:S3_BUCKET
           $version  = $env:MV_VERSION
       
-          $exeName = "MediathekView-$version-windows-amd64-snapshot-$date.exe"
-          $zipName = "MediathekView-$version-windows-amd64-snapshot-$date.zip"
+          $exeName = "MediathekView-$version-win-amd64-$date.exe"
+          $zipName = "MediathekView-$version-win-amd64-$date.zip"
       
           # SHA512 generieren
           Get-FileHash target\media\MediathekView-latest-windows-amd64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
