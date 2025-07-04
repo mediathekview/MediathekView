@@ -34,6 +34,16 @@ jobs:
         with:
           ref: develop
 
+      - name: Extract Version from pom.xml
+        id: version
+        run: |
+          VERSION=$(xmllint --xpath "/*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+          echo "Extracted Version: $VERSION"
+          echo "MV_VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Use Extracted Version
+        run: echo "The version is $MV_VERSION"
+
       - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
@@ -108,9 +118,11 @@ jobs:
           S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
         run: |
           DATE=$(date +'%Y-%m-%d')
-          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp \
-            target/media/${{ matrix.dmg_file }} \
-            "s3://${S3_BUCKET}/MediathekView-latest-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
+          FILE_NAME="MediathekView-${MV_VERSION}-${{ matrix.dmg_suffix }}-notarized-snapshot-$DATE.dmg"
+
+          shasum -a 512 "target/media/${{ matrix.dmg_file }}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"          
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${{ matrix.dmg_file }}" "s3://${S3_BUCKET}/${FILE_NAME}"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${FILE_NAME}.sha512" "s3://${S3_BUCKET}/${FILE_NAME}.sha512"
 
   build-windows-arm64:
     name: Build Windows ARM64 nightly
