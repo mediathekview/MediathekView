@@ -118,6 +118,30 @@ public class TitleParserManager {
                 // Un-parenthesized continuous notation, e.g. S01E16
                 "[sS](?<season>\\d{1,4})[eE](?<episode>\\d{1,4})"
         );
+        register("ZDFneo",
+                // 1) Parenthesized slash notation: (S03x/E07)
+                "\\(\\s*[sS](?<season>\\d{1,3})/[eE](?<episode>\\d{1,2})\\s*\\)",
+                // 2) Parenthesized continuous notation: (S03E07)
+                "\\(\\s*[sS](?<season>\\d{1,2})[eE](?<episode>\\d{1,2})\\s*\\)",
+                // 3) Inline slash notation: S03/E07
+                "[sS](?<season>\\d{1,2})/[eE](?<episode>\\d{1,2})",
+                // 4) Inline continuous notation: S03E07
+                "[sS](?<season>\\d{1,2})[eE](?<episode>\\d{1,2})",
+                // 5) German Staffel/Folge: Staffel 2, Folge 5
+                "Staffel\\s*(?<season>\\d{1,2})\\s*,\\s*Folge\\s*(?<episode>\\d{1,3})"
+        );
+        register("ZDF-tivi",
+                // 1) Parenthesized slash notation: (S03x/E07)
+                "\\(\\s*[sS](?<season>\\d{1,3})/[eE](?<episode>\\d{1,2})\\s*\\)",
+                // 2) Parenthesized continuous notation: (S03E07)
+                "\\(\\s*[sS](?<season>\\d{1,2})[eE](?<episode>\\d{1,2})\\s*\\)",
+                // 3) Inline slash notation: S03/E07
+                "[sS](?<season>\\d{1,2})/[eE](?<episode>\\d{1,2})",
+                // 4) Inline continuous notation: S03E07
+                "[sS](?<season>\\d{1,2})[eE](?<episode>\\d{1,2})",
+                // 5) German Staffel/Folge: Staffel 2, Folge 5
+                "Staffel\\s*(?<season>\\d{1,2})\\s*,\\s*Folge\\s*(?<episode>\\d{1,3})"
+        );
     }
 
     /**
