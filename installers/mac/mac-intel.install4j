@@ -39,7 +39,7 @@
     <entries>
       <fileEntry mountPoint="154" file="../bin/ffmpeg" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
       <fileEntry mountPoint="154" file="../bin/ffprobe" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
-      <fileEntry mountPoint="154" file="../bin/mv_shutdown_helper" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
+      <fileEntry mountPoint="154" file="../bin/MVShutdownHelper" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
       <fileEntry mountPoint="58" file="../MediathekView.jar" />
       <dirEntry mountPoint="58" file="../dependency" overwriteMode="1" uninstallMode="2" overrideOverwriteMode="true" overrideUninstallMode="true" entryMode="subdir" subDirectory="dependency">
         <exclude>
