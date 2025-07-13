@@ -1246,7 +1246,7 @@
                 set -e
                 mkdir -p "${bin.dir}"
                 for pair in \
-                  "common/mv_shutdown_helper:3c8254ce318ef41da00517199c5a5e85" \
+                  "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
                   "intel/ffmpeg:438891fe3a1077081aa400c1df18590c" \
                   "intel/ffprobe:5226b0b358243c5757108e107dc546bf"
                 do
@@ -1363,7 +1363,7 @@
 set -e
 mkdir -p "${bin.dir}"
 for pair in \
-  "common/mv_shutdown_helper:3c8254ce318ef41da00517199c5a5e85" \
+  "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
   "apple_silicon/ffmpeg:59529684989790fb73c956f813c9be13" \
   "apple_silicon/ffprobe:cca2b80ca82a1fd6f96763ba2ecbe691"
 do

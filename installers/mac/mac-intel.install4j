@@ -11,8 +11,8 @@
         <entry>*.so</entry>
         <entry>*.jnilib</entry>
         <entry>ffmpeg</entry>
-        <entry>mv_shutdown_helper</entry>
         <entry>ffprobe</entry>
+        <entry>MVShutdownHelper</entry>
       </macAdditionalBinaries>
       <macSearchedJars>
         <entry>jna-*</entry>
