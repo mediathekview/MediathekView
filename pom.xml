@@ -110,7 +110,7 @@
         <jna.version>5.17.0</jna.version>
         <jsoup.version>1.21.1</jsoup.version>
         <junit.jupiter.version>5.10.3</junit.jupiter.version>
-        <lucene.version>10.2.0</lucene.version>
+        <lucene.version>10.2.2</lucene.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
         <log4j2.version>2.24.3</log4j2.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
