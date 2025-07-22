@@ -12,6 +12,7 @@
 - **FEATURE:** Im Dialog *Filminformation* wird die Verfügbarkeit für den selektierten Film automatisch online abgefragt und bei Erfolg dargestellt.
 - **FEATURE:** Dialog *Filme speichern* bietet nun klar ersichtliche Handlungsoptionen, wie mit Downloads zu verfahren ist.
 - **FEATURE(macOS):** Standard-Abschaltverhalten des shutdown-Helper kann in *Einstellungen/Erweitert* konfiguriert werden.
+- **FEATURE(macOS):** Zum Schreiben von Spotlight Kommentaren wird kein AppleScript mehr genutzt.
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.

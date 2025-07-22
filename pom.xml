@@ -95,6 +95,7 @@
         <commons-io.version>2.19.0</commons-io.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <coroutines.version>1.10.2</coroutines.version>
+        <dd-plist.version>1.28</dd-plist.version>
         <flatlaf.version>3.6</flatlaf.version>
         <glazedlists.version>1.11.0</glazedlists.version>
         <guava.version>33.4.8-jre</guava.version>
@@ -153,6 +154,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.googlecode.plist</groupId>
+            <artifactId>dd-plist</artifactId>
+            <version>${dd-plist.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
