@@ -33,10 +33,13 @@ import java.nio.file.Path;
 public class FinderCommentService {
     private static final String ATTR_FINDER_COMMENT = "com.apple.metadata:kMDItemFinderComment";
 
+    public static String cleanComment(@NotNull String comment) {
+        return comment.replaceAll("\\R", "");
+    }
+
     public static void setFinderComment(@NotNull Path filePath, @NotNull String comment) throws Exception {
         try (var out = new ByteArrayOutputStream()) {
-            var cleaned = comment.replaceAll("\\R", "");
-            var nsString = new NSString(cleaned);
+            var nsString = new NSString(cleanComment(comment));
             PropertyListParser.saveAsBinary(nsString, out);
             byte[] plistBytes = out.toByteArray();
 

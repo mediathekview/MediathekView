@@ -214,7 +214,7 @@ public class StarterClass {
                                 logger.trace("Successfully wrote finder comment.");
 
                                 var newComment = FinderCommentService.getFinderComment(filmPath);
-                                if (newComment != null && newComment.equalsIgnoreCase(strComment)) {
+                                if (newComment != null && newComment.equalsIgnoreCase(FinderCommentService.cleanComment(strComment))) {
                                     logger.info("Finder comment verified.");
                                 }
                                 else
