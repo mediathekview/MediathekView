@@ -18,6 +18,7 @@
 
 package mediathek.mac;
 
+import com.dd.plist.BinaryPropertyListWriter;
 import com.dd.plist.NSObject;
 import com.dd.plist.NSString;
 import com.dd.plist.PropertyListParser;
@@ -31,7 +32,8 @@ import java.io.ByteArrayOutputStream;
 import java.nio.file.Path;
 
 public class FinderCommentService {
-    private static final String ATTR_FINDER_COMMENT = "com.apple.metadata:kMDItemFinderComment";
+    private static final String XATTR_FINDER_COMMENT = "com.apple.metadata:kMDItemFinderComment";
+    private static final String XATTR_COMMENT = "com.apple.metadata:kMDItemComment";
 
     public static String cleanComment(@NotNull String comment) {
         return comment.replaceAll("\\R", "");
@@ -40,28 +42,34 @@ public class FinderCommentService {
     public static void setFinderComment(@NotNull Path filePath, @NotNull String comment) throws Exception {
         try (var out = new ByteArrayOutputStream()) {
             var nsString = new NSString(cleanComment(comment));
-            PropertyListParser.saveAsBinary(nsString, out);
+            BinaryPropertyListWriter.write(nsString, out);
             byte[] plistBytes = out.toByteArray();
 
 
             Pointer data = new Memory(plistBytes.length);
             data.write(0, plistBytes, 0, plistBytes.length);
 
-            int result = LibC.INSTANCE.setxattr(filePath.toString(), ATTR_FINDER_COMMENT, data, plistBytes.length, 0, 0);
+            int result = LibC.INSTANCE.setxattr(filePath.toString(), XATTR_FINDER_COMMENT, data, plistBytes.length, 0, 0);
+            checkError(result);
 
-            if (result != 0) {
-                throw new RuntimeException("setxattr failed: " + Native.getLastError());
-            }
+            result = LibC.INSTANCE.setxattr(filePath.toString(), XATTR_COMMENT, data, plistBytes.length, 0, 0);
+            checkError(result);
+        }
+    }
+
+    private static void checkError(int result) {
+        if (result != 0) {
+            throw new RuntimeException("setxattr failed: " + Native.getLastError());
         }
     }
 
     public static String getFinderComment(Path filePath) throws Exception {
-        long size = FinderCommentService.LibC.INSTANCE.getxattr(filePath.toString(), ATTR_FINDER_COMMENT, null, 0, 0, 0);
+        long size = FinderCommentService.LibC.INSTANCE.getxattr(filePath.toString(), XATTR_FINDER_COMMENT, null, 0, 0, 0);
         if (size <= 0)
             return null;
 
         Pointer buffer = new Memory(size);
-        long readSize = FinderCommentService.LibC.INSTANCE.getxattr(filePath.toString(), ATTR_FINDER_COMMENT, buffer, size, 0, 0);
+        long readSize = FinderCommentService.LibC.INSTANCE.getxattr(filePath.toString(), XATTR_FINDER_COMMENT, buffer, size, 0, 0);
         if (readSize != size) {
             throw new RuntimeException("Failed to read full attribute");
         }
