@@ -24,6 +24,7 @@ import com.dd.plist.PropertyListParser;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,9 +33,10 @@ import java.nio.file.Path;
 public class FinderCommentService {
     private static final String ATTR_FINDER_COMMENT = "com.apple.metadata:kMDItemFinderComment";
 
-    public static void setFinderComment(Path filePath, String comment) throws Exception {
+    public static void setFinderComment(@NotNull Path filePath, @NotNull String comment) throws Exception {
         try (var out = new ByteArrayOutputStream()) {
-            var nsString = new NSString(comment);
+            var cleaned = comment.replaceAll("\\R", "");
+            var nsString = new NSString(cleaned);
             PropertyListParser.saveAsBinary(nsString, out);
             byte[] plistBytes = out.toByteArray();
 
