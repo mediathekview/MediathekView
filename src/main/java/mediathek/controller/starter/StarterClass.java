@@ -215,13 +215,13 @@ public class StarterClass {
 
                                 var newComment = FinderCommentService.getFinderComment(filmPath);
                                 if (newComment != null && newComment.equalsIgnoreCase(FinderCommentService.cleanComment(strComment))) {
-                                    logger.info("Finder comment verified.");
+                                    logger.trace("Finder comment verified.");
                                 }
                                 else
                                     logger.error("Finder comment verification failed.");
                             }
                         }
-                        catch (Exception e) {
+                        catch (Throwable e) {
                             logger.error("Failed to set Finder comment for \"{}\"", filmPath, e);
                         }
                     }
@@ -289,12 +289,12 @@ public class StarterClass {
         return starterThread;
     }
 
-    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm film, String aufloesung) {
+    public synchronized void urlMitProgrammStarten(DatenPset pSet, @NotNull DatenFilm film, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         String url = film.getUrlNormalQuality();
         if (!url.isEmpty()) {
-            DatenDownload d = new DatenDownload(pSet, film, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
+            var d = new DatenDownload(pSet, film, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
             starterThread.launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
@@ -304,7 +304,10 @@ public class StarterClass {
 
             // falls gemerkt, Film in Merkliste als abgespielt kennzeichnen
             if (film.isBookmarked()) {
-                film.getBookmark().setSeen(true);
+                var bookmark = film.getBookmark();
+                if (bookmark != null) {
+                    bookmark.setSeen(true);
+                }
             }
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             daten.getListeDownloadsButton().addMitNummer(d);
