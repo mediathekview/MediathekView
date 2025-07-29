@@ -96,6 +96,18 @@ public class TitleParserManager {
                 // 2) Parenthesized ratio-only pattern, e.g. (1/4)
                 "\\(\\s*(?<season>\\d{1,2})/(?<episode>\\d{1,2})\\s*\\)"
         );
+        register("SWR",
+                // 1) Parenthesized slash notation: (S03x/E07)
+                "\\(\\s*[sS](?<season>\\d{1,3})/[eE](?<episode>\\d{1,2})\\s*\\)",
+                // 2) Parenthesized continuous notation: (S03E07)
+                "\\(\\s*[sS](?<season>\\d{1,2})[eE](?<episode>\\d{1,2})\\s*\\)",
+                // 3) Inline slash notation: S03/E07
+                "[sS](?<season>\\d{1,2})/[eE](?<episode>\\d{1,2})",
+                // 4) Inline continuous notation: S03E07
+                "[sS](?<season>\\d{1,2})[eE](?<episode>\\d{1,2})",
+                // 5) German Staffel/Folge: Staffel 2, Folge 5
+                "Staffel\\s*(?<season>\\d{1,2})\\s*,\\s*Folge\\s*(?<episode>\\d{1,3})"
+        );
         register("WDR",
                 // 1) Parenthesized slash notation: (S03x/E07)
                 "\\(\\s*[sS](?<season>\\d{1,3})/[eE](?<episode>\\d{1,2})\\s*\\)",
