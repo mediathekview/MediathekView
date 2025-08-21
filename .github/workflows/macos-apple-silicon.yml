@@ -26,7 +26,7 @@ jobs:
 
     env:
       # bump this when you upgrade install4j
-      INSTALL4J_VERSION: '11_0_4'
+      INSTALL4J_VERSION: '11_0_5'
 
     steps:
       - name: Checkout develop branch
@@ -129,7 +129,7 @@ jobs:
     runs-on: windows-11-arm
 
     env:
-      INSTALL4J_VERSION: '11_0_4'
+      INSTALL4J_VERSION: '11_0_5'
 
     steps:
       - name: Checkout develop branch
@@ -221,7 +221,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      INSTALL4J_VERSION: '11_0_4'
+      INSTALL4J_VERSION: '11_0_5'
 
     steps:
       - name: Checkout develop branch
