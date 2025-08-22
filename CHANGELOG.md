@@ -13,6 +13,7 @@
 - **FEATURE:** Dialog *Filme speichern* bietet nun klar ersichtliche Handlungsoptionen, wie mit Downloads zu verfahren ist.
 - **FEATURE(macOS):** Standard-Abschaltverhalten des shutdown-Helper kann in *Einstellungen/Erweitert* konfiguriert werden.
 - **FEATURE(macOS):** Zum Schreiben von Spotlight Kommentaren wird kein AppleScript mehr genutzt.
+- **FEATURE:** Spalte *Zeit* im Tab Filme zeigt nun die Sendezeit ohne Sekunden an wenn diese Null ist.
 - **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
 - **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
 - **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.

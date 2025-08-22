@@ -17,10 +17,16 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
+    private static final DateTimeFormatter PARSER = DateTimeFormatter.ofPattern("H:mm[:ss]");
+    private static final DateTimeFormatter SHORT  = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter LONG   = DateTimeFormatter.ofPattern("HH:mm:ss");
     private final FontIcon selectedStopIcon;
     private final FontIcon normalStopIcon;
     private final SeenHistoryController history = new SeenHistoryController();
@@ -31,7 +37,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final FontIcon selectedBookmarkIcon;
     private final FontIcon normalBookmarkIcon;
     private final FontIcon selectedBookmarkIconHighlighted;
-
+    private final java.util.List<Color> bgList = new ArrayList<>();
     public CellRendererFilme() {
         selectedDownloadIcon = FontIcon.of(FontAwesomeSolid.DOWNLOAD, IconUtils.DEFAULT_SIZE, Color.WHITE);
         normalDownloadIcon = IconUtils.of(FontAwesomeSolid.DOWNLOAD);
@@ -117,6 +123,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     setIndicatorIcons(table, datenFilm, isSelected);
                 }
                 case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
+
+                case DatenFilm.FILM_ZEIT -> drawTime(datenFilm);
             }
 
             applyColorSettings(this, datenFilm, isBookMarked, isSelected);
@@ -125,6 +133,25 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
 
         return this;
+    }
+
+    /**
+     * Draw time without trailing seconds if zero.
+     * @param film input film object.
+     */
+    private void drawTime(@NotNull DatenFilm film) {
+        var zeit = film.getSendeZeit();
+        if (zeit == null || zeit.isBlank()) {
+            setText("");
+            return;
+        }
+
+        try {
+            var t = LocalTime.parse(zeit.trim(), PARSER);
+            setText((t.getSecond() == 0 ? SHORT : LONG).format(t));
+        } catch (DateTimeParseException ex) {
+            setText(zeit.trim());
+        }
     }
 
     /**
@@ -139,8 +166,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             case DatenFilm.FILM_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
         }
     }
-
-    private final java.util.List<Color> bgList = new ArrayList<>();
 
     private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isBookMarked, boolean isSelected) {
         bgList.clear();
