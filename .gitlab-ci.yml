@@ -61,7 +61,7 @@ Build and Deploy nightly Linux ARM:
   stage: deploy-nightly-linarm
   script:
     - mvn -B package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh nightly linux-aarch64 $CI_COMMIT_SHA
+    - /skripte/deploy.sh nightly linux-arm64 $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
 
