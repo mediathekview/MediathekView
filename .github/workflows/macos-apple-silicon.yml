@@ -201,19 +201,19 @@ jobs:
           $bucket   = $env:S3_BUCKET
           $version  = $env:MV_VERSION
       
-          $exeName = "MediathekView-$version-win-aarch64-$date.exe"
-          $zipName = "MediathekView-$version-win-aarch64-$date.zip"
+          $exeName = "MediathekView-$version-win-arm64-$date.exe"
+          $zipName = "MediathekView-$version-win-arm64-$date.zip"
       
           # SHA512 generieren
-          Get-FileHash target\media\MediathekView-latest-win-aarch64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
-          Get-FileHash target\media\MediathekView-latest-win-aarch64.zip -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$zipName.sha512"
+          Get-FileHash target\media\MediathekView-latest-win-arm64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
+          Get-FileHash target\media\MediathekView-latest-win-arm64.zip -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$zipName.sha512"
       
           # Upload .exe
-          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-win-aarch64.exe "s3://$bucket/$exeName"
+          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-win-arm64.exe "s3://$bucket/$exeName"
           aws --endpoint-url $endpoint s3 cp "target\media\$exeName.sha512" "s3://$bucket/$exeName.sha512"
       
           # Upload .zip
-          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-win-aarch64.zip "s3://$bucket/$zipName"
+          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-win-arm64.zip "s3://$bucket/$zipName"
           aws --endpoint-url $endpoint s3 cp "target\media\$zipName.sha512" "s3://$bucket/$zipName.sha512"
 
   build-windows-amd64:
