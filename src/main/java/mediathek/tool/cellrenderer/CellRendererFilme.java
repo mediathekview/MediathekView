@@ -27,6 +27,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final DateTimeFormatter PARSER = DateTimeFormatter.ofPattern("H:mm[:ss]");
     private static final DateTimeFormatter SHORT  = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter LONG   = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final int SECONDS_VARIANCE = 10;
     private final FontIcon selectedStopIcon;
     private final FontIcon normalStopIcon;
     private final SeenHistoryController history = new SeenHistoryController();
@@ -38,6 +39,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     private final FontIcon normalBookmarkIcon;
     private final FontIcon selectedBookmarkIconHighlighted;
     private final java.util.List<Color> bgList = new ArrayList<>();
+
     public CellRendererFilme() {
         selectedDownloadIcon = FontIcon.of(FontAwesomeSolid.DOWNLOAD, IconUtils.DEFAULT_SIZE, Color.WHITE);
         normalDownloadIcon = IconUtils.of(FontAwesomeSolid.DOWNLOAD);
@@ -148,7 +150,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
         try {
             var t = LocalTime.parse(zeit.trim(), PARSER);
-            setText((t.getSecond() == 0 ? SHORT : LONG).format(t));
+            setText((t.getSecond() < SECONDS_VARIANCE ? SHORT : LONG).format(t));
         } catch (DateTimeParseException ex) {
             setText(zeit.trim());
         }
