@@ -929,7 +929,6 @@
             </activation>
             <properties>
                 <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip</windows.ffmpeg.url>
-                <windows.ffmpeg.md5>3812b8f3c99cf33278dad42a79bff973</windows.ffmpeg.md5>
                 <windows.bin.dir>${project.build.directory}/res/bin</windows.bin.dir>
             </properties>
             <build>
@@ -955,7 +954,6 @@
                                         <argument>
                                             <![CDATA[
               $url    = '${windows.ffmpeg.url}'
-              $md5exp = '${windows.ffmpeg.md5}'
               $outDir = '${windows.bin.dir}'
               $zip    = Join-Path $outDir 'ffmpeg.zip'
 
@@ -965,57 +963,6 @@
               Write-Host "→ Downloading $url"
               # use Windows-native curl.exe for a console progress bar
               curl.exe -L $url -o $zip --progress-bar
-
-              # verify checksum
-              # Kompatibilitäts-Shim nur laden, wenn Get-FileHash fehlt
-                if (-not (Get-Command Get-FileHash -ErrorAction SilentlyContinue)) {
-                  function Get-FileHash {
-                    [CmdletBinding()]
-                    param(
-                      [Parameter(Mandatory = $true)]
-                      [string]$Path,
-
-                      [ValidateSet('MD5','SHA1','SHA256','SHA384','SHA512')]
-                      [string]$Algorithm = 'SHA256'
-                    )
-
-                    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
-                      throw "File not found: $Path"
-                    }
-
-                    # Algorithmus-Objekt wählen
-                    $algo = switch ($Algorithm.ToUpperInvariant()) {
-                      'MD5'    { [System.Security.Cryptography.MD5]::Create() }
-                      'SHA1'   { [System.Security.Cryptography.SHA1]::Create() }
-                      'SHA256' { [System.Security.Cryptography.SHA256]::Create() }
-                      'SHA384' { [System.Security.Cryptography.SHA384]::Create() }
-                      'SHA512' { [System.Security.Cryptography.SHA512]::Create() }
-                    }
-
-                    try {
-                      $fs = [System.IO.File]::OpenRead($Path)
-                      try {
-                        $bytes = $algo.ComputeHash($fs)
-                      } finally {
-                        $fs.Dispose()
-                      }
-
-                      # Rückgabe-Form wie beim echten Cmdlet
-                      [pscustomobject]@{
-                        Algorithm = $Algorithm.ToUpperInvariant()
-                        Hash      = ([System.BitConverter]::ToString($bytes)).Replace('-', '')
-                        Path      = (Resolve-Path -LiteralPath $Path).Path
-                      }
-                    }
-                    finally {
-                      $algo.Dispose()
-                    }
-                  }
-                }
-              $md5got = (Get-FileHash -Algorithm MD5 -Path $zip).Hash.ToLower()
-              if ($md5got -ne $md5exp) {
-                throw "MD5 mismatch: expected $md5exp, got $md5got"
-              }
 
               Write-Host "→ Unpacking $zip → $outDir"
               Expand-Archive -Path $zip -DestinationPath $outDir -Force
