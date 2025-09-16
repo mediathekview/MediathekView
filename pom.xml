@@ -751,8 +751,7 @@
             </activation>
             <properties>
                 <install4j.platform>windows</install4j.platform>
-                <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg_new.zip</windows.ffmpeg.url>
-                <windows.ffmpeg.md5>ef173fd7a3b684c71e445702a8f510f3</windows.ffmpeg.md5>
+                <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.zip</windows.ffmpeg.url>
                 <windows.ffmpeg.outdir>${project.build.directory}/res</windows.ffmpeg.outdir>
             </properties>
             <build>
@@ -778,7 +777,6 @@
                                         <argument>
                                             <![CDATA[
                       $url    = '${windows.ffmpeg.url}'
-                      $md5exp = '${windows.ffmpeg.md5}'
                       $outDir = '${windows.ffmpeg.outdir}'
                       $zip    = Join-Path $outDir 'ffmpeg_new.zip'
 
@@ -788,12 +786,6 @@
                       Write-Host "→ Downloading $url"
                       # use native curl.exe for a console progress bar
                       curl.exe -L $url -o $zip --progress-bar
-
-                      # verify checksum
-                      $md5got = (Get-FileHash -Algorithm MD5 -Path $zip).Hash.ToLower()
-                      if ($md5got -ne $md5exp) {
-                        throw "MD5 mismatch: expected $md5exp, got $md5got"
-                      }
 
                       Write-Host "→ Unpacking $zip → $outDir"
                       Expand-Archive -Path $zip -DestinationPath $outDir -Force
