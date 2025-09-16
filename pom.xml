@@ -1255,7 +1255,7 @@
                 for pair in \
                   "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
                   "intel/ffmpeg:dd1b293c38510063f98f733229c526f5" \
-                  "intel/ffprobe:5226b0b358243c5757108e107dc546bf"
+                  "intel/ffprobe:4e4d2f0b21770efeb8c69ca321115ed6"
                 do
                   IFS=":" read -r path md5 <<< "$pair"
                   url="${binaries.base}/${path}"
@@ -1372,7 +1372,7 @@ mkdir -p "${bin.dir}"
 for pair in \
   "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
   "apple_silicon/ffmpeg:36ec3a0b676d0e344bcca9987d9f2174" \
-  "apple_silicon/ffprobe:cca2b80ca82a1fd6f96763ba2ecbe691"
+  "apple_silicon/ffprobe:e2e1ceb77ab05ceaa9d6054a50de69a0"
 do
   IFS=":" read -r path md5 <<< "$pair"
   url="${binaries.base}/${path}"
