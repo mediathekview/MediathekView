@@ -1,6 +1,7 @@
 # **14.4.0**
 - Das Programm verwendet nun kein JavaFX mehr.
-- **(macOS, Windows Intel/Arm64):** ffmpeg 8 wird mitgeliefert
+- **(macOS, Windows Arm64): JDK 25 wird mitgeliefert.
+- **(macOS, Windows):** ffmpeg 8 wird mitgeliefert
 - **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten wird das Programm nicht fehlerfrei laufen.
 - **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
 - **FEATURE:** Die Merkliste kann nun auch über das Hilfe-Menü vollständig gelöscht werden.

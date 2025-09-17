@@ -5,7 +5,7 @@
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="Liberica" release="24/24.0.1+11">
+    <jreBundles jdkProviderId="Liberica" release="25/25+37">
       <modules>
         <defaultModules set="jre" />
         <module name="jdk.incubator.vector" />
