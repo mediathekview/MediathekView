@@ -1,6 +1,6 @@
 # **14.4.0**
 - Das Programm verwendet nun kein JavaFX mehr.
-- **(macOS, Windows Arm64): JDK 25 wird mitgeliefert.
+- **(macOS, Windows)**: JDK 25 wird mitgeliefert.
 - **(macOS, Windows):** ffmpeg 8 wird mitgeliefert
 - **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten wird das Programm nicht fehlerfrei laufen.
 - **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
