@@ -31,6 +31,7 @@ public class ShutdownActionComboBox extends JComboBox<String> {
 
     private static final String DOMAIN = "org.mediathekview.mv_shutdown_helper";
     private static final String KEY = "shutdownAction";
+    private static final String COMMAND = "/usr/bin/defaults";
     private static final List<String> ACTIONS = Arrays.asList("shutdown", "sleep", "restart");
     private static final Logger logger = LogManager.getLogger();
 
@@ -48,7 +49,7 @@ public class ShutdownActionComboBox extends JComboBox<String> {
 
     private String readCurrentAction() {
         try {
-            var pb = new ProcessBuilder("defaults", "read", DOMAIN, KEY);
+            var pb = new ProcessBuilder(COMMAND, "read", DOMAIN, KEY);
             pb.redirectErrorStream(true);
             var process = pb.start();
 
@@ -67,7 +68,7 @@ public class ShutdownActionComboBox extends JComboBox<String> {
 
     private void writeAction(String action) {
         try {
-            new ProcessBuilder("defaults", "write", DOMAIN, KEY, "-string", action)
+            new ProcessBuilder(COMMAND, "write", DOMAIN, KEY, "-string", action)
                     .inheritIO()
                     .start()
                     .waitFor();
