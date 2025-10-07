@@ -205,7 +205,7 @@ jobs:
           $zipName = "MediathekView-$version-win-arm64-$date.zip"
 
           # Files in target/media Directory
-          ls target\media\ | Format-List
+          ls target\media\ | Format-Table
       
           # SHA512 generieren
           Get-FileHash target\media\MediathekView-latest-win-arm64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
@@ -302,7 +302,7 @@ jobs:
           $zipName = "MediathekView-$version-win-amd64-$date.zip"
 
           # Files in target/media Directory
-          ls target\media\ | Format-List
+          ls target\media\ | Format-Table
       
           # SHA512 generieren
           Get-FileHash target\media\MediathekView-latest-windows-amd64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
