@@ -45,8 +45,8 @@ public class FilmLengthSlider extends RangeSlider {
     public void restoreFilterConfig(@NotNull FilterConfiguration filterConfig) {
         try {
             setValueIsAdjusting(true);
-            setHighValue((int) filterConfig.getFilmLengthMax());
             setLowValue((int) filterConfig.getFilmLengthMin());
+            setHighValue((int) filterConfig.getFilmLengthMax());
             setValueIsAdjusting(false);
         } catch (Exception exception) {
             logger.error("Failed to restore filmlength config", exception);
