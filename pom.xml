@@ -730,9 +730,7 @@
                         </goals>
                         <configuration>
                             <!-- configure the plugin here -->
-                            <excludeArtifactIds>
-                                sqlite-jdbc,mockito-core,mockito-junit-jupiter,junit-jupiter-api,junit-jupiter-params,junit-jupiter-engine,kotlin-test-junit,byte-buddy,byte-buddy-agent,junit-platform-commons,junit-platform-engine,kotlin-test
-                            </excludeArtifactIds>
+                            <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>
                 </executions>
