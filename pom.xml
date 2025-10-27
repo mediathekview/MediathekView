@@ -139,7 +139,7 @@
 
         <mainclass>mediathek.Main</mainclass>
 
-        <install4j.version>11.0.4</install4j.version>
+        <install4j.version>11.0.5</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
