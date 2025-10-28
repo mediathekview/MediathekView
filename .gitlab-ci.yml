@@ -41,7 +41,7 @@ stages:
   - deploy-nightly-linarm
   - deploy-lin
   - deploy-linarm
-  - deploy-win
+  # - deploy-win
 
 Build and Deploy nightly Linux:
   stage: deploy-nightly-lin
@@ -79,10 +79,10 @@ Build and Deploy Linux ARM:
   rules:
     - if: $CI_COMMIT_TAG
 
-Build and Deploy Windows:
-  stage: deploy-win
-  script:
-    - mvn -B package -P!linux_64bit,windows_64bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh release win
-  rules:
-    - if: $CI_COMMIT_TAG
+# Build and Deploy Windows:
+#   stage: deploy-win
+#   script:
+#     - mvn -B package -P!linux_64bit,windows_64bit,install4j $MAVEN_CLI_OPTS
+#     - /skripte/deploy.sh release win
+#   rules:
+#     - if: $CI_COMMIT_TAG
