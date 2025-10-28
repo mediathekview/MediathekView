@@ -24,6 +24,7 @@
 - **BUGFIX:** Auswahl "Radio Bremen TV" in der Senderliste liefert nun Ergebnisse bei Nutzung Lucene.
 - **BUGFIX:** Die minimale Dialoggröße des Dialog *Film speichern* sollte nun auf allen Plattformen richtig gesetzt werden.
 - **BUGFIX:** Download-Dialoge bieten nun direkt Auswahlmöglichkeit, wie damit zu verfahren ist (sofort laden/Warteschlange), anstatt eine CheckBox zu verwenden.
+- **BUGFIX:** Fehler bei der Wiederherstellung der Filmlänge in Filtern wurde behoben
 
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
