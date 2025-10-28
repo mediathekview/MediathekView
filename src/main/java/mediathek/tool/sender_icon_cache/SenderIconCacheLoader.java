@@ -1,6 +1,7 @@
 package mediathek.tool.sender_icon_cache;
 
 import com.google.common.cache.CacheLoader;
+import mediathek.config.Konstanten;
 import mediathek.tool.http.MVHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -16,7 +17,7 @@ import java.awt.image.BufferedImage;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
+class SenderIconCacheLoader extends CacheLoader<@NotNull String, @NotNull Optional<ImageIcon>> {
     private static final String WIKI_BASE_URL = "https://upload.wikimedia.org/wikipedia/commons/thumb";
     private static final Logger logger = LogManager.getLogger();
     private final AtomicBoolean useLocalIcons;
@@ -44,14 +45,16 @@ class SenderIconCacheLoader extends CacheLoader<String, Optional<ImageIcon>> {
         ImageIcon icon = null;
 
         if (!useLocalIcons.get()) {
+            var userAgent = String.format("%s %s", Konstanten.PROGRAMMNAME,Konstanten.MVVERSION);
             final Request request = new Request.Builder()
                     .url(networkResource)
                     .get()
+                    .header("User-Agent", userAgent)
                     .build();
 
             try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
                  ResponseBody body = response.body()) {
-                if (response.isSuccessful() && body != null) {
+                if (response.isSuccessful()) {
                     BufferedImage b_img = ImageIO.read(body.byteStream());
                     icon = new ImageIcon(b_img);
                 }

@@ -1,10 +1,10 @@
 package mediathek.tool;
 
 import com.ibm.icu.text.Transliterator;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -32,7 +32,7 @@ public class FilenameUtils {
     public static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH = "[:\\\\*|<>]";
     private static final Logger logger = LogManager.getLogger();
 
-    public static String checkDateiname(final String name, final boolean isPath) {
+    public static String checkFilenameForIllegalCharacters(final String name, final boolean isPath) {
         // dient nur zur Anzeige für Probleme (Textfeld wird rot)
         String ret = name;
         boolean isWindowsPath = false;
@@ -41,7 +41,7 @@ public class FilenameUtils {
         if (SystemUtils.IS_OS_WINDOWS) {
             splitChar = "\\\\";
         } else {
-            splitChar = "/";
+            splitChar = File.separator;
         }
 
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -54,7 +54,7 @@ public class FilenameUtils {
                 }
             }
         } else {
-            ret = StringUtils.stripStart(ret, ".");
+            ret = stripStartingDots(ret);
         }
 
         if (isPath && ret.contains(File.separator)) {
@@ -86,6 +86,15 @@ public class FilenameUtils {
         }
 
         return ret;
+    }
+
+    /**
+     * Remove all starting dots from a string, <b>if</b> it begins with them.
+     * @param input the input string
+     * @return the stripped result
+     */
+    protected static String stripStartingDots(@NotNull String input) {
+        return input.replaceFirst("^\\.+", "");
     }
 
     /**
@@ -188,7 +197,7 @@ public class FilenameUtils {
         } else if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
             //On OSX the VFS take care of writing correct filenames to FAT filesystems...
             //Just remove the default illegal characters
-            ret = StringUtils.stripStart(ret, ".");
+            ret = stripStartingDots(ret);
             ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
         } else {
             throw new IllegalStateException("Unsupported OS: " + SystemUtils.OS_NAME);

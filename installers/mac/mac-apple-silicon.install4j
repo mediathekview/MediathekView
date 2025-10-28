@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="11.0.4" transformSequenceNumber="11">
+<install4j version="11.0.5" transformSequenceNumber="11">
   <directoryPresets config="./MediathekView.jar" />
   <application name="MediathekView" applicationId="2884-1958-5872-3865" mediaDir="." mediaFilePattern="MediathekView-latest-apple-silicon" compression="9" createChecksums="false" shortName="mediathekview" publisher="MediathekView" publisherWeb="https://www.mediathekview.de" version="14.4.0" allPathsRelative="true" macVolumeId="5e5adc4d4aaebc38" javaMinVersion="24">
     <languages>
@@ -11,8 +11,8 @@
         <entry>*.so</entry>
         <entry>*.jnilib</entry>
         <entry>ffmpeg</entry>
-        <entry>mv_shutdown_helper</entry>
         <entry>ffprobe</entry>
+        <entry>MVShutdownHelper</entry>
       </macAdditionalBinaries>
       <macSearchedJars>
         <entry>jna-*</entry>
@@ -24,7 +24,7 @@
         <entry>sqlite-jdbc*</entry>
       </macSearchedJars>
     </codeSigning>
-    <jreBundles jdkProviderId="Liberica" release="24/24.0.1+11">
+    <jreBundles jdkProviderId="Liberica" release="25/25.0.1+11">
       <modules>
         <defaultModules set="jre" />
         <module name="jdk.incubator.vector" />
@@ -37,7 +37,7 @@
       <mountPoint id="58" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="154" file="../bin/mv_shutdown_helper" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
+      <fileEntry mountPoint="154" file="../bin/MVShutdownHelper" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
       <fileEntry mountPoint="154" file="../bin/ffmpeg" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
       <fileEntry mountPoint="154" file="../bin/ffprobe" overwriteMode="1" fileMode="544" overrideFileMode="true" overrideOverwriteMode="true" />
       <fileEntry mountPoint="58" file="../MediathekView.jar" />
@@ -55,7 +55,7 @@
   <launchers>
     <launcher name="MediathekView" id="59" icnsFile="./MediathekView.icns" customMacBundleIdentifier="true" macBundleIdentifier="org.mediathekview.MediathekView">
       <executable name="MediathekView" iconSet="true" redirectStderr="false" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-Xdock:name=&quot;MediathekView&quot; -Dfile.encoding=UTF-8 -DOSX_OFFICIAL_APP=true -ea -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED" arguments="-e" allowVMPassthroughParameters="false">
+      <java mainClass="mediathek.Main" vmParameters="-Xdock:name=&quot;MediathekView&quot; -Dfile.encoding=UTF-8 -DOSX_OFFICIAL_APP=true -ea -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED" arguments="-e -s" allowVMPassthroughParameters="false">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
           <scanDirectory location="dependency" failOnError="false" />

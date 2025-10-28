@@ -18,10 +18,13 @@
 
 package mediathek.gui.tabs.tab_film;
 
+import mediathek.gui.actions.DeleteBookmarksAction;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel;
+import mediathek.swing.IconOnlyButton;
+import mediathek.swing.IconOnlyToggleButton;
 import mediathek.tool.ApplicationConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +40,7 @@ public class FilmToolBar extends JToolBar {
     public FilmToolBar(@NotNull FilterSelectionComboBoxModel filterModel,
                        @NotNull GuiFilme.BookmarkAddFilmAction bookmarkAddFilmAction,
                        @NotNull GuiFilme.BookmarkRemoveFilmAction bookmarkRemoveFilmAction,
-                       @NotNull GuiFilme.BookmarkClearListAction bookmarkClearListAction,
+                       @NotNull DeleteBookmarksAction bookmarkClearListAction,
                        @NotNull ManageBookmarkAction manageBookmarkAction,
                        @NotNull PlayFilmAction playFilmAction,
                        @NotNull GuiFilme.SaveFilmAction saveFilmAction,
@@ -47,8 +50,8 @@ public class FilmToolBar extends JToolBar {
         this.toggleFilterDialogVisibilityAction = toggleFilterDialogVisibilityAction;
         this.btnToggleFilterDialogVisibility = new FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction);
 
-        add(playFilmAction);
-        add(saveFilmAction);
+        add(new IconOnlyButton(playFilmAction));
+        add(new IconOnlyButton(saveFilmAction));
         addSeparator();
 
         filterSelectionComboBox = new FilterSelectionComboBox(filterModel);
@@ -62,12 +65,12 @@ public class FilmToolBar extends JToolBar {
         add(btnToggleFilterDialogVisibility);
 
         addSeparator();
-        add(bookmarkAddFilmAction);
-        add(bookmarkRemoveFilmAction);
+        add(new IconOnlyButton(bookmarkAddFilmAction));
+        add(new IconOnlyButton(bookmarkRemoveFilmAction));
         addSeparator();
-        add(bookmarkClearListAction);
+        add(new IconOnlyButton(bookmarkClearListAction));
         addSeparator();
-        add(manageBookmarkAction);
+        add(new IconOnlyButton(manageBookmarkAction));
     }
 
     public FilterVisibilityToggleButton getToggleFilterDialogVisibilityButton() {
@@ -83,10 +86,9 @@ public class FilmToolBar extends JToolBar {
         toggleFilterDialogVisibilityAction.setEnabled(enabled);
     }
 
-    static class FilterVisibilityToggleButton extends JToggleButton {
+    public static class FilterVisibilityToggleButton extends IconOnlyToggleButton {
         public FilterVisibilityToggleButton(Action a) {
             super(a);
-            setText("");
             final boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false);
             setSelected(visible);
         }

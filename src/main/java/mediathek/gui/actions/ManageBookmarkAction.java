@@ -1,7 +1,8 @@
 package mediathek.gui.actions;
 
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.SVGIconUtilities;
+import mediathek.swing.IconUtils;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +13,7 @@ public class ManageBookmarkAction extends AbstractAction {
     public ManageBookmarkAction(MediathekGui mediathekGui) {
         this.mediathekGui = mediathekGui;
         putValue(Action.NAME, "Merkliste verwalten...");
-        putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/file-lines.svg"));
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT));
         putValue(Action.SHORT_DESCRIPTION, "Merkliste verwalten");
     }
 

@@ -8,8 +8,9 @@ import mediathek.config.MVConfig;
 import mediathek.controller.SenderFilmlistLoadApprover;
 import mediathek.gui.messages.FilmListImportTypeChangedEvent;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.IconUtils;
+import mediathek.swing.MultilineLabel;
 import mediathek.tool.*;
-import mediathek.tool.swing.MultilineLabel;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -17,6 +18,7 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -73,7 +75,7 @@ public class PanelFilmlisteLaden extends JPanel {
     }
 
     private void initReloadButton() {
-        btnReloadFilmlist.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
+        btnReloadFilmlist.setIcon(IconUtils.of(FontAwesomeSolid.REDO_ALT));
         btnReloadFilmlist.addActionListener(_ -> {
             final var daten = Daten.getInstance();
             daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen

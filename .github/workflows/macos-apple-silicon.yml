@@ -1,35 +1,320 @@
-name: build-macos-apple-silicon
+name: build-nightly-apps
 
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest
+    name: Build macOS ${{ matrix.arch }} nightly
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false # do not cancel other jobs when one fails
+      matrix:
+        include:
+          - arch: apple-silicon
+            runner: macos-latest
+            mvn_profile: mac_apple_silicon
+            dmg_suffix: apple-silicon
+            dmg_file: MediathekView-latest-apple-silicon.dmg
+          - arch: intel
+            runner: macos-13
+            mvn_profile: mac_intel
+            dmg_suffix: mac-intel
+            dmg_file: MediathekView-latest-mac-intel.dmg
+
+    env:
+      # bump this when you upgrade install4j
+      INSTALL4J_VERSION: '11_0_5'
 
     steps:
-      - name: Checkout code
+      - name: Checkout develop branch
         uses: actions/checkout@v4
+        with:
+          ref: develop
 
-      - name: Set up Java
+      - name: Extract Version from pom.xml
+        id: version
+        run: |
+          VERSION=$(xmllint --xpath "/*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+          echo "Extracted Version: $VERSION"
+          echo "MV_VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Use Extracted Version
+        run: echo "The version is $MV_VERSION"
+
+      - name: Set up Java 25 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
-          distribution: 'liberica'
-          java-version: '24'
+          distribution: liberica
+          java-version: '25'
           java-package: jdk
-          cache: 'maven'
+          cache: maven
+
+      - name: Cache extracted install4j.app
+        id: cache-install4j-app
+        uses: actions/cache@v4
+        with:
+          path: download/install4j.app
+          key: install4j-app-${{ matrix.arch }}-${{ env.INSTALL4J_VERSION }}
+          restore-keys: |
+            install4j-app-${{ matrix.arch }}-
+
+      - name: Restore or download & extract install4j
+        run: |
+          mkdir -p download
+          if [ -d download/install4j.app ]; then
+            echo "✔︎ Using cached install4j.app"
+          else
+            echo "→ Downloading install4j ${INSTALL4J_VERSION}"
+            curl -L -o download/install4j.dmg \
+              https://download.ej-technologies.com/install4j/install4j_macos_${INSTALL4J_VERSION}.dmg
+            hdiutil attach download/install4j.dmg
+            cp -r /Volumes/install4j/install4j.app download/install4j.app
+            hdiutil detach /Volumes/install4j*
+          fi
 
       - name: Install install4j
         run: |
-          curl -L -o install4j.dmg https://download.ej-technologies.com/install4j/install4j_macos_11_0_4.dmg
-          hdiutil attach install4j.dmg
-          cp -r /Volumes/install4j/install4j.app /Applications/install4j.app
-          hdiutil detach /Volumes/install4j*
+          sudo rm -rf /Applications/install4j.app || true
+          sudo cp -r download/install4j.app /Applications/install4j.app
 
       - name: Restore AuthKey
-        run: echo "${{ secrets.AUTHKEY_WA422TZX7G }}" | base64 --decode -i xxx -o AuthKey_WA422TZX7G.p8
+        run: |
+          mkdir -p target/mac
+          echo "${{ secrets.AUTHKEY_WA422TZX7G }}" \
+            | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
 
-      - name: Restore dev cert
-        run: echo "${{ secrets.MAC_DEV_CERT_2025 }}" | base64 --decode -i xxx -o mac_dev_cert_with_password.p12
+      - name: Restore dev certificate
+        run: |
+          mkdir -p target/mac
+          echo "${{ secrets.MAC_DEV_CERT_2025 }}" \
+            | base64 --decode > target/mac/mac_dev_cert_with_password.p12
 
       - name: Build macOS app
-        run: mvn -B package -Pmac_apple_silicon,install4j-mac-apple-silicon
+        run: mvn -B package -P${{ matrix.mvn_profile }},install4j-mac-${{ matrix.arch }} -DskipTests
+        env:
+          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
+          MAC_KEYSTORE_PASSWORD:       ${{ secrets.MAC_KEYSTORE_PASSWORD }}
+
+      - name: Configure AWS CLI for MinIO
+        run: |
+          mkdir -p ~/.aws
+          cat > ~/.aws/credentials <<EOF
+          [default]
+          aws_access_key_id     = ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          aws_secret_access_key = ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
+          EOF
+          cat > ~/.aws/config <<EOF
+          [default]
+          region = ${MINIO_REGION:-us-east-1}
+          output = json
+          EOF
+
+      - name: Upload artifact to S3
+        env:
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          FILE_NAME="MediathekView-${MV_VERSION}-${{ matrix.dmg_suffix }}-notarized-$DATE.dmg"
+
+          shasum -a 512 "target/media/${{ matrix.dmg_file }}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"          
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${{ matrix.dmg_file }}" "s3://${S3_BUCKET}/${FILE_NAME}"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${FILE_NAME}.sha512" "s3://${S3_BUCKET}/${FILE_NAME}.sha512"
+
+  build-windows-arm64:
+    name: Build Windows ARM64 nightly
+    runs-on: windows-11-arm
+
+    env:
+      INSTALL4J_VERSION: '11_0_5'
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Extract Version from pom.xml
+        shell: pwsh
+        run: |
+          [xml]$pom = Get-Content pom.xml
+          $version = $pom.project.version
+          echo "Version: $version"
+          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+
+
+      - name: Set up Java 25 (Liberica) & cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: liberica
+          java-version: '25'
+          java-package: jdk
+          cache: maven
+
+      - name: Cache install4j
+        uses: actions/cache@v4
+        with:
+          path: download/install4j
+          key: install4j-windows-arm64-${{ env.INSTALL4J_VERSION }}
+          restore-keys: install4j-windows-arm64-
+
+      - name: Download or reuse install4j.zip
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path download -Force | Out-Null
+          if (Test-Path download\install4j) {
+            Write-Host "✔︎ Cached install4j"
+          } else {
+            Write-Host "→ Downloading install4j $env:INSTALL4J_VERSION for Windows"
+            curl.exe -L `
+              "https://download.ej-technologies.com/install4j/install4j_windows-arm64_${env:INSTALL4J_VERSION}.zip" `
+              -o download/install4j.zip
+            Expand-Archive download/install4j.zip -DestinationPath download
+            # rename the extracted folder to 'install4j'
+            $folder = Get-ChildItem download -Directory | Where-Object Name -like 'install4j*' | Select-Object -First 1
+            Rename-Item -Path $folder.FullName -NewName 'install4j'
+          }
+
+      - name: Install install4j
+        run: |
+          echo "${{ github.workspace }}\download\install4j\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+
+      - name: Build Windows ARM64 app
+        run: mvn -B package -P windows-aarch64,install4j-win-aarch64 -DskipTests
+        env:
+          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
+
+      - name: Upload to S3
+        env:
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:   ${{ secrets.MVS3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+        shell: pwsh
+        run: |
+          $date     = Get-Date -Format yyyy-MM-dd
+          $endpoint = "https://$env:S3_ENDPOINT"
+          $bucket   = $env:S3_BUCKET
+          $version  = $env:MV_VERSION
+      
+          $exeName = "MediathekView-$version-win-arm64-$date.exe"
+          $zipName = "MediathekView-$version-win-arm64-$date.zip"
+
+          # Files in target/media Directory
+          ls target\media\ | Format-Table
+      
+          # SHA512 generieren
+          Get-FileHash target\media\MediathekView-latest-win-arm64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
+          Get-FileHash target\media\MediathekView-latest-win-arm64.zip -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$zipName.sha512"
+
+          # Upload update manifest xml
+          aws --endpoint-url $endpoint s3 cp target\media\updates.xml "s3://$bucket/updates-win-arm.xml"
+
+          # Upload .exe
+          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-win-arm64.exe "s3://$bucket/$exeName"
+          aws --endpoint-url $endpoint s3 cp "target\media\$exeName.sha512" "s3://$bucket/$exeName.sha512"
+      
+          # Upload .zip
+          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-win-arm64.zip "s3://$bucket/$zipName"
+          aws --endpoint-url $endpoint s3 cp "target\media\$zipName.sha512" "s3://$bucket/$zipName.sha512"
+
+  build-windows-amd64:
+    name: Build Windows AMD64 nightly
+    runs-on: windows-latest
+
+    env:
+      INSTALL4J_VERSION: '11_0_5'
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Extract Version from pom.xml
+        shell: pwsh
+        run: |
+          [xml]$pom = Get-Content pom.xml
+          $version = $pom.project.version
+          echo "Version: $version"
+          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+
+      - name: Set up Java 25 (Liberica) & cache Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: liberica
+          java-version: '25'
+          java-package: jdk
+          cache: maven
+
+      - name: Cache install4j
+        uses: actions/cache@v4
+        with:
+          path: download/install4j
+          key: install4j-windows-amd64-${{ env.INSTALL4J_VERSION }}
+          restore-keys: install4j-windows-amd64-
+
+      - name: Download or reuse install4j.zip
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path download -Force | Out-Null
+          if (Test-Path download\install4j) {
+            Write-Host "✔︎ Cached install4j"
+          } else {
+            Write-Host "→ Downloading install4j $env:INSTALL4J_VERSION for Windows"
+            curl.exe -L `
+              "https://download.ej-technologies.com/install4j/install4j_windows-x64_${env:INSTALL4J_VERSION}.zip" `
+              -o download/install4j.zip
+            Expand-Archive download/install4j.zip -DestinationPath download
+            # rename the extracted folder to 'install4j'
+            $folder = Get-ChildItem download -Directory | Where-Object Name -like 'install4j*' | Select-Object -First 1
+            Rename-Item -Path $folder.FullName -NewName 'install4j'
+          }
+
+      - name: Install install4j
+        run: |
+          echo "${{ github.workspace }}\download\install4j\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+
+      - name: Build Windows AMD64 app
+        run: mvn -B package -P windows_64bit,install4j-win-amd64 -DskipTests
+        env:
+          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
+
+      - name: Upload to S3
+        env:
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:   ${{ secrets.MVS3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+        shell: pwsh
+        run: |
+          $date     = Get-Date -Format yyyy-MM-dd
+          $endpoint = "https://$env:S3_ENDPOINT"
+          $bucket   = $env:S3_BUCKET
+          $version  = $env:MV_VERSION
+      
+          $exeName = "MediathekView-$version-win-amd64-$date.exe"
+          $zipName = "MediathekView-$version-win-amd64-$date.zip"
+
+          # Files in target/media Directory
+          ls target\media\ | Format-Table
+      
+          # SHA512 generieren
+          Get-FileHash target\media\MediathekView-latest-windows-amd64.exe -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$exeName.sha512"
+          Get-FileHash target\media\MediathekView-latest-windows-amd64.zip -Algorithm SHA512 | Select-Object -ExpandProperty Hash | Out-File -Encoding ASCII "target\media\$zipName.sha512"
+      
+          # Upload update manifest xml
+          aws --endpoint-url $endpoint s3 cp target\media\updates.xml "s3://$bucket/updates-win.xml"
+
+          # Upload .exe
+          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-windows-amd64.exe "s3://$bucket/$exeName"
+          aws --endpoint-url $endpoint s3 cp "target\media\$exeName.sha512" "s3://$bucket/$exeName.sha512"
+      
+          # Upload .zip
+          aws --endpoint-url $endpoint s3 cp target\media\MediathekView-latest-windows-amd64.zip "s3://$bucket/$zipName"
+          aws --endpoint-url $endpoint s3 cp "target\media\$zipName.sha512" "s3://$bucket/$zipName.sha512"

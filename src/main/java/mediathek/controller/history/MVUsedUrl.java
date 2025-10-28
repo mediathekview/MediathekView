@@ -19,7 +19,6 @@
  */
 package mediathek.controller.history;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,13 +86,12 @@ public class MVUsedUrl {
         return new MVUsedUrl(datum, thema, titel, url);
     }
 
-    private String putzen(String s) {
-        s = StringUtils.replace(s, "\n", "");
-        s = StringUtils.replace(s, "|", "");
-        s = StringUtils.replace(s, TRENNER, "");
-
-        return s;
+    protected static String putzen(String s) {
+        return s.replace("\n", "")
+                .replace("|", "")
+                .replace(TRENNER, "");
     }
+
 
     public String getDatum() {
         return DATE_TIME_FORMATTER.format(datum);

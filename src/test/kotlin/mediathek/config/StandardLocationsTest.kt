@@ -4,6 +4,8 @@ import org.apache.commons.lang3.SystemUtils
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledOnOs
+import org.junit.jupiter.api.condition.OS
 import java.nio.file.Paths
 import kotlin.io.path.isDirectory
 import kotlin.io.path.relativeToOrNull
@@ -26,26 +28,31 @@ internal class StandardLocationsTest {
     }
 
     @Test
-    fun getXDGDownloadDirectory() {
-        if (SystemUtils.IS_OS_LINUX) {
+    @EnabledOnOs(OS.LINUX)
+    fun getLinuxXDGDownloadDirectory() {
             assertTrue { StandardLocations.getXDGDownloadDirectory().isPresent }
             assertTrue { StandardLocations.getXDGDownloadDirectory().get().isDirectory() }
             assertTrue { StandardLocations.getXDGDownloadDirectory().get().relativeToOrNull(Paths.get(SystemUtils.USER_HOME)) != null }
-        } else {
-            assertTrue { StandardLocations.getXDGDownloadDirectory().isEmpty }
-        }
     }
 
     @Test
-    fun getStandardDownloadPath() {
-        val path = if (SystemUtils.IS_OS_MAC_OSX) {
-            Paths.get(SystemUtils.USER_HOME, "Downloads")
-        } else if (SystemUtils.IS_OS_LINUX) {
-            StandardLocations.getXDGDownloadDirectory().orElse(Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_DOWNLOADS))
-        } else {
-            Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_DOWNLOADS)
-        }
-        val loc2 = path.toAbsolutePath().toString()
-        assertEquals(StandardLocations.getStandardDownloadPath(), loc2)
+    @EnabledOnOs(OS.MAC)
+    fun getMacStandardDownloadPath() {
+        val path = Paths.get(SystemUtils.USER_HOME, "Downloads")
+        assertEquals(StandardLocations.getStandardDownloadPath(), path.toAbsolutePath().toString())
+    }
+
+    @Test
+    @EnabledOnOs(OS.LINUX)
+    fun getLinuxStandardDownloadPath() {
+        val path = StandardLocations.getXDGDownloadDirectory().orElse(Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_DOWNLOADS))
+        assertEquals(StandardLocations.getStandardDownloadPath(), path.toAbsolutePath().toString())
+    }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    fun getWindowsStandardDownloadPath() {
+        val path = Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_DOWNLOADS)
+        assertEquals(StandardLocations.getStandardDownloadPath(), path.toAbsolutePath().toString())
     }
 }

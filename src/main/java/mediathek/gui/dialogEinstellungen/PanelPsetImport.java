@@ -6,6 +6,7 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.IconUtils;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.TextCopyPasteHandler;
@@ -13,6 +14,7 @@ import mediathek.tool.models.NonEditableTableModel;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -36,10 +38,10 @@ public class PanelPsetImport extends PanelVorlage {
     }
 
     private void init() {
-        jButtonAktualisieren.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
+        jButtonAktualisieren.setIcon(IconUtils.of(FontAwesomeSolid.REDO_ALT));
         jButtonPfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
-        jComboBoxBs.addActionListener(e -> tabelleLaden());
+        jComboBoxBs.addActionListener(_ -> tabelleLaden());
         jButtonImportDatei.setEnabled(false);
         jButtonImportText.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
@@ -52,14 +54,14 @@ public class PanelPsetImport extends PanelVorlage {
         var handler2 = new TextCopyPasteHandler<>(jTextAreaImport);
         jTextAreaImport.setComponentPopupMenu(handler2.getPopupMenu());
 
-        jButtonImportVorlage.addActionListener(e -> {
+        jButtonImportVorlage.addActionListener(_ -> {
             if (!jTextFieldUrl.getText().isEmpty()) {
                 importDatei(jTextFieldUrl.getText());
             }
         });
-        jButtonImportDatei.addActionListener(e -> importDatei(jTextFieldDatei.getText()));
-        jButtonImportText.addActionListener(e -> importText());
-        jButtonAktualisieren.addActionListener(e -> {
+        jButtonImportDatei.addActionListener(_ -> importDatei(jTextFieldDatei.getText()));
+        jButtonImportText.addActionListener(_ -> importText());
+        jButtonAktualisieren.addActionListener(_ -> {
             setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             listePsetVorlagen.loadListOfSets();
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -73,7 +75,7 @@ public class PanelPsetImport extends PanelVorlage {
             colModel.getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             colModel.getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
         }
-        jButtonImportStandard.addActionListener(e -> GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, true), true));
+        jButtonImportStandard.addActionListener(_ -> GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, true), true));
     }
 
     private void importDatei(String datei) {

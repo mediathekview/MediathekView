@@ -1,7 +1,8 @@
 package mediathek.gui.actions;
 
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.SVGIconUtilities;
+import mediathek.swing.IconUtils;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,7 @@ public class LoadFilmListAction extends AbstractAction {
     public LoadFilmListAction(MediathekGui mediathekGui) {
         this.mediathekGui = mediathekGui;
         putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-        putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/cloud-arrow-down.svg"));
+        putValue(Action.SMALL_ICON, IconUtils.windowBarSpecificToolbarIcon(FontAwesomeSolid.CLOUD_DOWNLOAD_ALT));
         putValue(Action.NAME, "Neue Filmliste laden...");
         putValue(Action.SHORT_DESCRIPTION, "Neue Filmliste laden");
     }

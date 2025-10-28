@@ -65,7 +65,7 @@ public class MVPanelDownloadZiel extends JPanel {
                 nameGeaendert = true;
                 checkPfadName();
                 final String n1 = jTextFieldName.getText();
-                final String n2 = FilenameUtils.checkDateiname(n1, false /*pfad*/);
+                final String n2 = FilenameUtils.checkFilenameForIllegalCharacters(n1, false /*pfad*/);
                 if (!n1.equals(n2)) {
                     jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
@@ -97,7 +97,7 @@ public class MVPanelDownloadZiel extends JPanel {
                 checkPfadName();
                 String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
                 var editor = jComboBoxPath.getEditor().getEditorComponent();
-                if (!s.equals(FilenameUtils.checkDateiname(s, true))) {
+                if (!s.equals(FilenameUtils.checkFilenameForIllegalCharacters(s, true))) {
                     editor.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
                     editor.setBackground(UIManager.getDefaults().getColor("TextField.background"));

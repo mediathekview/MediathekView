@@ -1,59 +1,58 @@
 package mediathek.tool.cellrenderer;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
+import mediathek.swing.IconUtils;
 import mediathek.tool.ColorUtils;
-import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class CellRendererFilme extends CellRendererBaseWithStart {
     private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
-    private final FlatSVGIcon selectedStopIcon;
-    private final FlatSVGIcon normalStopIcon;
+    private static final DateTimeFormatter PARSER = DateTimeFormatter.ofPattern("H:mm[:ss]");
+    private static final DateTimeFormatter SHORT  = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter LONG   = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final int SECONDS_VARIANCE = 10;
+    private final FontIcon selectedStopIcon;
+    private final FontIcon normalStopIcon;
     private final SeenHistoryController history = new SeenHistoryController();
-    private final FlatSVGIcon selectedDownloadIcon;
-    private final FlatSVGIcon normalDownloadIcon;
-    private final FlatSVGIcon selectedPlayIcon;
-    private final FlatSVGIcon normalPlayIcon;
-    private final FlatSVGIcon selectedBookmarkIcon;
-    private final FlatSVGIcon normalBookmarkIcon;
-    private final FlatSVGIcon selectedBookmarkIconHighlighted;
+    private final FontIcon selectedDownloadIcon;
+    private final FontIcon normalDownloadIcon;
+    private final FontIcon selectedPlayIcon;
+    private final FontIcon normalPlayIcon;
+    private final FontIcon selectedBookmarkIcon;
+    private final FontIcon normalBookmarkIcon;
+    private final FontIcon selectedBookmarkIconHighlighted;
+    private final java.util.List<Color> bgList = new ArrayList<>();
 
     public CellRendererFilme() {
-        selectedDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
-        selectedDownloadIcon.setColorFilter(whiteColorFilter);
+        selectedDownloadIcon = FontIcon.of(FontAwesomeSolid.DOWNLOAD, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        normalDownloadIcon = IconUtils.of(FontAwesomeSolid.DOWNLOAD);
 
-        normalDownloadIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg");
+        selectedPlayIcon = FontIcon.of(FontAwesomeSolid.PLAY, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        normalPlayIcon = IconUtils.of(FontAwesomeSolid.PLAY);
 
-        selectedPlayIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
-        selectedPlayIcon.setColorFilter(whiteColorFilter);
+        selectedStopIcon = FontIcon.of(FontAwesomeSolid.STOP, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        normalStopIcon = IconUtils.of(FontAwesomeSolid.STOP);
 
-        normalPlayIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/play.svg");
-
-        selectedStopIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
-        selectedStopIcon.setColorFilter(whiteColorFilter);
-
-        normalStopIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/stop.svg");
-
-        selectedBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
-        selectedBookmarkIcon.setColorFilter(whiteColorFilter);
-
-        selectedBookmarkIconHighlighted = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
-        selectedBookmarkIconHighlighted.setColorFilter(new FlatSVGIcon.ColorFilter(_ -> Color.ORANGE));
-
-        normalBookmarkIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/bookmark.svg");
+        selectedBookmarkIcon = FontIcon.of(FontAwesomeSolid.BOOKMARK, IconUtils.DEFAULT_SIZE, Color.WHITE);
+        selectedBookmarkIconHighlighted = FontIcon.of(FontAwesomeSolid.BOOKMARK, IconUtils.DEFAULT_SIZE, Color.ORANGE);
+        normalBookmarkIcon = IconUtils.of(FontAwesomeSolid.BOOKMARK);
     }
 
     private JTextArea createTextArea(String content) {
@@ -126,6 +125,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     setIndicatorIcons(table, datenFilm, isSelected);
                 }
                 case DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected);
+
+                case DatenFilm.FILM_ZEIT -> drawTime(datenFilm);
             }
 
             applyColorSettings(this, datenFilm, isBookMarked, isSelected);
@@ -134,6 +135,25 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
 
         return this;
+    }
+
+    /**
+     * Draw time without trailing seconds if zero.
+     * @param film input film object.
+     */
+    private void drawTime(@NotNull DatenFilm film) {
+        var zeit = film.getSendeZeit();
+        if (zeit == null || zeit.isBlank()) {
+            setText("");
+            return;
+        }
+
+        try {
+            var t = LocalTime.parse(zeit.trim(), PARSER);
+            setText((t.getSecond() < SECONDS_VARIANCE ? SHORT : LONG).format(t));
+        } catch (DateTimeParseException ex) {
+            setText(zeit.trim());
+        }
     }
 
     /**
@@ -148,8 +168,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             case DatenFilm.FILM_GROESSE -> setHorizontalAlignment(SwingConstants.RIGHT);
         }
     }
-
-    private final java.util.List<Color> bgList = new ArrayList<>();
 
     private void applyColorSettings(Component c, @NotNull DatenFilm datenFilm, boolean isBookMarked, boolean isSelected) {
         bgList.clear();

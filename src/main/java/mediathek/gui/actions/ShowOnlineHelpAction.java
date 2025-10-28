@@ -4,8 +4,6 @@ import mediathek.config.Konstanten;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.SwingErrorDialog;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +13,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class ShowOnlineHelpAction extends AbstractAction {
-    private static final Logger logger = LogManager.getLogger();
-
     public ShowOnlineHelpAction() {
         super();
         putValue(NAME, "Online-Hilfe anzeigen...");
@@ -24,11 +20,7 @@ public class ShowOnlineHelpAction extends AbstractAction {
     }
 
     private void openUrl() {
-        try {
             UrlHyperlinkAction.openURL(Konstanten.ADRESSE_ONLINE_HELP);
-        } catch (URISyntaxException ex) {
-            logger.warn(ex);
-        }
     }
 
     @Override

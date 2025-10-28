@@ -11,8 +11,6 @@ import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -20,12 +18,14 @@ import mediathek.daten.*;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmlisten.writer.FilmListWriter;
+import mediathek.gui.actions.DeleteBookmarksAction;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.gui.dialog.DialogAboNoSet;
-import mediathek.gui.dialog.DialogAddDownload;
-import mediathek.gui.dialog.DialogAddMoreDownload;
+import mediathek.gui.dialog.add_download.DialogAddDownloadWithCoroutines;
+import mediathek.gui.dialog.add_download.DialogAddMoreDownload;
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
@@ -35,8 +35,8 @@ import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.helpers.GuiFilmeModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelper;
 import mediathek.gui.tabs.tab_film.helpers.LuceneGuiFilmeModelHelper;
-import mediathek.javafx.bookmark.BookmarkWindowController;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.IconUtils;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
 import mediathek.tool.datum.DatumFilm;
@@ -50,6 +50,8 @@ import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -62,7 +64,6 @@ import java.awt.print.PrinterException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class GuiFilme extends AGuiTabPanel {
     protected final FilterSelectionComboBoxModel filterSelectionComboBoxModel = new FilterSelectionComboBoxModel();
     private final BookmarkAddFilmAction bookmarkAddFilmAction = new BookmarkAddFilmAction();
     private final BookmarkRemoveFilmAction bookmarkRemoveFilmAction = new BookmarkRemoveFilmAction();
-    private final BookmarkClearListAction bookmarkClearListAction = new BookmarkClearListAction();
+    private final DeleteBookmarksAction deleteBookmarksAction = new DeleteBookmarksAction(MediathekGui.ui());
     private final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(MediathekGui.ui());
     private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
     private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
@@ -113,7 +114,6 @@ public class GuiFilme extends AGuiTabPanel {
     public final ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected final SearchField searchField;
     protected PsetButtonsPanel psetButtonsPanel;
-    private Optional<BookmarkWindowController> bookmarkWindowController = Optional.empty();
     private boolean stopBeob;
     private MVFilmTable tabelle;
     /**
@@ -148,7 +148,7 @@ public class GuiFilme extends AGuiTabPanel {
         filmToolBar = new FilmToolBar(filterSelectionComboBoxModel,
                 bookmarkAddFilmAction,
                 bookmarkRemoveFilmAction,
-                bookmarkClearListAction,
+                deleteBookmarksAction,
                 manageBookmarkAction,
                 playFilmAction,
                 saveFilmAction,
@@ -160,7 +160,7 @@ public class GuiFilme extends AGuiTabPanel {
                 filmToolBar.getToggleFilterDialogVisibilityButton(),
                 filterConfiguration);
 
-        start_init();
+        setupTable();
 
         zeitraumTimer = new NonRepeatingTimer(_ -> {
             // reset sender filter first
@@ -193,18 +193,13 @@ public class GuiFilme extends AGuiTabPanel {
     }
 
     @Handler
-    private void handleBookmarkDeleteRepaintEvent(BookmarkDeleteRepaintEvent e) {
-        SwingUtilities.invokeLater(this::repaint);
-    }
-
-    @Handler
     public void handleTableModelChange(TableModelChangeEvent e) {
         final Consumer<Boolean> function = (Boolean flag) -> {
             playFilmAction.setEnabled(flag);
             saveFilmAction.setEnabled(flag);
             bookmarkAddFilmAction.setEnabled(flag);
             bookmarkRemoveFilmAction.setEnabled(flag);
-            bookmarkClearListAction.setEnabled(flag);
+            deleteBookmarksAction.setEnabled(flag);
             manageBookmarkAction.setEnabled(flag);
             filmToolBar.setEnabled(flag);
         };
@@ -274,21 +269,12 @@ public class GuiFilme extends AGuiTabPanel {
 
     @Override
     public void installMenuEntries(JMenu menu) {
-        JMenuItem miMarkFilmAsSeen = new JMenuItem("Filme als gesehen markieren");
-        miMarkFilmAsSeen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsSeen.addActionListener(markFilmAsSeenAction);
-
-        JMenuItem miMarkFilmAsUnseen = new JMenuItem("Filme als ungesehen markieren");
-        miMarkFilmAsUnseen.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        miMarkFilmAsUnseen.addActionListener(markFilmAsUnseenAction);
-
         menu.add(playFilmAction);
         menu.add(saveFilmAction);
         menu.add(bookmarkAddFilmAction);
         menu.addSeparator();
-        menu.add(miMarkFilmAsSeen);
-        menu.add(miMarkFilmAsUnseen);
+        menu.add(markFilmAsSeenAction);
+        menu.add(markFilmAsUnseenAction);
         menu.addSeparator();
         menu.add(mediathekGui.toggleBlacklistAction);
         menu.add(mediathekGui.editBlacklistAction);
@@ -365,7 +351,7 @@ public class GuiFilme extends AGuiTabPanel {
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
     }
 
-    private void start_init() {
+    private void setupTable() {
         setupKeyMapping();
 
         tabelle.setModel(new TModelFilm());
@@ -426,10 +412,15 @@ public class GuiFilme extends AGuiTabPanel {
         SwingUtilities.invokeLater(this::updateStartInfoProperty);
     }
 
+    /**
+     * Handle single or multi film downloads.
+     * @param pSet used for downloads or null.
+     */
     private synchronized void saveFilm(@Nullable DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            new DialogAboNoSet(mediathekGui).setVisible(true);
             // Satz mit x, war wohl nix
+            var dialog = new DialogAboNoSet(mediathekGui);
+            dialog.setVisible(true);
             return;
         }
 
@@ -437,58 +428,53 @@ public class GuiFilme extends AGuiTabPanel {
             pSet = Daten.listePset.getListeSpeichern().getFirst();
         }
 
-        List<DatenFilm> liste = getSelFilme();
-        boolean addAllWithDefaults = false;
-        String pfad = "";
-        boolean info = false;
-        boolean subtitle = false;
+        var selectedFilmsList = getSelFilme();
+        var downloadsList = daten.getListeDownloads();
 
-        if (liste.size() > 1) {
-            DialogAddMoreDownload damd = new DialogAddMoreDownload(mediathekGui, pSet);
+        if (selectedFilmsList.size() > 1) {
+            var damd = new DialogAddMoreDownload(mediathekGui, pSet);
             var result = damd.showDialog();
-            if (damd.wasCancelled()) {
-                return;
-            }
-            else {
-                addAllWithDefaults = result.addAll();
-                pfad = result.path();
-                info = result.info();
-                subtitle = result.subtitle();
+            if (!damd.wasCancelled()) {
+                for (var film : selectedFilmsList) {
+                    // erst mal schauen obs den schon gibt
+                    if (downloadsList.getDownloadUrlFilm(film.getUrlNormalQuality()) != null) {
+                        int ret = JOptionPane.showConfirmDialog(mediathekGui,
+                                "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
+                                Konstanten.PROGRAMMNAME,
+                                JOptionPane.YES_NO_OPTION);
+                        if (ret == JOptionPane.NO_OPTION) {
+                            continue;
+                        }
+                    }
+
+                    if (result.addAllWithDefaults()) {
+                        var datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "",
+                                result.path(), "", result.info(), result.subtitle());
+                        downloadsList.addMitNummer(datenDownload);
+                        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
+                        if (result.startImmediately()) {
+                            datenDownload.startDownload();
+                        }
+                    } else {
+                        saveFilmObject(film, pSet);
+                    }
+                }
             }
         }
-
-        for (var film : liste) {
+        else { // single download
+            var film = selectedFilmsList.getFirst();
             // erst mal schauen obs den schon gibt
-            if (daten.getListeDownloads().getDownloadUrlFilm(film.getUrlNormalQuality()) != null) {
+            if (downloadsList.getDownloadUrlFilm(film.getUrlNormalQuality()) != null) {
                 int ret = JOptionPane.showConfirmDialog(mediathekGui,
                         "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
-                        "Anlegen?",
+                        Konstanten.PROGRAMMNAME,
                         JOptionPane.YES_NO_OPTION);
-                if (ret != JOptionPane.YES_OPTION) {
-                    continue;
+                if (ret == JOptionPane.NO_OPTION) {
+                    return;
                 }
             }
 
-            if (addAllWithDefaults) {
-                var datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "",
-                        pfad, "", info, subtitle);
-                registerDownload(datenDownload);
-            } else {
-                saveFilm(film, pSet);
-            }
-        }
-    }
-
-    /**
-     * Register a download object in queue.
-     * @param datenDownload the object that should be downloaded.
-     */
-    private void registerDownload(@NotNull DatenDownload datenDownload) {
-        Daten.getInstance().getListeDownloads().addMitNummer(datenDownload);
-        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
-            // und evtl. auch gleich starten
-            datenDownload.startDownload();
+            saveFilmObject(film, pSet);
         }
     }
 
@@ -497,34 +483,27 @@ public class GuiFilme extends AGuiTabPanel {
      * @param datenFilm film of interest
      * @param pSet the program set, can be null.
      */
-    private void saveFilm(@NotNull DatenFilm datenFilm, @NotNull DatenPset pSet) {
-        if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            //TODO should be impossible to reach this code block as psets are checked before...investigate.
-            MVMessageDialog.showMessageDialog(this,
-                    "Ohne Programm-Sets können keine Downloads gestartet werden.",
-                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-        } else {
-            // dann alle Downloads im Dialog abfragen
-            Optional<FilmResolution.Enum> res =
-                    filterConfiguration.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
-            DialogAddDownload dialog = new DialogAddDownload(mediathekGui, datenFilm, pSet, res);
-            dialog.setVisible(true);
-        }
+    private void saveFilmObject(@NotNull DatenFilm datenFilm, @NotNull DatenPset pSet) {
+        // dann alle Downloads im Dialog abfragen
+        Optional<FilmResolution.Enum> res =
+                filterConfiguration.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
+        var dialog = new DialogAddDownloadWithCoroutines(mediathekGui, datenFilm, pSet, res);
+        dialog.setVisible(true);
     }
 
     /**
      * If necessary instantiate and show the bookmark window
      */
     public void showManageBookmarkWindow() {
-        //init JavaFX when needed...
-        var fxPanel = new JFXPanel();
-        Platform.runLater(() -> {
-            if (bookmarkWindowController.isEmpty()) {
-                bookmarkWindowController = Optional.of(new BookmarkWindowController());
-            }
-            bookmarkWindowController.ifPresent(BookmarkWindowController::show);
-        });
+        if (bookmarkDialog == null) {
+            bookmarkDialog = new BookmarkDialog(mediathekGui);
+            bookmarkDialog.setVisible(true);
+        }
+        else {
+            bookmarkDialog.setVisible(true);
+        }
     }
+    public JDialog bookmarkDialog;
 
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten
@@ -545,13 +524,6 @@ public class GuiFilme extends AGuiTabPanel {
             filmSelection.ifPresent(
                     film -> daten.getStarterClass().urlMitProgrammStarten(pSet, film, aufloesung));
         }
-    }
-
-    /**
-     * Cleanup during shutdown
-     */
-    public void saveSettings() {
-        bookmarkWindowController.ifPresent(BookmarkWindowController::saveSettings);
     }
 
     /**
@@ -738,35 +710,11 @@ public class GuiFilme extends AGuiTabPanel {
 
     private static class FilterZeitraumEvent extends BaseEvent {}
 
-    public class BookmarkClearListAction extends AbstractAction {
-        public BookmarkClearListAction() {
-            putValue(Action.SHORT_DESCRIPTION, "Merkliste vollständig löschen");
-            putValue(Action.NAME, "Merkliste vollständig löschen");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createToolBarIcon("icons/fontawesome/file-circle-xmark.svg"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            var res = JOptionPane.showConfirmDialog(mediathekGui,
-                    "Möchten Sie wirklich die Merkliste vollständig löschen?", Konstanten.PROGRAMMNAME, JOptionPane.YES_NO_OPTION);
-            if (res == JOptionPane.YES_OPTION) {
-                var daten = Daten.getInstance();
-                var list = daten.getListeFilmeNachBlackList().parallelStream()
-                        .filter(DatenFilm::isBookmarked).toList();
-                if (!list.isEmpty()) {
-                    updateBookmarkListAndRefresh(list);
-                }
-                //delete leftover items which have no corresponding DatenFilm objects anymore -> outdated
-                daten.getListeBookmarkList().getObervableList().clear();
-                JOptionPane.showMessageDialog(mediathekGui, "Merkliste wurde gelöscht.", Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
-            }        }
-    }
-
     public class ToggleFilterDialogVisibilityAction extends AbstractAction {
         public ToggleFilterDialogVisibilityAction() {
             putValue(Action.NAME, "Filterdialog anzeigen");
             putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/filter.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.FILTER));
             putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
         }
 
@@ -961,29 +909,9 @@ public class GuiFilme extends AGuiTabPanel {
             var luceneBtn = new JButton();
             luceneBtn.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
             luceneBtn.setToolTipText("Lucene Query Syntax Hilfe");
-            luceneBtn.addActionListener(_ -> {
-                if (Desktop.isDesktopSupported()) {
-                    var desktop = Desktop.getDesktop();
-                    if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                        try {
-                            desktop.browse(Konstanten.LUCENE_CLIENT_HELP_URL.uri());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        showError();
-                    }
-                } else {
-                    showError();
-                }
-            });
+            luceneBtn.addActionListener(_ -> UrlHyperlinkAction.openURI(Konstanten.LUCENE_CLIENT_HELP_URL.uri()));
             searchToolbar.add(luceneBtn);
             putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT, searchToolbar);
-        }
-
-        private void showError() {
-            JOptionPane.showMessageDialog(this, "Es konnte kein Browser geöffnet werden.",
-                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
         }
 
         @Override
@@ -1147,7 +1075,7 @@ public class GuiFilme extends AGuiTabPanel {
         public SaveFilmAction() {
             putValue(Action.SHORT_DESCRIPTION, "Film downloaden");
             putValue(Action.NAME, "Film downloaden");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/download.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD));
             KeyStroke keyStroke;
             if (SystemUtils.IS_OS_MAC_OSX) {
                 keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey());
@@ -1173,7 +1101,7 @@ public class GuiFilme extends AGuiTabPanel {
             putValue(Action.ACCELERATOR_KEY, keyStroke);
             putValue(Action.SHORT_DESCRIPTION, "Ausgewählte Filme in der Merkliste speichern");
             putValue(Action.NAME, "Ausgewählte Filme merken");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createToolBarIcon("icons/fontawesome/file-circle-plus.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_PLUS));
         }
 
         @Override
@@ -1195,7 +1123,7 @@ public class GuiFilme extends AGuiTabPanel {
         public BookmarkRemoveFilmAction() {
             putValue(Action.SHORT_DESCRIPTION, "Ausgewählte Filme aus der Merkliste löschen");
             putValue(Action.NAME, "Ausgewählte Filme aus der Merkliste löschen");
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createToolBarIcon("icons/fontawesome/file-circle-minus.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_MINUS));
         }
 
         @Override
@@ -1625,7 +1553,7 @@ public class GuiFilme extends AGuiTabPanel {
                     var miThema = new JMenuItem(item.toString());
                     miThema.addActionListener(_ -> {
                         var url = item.getQueryUrl() + URLEncoder.encode(film.getThema(), StandardCharsets.UTF_8);
-                        tryLaunchBrowser(url);
+                        UrlHyperlinkAction.openURL(url);
                     });
                     mThema.add(miThema);
                 }
@@ -1633,7 +1561,7 @@ public class GuiFilme extends AGuiTabPanel {
                 var miTitel = new JMenuItem(item.toString());
                 miTitel.addActionListener(_ -> {
                     var url = item.getQueryUrl() + URLEncoder.encode(film.getTitle(), StandardCharsets.UTF_8);
-                    tryLaunchBrowser(url);
+                    UrlHyperlinkAction.openURL(url);
                 });
                 mTitel.add(miTitel);
             }
@@ -1644,14 +1572,6 @@ public class GuiFilme extends AGuiTabPanel {
             mOnlineSearch.add(mTitel);
             popupMenu.add(mOnlineSearch);
             popupMenu.addSeparator();
-        }
-
-        private void tryLaunchBrowser(String url) {
-            try {
-                UrlHyperlinkAction.openURL(url);
-            } catch (URISyntaxException ex) {
-                logger.error("Failed to launch online search for url {}", url);
-            }
         }
 
         private class BeobHistory implements ActionListener {

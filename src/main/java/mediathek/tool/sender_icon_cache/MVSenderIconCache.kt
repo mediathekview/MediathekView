@@ -50,9 +50,9 @@ object MVSenderIconCache {
     operator fun get(sender: String): Optional<ImageIcon> {
         return try {
                 senderCache[sender]
-        } catch (ex: InvalidCacheLoadException) {
+        } catch (_: InvalidCacheLoadException) {
             Optional.empty()
-        } catch (ex: ExecutionException) {
+        } catch (_: ExecutionException) {
             Optional.empty()
         }
     }

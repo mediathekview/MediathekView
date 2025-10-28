@@ -77,20 +77,7 @@ public class WindowsFileUtils {
         }
         joined.append('\0'); // Final double-null
 
-        var utf16 = joined.toString().getBytes(StandardCharsets.UTF_16LE);
-        //debugPrintUtf16(utf16);
-        var segment = arena.allocate(utf16.length, 2); // UTF-16 requires 2-byte alignment
-        segment.copyFrom(MemorySegment.ofArray(utf16));
-        return segment;
-    }
-
-    @SuppressWarnings("unused")
-    protected static void debugPrintUtf16(byte[] utf16) {
-        for (int i = 0; i < utf16.length; i += 2) {
-            int ch = ((utf16[i+1] & 0xFF) << 8) | (utf16[i] & 0xFF);
-            System.out.printf("%04x ", ch);
-        }
-        System.out.println();  // You should see: C: \ 0 \ 0 0 \ 0 (final two nulls)
+        return arena.allocateFrom(joined.toString(), StandardCharsets.UTF_16LE);
     }
 
     public static void moveToTrash(@NotNull File... files) throws IOException {

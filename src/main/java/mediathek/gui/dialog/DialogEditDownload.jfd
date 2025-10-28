@@ -1,0 +1,80 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanelRes:::::x, comp jScrollPane1::t:::x, seq t {space :0:0:x, comp jPanel1:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :p::p, comp jScrollPane1::::547:x, space u:::p, comp jPanelRes:::p::p, space u:::p, comp jPanel1:::p::p, space :::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Download ändern"
+			"minimumSize": new java.awt.Dimension( 500, 50 )
+			"modal": true
+			"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignTop": true
+					"$alignLeft": true
+				} ) {
+					name: "jPanelExtra"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+				"alignment": 0
+				"hgap": 10
+			} ) {
+				name: "jPanelRes"
+				"border": new javax.swing.border.TitledBorder( "Download-Qualität:" )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "jRadioButtonResHd"
+					"$buttonGroup": new FormReference( "buttonGroup1" )
+					"text": "Höchste/Hoch"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "jRadioButtonResHi"
+					"$buttonGroup": new FormReference( "buttonGroup1" )
+					"text": "Mittel"
+				} )
+				add( new FormComponent( "javax.swing.JRadioButton" ) {
+					name: "jRadioButtonResLo"
+					"$buttonGroup": new FormReference( "buttonGroup1" )
+					"text": "Niedrig"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+				name: "jPanel1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonOk"
+					"text": "Ok"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonAbbrechen"
+					"text": "Abbrechen"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 734 )
+		} )
+	}
+}

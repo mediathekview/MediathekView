@@ -39,8 +39,9 @@ import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinner;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.swing.AutoCompletionComboBox2;
+import mediathek.swing.IconUtils;
 import mediathek.tool.*;
-import mediathek.tool.swing.AutoCompletionComboBox2;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -52,6 +53,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.VerticalLayout;
 import org.jetbrains.annotations.NotNull;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
@@ -414,7 +416,7 @@ public class SwingFilterDialog extends JDialog {
 
     private class ResetCurrentFilterAction extends AbstractAction {
         public ResetCurrentFilterAction() {
-            putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/recycle.svg"));
+            putValue(Action.SMALL_ICON, IconUtils.of(FontAwesomeSolid.RECYCLE));
             putValue(Action.SHORT_DESCRIPTION, "Aktuellen Filter zurücksetzen");
             putValue(Action.NAME, "Aktuellen Filter zurücksetzen" + "...");
         }
@@ -763,20 +765,20 @@ public class SwingFilterDialog extends JDialog {
 
         //======== this ========
         setType(Window.Type.UTILITY);
-        setTitle("Filter"); //NON-NLS
+        setTitle("Filter");
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
-            new LC().fillX().insets("5").hideMode(3), //NON-NLS
+            new LC().fillX().insets("5").hideMode(3),
             // columns
             new AC()
-                .align("left"), //NON-NLS
+                .align("left"),
             // rows
             new AC()
                 .gap()
-                .shrink(0).align("top").gap("0") //NON-NLS
-                .gap("0") //NON-NLS
-                .shrink(0).gap("0") //NON-NLS
-                .gap("0") //NON-NLS
+                .shrink(0).align("top").gap("0")
+                .gap("0")
+                .shrink(0).gap("0")
+                .gap("0")
                 .shrink(0).gap()
                 .grow().fill().gap()
                 .shrink(0).gap()
@@ -789,7 +791,7 @@ public class SwingFilterDialog extends JDialog {
         //======== pnlFilterCommon ========
         {
             pnlFilterCommon.setLayout(new MigLayout(
-                new LC().fillX().insets("0").hideMode(3), //NON-NLS
+                new LC().fillX().insets("0").hideMode(3),
                 // columns
                 new AC()
                     .grow().fill().gap()
@@ -818,23 +820,23 @@ public class SwingFilterDialog extends JDialog {
             pnlShowOnly.setLayout(new VerticalLayout());
 
             //---- cbShowNewOnly ----
-            cbShowNewOnly.setText("Nur neue Filme anzeigen"); //NON-NLS
+            cbShowNewOnly.setText("Nur neue Filme anzeigen");
             pnlShowOnly.add(cbShowNewOnly);
 
             //---- cbShowBookMarkedOnly ----
-            cbShowBookMarkedOnly.setText("Nur gemerkte Filme anzeigen"); //NON-NLS
+            cbShowBookMarkedOnly.setText("Nur gemerkte Filme anzeigen");
             pnlShowOnly.add(cbShowBookMarkedOnly);
 
             //---- cbShowOnlyHq ----
-            cbShowOnlyHq.setText("Nur High Quality(HQ) Filme anzeigen"); //NON-NLS
+            cbShowOnlyHq.setText("Nur High Quality(HQ) Filme anzeigen");
             pnlShowOnly.add(cbShowOnlyHq);
 
             //---- cbShowSubtitlesOnly ----
-            cbShowSubtitlesOnly.setText("Nur Filme mit Untertitel anzeigen"); //NON-NLS
+            cbShowSubtitlesOnly.setText("Nur Filme mit Untertitel anzeigen");
             pnlShowOnly.add(cbShowSubtitlesOnly);
 
             //---- cbShowOnlyLivestreams ----
-            cbShowOnlyLivestreams.setText("Nur Livestreams anzeigen"); //NON-NLS
+            cbShowOnlyLivestreams.setText("Nur Livestreams anzeigen");
             pnlShowOnly.add(cbShowOnlyLivestreams);
         }
         contentPane.add(pnlShowOnly, new CC().cell(0, 2).growX());
@@ -845,27 +847,27 @@ public class SwingFilterDialog extends JDialog {
             pnlDontShow.setLayout(new VerticalLayout());
 
             //---- cbShowUnseenOnly ----
-            cbShowUnseenOnly.setText("Gesehene Filme nicht anzeigen"); //NON-NLS
+            cbShowUnseenOnly.setText("Gesehene Filme nicht anzeigen");
             pnlDontShow.add(cbShowUnseenOnly);
 
             //---- cbDontShowAbos ----
-            cbDontShowAbos.setText("Abos nicht anzeigen"); //NON-NLS
+            cbDontShowAbos.setText("Abos nicht anzeigen");
             pnlDontShow.add(cbDontShowAbos);
 
             //---- cbDontShowSignLanguage ----
-            cbDontShowSignLanguage.setText("Geb\u00e4rdensprache nicht anzeigen"); //NON-NLS
+            cbDontShowSignLanguage.setText("Geb\u00e4rdensprache nicht anzeigen");
             pnlDontShow.add(cbDontShowSignLanguage);
 
             //---- cbDontShowTrailers ----
-            cbDontShowTrailers.setText("Trailer/Teaser/Vorschau nicht anzeigen"); //NON-NLS
+            cbDontShowTrailers.setText("Trailer/Teaser/Vorschau nicht anzeigen");
             pnlDontShow.add(cbDontShowTrailers);
 
             //---- cbDontShowAudioVersions ----
-            cbDontShowAudioVersions.setText("H\u00f6rfassungen ausblenden"); //NON-NLS
+            cbDontShowAudioVersions.setText("H\u00f6rfassungen ausblenden");
             pnlDontShow.add(cbDontShowAudioVersions);
 
             //---- cbDontShowDuplicates ----
-            cbDontShowDuplicates.setText("Duplikate nicht anzeigen"); //NON-NLS
+            cbDontShowDuplicates.setText("Duplikate nicht anzeigen");
             pnlDontShow.add(cbDontShowDuplicates);
         }
         contentPane.add(pnlDontShow, new CC().cell(0, 4).growX());
@@ -875,17 +877,17 @@ public class SwingFilterDialog extends JDialog {
         {
             pnlSenderlist.setPreferredSize(new Dimension(258, 220));
             pnlSenderlist.setLayout(new MigLayout(
-                new LC().fill().insets("0").hideMode(3), //NON-NLS
+                new LC().fill().insets("0").hideMode(3),
                 // columns
                 new AC()
-                    .align("left"), //NON-NLS
+                    .align("left"),
                 // rows
                 new AC()
                     .gap()
                     .grow()));
 
             //---- label3 ----
-            label3.setText("Sender:"); //NON-NLS
+            label3.setText("Sender:");
             pnlSenderlist.add(label3, new CC().cell(0, 0));
 
             //======== scpSenderList ========
@@ -900,7 +902,7 @@ public class SwingFilterDialog extends JDialog {
                 senderList.setPreferredSize(null);
                 scpSenderList.setViewportView(senderList);
             }
-            pnlSenderlist.add(scpSenderList, new CC().cell(0, 1).grow().minHeight("50")); //NON-NLS
+            pnlSenderlist.add(scpSenderList, new CC().cell(0, 1).grow().minHeight("50"));
         }
         contentPane.add(pnlSenderlist, new CC().cell(0, 6).growX());
         contentPane.add(separator5, new CC().cell(0, 7).growX());
@@ -908,10 +910,10 @@ public class SwingFilterDialog extends JDialog {
         //======== pnlThema ========
         {
             pnlThema.setLayout(new MigLayout(
-                new LC().fillX().insets("0").hideMode(3), //NON-NLS
+                new LC().fillX().insets("0").hideMode(3),
                 // columns
                 new AC()
-                    .align("left").gap() //NON-NLS
+                    .align("left").gap()
                     .grow().fill().gap()
                     .fill(),
                 // rows
@@ -919,7 +921,7 @@ public class SwingFilterDialog extends JDialog {
                     ));
 
             //---- label4 ----
-            label4.setText("Thema:"); //NON-NLS
+            label4.setText("Thema:");
             pnlThema.add(label4, new CC().cell(0, 0));
 
             //---- jcbThema ----
@@ -935,7 +937,7 @@ public class SwingFilterDialog extends JDialog {
         //======== pnlFlimlength ========
         {
             pnlFlimlength.setLayout(new MigLayout(
-                new LC().fill().insets("0").hideMode(3), //NON-NLS
+                new LC().fill().insets("0").hideMode(3),
                 // columns
                 new AC()
                     .fill().gap()
@@ -945,24 +947,24 @@ public class SwingFilterDialog extends JDialog {
                     .fill(),
                 // rows
                 new AC()
-                    .gap("0") //NON-NLS
+                    .gap("0")
                     ));
 
             //---- label5 ----
-            label5.setText("Mindestl\u00e4nge:"); //NON-NLS
+            label5.setText("Mindestl\u00e4nge:");
             pnlFlimlength.add(label5, new CC().cell(0, 0));
 
             //---- lblMinFilmLengthValue ----
-            lblMinFilmLengthValue.setText("0"); //NON-NLS
+            lblMinFilmLengthValue.setText("0");
             pnlFlimlength.add(lblMinFilmLengthValue, new CC().cell(1, 0));
             pnlFlimlength.add(hSpacer1, new CC().cell(2, 0).growX());
 
             //---- label7 ----
-            label7.setText("Maximall\u00e4nge:"); //NON-NLS
+            label7.setText("Maximall\u00e4nge:");
             pnlFlimlength.add(label7, new CC().cell(3, 0));
 
             //---- lblMaxFilmLengthValue ----
-            lblMaxFilmLengthValue.setText("100"); //NON-NLS
+            lblMaxFilmLengthValue.setText("100");
             pnlFlimlength.add(lblMaxFilmLengthValue, new CC().cell(4, 0));
             pnlFlimlength.add(filmLengthSlider, new CC().cell(0, 1, 5, 1).growX());
         }
@@ -972,10 +974,10 @@ public class SwingFilterDialog extends JDialog {
         //======== pnlZeitraum ========
         {
             pnlZeitraum.setLayout(new MigLayout(
-                new LC().fillX().insets("0").hideMode(3), //NON-NLS
+                new LC().fillX().insets("0").hideMode(3),
                 // columns
                 new AC()
-                    .align("left").gap() //NON-NLS
+                    .align("left").gap()
                     .grow().fill().gap()
                     .fill(),
                 // rows
@@ -983,12 +985,12 @@ public class SwingFilterDialog extends JDialog {
                     ));
 
             //---- label1 ----
-            label1.setText("Zeitraum:"); //NON-NLS
+            label1.setText("Zeitraum:");
             pnlZeitraum.add(label1, new CC().cell(0, 0));
             pnlZeitraum.add(spZeitraum, new CC().cell(1, 0));
 
             //---- label2 ----
-            label2.setText("Tage"); //NON-NLS
+            label2.setText("Tage");
             pnlZeitraum.add(label2, new CC().cell(2, 0));
         }
         contentPane.add(pnlZeitraum, new CC().cell(0, 12).growX());

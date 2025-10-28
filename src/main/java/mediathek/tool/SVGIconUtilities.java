@@ -8,10 +8,6 @@ public class SVGIconUtilities {
         return createSVGIcon(resource, 16f);
     }
 
-    public static FlatSVGIcon createToolBarIcon(@NotNull String resource) {
-        return createSVGIcon(resource, 18f);
-    }
-
     public static FlatSVGIcon createSVGIcon(@NotNull String resource, float height) {
         FlatSVGIcon icon = new FlatSVGIcon(resource);
         float scaleFactor = (1f / icon.getIconHeight()) * height;

@@ -4,7 +4,7 @@ variables:
   MAVEN_OPTS: "-Djava.awt.headless=true"
   MAVEN_CLI_OPTS: "-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
 
-image: maven:3.9-eclipse-temurin-23
+image: maven:3.9.11-eclipse-temurin-25
 
 
 cache:
@@ -25,7 +25,7 @@ default:
     - ssh-keyscan -p 60002 dw2.mvorg.de >> ~/.ssh/known_hosts
     - ssh-keyscan -p 60002 116.202.81.23 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_11_0_4.tar.gz -O install4j.tar.gz
+    - wget -q https://download-gcdn.ej-technologies.com/install4j/install4j_unix_11_0_5.tar.gz -O install4j.tar.gz
     - tar -zxf install4j.tar.gz
     - java -version
     - ${INSTALL4J_JAVA_HOME}/bin/java -version
@@ -39,13 +39,9 @@ default:
 stages:
   - deploy-nightly-lin
   - deploy-nightly-linarm
-  - deploy-nightly-win
-  #- deploy-nightly-mac
-  # - deploy-nightly-mac-as
   - deploy-lin
   - deploy-linarm
   - deploy-win
-  # - deploy-win32
 
 Build and Deploy nightly Linux:
   stage: deploy-nightly-lin
@@ -61,35 +57,9 @@ Build and Deploy nightly Linux ARM:
   stage: deploy-nightly-linarm
   script:
     - mvn -B package -P!linux_64bit,linux_arm_64bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh nightly linux-aarch64 $CI_COMMIT_SHA
+    - /skripte/deploy.sh nightly linux-arm64 $CI_COMMIT_SHA
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
-
-Build and Deploy nightly Windows:
-  stage: deploy-nightly-win
-  script:
-    - mvn -B package -P!linux_64bit,windows_64bit,install4j $MAVEN_CLI_OPTS
-    - /skripte/deploy.sh nightly win $CI_COMMIT_SHA
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
-
-#Build and Deploy nightly Mac Intel:
-#  stage: deploy-nightly-mac
-#  script:
-#    - mvn -B package -P!linux_64bit,mac_intel $MAVEN_CLI_OPTS
-#    - /skripte/deploy.sh nightly mac $CI_COMMIT_SHA
-#  rules:
-#    - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
-
-# Build and Deploy nightly Mac Apple Silicon:
-#   stage: deploy-nightly-mac-as
-#   script:
-#     - mvn -B package -P!linux_64bit,mac_apple_silicon $MAVEN_CLI_OPTS
-#     - /skripte/deploy.sh nightly mac $CI_COMMIT_SHA
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "develop"'
-
-
 
 Build and Deploy Linux:
   stage: deploy-lin

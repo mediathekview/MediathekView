@@ -4,7 +4,6 @@ import mediathek.config.MVConfig;
 import mediathek.gui.messages.FontSizeChangedEvent;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -447,8 +446,7 @@ public abstract class MVTable extends JTable {
      * @param s The string to be processed.
      * @return The number of columns included.
      */
-    private int countNumberOfColumns(String s) {
-        // add plus one to satisfy saved data requirements...
-        return StringUtils.countMatches(s,',') + 1;
+    protected static long countNumberOfColumns(@NotNull String s) {
+        return s.chars().filter(ch -> ch == ',').count() + 1;
     }
 }

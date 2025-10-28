@@ -43,8 +43,8 @@ import java.awt.FlowLayout
 import java.awt.Taskbar
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
-import java.io.IOException
 import java.lang.foreign.*
+import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.swing.JOptionPane
@@ -197,11 +197,24 @@ class MediathekGuiMac : MediathekGui {
     }
 
     override fun shutdownComputer() {
+        var exePath: Path? = null
         try {
-            val exePath = GuiFunktionenProgramme.findExecutableOnPath("mv_shutdown_helper")
+            exePath = GuiFunktionenProgramme.findExecutableOnPath("MVShutdownHelper")
+        } catch (_: Exception) {
+            //try to find older shutdown binary
+            logger.warn("Could not find MVShutdownHelper executable")
+            try {
+                exePath = GuiFunktionenProgramme.findExecutableOnPath("mv_shutdown_helper")
+            }
+            catch (_: Exception) {
+                logger.error("Could not find old mv_shutdown_helper executable")
+            }
+        }
+        if (exePath != null) {
             Runtime.getRuntime().exec(arrayOf("nohup", exePath.absolutePathString()))
-        } catch (e: IOException) {
-            logger.error(e)
+        }
+        else {
+            logger.error("Could not shutdown mac as executable path is null")
         }
     }
 

@@ -1,3 +1,31 @@
+# **14.4.0**
+- Das Programm verwendet nun kein JavaFX mehr.
+- Java JDK 25 wird mitgeliefert.
+- **(macOS, Windows):** ffmpeg 8 wird mitgeliefert
+- **(Windows):** **Windows 10** wird als Minimum-OS vorausgesetzt. Ansonsten wird das Programm nicht fehlerfrei laufen.
+- **(macOS Intel):** Es wird macOS 11 als Minimum vorausgesetzt.
+- **FEATURE:** Die Merkliste kann nun auch über das Hilfe-Menü vollständig gelöscht werden.
+- **FEATURE:** Dialog *Merkliste verwalten* wurde völlig neu geschrieben. Siehe [folgenden Eintrag](https://forum.mediathekview.de/topic/6338/sneak-peak-zum-neuen-merklistendialog-und-frage-an-die-nutzer).
+- **FEATURE:** MV versucht für verschiedene Sender Season und Episode zu erkennen. Diese Informationen werden im Filminformationen-Dialog dargestellt.
+- **FEATURE:** `season` und `episode` können mit der Lucene Suche verwendet werden.
+- **FEATURE:** multi-threaded Lucene-Indizierung für verbesserte Performance auf Multicore-Systemen.
+- **FEATURE:** Die zapp-Android-Livestreams inklusive Senderinformationen sind nun im Tab *zapp Livestreams* in der App verfügbar. Per Doppelklick auf den Eintrag wird der Stream im Browser geöffnet. Sendungen mit einer Laufzeit von weniger als 5 Minuten werden durch einen orangenen Fortschrittbalken kenntlich gemacht. Das Tab kann über das Menü *Anzeige* ein- und ausgeblendet werden.
+- **FEATURE:** In der Merkliste kann die Verfügbarkeit für ARTE(alle Sprachen), die Sender der ARD-Mediathek, 3Sat und ORF gesucht werden.
+- **FEATURE:** Im Dialog *Filminformation* wird die Verfügbarkeit für den selektierten Film automatisch online abgefragt und bei Erfolg dargestellt.
+- **FEATURE:** Dialog *Filme speichern* bietet nun klar ersichtliche Handlungsoptionen, wie mit Downloads zu verfahren ist.
+- **FEATURE(macOS):** Standard-Abschaltverhalten des shutdown-Helper kann in *Einstellungen/Erweitert* konfiguriert werden.
+- **FEATURE(macOS):** Zum Schreiben von Spotlight Kommentaren wird kein AppleScript mehr genutzt.
+- **FEATURE:** Spalte *Zeit* im Tab Filme zeigt nun die Sendezeit ohne Sekunden an wenn diese Null ist.
+- **BUGFIX:** NPE beim Klicken der Hilfebuttons während der Erstkonfiguration behoben.
+- **BUGFIX:** Zurücksetzen der Filter setzt nun auch die maximale Filmlänge korrekt zurück.
+- **BUGFIX:** European Broadcast Union TTML parser wirft keine Exception mehr auf die Kommandozeile.
+- **BUGFIX:** *Download ändern*-Dialog zeigt nun die richtigen Text zu den Datenfeldern an.
+- **BUGFIX:** MediathekView passt einmalig auf Nachfrage die vorhandenen Filter auf die neue max. Filmlänge von 240 Minuten an.
+- **BUGFIX:** Auswahl "Radio Bremen TV" in der Senderliste liefert nun Ergebnisse bei Nutzung Lucene.
+- **BUGFIX:** Die minimale Dialoggröße des Dialog *Film speichern* sollte nun auf allen Plattformen richtig gesetzt werden.
+- **BUGFIX:** Download-Dialoge bieten nun direkt Auswahlmöglichkeit, wie damit zu verfahren ist (sofort laden/Warteschlange), anstatt eine CheckBox zu verwenden.
+- **BUGFIX:** Fehler bei der Wiederherstellung der Filmlänge in Filtern wurde behoben
+
 # **14.3.1**
 - Konvertierung allen JNA (Java Native Access) code nach Java Foreign Function and Memory API.
 - **BUGFIX:** Fehler in der Verarbeitung von *Filmliste löschen* wurde behoben.

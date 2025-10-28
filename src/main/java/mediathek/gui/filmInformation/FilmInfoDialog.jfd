@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.3.0.386" Java: "17.0.10" encoding: "UTF-8"
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -6,7 +6,7 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3"
 			"$columnConstraints": "[fill][grow,fill]"
-			"$rowConstraints": "[][][][][][][][][][][][][][grow,fill]"
+			"$rowConstraints": "[][][][][][][][][][][][][][][][][grow,fill]"
 		} ) {
 			name: "this"
 			"type": enum java.awt.Window$Type UTILITY
@@ -148,8 +148,8 @@ new FormModel {
 				"value": "cell 1 8"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
-				name: "label10"
-				"text": "Geo:"
+				name: "label12"
+				"text": "Season:"
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -157,10 +157,55 @@ new FormModel {
 				"value": "cell 0 9"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblSeason"
+				"text": "text"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 9,growx"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label14"
+				"text": "Episode:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 10"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblEpisode"
+				"text": "text"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 10,growx"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label15"
+				"text": "Verfügbar bis:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 11"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblAvailableUntil"
+				"text": "text"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 11"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label10"
+				"text": "Geo:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 12"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "lblGeo"
 				"text": "text"
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 1 9"
+				"value": "cell 1 12"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label11"
@@ -169,19 +214,19 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 10"
+				"value": "cell 0 13"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "lblAbo"
 				"text": "text"
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 1 10"
+				"value": "cell 1 13"
 			} )
 			add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 				name: "hyperlink"
 				"text": "Link zur Website"
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 11 2 1"
+				"value": "cell 0 14 2 1"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label13"
@@ -190,7 +235,7 @@ new FormModel {
 					"JavaCodeGenerator.variableLocal": true
 				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 12 2 1"
+				"value": "cell 0 15 2 1"
 			} )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "descScrollPane"
@@ -201,7 +246,7 @@ new FormModel {
 					"maximumSize": new java.awt.Dimension( 2147483647, 200 )
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 13 2 1"
+				"value": "cell 0 16 2 1"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )

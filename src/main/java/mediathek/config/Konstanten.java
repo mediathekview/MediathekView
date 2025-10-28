@@ -1,21 +1,19 @@
 /*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
+ * Copyright (c) 2025 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mediathek.config;
 
@@ -26,9 +24,12 @@ import okhttp3.HttpUrl;
 import java.util.concurrent.TimeUnit;
 
 public class Konstanten {
+    public static final String JSOUP_USER_AGENT = "Mozilla/5.0";
+    public static final String ZAPP_API_URL = "https://api.zapp.mediathekview.de/";
     public static final String NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY = "newSendersActivated.fourteen.three";
+    public static final String NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY = "newFilmlengthActivated.fourteen.three";
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(14, 3, 1);
+    public static final Version MVVERSION = new Version(14, 4, 0);
 
     public static final ApplicationType APPLICATION_TYPE = ApplicationType.PRODUCTION;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
@@ -93,9 +94,9 @@ public class Konstanten {
     public static final String PFAD_HILFETEXT_GEO = "/mediathek/file/hilfetext_geo.txt";
     public static final String PFAD_HILFETEXT_BLACKLIST = "/mediathek/file/hilfetext_blacklist.txt";
     public static final String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_pset.txt";
-    public static final String PFAD_HILFETEXT_STANDARD_PSET = "hilfetext_standardPset.txt";
-    public static final String PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG = "hilfetext_editDownloadProg.txt";
-    public static final String PFAD_HILFETEXT_RESET = "hilfetext_reset.txt";
-    public static final String PFAD_HILFETEXT_RESET_SET = "hilfetext_reset_set.txt";
-    public static final String PFAD_HILFETEXT_DIALOG_ADD_ABO = "hilfetext_dialog_add_abo.txt";
+    public static final String PFAD_HILFETEXT_STANDARD_PSET = "/mediathek/file/hilfetext_standardPset.txt";
+    public static final String PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG = "/mediathek/file/hilfetext_editDownloadProg.txt";
+    public static final String PFAD_HILFETEXT_RESET = "/mediathek/file/hilfetext_reset.txt";
+    public static final String PFAD_HILFETEXT_RESET_SET = "/mediathek/file/hilfetext_reset_set.txt";
+    public static final String PFAD_HILFETEXT_DIALOG_ADD_ABO = "/mediathek/file/hilfetext_dialog_add_abo.txt";
 }

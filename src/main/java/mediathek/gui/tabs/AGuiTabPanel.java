@@ -12,15 +12,16 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 public abstract class AGuiTabPanel extends JPanel {
+    protected final JTabbedPane descriptionTab = new JTabbedPane();
     protected Daten daten;
     protected MediathekGui mediathekGui;
-    protected final JTabbedPane descriptionTab = new JTabbedPane();
     protected FilmDescriptionPanel descriptionPanel;
 
     /**
@@ -32,7 +33,8 @@ public abstract class AGuiTabPanel extends JPanel {
                 descriptionTab.add(descriptionPanel, 0);
                 descriptionTab.setTitleAt(0, "Beschreibung");
             }
-        } else {
+        }
+        else {
             if (descriptionTab.indexOfComponent(descriptionPanel) != -1) {
                 descriptionTab.remove(descriptionPanel);
             }
@@ -86,6 +88,10 @@ public abstract class AGuiTabPanel extends JPanel {
     public abstract void installMenuEntries(JMenu menu);
 
     public class MarkFilmAsSeenAction extends AbstractAction {
+        public MarkFilmAsSeenAction() {
+            super("Filme als gesehen markieren");
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -97,6 +103,10 @@ public abstract class AGuiTabPanel extends JPanel {
     }
 
     public class MarkFilmAsUnseenAction extends AbstractAction {
+        public MarkFilmAsUnseenAction() {
+            super("Filme als ungesehen markieren");
+            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {

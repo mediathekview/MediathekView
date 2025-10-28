@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>14.3.1</version>
+    <version>14.4.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -71,50 +71,47 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
         <repository>
-            <id>Maven2</id>
+            <id>central</id>
             <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
     </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>ej-technologies</id>
-            <url>https://maven.ej-technologies.com/repository</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.language.version>23</jdk.language.version>
-        <jvm.target.version>23</jvm.target.version>
-        <kotlin.language.target>23</kotlin.language.target>
+        <jdk.language.version>25</jdk.language.version>
+        <jvm.target.version>25</jvm.target.version>
+        <kotlin.language.target>24</kotlin.language.target>
 
-        <kotlin.version>2.1.21</kotlin.version>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <kotlin.version>2.2.20</kotlin.version>
+        <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jvm.target.version}</maven.compiler.target>
 
-        <annotations.version>24.1.0</annotations.version>
-        <commons-configuration2.version>2.11.0</commons-configuration2.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-lang3.version>3.17.0</commons-lang3.version>
-        <flatlaf.version>3.6</flatlaf.version>
+        <annotations.version>26.0.2</annotations.version>
+        <commons-configuration2.version>2.12.0</commons-configuration2.version>
+        <commons-io.version>2.20.0</commons-io.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <coroutines.version>1.10.2</coroutines.version>
+        <dd-plist.version>1.28</dd-plist.version>
+        <flatlaf.version>3.6.1</flatlaf.version>
         <glazedlists.version>1.11.0</glazedlists.version>
-        <guava.version>33.4.8-jre</guava.version>
-        <icu4j.version>76.1</icu4j.version>
-        <jackson.version>2.18.0</jackson.version>
+        <guava.version>33.5.0-jre</guava.version>
+        <icu4j.version>77.1</icu4j.version>
+        <ikonli.version>12.4.0</ikonli.version>
+        <jackson.version>2.20.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
         <javax-activation.version>1.2.0</javax-activation.version>
-        <javafx.version>24</javafx.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
-        <jfreechart.version>1.5.5</jfreechart.version>
+        <jfreechart.version>1.5.6</jfreechart.version>
         <jide-oss.version>3.7.15</jide-oss.version>
         <jlibnotify.version>1.2.1</jlibnotify.version>
-        <jna.version>5.17.0</jna.version>
+        <jna.version>5.18.0</jna.version>
+        <jsoup.version>1.21.2</jsoup.version>
         <junit.jupiter.version>5.10.3</junit.jupiter.version>
-        <lucene.version>10.2.0</lucene.version>
+        <lucene.version>10.3.0</lucene.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
         <log4j2.version>2.24.3</log4j2.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
@@ -123,40 +120,90 @@
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
+        <maven-exec-maven-plugin.version>3.1.0</maven-exec-maven-plugin.version>
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <mbassador.version>1.3.2</mbassador.version>
         <miglayout.version>11.3</miglayout.version>
         <mockito.version>5.12.0</mockito.version>
-        <okhttp.version>5.0.0-alpha.14</okhttp.version>
+        <okhttp.version>5.1.0</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
-        <sqlite-jdbc.version>3.49.1.0</sqlite-jdbc.version>
+        <retrofit.version>3.0.0</retrofit.version>
+        <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
         <swingx.version>1.6.5-1</swingx.version>
         <xz.version>1.10</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
 
-        <install4j.version>11.0.4</install4j.version>
+        <install4j.version>11.0.5</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
         <install4j.jdk.min-version>24</install4j.jdk.min-version>
 
-        <!-- VM Parameters Windows x64 -->
-        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0
-            -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck
-        </install4j.vmparameters.win.64>
+        <!-- @formatter:off -->
+        <!-- VM Parameters Windows x64 and aarch64 -->
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
         <!-- VM Parameters Linux 64bit Intel and ARM -->
-        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact
-            -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED
-            -DexternalUpdateCheck
-        </install4j.vmparameters.linux.64>
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
+        <!-- @formatter:on -->
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.googlecode.plist</groupId>
+            <artifactId>dd-plist</artifactId>
+            <version>${dd-plist.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+            <version>${coroutines.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-swing</artifactId>
+            <version>${coroutines.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-swing</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome6-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-materialdesign2-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
@@ -317,6 +364,11 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -349,11 +401,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.jiconfont</groupId>
-            <artifactId>jiconfont-javafx</artifactId>
-            <version>1.0.0</version>
-        </dependency>
         <dependency>
             <groupId>com.github.jiconfont</groupId>
             <artifactId>jiconfont-font_awesome</artifactId>
@@ -418,7 +465,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.19.0</version>
+            <version>${commons-io.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -516,8 +563,10 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED</argLine>
+                </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -532,7 +581,6 @@
                         <configuration>
                             <sourceDirs>
                                 <source>src/main/kotlin</source>
-                                <source>src/main/java</source>
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
@@ -556,7 +604,6 @@
                     <jvmTarget>${jdk.language.version}</jvmTarget>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -604,7 +651,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven-jar-plugin.version}</version>
@@ -613,6 +659,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass><![CDATA[${mainclass}]]></mainClass>
+                            <classpathPrefix>dependency/</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>
@@ -670,6 +717,26 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!-- configure the plugin here -->
+                            <excludeArtifactIds>
+                                sqlite-jdbc,mockito-core,mockito-junit-jupiter,junit-jupiter-api,junit-jupiter-params,junit-jupiter-engine,kotlin-test-junit,byte-buddy,byte-buddy-agent,junit-platform-commons,junit-platform-engine,kotlin-test
+                            </excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -683,59 +750,51 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>win</javafx.platform>
                 <install4j.platform>windows</install4j.platform>
+                <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.zip</windows.ffmpeg.url>
+                <windows.ffmpeg.outdir>${project.build.directory}/res</windows.ffmpeg.outdir>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <version>1.7.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${maven-exec-maven-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>download-ffmpeg-exe-amd64-from-server</id>
+                                <id>fetch-unpack-clean-ffmpeg</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>wget</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg_new.zip</url>
-                                    <unpack>true</unpack>
-                                    <outputDirectory>${project.build.directory}/res</outputDirectory>
-                                    <md5>ef173fd7a3b684c71e445702a8f510f3</md5>
+                                    <executable>powershell</executable>
+                                    <arguments>
+                                        <argument>-NoProfile</argument>
+                                        <argument>-ExecutionPolicy</argument>
+                                        <argument>Bypass</argument>
+                                        <argument>-Command</argument>
+                                        <argument>
+                                            <![CDATA[
+                      $url    = '${windows.ffmpeg.url}'
+                      $outDir = '${windows.ffmpeg.outdir}'
+                      $zip    = Join-Path $outDir 'ffmpeg_new.zip'
+
+                      # ensure output dir
+                      New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+
+                      Write-Host "→ Downloading $url"
+                      # use native curl.exe for a console progress bar
+                      curl.exe -L $url -o $zip --progress-bar
+
+                      Write-Host "→ Unpacking $zip → $outDir"
+                      Expand-Archive -Path $zip -DestinationPath $outDir -Force
+
+                      Write-Host "→ Deleting $zip"
+                      Remove-Item -Path $zip -Force
+                    ]]>
+                                        </argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -760,17 +819,90 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/aarch64/**</exclude>
+                                                <exclude>**/native/Windows/armv7/**</exclude>
+                                                <exclude>**/native/Windows/x86/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>copy-install4j-win-amd64-installers</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/installers/windows-amd64</directory>
+                                            <targetPath>${basedir}/target</targetPath>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>install4j-win-amd64</id>
+            <properties>
+                <install4j.home>download\install4j</install4j.home>
+                <!--suppress UnresolvedMavenProperty -->
+                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-installer-win-amd64</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <projectFile>
+                                        ${project.build.directory}/mediathekview-windows-amd64.install4j
+                                    </projectFile>
                                 </configuration>
                             </execution>
                         </executions>
@@ -780,10 +912,7 @@
         </profile>
 
         <profile>
-            <!-- Does not include ffmpeg and install4j is also not ready.
-                For local test purposes only.
-            -->
-            <id>windows_arm64</id>
+            <id>windows-aarch64</id>
             <activation>
                 <os>
                     <family>windows</family>
@@ -791,81 +920,141 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>win</javafx.platform>
-                <install4j.platform>windows</install4j.platform>
+                <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip</windows.ffmpeg.url>
+                <windows.bin.dir>${project.build.directory}/res/bin</windows.bin.dir>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <version>1.7.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${maven-exec-maven-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>download-ffmpeg-exe-aarch64-from-server</id>
+                                <id>fetch-and-unpack-ffmpeg</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>wget</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip</url>
-                                    <unpack>true</unpack>
-                                    <outputDirectory>${project.build.directory}/res/bin</outputDirectory>
-                                    <md5>3812b8f3c99cf33278dad42a79bff973</md5>
+                                    <executable>powershell</executable>
+                                    <arguments>
+                                        <argument>-NoProfile</argument>
+                                        <argument>-ExecutionPolicy</argument>
+                                        <argument>Bypass</argument>
+                                        <argument>-Command</argument>
+                                        <argument>
+                                            <![CDATA[
+              $url    = '${windows.ffmpeg.url}'
+              $outDir = '${windows.bin.dir}'
+              $zip    = Join-Path $outDir 'ffmpeg.zip'
+
+              # ensure output dir exists
+              New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+
+              Write-Host "→ Downloading $url"
+              # use Windows-native curl.exe for a console progress bar
+              curl.exe -L $url -o $zip --progress-bar
+
+              Write-Host "→ Unpacking $zip → $outDir"
+              Expand-Archive -Path $zip -DestinationPath $outDir -Force
+
+              Write-Host "→ Deleting $zip"
+              Remove-Item -Path $zip -Force
+            ]]>
+                                        </argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/armv7/**</exclude>
+                                                <exclude>**/native/Windows/x86/**</exclude>
+                                                <exclude>**/native/Windows/x86_64/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
-                                <phase>package</phase>
+                                <id>copy-install4j-win-aarch64-installers</id>
+                                <phase>validate</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/installers/windows-aarch64</directory>
+                                            <targetPath>${basedir}/target</targetPath>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>install4j-win-aarch64</id>
+            <properties>
+                <install4j.home>download\install4j</install4j.home>
+                <!--suppress UnresolvedMavenProperty -->
+                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-installer-win-aarch64</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <projectFile>
+                                        ${project.build.directory}/mediathekview-windows-aarch64.install4j
+                                    </projectFile>
                                 </configuration>
                             </execution>
                         </executions>
@@ -884,41 +1073,8 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>linux</javafx.platform>
                 <install4j.platform>linux</install4j.platform>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -934,24 +1090,41 @@
                                 </goals>
                                 <configuration>
                                     <sourceFile>${project.basedir}/scripte/aria2-remote.sh</sourceFile>
-                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh</destinationFile>
+                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh
+                                    </destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -969,41 +1142,8 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>linux-aarch64</javafx.platform>
                 <install4j.platform>arm</install4j.platform>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
@@ -1019,24 +1159,41 @@
                                 </goals>
                                 <configuration>
                                     <sourceFile>${project.basedir}/scripte/aria2-remote.sh</sourceFile>
-                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh</destinationFile>
+                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh
+                                    </destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1054,210 +1211,84 @@
                 </os>
             </activation>
             <properties>
-                <javafx.platform>mac</javafx.platform>
+                <binaries.base>https://s3.mvorg.de/res/dev/mac/bin</binaries.base>
+                <bin.dir>${project.build.directory}/bin</bin.dir>
             </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <version>1.7.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${maven-exec-maven-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>download-shutdown-helper-from-server</id>
+                                <id>download-mac-intel-binaries</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>wget</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-intel-ffmpeg-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffmpeg</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>438891fe3a1077081aa400c1df18590c</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-intel-ffprobe-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/intel/ffprobe</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>5226b0b358243c5757108e107dc546bf</md5>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>-lc</argument>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <argument>
+                                            <![CDATA[
+                set -e
+                mkdir -p "${bin.dir}"
+                for pair in \
+                  "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
+                  "intel/ffmpeg:dd1b293c38510063f98f733229c526f5" \
+                  "intel/ffprobe:4e4d2f0b21770efeb8c69ca321115ed6"
+                do
+                  IFS=":" read -r path md5 <<< "$pair"
+                  url="${binaries.base}/${path}"
+                  dest="${bin.dir}/$(basename "$path")"
+                  echo "→ Downloading $url"
+                  curl -fL "$url" -o "$dest"
+                  actual=$(md5 -q "$dest")
+                  if [[ "$actual" != "$md5" ]]; then
+                    echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
+                    exit 1
+                  fi
+                done
+                ]]>
+                                        </argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>copy-dependencies</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-dependencies</goal>
+                                    <goal>shade</goal>
                                 </goals>
                                 <configuration>
-                                    <!-- configure the plugin here -->
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>mac_apple_silicon</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                    <arch>aarch64</arch>
-                </os>
-            </activation>
-            <properties>
-                <javafx.platform>mac-aarch64</javafx.platform>
-                <javafx.sdk>${project.basedir}/javafx_sdk/mac/aarch64/javafx-sdk/lib</javafx.sdk>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-base</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-controls</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-swing</artifactId>
-                    <version>${javafx.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-fxml</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-graphics</artifactId>
-                    <version>${javafx.version}</version>
-                    <classifier>${javafx.platform}</classifier>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.googlecode.maven-download-plugin</groupId>
-                        <artifactId>download-maven-plugin</artifactId>
-                        <version>1.7.0</version>
-                        <executions>
-                            <execution>
-                                <id>download-shutdown-helper-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/common/mv_shutdown_helper</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>3c8254ce318ef41da00517199c5a5e85</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-apple-silicon-ffmpeg-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/apple_silicon/ffmpeg</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>59529684989790fb73c956f813c9be13</md5>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>download-apple-silicon-ffprobe-from-server</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>wget</goal>
-                                </goals>
-                                <configuration>
-                                    <url>https://s3.mvorg.de/res/dev/mac/bin/apple_silicon/ffprobe</url>
-                                    <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                                    <md5>cca2b80ca82a1fd6f96763ba2ecbe691</md5>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${maven-dependency-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- configure the plugin here -->
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/aarch64/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1289,6 +1320,131 @@
             </build>
         </profile>
         <profile>
+            <id>mac_apple_silicon</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <binaries.base>https://s3.mvorg.de/res/dev/mac/bin</binaries.base>
+                <bin.dir>${project.build.directory}/bin</bin.dir>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${maven-exec-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>download-mac-apple-silicon-binaries</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>-lc</argument>
+                                        <!--suppress UnresolvedMavenProperty -->
+                                        <argument>
+                                            <![CDATA[
+set -e
+mkdir -p "${bin.dir}"
+for pair in \
+  "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
+  "apple_silicon/ffmpeg:36ec3a0b676d0e344bcca9987d9f2174" \
+  "apple_silicon/ffprobe:e2e1ceb77ab05ceaa9d6054a50de69a0"
+do
+  IFS=":" read -r path md5 <<< "$pair"
+  url="${binaries.base}/${path}"
+  dest="${bin.dir}/$(basename "$path")"
+
+  # if file exists and checksum matches, skip download
+  if [[ -f "$dest" && "$(md5 -q "$dest")" == "$md5" ]]; then
+    echo "→ Using cached $dest"
+  else
+    echo "→ Downloading $url"
+    curl -fL "$url" -o "$dest"
+    actual=$(md5 -q "$dest")
+    if [[ "$actual" != "$md5" ]]; then
+      echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
+      exit 1
+    fi
+  fi
+done
+]]>
+                                        </argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>shade-sqlite</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/FreeBSD/**</exclude>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/x86_64/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>copy-install4j-mac-installers</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/installers/mac</directory>
+                                            <targetPath>${basedir}/target/mac</targetPath>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
             <id>install4j</id>
             <build>
                 <plugins>
@@ -1304,7 +1460,9 @@
                                     <goal>compile</goal>
                                 </goals>
                                 <configuration>
-                                    <projectFile>${project.build.directory}/mediathekview_${install4j.platform}.install4j</projectFile>
+                                    <projectFile>
+                                        ${project.build.directory}/mediathekview_${install4j.platform}.install4j
+                                    </projectFile>
                                 </configuration>
                             </execution>
                         </executions>
@@ -1316,10 +1474,12 @@
             <id>install4j-mac-apple-silicon</id>
             <properties>
                 <install4j.home>/Applications/install4j.app</install4j.home>
-                <install4j.macKeystorePassword>${{ secrets.MAC_KEYSTORE_PASSWORD }}</install4j.macKeystorePassword>
-                <install4j.disableNotarization>true</install4j.disableNotarization>
-                <install4j.disableSigning>true</install4j.disableSigning>
-                <install4j.license>${{ secrets.INSTALL4J_LICENSE }}</install4j.license>
+                <!--suppress UnresolvedMavenProperty -->
+                <install4j.macKeystorePassword>${env.MAC_KEYSTORE_PASSWORD}</install4j.macKeystorePassword>
+                <install4j.disableNotarization>false</install4j.disableNotarization>
+                <install4j.disableSigning>false</install4j.disableSigning>
+                <!--suppress UnresolvedMavenProperty -->
+                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
                 <plugins>
@@ -1337,6 +1497,41 @@
                                 <configuration>
                                     <projectFile>
                                         ${project.build.directory}/mac/mac-apple-silicon.install4j
+                                    </projectFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>install4j-mac-intel</id>
+            <properties>
+                <install4j.home>/Applications/install4j.app</install4j.home>
+                <!--suppress UnresolvedMavenProperty -->
+                <install4j.macKeystorePassword>${env.MAC_KEYSTORE_PASSWORD}</install4j.macKeystorePassword>
+                <install4j.disableNotarization>false</install4j.disableNotarization>
+                <install4j.disableSigning>false</install4j.disableSigning>
+                <!--suppress UnresolvedMavenProperty -->
+                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.install4j</groupId>
+                        <artifactId>install4j-maven</artifactId>
+                        <version>${install4j.version}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-installer-mac-intel</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <projectFile>
+                                        ${project.build.directory}/mac/mac-intel.install4j
                                     </projectFile>
                                 </configuration>
                             </execution>

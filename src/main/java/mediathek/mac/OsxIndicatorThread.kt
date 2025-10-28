@@ -42,10 +42,11 @@ internal class OsxIndicatorThread : IndicatorThread() {
                 oldPercentage = percentage
                 TimeUnit.MILLISECONDS.sleep(500)
             }
-        } catch (ignored: Exception) {
+        } catch (_: Exception) {
         } finally {
             //reset the application dock icon
             taskbar.setProgressValue(-1)
+            taskbar.setIconBadge(null)
             oldPercentage = 0
         }
     }

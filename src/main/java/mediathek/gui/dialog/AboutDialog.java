@@ -1,7 +1,3 @@
-/*
- * Created by JFormDesigner on Sat Jul 23 12:40:16 CEST 2022
- */
-
 package mediathek.gui.dialog;
 
 import mediathek.config.Konstanten;
@@ -12,11 +8,9 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXHyperlink;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URISyntaxException;
 
 /**
  * @author Christian Franzke
@@ -29,31 +23,18 @@ public class AboutDialog extends JDialog {
 
         lblVersion.setText(String.format("Version %s (%s)", Konstanten.MVVERSION, SystemUtils.OS_ARCH));
 
-        hyperlinkHomepage.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_WEBSITE));
-        hyperlinkGuiDonation.addActionListener(l -> browseToUrl("https://paypal.me/ChristianFranzke"));
-        hyperlinkServerDonation.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_DONATION));
-        hyperlinkForum.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_FORUM));
-        hyperlinkOnlineHelp.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ONLINE_HELP));
-        hyperlinkFaq.addActionListener(l -> browseToUrl(Konstanten.ADRESSE_ONLINE_FAQ));
+        hyperlinkHomepage.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_WEBSITE));
+        hyperlinkGuiDonation.addActionListener(_ -> UrlHyperlinkAction.openURL("https://paypal.me/ChristianFranzke"));
+        hyperlinkServerDonation.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_DONATION));
+        hyperlinkForum.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_FORUM));
+        hyperlinkOnlineHelp.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_ONLINE_HELP));
+        hyperlinkFaq.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_ONLINE_FAQ));
 
-        hyperlinkJetBrains.addActionListener(l -> browseToUrl("https://www.jetbrains.com"));
-        hyperlinkEjTechnologies.addActionListener(l -> browseToUrl("https://www.ej-technologies.com"));
+        hyperlinkJetBrains.addActionListener(_ -> UrlHyperlinkAction.openURL("https://www.jetbrains.com"));
+        hyperlinkEjTechnologies.addActionListener(_ -> UrlHyperlinkAction.openURL("https://www.ej-technologies.com"));
 
 
         SwingUtilities.invokeLater(() -> scrollPane1.getVerticalScrollBar().setValue(0));
-    }
-
-    private void showError() {
-        JOptionPane.showMessageDialog(this, "Es konnte kein Browser geöffnet werden.",
-                Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-    }
-
-    private void browseToUrl(@NotNull String url) {
-        try {
-            UrlHyperlinkAction.openURL(url);
-        } catch (URISyntaxException e) {
-            showError();
-        }
     }
 
     private void initComponents() {

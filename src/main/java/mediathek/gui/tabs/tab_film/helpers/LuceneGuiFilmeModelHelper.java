@@ -56,11 +56,14 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     private static final Map<String, PointsConfig> PARSER_CONFIG_MAP = new HashMap<>();
     private static final HashSet<String> INTEREST_SET = new HashSet<>(List.of(LuceneIndexKeys.ID));
     static {
+        //INFO IntPoints MUST be registered here
         PARSER_CONFIG_MAP.put(LuceneIndexKeys.FILM_SIZE, new PointsConfig(new DecimalFormat(), Integer.class));
         PARSER_CONFIG_MAP.put(LuceneIndexKeys.FILM_LENGTH, new PointsConfig(new DecimalFormat(), Integer.class));
+        PARSER_CONFIG_MAP.put(LuceneIndexKeys.EPISODE, new PointsConfig(new DecimalFormat(), Integer.class));
+        PARSER_CONFIG_MAP.put(LuceneIndexKeys.SEASON, new PointsConfig(new DecimalFormat(), Integer.class));
     }
 
-    private final Analyzer analyzer = LuceneDefaultAnalyzer.buildAnalyzer();
+    private final Analyzer analyzer = LuceneDefaultAnalyzer.buildPerFieldAnalyzer();
 
     public LuceneGuiFilmeModelHelper(@NotNull SeenHistoryController historyController,
                                      @NotNull SearchFieldData searchFieldData,
@@ -184,10 +187,14 @@ public class LuceneGuiFilmeModelHelper extends GuiModelHelper {
     }
 
     private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull Collection<String> selectedSenders) {
+        if (selectedSenders.isEmpty()) {
+            return; // Kein Filter hinzufügen, wenn keine Sender ausgewählt sind
+        }
+
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         for (var sender : selectedSenders) {
             // sender must be lowercase as StandardAnalyzer converts it to lower during indexing
-            TermQuery term = new TermQuery(new Term(LuceneIndexKeys.SENDER, sender.toLowerCase()));
+            TermQuery term = new TermQuery(new Term(LuceneIndexKeys.SENDER, sender.toLowerCase(Locale.ROOT)));
             booleanQuery.add(term, BooleanClause.Occur.SHOULD);
         }
 

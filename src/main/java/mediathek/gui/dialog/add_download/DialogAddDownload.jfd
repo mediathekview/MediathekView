@@ -1,0 +1,284 @@
+JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel1::t:::x, comp jTextFieldSender::l:::x, comp panel2::l:::x, comp jPanelSize::l:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jTextFieldSender:::p::p, space :::p, comp jPanel1:::p::p, space :::p, comp jPanelSize:::::x, space :::p, comp panel2:::p::p, space :::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Film speichern"
+			"minimumSize": new java.awt.Dimension( 660, 420 )
+			"preferredSize": new java.awt.Dimension( 660, 420 )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {comp panel1:::::x, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp panel1:::p::p, space :::p}}"
+			} ) {
+				name: "panel2"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "insets 0,hidemode 3,alignx right,gap 5 5"
+					"$columnConstraints": "[fill][fill][fill]"
+					"$rowConstraints": "[fill]"
+				} ) {
+					name: "panel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnQueueDownload"
+						"text": "In die Warteschlange"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnDownloadImmediately"
+						"text": "Sofort laden"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonAbbrechen"
+						"text": "Abbrechen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 0"
+					} )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel2::::654:x, comp jPanel7:::::x}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jPanel7:::p::p, space :p:12:p, comp jPanel2:::p::p, space :::x}}"
+			} ) {
+				name: "jPanel1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+					"columns": 2
+					"rows": 2
+				} ) {
+					name: "jPanel2"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxInfodatei"
+						"text": "Lege Infodatei an"
+						"toolTipText": "Erzeugt eine Infodatei im Format \"Infodatei.txt\""
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxPfadSpeichern"
+						"text": "Zielpfad speichern"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxSubtitle"
+						"text": "Untertitel speichern: \"Filmname.xxx\""
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {par l {comp jLabelSet::l:p::p, comp jLabel1::l:p::p}, space :p:20:p, par l {comp jPanel4:::::x, comp jComboBoxPset:::::x}}, seq l {comp jLabel4:::p::p, space :::p, comp jTextFieldName:::::x:2}}, space :::p}}"
+					"$verticalGroup": "par l {seq {space :::p, par b {comp jLabelSet::b:p::p, comp jComboBoxPset::b:p::p}, space u:p::p, par t {comp jPanel4:::p::p, comp jLabel1:::p::p}, space :::p, par c {comp jLabel4::c:p::p, comp jTextFieldName::c:p::p}, space :::p}}"
+				} ) {
+					name: "jPanel7"
+					"maximumSize": new java.awt.Dimension( 606, 32767 )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel1"
+						"text": "Zielpfad:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "jTextFieldName"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabelSet"
+						"text": "Set:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "jComboBoxPset"
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new javax.swing.JComboBox<>();"
+							"JavaCodeGenerator.typeParameters": "String"
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel4"
+						"text": "Dateiname:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class javax.swing.BoxLayout ) ) {
+						name: "jPanel4"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "jComboBoxPfad"
+							"editable": true
+							auxiliary() {
+								"JavaCodeGenerator.customCreateCode": "new javax.swing.JComboBox<>();"
+								"JavaCodeGenerator.typeParameters": "String"
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonZiel"
+							"text": "F"
+							"toolTipText": "Zielpfad auswählen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonDelHistory"
+							"text": "H"
+							"toolTipText": "History löschen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					} )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3::::644:x, seq l {comp jPanel6:::p::p, space :0:0:x}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::p, comp jPanel3:::p::p, space ::66:x}}"
+			} ) {
+				name: "jPanelSize"
+				"border": new javax.swing.border.TitledBorder( "Download-Qualität" )
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+					"alignment": 0
+				} ) {
+					name: "jPanel3"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnRequestLiveInfo"
+						"text": "Codec-Details abrufen..."
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "org.jdesktop.swingx.JXBusyLabel" ) {
+						name: "lblBusyIndicator"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+						"columns": 1
+						"rows": 2
+					} ) {
+						name: "jPanel5"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lblStatus"
+							"text": "status"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "lblAudioInfo"
+							"text": "audio"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
+					name: "jPanel6"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonAufloesungHd"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "Höchste/Hoch"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonAufloesungHoch"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "Mittel"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "jRadioButtonAufloesungKlein"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+						"text": "Niedrig"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "jTextFieldSender"
+				"editable": false
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+				"text": " ARD: Tatort, ..."
+				"border": new javax.swing.border.TitledBorder( "Film" )
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 680, 480 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 650 )
+		} )
+	}
+}

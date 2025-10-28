@@ -17,23 +17,23 @@ public class PanelDownload extends JPanel {
         initComponents();
 
         cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
-        cbkDownloadError.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
+        cbkDownloadError.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
 
         var config = ApplicationConfiguration.getConfiguration();
         jCheckBoxBeep.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,false));
-        jCheckBoxBeep.addActionListener(l -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,jCheckBoxBeep.isSelected()));
+        jCheckBoxBeep.addActionListener(_ -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,jCheckBoxBeep.isSelected()));
 
         cbFetchMissingFileSize.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true));
-        cbFetchMissingFileSize.addActionListener(l -> config.setProperty(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, cbFetchMissingFileSize.isSelected()));
+        cbFetchMissingFileSize.addActionListener(_ -> config.setProperty(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, cbFetchMissingFileSize.isSelected()));
 
-        jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
+        jButtonBeep.addActionListener(_ -> Toolkit.getDefaultToolkit().beep());
 
         var countdown = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME);
         if (countdown < 1 || countdown > Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME) {
             countdown = Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME;
         }
         spDefaultDownloadContinuation.setValue(countdown);
-        spDefaultDownloadContinuation.addChangeListener(e -> {
+        spDefaultDownloadContinuation.addChangeListener(_ -> {
             int val = (int)spDefaultDownloadContinuation.getValue();
             config.setProperty(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, val);
         });
@@ -57,10 +57,10 @@ public class PanelDownload extends JPanel {
         //======== jPanel2 ========
         {
             jPanel2.setLayout(new MigLayout(
-                new LC().insets("5").hideMode(3).gridGap("5", "5"), //NON-NLS
+                new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
                 new AC()
-                    .align("left").gap() //NON-NLS
+                    .align("left").gap()
                     .fill(),
                 // rows
                 new AC()
@@ -70,19 +70,19 @@ public class PanelDownload extends JPanel {
                     ));
 
             //---- cbkDownloadError ----
-            cbkDownloadError.setText("Bei Downloadfehler eine Fehlermeldung anzeigen"); //NON-NLS
+            cbkDownloadError.setText("Bei Downloadfehler eine Fehlermeldung anzeigen");
             jPanel2.add(cbkDownloadError, new CC().cell(0, 0));
 
             //---- jCheckBoxBeep ----
-            jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben"); //NON-NLS
+            jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben");
             jPanel2.add(jCheckBoxBeep, new CC().cell(0, 1));
 
             //---- jButtonBeep ----
-            jButtonBeep.setText("Test"); //NON-NLS
+            jButtonBeep.setText("Test");
             jPanel2.add(jButtonBeep, new CC().cell(1, 1));
 
             //---- cbFetchMissingFileSize ----
-            cbFetchMissingFileSize.setText("Fehlende Filmgr\u00f6\u00dfe nachladen"); //NON-NLS
+            cbFetchMissingFileSize.setText("Fehlende Filmgr\u00f6\u00dfe nachladen");
             jPanel2.add(cbFetchMissingFileSize, new CC().cell(0, 2));
 
             //======== panel1 ========
@@ -90,7 +90,7 @@ public class PanelDownload extends JPanel {
                 panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 
                 //---- label1 ----
-                label1.setText("Standard-Wert f\u00fcr automatische Weiterf\u00fchrung:"); //NON-NLS
+                label1.setText("Standard-Wert f\u00fcr automatische Weiterf\u00fchrung:");
                 panel1.add(label1);
 
                 //---- spDefaultDownloadContinuation ----

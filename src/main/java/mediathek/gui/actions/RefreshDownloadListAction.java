@@ -1,7 +1,8 @@
 package mediathek.gui.actions;
 
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
-import mediathek.tool.SVGIconUtilities;
+import mediathek.swing.IconUtils;
+import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +16,7 @@ public class RefreshDownloadListAction extends AbstractAction {
         putValue(Action.NAME, "Liste der Downloads aktualisieren");
         putValue(Action.SHORT_DESCRIPTION, "Downloadliste aktualisieren");
         putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
-        putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/arrows-rotate.svg"));
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.REDO_ALT));
     }
 
     @Override
