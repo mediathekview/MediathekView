@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+    <id>de.mediathekview.MediathekView</id>
+    <launchable type="desktop-id">de.mediathekview.MediathekView.desktop</launchable>
+    <name>MediathekView</name>
+    <summary>Access public German TV Mediatheken</summary>
+    <summary xml:lang="de">Zugriff auf Mediatheken</summary>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0</project_license>
+    <developer_name>MediathekView developers</developer_name>
+    <url type="homepage">https://mediathekview.de/</url>
+    <url type="help">https://mediathekview.de/anleitung/</url>
+    <url type="vcs-browser">https://github.com/mediathekview/MediathekView</url>
+    <url type="donation">https://mediathekview.de/spenden/</url>
+    <categories>
+        <category>AudioVideo</category>
+        <category>Video</category>
+        <category>Player</category>
+        <category>Recorder</category>
+    </categories>
+    <description>
+        <p>
+            MediathekView searches the online media libraries of German public broadcasting stations
+            (ARD, ZDF, Arte, 3Sat, SWR, BR, MDR, NDR, WDR, HR, RBB, ORF, SRF) and lists available
+            shows and movies.
+            It supports filtering this list for specific broadcasts, and allows viewing and
+            downloading videos.
+            It also enables subscriptions and automatically downloads new episodes.
+        </p>
+        <p xml:lang="de">
+            MediathekView durchsucht die Mediatheken der deutschsprachigen öffentlich-rechtlichen
+            Fernsehsender (ARD, ZDF, Arte, 3Sat, SWR, BR, MDR, NDR, WDR, HR, RBB, ORF, SRF) und
+            zeigt verfügbare Serien und Filme an.
+            Die Liste der Filme kann nach bestimmten Sendern, etc. durchsucht werden. Videos können
+            direkt angesehen oder heruntergeladen werden.
+            Mediathekview unterstützt ebenfalls Abonnements von Serien und kann neue Folgen
+            automatisch herunterladen.
+        </p>
+        <p>
+            Viewing videos requires the "org.videolan.VLC" flatpak.
+        </p>
+        <p xml:lang="de">
+            Zum Anschauen von Videos muss "org.videolan.VLC" installiert sein.
+        </p>
+    </description>
+    <screenshots>
+        <!-- We duplicate screenshots here: Mediathekview only provides German-language screenshots,
+        which
+        we tag with the correct language, but flathub requires us to provide a default screenshot too -->
+        <screenshot type="default">
+            <image>https://mediathekview.de/images/screenshots/filme_uebersicht-standardansicht.png</image>
+            <image xml:lang="de">
+                https://mediathekview.de/images/screenshots/filme_uebersicht-standardansicht.png</image>
+            <caption>The movie list upon first launch</caption>
+            <caption xml:lang="de">Liste der Filme beim ersten Start</caption>
+        </screenshot>
+        <screenshot>
+            <image>https://mediathekview.de/images/screenshots/download_uebersicht.png</image>
+            <image xml:lang="de">https://mediathekview.de/images/screenshots/download_uebersicht.png</image>
+            <caption>The download view</caption>
+            <caption xml:lang="de">Die Download-Ansicht</caption>
+        </screenshot>
+    </screenshots>
+    <update_contact>sebastian@swsnr.de</update_contact>
+    <releases>
+        <release version="14.4.0" date="2025-10-28">
+            <url>https://mediathekview.de/changelog/14-4-0/</url>
+        </release>
+        <release version="14.3.1" date="2025-06-08">
+            <url>https://mediathekview.de/changelog/14-3-1/</url>
+        </release>
+        <release version="14.3.0" date="2025-06-05">
+            <url>https://mediathekview.de/changelog/14-3-0/</url>
+        </release>
+        <release version="14.2.0" date="2025-02-28">
+            <url>https://mediathekview.de/changelog/14-2-0/</url>
+        </release>
+        <release version="14.1.0" date="2024-08-21">
+            <url>https://mediathekview.de/changelog/14-1-0/</url>
+        </release>
+        <release version="14.0.0" date="2023-07-20" />
+        <release version="13.9.1" date="2022-07-14" />
+    </releases>
+    <content_rating type="oars-1.1" />
+</component>
