@@ -81,6 +81,10 @@ chmod +x usr/bin/MediathekView.jar
 cp -r ../MediathekView/dependency usr/bin/
 #cp ../MediathekView/MediathekView.sh usr/bin/$LOWERAPP
 
+# Copy appdata.xml
+mkdir -p usr/share/metainfo
+cp ../../res/MediathekView.appdata.xml usr/share/metainfo/MediathekView.appdata.xml
+
 cat > usr/bin/$LOWERAPP <<'EOF'
 #!/bin/sh
 
