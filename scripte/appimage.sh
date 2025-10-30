@@ -147,7 +147,7 @@ export CI_PROJECT_URL=$tmp_v3
 
 cd .. # Go out of AppImage
 
-#rm -Rf Appimage
+rm -Rf Appimage
 
 cp out/MediathekView*.AppImage target/
 # cd out/
