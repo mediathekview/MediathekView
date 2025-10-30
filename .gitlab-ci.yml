@@ -48,6 +48,7 @@ Build and Deploy nightly Linux:
   script:
     - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
+    - /skripte/gpg.sh
     - scripte/appimage.sh nightly
     - /skripte/deploy.sh nightly linux $CI_COMMIT_SHA
   rules:
@@ -66,6 +67,7 @@ Build and Deploy Linux:
   script:
     - mvn -B package -Plinux_64bit,install4j $MAVEN_CLI_OPTS
     - echo "Baue AppImage"
+    - /skripte/gpg.sh
     - scripte/appimage.sh release
     - /skripte/deploy.sh release linux
   rules:
