@@ -1,3 +1,8 @@
+# **14.4.1**
+- Downgrade JDK 25 zu 24 für Windows und Linux Builds
+- AppImage Signierung hinzugefügt
+-**BUGFIX:** Verbesserungen am AppImage
+
 # **14.4.0**
 - Das Programm verwendet nun kein JavaFX mehr.
 - Java JDK 25 wird mitgeliefert.

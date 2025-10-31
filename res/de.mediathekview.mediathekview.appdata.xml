@@ -69,6 +69,9 @@
     </screenshots>
     <update_contact>info@mediathekview.de</update_contact>
     <releases>
+        <release version="14.4.1" date="2025-10-31">
+            <url>https://mediathekview.de/changelog/14-4-1/</url>
+        </release>
         <release version="14.4.0" date="2025-10-28">
             <url>https://mediathekview.de/changelog/14-4-0/</url>
         </release>
