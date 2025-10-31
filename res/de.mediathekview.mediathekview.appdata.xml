@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
-    <id>de.mediathekview.MediathekView</id>
+<component type="desktop-application">
+    <id>de.mediathekview.mediathekview</id>
     <launchable type="desktop-id">de.mediathekview.MediathekView.desktop</launchable>
+    <icon type="scalable">mediathekview</icon>
+    <provides>
+		<id>de.mediathekview.MediathekView.desktop</id>
+	</provides>
     <name>MediathekView</name>
     <summary>Access public German TV Mediatheken</summary>
     <summary xml:lang="de">Zugriff auf Mediatheken</summary>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0</project_license>
-    <developer_name>MediathekView developers</developer_name>
+    <developer id="de.mediathekview">
+        <name>MediathekView developers</name>
+    </developer>
     <url type="homepage">https://mediathekview.de/</url>
     <url type="help">https://mediathekview.de/anleitung/</url>
     <url type="vcs-browser">https://github.com/mediathekview/MediathekView</url>
@@ -37,10 +43,10 @@
             automatisch herunterladen.
         </p>
         <p>
-            Viewing videos requires the "org.videolan.VLC" flatpak.
+            Viewing videos requires the "VLC".
         </p>
         <p xml:lang="de">
-            Zum Anschauen von Videos muss "org.videolan.VLC" installiert sein.
+            Zum Anschauen von Videos muss "VLC" installiert sein.
         </p>
     </description>
     <screenshots>
@@ -61,8 +67,11 @@
             <caption xml:lang="de">Die Download-Ansicht</caption>
         </screenshot>
     </screenshots>
-    <update_contact>sebastian@swsnr.de</update_contact>
+    <update_contact>info@mediathekview.de</update_contact>
     <releases>
+        <release version="14.4.1" date="2025-10-31">
+            <url>https://mediathekview.de/changelog/14-4-1/</url>
+        </release>
         <release version="14.4.0" date="2025-10-28">
             <url>https://mediathekview.de/changelog/14-4-0/</url>
         </release>

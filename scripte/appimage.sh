@@ -9,8 +9,11 @@
 export ARCH=$(arch)
 export APPIMAGE_EXTRACT_AND_RUN=1
 
+#APP=de.mediathekview.MediathekView
 APP=MediathekView
-LOWERAPP=${APP,,}
+APPLOW="MediathekView"
+LOWERAPP=${APPLOW,,}
+DESKTOPFILE="de.mediathekview.MediathekView"
 if [ "$1" = "release" ]; then
   echo "Baue AppImage Release Version"
   UPDATESTR="zsync|https://download.mediathekview.de/stabil/MediathekView.AppImage.zsync"
@@ -51,15 +54,20 @@ cd $APP.AppDir
 
 get_apprun
 
-cat > $LOWERAPP.desktop <<EOF
+mkdir -p usr/share/applications
+
+cat > usr/share/applications/$DESKTOPFILE.desktop <<EOF
 [Desktop Entry]
 Name=$APP
 Icon=$LOWERAPP
 Exec=$LOWERAPP
+StartupWMClass=mediathek-Main
 Type=Application
 Categories=AudioVideo;
 Comment=Mediatheken
 EOF
+
+ln -s usr/share/applications/$DESKTOPFILE.desktop $DESKTOPFILE.desktop 
 
 #get_icon
 
@@ -74,19 +82,30 @@ cp -R ../MediathekView/jre usr/lib/jvm/
 
 cp -R ../MediathekView/bin usr/bin
 chmod +x usr/bin/bin/*.sh
-cp ../MediathekView/MediathekView.svg $LOWERAPP.svg
+
+# Copy Icons
+
+mkdir -p usr/share/icons/hicolor/scalable/apps/
+cp ../../res/MediathekView.svg usr/share/icons/hicolor/scalable/apps/$LOWERAPP.svg
+ln -s usr/share/icons/hicolor/scalable/apps/$LOWERAPP.svg $LOWERAPP.svg 
+
+mkdir -p usr/share/icons/hicolor/256x256/apps/
+cp ../../res/MediathekView_256x256.png usr/share/icons/hicolor/256x256/apps/$LOWERAPP.png
+ln -s usr/share/icons/hicolor/256x256/apps/$LOWERAPP.png .DirIcon 
+
 
 cp ../MediathekView/MediathekView.jar usr/bin
 chmod +x usr/bin/MediathekView.jar
 cp -r ../MediathekView/dependency usr/bin/
-#cp ../MediathekView/MediathekView.sh usr/bin/$LOWERAPP
 
 # Copy appdata.xml
 mkdir -p usr/share/metainfo
-cp ../../res/MediathekView.appdata.xml usr/share/metainfo/MediathekView.appdata.xml
+cp ../../res/de.mediathekview.mediathekview.appdata.xml usr/share/metainfo/de.mediathekview.mediathekview.appdata.xml
 
 cat > usr/bin/$LOWERAPP <<'EOF'
 #!/bin/sh
+
+export DESKTOP_FILE_HINT="$APPDIR/de.mediathekview.MediathekView.desktop"
 
 dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
@@ -111,7 +130,7 @@ delete_blacklisted
 
 cd .. # Go out of AppImage
 echo "--------------------------------------------------------------------------------------------------------"
-echo "generate_type2_appimage -u ${UPDATESTR}"
+echo "generate_type2_appimage -u ${UPDATESTR} -s --sign-key CF27171895BB5076B89B29015B12B46054A0E0EE"
 
 tmp_v1=$CI_COMMIT_REF_NAME
 tmp_v2=$CI_JOB_NAME
@@ -120,7 +139,7 @@ unset CI_COMMIT_REF_NAME
 unset CI_JOB_NAME
 unset CI_PROJECT_URL
 
-generate_type2_appimage -u ${UPDATESTR}
+generate_type2_appimage -u ${UPDATESTR} -s --sign-key CF27171895BB5076B89B29015B12B46054A0E0EE
 
 export CI_COMMIT_REF_NAME=$tmp_v1
 export CI_JOB_NAME=$tmp_v2
@@ -131,5 +150,10 @@ cd .. # Go out of AppImage
 rm -Rf Appimage
 
 cp out/MediathekView*.AppImage target/
+# cd out/
+# file=$(ls de.mediathekview.MediathekView-*.AppImage)
+# newname=${file#de.mediathekview.}
+# cp "$file" ../target/"$newname"
+# cd ../
 
 rm -Rf out
