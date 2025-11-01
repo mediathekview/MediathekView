@@ -24,6 +24,10 @@
         <category>Player</category>
         <category>Recorder</category>
     </categories>
+    <branding>
+        <color type="primary" scheme_preference="light">#deddda</color>
+        <color type="primary" scheme_preference="dark">#5e5c64</color>
+    </branding>
     <description>
         <p>
             MediathekView searches the online media libraries of German public broadcasting stations
