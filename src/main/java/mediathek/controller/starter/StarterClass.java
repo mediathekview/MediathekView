@@ -207,22 +207,9 @@ public class StarterClass {
                 if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
                     var filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                     if (Files.exists(filmPath)) {
-                        try {
-                            var strComment = datenDownload.film.getDescription();
-                            if (strComment != null && !strComment.isEmpty()) {
-                                FinderCommentService.setFinderComment(filmPath, strComment);
-                                logger.trace("Successfully wrote finder comment.");
-
-                                var newComment = FinderCommentService.getFinderComment(filmPath);
-                                if (newComment != null && newComment.equalsIgnoreCase(FinderCommentService.cleanComment(strComment))) {
-                                    logger.trace("Finder comment verified.");
-                                }
-                                else
-                                    logger.error("Finder comment verification failed.");
-                            }
-                        }
-                        catch (Throwable e) {
-                            logger.error("Failed to set Finder comment for \"{}\"", filmPath, e);
+                        final var strComment = datenDownload.film.getDescription();
+                        if (strComment != null && !strComment.isEmpty()) {
+                            FinderCommentService.writeFinderComment(filmPath, strComment, true);
                         }
                     }
                 }

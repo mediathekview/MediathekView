@@ -22,6 +22,8 @@ import com.dd.plist.BinaryPropertyListWriter;
 import com.dd.plist.NSObject;
 import com.dd.plist.NSString;
 import com.dd.plist.PropertyListParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.foreign.*;
@@ -33,6 +35,7 @@ public class FinderCommentService {
     private static final String XATTR_COMMENT = "com.apple.metadata:kMDItemComment";
     private static final MethodHandle setxattr;
     private static final MethodHandle getxattr;
+    private static final Logger logger = LogManager.getLogger();
 
     static {
         try {
@@ -68,8 +71,9 @@ public class FinderCommentService {
         return comment.replaceAll("\\R", "");
     }
 
-    public static void setFinderComment(Path filePath, String comment) throws Throwable {
+    public static void writeFinderComment(Path filePath, String comment, boolean verify) {
         if (filePath.toString().isEmpty()) {
+            logger.warn("Empty file path detected, not writing finder comment.");
             return;
         }
 
@@ -89,10 +93,24 @@ public class FinderCommentService {
 
             result = (int) setxattr.invoke(pathSegment, commentAttrSegment, value, (long) plistBytes.length, 0, 0);
             checkError(result);
+
+            logger.trace("Successfully wrote finder comment.");
+            if (verify) {
+                var newComment = FinderCommentService.getFinderComment(filePath);
+                if (newComment != null && newComment.equalsIgnoreCase(FinderCommentService.cleanComment(comment))) {
+                    logger.trace("Finder comment verified.");
+                }
+                else
+                    logger.error("Finder comment verification failed.");
+            }
+
+        }
+        catch (Throwable t) {
+            logger.error("Failed to write finder comment.", t);
         }
     }
 
-    public static String getFinderComment(Path filePath) throws Throwable {
+    private static String getFinderComment(Path filePath) throws Throwable {
         try (var arena = Arena.ofConfined()) {
             var pathSegment = arena.allocateFrom(filePath.toString());
             var nameSegment = arena.allocateFrom(XATTR_FINDER_COMMENT);
