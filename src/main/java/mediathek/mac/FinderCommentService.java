@@ -69,6 +69,10 @@ public class FinderCommentService {
     }
 
     public static void setFinderComment(Path filePath, String comment) throws Throwable {
+        if (filePath.toString().isEmpty()) {
+            return;
+        }
+
         try (var arena = Arena.ofConfined(); var out = new ByteArrayOutputStream()) {
             var nsString = new NSString(cleanComment(comment));
             BinaryPropertyListWriter.write(nsString, out);

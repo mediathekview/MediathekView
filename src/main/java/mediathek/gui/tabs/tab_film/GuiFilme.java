@@ -520,8 +520,7 @@ public class GuiFilme extends AGuiTabPanel {
                 aufloesung = FilmResolution.Enum.HIGH_QUALITY.toString();
             } else aufloesung = "";
 
-            Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-            filmSelection.ifPresent(
+            getCurrentlySelectedFilm().ifPresent(
                     film -> daten.getStarterClass().urlMitProgrammStarten(pSet, film, aufloesung));
         }
     }
