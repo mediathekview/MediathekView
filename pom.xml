@@ -143,7 +143,7 @@
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
-        <install4j.jdk.min-version>24</install4j.jdk.min-version>
+        <install4j.jdk.min-version>25</install4j.jdk.min-version>
 
         <!-- @formatter:off -->
         <!-- VM Parameters Windows x64 and aarch64 -->
