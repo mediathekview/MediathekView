@@ -3,6 +3,7 @@ package mediathek.x11;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.mainwindow.MediathekGui;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.LinuxNotificationCenter;
@@ -29,6 +30,16 @@ public class MediathekGuiX11 extends MediathekGui {
     protected void createMenuBar() {
         super.createMenuBar();
         createDarkModeMenuAction();
+    }
+
+    @Override
+    protected void setupSystemTray() {
+        final var useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false);
+        if (!DesktopEnvDetector.trayIconSupported() && useTray) {
+            logger.warn("Application tray icon is not supported on this platform, deactivating.");
+            config.setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false);
+        }
+        super.setupSystemTray();
     }
 
     /**

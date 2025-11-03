@@ -1,3 +1,9 @@
+# **14.5.0**
+- **BUGFIX(Linux):** Tray-Icon Funktion wird für KDE deaktiviert, das sie hier nicht richtig funktioniert.
+- **BUGFIX:** Workaround für Oracle JDK-8024695 eingebaut. Dies verhinderte das korrekte Abspielen von Filmen.
+- **BUGFIX:** Veraltetes Sendericon wird nicht mehr im Filminfo-Dialog dargestellt.
+- **BUGFIX:** Zielpfad im "Film Speichern"-Dialog wird nicht mehr abgeschnitten angezeigt.
+
 # **14.4.2**
 - Downgrade JDK 25 zu 24 auch für macOS (Intel und Apple Silicon) Builds
 - **BUGFIX(macOS):** Es wird keine exception mehr beim schreiben nicht-existenter Finder-Comments geworfen.

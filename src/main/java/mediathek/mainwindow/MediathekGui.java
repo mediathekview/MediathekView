@@ -489,10 +489,21 @@ public class MediathekGui extends JFrame {
         Runtime.getRuntime().addShutdownHook(new Log4jShutdownHookThread());
     }
 
-    private void setupSystemTray() {
+    protected void setupSystemTray() {
         SwingUtilities.invokeLater(() -> {
             initializeSystemTray();
-            initWindowListenerForTray();
+
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent evt) {
+                    if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
+                        setVisible(false);
+                    }
+                    else {
+                        quitApplication();
+                    }
+                }
+            });
         });
     }
 
@@ -748,20 +759,6 @@ public class MediathekGui extends JFrame {
 
         automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
         automaticFilmlistUpdate.start();
-    }
-
-    protected void initWindowListenerForTray() {
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
-                    setVisible(false);
-                }
-                else {
-                    quitApplication();
-                }
-            }
-        });
     }
 
     @Handler

@@ -21,14 +21,12 @@ import java.awt.event.MouseEvent;
 
 public final class MVTray {
 
-    private final Daten daten;
     private int trayState; // 0, 1=Download, 2=Download mit Fehler
     private SystemTray tray;
     private TrayIcon trayIcon;
     private int count;
 
     public MVTray() {
-        daten = Daten.getInstance();
         MessageBus.getMessageBus().subscribe(this);
     }
 
@@ -43,7 +41,7 @@ public final class MVTray {
             }
 
             // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-            DownloadStartInfo info = daten.getListeDownloads().getStarts();
+            DownloadStartInfo info = Daten.getInstance().getListeDownloads().getStarts();
             if (info.error > 0) {
                 // es gibt welche mit Fehler
                 if (trayState != 2) {
@@ -84,11 +82,11 @@ public final class MVTray {
             trayIcon.setPopupMenu(popup);
 
             MenuItem itemInfo = new MenuItem("Infos anzeigen");
-            itemInfo.addActionListener(e -> addNotification(getTextInfos()));
+            itemInfo.addActionListener(_ -> addNotification(getTextInfos()));
             popup.add(itemInfo);
 
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
-            itemRemoveTray.addActionListener(e -> {
+            itemRemoveTray.addActionListener(_ -> {
                 MediathekGui.ui().setVisible(true);
                 ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false);
                 MediathekGui.ui().initializeSystemTray();
@@ -98,7 +96,7 @@ public final class MVTray {
 
             popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
-            itemBeenden.addActionListener(e -> MediathekGui.ui().quitApplication());
+            itemBeenden.addActionListener(_ -> MediathekGui.ui().quitApplication());
             popup.add(itemBeenden);
 
             trayIcon.setPopupMenu(popup);
@@ -135,10 +133,11 @@ public final class MVTray {
 
     private String getTextInfos() {
         String strText = "";
+        var filmList = Daten.getInstance().getListeFilme();
 
-        strText += "Filmliste erstellt: " + daten.getListeFilme().getMetaData().getGenerationDateTimeAsString() + " Uhr  ";
+        strText += "Filmliste erstellt: " + filmList.getMetaData().getGenerationDateTimeAsString() + " Uhr  ";
         strText += "\n";
-        strText += "Anz. Filme: " + daten.getListeFilme().size();
+        strText += "Anz. Filme: " + filmList.size();
         strText += "\n";
         strText += getInfoTextDownloads();
 
@@ -146,6 +145,7 @@ public final class MVTray {
     }
 
     private String getInfoTextDownloads() {
+        var daten = Daten.getInstance();
         final DownloadStartInfo info = daten.getListeDownloads().getStarts();
         String text = "Downloads: " + info.total_starts;
 
@@ -175,7 +175,7 @@ public final class MVTray {
         msg.setTitle("Programminfos");
         msg.setMessage(meldung);
         msg.setType(MessageType.INFO);
-        daten.notificationCenter().displayNotification(msg);
+        Daten.getInstance().notificationCenter().displayNotification(msg);
     }
 
 }

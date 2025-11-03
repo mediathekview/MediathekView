@@ -213,7 +213,10 @@ public class FilmInfoDialog extends JDialog {
                 var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
                 var destDim = GuiFunktionen.calculateFittedDimension(imageDim, DEFAULT_SENDER_DIMENSION);
                 lblSender.setIcon(new ScaledImageIcon(icon, destDim.width, destDim.height));
-            }, () -> lblSender.setText(currentFilm.getSender()));
+            }, () -> {
+                lblSender.setText(currentFilm.getSender());
+                lblSender.setIcon(null);
+            });
 
             lblThema.setText(currentFilm.getThema());
             lblTitel.setText(currentFilm.getTitle());

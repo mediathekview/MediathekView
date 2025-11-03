@@ -37,7 +37,10 @@ public class DownloadInformationLabel extends JLabel {
             textLinks += (info.running == 1) ? "1 läuft" : info.running + " laufen";
 
             if (info.running > 0) {
-                textLinks += " (" + daten.getDownloadInfos().getBandwidthStr() + ')';
+                var bandwidth = daten.getDownloadInfos().getBandwidthStr();
+                if (!bandwidth.isEmpty()) {
+                    textLinks += " (" + bandwidth + ')';
+                }
 
                 var infos = daten.getDownloadInfos();
                 final long byteAlleDownloads = infos.getByteAlleDownloads();

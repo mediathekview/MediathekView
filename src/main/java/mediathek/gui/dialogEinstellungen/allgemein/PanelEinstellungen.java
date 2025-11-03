@@ -7,6 +7,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.cellrenderer.CellRendererBaseWithStart;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
+import mediathek.x11.DesktopEnvDetector;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -86,7 +87,7 @@ public class PanelEinstellungen extends JPanel {
     }
 
     private void setupTray() {
-        if (SystemUtils.IS_OS_MAC_OSX) {
+        if (SystemUtils.IS_OS_MAC_OSX || !DesktopEnvDetector.trayIconSupported()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {

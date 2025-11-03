@@ -11,7 +11,6 @@ import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
 import mediathek.tool.datum.Datum;
 import okhttp3.HttpUrl;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,12 +23,14 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.stream.Collectors;
 
-public final class DatenDownload implements Comparable<DatenDownload> {
+public class DatenDownload implements Comparable<DatenDownload> {
 
     // Quelle - start über einen Button - Download - Abo
     public static final byte QUELLE_ALLE = -1;
@@ -102,6 +103,10 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     private static final Logger logger = LogManager.getLogger(DatenDownload.class);
     private static final String TWO_LETTER_YEAR_PARAMETER = "%3_2";
     private static final String FOUR_LETTER_YEAR_PARAMETER = "%3";
+    private static final DateTimeFormatter HHMMSS = DateTimeFormatter.ofPattern("HHmmss");
+    private static final DateTimeFormatter HH_MM_SS = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final DateTimeFormatter YYYYMMDD = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter DATUM_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     public String[] arr;
     public Datum datumFilm = new Datum(0);
     public DatenFilm film;
@@ -235,22 +240,6 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         MessageBus.getMessageBus().publishAsync(new StartEvent());
     }
 
-    public static String getTextBandbreite(long b) {
-        if (b > 1000 * 1000) {
-            String s = String.valueOf(b / 1000);
-            if (s.length() >= 4) {
-                s = s.substring(0, s.length() - 3) + ',' + s.substring(s.length() - 3);
-            }
-            return s + " MB/s";
-        } else if (b > 1000) {
-            return (b / 1000) + " kB/s";
-        } else if (b > 1) {
-            return b + " B/s";
-        } else {
-            return "";
-        }
-    }
-
     private static String datumDrehen(String datum) {
         String ret = "";
         if (!datum.isEmpty()) {
@@ -268,10 +257,10 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    private static String datumDatumZeitReinigen(String datum) {
-        String ret = StringUtils.replace(datum, ":", "");
-        ret = StringUtils.replace(ret, ".", "");
-        return ret;
+    /// Remove `.` and `:` from input string.
+    /// @return the cleanup result.
+    protected String stripDotsAndColons(String datum) {
+        return datum.replace(":", "").replace(".", "");
     }
 
     /**
@@ -574,29 +563,33 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_SPOTLIGHT]);
     }
 
+    /**
+     * Return number of minutes based on input seconds.
+      * @param sekunden remaining time in seconds
+     * @return string for minutes remaining
+     */
+    protected String formatTimeRemaining(long sekunden) {
+        if (sekunden > 300) {
+            return Math.round(sekunden / 60.0) + " Min.";
+        }
+
+        // geordnete Schwellenwerte (von hoch nach niedrig)
+        int[] limits =    {230, 170, 110,  60,  30,  20,  10};
+        String[] labels = {"5 Min.", "4 Min.", "3 Min.", "2 Min.", "1 Min.", "30 s", "20 s"};
+
+        for (int i = 0; i < limits.length; i++) {
+            if (sekunden > limits[i]) {
+                return labels[i];
+            }
+        }
+
+        return "10 s";
+    }
+
     public String getTextRestzeit() {
         if (start != null) {
-            if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN && start.restSekunden > 0) {
-
-                if (start.restSekunden > 300) {
-                    return Math.round(start.restSekunden / 60.0) + " Min.";
-                } else if (start.restSekunden > 230) {
-                    return "5 Min.";
-                } else if (start.restSekunden > 170) {
-                    return "4 Min.";
-                } else if (start.restSekunden > 110) {
-                    return "3 Min.";
-                } else if (start.restSekunden > 60) {
-                    return "2 Min.";
-                } else if (start.restSekunden > 30) {
-                    return "1 Min.";
-                } else if (start.restSekunden > 20) {
-                    return "30 s";
-                } else if (start.restSekunden > 10) {
-                    return "20 s";
-                } else {
-                    return "10 s";
-                }
+            if (start.status < Start.STATUS_FERTIG && start.status == Start.STATUS_RUN && start.restSekunden > 0) {
+                return formatTimeRemaining(start.restSekunden);
             }
         }
         return "";
@@ -605,8 +598,8 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     public String getTextBandbreite() {
         // start.bandbreite -->> bytes per second
         if (start != null) {
-            if (/*start.status < Start.STATUS_FERTIG &&*/start.status >= Start.STATUS_RUN) {
-                return getTextBandbreite(start.bandbreite);
+            if (start.status >= Start.STATUS_RUN) {
+                return BandwidthFormatter.format(start.bandbreite);
             }
         }
         return "";
@@ -626,14 +619,14 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             DatenProg programm = pSet.getProgUrl(arr[DOWNLOAD_URL]);
             // ##############################################
             // für die alten Versionen:
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME], "%n", "");
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME], "%p", "");
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], "%n", "");
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], "%p", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME].replace("%n", "")
+                    .replace("%p", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].replace("%n", "")
+                    .replace("%p", "");
 
             for (DatenProg prog : pSet.getListeProg()) {
-                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = StringUtils.replace(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME], "%n", "");
-                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = StringUtils.replace(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME], "%p", "");
+                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME].replace("%n", "")
+                        .replace("%p", "");
             }
 
             // ##############################################
@@ -676,15 +669,12 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String replaceExec(String befehlsString) {
-        befehlsString = StringUtils.replace(befehlsString, "**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        befehlsString = StringUtils.replace(befehlsString, "%f", arr[DOWNLOAD_URL]);
-        //FIXME %F needs to be removed as we no longer use flvstreamer
-        befehlsString = StringUtils.replace(befehlsString, "%F", arr[DOWNLOAD_URL_RTMP]);
-        befehlsString = StringUtils.replace(befehlsString, "%a", arr[DOWNLOAD_ZIEL_PFAD]);
-        befehlsString = StringUtils.replace(befehlsString, "%b", arr[DOWNLOAD_ZIEL_DATEINAME]);
-        befehlsString = StringUtils.replace(befehlsString, "%w", websiteUrl);
-
-        return befehlsString;
+        return befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                .replace("%f", arr[DOWNLOAD_URL])
+                .replace("%F", arr[DOWNLOAD_URL_RTMP])
+                .replace("%a", arr[DOWNLOAD_ZIEL_PFAD])
+                .replace("%b", arr[DOWNLOAD_ZIEL_DATEINAME])
+                .replace("%w", websiteUrl);
     }
 
     private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
@@ -815,9 +805,9 @@ public final class DatenDownload implements Comparable<DatenDownload> {
             }
         }
 
-        replStr = StringUtils.replace(replStr, "%t", getField(film.getThema(), laenge));
-        replStr = StringUtils.replace(replStr, "%T", getField(film.getTitle(), laenge));
-        replStr = StringUtils.replace(replStr, "%s", getField(film.getSender(), laenge));
+        replStr = replStr.replace("%t", getField(film.getThema(), laenge))
+                .replace("%T", getField(film.getTitle(), laenge))
+                .replace("%s", getField(film.getSender(), laenge));
 
         final String downloadUrl = this.arr[DatenDownload.DOWNLOAD_URL];
         //special case only for austrian ORF and m3u8 files
@@ -833,25 +823,35 @@ public final class DatenDownload implements Comparable<DatenDownload> {
                 field = FileUtils.removeExtension(field);
             }
 
-            replStr = StringUtils.replace(replStr, "%N", field);
+            replStr = replStr.replace("%N", field);
         } else
-            replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(downloadUrl), laenge));
+            replStr = replStr.replace("%N", getField(GuiFunktionen.getDateiName(downloadUrl), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
-        replStr = StringUtils.replace(replStr, "%D", film.getSendeDatum().isEmpty() ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.getSendeDatum())));
-        replStr = StringUtils.replace(replStr, "%d", film.getSendeZeit().isEmpty() ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.getSendeZeit()));
-        replStr = StringUtils.replace(replStr, "%H", getHeute_yyyyMMdd());
-        replStr = StringUtils.replace(replStr, "%h", getJetzt_HHMMSS());
+        replStr = replStr.replace("%D", film.getSendeDatum().isEmpty() ? getHeute_yyyyMMdd() : stripDotsAndColons(datumDrehen(film.getSendeDatum())))
+                .replace("%d", film.getSendeZeit().isEmpty() ? getJetzt_HHMMSS() : stripDotsAndColons(film.getSendeZeit()))
+                .replace("%H", getHeute_yyyyMMdd())
+                .replace("%h", getJetzt_HHMMSS())
+                .replace("%1", getDMY(DMYTag.DAY, film.getSendeDatum().isEmpty() ? getHeute_dd_MM_yyy() : film.getSendeDatum()))
+                .replace("%2", getDMY(DMYTag.MONTH, film.getSendeDatum().isEmpty() ? getHeute_dd_MM_yyy() : film.getSendeDatum()));
 
-        replStr = StringUtils.replace(replStr, "%1", getDMY(DMYTag.DAY, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
-        replStr = StringUtils.replace(replStr, "%2", getDMY(DMYTag.MONTH, film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum()));
         replStr = replaceYearParameter(replStr, film);
-        replStr = StringUtils.replace(replStr, "%4", getHMS(HMSTag.HOUR, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
-        replStr = StringUtils.replace(replStr, "%5", getHMS(HMSTag.MINUTE, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
-        replStr = StringUtils.replace(replStr, "%6", getHMS(HMSTag.SECOND, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()));
 
-        replStr = StringUtils.replace(replStr, "%i", String.valueOf(System.currentTimeMillis()));
+        replStr = replStr.replace("%4", getHMS(HMSTag.HOUR, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()))
+                .replace("%5", getHMS(HMSTag.MINUTE, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()))
+                .replace("%6", getHMS(HMSTag.SECOND, film.getSendeZeit().isEmpty() ? getJetzt_HH_MM_SS() : film.getSendeZeit()))
+                .replace("%i", String.valueOf(System.currentTimeMillis()));
 
+        replStr = replaceResolutionParameter(replStr, film);
+
+        replStr = replStr.replace("%S", GuiFunktionen.getSuffixFromUrl(downloadUrl))
+                .replace("%Z", getHash(downloadUrl))
+                .replace("%z", getHash(downloadUrl) + '.' + GuiFunktionen.getSuffixFromUrl(downloadUrl));
+
+        return replStr;
+    }
+
+    protected String replaceResolutionParameter(@NotNull String replStr, @NotNull DatenFilm film) {
         String res = "";
         if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL))) {
             res = "H";
@@ -860,15 +860,7 @@ public final class DatenDownload implements Comparable<DatenDownload> {
         } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.Enum.LOW))) {
             res = "L";
         }
-        replStr = StringUtils.replace(replStr, "%q", res);
-
-        replStr = StringUtils.replace(replStr, "%S", GuiFunktionen.getSuffixFromUrl(downloadUrl));
-        replStr = StringUtils.replace(replStr, "%Z", getHash(downloadUrl));
-
-        replStr = StringUtils.replace(replStr, "%z", getHash(downloadUrl)
-                + '.' + GuiFunktionen.getSuffixFromUrl(downloadUrl));
-
-        return replStr;
+        return replStr.replace("%q", res);
     }
 
     /**
@@ -877,15 +869,16 @@ public final class DatenDownload implements Comparable<DatenDownload> {
      * @param film the film object
      * @return the processed string
      */
-    private String replaceYearParameter(String replStr, DatenFilm film) {
-        var datum = film.getSendeDatum().isEmpty() ? getHeute_yyyy_MM_dd() : film.getSendeDatum();
+    protected String replaceYearParameter(String replStr, DatenFilm film) {
+        var datum = film.getSendeDatum().isEmpty() ? getHeute_dd_MM_yyy() : film.getSendeDatum();
         var year = getDMY(DMYTag.YEAR, datum);
         if (replStr.contains(TWO_LETTER_YEAR_PARAMETER)) {
             // two-digit year
             year = year.substring(2);
-            return StringUtils.replace(replStr, TWO_LETTER_YEAR_PARAMETER, year);
-        } else
-            return StringUtils.replace(replStr, FOUR_LETTER_YEAR_PARAMETER, year);
+            return replStr.replace(TWO_LETTER_YEAR_PARAMETER, year);
+        } else {
+            return replStr.replace(FOUR_LETTER_YEAR_PARAMETER, year);
+        }
     }
 
     private String getHash(String pfad) {
@@ -914,19 +907,19 @@ public final class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String getJetzt_HHMMSS() {
-        return FastDateFormat.getInstance("HHmmss").format(new Date());
+        return LocalTime.now().format(HHMMSS);
     }
 
     private String getJetzt_HH_MM_SS() {
-        return FastDateFormat.getInstance("HH:mm:ss").format(new Date());
+        return LocalTime.now().format(HH_MM_SS);
     }
 
     private String getHeute_yyyyMMdd() {
-        return FastDateFormat.getInstance("yyyyMMdd").format(new Date());
+        return LocalDate.now().format(YYYYMMDD);
     }
 
-    private String getHeute_yyyy_MM_dd() {
-        return sdf_datum.format(new Date());
+    protected String getHeute_dd_MM_yyy() {
+        return LocalDate.now().format(DATUM_FORMAT);
     }
 
     private void initialize() {

@@ -12,6 +12,7 @@ import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.FinderCommentService;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.BandwidthFormatter;
 import mediathek.tool.FileUtils;
 import mediathek.tool.MessageBus;
 import mediathek.tool.notification.MessageType;
@@ -158,7 +159,7 @@ public class StarterClass {
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
                 text.add("Bytes gelesen: " + FileUtils.humanReadableByteCountBinary(start.mVBandwidthCountingInputStream.getSumByte()));
-                text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVBandwidthCountingInputStream.getSumBandwidth()));
+                text.add("Bandbreite: " + BandwidthFormatter.format(start.mVBandwidthCountingInputStream.getSumBandwidth()));
             }
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);

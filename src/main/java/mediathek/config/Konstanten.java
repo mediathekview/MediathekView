@@ -17,10 +17,11 @@
  */
 package mediathek.config;
 
-import java.util.concurrent.TimeUnit;
 import mediathek.tool.FileUtils;
 import mediathek.tool.Version;
 import okhttp3.HttpUrl;
+
+import java.util.concurrent.TimeUnit;
 
 
 public class Konstanten {
@@ -29,9 +30,9 @@ public class Konstanten {
     public static final String NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY = "newSendersActivated.fourteen.three";
     public static final String NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY = "newFilmlengthActivated.fourteen.three";
     public static final long MINIMUM_MEMORY_THRESHOLD = 768 * FileUtils.ONE_MB;
-    public static final Version MVVERSION = new Version(14, 4, 2);
+    public static final Version MVVERSION = new Version(14, 5, 0);
 
-    public static final ApplicationType APPLICATION_TYPE = ApplicationType.PRODUCTION;
+    public static final ApplicationType APPLICATION_TYPE = ApplicationType.NIGHTLY;
     public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
 
     public static final String FORMAT_ZIP = ".zip";

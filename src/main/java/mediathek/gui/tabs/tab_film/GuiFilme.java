@@ -1174,16 +1174,16 @@ public class GuiFilme extends AGuiTabPanel {
         }
 
         @Override
-        public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON1) {
-                if (arg0.getClickCount() == 1) {
-                    p = arg0.getPoint();
+        public void mouseClicked(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                if (e.getClickCount() == 1) {
+                    p = e.getPoint();
                     int row = tabelle.rowAtPoint(p);
                     int column = tabelle.columnAtPoint(p);
                     if (row >= 0) {
                         buttonTable(row, column);
                     }
-                } else if (arg0.getClickCount() > 1) {
+                } else if (e.getClickCount() > 1) {
                     var infoDialog = mediathekGui.getFilmInfoDialog();
                     if (infoDialog != null) {
                         if (!infoDialog.isVisible()) {
@@ -1212,25 +1212,24 @@ public class GuiFilme extends AGuiTabPanel {
         private void buttonTable(int row, int column) {
             if (row != -1) {
                 switch (tabelle.convertColumnIndexToModel(column)) {
-                    case DatenFilm.FILM_ABSPIELEN -> {
-                        Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-                        filmSelection.ifPresent(datenFilm -> {
-                            boolean stop = false;
-                            final DatenDownload datenDownload =
-                                    daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
-                            if (datenDownload != null) {
-                                if (datenDownload.start != null) {
-                                    if (datenDownload.start.status == Start.STATUS_RUN) {
-                                        stop = true;
-                                        daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrlNormalQuality());
-                                    }
+                    case DatenFilm.FILM_ABSPIELEN -> getCurrentlySelectedFilm().ifPresent(film -> {
+                        boolean dontPlay = false;
+                        final var download =
+                                daten.getListeDownloadsButton().getDownloadUrlFilm(film.getUrlNormalQuality());
+                        if (download != null) {
+                            if (download.start != null) {
+                                if (download.start.status == Start.STATUS_RUN) {
+                                    // we have a running "download", do not start again
+                                    dontPlay = true;
+                                    daten.getListeDownloadsButton().delDownloadButton(film.getUrlNormalQuality());
                                 }
                             }
-                            if (!stop) {
-                                playFilmAction.actionPerformed(null);
-                            }
-                        });
-                    }
+                        }
+                        // if the download is already playing, do not start again...
+                        if (!dontPlay) {
+                            playFilmAction.actionPerformed(null);
+                        }
+                    });
                     case DatenFilm.FILM_AUFZEICHNEN -> saveFilm(null);
                     case DatenFilm.FILM_MERKEN -> getCurrentlySelectedFilm().ifPresent(film -> {
                         if (!film.isLivestream()) {
@@ -1241,6 +1240,25 @@ public class GuiFilme extends AGuiTabPanel {
                         }
                     });
                 }
+            }
+        }
+
+        private void createStartWithPsetItems(@NotNull JPopupMenu jPopupMenu) {
+            JMenu submenue = new JMenu("Film mit Set starten");
+            jPopupMenu.add(submenue);
+            ListePset liste = Daten.listePset.getListeButton();
+            for (DatenPset pset : liste) {
+                if (pset.getListeProg().isEmpty() && pset.getName().isEmpty()) {
+                    // ein "leeres" Pset, Platzhalter
+                    continue;
+                }
+
+                JMenuItem item = new JMenuItem(pset.getName());
+                pset.getForegroundColor().ifPresent(item::setForeground);
+                if (!pset.getListeProg().isEmpty()) {
+                    item.addActionListener(_ -> playerStarten(pset));
+                }
+                submenue.add(item);
             }
         }
 
@@ -1289,22 +1307,7 @@ public class GuiFilme extends AGuiTabPanel {
             submenueAbo.add(itemAboMitTitel);
 
             // Programme einblenden
-            JMenu submenue = new JMenu("Film mit Set starten");
-            jPopupMenu.add(submenue);
-            ListePset liste = Daten.listePset.getListeButton();
-            for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.getName().isEmpty()) {
-                    // ein "leeres" Pset, Platzhalter
-                    continue;
-                }
-
-                JMenuItem item = new JMenuItem(pset.getName());
-                pset.getForegroundColor().ifPresent(item::setForeground);
-                if (!pset.getListeProg().isEmpty()) {
-                    item.addActionListener(_ -> playerStarten(pset));
-                }
-                submenue.add(item);
-            }
+            createStartWithPsetItems(jPopupMenu);
 
             JMenu submenueBlack = new JMenu("Blacklist");
             jPopupMenu.add(submenueBlack);

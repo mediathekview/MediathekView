@@ -391,7 +391,7 @@ class DialogAddDownloadWithCoroutines(
     }
 
     private fun setupFilmQualityRadioButtons() {
-        val listener: ActionListener? = ActionListener {
+        val listener = ActionListener {
             setNameFilm()
             lblStatus.setText("")
             lblAudioInfo.setText("")
@@ -698,21 +698,9 @@ class DialogAddDownloadWithCoroutines(
         cbPathTextComponent.isOpaque = true
 
         cbPathTextComponent.document.addDocumentListener(object : DocumentListener {
-            private val MAX_PATH_LENGTH = 40
-
             override fun insertUpdate(e: DocumentEvent?) = tus()
             override fun removeUpdate(e: DocumentEvent?) = tus()
             override fun changedUpdate(e: DocumentEvent?) = tus()
-
-            private fun truncate() {
-                val text = cbPathTextComponent.text
-                if (text.length > MAX_PATH_LENGTH) {
-                    val shortText = "..." + text.takeLast(MAX_PATH_LENGTH)
-                    SwingUtilities.invokeLater {
-                        cbPathTextComponent.text = shortText
-                    }
-                }
-            }
 
             private fun fileNameCheck(filePath: String) {
                 val editor = jComboBoxPfad.editor.editorComponent
@@ -732,7 +720,6 @@ class DialogAddDownloadWithCoroutines(
                     }
                     calculateAndCheckDiskSpace()
                 }
-                truncate()
             }
         })
     }
