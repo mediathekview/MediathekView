@@ -242,11 +242,17 @@ public class BookmarkDataList {
                 assignData(bookmark, film);
             }
             else {
-                var film = listefilme.getFilmByUrl(bookmark.getUrl());
-                assignData(bookmark, film);
-                // if we didn't have hashCode, update to new format now if possible...
-                if (film != null) {
-                    bookmark.setFilmHashCode(film.getSha256().toString());
+                var url = bookmark.getUrl();
+                if (url == null) {
+                    logger.warn("Stored bookmark is invalid, url is null");
+                }
+                else {
+                    var film = listefilme.getFilmByUrl(bookmark.getUrl());
+                    assignData(bookmark, film);
+                    // if we didn't have hashCode, update to new format now if possible...
+                    if (film != null) {
+                        bookmark.setFilmHashCode(film.getSha256().toString());
+                    }
                 }
             }
         }

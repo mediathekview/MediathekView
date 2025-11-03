@@ -24,6 +24,10 @@
         <category>Player</category>
         <category>Recorder</category>
     </categories>
+    <branding>
+        <color type="primary" scheme_preference="light">#deddda</color>
+        <color type="primary" scheme_preference="dark">#5e5c64</color>
+    </branding>
     <description>
         <p>
             MediathekView searches the online media libraries of German public broadcasting stations
@@ -69,6 +73,9 @@
     </screenshots>
     <update_contact>info@mediathekview.de</update_contact>
     <releases>
+        <release version="14.4.2" date="2025-11-03">
+            <url>https://mediathekview.de/changelog/14-4-1/</url>
+        </release>
         <release version="14.4.1" date="2025-10-31">
             <url>https://mediathekview.de/changelog/14-4-1/</url>
         </release>

@@ -1,7 +1,11 @@
+# **14.4.2**
+- Downgrade JDK 25 zu 24 auch für macOS (Intel und Apple Silicon) Builds
+- **BUGFIX(macOS):** Es wird keine exception mehr beim schreiben nicht-existenter Finder-Comments geworfen.
+
 # **14.4.1**
 - Downgrade JDK 25 zu 24 für Windows und Linux Builds
 - AppImage Signierung hinzugefügt
--**BUGFIX:** Verbesserungen am AppImage
+-vc**BUGFIX:** Verbesserungen am AppImage
 
 # **14.4.0**
 - Das Programm verwendet nun kein JavaFX mehr.

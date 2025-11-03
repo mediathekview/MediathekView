@@ -44,11 +44,11 @@ jobs:
       - name: Use Extracted Version
         run: echo "The version is $MV_VERSION"
 
-      - name: Set up Java 25 (Liberica) & cache Maven
+      - name: Set up Java 24 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
           distribution: liberica
-          java-version: '25'
+          java-version: '24'
           java-package: jdk
           cache: maven
 
