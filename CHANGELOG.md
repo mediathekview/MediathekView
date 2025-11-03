@@ -1,5 +1,6 @@
 # **14.4.2**
-- **BUGFIX(macOS):** Es wird keine exception mehr beim schreiben nicht-existenter Finder-Comments geworfen. 
+- Downgrade JDK 25 zu 24 auch für macOS (Intel und Apple Silicon) Builds
+- **BUGFIX(macOS):** Es wird keine exception mehr beim schreiben nicht-existenter Finder-Comments geworfen.
 
 # **14.4.1**
 - Downgrade JDK 25 zu 24 für Windows und Linux Builds
