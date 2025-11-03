@@ -44,11 +44,11 @@ jobs:
       - name: Use Extracted Version
         run: echo "The version is $MV_VERSION"
 
-      - name: Set up Java 24 (Liberica) & cache Maven
+      - name: Set up Java 25 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
           distribution: liberica
-          java-version: '24'
+          java-version: '25'
           java-package: jdk
           cache: maven
 
@@ -146,11 +146,11 @@ jobs:
           "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
 
-      - name: Set up Java 24 (Liberica) & cache Maven
+      - name: Set up Java 25 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
           distribution: liberica
-          java-version: '24'
+          java-version: '25'
           java-package: jdk
           cache: maven
 
@@ -243,11 +243,11 @@ jobs:
           echo "Version: $version"
           "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
-      - name: Set up Java 24 (Liberica) & cache Maven
+      - name: Set up Java 25 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
           distribution: liberica
-          java-version: '24'
+          java-version: '25'
           java-package: jdk
           cache: maven
 
