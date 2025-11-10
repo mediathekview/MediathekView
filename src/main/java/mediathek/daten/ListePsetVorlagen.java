@@ -77,7 +77,7 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
             return "Mac";
         else if (SystemUtils.IS_OS_WINDOWS)
             return "Windows";
-        else if (SystemUtils.IS_OS_LINUX)
+        else if (SystemUtils.IS_OS_UNIX)
             return "Linux";
         else
             return "";
@@ -118,7 +118,7 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
     }
 
     private static @NotNull String getProgramSetTemplateFromLocalResources() throws IllegalStateException {
-        if (SystemUtils.IS_OS_LINUX)
+        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD)
             return "/mediathek/file/pset_linux.xml";
         else if (SystemUtils.IS_OS_MAC_OSX)
             return "/mediathek/file/pset_mac.xml";

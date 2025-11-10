@@ -113,7 +113,7 @@ object StandardLocations {
         val userHome = SystemUtils.USER_HOME
         val path = if (SystemUtils.IS_OS_MAC_OSX)
             Paths.get(userHome, "Downloads")
-        else if (SystemUtils.IS_OS_LINUX)
+        else if (SystemUtils.IS_OS_UNIX)
             getXDGDownloadDirectory().orElse(Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS))
         else
             Paths.get(userHome, Konstanten.VERZEICHNIS_DOWNLOADS)

@@ -80,6 +80,7 @@ public class GuiFunktionenProgramme {
     }
 
     private static final String PFAD_LINUX_VLC = "/usr/bin/vlc";
+    private static final String PFAD_BSD_VLC = "/usr/local/bin/vlc";
     private static final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
     private static final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
 
@@ -94,6 +95,9 @@ public class GuiFunktionenProgramme {
         try {
             if (SystemUtils.IS_OS_LINUX) {
                     pfad = PFAD_LINUX_VLC;
+            }
+            else if (SystemUtils.IS_OS_FREE_BSD) {
+                    pfad = PFAD_BSD_VLC;
             }
             else if (SystemUtils.IS_OS_MAC_OSX) {
                 pfad = PFAD_MAC_VLC;
@@ -120,6 +124,7 @@ public class GuiFunktionenProgramme {
     }
 
     private static final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
+    private static final String PFAD_BSD_FFMPEG = "/usr/local/bin/ffmpeg";
     private static final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
     private static final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
 
@@ -136,6 +141,8 @@ public class GuiFunktionenProgramme {
         try {
             if (SystemUtils.IS_OS_LINUX)
                 pfad = PFAD_LINUX_FFMPEG;
+            else if (SystemUtils.IS_OS_FREE_BSD)
+                pfad = PFAD_BSD_FFMPEG;
             else if (SystemUtils.IS_OS_MAC_OSX)
                 pfad = PFAD_MAC_FFMPEG;
             else

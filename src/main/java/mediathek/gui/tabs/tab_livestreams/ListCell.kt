@@ -44,7 +44,7 @@ class ListCell : JPanel() {
             Dimension(215, 90)
         } else if (SystemUtils.IS_OS_MAC_OSX) {
             Dimension(215, 115)
-        } else if (SystemUtils.IS_OS_LINUX) {
+        } else if (SystemUtils.IS_OS_UNIX) {
             Dimension(215, 120)
         } else {
             throw IllegalStateException("Unknown OS")
