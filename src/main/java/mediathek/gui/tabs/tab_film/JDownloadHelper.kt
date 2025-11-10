@@ -30,6 +30,7 @@ class JDownloadHelper {
             .build()
         val request = Request.Builder()
             .url("http://127.0.0.1:9666/flash/add")
+            .header("Host", "mediathekview.de")
             .post(formBody)
             .build()
         try {
