@@ -319,7 +319,7 @@ public class Main {
                 && (mxParamCount == 0))
             correctParameters = true;
 
-        if (SystemUtils.IS_OS_LINUX) {
+        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD) {
             if (addOpens == 0)
                 correctParameters = false;
         }
@@ -344,7 +344,7 @@ public class Main {
                 "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
                 "<li>-XX:+UseStringDeduplication</li>" +
                 "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
-        if (SystemUtils.IS_OS_LINUX) {
+        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD) {
             message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
         }
 
@@ -450,7 +450,7 @@ public class Main {
 
                 configureDnsPreferenceMode(parseResult);
 
-                if (SystemUtils.IS_OS_LINUX) {
+                if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD) {
                     if (!Config.isDisableFlatLafDecorations()) {
                         // enable custom window decorations
                         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -464,7 +464,7 @@ public class Main {
                 registerFlatLafCustomization();
                 DarkModeSetup.setup();
 
-                if (SystemUtils.IS_OS_LINUX) {
+                if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD) {
                     checkUiScaleSetting();
                 }
 
@@ -810,7 +810,7 @@ public class Main {
         else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
         }
-        else if (SystemUtils.IS_OS_LINUX) {
+        else if (SystemUtils.IS_OS_UNIX) {
             window = new MediathekGuiX11();
         }
         else {

@@ -194,7 +194,7 @@ public class FilenameUtils {
             //Therefore be more conservative by default and replace more characters.
             ret = removeWindowsTrailingDots(ret);
             ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-        } else if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
+        } else if (SystemUtils.IS_OS_UNIX) {
             //On OSX the VFS take care of writing correct filenames to FAT filesystems...
             //Just remove the default illegal characters
             ret = stripStartingDots(ret);

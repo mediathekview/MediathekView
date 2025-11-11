@@ -76,7 +76,7 @@ public class PanelEinstellungenErweitert extends JPanel {
         handler = new TextCopyPasteHandler<>(jTextFieldProgrammShutdown);
         jTextFieldProgrammShutdown.setComponentPopupMenu(handler.getPopupMenu());
 
-        if (!SystemUtils.IS_OS_LINUX) {
+        if (!(SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD)) {
             jTextFieldProgrammShutdown.setEnabled(false);
             jButtonProgrammShutdown.setEnabled(false);
         }

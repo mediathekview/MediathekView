@@ -1064,6 +1064,72 @@
         </profile>
 
         <profile>
+            <id>freebsd</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>freebsd</name>
+                    <arch>amd64</arch>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.coderplus.maven.plugins</groupId>
+                        <artifactId>copy-rename-maven-plugin</artifactId>
+                        <version>1.0</version>
+                        <executions>
+                            <execution>
+                                <id>rename-file</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <sourceFile>${project.basedir}/scripte/aria2-remote.sh</sourceFile>
+                                    <destinationFile>${project.build.directory}/res/bin/aria2-remote.sh
+                                    </destinationFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>${maven-shade-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>org.xerial:sqlite-jdbc</include>
+                                        </includes>
+                                    </artifactSet>
+                                    <filters>
+                                        <filter>
+                                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                                            <excludes>
+                                                <exclude>**/native/Linux/**</exclude>
+                                                <exclude>**/native/Linux-Android/**</exclude>
+                                                <exclude>**/native/Linux-Musl/**</exclude>
+                                                <exclude>**/native/Mac/**</exclude>
+                                                <exclude>**/native/Windows/**</exclude>
+                                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>linux_64bit</id>
             <activation>
                 <os>

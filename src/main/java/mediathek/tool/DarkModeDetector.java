@@ -44,7 +44,7 @@ public class DarkModeDetector {
             return isMacOsDarkMode();
         else if (SystemUtils.IS_OS_WINDOWS)
             return isWindowsDarkMode();
-        else if (SystemUtils.IS_OS_LINUX && isGnome())
+        else if (SystemUtils.IS_OS_UNIX && isGnome())
             return isGnomeDarkMode();
         else
             return false;
@@ -61,7 +61,7 @@ public class DarkModeDetector {
      */
     public static boolean hasDarkModeDetectionSupport() {
         return SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX ||
-                (SystemUtils.IS_OS_LINUX && isGnome());
+                (SystemUtils.IS_OS_UNIX && isGnome());
     }
 
     private static boolean isGnomeDarkMode() {
