@@ -273,7 +273,7 @@ public class SwingFilterDialog extends JDialog {
         jcbThema.setSelectedItem(thema);
         jcbThema.addActionListener(_ -> {
             var sel = (String) jcbThema.getSelectedItem();
-            if (sel != null) {
+            if (sel != null && !sel.isEmpty()) {
                 filterConfig.setThema(sel);
             }
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
@@ -308,11 +308,14 @@ public class SwingFilterDialog extends JDialog {
         cbDontShowAudioVersions.setSelected(filterConfig.isDontShowAudioVersions());
         cbDontShowDuplicates.setSelected(filterConfig.isDontShowDuplicates());
 
+        //setSelectedItem wird 2x benötigt, da sonst entweder das Thema gar nicht geladen wird aus der Config, bzw. nicht in der Combobox angezeigt wird
         jcbThema.setSelectedItem(filterConfig.getThema());
 
         ((SenderCheckBoxList) senderList).restoreFilterConfig();
         ((FilmLengthSlider) filmLengthSlider).restoreFilterConfig(filterConfig);
+
         spZeitraum.restoreFilterConfig(filterConfig);
+        jcbThema.setSelectedItem(filterConfig.getThema());
     }
 
     private void enableControls(boolean enable) {
@@ -619,8 +622,9 @@ public class SwingFilterDialog extends JDialog {
                         existingFilter.ifPresentOrElse(_ -> {
                             //if a filter already exists we cannot rename...
                             JOptionPane.showMessageDialog(MediathekGui.ui(),
-                                    String.format("Filter %s existiert bereits.\nAktion wird abgebrochen", fName),
-                                    Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+                                String.format(
+                                    "Filter %s existiert bereits.\nAktion wird abgebrochen", fName),
+                                Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
                         }, () -> {
                             // no existing name...
                             Configuration config = ApplicationConfiguration.getConfiguration();
@@ -632,9 +636,9 @@ public class SwingFilterDialog extends JDialog {
                             config.unlock(LockMode.WRITE);
                             logger.trace("Renamed filter \"{}\" to \"{}\"", fltName, fName);
                         });
-                    }
-                    else
+                    } else {
                         logger.warn("New and old filter name are identical...doing nothing");
+                    }
                 }
                 else {
                     JOptionPane.showMessageDialog(MediathekGui.ui(), "Filtername darf nicht leer sein!",

@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/develop'
     name: Build macOS ${{ matrix.arch }} nightly
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -125,6 +126,7 @@ jobs:
           aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${FILE_NAME}.sha512" "s3://${S3_BUCKET}/${FILE_NAME}.sha512"
 
   build-windows-arm64:
+    if: github.ref == 'refs/heads/develop'
     name: Build Windows ARM64 nightly
     runs-on: windows-11-arm
 
@@ -223,6 +225,7 @@ jobs:
           aws --endpoint-url $endpoint s3 cp "target\media\$zipName.sha512" "s3://$bucket/$zipName.sha512"
 
   build-windows-amd64:
+    if: github.ref == 'refs/heads/develop'
     name: Build Windows AMD64 nightly
     runs-on: windows-latest
 
