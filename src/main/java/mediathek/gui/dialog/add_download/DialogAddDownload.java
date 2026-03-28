@@ -50,7 +50,7 @@ public class DialogAddDownload extends JDialog {
         var jPanel2 = new JPanel();
         jCheckBoxInfodatei = new JCheckBox();
         jCheckBoxPfadSpeichern = new JCheckBox();
-        jCheckBoxSubtitle = new JCheckBox();
+        jCheckBoxSubtitle = new DownloadSubtitleCheckBox();
         var jPanel7 = new JPanel();
         var jLabel1 = new JLabel();
         jTextFieldName = new JTextField();
@@ -142,9 +142,6 @@ public class DialogAddDownload extends JDialog {
                 //---- jCheckBoxPfadSpeichern ----
                 jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
                 jPanel2.add(jCheckBoxPfadSpeichern);
-
-                //---- jCheckBoxSubtitle ----
-                jCheckBoxSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
                 jPanel2.add(jCheckBoxSubtitle);
             }
 
@@ -294,7 +291,7 @@ public class DialogAddDownload extends JDialog {
                     .addGroup(jPanelSizeLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanelSizeLayout.createParallelGroup()
-                            .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
+                            .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE)
                             .addGroup(jPanelSizeLayout.createSequentialGroup()
                                 .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -307,7 +304,7 @@ public class DialogAddDownload extends JDialog {
                         .addComponent(jPanel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(66, Short.MAX_VALUE))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
         }
 
@@ -360,7 +357,7 @@ public class DialogAddDownload extends JDialog {
     protected JButton jButtonAbbrechen;
     protected JCheckBox jCheckBoxInfodatei;
     protected JCheckBox jCheckBoxPfadSpeichern;
-    protected JCheckBox jCheckBoxSubtitle;
+    protected DownloadSubtitleCheckBox jCheckBoxSubtitle;
     protected JTextField jTextFieldName;
     protected JComboBox<String> jComboBoxPset;
     protected JComboBox<String> jComboBoxPfad;

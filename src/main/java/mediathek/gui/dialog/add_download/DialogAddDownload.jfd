@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -89,9 +89,8 @@ new FormModel {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
+					add( new FormComponent( "mediathek.gui.dialog.add_download.DownloadSubtitleCheckBox" ) {
 						name: "jCheckBoxSubtitle"
-						"text": "Untertitel speichern: \"Filmname.xxx\""
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -175,8 +174,8 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3::::644:x, seq l {comp jPanel6:::p::p, space :0:0:x}}, space :::p}}"
-				"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::p, comp jPanel3:::p::p, space ::66:x}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3::::642:x, seq l {comp jPanel6:::p::p, space :0:0:x}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jPanel6:::p::p, space :::p, comp jPanel3:::p::p, space :::x}}"
 			} ) {
 				name: "jPanelSize"
 				"border": new javax.swing.border.TitledBorder( "Download-Qualität" )

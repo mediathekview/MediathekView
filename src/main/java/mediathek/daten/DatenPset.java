@@ -282,8 +282,8 @@ public class DatenPset implements Comparable<DatenPset> {
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
         if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT].equals("")
                 || !this.arr[PROGRAMMSET_SUFFIX_DIREKT].equals("")) {
-            return GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT], url, true)
-                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT], url, false);
+            return GuiFunktionenProgramme.checkPrefix(this.arr[PROGRAMMSET_PRAEFIX_DIREKT], url)
+                    && GuiFunktionenProgramme.checkSuffix(this.arr[PROGRAMMSET_SUFFIX_DIREKT], url);
         }
 
         return false;

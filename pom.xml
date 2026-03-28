@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>14.4.2</version>
+    <version>14.5.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -80,40 +80,41 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.language.version>24</jdk.language.version>
-        <jvm.target.version>24</jvm.target.version>
-        <kotlin.language.target>24</kotlin.language.target>
+        <jdk.language.version>25</jdk.language.version>
+        <jvm.target.version>25</jvm.target.version>
+        <kotlin.language.target>25</kotlin.language.target>
 
-        <kotlin.version>2.2.20</kotlin.version>
+        <kotlin.version>2.3.10</kotlin.version>
         <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jvm.target.version}</maven.compiler.target>
 
         <annotations.version>26.0.2</annotations.version>
-        <commons-configuration2.version>2.12.0</commons-configuration2.version>
-        <commons-io.version>2.20.0</commons-io.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <commons-configuration2.version>2.13.0</commons-configuration2.version>
+        <commons-io.version>2.21.0</commons-io.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
         <coroutines.version>1.10.2</coroutines.version>
+        <caffeine.version>3.2.3</caffeine.version>
+        <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
         <dd-plist.version>1.28</dd-plist.version>
-        <flatlaf.version>3.6.1</flatlaf.version>
+        <flatlaf.version>3.7</flatlaf.version>
         <glazedlists.version>1.11.0</glazedlists.version>
-        <guava.version>33.5.0-jre</guava.version>
-        <icu4j.version>77.1</icu4j.version>
         <ikonli.version>12.4.0</ikonli.version>
-        <jackson.version>2.20.0</jackson.version>
+        <jackson.version>3.1.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
         <javax-activation.version>1.2.0</javax-activation.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jfreechart.version>1.5.6</jfreechart.version>
         <jide-oss.version>3.7.15</jide-oss.version>
-        <jlibnotify.version>1.2.1</jlibnotify.version>
-        <jna.version>5.18.0</jna.version>
-        <jsoup.version>1.21.2</jsoup.version>
-        <junit.jupiter.version>5.10.3</junit.jupiter.version>
-        <lucene.version>10.3.0</lucene.version>
+        <jlibnotify.version>1.2.3</jlibnotify.version>
+        <jna.version>5.18.1</jna.version>
+        <jsoup.version>1.22.1</jsoup.version>
+        <junit.jupiter.version>6.0.3</junit.jupiter.version>
+        <lucene.version>10.4.0</lucene.version>
+        <flexmark.version>0.64.8</flexmark.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
-        <log4j2.version>2.24.3</log4j2.version>
+        <log4j2.version>2.25.3</log4j2.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -121,6 +122,7 @@
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-exec-maven-plugin.version>3.1.0</maven-exec-maven-plugin.version>
+        <git-commit-id-maven-plugin.version>9.0.1</git-commit-id-maven-plugin.version>
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
@@ -130,12 +132,11 @@
         <mbassador.version>1.3.2</mbassador.version>
         <miglayout.version>11.3</miglayout.version>
         <mockito.version>5.12.0</mockito.version>
-        <okhttp.version>5.1.0</okhttp.version>
+        <okhttp.version>5.3.2</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
-        <retrofit.version>3.0.0</retrofit.version>
-        <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.51.2.0</sqlite-jdbc.version>
         <swingx.version>1.6.5-1</swingx.version>
-        <xz.version>1.10</xz.version>
+        <xz.version>1.11</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
 
@@ -143,13 +144,13 @@
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
         <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
-        <install4j.jdk.min-version>24</install4j.jdk.min-version>
+        <install4j.jdk.min-version>25</install4j.jdk.min-version>
 
         <!-- @formatter:off -->
         <!-- VM Parameters Windows x64 and aarch64 -->
-        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
         <!-- VM Parameters Linux 64bit Intel and ARM -->
-        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
         <!-- @formatter:on -->
     </properties>
 
@@ -177,16 +178,10 @@
             <artifactId>kotlinx-coroutines-swing</artifactId>
             <version>${coroutines.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>retrofit</artifactId>
-            <version>${retrofit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>converter-jackson</artifactId>
-            <version>${retrofit.version}</version>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-json</artifactId>
+            <version>${kotlinx-serialization.version}</version>
         </dependency>
 
         <dependency>
@@ -204,12 +199,6 @@
             <artifactId>ikonli-materialdesign2-pack</artifactId>
             <version>${ikonli.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.ibm.icu</groupId>
-            <artifactId>icu4j</artifactId>
-            <version>${icu4j.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.github.lgooddatepicker</groupId>
             <artifactId>LGoodDatePicker</artifactId>
@@ -235,6 +224,16 @@
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-queries</artifactId>
             <version>${lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-ext-tables</artifactId>
+            <version>${flexmark.version}</version>
         </dependency>
 
         <dependency>
@@ -347,26 +346,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
-        <!-- for Bookmark JSON reading and writing -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 
@@ -568,6 +555,29 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>${git-commit-id-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>git-properties</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>git.branch</includeOnlyProperty>
+                        <includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>
+                    </includeOnlyProperties>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
@@ -602,7 +612,17 @@
                 </executions>
                 <configuration>
                     <jvmTarget>${jdk.language.version}</jvmTarget>
+                    <compilerPlugins>
+                        <plugin>kotlinx-serialization</plugin>
+                    </compilerPlugins>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

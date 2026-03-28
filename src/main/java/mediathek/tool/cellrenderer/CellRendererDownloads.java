@@ -153,7 +153,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                 case DatenDownload.DOWNLOAD_SENDER -> {
                     if (mvTable.showSenderIcons()) {
                         Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
-                        setSenderIcon(value.toString(), targetDim);
+                        setSenderIcon(value.toString(), targetDim, isSelected);
                     }
                 }
                 case DatenDownload.DOWNLOAD_GEO -> drawGeolocationIcons(datenDownload.film, isSelected);

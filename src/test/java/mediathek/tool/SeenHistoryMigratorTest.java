@@ -81,8 +81,15 @@ public class SeenHistoryMigratorTest {
             rs = statement.executeQuery(testSql);
             rs.next();
             count = rs.getInt(1);
-            // there must be 8 entries in db
-            assertEquals(8, count);
+            // the duplicate URL from the old text file must be imported only once
+            assertEquals(7, count);
+            rs.close();
+
+            testSql = "SELECT COUNT(*) FROM (SELECT DISTINCT url FROM seen_history)";
+            rs = statement.executeQuery(testSql);
+            rs.next();
+            count = rs.getInt(1);
+            assertEquals(7, count);
             rs.close();
         }
     }

@@ -1,16 +1,28 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.gui.tabs.tab_film;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.controller.starter.Start;
@@ -54,6 +66,7 @@ import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
@@ -66,12 +79,13 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GuiFilme extends AGuiTabPanel {
 
@@ -119,7 +133,7 @@ public class GuiFilme extends AGuiTabPanel {
     /**
      * We perform model filtering in the background the keep UI thread alive.
      */
-    private ListenableFuture<TableModel> modelFuture;
+    private CompletableFuture<TableModel> modelFuture;
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         daten = aDaten;
@@ -648,40 +662,36 @@ public class GuiFilme extends AGuiTabPanel {
         tabelle.setEnabled(false);
 
         var decoratedPool = daten.getDecoratedPool();
-        modelFuture = decoratedPool.submit(() -> {
+        modelFuture = CompletableFuture.supplyAsync(() -> {
             var searchFieldData = new SearchFieldData(searchField.getText(), searchField.getSearchMode());
             GuiModelHelper helper = GuiModelHelperFactory.createGuiModelHelper(
                     historyController, searchFieldData, filterConfiguration);
             return helper.getFilteredTableModel();
-        });
-        Futures.addCallback(modelFuture,
-                new FutureCallback<>() {
-                    public void onSuccess(TableModel model) {
-                        SwingUtilities.invokeLater(() -> {
-                            tabelle.setModel(model);
-                            tabelle.setEnabled(true);
-                            updateStartInfoProperty();
-                            tabelle.setSpalten();
-                            updateFilmData();
-                            stopBeob = false;
-                            tabelle.scrollToSelection();
-                            messageBus.publish(new TableModelChangeEvent(false, from_search_field));
-                        });
-                    }
-
-                    public void onFailure(@NotNull Throwable thrown) {
-                        logger.error("Model filtering failed!", thrown);
-                        SwingUtilities.invokeLater(() -> {
-                            tabelle.setEnabled(true);
-                            updateStartInfoProperty();
-                            tabelle.setSpalten();
-                            updateFilmData();
-                            stopBeob = false;
-                            messageBus.publish(new TableModelChangeEvent(false, from_search_field));
-                        });
-                    }
-                },
-                decoratedPool);
+        }, decoratedPool);
+        modelFuture.whenCompleteAsync((model, thrown) -> {
+            if (thrown == null) {
+                SwingUtilities.invokeLater(() -> {
+                    tabelle.setModel(model);
+                    tabelle.setEnabled(true);
+                    updateStartInfoProperty();
+                    tabelle.setSpalten();
+                    updateFilmData();
+                    stopBeob = false;
+                    tabelle.scrollToSelection();
+                    messageBus.publish(new TableModelChangeEvent(false, from_search_field));
+                });
+            } else {
+                logger.error("Model filtering failed!", thrown);
+                SwingUtilities.invokeLater(() -> {
+                    tabelle.setEnabled(true);
+                    updateStartInfoProperty();
+                    tabelle.setSpalten();
+                    updateFilmData();
+                    stopBeob = false;
+                    messageBus.publish(new TableModelChangeEvent(false, from_search_field));
+                });
+            }
+        }, decoratedPool);
     }
 
     static class GuiModelHelperFactory {
@@ -789,6 +799,7 @@ public class GuiFilme extends AGuiTabPanel {
 
         public class SearchHistoryButton extends JButton {
             private static final Logger logger = LogManager.getLogger();
+            private static final Pattern JSON_STRING_PATTERN = Pattern.compile("\"((?:\\\\.|[^\"])*)\"");
             private final EventList<String> historyList = new BasicEventList<>();
             private final JMenuItem miClearHistory = new JMenuItem("Alles löschen");
             private final JMenuItem miEditHistory = new JMenuItem("Einträge bearbeiten");
@@ -850,41 +861,86 @@ public class GuiFilme extends AGuiTabPanel {
 
             private void loadHistory() {
                 try {
-                    ObjectMapper mapper = new ObjectMapper();
-                    var json = ApplicationConfiguration.getConfiguration().getString(SEARCH_HISTORY_CONFIG, "");
-                    if (!json.isEmpty()) {
-                        List<String> entries = mapper.readValue(json, new TypeReference<>() {
-                        });
-                        if (!entries.isEmpty()) {
-                            historyList.getReadWriteLock().writeLock().lock();
-                            try {
-                                historyList.addAll(entries);
-                            }
-                            finally {
-                                historyList.getReadWriteLock().writeLock().unlock();
-                            }
+                    List<String> entries = readHistoryEntries();
+                    if (!entries.isEmpty()) {
+                        historyList.getReadWriteLock().writeLock().lock();
+                        try {
+                            historyList.addAll(entries);
+                        }
+                        finally {
+                            historyList.getReadWriteLock().writeLock().unlock();
                         }
                     }
-                } catch (JsonProcessingException ex) {
+                }
+                catch (Exception ex) {
                     logger.error("Failed to load search history", ex);
                 }
             }
 
             private void saveHistory() {
-                ObjectMapper mapper = new ObjectMapper();
                 try {
                     historyList.getReadWriteLock().readLock().lock();
                     try {
-                        var json = mapper.writeValueAsString(historyList);
+                        String json = JsonStringUtils.toJsonStringArray(new ArrayList<>(historyList));
                         ApplicationConfiguration.getConfiguration().setProperty(SEARCH_HISTORY_CONFIG, json);
                     }
                     finally {
                         historyList.getReadWriteLock().readLock().unlock();
                     }
-                } catch (JsonProcessingException e) {
+                }
+                catch (Exception e) {
                     logger.error("Failed to write search history", e);
                 }
             }
+
+            private List<String> readHistoryEntries() {
+                var config = ApplicationConfiguration.getConfiguration();
+                Object rawValue = config.getProperty(SEARCH_HISTORY_CONFIG);
+                switch (rawValue) {
+                    case null -> {
+                        return List.of();
+                    }
+                    case Collection<?> collection -> {
+                        List<String> entries = new ArrayList<>();
+                        for (Object value : collection) {
+                            if (value != null) {
+                                entries.add(value.toString());
+                            }
+                        }
+                        // Normalize legacy key back to JSON string format for old-version compatibility.
+                        config.setProperty(SEARCH_HISTORY_CONFIG, JsonStringUtils.toJsonStringArray(entries));
+                        return entries;
+                    }
+                    case String json -> {
+                        var parsed = parseLegacyJsonArray(json);
+                        if (!parsed.isEmpty() || "[]".equals(json.trim())) {
+                            return new ArrayList<>(parsed);
+                        }
+                        if (!json.isBlank()) {
+                            return List.of(json);
+                        }
+                    }
+                    default -> {
+                    }
+                }
+
+                return List.of();
+            }
+
+            private List<String> parseLegacyJsonArray(String json) {
+                String trimmed = json == null ? "" : json.trim();
+                if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
+                    return List.of();
+                }
+
+                List<String> entries = new ArrayList<>();
+                Matcher matcher = JSON_STRING_PATTERN.matcher(trimmed);
+                while (matcher.find()) {
+                    entries.add(JsonStringUtils.unescapeJsonString(matcher.group(1)));
+                }
+                return entries;
+            }
+
         }
     }
 
@@ -905,10 +961,8 @@ public class GuiFilme extends AGuiTabPanel {
             JToolBar searchToolbar = new JToolBar();
             searchToolbar.addSeparator();
 
-            var luceneBtn = new JButton();
-            luceneBtn.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-            luceneBtn.setToolTipText("Lucene Query Syntax Hilfe");
-            luceneBtn.addActionListener(_ -> UrlHyperlinkAction.openURI(Konstanten.LUCENE_CLIENT_HELP_URL.uri()));
+            var luceneBtn = new JButton(mediathekGui.getShowLuceneTutorialAction());
+            luceneBtn.setText(null);
             searchToolbar.add(luceneBtn);
             putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT, searchToolbar);
         }
@@ -1174,16 +1228,16 @@ public class GuiFilme extends AGuiTabPanel {
         }
 
         @Override
-        public void mouseClicked(MouseEvent arg0) {
-            if (arg0.getButton() == MouseEvent.BUTTON1) {
-                if (arg0.getClickCount() == 1) {
-                    p = arg0.getPoint();
+        public void mouseClicked(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                if (e.getClickCount() == 1) {
+                    p = e.getPoint();
                     int row = tabelle.rowAtPoint(p);
                     int column = tabelle.columnAtPoint(p);
                     if (row >= 0) {
                         buttonTable(row, column);
                     }
-                } else if (arg0.getClickCount() > 1) {
+                } else if (e.getClickCount() > 1) {
                     var infoDialog = mediathekGui.getFilmInfoDialog();
                     if (infoDialog != null) {
                         if (!infoDialog.isVisible()) {
@@ -1212,25 +1266,24 @@ public class GuiFilme extends AGuiTabPanel {
         private void buttonTable(int row, int column) {
             if (row != -1) {
                 switch (tabelle.convertColumnIndexToModel(column)) {
-                    case DatenFilm.FILM_ABSPIELEN -> {
-                        Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-                        filmSelection.ifPresent(datenFilm -> {
-                            boolean stop = false;
-                            final DatenDownload datenDownload =
-                                    daten.getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
-                            if (datenDownload != null) {
-                                if (datenDownload.start != null) {
-                                    if (datenDownload.start.status == Start.STATUS_RUN) {
-                                        stop = true;
-                                        daten.getListeDownloadsButton().delDownloadButton(datenFilm.getUrlNormalQuality());
-                                    }
+                    case DatenFilm.FILM_ABSPIELEN -> getCurrentlySelectedFilm().ifPresent(film -> {
+                        boolean dontPlay = false;
+                        final var download =
+                                daten.getListeDownloadsButton().getDownloadUrlFilm(film.getUrlNormalQuality());
+                        if (download != null) {
+                            if (download.start != null) {
+                                if (download.start.status == Start.STATUS_RUN) {
+                                    // we have a running "download", do not start again
+                                    dontPlay = true;
+                                    daten.getListeDownloadsButton().delDownloadButton(film.getUrlNormalQuality());
                                 }
                             }
-                            if (!stop) {
-                                playFilmAction.actionPerformed(null);
-                            }
-                        });
-                    }
+                        }
+                        // if the download is already playing, do not start again...
+                        if (!dontPlay) {
+                            playFilmAction.actionPerformed(null);
+                        }
+                    });
                     case DatenFilm.FILM_AUFZEICHNEN -> saveFilm(null);
                     case DatenFilm.FILM_MERKEN -> getCurrentlySelectedFilm().ifPresent(film -> {
                         if (!film.isLivestream()) {
@@ -1241,6 +1294,25 @@ public class GuiFilme extends AGuiTabPanel {
                         }
                     });
                 }
+            }
+        }
+
+        private void createStartWithPsetItems(@NotNull JPopupMenu jPopupMenu) {
+            JMenu submenue = new JMenu("Film mit Set starten");
+            jPopupMenu.add(submenue);
+            ListePset liste = Daten.listePset.getListeButton();
+            for (DatenPset pset : liste) {
+                if (pset.getListeProg().isEmpty() && pset.getName().isEmpty()) {
+                    // ein "leeres" Pset, Platzhalter
+                    continue;
+                }
+
+                JMenuItem item = new JMenuItem(pset.getName());
+                pset.getForegroundColor().ifPresent(item::setForeground);
+                if (!pset.getListeProg().isEmpty()) {
+                    item.addActionListener(_ -> playerStarten(pset));
+                }
+                submenue.add(item);
             }
         }
 
@@ -1289,22 +1361,7 @@ public class GuiFilme extends AGuiTabPanel {
             submenueAbo.add(itemAboMitTitel);
 
             // Programme einblenden
-            JMenu submenue = new JMenu("Film mit Set starten");
-            jPopupMenu.add(submenue);
-            ListePset liste = Daten.listePset.getListeButton();
-            for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.getName().isEmpty()) {
-                    // ein "leeres" Pset, Platzhalter
-                    continue;
-                }
-
-                JMenuItem item = new JMenuItem(pset.getName());
-                pset.getForegroundColor().ifPresent(item::setForeground);
-                if (!pset.getListeProg().isEmpty()) {
-                    item.addActionListener(_ -> playerStarten(pset));
-                }
-                submenue.add(item);
-            }
+            createStartWithPsetItems(jPopupMenu);
 
             JMenu submenueBlack = new JMenu("Blacklist");
             jPopupMenu.add(submenueBlack);

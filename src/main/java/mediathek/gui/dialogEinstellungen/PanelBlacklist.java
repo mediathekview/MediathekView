@@ -204,7 +204,7 @@ public class PanelBlacklist extends JPanel {
 
         jButtonAendern.addActionListener(_ -> onChangeBlacklistRule());
 
-        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
         jButtonTabelleLoeschen.addActionListener(_ -> {
             int ret = JOptionPane.showConfirmDialog(parentComponent,
                     "<html>Möchten Sie wirklich <b>alle Regeln</b> dauerhaft löschen?</html>",

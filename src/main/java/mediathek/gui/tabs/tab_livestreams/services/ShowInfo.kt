@@ -18,15 +18,17 @@
 
 package mediathek.gui.tabs.tab_livestreams.services
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.Serializable
 import java.time.Instant
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 data class ShowInfo(
     val title: String = "",
     val subtitle: String? = "",
     val description: String = "",
     val channel: String = "",
+    @Serializable(with = InstantIso8601Serializer::class)
     val startTime: Instant = Instant.EPOCH,
+    @Serializable(with = InstantIso8601Serializer::class)
     val endTime: Instant = Instant.EPOCH
 )

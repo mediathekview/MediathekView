@@ -1,16 +1,15 @@
 package mediathek.tool;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.abo.DatenAbo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -18,14 +17,14 @@ public class Filter {
     /**
      * Stores the regexp strings that were rejected as invalid.
      */
-    public static final Set<String> regExpErrorList = new HashSet<>();
+    public static final Set<String> regExpErrorList = ConcurrentHashMap.newKeySet();
     /**
      * The cache for already compiled RegExp.
      * Entries will be removed if the haven´t been accessed for more than 5 minutes.
      */
-    private static final LoadingCache<String, Pattern> CACHE = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, Pattern> CACHE = Caffeine.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build(new PatternCacheLoader());
+            .build(Filter::compilePattern);
     private static final Logger logger = LogManager.getLogger(Filter.class);
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
@@ -273,18 +272,11 @@ public class Filter {
         return !regExpErrorList.isEmpty();
     }
 
-    /**
-     * This loader will compile regexp patterns when they are not in cache.
-     */
-    static class PatternCacheLoader extends CacheLoader<String, Pattern> {
+    private static @NotNull Pattern compilePattern(@NotNull String pattern) throws IllegalArgumentException {
+        logger.trace("COMPILING PATTERN: {}", pattern);
+        final String regexPattern = pattern.substring(2);
 
-        @Override
-        public @NotNull Pattern load(@NotNull String pattern) throws IllegalArgumentException {
-            logger.trace("COMPILING PATTERN: {}", pattern);
-            final String regexPattern = pattern.substring(2);
-
-            return Pattern.compile(regexPattern,
-                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
-        }
+        return Pattern.compile(regexPattern,
+                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
     }
 }

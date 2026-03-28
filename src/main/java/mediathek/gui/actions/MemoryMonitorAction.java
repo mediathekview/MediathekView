@@ -23,9 +23,11 @@ public class MemoryMonitorAction extends AbstractAction {
     }
 
     public void showMemoryMonitor() {
-        if (dialog == null)
+        if (dialog == null || !dialog.isDisplayable()) {
             dialog = new MemoryMonitorDialog(parent);
+        }
         dialog.setVisible(true);
+        dialog.toFront();
     }
 
     @Override

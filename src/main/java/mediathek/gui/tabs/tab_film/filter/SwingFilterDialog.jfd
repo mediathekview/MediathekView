@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -63,7 +63,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowOnlyHq"
-					"text": "Nur High Quality(HQ) Filme anzeigen"
+					"text": "Nur High-Quality-Filme (HQ) anzeigen"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowSubtitlesOnly"
@@ -112,6 +112,10 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDontShowDuplicates"
 					"text": "Duplikate nicht anzeigen"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "cbDontShowGeoblocked"
+					"text": "Geo-blockierte Filme nicht anzeigen"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 4,growx"

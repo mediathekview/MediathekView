@@ -1,12 +1,15 @@
 package mediathek.tool
 
 import mediathek.mac.MacFileUtils
+import mediathek.tool.http.MVHttpClient
 import mediathek.windows.WindowsFileUtils
+import okhttp3.Request
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.text.StringCharacterIterator
 import kotlin.math.abs
 
@@ -67,5 +70,45 @@ object FileUtils {
         }
         value *= java.lang.Long.signum(bytes).toLong()
         return String.format("%.1f %ciB", value / 1024.0, ci.current())
+    }
+
+    /**
+     * Downloads the given URI into a fresh temp file and returns its Path.
+     * Caller should delete the file when done.
+     */
+    @JvmStatic
+    @Throws(IOException::class)
+    fun downloadToTempFile(uri: String): Path {
+        val target = Files.createTempFile("mv-download-", ".tmp")
+        // Use a sibling temp to avoid partially-written files if you later decide to move/rename.
+        val writing = target.resolveSibling(target.fileName.toString() + ".part")
+
+        val request = Request.Builder().url(uri).get().build()
+
+        try {
+            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    throw IOException("Download failed: HTTP " + response.code + " " + response.message)
+                }
+                response.body.use { body ->
+                    body.byteStream().use { `in` ->
+                        Files.copy(`in`, writing, StandardCopyOption.REPLACE_EXISTING)
+                    }
+                }
+                Files.move(writing, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+                return target
+            }
+        } catch (e: IOException) {
+            // Best-effort cleanup on failure
+            try {
+                Files.deleteIfExists(writing)
+            } catch (_: IOException) {
+            }
+            try {
+                Files.deleteIfExists(target)
+            } catch (_: IOException) {
+            }
+            throw e
+        }
     }
 }

@@ -1,7 +1,23 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.tool;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
 import mediathek.gui.tabs.tab_film.filter.zeitraum.ZeitraumSpinnerFormatter;
 import org.apache.commons.configuration2.Configuration;
@@ -14,11 +30,14 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FilterConfiguration {
     protected static final String FILTER_PANEL_CURRENT_FILTER = "filter.current.filter";
     protected static final String FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_";
     private static final String KEY_UUID_SPLITERATOR = "_";
+    private static final Pattern JSON_STRING_PATTERN = Pattern.compile("\"((?:\\\\.|[^\"])*)\"");
     private static final Logger LOG = LoggerFactory.getLogger(FilterConfiguration.class);
     private static final CopyOnWriteArraySet<Runnable> availableFiltersChangedCallbacks = new CopyOnWriteArraySet<>();
     private static final CopyOnWriteArraySet<Consumer<FilterDTO>> currentFilterChangedCallbacks = new CopyOnWriteArraySet<>();
@@ -45,6 +64,8 @@ public class FilterConfiguration {
     private void migrateOldFilterConfigurations() {
         FilterDTO newFilter = new FilterDTO(UUID.randomUUID(), "Alter Filter");
         if (migrateAll(() -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS.getOldKey(), newFilter, Boolean.class, this::setDontShowAbos),
+
+                () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_GEOBLOCKED.getOldKey(), newFilter, Boolean.class, this::setDontShowGeoblocked),
 
                 () -> migrateOldFilterConfiguration(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getOldKey(), newFilter, Boolean.class, this::setDontShowAudioVersions),
 
@@ -122,6 +143,7 @@ public class FilterConfiguration {
                 && !isShowBookMarkedOnly()
                 && !isDontShowTrailers()
                 && !isDontShowSignLanguage()
+                && !isDontShowGeoblocked()
                 && !isDontShowAudioVersions()
                 && !isDontShowDuplicates()
                 && getZeitraum().equalsIgnoreCase(ZeitraumSpinnerFormatter.INFINITE_TEXT);
@@ -222,6 +244,15 @@ public class FilterConfiguration {
         return this;
     }
 
+    public boolean isDontShowGeoblocked() {
+        return configuration.getBoolean(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_GEOBLOCKED.getKey()), false);
+    }
+
+    public FilterConfiguration setDontShowGeoblocked(boolean dontShowGeoblocked) {
+        configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_GEOBLOCKED.getKey()), dontShowGeoblocked);
+        return this;
+    }
+
     public boolean isDontShowAudioVersions() {
         return configuration.getBoolean(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS.getKey()), false);
     }
@@ -261,18 +292,42 @@ public class FilterConfiguration {
     }
 
     public Set<String> getCheckedChannels() {
-        String json = configuration.getString(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()), "[]");
-        return parseJsonToSet(json);
+        String key = toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey());
+        Object value = configuration.getProperty(key);
+
+        switch (value) {
+            case Collection<?> collection -> {
+                Set<String> result = new LinkedHashSet<>();
+                collection.forEach(item -> {
+                    if (item != null) {
+                        result.add(item.toString());
+                    }
+                });
+                // Normalize this key back to legacy JSON string format for old-version compatibility.
+                configuration.setProperty(key, JsonStringUtils.toJsonStringArray(result));
+                return result;
+            }
+            case null, default -> {
+            }
+        }
+
+        String raw = configuration.getString(key, "");
+        if (raw == null || raw.isBlank()) {
+            return new HashSet<>();
+        }
+
+        Set<String> legacyParsed = parseLegacyJsonArray(raw);
+        if (!legacyParsed.isEmpty() || "[]".equals(raw.trim())) {
+            return legacyParsed;
+        }
+
+        return new HashSet<>(Collections.singletonList(raw));
     }
 
     public FilterConfiguration setCheckedChannels(@NotNull Collection<String> newList) {
-        try {
-            var objectMapper = new ObjectMapper();
-            String json = objectMapper.writeValueAsString(newList);
-            configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()), json);
-        } catch (Exception e) {
-            LOG.error("Fehler beim Speichern der Checked Channels", e);
-        }
+        var distinctValues = new LinkedHashSet<>(newList);
+        String json = JsonStringUtils.toJsonStringArray(distinctValues);
+        configuration.setProperty(toFilterConfigNameWithCurrentFilter(FilterConfigurationKeys.FILTER_PANEL_CHECKED_CHANNELS.getKey()), json);
         return this;
     }
 
@@ -294,16 +349,27 @@ public class FilterConfiguration {
 
 
     private Set<String> parseJsonToSet(String json) {
+        return parseLegacyJsonArray(json);
+    }
+
+    private Set<String> parseLegacyJsonArray(String json) {
         try {
-            var objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, new TypeReference<>() {
-            });
+            String trimmed = json == null ? "" : json.trim();
+            if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
+                return new HashSet<>();
+            }
+
+            Set<String> result = new HashSet<>();
+            Matcher matcher = JSON_STRING_PATTERN.matcher(trimmed);
+            while (matcher.find()) {
+                result.add(JsonStringUtils.unescapeJsonString(matcher.group(1)));
+            }
+            return result;
         } catch (Exception e) {
             LOG.error("Fehler beim Konvertieren der alten Senderliste aus JSON", e);
             return new HashSet<>();
         }
     }
-
 
     public FilterConfiguration clearCurrentFilter() {
         Arrays.stream(FilterConfigurationKeys.values()).map(FilterConfigurationKeys::getKey).map(this::toFilterConfigNameWithCurrentFilter).forEach(configuration::clearProperty);
@@ -423,6 +489,7 @@ public class FilterConfiguration {
         FILTER_PANEL_SHOW_UNSEEN_ONLY("filter.filter_%s.show.unseen_only"),
         FILTER_PANEL_SHOW_LIVESTREAMS_ONLY("filter.filter_%s.show.livestreams_only"),
         FILTER_PANEL_DONT_SHOW_ABOS("filter.filter_%s.dont_show.abos"),
+        FILTER_PANEL_DONT_SHOW_GEOBLOCKED("filter.filter_%s.dont_show.geoblocked"),
         FILTER_PANEL_DONT_SHOW_TRAILERS("filter.filter_%s.dont_show.trailers"),
         FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE("filter.filter_%s.dont_show.sign_language"),
         FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS("filter.filter_%s.dont_show.audio_versions"),

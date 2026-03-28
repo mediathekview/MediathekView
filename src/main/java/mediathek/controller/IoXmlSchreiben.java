@@ -217,7 +217,6 @@ public class IoXmlSchreiben {
     }
 
     public synchronized void writeConfigurationFile(Path xmlFilePath) {
-        logger.debug("Daten Schreiben nach: {}", xmlFilePath.toString());
         xmlDatenSchreiben(xmlFilePath);
     }
 
@@ -265,8 +264,6 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n\n");
 
             writeFileEnd(writer);
-
-            logger.debug("Config Schreiben beendet");
         } catch (Exception ex) {
             logger.error("xmlDatenSchreiben", ex);
         }

@@ -20,7 +20,7 @@ jobs:
             dmg_suffix: apple-silicon
             dmg_file: MediathekView-latest-apple-silicon.dmg
           - arch: intel
-            runner: macos-13
+            runner: macos-15-intel
             mvn_profile: mac_intel
             dmg_suffix: mac-intel
             dmg_file: MediathekView-latest-mac-intel.dmg
@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Checkout develop branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: develop
 
@@ -45,11 +45,11 @@ jobs:
       - name: Use Extracted Version
         run: echo "The version is $MV_VERSION"
 
-      - name: Set up Java 24 (Liberica) & cache Maven
-        uses: actions/setup-java@v4
+      - name: Set up Java 25 (Liberica) & cache Maven
+        uses: actions/setup-java@v5
         with:
           distribution: liberica
-          java-version: '24'
+          java-version: '25'
           java-package: jdk
           cache: maven
 
@@ -148,11 +148,11 @@ jobs:
           "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
 
-      - name: Set up Java 24 (Liberica) & cache Maven
+      - name: Set up Java 25 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
           distribution: liberica
-          java-version: '24'
+          java-version: '25'
           java-package: jdk
           cache: maven
 
@@ -246,11 +246,11 @@ jobs:
           echo "Version: $version"
           "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
-      - name: Set up Java 24 (Liberica) & cache Maven
+      - name: Set up Java 25 (Liberica) & cache Maven
         uses: actions/setup-java@v4
         with:
           distribution: liberica
-          java-version: '24'
+          java-version: '25'
           java-package: jdk
           cache: maven
 

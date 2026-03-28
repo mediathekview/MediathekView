@@ -85,7 +85,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
-            final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
             final boolean isBookMarked = datenFilm.isBookmarked();
             final var mvTable = (MVTable) table;
 
@@ -110,14 +109,17 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             //here comes the content...
             switch (columnModelIndex) {
                 case DatenFilm.FILM_DAUER -> setText(datenFilm.getFilmLengthAsString());
-                case DatenFilm.FILM_ABSPIELEN -> handleButtonStartColumn(datenDownload, isSelected);
+                case DatenFilm.FILM_ABSPIELEN -> {
+                    final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.getUrlNormalQuality());
+                    handleButtonStartColumn(datenDownload, isSelected);
+                }
                 case DatenFilm.FILM_AUFZEICHNEN -> handleButtonDownloadColumn(isSelected);
                 case DatenFilm.FILM_MERKEN ->
                         handleButtonBookmarkColumn(isBookMarked, isSelected, datenFilm.isLivestream());
                 case DatenFilm.FILM_SENDER -> {
                     if (mvTable.showSenderIcons()) {
                         Dimension targetDim = getSenderCellDimension(table, row, columnModelIndex);
-                        setSenderIcon(value.toString(), targetDim);
+                        setSenderIcon(value.toString(), targetDim, isSelected);
                     }
                 }
                 case DatenFilm.FILM_TITEL -> {
@@ -174,7 +176,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
 
         bgList.add(c.getBackground());
 
-        if (history.hasBeenSeen(datenFilm)) {
+        if (history.hasBeenSeenFromCache(datenFilm)) {
             bgList.add(MVColor.FILM_HISTORY.color);
         }
 
@@ -227,10 +229,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             // Button Merken
             setToolTipText(isBookMarked ? "Film aus Merkliste entfernen" : "Film merken");
             if (isBookMarked) {
-                if (isSelected) {
-                    setIcon(selectedBookmarkIconHighlighted);
-                } else
-                    setIcon(selectedBookmarkIconHighlighted);
+                setIcon(selectedBookmarkIconHighlighted);
             } else {
                 if (isSelected) {
                     setIcon(selectedBookmarkIcon);

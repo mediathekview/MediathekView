@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,92 +22,86 @@ import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FilterConfiguration;
-import mediathek.tool.models.TModelFilm;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.table.TableModel;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-public class GuiFilmeModelHelper extends GuiModelHelper {
-    private TModelFilm filmModel;
+public final class GuiFilmeModelHelper implements GuiModelHelper {
+    private final GuiModelHelperSupport support;
 
     public GuiFilmeModelHelper(@NotNull SeenHistoryController historyController,
                                @NotNull SearchFieldData searchFieldData,
                                @NotNull FilterConfiguration filterConfiguration) {
-        super(historyController, searchFieldData, filterConfiguration);
-    }
-
-    private void performTableFiltering() {
-        calculateFilmLengthSliderValues();
-
-        if (filterConfiguration.isShowUnseenOnly())
-            historyController.prepareMemoryCache();
-
-        var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
-        var selectedSenders = getSelectedSendersFromFilter();
-        if (!selectedSenders.isEmpty()) {
-            stream = stream.filter(f -> selectedSenders.contains(f.getSender()));
-        }
-        if (filterConfiguration.isShowNewOnly())
-            stream = stream.filter(DatenFilm::isNew);
-        if (filterConfiguration.isShowBookMarkedOnly())
-            stream = stream.filter(DatenFilm::isBookmarked);
-        if (filterConfiguration.isShowLivestreamsOnly())
-            stream = stream.filter(DatenFilm::isLivestream);
-        if (filterConfiguration.isShowHighQualityOnly())
-            stream = stream.filter(DatenFilm::isHighQuality);
-        if (filterConfiguration.isDontShowTrailers())
-            stream = stream.filter(film -> !film.isTrailerTeaser());
-        if (filterConfiguration.isDontShowSignLanguage())
-            stream = stream.filter(film -> !film.isSignLanguage());
-        if (filterConfiguration.isDontShowAudioVersions())
-            stream = stream.filter(film -> !film.isAudioVersion());
-        if (filterConfiguration.isDontShowAbos())
-            stream = stream.filter(film -> film.getAbo() == null);
-        if (filterConfiguration.isDontShowDuplicates()) {
-            stream = stream.filter(film -> !film.isDuplicate());
-        }
-        if (filterConfiguration.isShowSubtitlesOnly()) {
-            stream = stream.filter(DatenFilm::hasAnySubtitles);
-        }
-
-        stream = applyCommonFilters(stream, filterConfiguration.getThema());
-
-        //final stage filtering...
-        String[] arrIrgendwo = searchFieldData.evaluateThemaTitel();
-        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
-        if (!searchFieldEmpty) {
-            stream = stream.filter(FinalStageFilterFactory
-                    .createFinalStageFilter(searchFieldData.searchThroughDescriptions(), arrIrgendwo));
-        }
-
-        var list = stream.toList();
-        stream.close();
-
-        //adjust initial capacity
-        filmModel = new TModelFilm(list.size());
-        filmModel.addAll(list);
-
-        if (filterConfiguration.isShowUnseenOnly())
-            historyController.emptyMemoryCache();
+        support = new GuiModelHelperSupport(historyController, searchFieldData, filterConfiguration);
     }
 
     @Override
-    public TableModel getFilteredTableModel() {
-        final var listeFilme = Daten.getInstance().getListeFilmeNachBlackList();
-
-        if (!listeFilme.isEmpty()) {
-            if (noFiltersAreSet()) {
-                //adjust initial capacity
-                filmModel = new TModelFilm(listeFilme.size());
-                filmModel.addAll(listeFilme);
-            } else {
-                performTableFiltering();
-            }
-        } else
-            return new TModelFilm();
-
-        return filmModel;
+    public javax.swing.table.TableModel getFilteredTableModel() {
+        var allFilms = getAllFilms();
+        return support.getFilteredTableModel(allFilms, this::filterFilms);
     }
 
+    private Collection<DatenFilm> getAllFilms() {
+        return Daten.getInstance().getListeFilmeNachBlackList();
+    }
+
+    private Collection<DatenFilm> filterFilms() {
+        var filterContext = support.createFilterExecutionContext();
+
+        if (support.filterConfiguration().isShowUnseenOnly()) {
+            support.prepareHistoryMemoryCache();
+        }
+
+        var stream = Daten.getInstance().getListeFilmeNachBlackList().parallelStream();
+        if (filterContext.hasSelectedSenders()) {
+            stream = stream.filter(filterContext.senderFilter());
+        }
+        stream = applyConfiguredPredicates(stream);
+
+        stream = support.applyCommonFilters(stream, filterContext.filterThema(), filterContext.lengthFilterRange());
+
+        if (filterContext.hasSearchTerms()) {
+            stream = stream.filter(filterContext.finalStageFilter());
+        }
+
+        return stream.toList();
+    }
+
+    private Stream<DatenFilm> applyConfiguredPredicates(Stream<DatenFilm> stream) {
+        for (var predicateSpec : createPredicateSpecs()) {
+            if (predicateSpec.enabled().getAsBoolean()) {
+                stream = stream.filter(predicateSpec.predicate());
+            }
+        }
+        return stream;
+    }
+
+    private List<PredicateSpec> createPredicateSpecs() {
+        return List.of(
+                predicateSpec(support.filterConfiguration()::isShowNewOnly, DatenFilm::isNew),
+                predicateSpec(support.filterConfiguration()::isShowBookMarkedOnly, DatenFilm::isBookmarked),
+                predicateSpec(support.filterConfiguration()::isShowLivestreamsOnly, DatenFilm::isLivestream),
+                predicateSpec(support.filterConfiguration()::isShowHighQualityOnly, DatenFilm::isHighQuality),
+                predicateSpec(support.filterConfiguration()::isDontShowTrailers, film -> !film.isTrailerTeaser()),
+                predicateSpec(support.filterConfiguration()::isDontShowSignLanguage, film -> !film.isSignLanguage()),
+                predicateSpec(
+                        support.filterConfiguration()::isDontShowGeoblocked,
+                        film -> !film.isGeoBlockedForLocation(ApplicationConfiguration.getInstance().getGeographicLocation())),
+                predicateSpec(support.filterConfiguration()::isDontShowAudioVersions, film -> !film.isAudioVersion()),
+                predicateSpec(support.filterConfiguration()::isDontShowAbos, film -> film.getAbo() == null),
+                predicateSpec(support.filterConfiguration()::isDontShowDuplicates, film -> !film.isDuplicate()),
+                predicateSpec(support.filterConfiguration()::isShowSubtitlesOnly, DatenFilm::hasAnySubtitles));
+    }
+
+    private PredicateSpec predicateSpec(@NotNull BooleanSupplier enabled, @NotNull Predicate<DatenFilm> predicate) {
+        return new PredicateSpec(enabled, predicate);
+    }
+
+    private record PredicateSpec(BooleanSupplier enabled, Predicate<DatenFilm> predicate) {}
 }

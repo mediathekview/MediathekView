@@ -10,7 +10,7 @@ internal class SearchFieldDataTest {
         var data = SearchFieldData("", SearchControlFieldMode.IRGENDWO)
         assertTrue(data.searchThroughDescriptions())
 
-        data = SearchFieldData("", SearchControlFieldMode.THEMA_TITEL);
+        data = SearchFieldData("", SearchControlFieldMode.THEMA_TITEL)
         assertFalse(data.searchThroughDescriptions())
     }
 
@@ -38,6 +38,6 @@ internal class SearchFieldDataTest {
     @Test
     fun searchFieldText() {
         val data = SearchFieldData("testStr", SearchControlFieldMode.THEMA_TITEL)
-        assertEquals(data.searchFieldText, "testStr");
+        assertEquals(data.searchFieldText, "testStr")
     }
 }

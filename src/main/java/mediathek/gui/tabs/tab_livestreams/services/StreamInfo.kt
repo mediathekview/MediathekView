@@ -18,6 +18,9 @@
 
 package mediathek.gui.tabs.tab_livestreams.services
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class StreamInfo(
     val streamUrl: String = "",
     val name: String = ""

@@ -48,7 +48,7 @@ public class DialogEditAbo extends JDialog {
      * @param aktA the active abo.
      * @param isMultiEditMode show checkbox for each field which shall be changed in multi edit mode
      */
-    public DialogEditAbo(final JFrame parent, DatenAbo aktA, boolean isMultiEditMode) {
+    public DialogEditAbo(JFrame parent, DatenAbo aktA, boolean isMultiEditMode) {
         super(parent, true);
         initComponents();
 
@@ -90,7 +90,10 @@ public class DialogEditAbo extends JDialog {
         EscapeKeyHandler.installHandler(this, this::dispose);
 
         jButtonHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHelp.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
+        jButtonHelp.addActionListener(_ -> {
+            var msg = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_DIALOG_ADD_ABO).trim();
+            new DialogHilfe(this, true, msg).setVisible(true);
+        });
 
         if (comboboxPSet.getModel().getSize() == 0) {
             // dann gibts kein Set zum Aufzeichnen
@@ -175,13 +178,15 @@ public class DialogEditAbo extends JDialog {
                 label = new JLabel(DatenAbo.COLUMN_NAMES[tag.getIndex()] + ":");
                 label.setForeground(MVColor.getBlueColor());
             }
-            case MINDESTDAUER -> label = new JLabel("Dauer [min]: ");
+            case MINDESTDAUER -> label = new JLabel("Dauer [Min]: ");
             default -> label = new JLabel(DatenAbo.COLUMN_NAMES[tag.getIndex()] + ":");
         }
         gridbag.setConstraints(label, c);
 
         return label;
     }
+
+    private static final String DAUER_TEXT_ALL = "Alles";
 
     private void addExtraFeld(AboTags index, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
         //Labels
@@ -250,8 +255,8 @@ public class DialogEditAbo extends JDialog {
             case MINDESTDAUER -> {
                 final int minDauer = aktAbo.getMindestDauerMinuten();
                 sliderDauer.setValue(minDauer);
-                labelDauer.setText(String.valueOf(minDauer == 0 ? " alles " : minDauer));
-                sliderDauer.addChangeListener(_ -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : Integer.toString(sliderDauer.getValue()))));
+                labelDauer.setText(String.valueOf(minDauer == 0 ? " " + DAUER_TEXT_ALL : minDauer));
+                sliderDauer.addChangeListener(_ -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? DAUER_TEXT_ALL : Integer.toString(sliderDauer.getValue()))));
                 var p = new JPanel(new BorderLayout());
                 p.add(sliderDauer, BorderLayout.CENTER);
                 p.add(labelDauer, BorderLayout.EAST);

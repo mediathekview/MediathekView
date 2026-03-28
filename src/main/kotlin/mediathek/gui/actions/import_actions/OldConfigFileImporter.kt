@@ -34,23 +34,23 @@ class OldConfigFileImporter {
                 InputStreamReader(fis, StandardCharsets.UTF_8).use { isr ->
                     parser = inFactory.createXMLStreamReader(isr)
                     while (parser!!.hasNext()) {
-                        val event = parser!!.next()
+                        val event = parser.next()
                         if (event == XMLStreamConstants.START_ELEMENT) {
-                            if (importAbo && parser!!.localName == DatenAbo.TAG) {
-                                if (importAboEntry(parser!!))
+                            if (importAbo && parser.localName == DatenAbo.TAG) {
+                                if (importAboEntry(parser))
                                     foundAbos++
-                            } else if (importBlacklist && parser!!.localName == BlacklistRule.TAG) {
+                            } else if (importBlacklist && parser.localName == BlacklistRule.TAG) {
                                 try {
                                     val rule = BlacklistRule()
-                                    rule.readFromConfig(parser!!)
+                                    rule.readFromConfig(parser)
                                     daten.listeBlacklist.addWithoutNotification(rule)
                                     foundBlacklistEntries++
                                 }
                                 catch (e: Exception) {
                                     logger.error("Failed to read blacklist rule", e)
                                 }
-                            } else if (importReplaceList && parser!!.localName == ReplaceList.REPLACELIST) {
-                                if (importReplaceList(parser!!))
+                            } else if (importReplaceList && parser.localName == ReplaceList.REPLACELIST) {
+                                if (importReplaceList(parser))
                                     foundReplaceListEntries++
                             }
                         }
@@ -61,9 +61,9 @@ class OldConfigFileImporter {
         finally {
             if (parser != null) {
                 try {
-                    parser!!.close()
+                    parser.close()
                 }
-                catch (ignored: XMLStreamException) {
+                catch (_: XMLStreamException) {
                 }
             }
         }
@@ -87,7 +87,7 @@ class OldConfigFileImporter {
             daten.listeAbo.addAbo(datenAbo)
             true
         }
-        catch (e: Exception) {
+        catch (_: Exception) {
             logger.error("Error importing abo entry")
             false
         }

@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -224,7 +224,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 				name: "hyperlink"
-				"text": "Link zur Website"
+				"text": "Link zur Webseite"
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 14 2 1"
 			} )

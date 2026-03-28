@@ -12,7 +12,7 @@ public class DeleteDownloadAction extends AbstractAction {
     public DeleteDownloadAction(GuiDownloads guiDownloads) {
         this.guiDownloads = guiDownloads;
         putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/xmark.svg"));
-        putValue(Action.NAME, "gespeicherten Film (Datei) löschen");
+        putValue(Action.NAME, "Gespeicherten Film (Datei) löschen");
     }
 
     @Override

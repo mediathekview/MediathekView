@@ -1,8 +1,6 @@
 package mediathek.mainwindow;
 
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import mediathek.Main;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
@@ -36,6 +34,7 @@ import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
 import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
+import mediathek.logging.LogDialog;
 import mediathek.res.GetIcon;
 import mediathek.swing.IconOnlyButton;
 import mediathek.tool.*;
@@ -135,9 +134,12 @@ public class MediathekGui extends JFrame {
     private final FilmInfoDialog filmInfo;
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
+    private final ShowFilmStatisticsAction showFilmStatisticsAction = new ShowFilmStatisticsAction(this);
     private final ShowDuplicateStatisticsAction showDuplicateStatisticsAction = new ShowDuplicateStatisticsAction(this);
+    private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel();
     private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabLivestreams);
+    private final LogDialog logWindow = new LogDialog(this);
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -239,7 +241,7 @@ public class MediathekGui extends JFrame {
         mapFilmUrlCopyCommands();
 
         if (Config.shouldDownloadAndQuit()) {
-            var future = Daten.getInstance().getDecoratedPool().submit(() -> {
+            var future = CompletableFuture.supplyAsync(() -> {
                 try {
                     TimeUnit.SECONDS.sleep(10);
                     logger.info("Auto DL and Quit: Updating filmlist...");
@@ -261,22 +263,17 @@ public class MediathekGui extends JFrame {
                     logger.error("Auto DL and Quit: error starting downloads", e);
                     return false;
                 }
-            });
-            Futures.addCallback(future, new FutureCallback<>() {
-                @Override
-                public void onSuccess(Boolean result) {
+            }, Daten.getInstance().getDecoratedPool());
+            future.whenCompleteAsync((result, throwable) -> {
+                if (throwable == null) {
                     try {
                         SwingUtilities.invokeAndWait(() -> quitApplication(true));
                     }
                     catch (Exception e) {
                         logger.error("Auto DL and Quit: Error in callback...", e);
                     }
-                }
-
-                @Override
-                public void onFailure(@NotNull Throwable t) {
-
-                    logger.error("Auto DL and Quit: Error in callback...", t);
+                } else {
+                    logger.error("Auto DL and Quit: Error in callback...", throwable);
                 }
             }, Daten.getInstance().getDecoratedPool());
         }
@@ -489,10 +486,21 @@ public class MediathekGui extends JFrame {
         Runtime.getRuntime().addShutdownHook(new Log4jShutdownHookThread());
     }
 
-    private void setupSystemTray() {
+    protected void setupSystemTray() {
         SwingUtilities.invokeLater(() -> {
             initializeSystemTray();
-            initWindowListenerForTray();
+
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent evt) {
+                    if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
+                        setVisible(false);
+                    }
+                    else {
+                        quitApplication();
+                    }
+                }
+            });
         });
     }
 
@@ -562,10 +570,7 @@ public class MediathekGui extends JFrame {
     private void createMemoryMonitor() {
         boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, false);
         if (visible) {
-            if (!SystemUtils.IS_OS_MAC_OSX) {
-                //FIXME macOS Sonoma 14.1 causes freeze when showing on startup...
-                showMemoryMonitorAction.showMemoryMonitor();
-            }
+            showMemoryMonitorAction.showMemoryMonitor();
         }
     }
 
@@ -750,20 +755,6 @@ public class MediathekGui extends JFrame {
         automaticFilmlistUpdate.start();
     }
 
-    protected void initWindowListenerForTray() {
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
-                    setVisible(false);
-                }
-                else {
-                    quitApplication();
-                }
-            }
-        });
-    }
-
     @Handler
     private void handleUpdateStateChanged(UpdateStateChangedEvent e) {
         SwingUtilities.invokeLater(() -> setupUpdateCheck(e.isActive()));
@@ -802,6 +793,10 @@ public class MediathekGui extends JFrame {
 
     protected JPanel createTabFilme(@NotNull Daten daten) {
         return new GuiFilme(daten, this);
+    }
+
+    public Action getShowLuceneTutorialAction() {
+        return showLuceneTutorialAction;
     }
 
     protected JPanel createTabDownloads(@NotNull Daten daten) {
@@ -1015,6 +1010,7 @@ public class MediathekGui extends JFrame {
         }
         jMenuAnsicht.add(showBandwidthUsageAction);
         jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(showFilmStatisticsAction);
         jMenuAnsicht.add(showDuplicateStatisticsAction);
         var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
         mi.addActionListener(_ -> {
@@ -1053,7 +1049,10 @@ public class MediathekGui extends JFrame {
 
     private void createHelpMenu() {
         jMenuHilfe.add(new ShowOnlineHelpAction());
+        jMenuHilfe.add(showLuceneTutorialAction);
         jMenuHilfe.add(new ShowOnlineFaqAction(this));
+        jMenuHilfe.addSeparator();
+        jMenuHilfe.add(new ShowLogWindowAction());
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetSettingsAction(this, daten));
         jMenuHilfe.add(new ResetDownloadHistoryAction(this));
@@ -1187,7 +1186,7 @@ public class MediathekGui extends JFrame {
 
         // stop the download thread
         logger.trace("Stop Starter Thread.");
-        daten.getStarterClass().getStarterThread().interrupt();
+        daten.getStarterClass().shutdown();
 
         logger.trace("Close Notification center.");
         closeNotificationCenter();
@@ -1304,9 +1303,22 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    class ShowLogWindowAction extends AbstractAction {
+        public ShowLogWindowAction() {
+            super("Live Programm-Log anzeigen");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!logWindow.isVisible())
+                logWindow.setVisible(true);
+            logWindow.toFront();
+        }
+    }
+
     public class ToggleZappLivestreamsTabAction extends AbstractAction {
+        private static final String TAB_TITLE = "Zapp Livestreams Tab ein-/ausblenden";
         private final LivestreamPanel livestreamPanel;
-        private static final String TAB_TITLE = "Zapp Livestream Tab ein-/ausblenden";
 
         public ToggleZappLivestreamsTabAction(LivestreamPanel livestreamPanel) {
             this.livestreamPanel = livestreamPanel;

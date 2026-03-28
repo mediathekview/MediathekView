@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.controller.starter;
 
 import mediathek.config.Daten;
@@ -8,10 +26,10 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.DatenPset;
 import mediathek.gui.messages.ButtonStartEvent;
-import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.FinderCommentService;
 import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.BandwidthFormatter;
 import mediathek.tool.FileUtils;
 import mediathek.tool.MessageBus;
 import mediathek.tool.notification.MessageType;
@@ -31,19 +49,27 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StarterClass {
     private static final Logger logger = LogManager.getLogger(StarterClass.class);
+    private static final long DOWNLOAD_DELAY_SECONDS = 2;
+    private static final long NEW_START_PAUSE_SECONDS = 5;
     private final Daten daten;
-    private final StarterThread starterThread;
+    private final ScheduledExecutorService starterScheduler;
+    private final ScheduledFuture<?> starterFuture;
     private final AtomicBoolean pause = new AtomicBoolean(false);
+    private volatile long pauseUntilEpochMillis;
 
     public StarterClass(Daten daten) {
         this.daten = daten;
-        starterThread = new StarterThread();
-        starterThread.start();
+        starterScheduler = Executors.newSingleThreadScheduledExecutor(r ->
+                Thread.ofPlatform().name("StarterScheduler").daemon(true).unstarted(r));
+        starterFuture = starterScheduler.scheduleWithFixedDelay(this::processStarterTick, 0, DOWNLOAD_DELAY_SECONDS, TimeUnit.SECONDS);
     }
 
     static boolean pruefen(Daten daten, DatenDownload datenDownload, Start start) {
@@ -63,9 +89,11 @@ public class StarterClass {
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (!file.exists()) {
             logger.error("Download fehlgeschlagen, Datei existiert nicht: {}", filePath);
-        } else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
+        }
+        else if (file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB) {
             logger.error("Download fehlgeschlagen, Datei zu klein:{}", filePath);
-        } else {
+        }
+        else {
             if (datenDownload.isFromAbo()) {
                 var usedUrl = new MVUsedUrl(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
                         datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
@@ -89,7 +117,8 @@ public class StarterClass {
                 if (Files.size(path) < Konstanten.MIN_FILM_FILE_SIZE_KB)
                     Files.delete(path);
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             logger.trace("Fehler beim Löschen: {}", path.toAbsolutePath().toString());
         }
     }
@@ -99,10 +128,12 @@ public class StarterClass {
         boolean abspielen = datenDownload.quelle == DatenDownload.QUELLE_BUTTON;
         if (abspielen) {
             text.add("Film abspielen");
-        } else {
+        }
+        else {
             if (start.startcounter > 1) {
                 text.add("Download starten - Restart (Summe Starts: " + start.startcounter + ')');
-            } else {
+            }
+            else {
                 text.add("Download starten");
             }
             text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET]);
@@ -112,7 +143,8 @@ public class StarterClass {
         text.add("Startzeit: " + DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(start.startTime));
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
-        } else {
+        }
+        else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
@@ -131,15 +163,19 @@ public class StarterClass {
         ArrayList<String> text = new ArrayList<>();
         if (abgebrochen) {
             text.add("Download wurde abgebrochen");
-        } else if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
+        }
+        else if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
             text.add("Film fertig");
-        } else {
+        }
+        else {
             if (start.stoppen) {
                 text.add("Download abgebrochen");
-            } else if (start.status == Start.STATUS_FERTIG) {
+            }
+            else if (start.status == Start.STATUS_FERTIG) {
                 // dann ists gut
                 text.add("Download ist fertig und hat geklappt");
-            } else if (start.status == Start.STATUS_ERR) {
+            }
+            else if (start.status == Start.STATUS_ERR) {
                 text.add("Download ist fertig und war fehlerhaft");
             }
             if (datenDownload.isDownloadManager()) {
@@ -158,13 +194,14 @@ public class StarterClass {
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             if (start.mVBandwidthCountingInputStream != null) {
                 text.add("Bytes gelesen: " + FileUtils.humanReadableByteCountBinary(start.mVBandwidthCountingInputStream.getSumByte()));
-                text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVBandwidthCountingInputStream.getSumBandwidth()));
+                text.add("Bandbreite: " + BandwidthFormatter.format(start.mVBandwidthCountingInputStream.getSumBandwidth()));
             }
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
-        } else {
+        }
+        else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
@@ -230,7 +267,8 @@ public class StarterClass {
 
         if (state == HttpDownloadState.CANCEL) {
             datenDownload.resetDownload();
-        } else {
+        }
+        else {
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
             datenDownload.mVFilmSize.setAktSize(-1);
@@ -238,7 +276,7 @@ public class StarterClass {
         notifyStartEvent(datenDownload);
 
         if (SystemUtils.IS_OS_MAC_OSX) {
-            Taskbar.getTaskbar().requestUserAttention(true,false);
+            Taskbar.getTaskbar().requestUserAttention(true, false);
         }
     }
 
@@ -256,7 +294,8 @@ public class StarterClass {
                     datenDownload.mVFilmSize.setSize(length);
                 }
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.error("Fehler beim Ermitteln der Dateigröße: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
@@ -272,10 +311,6 @@ public class StarterClass {
         }
     }
 
-    public StarterThread getStarterThread() {
-        return starterThread;
-    }
-
     public synchronized void urlMitProgrammStarten(DatenPset pSet, @NotNull DatenFilm film, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
@@ -283,7 +318,7 @@ public class StarterClass {
         if (!url.isEmpty()) {
             var d = new DatenDownload(pSet, film, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
-            starterThread.launchDownloadThread(d);
+            launchDownloadThread(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             try (var historyController = new SeenHistoryController()) {
                 historyController.markSeen(film);
@@ -305,6 +340,11 @@ public class StarterClass {
         pause.set(true);
     }
 
+    public void shutdown() {
+        starterFuture.cancel(true);
+        starterScheduler.shutdownNow();
+    }
+
     private void reStartmeldung(DatenDownload datenDownload) {
         ArrayList<String> text = new ArrayList<>();
         text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + datenDownload.start.countRestarted + ')');
@@ -313,81 +353,68 @@ public class StarterClass {
         logger.info(text);
     }
 
-    // ********************************************
-    // Hier wird dann gestartet
-    // Ewige Schleife die die Downloads startet
-    // ********************************************
-    public class StarterThread extends Thread {
-        private static final long DOWNLOAD_DELAY = 2;
-        public StarterThread() {
-            setName(StarterThread.class.toString());
+    private void processStarterTick() {
+        try {
+            if (isPauseActive()) {
+                return;
+            }
+
+            DatenDownload datenDownload = getNextStart();
+            if (datenDownload != null) {
+                launchDownloadThread(datenDownload);
+                return;
+            }
+
+            daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
         }
+        catch (Exception ex) {
+            logger.error("Fehler im Starter-Scheduler:", ex);
+        }
+    }
 
-        @Override
-        public void run() {
-            while (!isInterrupted()) {
-                try {
-                    DatenDownload datenDownload;
-                    while ((datenDownload = getNextStart()) != null) {
-                        launchDownloadThread(datenDownload);
-                        //alle 2 Sekunden einen Download starten
-                        TimeUnit.SECONDS.sleep(DOWNLOAD_DELAY);
-                    }
-                    daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
-                    TimeUnit.SECONDS.sleep(DOWNLOAD_DELAY);
-                }
-                catch (InterruptedException ignored) {
-                }
-                catch (Exception ex) {
-                    logger.error("Fehler in Starten Thread:", ex);
-                }
+    private boolean isPauseActive() {
+        if (pause.getAndSet(false)) {
+            pauseUntilEpochMillis = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(NEW_START_PAUSE_SECONDS, TimeUnit.SECONDS);
+        }
+        return System.currentTimeMillis() < pauseUntilEpochMillis;
+    }
+
+    private synchronized DatenDownload getNextStart() {
+        // get: erstes passendes Element der Liste zurückgeben oder null
+        // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
+        final var listeDownloads = daten.getListeDownloads();
+        DatenDownload download = listeDownloads.getNextStart();
+        if (download == null) {
+            // dann versuchen einen Fehlerhaften nochmal zu starten
+            download = listeDownloads.getRestartDownload();
+            if (download != null) {
+                reStartmeldung(download);
             }
         }
+        return download;
+    }
 
-        private synchronized DatenDownload getNextStart() throws InterruptedException {
-            // get: erstes passendes Element der Liste zurückgeben oder null
-            // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-            if (pause.get()) {
-                // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
-                // damit ein zu Löschender Download nicht noch schnell gestartet wird
-                TimeUnit.SECONDS.sleep(5);
-                pause.set(false);
+    /**
+     * This will start the download process.
+     *
+     * @param datenDownload The {@link mediathek.daten.DatenDownload} info object for download.
+     */
+    private void launchDownloadThread(DatenDownload datenDownload) {
+        datenDownload.start.startTime = LocalDateTime.now();
+        DownloadProgressEventPublisher.publishThrottled();
+
+        Thread downloadThread;
+
+        switch (datenDownload.art) {
+            case DatenDownload.ART_PROGRAMM -> {
+                downloadThread = new ExternalProgramDownload(datenDownload);
+                downloadThread.start();
             }
-
-            final var listeDownloads = daten.getListeDownloads();
-            DatenDownload download = listeDownloads.getNextStart();
-            if (download == null) {
-                // dann versuchen einen Fehlerhaften nochmal zu starten
-                download = listeDownloads.getRestartDownload();
-                if (download != null) {
-                    reStartmeldung(download);
-                }
+            case DatenDownload.ART_DOWNLOAD -> {
+                downloadThread = new DirectHttpDownload(daten, datenDownload);
+                downloadThread.start();
             }
-            return download;
-        }
-
-        /**
-         * This will start the download process.
-         *
-         * @param datenDownload The {@link mediathek.daten.DatenDownload} info object for download.
-         */
-        private void launchDownloadThread(DatenDownload datenDownload) {
-            datenDownload.start.startTime = LocalDateTime.now();
-            MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
-
-            Thread downloadThread;
-
-            switch (datenDownload.art) {
-                case DatenDownload.ART_PROGRAMM -> {
-                    downloadThread = new ExternalProgramDownload(datenDownload);
-                    downloadThread.start();
-                }
-                case DatenDownload.ART_DOWNLOAD -> {
-                    downloadThread = new DirectHttpDownload(daten, datenDownload);
-                    downloadThread.start();
-                }
-                default -> logger.error("StarterClass.Starten - Switch-default");
-            }
+            default -> logger.error("StarterClass.Starten - Switch-default");
         }
     }
 }

@@ -14,7 +14,6 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import okhttp3.HttpUrl;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,13 +38,13 @@ public class DialogFilmBeschreibung extends JDialog {
         jTextArea1.setText(datenFilm.getDescription());
         jTextFieldTitel.setText(datenFilm.getTitle());
 
-        jButtonOk.addActionListener(e -> {
+        jButtonOk.addActionListener(_ -> {
             datenFilm.setDescription(jTextArea1.getText());
             dispose();
         });
 
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfe.addActionListener(e -> {
+        jButtonHilfe.addActionListener(_ -> {
             var message = """
                     Diese Funktion richtet sich z.B. an Benutzer,welche eine angepasste Beschreibung der Sendung in Form der Infodatei ("Filmname.txt") anlegen und durch Drittprogramme einlesen lassen wollen.
 
@@ -54,7 +53,7 @@ public class DialogFilmBeschreibung extends JDialog {
             JOptionPane.showMessageDialog(this, message, Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
         });
 
-        jButtonSpeichern.addActionListener(e -> {
+        jButtonSpeichern.addActionListener(_ -> {
             datenFilm.setDescription(jTextArea1.getText());
 
             String titel = FilenameUtils.replaceLeerDateiname(datenFilm.getTitle(), false,
@@ -70,11 +69,11 @@ public class DialogFilmBeschreibung extends JDialog {
                 pfad = StandardLocations.getStandardDownloadPath();
             }
 
-            if (titel.isEmpty()) {
-                titel = StringUtils.replace(datenFilm.getSender(), " ", "-") + ".txt";
-            } else {
-                titel += ".txt";
-            }
+            final String suffix = ".txt";
+            titel = titel.isEmpty()
+                    ? datenFilm.getSender().replace(" ", "-") + suffix
+                    : titel + suffix;
+
 
             pfad = GuiFunktionen.addsPfad(pfad, titel);
             var destFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(),"Infos speichern", pfad);

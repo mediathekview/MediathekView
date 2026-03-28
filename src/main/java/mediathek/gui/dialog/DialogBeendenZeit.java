@@ -93,7 +93,10 @@ public class DialogBeendenZeit extends JDialog {
         comboActions.addActionListener(_ -> setCbShutdownCoputer());
 
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> {
+            final var msg = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN).trim();
+            JOptionPane.showMessageDialog(parent, msg, Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
+        });
         setCbShutdownCoputer();
 
         cbShutdownComputer.addActionListener(_ -> shutdown = cbShutdownComputer.isSelected());
@@ -237,26 +240,26 @@ public class DialogBeendenZeit extends JDialog {
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
-        setTitle("Zeitverz\u00f6gerter Download-Start"); //NON-NLS
+        setTitle("Zeitverz\u00f6gerter Download-Start");
         var contentPane = getContentPane();
 
         //---- jLabel1 ----
-        jLabel1.setText("Wie m\u00f6chten Sie fortfahren wenn alle Downloads fertig sind?"); //NON-NLS
+        jLabel1.setText("Wie m\u00f6chten Sie fortfahren, wenn alle Downloads fertig sind?");
 
         //---- btnContinue ----
-        btnContinue.setText("Weiter"); //NON-NLS
+        btnContinue.setText("Weiter");
 
         //---- cbShutdownComputer ----
-        cbShutdownComputer.setText("Rechner herunterfahren"); //NON-NLS
+        cbShutdownComputer.setText("Rechner herunterfahren");
 
         //---- btnCancel ----
-        btnCancel.setText("Abbrechen"); //NON-NLS
+        btnCancel.setText("Abbrechen");
 
         //---- jButtonHilfe ----
-        jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         //---- jLabel2 ----
-        jLabel2.setText("Alle Downloads starten um: "); //NON-NLS
+        jLabel2.setText("Alle Downloads starten um: ");
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
@@ -288,7 +291,7 @@ public class DialogBeendenZeit extends JDialog {
                     .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(dateTimePicker, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
                     .addComponent(jLabel1)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(comboActions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)

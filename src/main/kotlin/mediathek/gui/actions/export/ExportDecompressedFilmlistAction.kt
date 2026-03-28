@@ -43,7 +43,7 @@ class ExportDecompressedFilmlistAction : AbstractAction() {
             worker.execute()
         } else {
             JOptionPane.showMessageDialog(MediathekGui.ui(),
-                                          "Export wurde abgebrochen",
+                                          "Der Export wurde abgebrochen.",
                                           Konstanten.PROGRAMMNAME,
                                           JOptionPane.WARNING_MESSAGE)
             isEnabled = true

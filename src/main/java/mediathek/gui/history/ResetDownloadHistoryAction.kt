@@ -9,7 +9,7 @@ import javax.swing.JOptionPane
 class ResetDownloadHistoryAction(private val owner: JFrame) : AbstractAction() {
     override fun actionPerformed(e: ActionEvent) {
         val ret = JOptionPane.showConfirmDialog(owner, """
-     Sind Sie sicher dass Sie alle Einträge der Download-Historie löschen wollen?
+     Sind Sie sicher, dass Sie alle Einträge der Download-Historie löschen wollen?
      Dies kann nicht rückgängig gemacht werden.
      """.trimIndent(), "Download-Historie löschen", JOptionPane.YES_NO_OPTION)
         if (ret == JOptionPane.OK_OPTION) {

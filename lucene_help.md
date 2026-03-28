@@ -44,4 +44,6 @@ Es ist nicht möglich, Filme anhand von URLs bzw. Teilsegmenten davon zu suchen.
 Um sich mit der Abfragesyntax vertraut zu machen sind nachfolgende Links empfohlen:
 
 1. [Lucene Query Syntax](https://ci-builds.apache.org/job/Lucene/job/Lucene-Artifacts-main/javadoc/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package.description)
-2. [Lucene Tutorial](http://lucenetutorial.com/lucene-query-syntax.html)
+2. [Lucene Tutorial](https://web.archive.org/web/20250919224433/https://www.lucenetutorial.com/lucene-query-syntax.html) *
+
+\* Archive.org Version, da die Seite nicht mehr existiert.

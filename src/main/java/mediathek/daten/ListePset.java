@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.daten;
 
 import mediathek.config.MVConfig;
@@ -7,7 +25,6 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.MessageBus;
 import mediathek.tool.models.NonEditableTableModel;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -32,7 +49,7 @@ public class ListePset extends ArrayList<DatenPset> {
     }
 
     private static void progMusterErsetzen(JFrame parent, DatenPset pSet) {
-        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], MUSTER_PFAD_ZIEL, StandardLocations.getStandardDownloadPath());
+        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].replace(MUSTER_PFAD_ZIEL, StandardLocations.getStandardDownloadPath());
         String vlc = "";
         String ffmpeg = "";
 

@@ -7,10 +7,8 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.cellrenderer.CellRendererBaseWithStart;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
+import mediathek.x11.DesktopEnvDetector;
 import net.engio.mbassy.listener.Handler;
-import net.miginfocom.layout.AC;
-import net.miginfocom.layout.CC;
-import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
@@ -52,7 +50,8 @@ public class PanelEinstellungen extends JPanel {
 
     private void cbUseWikipediaSenderLogosActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
-        MessageBus.getMessageBus().publishAsync(new SenderIconStyleChangedEvent());
+        MessageBus.getMessageBus().publish(new SenderIconStyleChangedEvent());
+        MediathekGui.ui().repaint();
     }
     
     private void cbAutomaticUpdateChecksActionPerformed(ActionEvent evt) {
@@ -63,7 +62,7 @@ public class PanelEinstellungen extends JPanel {
     private void setupTabUI() {
         final boolean tabPositionTop = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true);
         jCheckBoxTabsTop.setSelected(tabPositionTop);
-        jCheckBoxTabsTop.addActionListener(ae -> {
+        jCheckBoxTabsTop.addActionListener(_ -> {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, jCheckBoxTabsTop.isSelected());
             MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
@@ -74,7 +73,7 @@ public class PanelEinstellungen extends JPanel {
 
         var config = ApplicationConfiguration.getConfiguration();
         jCheckBoxTabIcon.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false));
-        jCheckBoxTabIcon.addActionListener(ae -> {
+        jCheckBoxTabIcon.addActionListener(_ -> {
             config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS, jCheckBoxTabIcon.isSelected());
             MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
@@ -86,14 +85,14 @@ public class PanelEinstellungen extends JPanel {
     }
 
     private void setupTray() {
-        if (SystemUtils.IS_OS_MAC_OSX) {
+        if (SystemUtils.IS_OS_MAC_OSX || !DesktopEnvDetector.trayIconSupported()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
             MessageBus.getMessageBus().subscribe(this);
 
             jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false));
-            jCheckBoxTray.addActionListener(ae -> {
+            jCheckBoxTray.addActionListener(_ -> {
                 config.setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,jCheckBoxTray.isSelected());
                 MediathekGui.ui().initializeSystemTray();
             });
@@ -106,7 +105,7 @@ public class PanelEinstellungen extends JPanel {
 
         var searchPanel = new ModernSearchConfigPanel();
         searchPanel.getCbActivateModernSearch().setSelected(useModernSearch);
-        searchPanel.getCbActivateModernSearch().addActionListener(l -> {
+        searchPanel.getCbActivateModernSearch().addActionListener(_ -> {
             var selected = searchPanel.getCbActivateModernSearch().isSelected();
             config.setProperty(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, selected);
         });
@@ -142,13 +141,13 @@ public class PanelEinstellungen extends JPanel {
         var restore = ApplicationConfiguration.getConfiguration()
                 .getBoolean(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB, false);
         cbRestoreSelectedTab.setSelected(restore);
-        cbRestoreSelectedTab.addActionListener(l -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB,
+        cbRestoreSelectedTab.addActionListener(_ -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB,
                 cbRestoreSelectedTab.isSelected()));
 
         var drawIconsRight = ApplicationConfiguration.getConfiguration()
                         .getBoolean(CellRendererBaseWithStart.ICON_POSITION_RIGHT, false);
         cbDrawListIconsRight.setSelected(drawIconsRight);
-        cbDrawListIconsRight.addActionListener(l -> {
+        cbDrawListIconsRight.addActionListener(_ -> {
             ApplicationConfiguration.getConfiguration().setProperty(CellRendererBaseWithStart.ICON_POSITION_RIGHT, cbDrawListIconsRight.isSelected());
             MediathekGui.ui().repaint();
         });
@@ -156,7 +155,7 @@ public class PanelEinstellungen extends JPanel {
         boolean useIconWithText = ApplicationConfiguration.getConfiguration()
                 .getBoolean(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, false);
         cbShowBlacklistIconWithText.setSelected(useIconWithText);
-        cbShowBlacklistIconWithText.addActionListener(l -> {
+        cbShowBlacklistIconWithText.addActionListener(_ -> {
             var useText = cbShowBlacklistIconWithText.isSelected();
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, useText);
         });
@@ -164,7 +163,7 @@ public class PanelEinstellungen extends JPanel {
         boolean useSystemDarkMode = ApplicationConfiguration.getConfiguration()
                 .getBoolean(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, false);
         cbUseSystemDarkMode.setSelected(useSystemDarkMode);
-        cbUseSystemDarkMode.addActionListener(l -> ApplicationConfiguration.getConfiguration()
+        cbUseSystemDarkMode.addActionListener(_ -> ApplicationConfiguration.getConfiguration()
                 .setProperty(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, cbUseSystemDarkMode.isSelected()));
     }
 
@@ -186,7 +185,7 @@ public class PanelEinstellungen extends JPanel {
             }
             cbAutomaticMenuTabSwitching.setSelected(installed);
 
-            cbAutomaticMenuTabSwitching.addActionListener(e -> {
+            cbAutomaticMenuTabSwitching.addActionListener(_ -> {
                 final boolean isOn = cbAutomaticMenuTabSwitching.isSelected();
                 config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, isOn);
                 final InstallTabSwitchListenerEvent evt = new InstallTabSwitchListenerEvent();
@@ -234,44 +233,42 @@ public class PanelEinstellungen extends JPanel {
 
         //======== jPanel5 ========
         {
-            jPanel5.setBorder(new TitledBorder("Tab-Verhalten")); //NON-NLS
+            jPanel5.setBorder(new TitledBorder("Tab-Verhalten"));
             jPanel5.setLayout(new MigLayout(
-                new LC().insets("0").hideMode(3).gridGap("5", "5"), //NON-NLS
+                "insets 0,hidemode 3,gap 5 5",
                 // columns
-                new AC()
-                    .fill().gap()
-                    .fill().gap()
-                    .fill(),
+                "[fill]" +
+                "[fill]" +
+                "[fill]",
                 // rows
-                new AC()
-                    .gap()
-                    .fill()));
+                "[]" +
+                "[fill]"));
 
             //---- jCheckBoxTabsTop ----
-            jCheckBoxTabsTop.setText("Tabs oben anzeigen"); //NON-NLS
-            jPanel5.add(jCheckBoxTabsTop, new CC().cell(0, 0));
+            jCheckBoxTabsTop.setText("Tabs oben anzeigen");
+            jPanel5.add(jCheckBoxTabsTop, "cell 0 0");
 
             //---- jCheckBoxTabIcon ----
-            jCheckBoxTabIcon.setText("Icons anzeigen"); //NON-NLS
-            jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen"); //NON-NLS
-            jPanel5.add(jCheckBoxTabIcon, new CC().cell(1, 0));
+            jCheckBoxTabIcon.setText("Icons anzeigen");
+            jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
+            jPanel5.add(jCheckBoxTabIcon, "cell 1 0");
 
             //---- cbAutomaticMenuTabSwitching ----
-            cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Men\u00fcnutzung um"); //NON-NLS
-            jPanel5.add(cbAutomaticMenuTabSwitching, new CC().cell(2, 0));
+            cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Men\u00fcnutzung um");
+            jPanel5.add(cbAutomaticMenuTabSwitching, "cell 2 0");
 
             //---- cbRestoreSelectedTab ----
-            cbRestoreSelectedTab.setText("Letzte Auswahl beim Start wiederherstellen"); //NON-NLS
-            cbRestoreSelectedTab.setToolTipText("Wenn gew\u00e4hlt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert."); //NON-NLS
-            jPanel5.add(cbRestoreSelectedTab, new CC().cell(0, 1, 3, 1));
+            cbRestoreSelectedTab.setText("Letzte Auswahl beim Start wiederherstellen");
+            cbRestoreSelectedTab.setToolTipText("Wenn gew\u00e4hlt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert.");
+            jPanel5.add(cbRestoreSelectedTab, "cell 0 1 3 1");
         }
 
         //======== jPanel3 ========
         {
-            jPanel3.setBorder(new TitledBorder("Download")); //NON-NLS
+            jPanel3.setBorder(new TitledBorder("Download"));
 
             //---- jLabel3 ----
-            jLabel3.setText("User-Agent:"); //NON-NLS
+            jLabel3.setText("User-Agent:");
 
             //---- jtfUserAgent ----
             jtfUserAgent.setMinimumSize(new Dimension(200, 26));
@@ -301,20 +298,20 @@ public class PanelEinstellungen extends JPanel {
 
         //======== jPanel4 ========
         {
-            jPanel4.setBorder(new TitledBorder("HTTP-Proxy (Neustart erforderlich!)")); //NON-NLS
-            jPanel4.setToolTipText(""); //NON-NLS
+            jPanel4.setBorder(new TitledBorder("HTTP-Proxy (Neustart erforderlich!)"));
+            jPanel4.setToolTipText("");
 
             //---- jLabel4 ----
-            jLabel4.setText("Host:"); //NON-NLS
+            jLabel4.setText("Host:");
 
             //---- jLabel5 ----
-            jLabel5.setText("Port:"); //NON-NLS
+            jLabel5.setText("Port:");
 
             //---- jLabel7 ----
-            jLabel7.setText("User:"); //NON-NLS
+            jLabel7.setText("User:");
 
             //---- jLabel8 ----
-            jLabel8.setText("Passwort:"); //NON-NLS
+            jLabel8.setText("Passwort:");
 
             GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
             jPanel4.setLayout(jPanel4Layout);
@@ -365,48 +362,46 @@ public class PanelEinstellungen extends JPanel {
         //======== panel1 ========
         {
             panel1.setLayout(new MigLayout(
-                new LC().insets("0").hideMode(3).gridGap("5", "0"), //NON-NLS
+                "insets 0,hidemode 3,gap 5 0",
                 // columns
-                new AC()
-                    .grow().align("left").gap() //NON-NLS
-                    .fill(),
+                "[grow,left]" +
+                "[fill]",
                 // rows
-                new AC()
-                    .fill().gap()
-                    .fill().gap()
-                    .fill().gap()
-                    .gap()
-                    .fill()));
+                "[fill]" +
+                "[fill]" +
+                "[fill]" +
+                "[]" +
+                "[fill]"));
 
             //---- jCheckBoxTray ----
-            jCheckBoxTray.setText("Programm ins Tray minimieren"); //NON-NLS
-            panel1.add(jCheckBoxTray, new CC().cell(0, 0));
+            jCheckBoxTray.setText("Programm ins Tray minimieren");
+            panel1.add(jCheckBoxTray, "cell 0 0");
 
             //---- cbShowBlacklistIconWithText ----
-            cbShowBlacklistIconWithText.setText("Blacklist-Filter-Icon mit Text anzeigen"); //NON-NLS
-            cbShowBlacklistIconWithText.setToolTipText("Neustart erforderlich"); //NON-NLS
-            panel1.add(cbShowBlacklistIconWithText, new CC().cell(1, 0));
+            cbShowBlacklistIconWithText.setText("Blacklist-Filter-Icon mit Text anzeigen");
+            cbShowBlacklistIconWithText.setToolTipText("Neustart erforderlich");
+            panel1.add(cbShowBlacklistIconWithText, "cell 1 0");
 
             //---- cbUseWikipediaSenderLogos ----
-            cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden"); //NON-NLS
-            panel1.add(cbUseWikipediaSenderLogos, new CC().cell(0, 1));
+            cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden");
+            panel1.add(cbUseWikipediaSenderLogos, "cell 0 1");
 
             //---- cbAutomaticUpdateChecks ----
-            cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen"); //NON-NLS
-            panel1.add(cbAutomaticUpdateChecks, new CC().cell(0, 2));
+            cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen");
+            panel1.add(cbAutomaticUpdateChecks, "cell 0 2");
 
             //---- cbDrawListIconsRight ----
-            cbDrawListIconsRight.setText("Info-Icons der Listen rechts darstellen"); //NON-NLS
-            panel1.add(cbDrawListIconsRight, new CC().cell(0, 3));
+            cbDrawListIconsRight.setText("Info-Icons der Listen rechts darstellen");
+            panel1.add(cbDrawListIconsRight, "cell 0 3");
 
             //---- cbUseSystemDarkMode ----
-            cbUseSystemDarkMode.setText("Erscheinungsbild des Betriebssystem verwenden"); //NON-NLS
-            cbUseSystemDarkMode.setToolTipText("Stellt den Hell-/Dunkelmodus der App beim Programmstart nach den aktuellen Einstellungen des Betriebssystem ein."); //NON-NLS
-            panel1.add(cbUseSystemDarkMode, new CC().cell(0, 4, 2, 1));
+            cbUseSystemDarkMode.setText("Erscheinungsbild des Betriebssystems verwenden");
+            cbUseSystemDarkMode.setToolTipText("Stellt den Hell-/Dunkelmodus der App beim Programmstart nach den aktuellen Einstellungen des Betriebssystem ein.");
+            panel1.add(cbUseSystemDarkMode, "cell 0 4 2 1");
         }
 
         //---- modernSearchTitlePanel ----
-        modernSearchTitlePanel.setTitle("Moderne Suche"); //NON-NLS
+        modernSearchTitlePanel.setTitle("Moderne Suche");
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -421,7 +416,7 @@ public class PanelEinstellungen extends JPanel {
                             .addGroup(layout.createParallelGroup()
                                 .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(0, 20, Short.MAX_VALUE))
+                            .addGap(0, 18, Short.MAX_VALUE))
                         .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addContainerGap())
         );
@@ -437,7 +432,7 @@ public class PanelEinstellungen extends JPanel {
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                    .addComponent(modernSearchTitlePanel, GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
                     .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

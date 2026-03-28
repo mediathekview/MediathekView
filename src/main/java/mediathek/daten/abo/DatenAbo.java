@@ -27,9 +27,9 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
     public static final int ABO_REF = 13;
-    public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
+    public static final String[] COLUMN_NAMES = {"Nr", "Aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Dauer", "min/max", "Zielpfad", "letztes Abo", "Programmset", ""};
+            "Irgendwo", "Dauer", "Min/Max", "Zielpfad", "Letztes Abo", "Programmset", ""};
     public static final int MAX_ELEM = 14;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);

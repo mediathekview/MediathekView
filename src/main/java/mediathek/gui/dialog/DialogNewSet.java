@@ -64,7 +64,7 @@ public class DialogNewSet extends JDialog {
             }
         });
         jButtonSetHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonSetHelp.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
+        jButtonSetHelp.addActionListener(_ -> new DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
 
         EscapeKeyHandler.installHandler(this, () -> {
             ok = false;

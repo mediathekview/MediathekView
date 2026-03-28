@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Helper class to globally change to L&F font sizes
@@ -181,7 +182,7 @@ public class FontManager {
         String currentSize = Integer.toString(currentFont.getSize());
 
         // add font families
-        ArrayList<String> families = new ArrayList<>(Arrays.asList(
+        ArrayList<String> families = new ArrayList<>(List.of(
                 "Arial", "Cantarell", "Comic Sans MS", "DejaVu Sans",
                 "Dialog", "Liberation Sans", "Noto Sans", "Roboto",
                 "SansSerif", "Segoe UI", "Serif", "Tahoma", "Ubuntu", "Verdana"));
@@ -204,8 +205,7 @@ public class FontManager {
 
         // add font sizes
         fontMenu.addSeparator();
-        ArrayList<String> sizes = new ArrayList<>(Arrays.asList(
-                "10", "11", "12", "13", "14", "16", "18", "20", "24", "28"));
+        ArrayList<String> sizes = new ArrayList<>(List.of("10", "11", "12", "13", "14", "16", "18", "20", "24", "28"));
         if (!sizes.contains(currentSize))
             sizes.add(currentSize);
         sizes.sort(String.CASE_INSENSITIVE_ORDER);

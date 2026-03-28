@@ -1,3 +1,34 @@
+# **14.5.0**
+- **BUGFIX(Linux):** Tray-Icon Funktion wird für KDE deaktiviert, das sie hier nicht richtig funktioniert.
+- **BUGFIX:** Workaround für Oracle JDK-8024695 eingebaut. Dies verhinderte das korrekte Abspielen von Filmen.
+- **BUGFIX:** Veraltetes Sendericon wird nicht mehr im Filminfo-Dialog dargestellt.
+- **BUGFIX:** Zielpfad im "Film Speichern"-Dialog wird nicht mehr abgeschnitten.
+- **BUGFIX(macOS):** MV sucht nun bei zapp Livestreams in folgender Reihenfolge nach passenden Playern: IINA -> VLC -> Browserauswahl
+- **BUGFIX:** Im *Abo Verwalten*-Dialog werden nun Sender als Text korrekt dargestellt.
+- **BUGFIX(Windows):** Das Programm stürzt nicht mehr bei Nutzung über Remote Desktop ab.
+- **BUGFIX:** Die Verfügbarkeit von Sendung des Radio Bremen TV ist nun möglich.
+- **BUGFIX:** Darkmode-Darstellung des Bandbreitendialogs wurde verbessert.
+- **BUGFIX:** Bestimmte HTTP/2-Downloadfehler werden nun abgefangen und Neustarts initiiert.
+- **BUGFIX:** Wikipedia-Sendericons werden nicht mehr über das Netzwerk geladen da sich die Adressen regelmäßig ändern.
+- **BUGFIX:** Bei Wikipedia-Icons wird nun der transparente Außenbereich soweit wie möglich entfernt damit sie größer dargestellt werden.
+- **BUGFIX(macOS):** Ein gestarteter IINA-Player behindert nicht mehr das Beenden von MediathekView.
+- **BUGFIX(macOS):** Datei speichern-Dialog zeigt nun den vorgegebenen Dateinamen anstatt "Untitled" an.
+- **FEATURE:** Unterstützung für WebVTT-Untertitel bei Sendern.
+- **FEATURE:** Via *Hilfe/Live Programm-Log anzeigen* kann nun die Log-Datei in Echtzeit eingesehen werden.
+- **FEATURE:** Lucene Directory-Provider kann via *Einstellungen/Lucene-Tuning* konfiguriert werden. Je nach OS kann dies die Performance verbessern.
+- **FEATURE:** Zapp-Livestream-Icons zeigen nun das zugehörige Bundesland.
+- **FEATURE:** Unter *Ansicht/Filmlisten-Statistik anzeigen...* werden statistische Informationen über die aktuell genutzte ungefilterte Filmliste dargestellt.
+- **FEATURE:** Bandbreitendialog skaliert nun bis GBit/s und ist darkmode-aware. Zusätzlich wird nun eine durchschnittliche Bandbreite dargestellt.
+- **FEATURE:** Neue Filteroption *"Geo-blockierte Filme nicht anzeigen"* im Filterdialog.
+- **FEATURE:** Neue integrierte Lucene-Hilfsdokumentation, die über den *?*-Button bzw. *Hilfe/Lucene-Suchsyntax anzeigen..* aufgerufen werden kann. Der Menüeintrag ist auch bei deaktivierter Lucene-Suche aufrufbar
+- **FEATURE(macOS):** Verbesserte Steuerung des IINA Players. Hierzu werden seitens macOS Berechtigungen zur Fernsteuerung benötigt.
+- **FEATURE:** zapp Livestream-Einträge haben nun auch ein Kontextmenü um das Abspielen der Einträge zu ermöglichen. Die Livestreams können weiterhin per Doppelklick gestartet werden.
+- Große Datenbank-Maintenance der Filmhistorie wird nur noch alle 30 Tage ausgeführt, nicht bei jedem Beenden. Kann manuell über das Hilfe-Menü gestartet werden.
+- Untertitel-Format-Support wurde vollständig neu implementiert und unterstützt nun auch TTML2-Standard.
+- Lucene-Index-Erstellung wurde für multi-core-Systeme optimiert.
+- Reduzierter Netzwerkverkehr durch Caching bei der Abfrage der Filmverfügbarkeiten.
+- verbesserte Darstellungsqualität der Sendericons
+
 # **14.4.2**
 - Downgrade JDK 25 zu 24 auch für macOS (Intel und Apple Silicon) Builds
 - **BUGFIX(macOS):** Es wird keine exception mehr beim schreiben nicht-existenter Finder-Comments geworfen.
@@ -5,7 +36,7 @@
 # **14.4.1**
 - Downgrade JDK 25 zu 24 für Windows und Linux Builds
 - AppImage Signierung hinzugefügt
--vc**BUGFIX:** Verbesserungen am AppImage
+- **BUGFIX:** Verbesserungen am AppImage
 
 # **14.4.0**
 - Das Programm verwendet nun kein JavaFX mehr.

@@ -2,6 +2,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.gui.dialogEinstellungen.allgemein.LuceneDirectoryModePanel;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.res.GetIcon;
@@ -29,6 +30,7 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
     private static final String NAME_allgemeineEinstellungenGeo = "Standort & Geoblocking";
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
+    private static final String NAME_allgemeineEinstellungenLucene = "Lucene-Tuning";
     private static final String NAME_filmListe = "Filmliste";
     private static final String NAME_filmListeLaden = "Filmliste laden";
     private static final String NAME_blacklist = "Blacklist";
@@ -43,6 +45,7 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
+    private final DefaultMutableTreeNode treeNodeLucene = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenLucene);
     // ######## Filme ###############
     private final DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
     private final DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
@@ -62,7 +65,7 @@ public class DialogEinstellungen extends JFrame {
         restoreSizeFromConfig();
 
         setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
-        jButtonBeenden.addActionListener(e -> beenden());
+        jButtonBeenden.addActionListener(_ -> beenden());
 
         EscapeKeyHandler.installHandler(this, this::beenden);
     }
@@ -110,6 +113,7 @@ public class DialogEinstellungen extends JFrame {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
+        treeNodeEinstellungen.add(treeNodeLucene);
         treeNodeStart.add(treeNodeEinstellungen);
 
         // ######## Filme ###############
@@ -130,7 +134,7 @@ public class DialogEinstellungen extends JFrame {
         jTree1.setModel(new DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         jTree1.setRootVisible(false);
-        jTree1.addTreeSelectionListener(e -> {
+        jTree1.addTreeSelectionListener(_ -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
             if (node == null) {
                 // nix markiert
@@ -164,6 +168,10 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_allgemeineEinstellungenColor -> {
                         jPanelExtra.removeAll();
                         jPanelExtra.add(new PanelEinstellungenColor());
+                    }
+                    case NAME_allgemeineEinstellungenLucene -> {
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(new LuceneDirectoryModePanel());
                     }
                     case NAME_filmListe -> jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
                     case NAME_filmListeLaden -> {

@@ -1,8 +1,26 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.controller.starter;
 
-import com.google.common.util.concurrent.RateLimiter;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.controller.ByteRateLimiter;
 import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.controller.ThrottlingInputStream;
 import mediathek.controller.history.SeenHistoryController;
@@ -13,6 +31,7 @@ import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.http.MVHttpClient;
+import mediathek.tool.subtitles.MVSubtitle;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.listener.Handler;
 import okhttp3.*;
@@ -31,6 +50,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -38,6 +59,10 @@ import java.util.concurrent.ExecutionException;
 public class DirectHttpDownload extends Thread {
 
     private static final int HTTP_RANGE_NOT_SATISFIABLE = 416;
+    private static final int MAX_TRANSIENT_DOWNLOAD_RETRIES = 3;
+    private static final long RETRY_DELAY_MILLIS = 1_000L;
+    private static final boolean DEBUG_FORCE_STREAM_RESET_ONCE = Boolean.getBoolean("mv.debug.forceHttp2ResetOnce");
+    private static final long DEBUG_FORCE_STREAM_RESET_AFTER_BYTES = Long.getLong("mv.debug.forceHttp2ResetAfterBytes", 512L * 1024L);
     private static final Logger logger = LogManager.getLogger(DirectHttpDownload.class);
     private final Daten daten;
     private final DatenDownload datenDownload;
@@ -45,7 +70,7 @@ public class DirectHttpDownload extends Thread {
     /**
      * Instance which will limit the download speed
      */
-    private final RateLimiter rateLimiter;
+    private final ByteRateLimiter rateLimiter;
     private final MBassador<BaseEvent> messageBus;
     private final OkHttpClient httpClient;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
@@ -55,6 +80,7 @@ public class DirectHttpDownload extends Thread {
      */
     private long alreadyDownloaded;
     private File file;
+    private boolean debugStreamResetInjected;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     private CompletableFuture<Void> infoFuture;
@@ -64,7 +90,7 @@ public class DirectHttpDownload extends Thread {
         super();
 
         httpClient = MVHttpClient.getInstance().getHttpClient();
-        rateLimiter = RateLimiter.create(getDownloadLimit());
+        rateLimiter = new ByteRateLimiter(getDownloadLimit());
         messageBus = MessageBus.getMessageBus();
         messageBus.subscribe(this);
 
@@ -108,6 +134,7 @@ public class DirectHttpDownload extends Thread {
         var active = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DownloadRateLimiter.ACTIVE, false);
         return calcLimit(limit, active);
     }
+
     /**
      * Try to read the download limit from config file, other set to artificial limit 1GB/s!
      *
@@ -156,7 +183,8 @@ public class DirectHttpDownload extends Thread {
                 try {
                     MVInfoFile infoFile = new MVInfoFile();
                     infoFile.writeInfoFile(datenDownload);
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     logger.error("Failed to write info file", ex);
                 }
             });
@@ -191,8 +219,8 @@ public class DirectHttpDownload extends Thread {
             fileSink = Okio.sink(file);
         try (fileSink;
              var bufferedSink = Okio.buffer(fileSink);
-             ThrottlingInputStream tis = new ThrottlingInputStream(inputStream, rateLimiter);
-             MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis)) {
+             var tis = new ThrottlingInputStream(inputStream, rateLimiter);
+             var mvis = new MVBandwidthCountingInputStream(tis)) {
             start.mVBandwidthCountingInputStream = mvis;
             datenDownload.mVFilmSize.addAktSize(alreadyDownloaded);
             final byte[] buffer = new byte[1024];
@@ -201,7 +229,18 @@ public class DirectHttpDownload extends Thread {
             long aktBandwidth, aktSize = 0;
             boolean melden = false;
 
-            while ((len = start.mVBandwidthCountingInputStream.read(buffer)) != -1 && (!start.stoppen)) {
+            while (!start.stoppen) {
+                if (DEBUG_FORCE_STREAM_RESET_ONCE
+                        && !debugStreamResetInjected
+                        && alreadyDownloaded >= DEBUG_FORCE_STREAM_RESET_AFTER_BYTES) {
+                    debugStreamResetInjected = true;
+                    throw new IOException("stream was reset: INTERNAL_ERROR (debug injection)");
+                }
+
+                len = start.mVBandwidthCountingInputStream.read(buffer);
+                if (len == -1) {
+                    break;
+                }
                 alreadyDownloaded += len;
                 bufferedSink.write(buffer, 0, len);
                 datenDownload.mVFilmSize.addAktSize(len);
@@ -219,7 +258,8 @@ public class DirectHttpDownload extends Thread {
                     // p muss zwischen 1 und 999 liegen
                     if (p == 0) {
                         p = Start.PROGRESS_GESTARTET;
-                    } else if (p >= 1000) {
+                    }
+                    else if (p >= 1000) {
                         p = 999;
                     }
                     start.percent = (int) p;
@@ -241,7 +281,7 @@ public class DirectHttpDownload extends Thread {
                     melden = true;
                 }
                 if (melden) {
-                    MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+                    DownloadProgressEventPublisher.publishThrottled();
                     melden = false;
                 }
             }
@@ -252,10 +292,12 @@ public class DirectHttpDownload extends Thread {
             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                 // direkter Start mit dem Button
                 start.status = Start.STATUS_FERTIG;
-            } else if (StarterClass.pruefen(daten, datenDownload, start)) {
+            }
+            else if (StarterClass.pruefen(daten, datenDownload, start)) {
                 //Anzeige ändern - fertig
                 start.status = Start.STATUS_FERTIG;
-            } else {
+            }
+            else {
                 //Anzeige ändern - bei Fehler fehlt der Eintrag
                 start.status = Start.STATUS_ERR;
             }
@@ -285,14 +327,99 @@ public class DirectHttpDownload extends Thread {
         return request.build();
     }
 
+    private boolean executeDownloadRequest(@NotNull HttpUrl url, @NotNull OkHttpClient client) throws IOException {
+        Request request = buildDownloadRequest(url);
+        try (Response response = client.newCall(request).execute()) {
+            ResponseBody body = response.body();
+            if (response.isSuccessful() && body != null) {
+                downloadContent(body.byteStream());
+                return true;
+            }
+
+            final int responseCode = response.code();
+            if (responseCode == HTTP_RANGE_NOT_SATISFIABLE) {
+                // Reset and try once again without range.
+                alreadyDownloaded = 0;
+                Request retryRequest = buildDownloadRequest(url);
+                try (Response retryResponse = client.newCall(retryRequest).execute()) {
+                    ResponseBody retryBody = retryResponse.body();
+                    if (retryResponse.isSuccessful() && retryBody != null) {
+                        downloadContent(retryBody.byteStream());
+                        return true;
+                    }
+                    printHttpErrorMessage(retryResponse);
+                    return false;
+                }
+            }
+
+            if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                logger.error("HTTP error 404 received for URL: {}", request.url().toString());
+                state = HttpDownloadState.ERROR;
+                start.status = Start.STATUS_ERR;
+            }
+            else {
+                printHttpErrorMessage(response);
+            }
+            return false;
+        }
+    }
+
+    private boolean isHttp2InternalStreamReset(@NotNull IOException ex) {
+        Throwable current = ex;
+        while (current != null) {
+            if ("okhttp3.internal.http2.StreamResetException".equals(current.getClass().getName())) {
+                final String msg = String.valueOf(current.getMessage());
+                if (msg.contains("INTERNAL_ERROR")) {
+                    return true;
+                }
+            }
+
+            final String msg = current.getMessage();
+            if (msg != null) {
+                final String lower = msg.toLowerCase(Locale.ROOT);
+                if (lower.contains("stream was reset") && lower.contains("internal_error")) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private boolean isRetryableStreamException(@NotNull IOException ex) {
+        if (isHttp2InternalStreamReset(ex)) {
+            return true;
+        }
+
+        final String msg = ex.getMessage();
+        if (msg == null) {
+            return false;
+        }
+
+        final String lower = msg.toLowerCase(Locale.ROOT);
+        return lower.contains("stream was reset")
+                || lower.contains("unexpected end of stream")
+                || lower.contains("connection reset")
+                || lower.contains("broken pipe");
+    }
+
+    private void waitForRetry(int retryCount, @NotNull IOException ex) {
+        logger.warn("Transient download error (retry {}/{}), resuming at byte {}",
+                retryCount, MAX_TRANSIENT_DOWNLOAD_RETRIES, alreadyDownloaded, ex);
+        try {
+            Thread.sleep(RETRY_DELAY_MILLIS);
+        }
+        catch (InterruptedException interruptedException) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     @Override
     public synchronized void run() {
         StarterClass.startmeldung(datenDownload, start);
 
         messageBus.publishAsync(new DownloadStartEvent());
 
-        Response response = null;
-        ResponseBody body = null;
         try {
             createDirectory();
             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
@@ -302,42 +429,34 @@ public class DirectHttpDownload extends Thread {
                 assert url != null;
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
+                int retryCount = 0;
+                boolean forceHttp11 = false;
 
-                Request request = buildDownloadRequest(url);
-                response = httpClient.newCall(request).execute();
-                body = response.body();
-                if (response.isSuccessful() && body != null) {
-                    downloadContent(body.byteStream());
-                } else {
-                    final int responseCode = response.code();
-                    if (responseCode == HTTP_RANGE_NOT_SATISFIABLE) {
-                        //close old stuff first
-                        if (body != null)
-                            body.close();
-                        response.close();
-
-                        //reset download count
-                        alreadyDownloaded = 0;
-                        request = buildDownloadRequest(url);
-                        response = httpClient.newCall(request).execute();
-                        body = response.body();
-                        if (response.isSuccessful() && body != null)
-                            downloadContent(body.byteStream());
-                        else {
-                            printHttpErrorMessage(response);
+                while (!start.stoppen) {
+                    final OkHttpClient client = forceHttp11
+                            ? httpClient.newBuilder().protocols(List.of(Protocol.HTTP_1_1)).build()
+                            : httpClient;
+                    try {
+                        if (executeDownloadRequest(url, client)) {
+                            break;
                         }
-                    } else {
-                        if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                            logger.error("HTTP error 404 received for URL: {}", request.url().toString());
-                            state = HttpDownloadState.ERROR;
-                            start.status = Start.STATUS_ERR;
-                        } else {
-                            printHttpErrorMessage(response);
+                        // Non-successful HTTP response was handled already.
+                        break;
+                    }
+                    catch (IOException ex) {
+                        if (isRetryableStreamException(ex) && retryCount < MAX_TRANSIENT_DOWNLOAD_RETRIES) {
+                            //logger.error("Received stream exception, retrying forcing HTTP1.1 download");
+                            retryCount++;
+                            forceHttp11 = forceHttp11 || isHttp2InternalStreamReset(ex);
+                            waitForRetry(retryCount, ex);
+                            continue;
                         }
+                        throw ex;
                     }
                 }
             }
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             logger.error("run()", ex);
             start.status = Start.STATUS_ERR;
             state = HttpDownloadState.ERROR;
@@ -345,12 +464,6 @@ public class DirectHttpDownload extends Thread {
             removeSeenHistoryEntry();
 
             SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), ex.getLocalizedMessage(), datenDownload).setVisible(true));
-        } finally {
-            if (body != null)
-                body.close();
-
-            if (response != null)
-                response.close();
         }
 
         waitForPendingDownloads();
@@ -378,7 +491,8 @@ public class DirectHttpDownload extends Thread {
             if (subtitleFuture != null)
                 subtitleFuture.get();
 
-        } catch (InterruptedException | ExecutionException e) {
+        }
+        catch (InterruptedException | ExecutionException e) {
             logger.error("waitForPendingDownloads().", e);
         }
     }
@@ -393,7 +507,8 @@ public class DirectHttpDownload extends Thread {
         retAbbrechen = true;
         if (SwingUtilities.isEventDispatchThread()) {
             retAbbrechen = abbrechen_();
-        } else {
+        }
+        else {
             SwingUtilities.invokeLater(() -> {
                 retAbbrechen = abbrechen_();
                 dialogAbbrechenIsVis = false;
@@ -402,7 +517,8 @@ public class DirectHttpDownload extends Thread {
         while (dialogAbbrechenIsVis) {
             try {
                 wait(100);
-            } catch (Exception ignored) {
+            }
+            catch (Exception ignored) {
 
             }
         }
@@ -412,7 +528,8 @@ public class DirectHttpDownload extends Thread {
     private void createDirectory() {
         try {
             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
-        } catch (IOException ignored) {
+        }
+        catch (IOException ignored) {
         }
     }
 

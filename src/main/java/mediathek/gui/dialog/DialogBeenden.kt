@@ -183,7 +183,8 @@ class DialogBeenden(parent: JFrame, shouldDownloadAndQuit: Boolean) : JDialog(pa
         })
 
         jButtonHilfe.addActionListener {
-            DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN)).isVisible = true
+            val msg = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN).trim()
+            JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.PLAIN_MESSAGE)
         }
 
         jButtonHilfe.isEnabled = false

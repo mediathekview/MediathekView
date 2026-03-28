@@ -2,6 +2,7 @@ package mediathek.gui.dialog;
 
 import mediathek.mainwindow.MemoryUsagePanel;
 import mediathek.tool.ApplicationConfiguration;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,78 +10,112 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.time.Duration;
+import java.util.Optional;
 
-public class MemoryMonitorDialog extends JDialog {
+public final class MemoryMonitorDialog extends JDialog {
+    private static final Duration HISTORY_WINDOW = Duration.ofMinutes(2);
+    private static final Duration SAMPLE_INTERVAL = Duration.ofSeconds(1);
+    private static final Dimension DEFAULT_SIZE = new Dimension(480, 240);
+
+    private final Configuration configuration = ApplicationConfiguration.getConfiguration();
+    private final MemoryUsagePanel memoryUsagePanel = new MemoryUsagePanel(HISTORY_WINDOW, SAMPLE_INTERVAL);
+
     public MemoryMonitorDialog(@NotNull JFrame parent) {
         super(parent, "Speicherverbrauch", false);
+
         setType(Type.UTILITY);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        MemoryUsagePanel panel = new MemoryUsagePanel(2, TimeUnit.MINUTES);
-        panel.setPreferredSize(new Dimension(480, 240));
-        getContentPane().add(panel, BorderLayout.CENTER);
+        memoryUsagePanel.setPreferredSize(DEFAULT_SIZE);
+        add(memoryUsagePanel, BorderLayout.CENTER);
         pack();
-        panel.new MemoryUsageDataGenerator(1, TimeUnit.SECONDS).start();
-
-        restoreLocation();
+        restoreBounds();
 
         addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(ComponentEvent e) {
-                saveLocation();
+            public void componentResized(ComponentEvent event) {
+                storeBounds();
             }
 
             @Override
-            public void componentMoved(ComponentEvent e) {
-                saveLocation();
+            public void componentMoved(ComponentEvent event) {
+                storeBounds();
+            }
+        });
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent event) {
+                storeVisibility(true);
             }
 
             @Override
-            public void componentShown(ComponentEvent e) {
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, true);
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, false);
+            public void windowClosed(WindowEvent event) {
+                storeVisibility(false);
             }
         });
     }
 
-    private void restoreLocation() {
-        var config = ApplicationConfiguration.getConfiguration();
-        config.lock(LockMode.READ);
-        try {
-            var newLocation = new Point();
-            newLocation.x = config.getInt(ApplicationConfiguration.MemoryMonitorDialog.X);
-            newLocation.y = config.getInt(ApplicationConfiguration.MemoryMonitorDialog.Y);
-            setLocation(newLocation);
+    @Override
+    public void dispose() {
+        memoryUsagePanel.close();
+        super.dispose();
+    }
 
-            int w = config.getInt(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, -1);
-            int h = config.getInt(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, -1);
-            if (w != -1 && h != -1) {
-                setPreferredSize(new Dimension(w, h));
+    private void restoreBounds() {
+        readStoredBounds().ifPresentOrElse(this::applyBounds, this::applyDefaultBounds);
+    }
+
+    private Optional<DialogBounds> readStoredBounds() {
+        configuration.lock(LockMode.READ);
+        try {
+            var width = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, -1);
+            var height = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, -1);
+            var x = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.X, Integer.MIN_VALUE);
+            var y = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.Y, Integer.MIN_VALUE);
+
+            if (width <= 0 || height <= 0 || x == Integer.MIN_VALUE || y == Integer.MIN_VALUE) {
+                return Optional.empty();
             }
-        } catch (NoSuchElementException ignored) {
+
+            return Optional.of(new DialogBounds(x, y, width, height));
         } finally {
-            config.unlock(LockMode.READ);
+            configuration.unlock(LockMode.READ);
         }
     }
 
-    private void saveLocation() {
-        if (!isVisible())
+    private void applyBounds(DialogBounds bounds) {
+        setBounds(bounds.x(), bounds.y(), bounds.width(), bounds.height());
+    }
+
+    private void applyDefaultBounds() {
+        setSize(DEFAULT_SIZE);
+        setLocationRelativeTo(getOwner());
+    }
+
+    private void storeBounds() {
+        if (!isShowing()) {
             return;
-        var config = ApplicationConfiguration.getConfiguration();
-        try {
-            config.lock(LockMode.WRITE);
-            var location = getLocationOnScreen();
-            config.setProperty(ApplicationConfiguration.MemoryMonitorDialog.X, location.x);
-            config.setProperty(ApplicationConfiguration.MemoryMonitorDialog.Y, location.y);
-            config.setProperty(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, getWidth());
-            config.setProperty(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, getHeight());
-        } finally {
-            config.unlock(LockMode.WRITE);
         }
+
+        var bounds = getBounds();
+        configuration.lock(LockMode.WRITE);
+        try {
+            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.X, bounds.x);
+            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.Y, bounds.y);
+            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, bounds.width);
+            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, bounds.height);
+        } finally {
+            configuration.unlock(LockMode.WRITE);
+        }
+    }
+
+    private void storeVisibility(boolean visible) {
+        configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, visible);
+    }
+
+    private record DialogBounds(int x, int y, int width, int height) {
     }
 }

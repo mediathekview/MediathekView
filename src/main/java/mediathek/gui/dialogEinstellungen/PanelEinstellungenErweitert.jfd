@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -160,7 +160,7 @@ new FormModel {
 				"$rowConstraints": "[]"
 			} ) {
 				name: "panel1"
-				"border": new javax.swing.border.TitledBorder( "macOS: Standardverhalten des Hilfsprogramm" )
+				"border": new javax.swing.border.TitledBorder( "macOS: Standardverhalten des Hilfsprogramms" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -171,7 +171,7 @@ new FormModel {
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 560, 410 )
+			"size": new java.awt.Dimension( 560, 460 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {

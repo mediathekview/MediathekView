@@ -1,35 +1,28 @@
 /*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
+ * Copyright (c) 2008-2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package mediathek.controller.starter;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import mediathek.config.Config;
-import mediathek.gui.messages.DownloadProgressChangedEvent;
 import mediathek.tool.MVFilmSize;
-import mediathek.tool.MessageBus;
-import org.apache.commons.lang3.StringUtils;
+import mediathek.tool.ProcessCommandUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,8 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,19 +38,11 @@ import java.util.regex.Pattern;
  */
 public class RuntimeExec {
     public static final String TRENNER_PROG_ARRAY = "<>";
-    /**
-     * The cache for compiled RegExp.
-     */
-    private static final LoadingCache<String, Pattern> CACHE = CacheBuilder.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build(new PatternCacheLoader());
-    private static final String PATTERN_FFMPEG = "(?<=  Duration: )[^,]*"; // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
-    private static final String PATTERN_TIME = "(?<=time=)[^ ]*"; // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
-    private static final String PATTERN_SIZE = "(?<=size=)[^k]*"; // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
+    private static final Pattern PATTERN_FFMPEG = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
+    private static final Pattern PATTERN_TIME = Pattern.compile("(?<=time=)[^ ]*"); // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
+    private static final Pattern PATTERN_SIZE = Pattern.compile("(?<=size=)[^k]*"); // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
     private static final Logger logger = LogManager.getLogger();
-    private static final AtomicInteger processNr = new AtomicInteger(0);
     private final String strProgCall;
-    private Process process;
     private Start start;
     private double totalSecs;
     private long oldSize;
@@ -84,33 +67,42 @@ public class RuntimeExec {
         strProgCall = p;
     }
 
+    private void logOutput(String s, boolean isArray) {
+        logger.info("=====================");
+        if (isArray) {
+            logger.info("Starte Array: ");
+        }
+        else {
+            logger.info("Starte nicht als Array:");
+        }
+        logger.info(" -> {}", s);
+        logger.info("=====================");
+    }
+
     public Process exec(boolean log) {
+        Process process = null;
+
         try {
             if (arrProgCallArray != null) {
                 if (log) {
-                    logger.info("=====================");
-                    logger.info("Starte Array: ");
-                    logger.info(" -> " + strProgCallArray);
-                    logger.info("=====================");
+                    logOutput(strProgCallArray, true);
                 }
-                process = Runtime.getRuntime().exec(arrProgCallArray);
-            } else {
+                process = new ProcessBuilder(arrProgCallArray).start();
+            }
+            else {
                 if (log) {
-                    logger.info("=====================");
-                    logger.info("Starte nicht als Array:");
-                    logger.info(" -> " + strProgCall);
-                    logger.info("=====================");
+                    logOutput(strProgCall, false);
                 }
-                process = Runtime.getRuntime().exec(strProgCall);
+                process = new ProcessBuilder(ProcessCommandUtils.tokenizeCommand(strProgCall)).start();
             }
 
-            Thread clearIn = new Thread(new ClearInOut(IoType.INPUT, process));
-            Thread clearOut = new Thread(new ClearInOut(IoType.ERROR, process));
-            clearIn.setName("ClearIn: " + clearIn.threadId());
-            clearOut.setName("ClearOut: " + clearOut.threadId());
+            ClearInOut clearIn = new ClearInOut(IoType.INPUT, process);
+            ClearInOut clearOut = new ClearInOut(IoType.ERROR, process);
+
             clearIn.start();
             clearOut.start();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.error("Fehler beim Starten", ex);
         }
         return process;
@@ -118,19 +110,7 @@ public class RuntimeExec {
 
     private enum IoType {INPUT, ERROR}
 
-    /**
-     * This loader will compile regexp patterns when they are not in cache.
-     */
-    static class PatternCacheLoader extends CacheLoader<String, Pattern> {
-
-        @Override
-        public @NotNull Pattern load(@NotNull String pattern) throws IllegalArgumentException {
-            logger.trace("COMPILING RuntimeExec PATTERN: " + pattern);
-            return Pattern.compile(pattern);
-        }
-    }
-
-    private class ClearInOut implements Runnable {
+    private class ClearInOut extends Thread {
         private final IoType art;
         private final Process process;
         private int percent;
@@ -139,6 +119,7 @@ public class RuntimeExec {
         public ClearInOut(IoType art, Process process) {
             this.art = art;
             this.process = process;
+            setName(String.format("ClearInOut type %s for pid %d", art.toString(), process.pid()));
         }
 
         @Override
@@ -148,9 +129,10 @@ public class RuntimeExec {
             if (art == IoType.INPUT) {
                 in = process.getInputStream();
                 titel = "INPUTSTREAM";
-            } else {
+            }
+            else {
                 in = process.getErrorStream();
-                titel = String.format("ERRORSTREAM [%d]", processNr.incrementAndGet());
+                titel = String.format("ERRORSTREAM [%d]", process.pid());
             }
 
             try (in;
@@ -164,7 +146,8 @@ public class RuntimeExec {
                         logger.trace("  >> {}}: {}}", titel, inStr);
                     }
                 }
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 logger.error("ClearInOut.run() error occured", ex);
             }
         }
@@ -177,7 +160,7 @@ public class RuntimeExec {
             // -i %f -acodec copy -vcodec copy -y **
             try {
                 // Gesamtzeit
-                matcher = CACHE.get(PATTERN_FFMPEG).matcher(input);
+                matcher = PATTERN_FFMPEG.matcher(input);
                 if (matcher.find()) {
                     // Find duration
                     String dauer = matcher.group().trim();
@@ -187,12 +170,13 @@ public class RuntimeExec {
                             + Double.parseDouble(hms[2]);
                 }
                 // Bandbreite
-                matcher = CACHE.get(PATTERN_SIZE).matcher(input);
+                matcher = PATTERN_SIZE.matcher(input);
                 if (matcher.find()) {
                     String s = matcher.group().trim();
                     if (!s.isEmpty()) {
                         try {
-                            final long aktSize = Integer.parseInt(StringUtils.replace(s, "kB", ""));
+
+                            final long aktSize = Integer.parseInt(s.replace("kB", ""));
                             mVFilmSize.setAktSize(aktSize * 1_000);
                             final var akt = Duration.between(start.startTime, LocalDateTime.now()).toSeconds();
                             if (oldSecs < akt - 5) {
@@ -200,12 +184,13 @@ public class RuntimeExec {
                                 oldSecs = akt;
                                 oldSize = aktSize;
                             }
-                        } catch (NumberFormatException ignored) {
+                        }
+                        catch (NumberFormatException ignored) {
                         }
                     }
                 }
                 // Fortschritt
-                matcher = CACHE.get(PATTERN_TIME).matcher(input);
+                matcher = PATTERN_TIME.matcher(input);
                 if (totalSecs > 0 && matcher.find()) {
                     // ffmpeg    1611kB time=00:00:06.73 bitrate=1959.7kbits/s   
                     // avconv    size=   26182kB time=100.96 bitrate=2124.5kbits/s 
@@ -217,14 +202,16 @@ public class RuntimeExec {
                                 + Double.parseDouble(hms[2]);
                         double d = aktSecs / totalSecs * 100;
                         meldenDouble(d);
-                    } else {
+                    }
+                    else {
                         double aktSecs = Double.parseDouble(zeit);
                         double d = aktSecs / totalSecs * 100;
                         meldenDouble(d);
                     }
                 }
-            } catch (Exception ex) {
-                MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+            }
+            catch (Exception ex) {
+                DownloadProgressEventPublisher.publishThrottled();
                 logger.error("GetPercentageFromErrorStream(): {}", input);
             }
         }
@@ -247,7 +234,7 @@ public class RuntimeExec {
                     int restProzent = 1000 - percent;
                     start.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
-                MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
+                DownloadProgressEventPublisher.publishThrottled();
             }
         }
     }

@@ -128,7 +128,7 @@ class FileDialogs {
                 chooser.mode = FileDialog.SAVE
                 chooser.isMultipleMode = false
                 if (initialFile.isNotEmpty()) {
-                    chooser.directory = initialFile
+                    chooser.file = initialFile
                 }
                 chooser.isVisible = true
                 if (chooser.file != null) {

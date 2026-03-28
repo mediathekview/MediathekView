@@ -17,11 +17,11 @@ import java.awt.image.BufferedImage;
 public class DropShadowBorder extends EmptyBorder {
 
     @Styleable
-    protected Color shadowColor;
+    protected final Color shadowColor;
     @Styleable
-    protected Insets shadowInsets;
+    protected final Insets shadowInsets;
     @Styleable
-    protected float shadowOpacity;
+    protected final float shadowOpacity;
 
     private Image shadowImage;
     private final int shadowSize;

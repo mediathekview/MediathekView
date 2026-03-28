@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.7.0.1134" Java: "17.0.3" encoding: "UTF-8"
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -11,7 +11,7 @@ new FormModel {
 			name: "this"
 			add( new FormComponent( "com.jidesoft.swing.MultilineLabel" ) {
 				name: "multilineLabel1"
-				"text": "Mit der modernen Suche können komplexe Abfragen inkl. UND/ODER/NICHT Anteilen über diverse Felder der Filmliste durchgeführt werden. \nDie Bedienung ist komplett anders und deutlich komplexer als die bisher verwendete Suche und richtet sich daher nur an erfahrene Nutzer, die sich in die Materie einarbeiten wollen. Eine Suche im Internet zur Gestaltung der Abfragen ist unausweichlich.\nDie Lade-/Verarbeitungszeit der Filmliste erhöht sich je nach verwendetem Rechner um ca. 10-30 Sekunden.\nEs ist nicht möglich, die neue Suche und die alte parallel zu verwenden."
+				"text": "Mit der modernen Suche können komplexe Abfragen inkl. UND-/ODER-/NICHT-Anteilen über diverse Felder der Filmliste durchgeführt werden. \nDie Bedienung ist komplett anders und deutlich komplexer als die bisher verwendete Suche und richtet sich daher nur an erfahrene Nutzer, die sich in die Materie einarbeiten wollen. Eine Suche im Internet zur Gestaltung der Abfragen ist unausweichlich.\nDie Lade-/Verarbeitungszeit der Filmliste erhöht sich je nach verwendetem Rechner um ca. 10-30 Sekunden.\nEs ist nicht möglich, die neue Suche und die alte parallel zu verwenden."
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}

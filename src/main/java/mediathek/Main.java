@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ import mediathek.controller.history.SeenHistoryMigrator;
 import mediathek.daten.IndexedFilmList;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
+import mediathek.logging.SwingAppender;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
@@ -122,6 +123,28 @@ public class Main {
         }
     }
 
+    private static void registerSwingAppender(Level minLevel) {
+        final String APPENDER_NAME = "SwingAppender";
+
+        var ctx = (LoggerContext) LogManager.getContext(false);
+        var config = ctx.getConfiguration();
+
+        if (config.getAppender(APPENDER_NAME) != null) {
+            return;
+        }
+
+        var appender = SwingAppender.createAppender(APPENDER_NAME, null);
+
+        appender.start();
+        config.addAppender(appender);
+
+        // Attach to root logger
+        var rootLogger = config.getRootLogger();
+        rootLogger.addAppender(appender, minLevel, null);
+
+        ctx.updateLoggers();
+    }
+
     private static void setupLogging() {
         final var loggerContext = (LoggerContext) LogManager.getContext(false);
         final var config = loggerContext.getConfiguration();
@@ -204,8 +227,10 @@ public class Main {
     }
 
     private static void printVersionInformation() {
+        var buildInfo = BuildInfo.current();
         logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(RuntimeStatistics.startZeit));
         logger.info("Version: {}", Konstanten.MVVERSION);
+        logger.info("Build Git: {}", buildInfo.formatForDisplay());
 
         logger.info("=== Java Information ===");
 
@@ -446,6 +471,16 @@ public class Main {
                 }
 
                 setupLogging();
+
+                Level level;
+                if (Config.isEnhancedLoggingEnabled() && Config.isDebugModeEnabled())
+                    level = Level.TRACE;
+                else if (Config.isEnhancedLoggingEnabled())
+                    level = Level.DEBUG;
+                else
+                    level = Level.INFO;
+                registerSwingAppender(level);
+
                 printPortableModeInfo();
 
                 configureDnsPreferenceMode(parseResult);
@@ -784,7 +819,7 @@ public class Main {
         if (Config.isDebugModeEnabled() || Config.isInstallThreadCheckingRepaintManager()) {
             // use for debugging EDT violations
             RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-            logger.info("Swing Thread checking repaint manager installed.");
+            logger.debug("Swing Thread checking repaint manager installed.");
         }
 
         splashScreen.ifPresent(s -> s.update(UIProgressState.START_UI));

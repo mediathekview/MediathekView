@@ -18,9 +18,39 @@
 
 package mediathek.gui.tabs.tab_livestreams.services
 
-import retrofit2.http.GET
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
 
-interface StreamService {
-    @GET("/v1/channelinfolist") // Anpassen!
-    suspend fun getStreams(): Map<String, StreamInfo>
+class StreamService(
+    private val httpClient: OkHttpClient,
+    private val json: Json,
+    baseUrl: String
+) {
+    private val apiBaseUrl = baseUrl.toHttpUrl()
+
+    suspend fun getStreams(): Map<String, StreamInfo> = withContext(Dispatchers.IO) {
+        val url = apiBaseUrl.newBuilder()
+            .addPathSegments("v1/channelinfolist")
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        httpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw IOException("Failed to fetch streams: HTTP ${response.code}")
+            }
+
+            val body = response.body.string()
+            json.decodeFromString(MapSerializer(String.serializer(), StreamInfo.serializer()), body)
+        }
+    }
 }

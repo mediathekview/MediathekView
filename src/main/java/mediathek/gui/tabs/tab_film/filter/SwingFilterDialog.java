@@ -174,6 +174,10 @@ public class SwingFilterDialog extends JDialog {
             filterConfig.setDontShowSignLanguage(cbDontShowSignLanguage.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
         });
+        cbDontShowGeoblocked.addActionListener(_ -> {
+            filterConfig.setDontShowGeoblocked(cbDontShowGeoblocked.isSelected());
+            MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
+        });
         cbDontShowTrailers.addActionListener(_ -> {
             filterConfig.setDontShowTrailers(cbDontShowTrailers.isSelected());
             MessageBus.getMessageBus().publish(new ReloadTableDataEvent());
@@ -299,6 +303,7 @@ public class SwingFilterDialog extends JDialog {
         cbShowUnseenOnly.setSelected(filterConfig.isShowUnseenOnly());
         cbDontShowAbos.setSelected(filterConfig.isDontShowAbos());
         cbDontShowSignLanguage.setSelected(filterConfig.isDontShowSignLanguage());
+        cbDontShowGeoblocked.setSelected(filterConfig.isDontShowGeoblocked());
         cbDontShowTrailers.setSelected(filterConfig.isDontShowTrailers());
         cbDontShowAudioVersions.setSelected(filterConfig.isDontShowAudioVersions());
         cbDontShowDuplicates.setSelected(filterConfig.isDontShowDuplicates());
@@ -328,6 +333,7 @@ public class SwingFilterDialog extends JDialog {
         cbShowUnseenOnly.setEnabled(enable);
         cbDontShowAbos.setEnabled(enable);
         cbDontShowSignLanguage.setEnabled(enable);
+        cbDontShowGeoblocked.setEnabled(enable);
         cbDontShowTrailers.setEnabled(enable);
         cbDontShowAudioVersions.setEnabled(enable);
         cbDontShowDuplicates.setEnabled(enable);
@@ -424,7 +430,7 @@ public class SwingFilterDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             var result = JOptionPane.showConfirmDialog(MediathekGui.ui(),
-                    "Sind Sie sicher dass Sie den Filter zurücksetzen möchten?", "Filter zurücksetzen",
+                    "Sind Sie sicher, dass Sie den Filter zurücksetzen möchten?", "Filter zurücksetzen",
                     JOptionPane.YES_NO_OPTION);
             if (result == JOptionPane.YES_OPTION) {
                 filterConfig.clearCurrentFilter();
@@ -739,6 +745,7 @@ public class SwingFilterDialog extends JDialog {
         cbDontShowTrailers = new JCheckBox();
         cbDontShowAudioVersions = new JCheckBox();
         cbDontShowDuplicates = new JCheckBox();
+        cbDontShowGeoblocked = new JCheckBox();
         var separator4 = new JSeparator();
         var pnlSenderlist = new JPanel();
         label3 = new JLabel();
@@ -828,7 +835,7 @@ public class SwingFilterDialog extends JDialog {
             pnlShowOnly.add(cbShowBookMarkedOnly);
 
             //---- cbShowOnlyHq ----
-            cbShowOnlyHq.setText("Nur High Quality(HQ) Filme anzeigen");
+            cbShowOnlyHq.setText("Nur High-Quality-Filme (HQ) anzeigen");
             pnlShowOnly.add(cbShowOnlyHq);
 
             //---- cbShowSubtitlesOnly ----
@@ -869,6 +876,10 @@ public class SwingFilterDialog extends JDialog {
             //---- cbDontShowDuplicates ----
             cbDontShowDuplicates.setText("Duplikate nicht anzeigen");
             pnlDontShow.add(cbDontShowDuplicates);
+
+            //---- cbDontShowGeoblocked ----
+            cbDontShowGeoblocked.setText("Geo-blockierte Filme nicht anzeigen");
+            pnlDontShow.add(cbDontShowGeoblocked);
         }
         contentPane.add(pnlDontShow, new CC().cell(0, 4).growX());
         contentPane.add(separator4, new CC().cell(0, 5).growX());
@@ -1014,6 +1025,7 @@ public class SwingFilterDialog extends JDialog {
     private JCheckBox cbDontShowTrailers;
     private JCheckBox cbDontShowAudioVersions;
     private JCheckBox cbDontShowDuplicates;
+    private JCheckBox cbDontShowGeoblocked;
     private JLabel label3;
     public CheckBoxList senderList;
     private JLabel label4;

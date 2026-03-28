@@ -67,8 +67,8 @@ public class DatenProg implements Comparable<DatenProg> {
         boolean ret = false;
         if (url != null) {
             //Felder sind entweder leer oder passen
-            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_PRAEFIX], url, true)
-                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_SUFFIX], url, false)) {
+            if (GuiFunktionenProgramme.checkPrefix(this.arr[PROGRAMM_PRAEFIX], url)
+                    && GuiFunktionenProgramme.checkSuffix(this.arr[PROGRAMM_SUFFIX], url)) {
                 ret = true;
             }
         }

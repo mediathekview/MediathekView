@@ -18,11 +18,38 @@
 
 package mediathek.gui.tabs.tab_livestreams.services
 
-import retrofit2.http.GET
-import retrofit2.http.Path
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
 
+class ShowService(
+    private val httpClient: OkHttpClient,
+    private val json: Json,
+    baseUrl: String
+) {
+    private val apiBaseUrl = baseUrl.toHttpUrl()
 
-interface ShowService {
-    @GET("/v1/shows/{key}")
-    suspend fun getShow(@Path("key") key: String): ShowsResponse
+    suspend fun getShow(key: String): ShowsResponse = withContext(Dispatchers.IO) {
+        val url = apiBaseUrl.newBuilder()
+            .addPathSegments("v1/shows")
+            .addPathSegment(key)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        httpClient.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                throw IOException("Failed to fetch show '$key': HTTP ${response.code}")
+            }
+
+            val body = response.body.string()
+            json.decodeFromString(ShowsResponse.serializer(), body)
+        }
+    }
 }

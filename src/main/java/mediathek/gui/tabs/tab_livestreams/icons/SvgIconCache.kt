@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ object SvgIconCache {
         "tagesschau24" to SvgSenderIconLabel::class.java.getResource("/icons/sender/tagesschau24.svg"),
         "wdr" to SvgSenderIconLabel::class.java.getResource("/icons/sender/wdr.svg"),
         "zdf" to SvgSenderIconLabel::class.java.getResource("/icons/sender/zdf.svg"),
+        "zdf-tivi" to SvgSenderIconLabel::class.java.getResource("/icons/sender/ZDFtivi.svg"),
         "zdfinfo" to SvgSenderIconLabel::class.java.getResource("/icons/sender/ZDFinfo.svg"),
         "zdfneo" to SvgSenderIconLabel::class.java.getResource("/icons/sender/ZDFneo.svg")
     )

@@ -26,7 +26,7 @@ public class ResetSettingsPanel extends JPanel {
         initComponents();
 
         jButtonHilfeReset.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfeReset.addActionListener(_ -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET)).setVisible(true));
+        jButtonHilfeReset.addActionListener(_ -> new DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(_ -> {
             Daten.listePset.clear();
             GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(), ListePsetVorlagen.getStandarset(parent, true), true);

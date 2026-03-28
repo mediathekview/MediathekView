@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,10 @@
 
 package mediathek.gui.tabs.tab_film;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.util.ScaledImageIcon;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
+import mediathek.tool.sender_icon_cache.SenderIconRenderUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,9 +50,18 @@ public class SenderIconLabel extends JLabel {
         }
         else {
             MVSenderIconCache.get(sender).ifPresentOrElse(icon -> {
-                var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-                var destDim = GuiFunktionen.calculateFittedDimension(imageDim, ICON_DIMENSION);
-                var origIcon = new ScaledImageIcon(icon, destDim.width, destDim.height);
+                Icon origIcon;
+                if (icon instanceof FlatSVGIcon svg) {
+                    var destDim = SenderIconRenderUtil.calculateFittedDimensionAllowUpscale(
+                            new Dimension(svg.getIconWidth(), svg.getIconHeight()),
+                            ICON_DIMENSION
+                    );
+                    origIcon = svg.derive(destDim.width, destDim.height);
+                } else {
+                    var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
+                    var destDim = SenderIconRenderUtil.calculateFittedDimensionAllowUpscale(imageDim, ICON_DIMENSION);
+                    origIcon = new ScaledImageIcon(icon, destDim.width, destDim.height);
+                }
                 setText("");
                 setIcon(origIcon);
                 sizeToIcon(origIcon);

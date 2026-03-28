@@ -83,7 +83,7 @@ public class PanelEinstellungenGeo extends JPanel {
         });
 
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_GEO)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_GEO)).setVisible(true));
     }
 
     /**

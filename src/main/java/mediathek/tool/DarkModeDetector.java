@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 derreisende77.
+ * Copyright (c) 2024-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,10 @@ package mediathek.tool;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.concurrent.TimeUnit;
 
 
@@ -29,9 +32,11 @@ import java.util.concurrent.TimeUnit;
  * Based on java code from <a href="https://gist.github.com/HanSolo/7cf10b86efff8ca2845bf5ec2dd0fe1d">this gist</a>.
  */
 public class DarkModeDetector {
-    private static final String REGQUERY_UTIL  = "reg query ";
     private static final String REGDWORD_TOKEN = "REG_DWORD";
-    private static final String DARK_THEME_CMD = REGQUERY_UTIL + "\"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\"" + " /v AppsUseLightTheme";
+    private static final String[] DARK_THEME_CMD = {
+            "reg", "query", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+            "/v", "AppsUseLightTheme"
+    };
 
     /**
      * Detect whether the running OS is in dark mode.
@@ -66,58 +71,61 @@ public class DarkModeDetector {
 
     private static boolean isGnomeDarkMode() {
         try {
-           var process = Runtime.getRuntime().exec(new String[]{"gsettings", "get", "org.gnome.desktop.interface", "color-scheme"});
-           var buffer = new StringWriter();
-           try (var source = new InputStreamReader(process.getInputStream())) {
-               source.transferTo(buffer);
-           }
-           var rc = process.waitFor(5, TimeUnit.SECONDS);
-           return rc && buffer.toString().trim().equals( "'prefer-dark'");
+            var process = new ProcessBuilder("gsettings", "get", "org.gnome.desktop.interface", "color-scheme").start();
+            String result;
+            try (var source = new InputStreamReader(process.getInputStream());
+                 var buffer = new StringWriter()) {
+                source.transferTo(buffer);
+                result = buffer.toString().trim();
+            }
+            boolean finished = process.waitFor(5, TimeUnit.SECONDS);
+            if (!finished) {
+                process.destroyForcibly();
+                return false;
+            }
+            if (process.exitValue() != 0) {
+                return false;
+            }
+            return result.equals("'prefer-dark'");
         } catch (IOException | InterruptedException e) {
             return false;
         }
     }
 
     private static boolean isMacOsDarkMode() {
-        BufferedReader rdr = null;
-        InputStreamReader isr = null;
-
         try {
-            boolean           isDarkMode = false;
-            var process    = Runtime.getRuntime().exec(new String[]{"defaults", "read", "-g", "AppleInterfaceStyle"});
-            isr        = new InputStreamReader(process.getInputStream());
-            rdr        = new BufferedReader(isr);
-            String            line;
-            while((line = rdr.readLine()) != null) {
-                if (line.equals("Dark")) { isDarkMode = true; }
+            boolean isDarkMode = false;
+            var process = new ProcessBuilder("defaults", "read", "-g", "AppleInterfaceStyle").start();
+            try (var isr = new InputStreamReader(process.getInputStream());
+                 var rdr = new BufferedReader(isr)) {
+                String line;
+                while ((line = rdr.readLine()) != null) {
+                    if (line.equals("Dark")) {
+                        isDarkMode = true;
+                    }
+                }
             }
             int rc = process.waitFor();  // Wait for the process to complete
             return 0 == rc && isDarkMode;
-        } catch (IOException | InterruptedException e) {
-            return false;
         }
-        finally {
-            try {
-                if (rdr != null)
-                    rdr.close();
-
-                if (isr != null)
-                    isr.close();
-            } catch (IOException ignored) {
-            }
+        catch (IOException | InterruptedException e) {
+            return false;
         }
     }
 
     private static boolean isWindowsDarkMode() {
         try {
-            Process      process = Runtime.getRuntime().exec(DARK_THEME_CMD);
-            StreamReader reader  = new StreamReader(process.getInputStream());
-
-            reader.start();
-            process.waitFor();
-            reader.join();
-
-            String result = reader.getResult();
+            Process process = new ProcessBuilder(DARK_THEME_CMD).start();
+            String result;
+            try (var reader = new InputStreamReader(process.getInputStream());
+                 var buffer = new StringWriter()) {
+                reader.transferTo(buffer);
+                int rc = process.waitFor();
+                if (rc != 0) {
+                    return false;
+                }
+                result = buffer.toString();
+            }
             int p = result.indexOf(REGDWORD_TOKEN);
 
             if (p == -1) { return false; }
@@ -129,26 +137,5 @@ public class DarkModeDetector {
         catch (Exception e) {
             return false;
         }
-    }
-
-    // ******************** Internal Classes **********************************
-    static class StreamReader extends Thread {
-        private final InputStream  is;
-        private final StringWriter sw;
-
-        StreamReader(InputStream is) {
-            this.is = is;
-            sw = new StringWriter();
-        }
-
-        public void run() {
-            try {
-                int c;
-                while ((c = is.read()) != -1)
-                    sw.write(c);
-            } catch (IOException ignored) {}
-        }
-
-        String getResult() { return sw.toString(); }
     }
 }

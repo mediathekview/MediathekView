@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,9 +23,25 @@ class SenderUtils {
         /**
          * Remove soft hyphens and control characters from string.
          */
-        @JvmStatic
         fun sanitizeName(name: String): String {
             return name.replace(Regex("[\\u00AD\\p{Cf}]"), "")
+        }
+
+        /**
+         * Extract regional label for selected channels.
+         * MDR/NDR/NRD/SWR use second token, rbb uses third token.
+         */
+        fun extractRegionLabel(sanitizedName: String): String? {
+            val parts = sanitizedName.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+            if (parts.isEmpty()) {
+                return null
+            }
+
+            return when (parts[0].lowercase()) {
+                "mdr", "ndr", "nrd", "swr", "br" -> parts.getOrNull(1)
+                "rbb" -> parts.getOrNull(2)
+                else -> null
+            }
         }
     }
 }

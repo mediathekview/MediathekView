@@ -1204,7 +1204,7 @@ public class GuiDownloads extends AGuiTabPanel {
             jPopupMenu.add(startAllDownloadsAction);
             jPopupMenu.add(stopAllDownloadsAction);
 
-            JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
+            JMenuItem itemWartendeStoppen = new JMenuItem("Wartende Downloads stoppen");
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(_ -> stopAllWaitingDownloads());
 

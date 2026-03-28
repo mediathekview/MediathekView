@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.6" encoding: "UTF-8"
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -79,7 +79,7 @@ new FormModel {
 							"value": "Center"
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "aktive Entwickler"
+						"title": "Aktive Entwickler"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 						name: "panel3"
@@ -100,7 +100,7 @@ new FormModel {
 							"value": "Center"
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "ehemalige Mitwirkende"
+						"title": "Ehemalige Mitwirkende"
 					} )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2,grow"

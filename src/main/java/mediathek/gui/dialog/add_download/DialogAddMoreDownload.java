@@ -184,7 +184,7 @@ public class DialogAddMoreDownload extends JDialog {
         var jPanel1 = new JPanel();
         chkInfo = new JCheckBox();
         jCheckBoxPfadSpeichern = new JCheckBox();
-        chkSubtitle = new JCheckBox();
+        chkSubtitle = new DownloadSubtitleCheckBox();
         btnChange = new JButton();
         btnCancel = new JButton();
         btnStartImmediately = new JButton();
@@ -229,9 +229,6 @@ public class DialogAddMoreDownload extends JDialog {
                 //---- jCheckBoxPfadSpeichern ----
                 jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
                 jPanel1.add(jCheckBoxPfadSpeichern);
-
-                //---- chkSubtitle ----
-                chkSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
                 jPanel1.add(chkSubtitle);
             }
 
@@ -248,7 +245,7 @@ public class DialogAddMoreDownload extends JDialog {
                                 .addComponent(jComboBoxPath, GroupLayout.PREFERRED_SIZE, 450, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonPath)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButtonDelPath))
                             .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
@@ -291,7 +288,7 @@ public class DialogAddMoreDownload extends JDialog {
                         .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                             .addContainerGap()
                             .addComponent(btnChange)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnQueueDownloads)
                             .addGap(18, 18, 18)
                             .addComponent(btnStartImmediately)
@@ -310,7 +307,7 @@ public class DialogAddMoreDownload extends JDialog {
                         .addComponent(btnStartImmediately)
                         .addComponent(btnQueueDownloads)
                         .addComponent(btnChange))
-                    .addContainerGap(7, Short.MAX_VALUE))
+                    .addContainerGap(1, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -322,7 +319,7 @@ public class DialogAddMoreDownload extends JDialog {
     private JButton jButtonPath;
     private JCheckBox chkInfo;
     private JCheckBox jCheckBoxPfadSpeichern;
-    private JCheckBox chkSubtitle;
+    private DownloadSubtitleCheckBox chkSubtitle;
     private JButton btnChange;
     private JButton btnCancel;
     private JButton btnStartImmediately;

@@ -1,6 +1,23 @@
+/*
+ * Copyright (c) 2014-2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.tool;
 
-import com.ibm.icu.text.Transliterator;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,12 +27,8 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
+import java.text.Normalizer;
 
-/**
- * User: crystalpalace1977
- * Date: 28.12.14
- * Time: 16:02
- */
 public class FilenameUtils {
 
     /**
@@ -40,7 +53,8 @@ public class FilenameUtils {
 
         if (SystemUtils.IS_OS_WINDOWS) {
             splitChar = "\\\\";
-        } else {
+        }
+        else {
             splitChar = File.separator;
         }
 
@@ -53,7 +67,8 @@ public class FilenameUtils {
                     ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
                 }
             }
-        } else {
+        }
+        else {
             ret = stripStartingDots(ret);
         }
 
@@ -72,7 +87,8 @@ public class FilenameUtils {
                 str += File.separator;
             }
             ret = str;
-        } else {
+        }
+        else {
             ret = convertToNativeEncoding(ret, false);
         }
 
@@ -80,7 +96,8 @@ public class FilenameUtils {
             // c: wieder herstellen
             if (ret.length() == 1) {
                 ret += ":";
-            } else if (ret.length() > 1) {
+            }
+            else if (ret.length() > 1) {
                 ret = ret.charAt(0) + ":" + ret.substring(1);
             }
         }
@@ -90,6 +107,7 @@ public class FilenameUtils {
 
     /**
      * Remove all starting dots from a string, <b>if</b> it begins with them.
+     *
      * @param input the input string
      * @return the stripped result
      */
@@ -137,7 +155,8 @@ public class FilenameUtils {
 
             //remove NUL character from conversion...
             ret = ret.replaceAll("\\u0000", "");
-        } catch (CharacterCodingException e) {
+        }
+        catch (CharacterCodingException e) {
             logger.error("convertToNativeEncoding", e);
         }
 
@@ -155,9 +174,7 @@ public class FilenameUtils {
         //remove NUL character from conversion...
         ret = ret.replaceAll("\\u0000", "");
 
-        //convert to ASCII with icu4j
-        var transliterator = Transliterator.getInstance("de-ASCII");
-        ret = transliterator.transliterate(ret);
+        ret = transliterateToAscii(ret);
 
         ret = removeIllegalCharacters(ret, isPath);
 
@@ -172,10 +189,48 @@ public class FilenameUtils {
             if (buf.hasArray()) {
                 ret = new String(buf.array());
             }
-        } catch (CharacterCodingException e) {
+        }
+        catch (CharacterCodingException e) {
             logger.error("convertToASCIIEncoding", e);
         }
 
+        return ret;
+    }
+
+    /**
+     * Convert Unicode text into a filename-safe ASCII representation without ICU4J.
+     * German substitutions are applied first, then combining marks are stripped.
+     */
+    private static String transliterateToAscii(String input) {
+        String ret = input;
+
+        ret = ret.replace("ä", "ae")
+                .replace("ö", "oe")
+                .replace("ü", "ue")
+                .replace("Ä", "AE")
+                .replace("Ö", "OE")
+                .replace("Ü", "UE")
+                .replace("ß", "ss")
+                .replace("ẞ", "SS");
+
+        // Characters that are not decomposed to ASCII by NFD.
+        ret = ret.replace("ł", "l")
+                .replace("Ł", "L")
+                .replace("đ", "d")
+                .replace("Đ", "D")
+                .replace("ø", "o")
+                .replace("Ø", "O")
+                .replace("ð", "d")
+                .replace("Ð", "D")
+                .replace("þ", "th")
+                .replace("Þ", "Th")
+                .replace("œ", "oe")
+                .replace("Œ", "OE")
+                .replace("æ", "ae")
+                .replace("Æ", "AE");
+
+        ret = Normalizer.normalize(ret, Normalizer.Form.NFD);
+        ret = ret.replaceAll("\\p{M}+", "");
         return ret;
     }
 
@@ -194,12 +249,14 @@ public class FilenameUtils {
             //Therefore be more conservative by default and replace more characters.
             ret = removeWindowsTrailingDots(ret);
             ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-        } else if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
+        }
+        else if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
             //On OSX the VFS take care of writing correct filenames to FAT filesystems...
             //Just remove the default illegal characters
             ret = stripStartingDots(ret);
             ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
-        } else {
+        }
+        else {
             throw new IllegalStateException("Unsupported OS: " + SystemUtils.OS_NAME);
         }
 
@@ -229,7 +286,8 @@ public class FilenameUtils {
         // und wenn gewünscht: "NUR Ascii-Zeichen"
         if (onlyAscii) {
             ret = convertToASCIIEncoding(ret, isPath);
-        } else {
+        }
+        else {
             ret = convertToNativeEncoding(ret, isPath);
         }
 
@@ -237,7 +295,8 @@ public class FilenameUtils {
             // c: wieder herstellen
             if (ret.length() == 1) {
                 ret += ":";
-            } else if (ret.length() > 1) {
+            }
+            else if (ret.length() > 1) {
                 ret = ret.charAt(0) + ":" + ret.substring(1);
             }
         }

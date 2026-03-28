@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,10 +18,6 @@
 
 package mediathek.gui.bookmark;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import mediathek.daten.DatenFilm;
 
 import java.beans.PropertyChangeListener;
@@ -37,14 +33,10 @@ import java.util.Optional;
  *
  * @author K. Wich
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookmarkData {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
-    @JsonProperty("seen")
     private boolean seen;
     private String url;
-    @JsonIgnore
     private DatenFilm filmdata;
     private String note;
     private LocalDate availableUntil;
@@ -53,7 +45,7 @@ public class BookmarkData {
     /// The SHA256 hashcode from the film object used to create the bookmark.
     /// This is the *correct* way to store film object info as it will be unique.
     ///
-    /// Must be converted back to [com.google.common.hash.HashCode].
+    /// Stored as lower-case hex string.
     /// Will erase [BookmarkData#url] as it is unneeded then.
     private String filmHashCode;
     private String originalSender;
@@ -98,7 +90,6 @@ public class BookmarkData {
         this.originalTitle = originalTitle;
     }
 
-    @JsonIgnore
     public String getSender() {
         if (filmdata != null) {
             return filmdata.getSender();
@@ -107,7 +98,6 @@ public class BookmarkData {
             return Objects.requireNonNullElse(originalSender, "NO SENDER");
     }
 
-    @JsonIgnore
     public String getThema() {
         if (filmdata != null) {
             return filmdata.getThema();
@@ -116,7 +106,6 @@ public class BookmarkData {
             return Objects.requireNonNullElse(originalThema, "NO THEMA");
     }
 
-    @JsonIgnore
     public String getTitle() {
         if (filmdata != null) {
             return filmdata.getTitle();
@@ -125,7 +114,6 @@ public class BookmarkData {
             return Objects.requireNonNullElse(originalTitle, "NO TITLE");
     }
 
-    @JsonIgnore
     public int getDauer() {
         if (filmdata != null) {
             return filmdata.getFilmLength();
@@ -134,7 +122,6 @@ public class BookmarkData {
             return -1;
     }
 
-    @JsonIgnore
     public Date getSendedatum() {
         if (filmdata != null) {
             return filmdata.getDatumFilm();
@@ -185,7 +172,6 @@ public class BookmarkData {
         support.firePropertyChange("url", oldUrl, url);
     }
 
-    @JsonIgnore
     public String getNormalQualityUrl() {
         if (filmdata != null) {
             return filmdata.getUrlNormalQuality();
@@ -212,7 +198,6 @@ public class BookmarkData {
         support.removePropertyChangeListener(l);
     }
 
-    @JsonIgnore
     public Optional<String> getNoteOptional() {
         return Optional.ofNullable(note);
     }
@@ -227,34 +212,28 @@ public class BookmarkData {
         support.firePropertyChange("seen", oldSeen, seen);
     }
 
-    @JsonIgnore
     public boolean getNotSeen() {
         return !this.seen;
     }
 
-    @JsonIgnore
     public boolean isNotInFilmList() {
         return this.filmdata == null;
     }
 
-    @JsonIgnore
     public DatenFilm getDatenFilm() {
         return this.filmdata;
     }
 
-    @JsonIgnore
     public void setDatenFilm(DatenFilm filmdata) {
         DatenFilm oldFilm = this.filmdata;
         this.filmdata = filmdata;
         support.firePropertyChange("datenFilm", oldFilm, filmdata);
     }
 
-    @JsonIgnore
     public String getWebUrl() {
         return (this.filmdata != null) ? this.filmdata.getWebsiteUrl() : null;
     }
 
-    @JsonIgnore
     public Optional<DatenFilm> getDatenFilmOptional() {
         return Optional.ofNullable(filmdata);
     }

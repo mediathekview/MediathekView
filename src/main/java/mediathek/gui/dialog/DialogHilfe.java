@@ -1,20 +1,33 @@
 package mediathek.gui.dialog;
 
 import mediathek.tool.EscapeKeyHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
+import java.awt.*;
 
 public class DialogHilfe extends JDialog {
 
-    public DialogHilfe(JFrame parent, boolean modal, String text) {
+    public DialogHilfe(Dialog parent, boolean modal, @NotNull String text) {
         super(parent, modal);
         initComponents();
+
+        setup(text);
+    }
+
+    public DialogHilfe(Frame parent, boolean modal, @NotNull String text) {
+        super(parent, modal);
+        initComponents();
+
+        setup(text);
+    }
+
+    protected void setup(@NotNull String text) {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        jTextArea1.setEditable(false);
         jTextArea1.setText(text);
+        jTextArea1.setCaretPosition(0);
 
         EscapeKeyHandler.installHandler(this, this::dispose);
 

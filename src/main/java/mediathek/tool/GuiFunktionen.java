@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.tool;
 
 import mediathek.config.MVConfig;
@@ -14,7 +32,6 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
 import java.io.File;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class GuiFunktionen {
@@ -72,7 +89,7 @@ public class GuiFunktionen {
                                                      @MagicConstant(intValues = {JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE, JOptionPane.INFORMATION_MESSAGE, JOptionPane.ERROR_MESSAGE}) int style) {
         var op = new JOptionPane(message, style, optionType, null, null);
         var dialog = op.createDialog(parentComponent, title);
-        new Timer((int)TimeUnit.MILLISECONDS.convert(defaultDelay,timeUnit), e -> op.setValue(defaultValue)).start();
+        new Timer((int)TimeUnit.MILLISECONDS.convert(defaultDelay,timeUnit), _ -> op.setValue(defaultValue)).start();
         dialog.setVisible(true);
         return (int)op.getValue();
     }
@@ -275,11 +292,10 @@ public class GuiFunktionen {
      * @return the stripped filename
      */
     public static String getFileNameWithoutExtension(@NotNull String fileName) {
-        return Optional.of(fileName.lastIndexOf('.'))
-                .filter(i-> i >= 0)
-                .filter(i-> i > fileName.lastIndexOf(File.separator))
-                .map(i-> fileName.substring(0, i))
-                .orElse(fileName);
+        final int dotIndex = FileNameExtensions.getLikelyExtensionDotIndex(fileName);
+        return dotIndex >= 0
+                ? fileName.substring(0, dotIndex)
+                : fileName;
     }
 
     /**

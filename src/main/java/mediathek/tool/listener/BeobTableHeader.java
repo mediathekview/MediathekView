@@ -99,7 +99,7 @@ public class BeobTableHeader extends MouseAdapter {
             }
             box[i] = new JCheckBoxMenuItem(columns[i]);
             box[i].setSelected(anzeigen(i));
-            box[i].addActionListener(e -> setSpalten());
+            box[i].addActionListener(_ -> setSpalten());
             jPopupMenu.add(box[i]);
         }
         // jetzt evtl. noch die Button
@@ -108,7 +108,7 @@ public class BeobTableHeader extends MouseAdapter {
 
             final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Buttons anzeigen");
             item2.setSelected(anzeigen(button[0])); //entweder alle oder keiner!
-            item2.addActionListener(e -> toggleButtonVisibility(item2.isSelected()));
+            item2.addActionListener(_ -> toggleButtonVisibility(item2.isSelected()));
             jPopupMenu.add(item2);
         }
         if (displaySenderIconMenus) {
@@ -116,15 +116,15 @@ public class BeobTableHeader extends MouseAdapter {
 
             final JCheckBoxMenuItem item3 = new JCheckBoxMenuItem("Sendericons anzeigen");
             item3.setSelected(tabelle.showSenderIcons());
-            item3.addActionListener(e -> toggleSenderIconDisplay(item3.isSelected()));
+            item3.addActionListener(_ -> toggleSenderIconDisplay(item3.isSelected()));
             jPopupMenu.add(item3);
 
-            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("kleine Sendericons anzeigen");
+            final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Kleine Sendericons anzeigen");
             item2.setSelected(tabelle.useSmallSenderIcons);
             if (!tabelle.showSenderIcons()) {
                 item2.setEnabled(false);
             } else {
-                item2.addActionListener(e -> {
+                item2.addActionListener(_ -> {
                     tabelle.useSmallSenderIcons = item2.isSelected();
                     setSpalten();
                 });
@@ -137,7 +137,7 @@ public class BeobTableHeader extends MouseAdapter {
             // Tabellenspalten umbrechen
             JCheckBoxMenuItem itemBr = new JCheckBoxMenuItem("Zeilen umbrechen");
             itemBr.setSelected(tabelle.isLineBreak());
-            itemBr.addActionListener(e -> {
+            itemBr.addActionListener(_ -> {
                 tabelle.setLineBreak(itemBr.isSelected());
                 MVConfig.add(configKey, Boolean.toString(itemBr.isSelected()));
                 setSpalten();
@@ -149,7 +149,7 @@ public class BeobTableHeader extends MouseAdapter {
 
         // Tabellenspalten zurücksetzen
         var miResetColumns = new JMenuItem("Spalten zurücksetzen");
-        miResetColumns.addActionListener(e -> tabelle.resetTabelle());
+        miResetColumns.addActionListener(_ -> tabelle.resetTabelle());
         jPopupMenu.add(miResetColumns);
 
         return jPopupMenu;

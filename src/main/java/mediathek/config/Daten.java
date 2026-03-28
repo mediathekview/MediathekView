@@ -3,7 +3,6 @@ package mediathek.config;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
-import com.google.common.util.concurrent.*;
 import mediathek.Main;
 import mediathek.SplashScreen;
 import mediathek.controller.IoXmlLesen;
@@ -21,8 +20,6 @@ import mediathek.tool.SenderListBoxModel;
 import mediathek.tool.notification.INotificationCenter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
@@ -37,7 +34,9 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -65,7 +64,7 @@ public class Daten {
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
-    private final ListeningExecutorService decoratedPool = MoreExecutors.listeningDecorator(Executors.newVirtualThreadPerTaskExecutor());
+    private final ExecutorService decoratedPool = Executors.newVirtualThreadPerTaskExecutor();
     /**
      * "the" final list of films after all filtering is done.
      * Defaults to no lucene index unless changed at startup.
@@ -77,7 +76,7 @@ public class Daten {
      */
     private AboHistoryController erledigteAbos;
     private boolean alreadyMadeBackup;
-    private ListenableFuture<AboHistoryController> aboHistoryFuture;
+    private CompletableFuture<AboHistoryController> aboHistoryFuture;
     private EventList<String> allSenderList;
 
     private Daten() {
@@ -196,7 +195,7 @@ public class Daten {
         return true;
     }
 
-    public ListeningExecutorService getDecoratedPool() {
+    public ExecutorService getDecoratedPool() {
         return decoratedPool;
     }
 
@@ -205,20 +204,15 @@ public class Daten {
         aboHistoryFuture = launchAboHistoryController(decoratedPool);
     }
 
-    private ListenableFuture<AboHistoryController> launchAboHistoryController(ListeningExecutorService decoratedPool) {
-        var aboHistoryFuture = decoratedPool.submit(AboHistoryController::new);
-        Futures.addCallback(aboHistoryFuture, new FutureCallback<>() {
-            @Override
-            public void onSuccess(@Nullable AboHistoryController aboHistoryController) {
-                setAboHistoryList(aboHistoryController);
-            }
-
-            @Override
-            public void onFailure(@NotNull Throwable throwable) {
+    private CompletableFuture<AboHistoryController> launchAboHistoryController(ExecutorService decoratedPool) {
+        var aboHistoryFuture = CompletableFuture.supplyAsync(AboHistoryController::new, decoratedPool);
+        aboHistoryFuture.whenCompleteAsync((aboHistoryController, throwable) -> {
+            if (throwable != null) {
                 logger.error("launchAboHistoryController", throwable);
+                return;
             }
+            setAboHistoryList(aboHistoryController);
         }, decoratedPool);
-
         return aboHistoryFuture;
     }
 

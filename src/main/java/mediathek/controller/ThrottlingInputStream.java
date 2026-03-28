@@ -1,20 +1,19 @@
 package mediathek.controller;
 
-import com.google.common.util.concurrent.RateLimiter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * InputStream which limits reads based on an {@link RateLimiter}.
+ * InputStream which limits reads based on a {@link ByteRateLimiter}.
  */
 public class ThrottlingInputStream extends InputStream {
 
     private final InputStream target;
-    private final RateLimiter maxBytesPerSecond;
+    private final ByteRateLimiter maxBytesPerSecond;
 
-    public ThrottlingInputStream(InputStream target, RateLimiter maxBytesPerSecond) {
+    public ThrottlingInputStream(InputStream target, ByteRateLimiter maxBytesPerSecond) {
         this.target = target;
         this.maxBytesPerSecond = maxBytesPerSecond;
     }

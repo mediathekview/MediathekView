@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,10 +20,6 @@ package mediathek.gui.bookmark;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.google.common.hash.HashCode;
 import mediathek.config.Daten;
 import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
@@ -35,10 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Stores a full list of bookmarked movies.
@@ -48,12 +42,9 @@ import java.util.List;
 public class BookmarkDataList {
     private static final Logger logger = LogManager.getLogger();
     private final BasicEventList<BookmarkData> bookmarks;
-    private final ObjectMapper objectMapper;
 
     public BookmarkDataList(@NotNull Daten daten) {
         bookmarks = new BasicEventList<>();
-
-        objectMapper = JsonMapper.builder().findAndAddModules().build();
 
         // Wait until film liste is ready and update references
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -81,7 +72,6 @@ public class BookmarkDataList {
      *
      * @return observable List
      */
-    @JsonGetter("bookmarks")
     public EventList<BookmarkData> getEventList() {
         return bookmarks;
     }
@@ -125,7 +115,7 @@ public class BookmarkDataList {
                     BookmarkData bdata = new BookmarkData(movie);
                     movie.setBookmark(bdata); // Link backwards
                     bdata.setSeen(history.hasBeenSeen(movie));
-                    bdata.setFilmHashCode(movie.getSha256().toString());
+                    bdata.setFilmHashCode(movie.getSha256());
                     bdata.setBookmarkAdded(LocalDate.now());
                     bookmarks.add(bdata);
                 });
@@ -156,8 +146,7 @@ public class BookmarkDataList {
         var filePath = StandardLocations.getBookmarkFilePath();
 
         try {
-            var wrapper = objectMapper.readValue(filePath.toFile(), BookmarksWrapper.class);
-            var bookmarkList = wrapper.getBookmarks();
+            var bookmarkList = BookmarkJsonStore.read(filePath);
             if (bookmarkList != null) {
                 bookmarks.addAll(bookmarkList);
                 bookmarkList.clear();
@@ -172,11 +161,10 @@ public class BookmarkDataList {
         var filePath = StandardLocations.getBookmarkFilePath();
 
         try {
-            var objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-            objectWriter.writeValue(filePath.toFile(), this);
+            BookmarkJsonStore.write(filePath, bookmarks);
             logger.trace("Bookmarks written");
         }
-        catch (IOException e) {
+        catch (Exception e) {
             logger.error("Could not save bookmarks to {}", filePath, e);
         }
     }
@@ -232,13 +220,25 @@ public class BookmarkDataList {
             return;
 
         ListeFilme listefilme = Daten.getInstance().getListeFilme();
+        List<DatenFilm> filmSnapshot;
+        synchronized (listefilme) {
+            filmSnapshot = new ArrayList<>(listefilme);
+        }
+        var filmsByHash = createFilmHashIndex(filmSnapshot);
+        var filmsByUrl = createFilmUrlIndex(filmSnapshot);
+        List<BookmarkData> bookmarkSnapshot;
+        bookmarks.getReadWriteLock().readLock().lock();
+        try {
+            bookmarkSnapshot = new ArrayList<>(bookmarks);
+        }
+        finally {
+            bookmarks.getReadWriteLock().readLock().unlock();
+        }
 
-        for (var bookmark : bookmarks) {
+        for (var bookmark : bookmarkSnapshot) {
             var hashCodeStr = bookmark.getFilmHashCode();
             if (hashCodeStr != null) {
-                var hashCode = HashCode.fromString(hashCodeStr);
-                var film = listefilme.parallelStream()
-                        .filter(df -> df.getSha256().equals(hashCode)).findFirst().orElse(null);
+                var film = filmsByHash.get(hashCodeStr);
                 assignData(bookmark, film);
             }
             else {
@@ -247,11 +247,11 @@ public class BookmarkDataList {
                     logger.warn("Stored bookmark is invalid, url is null");
                 }
                 else {
-                    var film = listefilme.getFilmByUrl(bookmark.getUrl());
+                    var film = filmsByUrl.get(url.toLowerCase(Locale.ROOT));
                     assignData(bookmark, film);
                     // if we didn't have hashCode, update to new format now if possible...
                     if (film != null) {
-                        bookmark.setFilmHashCode(film.getSha256().toString());
+                        bookmark.setFilmHashCode(film.getSha256());
                     }
                 }
             }
@@ -265,20 +265,19 @@ public class BookmarkDataList {
         }
     }
 
-
-    /**
-     * Internal wrapper for reading bookmarks with object mapper
-     */
-    private static class BookmarksWrapper {
-        private List<BookmarkData> bookmarks;
-
-        public List<BookmarkData> getBookmarks() {
-            return bookmarks;
+    private Map<String, DatenFilm> createFilmHashIndex(List<DatenFilm> films) {
+        Map<String, DatenFilm> filmsByHash = new HashMap<>(films.size());
+        for (var film : films) {
+            filmsByHash.putIfAbsent(film.getSha256(), film);
         }
+        return filmsByHash;
+    }
 
-        @SuppressWarnings("unused")
-        public void setBookmarks(List<BookmarkData> bookmarks) {
-            this.bookmarks = bookmarks;
+    private Map<String, DatenFilm> createFilmUrlIndex(List<DatenFilm> films) {
+        Map<String, DatenFilm> filmsByUrl = new HashMap<>(films.size());
+        for (var film : films) {
+            filmsByUrl.putIfAbsent(film.getUrlNormalQuality().toLowerCase(Locale.ROOT), film);
         }
+        return filmsByUrl;
     }
 }

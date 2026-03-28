@@ -18,15 +18,15 @@
 
 package mediathek.gui.tabs.tab_livestreams
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import kotlinx.serialization.json.Json
 import mediathek.config.Konstanten
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.tabs.tab_livestreams.services.ShowService
 import mediathek.gui.tabs.tab_livestreams.services.StreamService
+import mediathek.mac.MacMultimediaPlayerLocator
+import mediathek.mac.SingleIinaPlayer
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.OverlayPanel
 import mediathek.tool.GermanStringSorter
@@ -35,8 +35,6 @@ import mediathek.tool.http.MVHttpClient
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.Rectangle
@@ -79,53 +77,35 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
             }
         })
 
-        val mapper = ObjectMapper().apply {
-            registerModule(JavaTimeModule())
-            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        val json = Json {
+            ignoreUnknownKeys = true
         }
 
         val client = MVHttpClient.getInstance().httpClient
-        streamService = Retrofit.Builder()
-            .baseUrl(Konstanten.ZAPP_API_URL)
-            .addConverterFactory(JacksonConverterFactory.create(mapper))
-            .client(client)
-            .build()
-            .create(StreamService::class.java)
-
-        showService = Retrofit.Builder()
-            .baseUrl(Konstanten.ZAPP_API_URL)
-            .addConverterFactory(JacksonConverterFactory.create(mapper))
-            .client(client)
-            .build()
-            .create(ShowService::class.java)
+        streamService = StreamService(client, json, Konstanten.ZAPP_API_URL)
+        showService = ShowService(client, json, Konstanten.ZAPP_API_URL)
 
         refreshTimer.start()
     }
+
+    private var iinaPlayer = SingleIinaPlayer()
 
     private fun setupList() {
         list.cellRenderer = LivestreamRenderer()
         list.selectionMode = ListSelectionModel.SINGLE_SELECTION
         list.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                if (e.clickCount == 2) {
-                    val selected = list.selectedValue ?: return
-                    if (!SystemUtils.IS_OS_MAC_OSX) {
-                        try {
-                            //windows, linux
-                            val vlcPath = GuiFunktionenProgramme.findExecutableOnPath("vlc")
-                            val pb = ProcessBuilder(vlcPath.toAbsolutePath().toString(), selected.streamUrl)
-                            pb.start()
-                        }
-                        catch (_: IllegalStateException) {
-                            JOptionPane.showMessageDialog(MediathekGui.ui(),
-                                "<html>Es konnte kein VLC auf dem System gefunden werden.<br/>" +
-                                        "Es wird versucht, den Stream über den Browser zu öffnen.</html>")
-                            UrlHyperlinkAction.openURL(selected.streamUrl)
-                        }
-                    }
-                    else // macOS can safely open it via java
-                        Desktop.getDesktop().browse(URI(selected.streamUrl))
+                if (SwingUtilities.isLeftMouseButton(e) && e.clickCount == 2) {
+                    playSelectedStream()
                 }
+            }
+
+            override fun mousePressed(e: MouseEvent) {
+                showPopupMenu(e)
+            }
+
+            override fun mouseReleased(e: MouseEvent) {
+                showPopupMenu(e)
             }
         })
         list.addComponentListener(object : ComponentAdapter() {
@@ -167,6 +147,62 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
             }
         })
 
+    }
+
+    private fun showPopupMenu(e: MouseEvent) {
+        if (!e.isPopupTrigger) {
+            return
+        }
+
+        val index = list.locationToIndex(e.point)
+        if (index < 0) {
+            return
+        }
+
+        val bounds = list.getCellBounds(index, index)
+        if (bounds == null || !bounds.contains(e.point)) {
+            return
+        }
+
+        list.selectedIndex = index
+
+        JPopupMenu().apply {
+            add(JMenuItem("Abspielen").apply {
+                addActionListener {
+                    playSelectedStream()
+                }
+            })
+            show(e.component, e.x, e.y)
+        }
+    }
+
+    private fun playSelectedStream() {
+        val selected = list.selectedValue ?: return
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            try {
+                // windows, linux
+                val vlcPath = GuiFunktionenProgramme.findExecutableOnPath("vlc")
+                ProcessBuilder(vlcPath.toAbsolutePath().toString(), selected.streamUrl).start()
+            }
+            catch (_: IllegalStateException) {
+                JOptionPane.showMessageDialog(MediathekGui.ui(),
+                    "<html>Es konnte kein VLC auf dem System gefunden werden.<br/>" +
+                            "Es wird versucht, den Stream über den Browser zu öffnen.</html>")
+                UrlHyperlinkAction.openURL(selected.streamUrl)
+            }
+        }
+        else {
+            MacMultimediaPlayerLocator.findIinaPlayer().ifPresentOrElse({
+                iinaPlayer.play(selected.streamUrl)
+            }, {
+                MacMultimediaPlayerLocator.findVlcPlayer().ifPresentOrElse({
+                    ProcessBuilder("open", "-a", "VLC", selected.streamUrl).start()
+                },{
+                    // macOS can safely open it via java
+                    Desktop.getDesktop().browse(URI(selected.streamUrl))
+                })
+            })
+        }
     }
 
     private fun loadLivestreams() {

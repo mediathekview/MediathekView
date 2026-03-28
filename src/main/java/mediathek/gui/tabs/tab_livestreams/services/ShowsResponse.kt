@@ -18,9 +18,9 @@
 
 package mediathek.gui.tabs.tab_livestreams.services
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import kotlinx.serialization.Serializable
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Serializable
 data class ShowsResponse(
     val shows: List<ShowInfo> = emptyList(),
     val error: String? = null

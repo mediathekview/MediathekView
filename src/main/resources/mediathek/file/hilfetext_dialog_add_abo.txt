@@ -9,8 +9,8 @@ gesucht.
 
 ======================================
 Ein Filterwort kann auch Leerzeichen enthalten,
-mehrere Filterwörter werden durch "," getrennt,
-angeben z.B.: "Hallo ich,Tatort". Es wird dann
+mehrere Filterwörter werden durch "," getrennt
+angeben, z.B.: "Hallo ich,Tatort". Es wird dann
 nach Filmen gesucht, die im entsprechenden Feld 
 "Hallo ich" ODER "Tatort" enthalten.
 
@@ -18,7 +18,7 @@ Groß- und Kleinschreibung wird beim Filtern
 nicht beachtet.
 
 ======================================
-In den Filtern können auch reguläre Ausdrücken
+In den Filtern können auch reguläre Ausdrücke
 verwendet werden. Diese müssen mit "#:" eingeleitet
 werden und werden dann auf die entsprechenden
 Felder des Films angewandt.

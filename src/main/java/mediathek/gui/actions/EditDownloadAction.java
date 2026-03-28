@@ -11,7 +11,7 @@ public class EditDownloadAction extends AbstractAction {
 
     public EditDownloadAction(GuiDownloads guiDownloads) {
         this.guiDownloads = guiDownloads;
-        putValue(Action.NAME, "Download ändern");
+        putValue(Action.NAME, "Download ändern...");
         putValue(Action.SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
     }
 

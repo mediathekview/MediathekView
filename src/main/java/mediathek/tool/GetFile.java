@@ -21,11 +21,8 @@ package mediathek.tool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 /**
  * @author emil
@@ -35,17 +32,19 @@ public class GetFile {
     private static final Logger logger = LogManager.getLogger();
 
     public static String getHilfeSuchen(String pfad) {
-        StringBuilder ret = new StringBuilder();
-        try (var is = Objects.requireNonNull(GetFile.class.getResource(pfad)).openStream();
-             InputStreamReader in = new InputStreamReader(is, StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(in)) {
-            String strLine;
-            while ((strLine = br.readLine()) != null) {
-                ret.append('\n').append(strLine);
+        if (pfad == null || pfad.isBlank()) {
+            return "";
+        }
+
+        try (var is = GetFile.class.getResourceAsStream(pfad)) {
+            if (is == null) {
+                logger.warn("getHilfeSuchen(): resource not found: {}", pfad);
+                return "";
             }
+            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException ex) {
             logger.error("getHilfeSuchen()", ex);
+            return "";
         }
-        return ret.toString();
     }
 }

@@ -65,7 +65,7 @@ public class PanelProgrammPfade extends JPanel {
             MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, "");
             jTextFieldFFmpeg.setText(GuiFunktionenProgramme.getMusterPfadFFmpeg());
         });
-        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(Konstanten.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true));
     }
 
     private void check() {

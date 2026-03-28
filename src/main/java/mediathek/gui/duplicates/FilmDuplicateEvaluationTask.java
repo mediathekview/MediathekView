@@ -1,16 +1,32 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.gui.duplicates;
 
 import ca.odell.glazedlists.TransactionList;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Sets;
-import com.google.common.hash.Hashing;
 import mediathek.config.Daten;
 import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,53 +40,43 @@ public class FilmDuplicateEvaluationTask implements Runnable {
     }
 
     private void printDuplicateStatistics() {
-        Stopwatch watch = Stopwatch.createStarted();
-        final var duplicates = listeFilme.parallelStream()
-                .filter(DatenFilm::isDuplicate)
-                .toList();
-
         var statisticsEventList = Daten.getInstance().getDuplicateStatistics();
-
-        Map<String, Long> statisticsMap = duplicates.parallelStream().collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
+        Map<String, Long> statisticsMap = listeFilme.parallelStream()
+                .filter(DatenFilm::isDuplicate)
+                .collect(Collectors.groupingBy(DatenFilm::getSender, Collectors.counting()));
+        long duplicateCount = statisticsMap.values().stream().mapToLong(Long::longValue).sum();
         TransactionList<FilmStatistics> tList = new TransactionList<>(statisticsEventList);
         tList.getReadWriteLock().writeLock().lock();
-        tList.beginEvent(true);
-        tList.clear();
-        for (var sender : statisticsMap.keySet()) {
-            tList.add(new FilmStatistics(sender, statisticsMap.get(sender)));
+        try {
+            tList.beginEvent(true);
+            tList.clear();
+            for (var sender : statisticsMap.keySet()) {
+                tList.add(new FilmStatistics(sender, statisticsMap.get(sender)));
+            }
+            tList.commitEvent();
         }
-        tList.commitEvent();
-        tList.getReadWriteLock().writeLock().unlock();
-        watch.stop();
-
-        logger.trace("Duplicate stream filter took: {}", watch);
-        logger.trace("Number of duplicates: {}", duplicates.size());
+        finally {
+            tList.getReadWriteLock().writeLock().unlock();
+        }
+        logger.trace("Number of duplicates: {}", duplicateCount);
     }
 
     private void checkDuplicates() {
         logger.trace("Start Duplicate URL search");
-        final Set<Long> urlCache = Sets.newConcurrentHashSet();
-
-        var hf = Hashing.murmur3_128();
-        Stopwatch watch = Stopwatch.createStarted();
+        final Map<String, Map<String, Set<String>>> urlCache = new HashMap<>();
         listeFilme.stream()
                 .filter(f -> !f.isLivestream())
                 .sorted(new BigSenderPenaltyComparator())
                 .forEach(film -> {
-                    var hasher = hf.newHasher()
-                            .putString(film.getUrlNormalQuality(), StandardCharsets.UTF_8);
-                    if (film.isHighQuality())
-                        hasher = hasher.putString(film.getHighQualityUrl(), StandardCharsets.UTF_8);
-                    if (film.hasLowQuality())
-                        hasher = hasher.putString(film.getLowQualityUrl(), StandardCharsets.UTF_8);
-                    final var hc = hasher.hash();
-                    final var hash = hc.padToLong();
+                    final String normalUrl = film.getUrlNormalQuality();
+                    final String highQualityUrl = film.isHighQuality() ? film.getHighQualityUrl() : "";
+                    final String lowQualityUrl = film.hasLowQuality() ? film.getLowQualityUrl() : "";
 
-                    film.setDuplicate(urlCache.contains(hash));
-                    urlCache.add(hash);
+                    Map<String, Set<String>> byHighQualityUrl = urlCache.computeIfAbsent(normalUrl, _ -> new HashMap<>());
+                    Set<String> seenLowQualityUrls = byHighQualityUrl.computeIfAbsent(highQualityUrl, _ -> new HashSet<>());
+
+                    film.setDuplicate(!seenLowQualityUrls.add(lowQualityUrl));
                 });
-        watch.stop();
-        logger.trace("Duplicate URL search took: {}", watch);
         urlCache.clear();
     }
 

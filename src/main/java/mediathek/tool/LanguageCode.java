@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 derreisende77.
+ * Copyright (c) 2024-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,10 @@
 
 package mediathek.tool;
 
-import com.ibm.icu.util.ULocale;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+import java.util.MissingResourceException;
 
 public enum LanguageCode {
     aa("Afar", "Afaraf"),
@@ -198,25 +200,38 @@ public enum LanguageCode {
 
     private final String readableName;
     private final String nativeName;
+
     LanguageCode(String readableName, String nativeName) {
         this.readableName = readableName;
         this.nativeName = nativeName;
     }
-    public String readableName() { return readableName;}
-    public String nativeName() { return nativeName;}
-    public @NotNull String getISO3Language() throws IllegalArgumentException {
-        ULocale locale = new ULocale(this.name());
-        var isocode = locale.getISO3Language();
-        if (isocode.isEmpty())
-            throw new IllegalArgumentException("Language code '" + this.name() + "' is empty");
-        else return isocode;
-    }
 
     public static LanguageCode fromNativeName(@NotNull String nativeName) throws IllegalArgumentException {
-        for (var item: LanguageCode.values()) {
+        for (var item : LanguageCode.values()) {
             if (item.nativeName.equals(nativeName))
                 return item;
         }
         throw new IllegalArgumentException("Language code '" + nativeName + "' not found");
+    }
+
+    public String readableName() {
+        return readableName;
+    }
+
+    public String nativeName() {
+        return nativeName;
+    }
+
+    public @NotNull String getISO3Language() throws IllegalArgumentException {
+        try {
+            var isocode = Locale.of(this.name()).getISO3Language();
+            if (isocode.isEmpty()) {
+                throw new IllegalArgumentException("Language code '" + this.name() + "' is empty");
+            }
+            return isocode;
+        }
+        catch (MissingResourceException ex) {
+            throw new IllegalArgumentException("Language code '" + this.name() + "' is empty");
+        }
     }
 }

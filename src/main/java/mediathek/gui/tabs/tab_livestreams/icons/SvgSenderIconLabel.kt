@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,20 +20,33 @@ package mediathek.gui.tabs.tab_livestreams.icons
 
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import java.awt.Dimension
+import java.awt.Font
 import java.net.URL
 import javax.swing.JLabel
 
 class SvgSenderIconLabel : JLabel() {
 
     private var iconUrl: URL? = null
-    private var targetSize = 24  // Both width and height for bounding box
+    private var iconSize = 24
 
-    fun setSenderIcon(url: URL, boundingSize: Int = 24) {
+    fun setSenderIcon(url: URL, boundingSize: Int = 24, regionLabel: String? = null) {
         iconUrl = url
-        targetSize = boundingSize
+        iconSize = boundingSize
         icon = iconUrl?.let {
-            FlatSVGIcon(it).derive(targetSize, targetSize)
+            FlatSVGIcon(it).derive(iconSize, iconSize)
         }
+
+        val text = regionLabel?.trim().orEmpty()
+        if (text.isNotEmpty()) {
+            this.text = text
+            font = regionLabelFont()
+            horizontalTextPosition = CENTER
+            verticalTextPosition = BOTTOM
+            iconTextGap = 2
+        } else {
+            this.text = ""
+        }
+
         horizontalAlignment = CENTER
         verticalAlignment = CENTER
         revalidate()
@@ -41,6 +54,38 @@ class SvgSenderIconLabel : JLabel() {
     }
 
     override fun getPreferredSize(): Dimension {
-        return Dimension(targetSize, targetSize)
+        val metrics = getFontMetrics(regionLabelFont())
+        val labelWidth = maxOf(iconSize, longestRegionLabelWidth(metrics))
+        if (text.isBlank()) {
+            return Dimension(labelWidth, iconSize)
+        }
+
+        val textHeight = metrics.height + iconTextGap
+        return Dimension(labelWidth, iconSize + textHeight)
+    }
+
+    private fun longestRegionLabelWidth(metrics: java.awt.FontMetrics): Int {
+        return REGION_LABELS.maxOf { metrics.stringWidth(it) }
+    }
+
+    private fun regionLabelFont(): Font = super.getFont().deriveFont(regionLabelFontSizePt)
+
+    companion object {
+        @JvmStatic
+        var regionLabelFontSizePt: Float = 10f
+
+        private val REGION_LABELS = listOf(
+            "Sachsen",
+            "Sachsen-Anhalt",
+            "Thüringen",
+            "Hamburg",
+            "Mecklenburg-Vorpommern",
+            "Schleswig-Holstein",
+            "Niedersachsen",
+            "Baden-Württemberg",
+            "Rheinland-Pfalz",
+            "Berlin",
+            "Brandenburg"
+        )
     }
 }

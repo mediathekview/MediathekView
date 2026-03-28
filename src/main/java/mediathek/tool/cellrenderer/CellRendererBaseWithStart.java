@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.tool.cellrenderer;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -16,18 +34,18 @@ import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.*;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * CellRenderer base class for all custom renderer associated with a Start.
  */
 public class CellRendererBaseWithStart extends CellRendererBase {
     public static final String ICON_POSITION_RIGHT = "ui.list.iconposition_right";
-    private static final EnumSet<Country> euCountryList = EnumSet.of(Country.DE, Country.AT, Country.FR);
+    private static final String INDICATOR_VISIBILITY_CACHE_KEY = "mv.renderer.indicatorVisibilityCache";
     protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected final FontIcon lockedIcon;
     protected final FontIcon lockedIconSelected;
@@ -69,10 +87,19 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         audioDescriptionSelected = FontIcon.of(FontAwesomeSolid.AUDIO_DESCRIPTION, IconUtils.DEFAULT_SIZE, Color.WHITE);
     }
 
+    private static boolean isColumnHidden(@NotNull JTable table, @NotNull String identifier) {
+        try {
+            return table.getColumn(identifier).getWidth() == 0;
+        } catch (IllegalArgumentException ignored) {
+            // If column does not exist in this table model, treat as hidden.
+            return true;
+        }
+    }
+
     protected void drawGeolocationIcons(@NotNull DatenFilm film, boolean isSelected) {
         setHorizontalAlignment(SwingConstants.CENTER);
         setText("");
-        if (film.countrySet.isEmpty()) {
+        if (!film.hasCountries()) {
             setToolTipText("Keine Geoinformationen vorhanden");
             if (isSelected)
                 setIcon(unlockedIconSelected);
@@ -80,8 +107,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
                 setIcon(unlockedIcon);
         }
         else {
-            var geoString = film.countrySet.stream().map(Country::toString).collect(Collectors.joining("-"));
-            setToolTipText(geoString);
+            setToolTipText(film.getCountriesAsString());
             if (filmIsCountryUnlocked(film)) {
                 //we are unlocked
                 if (isSelected)
@@ -102,11 +128,11 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     private boolean filmIsCountryUnlocked(@NotNull DatenFilm film) {
         var curLocation = ApplicationConfiguration.getInstance().getGeographicLocation();
         //EU consists of many states therefore we have to extend the country test...
-        if (film.countrySet.contains(Country.EU)) {
-            return film.countrySet.contains(curLocation) || euCountryList.contains(curLocation);
+        if (film.hasCountry(Country.EU)) {
+            return film.hasCountry(curLocation) || Country.EU_COUNTRIES.contains(curLocation);
         }
         else {
-            return film.countrySet.contains(curLocation);
+            return film.hasCountry(curLocation);
         }
     }
 
@@ -158,7 +184,12 @@ public class CellRendererBaseWithStart extends CellRendererBase {
      * @param isSelected is row selected.
      */
     protected void setIndicatorIcons(@NotNull JTable table, @NotNull DatenFilm datenFilm, boolean isSelected) {
-        if (!datenFilm.countrySet.isEmpty()) {
+        var visibility = getIndicatorColumnVisibility(table);
+        setIndicatorIcons(datenFilm, isSelected, visibility.hqColumnHidden, visibility.utColumnHidden);
+    }
+
+    protected void setIndicatorIcons(@NotNull DatenFilm datenFilm, boolean isSelected, boolean hqColumnHidden, boolean utColumnHidden) {
+        if (datenFilm.hasCountries()) {
             if (!filmIsCountryUnlocked(datenFilm)) {
                 //locked
                 if (isSelected)
@@ -168,9 +199,8 @@ public class CellRendererBaseWithStart extends CellRendererBase {
             }
         }
 
-        var tc = table.getColumn("HQ");
         // if HQ column is NOT visible add icon
-        if (tc.getWidth() == 0) {
+        if (hqColumnHidden) {
             if (datenFilm.isHighQuality()) {
                 if (isSelected)
                     iconList.add(highQualityIconSelected);
@@ -186,9 +216,8 @@ public class CellRendererBaseWithStart extends CellRendererBase {
                 iconList.add(audioDescription);
         }
 
-        tc = table.getColumn("UT");
         //if UT column is NOT visible
-        if (tc.getWidth() == 0) {
+        if (utColumnHidden) {
             if (datenFilm.hasSubtitle()) {
                 if (isSelected)
                     iconList.add(subtitleIconSelected);
@@ -216,5 +245,70 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         setHorizontalTextPosition(position);
         //always clear at the end
         iconList.clear();
+    }
+
+    private IndicatorColumnVisibility getIndicatorColumnVisibility(@NotNull JTable table) {
+        var cache = (IndicatorVisibilityCache) table.getClientProperty(INDICATOR_VISIBILITY_CACHE_KEY);
+        if (cache == null || cache.columnModel != table.getColumnModel()) {
+            cache = new IndicatorVisibilityCache(table);
+            table.putClientProperty(INDICATOR_VISIBILITY_CACHE_KEY, cache);
+        }
+        return cache.get();
+    }
+
+    private record IndicatorColumnVisibility(boolean hqColumnHidden, boolean utColumnHidden) {
+    }
+
+    private static final class IndicatorVisibilityCache implements TableColumnModelListener {
+        private final JTable table;
+        private final javax.swing.table.TableColumnModel columnModel;
+        private boolean dirty = true;
+        private IndicatorColumnVisibility visibility = new IndicatorColumnVisibility(true, true);
+
+        private IndicatorVisibilityCache(@NotNull JTable table) {
+            this.table = table;
+            this.columnModel = table.getColumnModel();
+            this.columnModel.addColumnModelListener(this);
+        }
+
+        private IndicatorColumnVisibility get() {
+            if (dirty) {
+                visibility = new IndicatorColumnVisibility(
+                        isColumnHidden(table, "HQ"),
+                        isColumnHidden(table, "UT")
+                );
+                dirty = false;
+            }
+            return visibility;
+        }
+
+        private void invalidate() {
+            dirty = true;
+        }
+
+        @Override
+        public void columnAdded(TableColumnModelEvent e) {
+            invalidate();
+        }
+
+        @Override
+        public void columnRemoved(TableColumnModelEvent e) {
+            invalidate();
+        }
+
+        @Override
+        public void columnMoved(TableColumnModelEvent e) {
+            invalidate();
+        }
+
+        @Override
+        public void columnMarginChanged(javax.swing.event.ChangeEvent e) {
+            invalidate();
+        }
+
+        @Override
+        public void columnSelectionChanged(javax.swing.event.ListSelectionEvent e) {
+            // selection does not affect visibility
+        }
     }
 }

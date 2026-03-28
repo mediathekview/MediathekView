@@ -215,21 +215,25 @@ public class ToastPanelUI extends BasicPanelUI implements StyleableUI, PropertyC
         button.setFocusable(false);
         button.setName("Toast.closeButton");
         button.putClientProperty(BUTTON_TYPE, BUTTON_TYPE_TOOLBAR_BUTTON);
-        button.putClientProperty(STYLE, "" +
-                "arc:999;" +
-                "background:null;");
+        button.putClientProperty(STYLE, "arc:999;background:null;");
         button.setIcon(closeButtonIcon);
-        button.addActionListener(e -> closeButtonClicked(c));
+        button.addActionListener(_ -> closeButtonClicked(c));
         return button;
     }
 
     protected void closeButtonClicked(JComponent c) {
         Object callback = c.getClientProperty(TOAST_CLOSE_CALLBACK);
-        if (callback instanceof Runnable) {
-            ((Runnable) callback).run();
-        } else if (callback instanceof Consumer) {
-            ((Consumer) callback).accept(c);
+        switch (callback) {
+            case Runnable runnable -> runnable.run();
+            case Consumer<?> consumer -> invokeCloseConsumer(consumer, c);
+            case null, default -> {
+            }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void invokeCloseConsumer(Consumer<?> callback, JComponent component) {
+        ((Consumer<JComponent>) callback).accept(component);
     }
 
     public void installLayout(JComponent c) {
@@ -243,7 +247,8 @@ public class ToastPanelUI extends BasicPanelUI implements StyleableUI, PropertyC
     protected void installStyle(JPanel c) {
         try {
             applyStyle(c, FlatStylingSupport.getResolvedStyle(c, "ToastPanel"));
-        } catch (RuntimeException ex) {
+        }
+        catch (RuntimeException ex) {
             LoggingFacade.INSTANCE.logSevere(null, ex);
         }
     }

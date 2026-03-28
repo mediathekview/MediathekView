@@ -373,7 +373,7 @@ public class PanelEinstellungenErweitert extends JPanel {
 
         //======== panel1 ========
         {
-            panel1.setBorder(new TitledBorder("macOS: Standardverhalten des Hilfsprogramm"));
+            panel1.setBorder(new TitledBorder("macOS: Standardverhalten des Hilfsprogramms"));
             panel1.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns

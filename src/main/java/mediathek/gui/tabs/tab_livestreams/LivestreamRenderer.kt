@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ class LivestreamRenderer : JPanel(), ListCellRenderer<LivestreamEntry> {
         val sanitized = SenderUtils.sanitizeName(value.streamName)
         //println("sanitized: $sanitized")
         val iconUrl = SvgIconCache.getIconUrl(sanitized.lowercase())
-        listCell.lblSender.setSenderIcon(iconUrl, ICON_SIZE)
+        listCell.lblSender.setSenderIcon(iconUrl, ICON_SIZE, SenderUtils.extractRegionLabel(sanitized))
 
         val show = value.show
         if (show != null && show.startTime.isBefore(Instant.now()) && show.endTime.isAfter(Instant.now())) {

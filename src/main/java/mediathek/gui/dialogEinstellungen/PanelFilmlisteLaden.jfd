@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.6" encoding: "UTF-8"
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -20,9 +20,9 @@ new FormModel {
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
+				add( new FormComponent( "mediathek.swing.MultilineLabel" ) {
 					name: "multilineLabel1"
-					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn älter als 3h). Zusätzlich kann sie über den Button \"Filmliste laden\" aktualisiert werden."
+					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn älter als 3h). Zusätzlich kann sie über den Button \"Neue Filmliste laden\" aktualisiert werden."
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
@@ -44,9 +44,9 @@ new FormModel {
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
-				add( new FormComponent( "mediathek.tool.swing.MultilineLabel" ) {
+				add( new FormComponent( "mediathek.swing.MultilineLabel" ) {
 					name: "multilineLabel2"
-					"text": "Die Filmliste wird nur manuell über den Button \"Filmliste laden\" aus dem Internet geladen. Alternativ kann auch eine Datei zum Laden angegeben werden."
+					"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\" aus dem Internet geladen. Alternativ kann auch eine Datei zum Laden angegeben werden."
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
