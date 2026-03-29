@@ -1426,6 +1426,7 @@ public class GuiFilme extends AGuiTabPanel {
             submenueBlack.add(itemBlackSenderThema);
 
             res.ifPresent(film -> {
+                jPopupMenu.addSeparator();
                 jDownloadHelper.installContextMenu(film, jPopupMenu);
                 jPopupMenu.addSeparator();
                 pyLoadHelper.installContextMenu(film, jPopupMenu);

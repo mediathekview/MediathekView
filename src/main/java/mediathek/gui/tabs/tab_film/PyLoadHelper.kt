@@ -92,8 +92,6 @@ class PyLoadHelper {
     }
 
     fun installContextMenu(film: DatenFilm, jPopupMenu: JPopupMenu) {
-        jPopupMenu.addSeparator()
-
         val pyLoadUrl = ApplicationConfiguration.getConfiguration()
             .getString(ApplicationConfiguration.APPLICATION_PYLOAD_URL, "")
         val pyLoadConfigured = pyLoadUrl.isNotBlank()

@@ -70,8 +70,6 @@ class JDownloadHelper {
     }
 
     fun installContextMenu(film: DatenFilm, jPopupMenu: JPopupMenu) {
-        jPopupMenu.addSeparator()
-
         val mJD = JMenu("Mit JDownloader herunterladen")
         val uNormal = film.urlNormalQuality.toHttpUrl()
         val uHq = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).toHttpUrl()
