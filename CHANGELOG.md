@@ -12,6 +12,8 @@
 - **BUGFIX:** Die App friert nicht mehr bei einer beschädigten History-Db ein. Es wird eine temporäre Datenbank für den Start genutzt. **In diesem Zustand gehen alle Änderungen verloren.**
 - **BUGFIX(Windows):** Bandbreitenbegrenzung der Downloads funktionierte nicht richtig.
 - **BUGFIX:** Im Tab Filme führte das Verschieben von Spalten zur fehlerhaften Darstellungen innerhalb der Spalten.
+- **BUGFIX:** Mehrfachauswahl im Tab *Download* wird nun zurückgesetzt nach dem Löschen.
+- **BUGFIX:** Ein Download Verzeichnis wird nun erst beim Downloadbeginn angelegt.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
 - **FEATURE:** Tab *Audiothek* zur Suche (offline als auch online), Abspielen und Download von Podcasts der ARD Audiothek und via podcastindex.org.
 - **FEATURE:** Filter können nun kopiert werden.
@@ -25,6 +27,7 @@
 - **FEATURE:** Das Format der Zeitdarstellung im Tab Filme kann via *Einstellungen\Allgemein* konfiguriert werden.
 - **FEATURE:** Einige Sender wie BR, MDR, NDR verwenden Content Delivery Networks, welche zu fehlerhaften Downloads mit MV führen. MV versucht CDN-Server zu erkennen und einen entsprechend angepassten Downloader zu verwenden. Dies kann je nach Konfiguration des Servers die Downloadgeschwindigkeit erheblich reduzieren, jedoch überwiegen die Vorteile bei der Nutzung die Nachteile. Die Funktion kann im Tab *Download* in der Toolbar via Checkbox *CDN-aware Downloader verwenden* (de-)aktiviert werden.
 - **FEATURE:** Im Tab *Downloads* wurde das Seitenpanel entfernt und in Toolbars ausgelagert. Die Filtereinstellungen sowie der Zustand der Toolbars ist persistent über Neustarts hinweg. Schwebende Toolbars werden nur angezeigt wenn das Tab aktiv ist.
+- **FEATURE:** Unfertige Downloads werden nun automatisch mit Endung `.part` markiert und bei erfolgreichem Download umbenannt.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 

@@ -18,7 +18,9 @@
 
 package mediathek.controller.starter
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import mediathek.config.Config
 import mediathek.config.Daten
 import mediathek.config.Konstanten
@@ -31,9 +33,11 @@ import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.*
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.*
+import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.FileSize
+import mediathek.tool.FileUtils
+import mediathek.tool.MessageBus
 import mediathek.tool.http.MVHttpClient
-import mediathek.tool.subtitles.MVSubtitle
 import net.engio.mbassy.bus.MBassador
 import net.engio.mbassy.listener.Handler
 import okhttp3.*
@@ -68,11 +72,11 @@ class CdnAwareDirectDownloadThread(
 
     private var state = HttpDownloadState.DOWNLOAD
     private var alreadyDownloaded = 0L
+    private lateinit var finalFile: File
     private lateinit var file: File
     private var retAbbrechen = false
     private var dialogAbbrechenIsVis = false
-    private var infoJob: Deferred<Unit>? = null
-    private var subtitleJob: Deferred<Unit>? = null
+    private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
     private var previousProgress = 0L
     private var startProgress = -1L
     private val bandwidthStartedAtNanos = System.nanoTime()
@@ -102,7 +106,8 @@ class CdnAwareDirectDownloadThread(
         runBlocking {
             try {
                 createDirectory()
-                file = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                finalFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                file = DirectDownloadPartFiles.partFileFor(finalFile)
 
                 if (!cancelDownload()) {
                     val url = requireNotNull(datenDownload.arr[DatenDownload.DOWNLOAD_URL].toHttpUrlOrNull())
@@ -176,26 +181,7 @@ class CdnAwareDirectDownloadThread(
     private suspend fun prepareAncillaryDownloads() = coroutineScope {
         datenDownload.interruptRestart()
         datenDownload.mVFilmSize.aktSize = alreadyDownloaded
-
-        infoJob = if (datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI].toBoolean()) {
-            async(Dispatchers.IO) {
-                try {
-                    MVInfoFile().writeInfoFile(datenDownload)
-                } catch (ex: IOException) {
-                    logger.error("Failed to write info file", ex)
-                }
-            }
-        } else {
-            null
-        }
-
-        subtitleJob = if (datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE].toBoolean()) {
-            async(Dispatchers.IO) {
-                MVSubtitle().writeSubtitle(datenDownload)
-            }
-        } else {
-            null
-        }
+        ancillaryDownloads = DirectDownloadAncillaryFiles.start(this, datenDownload, logger)
     }
 
     private suspend fun executeChunkedDownload(url: HttpUrl, totalSize: Long) {
@@ -390,6 +376,16 @@ class CdnAwareDirectDownloadThread(
             return
         }
 
+        try {
+            DirectDownloadPartFiles.moveCompletedPartToFinal(file, finalFile)
+        } catch (ex: IOException) {
+            logger.error("Failed to finalize download file", ex)
+            start.status = Start.STATUS_ERR
+            state = HttpDownloadState.ERROR
+            removeSeenHistoryEntry()
+            return
+        }
+
         start.status = when {
             datenDownload.quelle == DatenDownload.QUELLE_BUTTON -> Start.STATUS_FERTIG
             StarterClass.pruefen(Daten.getInstance(), datenDownload, start) -> Start.STATUS_FERTIG
@@ -445,14 +441,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private suspend fun awaitAncillaryDownloads() {
-        try {
-            infoJob?.await()
-            subtitleJob?.await()
-        } catch (_: CancellationException) {
-            throw CancellationException()
-        } catch (ex: Exception) {
-            logger.error("awaitAncillaryDownloads().", ex)
-        }
+        ancillaryDownloads.await()
     }
 
     private fun handleDownloadFailure(ex: IOException) {
@@ -476,7 +465,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private fun cancelDownload(): Boolean {
-        if (!file.exists()) {
+        if (!file.exists() && !finalFile.exists()) {
             return false
         }
 
@@ -509,10 +498,11 @@ class CdnAwareDirectDownloadThread(
     }
 
     private fun abortOrResume(): Boolean {
-        if (!file.exists()) {
+        if (!file.exists() && !finalFile.exists()) {
             return false
         }
 
+        val hasPartFile = file.exists()
         var result = false
         val dialog = DialogContinueDownload(MediathekGui.ui(), datenDownload, true)
         dialog.isVisible = true
@@ -524,19 +514,35 @@ class CdnAwareDirectDownloadThread(
             }
 
             DialogContinueDownload.DownloadResult.CONTINUE -> {
-                alreadyDownloaded = file.length()
+                if (!hasPartFile && !moveLegacyFinalFileToPart()) {
+                    state = HttpDownloadState.ERROR
+                    result = true
+                } else {
+                    alreadyDownloaded = file.length()
+                }
             }
 
             DialogContinueDownload.DownloadResult.RESTART_WITH_NEW_NAME -> {
                 if (dialog.isNewName) {
                     MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                     createDirectory()
-                    file = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                    finalFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                    file = DirectDownloadPartFiles.partFileFor(finalFile)
                 }
             }
         }
 
         return result
+    }
+
+    private fun moveLegacyFinalFileToPart(): Boolean {
+        return try {
+            DirectDownloadPartFiles.moveLegacyFinalFileToPart(finalFile, file)
+            true
+        } catch (ex: IOException) {
+            logger.error("Failed to move existing download to part file", ex)
+            false
+        }
     }
 
     companion object {
