@@ -209,6 +209,26 @@ internal class FilmFilterControllerTest {
     }
 
     @Test
+    fun `locked reset restores persisted filter state without clearing configuration`() {
+        val filterConfiguration = TestFilterConfiguration(XMLConfiguration())
+        filterConfiguration.addNewFilter(DEFAULT_FILTER)
+        filterConfiguration.setCurrentFilter(DEFAULT_FILTER)
+        filterConfiguration.setShowNewOnly(true)
+        filterConfiguration.thema = "...von oben"
+        val controller = FilmFilterController(filterConfiguration)
+        controller.setCurrentFilterChangesLocked(true)
+        controller.onShowNewOnlyChanged(false)
+        controller.onThemaChanged("temporary")
+
+        controller.resetCurrentFilter()
+
+        assertTrue(controller.state().showNewOnly)
+        assertEquals("...von oben", controller.state().thema)
+        assertTrue(filterConfiguration.isShowNewOnly)
+        assertEquals("...von oben", filterConfiguration.thema)
+    }
+
+    @Test
     fun `repeated identical checkbox value is a no-op`() {
         val reloadRequester = RecordingReloadRequester()
         val controller = createController(reloadRequester)

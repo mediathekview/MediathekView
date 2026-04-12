@@ -321,6 +321,10 @@ class FilmFilterController(
 
     fun resetCurrentFilter() {
         logger.trace("Updating filter lifecycle for reason=resetFilter: currentFilter={}", currentState.currentFilter)
+        if (filterConfig.isCurrentFilterLocked) {
+            syncStateFromConfig("resetFilter")
+            return
+        }
         filterConfig.clearCurrentFilter()
         syncStateFromConfig("resetFilter")
     }
