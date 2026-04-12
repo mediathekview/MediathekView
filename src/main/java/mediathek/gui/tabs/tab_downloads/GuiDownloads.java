@@ -555,6 +555,7 @@ public class GuiDownloads extends AGuiTabPanel {
      */
     public void downloadLoeschen(boolean permanentDeletion) {
         try {
+            int rowToSelectAfterDeletion = tabelle.getSelectedRow();
             ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
             if (arrayDownloads.isEmpty()) {
                 return;
@@ -588,10 +589,22 @@ public class GuiDownloads extends AGuiTabPanel {
 
             daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
+            selectSingleRowAfterDeletion(rowToSelectAfterDeletion);
         }
         catch (Exception ex) {
             logger.error("downloadLoeschen()", ex);
         }
+    }
+
+    private void selectSingleRowAfterDeletion(int rowToSelect) {
+        int rowCount = tabelle.getRowCount();
+        if (rowCount == 0) {
+            tabelle.clearSelection();
+            return;
+        }
+
+        int validRow = Math.max(0, Math.min(rowToSelect, rowCount - 1));
+        tabelle.setRowSelectionInterval(validRow, validRow);
     }
 
     private @NotNull List<DatenDownload> addAllDownloadsToList() {
