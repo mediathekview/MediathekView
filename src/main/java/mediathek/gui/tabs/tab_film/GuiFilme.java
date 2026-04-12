@@ -93,6 +93,7 @@ import java.util.regex.Pattern;
 public class GuiFilme extends AGuiTabPanel {
 
     public static final String NAME = "Filme";
+    public static final boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
     private static final String ACTION_MAP_KEY_PLAY_FILM = "film_abspielen";
     private static final String ACTION_MAP_KEY_SAVE_FILM = "download_film";
     private static final String ACTION_MAP_KEY_BOOKMARK_FILM = "bookmark_film";
@@ -106,14 +107,26 @@ public class GuiFilme extends AGuiTabPanel {
     private static final Logger logger = LogManager.getLogger();
     private static final int[] BUTTON_COLUMNS = {DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN,
             DatenFilm.FILM_MERKEN};
-    public static final boolean[] VISIBLE_COLUMNS = new boolean[DatenFilm.MAX_ELEM];
     public final PlayFilmAction playFilmAction = new PlayFilmAction(this);
     public final SaveFilmAction saveFilmAction = new SaveFilmAction();
     public final CopyUrlToClipboardAction copyHqUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.HIGH_QUALITY);
     public final CopyUrlToClipboardAction copyNormalUrlToClipboardAction = new CopyUrlToClipboardAction(FilmResolution.Enum.NORMAL);
+    public final SwingFilterDialog swingFilterDialog;
+    public final ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
     protected final JTabbedPane psetButtonsTab = new JTabbedPane();
+    protected final SearchField searchField;
+    protected final DeleteBookmarksAction deleteBookmarksAction = new DeleteBookmarksAction(MediathekGui.ui());
     private final FilterConfiguration filterConfiguration = new FilterConfiguration();
     private final BookmarkStartupReloadCoordinator bookmarkStartupReloadCoordinator = new BookmarkStartupReloadCoordinator();
+    private final BookmarkAddFilmAction bookmarkAddFilmAction = new BookmarkAddFilmAction();
+    private final BookmarkRemoveFilmAction bookmarkRemoveFilmAction = new BookmarkRemoveFilmAction();
+    private final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(MediathekGui.ui());
+    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
+    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
+    private final JScrollPane filmListScrollPane = new JScrollPane();
+    private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
+    private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
+    private final NonRepeatingTimer reloadTableDataTimer;
     private final FilmFilterController filterController = new FilmFilterController(filterConfiguration,
             new FilmFilterController.DataProvider() {
                 @Override
@@ -143,37 +156,8 @@ public class GuiFilme extends AGuiTabPanel {
                     filterController::availableFilters,
                     filterController::isFilterLocked,
                     filterController.selectionObserverRegistry());
-    private final ListenerFilmeLaden filmListReloadListener = new ListenerFilmeLaden() {
-        @Override
-        public void start(ListenerFilmeLadenEvent event) {
-            SwingUtilities.invokeLater(swingFilterDialog::onFilmDataLoadingStarted);
-            bookmarkStartupReloadCoordinator.onFilmListLoadingStarted();
-        }
-
-        @Override
-        public void fertig(ListenerFilmeLadenEvent event) {
-            SwingUtilities.invokeLater(() -> {
-                swingFilterDialog.onFilmDataLoaded();
-                if (bookmarkStartupReloadCoordinator.onFilmListLoaded(filterConfiguration.isShowBookMarkedOnly())) {
-                    GuiFilme.this.requestTableReload();
-                }
-            });
-        }
-    };
-    private final BookmarkAddFilmAction bookmarkAddFilmAction = new BookmarkAddFilmAction();
-    private final BookmarkRemoveFilmAction bookmarkRemoveFilmAction = new BookmarkRemoveFilmAction();
-    private final DeleteBookmarksAction deleteBookmarksAction = new DeleteBookmarksAction(MediathekGui.ui());
-    private final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(MediathekGui.ui());
-    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
-    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
-    private final JScrollPane filmListScrollPane = new JScrollPane();
-    private final JCheckBoxMenuItem cbkShowDescription = new JCheckBoxMenuItem("Beschreibung anzeigen");
-    private final JCheckBoxMenuItem cbShowButtons = new JCheckBoxMenuItem("Buttons anzeigen");
-    private final NonRepeatingTimer reloadTableDataTimer;
     private final FilmToolBar filmToolBar;
-    public final SwingFilterDialog swingFilterDialog;
-    public final ToggleFilterDialogVisibilityAction toggleFilterDialogVisibilityAction = new ToggleFilterDialogVisibilityAction();
-    protected final SearchField searchField;
+    protected BookmarkDialog bookmarkDialog;
     protected PsetButtonsPanel psetButtonsPanel;
     private boolean stopBeob;
     private MVFilmTable tabelle;
@@ -229,6 +213,23 @@ public class GuiFilme extends AGuiTabPanel {
 
         // register message bus handler
         MessageBus.getMessageBus().subscribe(this);
+        ListenerFilmeLaden filmListReloadListener = new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                SwingUtilities.invokeLater(swingFilterDialog::onFilmDataLoadingStarted);
+                bookmarkStartupReloadCoordinator.onFilmListLoadingStarted();
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                SwingUtilities.invokeLater(() -> {
+                    swingFilterDialog.onFilmDataLoaded();
+                    if (bookmarkStartupReloadCoordinator.onFilmListLoaded(filterConfiguration.isShowBookMarkedOnly())) {
+                        GuiFilme.this.requestTableReload();
+                    }
+                });
+            }
+        };
         daten.getFilmeLaden().addAdListener(filmListReloadListener);
         SwingUtilities.invokeLater(this::requestTableReload);
 
@@ -581,7 +582,10 @@ public class GuiFilme extends AGuiTabPanel {
             bookmarkDialog.setVisible(true);
         }
     }
-    public JDialog bookmarkDialog;
+
+    public BookmarkDialog getBookmarkDialog() {
+        return bookmarkDialog;
+    }
 
     public void playerStarten(DatenPset pSet) {
         // Url mit Prognr. starten

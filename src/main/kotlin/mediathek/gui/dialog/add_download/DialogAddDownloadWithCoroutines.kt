@@ -499,7 +499,7 @@ class DialogAddDownloadWithCoroutines(
 
         val pfad = if (pfadRaw.endsWith(File.separator)) pfadRaw else pfadRaw + File.separator
 
-        return if (GuiFunktionenProgramme.checkPathWriteable(pfad)) {
+        return if (GuiFunktionenProgramme.checkPathWriteableWithoutCreating(pfad)) {
             true
         } else {
             MVMessageDialog.showMessageDialog(

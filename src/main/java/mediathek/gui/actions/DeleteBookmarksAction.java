@@ -42,7 +42,7 @@ public class DeleteBookmarksAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         boolean restoreManageBookmarkWindow = false;
-        var bookmarkDialog = owner.tabFilme.bookmarkDialog;
+        var bookmarkDialog = owner.tabFilme.getBookmarkDialog();
 
         if (bookmarkDialog != null && bookmarkDialog.isVisible()) {
             restoreManageBookmarkWindow = true;
