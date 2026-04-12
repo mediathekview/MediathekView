@@ -546,6 +546,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return !arr[DatenDownload.DOWNLOAD_ABO].isEmpty();
     }
 
+    public boolean isAutomaticStartBlockedByAbo() {
+        return isFromAbo() && abo != null && abo.isDoNotStartAutomatically();
+    }
+
     public boolean isRestart() {
         if (arr[DOWNLOAD_PROGRAMM_RESTART].isEmpty()) {
             return false;

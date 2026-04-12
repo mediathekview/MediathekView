@@ -22,6 +22,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.history.MVUsedUrl;
+import mediathek.controller.starter.DirectDownloadPartFiles;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenFilm;
@@ -528,13 +529,13 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         }
         try {
-            File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            File file = getExistingDownloadFile(datenDownload);
             if (!file.exists()) {
                 MVMessageDialog.showMessageDialog(mediathekGui, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int ret = JOptionPane.showConfirmDialog(mediathekGui,
-                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], "Film Löschen?", JOptionPane.YES_NO_OPTION);
+                    file.getAbsolutePath(), "Film Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
 
                 // und jetzt die Datei löschen
@@ -548,6 +549,20 @@ public class GuiDownloads extends AGuiTabPanel {
             MVMessageDialog.showMessageDialog(mediathekGui, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
             logger.error("Fehler beim löschen: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
+    }
+
+    private File getExistingDownloadFile(DatenDownload datenDownload) {
+        File finalFile = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        if (finalFile.exists()) {
+            return finalFile;
+        }
+
+        File partFile = DirectDownloadPartFiles.INSTANCE.partFileFor(finalFile);
+        if (partFile.exists()) {
+            return partFile;
+        }
+
+        return finalFile;
     }
 
     /**
@@ -786,7 +801,7 @@ public class GuiDownloads extends AGuiTabPanel {
 
         //do not start manual downloads, only downloads which were created from abos
         if (skipManualDownloads)
-            listeDownloadsStarten.removeIf(item -> !item.isFromAbo());
+            listeDownloadsStarten.removeIf(item -> !item.isFromAbo() || item.isAutomaticStartBlockedByAbo());
 
         if (starten) {
             //alle Downloads starten/wiederstarten

@@ -30,7 +30,8 @@ public class MVAbosTable extends MVTable {
         breite[i] = 200;
         if (i == DatenAbo.ABO_NR
                 || i == DatenAbo.ABO_EINGESCHALTET
-                || i == DatenAbo.ABO_MIN) {
+                || i == DatenAbo.ABO_MIN
+                || i == DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY) {
             breite[i] = 75;
         } else if (i == DatenAbo.ABO_DOWN_DATUM
                 || i == DatenAbo.ABO_SENDER) {

@@ -28,6 +28,7 @@
 - **FEATURE:** Einige Sender wie BR, MDR, NDR verwenden Content Delivery Networks, welche zu fehlerhaften Downloads mit MV führen. MV versucht CDN-Server zu erkennen und einen entsprechend angepassten Downloader zu verwenden. Dies kann je nach Konfiguration des Servers die Downloadgeschwindigkeit erheblich reduzieren, jedoch überwiegen die Vorteile bei der Nutzung die Nachteile. Die Funktion kann im Tab *Download* in der Toolbar via Checkbox *CDN-aware Downloader verwenden* (de-)aktiviert werden.
 - **FEATURE:** Im Tab *Downloads* wurde das Seitenpanel entfernt und in Toolbars ausgelagert. Die Filtereinstellungen sowie der Zustand der Toolbars ist persistent über Neustarts hinweg. Schwebende Toolbars werden nur angezeigt wenn das Tab aktiv ist.
 - **FEATURE:** Unfertige Downloads werden nun automatisch mit Endung `.part` markiert und bei erfolgreichem Download umbenannt.
+- **FEATURE:** Jedes Abo kann nun mittels *Nicht automatisch starten*-Option den automatischen Download der generierten Filme verhindern, wenn *Einstellungen/Erweitert/Downloads aus Abos sofort starten* aktiviert ist.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 

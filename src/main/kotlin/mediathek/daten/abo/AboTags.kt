@@ -33,7 +33,8 @@ enum class AboTags(val index: Int, val xmlName: String) {
     MIN(DatenAbo.ABO_MIN, "min_max"),
     ZIELPFAD(DatenAbo.ABO_ZIELPFAD, "Zielpfad"),
     DOWN_DATUM(DatenAbo.ABO_DOWN_DATUM, "letztes_Abo"),
-    PSET(DatenAbo.ABO_PSET, "Programmset");
+    PSET(DatenAbo.ABO_PSET, "Programmset"),
+    DO_NOT_START_AUTOMATICALLY(DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY, "nicht_automatisch_starten");
 
     companion object {
         @JvmStatic

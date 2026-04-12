@@ -87,6 +87,11 @@ public class CellRendererAbo extends CellRendererBase {
                     case PSET:
                         setText(abo.getPsetName());
                         break;
+
+                    case DO_NOT_START_AUTOMATICALLY:
+                        setHorizontalAlignment(SwingConstants.CENTER);
+                        setText(Boolean.toString(abo.isDoNotStartAutomatically()));
+                        break;
                 }
             });
 

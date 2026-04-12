@@ -11,8 +11,15 @@ import javax.swing.JDialog
 
 class ManageAboDialog(owner: Frame?) : JDialog(owner) {
     private val aboPanel: ManageAboPanel
+    private var disposed = false
 
     override fun dispose() {
+        if (disposed) {
+            super.dispose()
+            return
+        }
+        disposed = true
+
         aboPanel.tabelleSpeichern()
         saveToConfig()
 

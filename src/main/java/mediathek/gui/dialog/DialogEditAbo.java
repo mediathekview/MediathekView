@@ -27,6 +27,7 @@ public class DialogEditAbo extends JDialog {
     private final JComboBox<String> comboboxSender = new JComboBox<>();
     private final JComboBox<String> comboboxPfad = new JComboBox<>();
     private final JCheckBox checkBoxEingeschaltet = new JCheckBox();
+    private final JCheckBox checkBoxDoNotStartAutomatically = new JCheckBox();
     private final JRadioButton rbMin = new JRadioButton("Mindestdauer");
     private final JRadioButton rbMax = new JRadioButton("Maximaldauer");
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
@@ -294,6 +295,12 @@ public class DialogEditAbo extends JDialog {
                 gridbag.setConstraints(comboboxPSet, c);
                 panel.add(comboboxPSet);
             }
+
+            case DO_NOT_START_AUTOMATICALLY -> {
+                checkBoxDoNotStartAutomatically.setSelected(aktAbo.isDoNotStartAutomatically());
+                gridbag.setConstraints(checkBoxDoNotStartAutomatically, c);
+                panel.add(checkBoxDoNotStartAutomatically);
+            }
         }
 
         if (isMultiEditMode) {
@@ -301,7 +308,7 @@ public class DialogEditAbo extends JDialog {
             c.gridx = 2;
             c.weightx = 0;
             switch(index) {
-                case EINGESCHALTET, MIN, MINDESTDAUER, PSET, ZIELPFAD -> {
+                case EINGESCHALTET, MIN, MINDESTDAUER, PSET, ZIELPFAD, DO_NOT_START_AUTOMATICALLY -> {
                     c.fill = GridBagConstraints.NONE;
                     c.anchor = GridBagConstraints.CENTER;
                     var jcb = new JCheckBox();
@@ -332,6 +339,7 @@ public class DialogEditAbo extends JDialog {
     private void get(DatenAbo abo) {
         //no ABO_NR
         abo.setActive(checkBoxEingeschaltet.isSelected());
+        abo.setDoNotStartAutomatically(checkBoxDoNotStartAutomatically.isSelected());
         abo.setName(textFieldMap.get(AboTags.NAME).getText().trim());
         abo.setSender(Objects.requireNonNull(comboboxSender.getSelectedItem()).toString());
         abo.setThema(textFieldMap.get(AboTags.THEMA).getText().trim());
@@ -374,25 +382,25 @@ public class DialogEditAbo extends JDialog {
             this.tf = tf;
         }
 
-        @Override
-        public void insertUpdate(DocumentEvent e) {
+        protected void doWork() {
             final boolean isEmpty = tf.getText().isBlank();
             tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
             jButtonBeenden.setEnabled(!isEmpty);
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            doWork();
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
-            jButtonBeenden.setEnabled(!isEmpty);
+            doWork();
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-            final boolean isEmpty = tf.getText().isBlank();
-            tf.setBackground(isEmpty ? Color.red : UIManager.getColor(TEXTFIELD_BACKGROUND));
-            jButtonBeenden.setEnabled(!isEmpty);
+            doWork();
         }
     }
 

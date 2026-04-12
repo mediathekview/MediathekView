@@ -45,11 +45,12 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_ZIELPFAD = 10;
     public static final int ABO_DOWN_DATUM = 11;
     public static final int ABO_PSET = 12;
-    public static final int ABO_REF = 13;
+    public static final int ABO_DO_NOT_START_AUTOMATICALLY = 13;
+    public static final int ABO_REF = 14;
     public static final String[] COLUMN_NAMES = {"Nr", "Aktiv", "Name",
             "Sender", "Thema", "Titel", "Thema-Titel",
-            "Irgendwo", "Dauer", "Min/Max", "Zielpfad", "Letztes Abo", "Programmset", ""};
-    public static final int MAX_ELEM = 14;
+            "Irgendwo", "Dauer", "Min/Max", "Zielpfad", "Letztes Abo", "Programmset", "Nicht automatisch starten", ""};
+    public static final int MAX_ELEM = 15;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
@@ -80,6 +81,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private String zielpfad = "";
     private String down_datum = ""; //TODO store as date??
     private String pSetName = "";
+    private boolean doNotStartAutomatically;
     /**
      * Whether or not to use minimum film length or maximum film length.
      */
@@ -146,6 +148,14 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     public void setPsetName(String pset) {
         this.pSetName = pset;
+    }
+
+    public boolean isDoNotStartAutomatically() {
+        return doNotStartAutomatically;
+    }
+
+    public void setDoNotStartAutomatically(boolean doNotStartAutomatically) {
+        this.doNotStartAutomatically = doNotStartAutomatically;
     }
 
     public String getDownDatum() {
@@ -234,6 +244,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         ret.down_datum = this.down_datum;
         ret.zielpfad = this.zielpfad;
         ret.pSetName = this.pSetName;
+        ret.doNotStartAutomatically = this.doNotStartAutomatically;
         ret.irgendwo = this.irgendwo;
         return ret;
     }
@@ -300,6 +311,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(AboTags.ZIELPFAD.getXmlName(), getZielpfad());
             writeElement.accept(AboTags.DOWN_DATUM.getXmlName(), getDownDatum());
             writeElement.accept(AboTags.PSET.getXmlName(), getPsetName());
+            writeElement.accept(AboTags.DO_NOT_START_AUTOMATICALLY.getXmlName(), Boolean.toString(isDoNotStartAutomatically()));
 
             writer.writeEndElement();
             writer.writeCharacters("\n");
@@ -375,6 +387,10 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
                             case PSET:
                                 setPsetName(text);
+                                break;
+
+                            case DO_NOT_START_AUTOMATICALLY:
+                                setDoNotStartAutomatically(Boolean.parseBoolean(text));
                                 break;
                         }
                     } catch (XMLStreamException | RuntimeException e) {

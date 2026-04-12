@@ -10,7 +10,7 @@ public class TModelAbo extends NonEditableTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return switch (columnIndex) {
-            case DatenAbo.ABO_EINGESCHALTET -> Boolean.class;
+            case DatenAbo.ABO_EINGESCHALTET, DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY -> Boolean.class;
             case DatenAbo.ABO_REF -> DatenAbo.class;
             default -> String.class;
         };
@@ -38,6 +38,7 @@ public class TModelAbo extends NonEditableTableModel {
             case DatenAbo.ABO_ZIELPFAD -> "Zielpfad";
             case DatenAbo.ABO_DOWN_DATUM -> "letztes Abo";
             case DatenAbo.ABO_PSET -> "Programmset";
+            case DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY -> "nicht automatisch starten";
             case DatenAbo.ABO_REF -> "";
             default -> throw new IndexOutOfBoundsException("UNKNOWN COLUMN NAME: " + column);
         };

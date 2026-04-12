@@ -99,6 +99,7 @@ public class ManageAboPanel extends JPanel {
                 object[DatenAbo.ABO_ZIELPFAD] = null;
                 object[DatenAbo.ABO_DOWN_DATUM] = null;
                 object[DatenAbo.ABO_PSET] = null;
+                object[DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY] = abo.isDoNotStartAutomatically();
                 object[DatenAbo.ABO_REF] = abo;
                 model.addRow(object);
             }
@@ -367,6 +368,7 @@ public class ManageAboPanel extends JPanel {
                             case MIN -> curSelAbo.setFilmLengthState(editedAbo.getFilmLengthState());
                             case ZIELPFAD -> curSelAbo.setZielpfad(editedAbo.getZielpfad());
                             case PSET -> curSelAbo.setPsetName(editedAbo.getPsetName());
+                            case DO_NOT_START_AUTOMATICALLY -> curSelAbo.setDoNotStartAutomatically(editedAbo.isDoNotStartAutomatically());
                             default -> logger.error("Unhandled tag called {}", tag);
                         }
                     });
