@@ -116,7 +116,7 @@ public class StarterClass {
                     Files.delete(path);
             }
         }
-        catch (IOException ex) {
+        catch (IOException _) {
             logger.trace("Fehler beim Löschen: {}", path.toAbsolutePath().toString());
         }
     }
@@ -293,7 +293,7 @@ public class StarterClass {
                 }
             }
         }
-        catch (Exception ex) {
+        catch (Exception _) {
             logger.error("Fehler beim Ermitteln der Dateigröße: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
