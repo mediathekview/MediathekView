@@ -226,11 +226,11 @@ internal class FilmFilterControllerTest {
 
         val added = controller.addFilter("Second Filter")
         assertTrue(added is FilmFilterController.AddFilterResult.Added)
-        assertEquals("Second Filter", controller.currentFilter().name())
+        assertEquals("Second Filter", controller.currentFilter().name)
 
         val renameResult = controller.renameCurrentFilter("Renamed Filter")
         assertEquals(FilmFilterController.RenameFilterResult.Renamed, renameResult)
-        assertEquals("Renamed Filter", controller.currentFilter().name())
+        assertEquals("Renamed Filter", controller.currentFilter().name)
 
         controller.resetCurrentFilter()
         assertFalse(controller.state().showNewOnly)
@@ -238,7 +238,7 @@ internal class FilmFilterControllerTest {
 
         controller.deleteCurrentFilter()
         assertEquals(1, controller.availableFilters().size)
-        assertEquals(DEFAULT_FILTER.name(), controller.currentFilter().name())
+        assertEquals(DEFAULT_FILTER.name, controller.currentFilter().name)
     }
 
     @Test
@@ -260,7 +260,7 @@ internal class FilmFilterControllerTest {
 
         val cloned = controller.cloneCurrentFilter()
 
-        assertEquals("Filter 1 Kopie", cloned.filter.name())
+        assertEquals("Filter 1 Kopie", cloned.filter.name)
         assertEquals(cloned.filter, controller.currentFilter())
         assertTrue(controller.state().showNewOnly)
         assertEquals("7", controller.state().zeitraum)
@@ -275,7 +275,7 @@ internal class FilmFilterControllerTest {
         controller.restoreCurrentFilterSelection(DEFAULT_FILTER)
         val secondClone = controller.cloneCurrentFilter()
 
-        assertEquals("Filter 1 Kopie 2", secondClone.filter.name())
+        assertEquals("Filter 1 Kopie 2", secondClone.filter.name)
     }
 
     @Test
@@ -292,10 +292,10 @@ internal class FilmFilterControllerTest {
     fun `renaming current filter to same name is a no-op`() {
         val controller = createController()
 
-        val renameResult = controller.renameCurrentFilter(DEFAULT_FILTER.name())
+        val renameResult = controller.renameCurrentFilter(DEFAULT_FILTER.name)
 
         assertEquals(FilmFilterController.RenameFilterResult.Renamed, renameResult)
-        assertEquals(DEFAULT_FILTER.name(), controller.currentFilter().name())
+        assertEquals(DEFAULT_FILTER.name, controller.currentFilter().name)
         assertEquals(1, controller.availableFilters().size)
     }
 

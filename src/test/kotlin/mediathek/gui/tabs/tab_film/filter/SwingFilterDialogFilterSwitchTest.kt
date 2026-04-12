@@ -131,7 +131,7 @@ internal class SwingFilterDialogFilterSwitchTest {
             }
             onEdt {}
 
-            assertEquals("Fresh Filter", setup.controller.currentFilter().name())
+            assertEquals("Fresh Filter", setup.controller.currentFilter().name)
             assertEquals(ZeitraumSpinner.INFINITE_TEXT, setup.controller.state().zeitraum)
             assertEquals(ZeitraumSpinner.INFINITE_VALUE, zeitraumSpinnerValue(setup.dialog))
             assertEquals(0, setup.reloadRequester.tableReloadRequests)
@@ -161,7 +161,7 @@ internal class SwingFilterDialogFilterSwitchTest {
             }
             onEdt {}
 
-            assertEquals("Filter 3 Kopie", setup.controller.currentFilter().name())
+            assertEquals("Filter 3 Kopie", setup.controller.currentFilter().name)
             assertEquals("7", setup.controller.state().zeitraum)
             assertEquals(setup.controller.currentFilter(), setup.comboBox.selectedItem)
             assertEquals(1, setup.reloadRequester.tableReloadRequests)
@@ -194,7 +194,7 @@ internal class SwingFilterDialogFilterSwitchTest {
             }
             onEdt {}
 
-            assertEquals("Filter 1", setup.controller.currentFilter().name())
+            assertEquals("Filter 1", setup.controller.currentFilter().name)
             assertEquals(setup.controller.currentFilter(), setup.comboBox.selectedItem)
             assertFalse(setup.controller.availableFilters().any { it == setup.secondFilter })
             assertEquals(tableReloadsBeforeDelete + 1, setup.reloadRequester.tableReloadRequests)
@@ -218,8 +218,8 @@ internal class SwingFilterDialogFilterSwitchTest {
             onEdt {}
 
             assertEquals(FilmFilterController.RenameFilterResult.Renamed, renameResult)
-            assertEquals("Renamed Filter 1", setup.controller.currentFilter().name())
-            assertEquals("Renamed Filter 1", (setup.comboBox.selectedItem as FilterDTO).name())
+            assertEquals("Renamed Filter 1", setup.controller.currentFilter().name)
+            assertEquals("Renamed Filter 1", (setup.comboBox.selectedItem as FilterDTO).name)
         } finally {
             onEdt {
                 setup.dialog.dispose()
@@ -240,8 +240,8 @@ internal class SwingFilterDialogFilterSwitchTest {
             }
             onEdt {}
 
-            assertEquals("Renamed Via Action", setup.controller.currentFilter().name())
-            assertEquals("Renamed Via Action", (setup.comboBox.selectedItem as FilterDTO).name())
+            assertEquals("Renamed Via Action", setup.controller.currentFilter().name)
+            assertEquals("Renamed Via Action", (setup.comboBox.selectedItem as FilterDTO).name)
         } finally {
             onEdt {
                 setup.dialog.dispose()
@@ -307,7 +307,7 @@ internal class SwingFilterDialogFilterSwitchTest {
             }
             onEdt {}
 
-            assertEquals("Filter 1", setup.controller.currentFilter().name())
+            assertEquals("Filter 1", setup.controller.currentFilter().name)
             assertEquals(false, setup.controller.state().showNewOnly)
             assertEquals(tableReloadsBeforeReset + 1, setup.reloadRequester.tableReloadRequests)
             assertEquals(zeitraumReloadsBeforeReset, setup.reloadRequester.zeitraumReloadRequests)

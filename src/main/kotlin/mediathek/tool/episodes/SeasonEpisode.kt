@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool.episodes;
+package mediathek.tool.episodes
 
-public record SeasonEpisode(int season, int episode) {}
+@JvmRecord
+data class SeasonEpisode(
+    val season: Int,
+    val episode: Int,
+)

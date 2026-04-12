@@ -123,7 +123,7 @@ class FilmFilterController(
 
     fun currentFilter(): FilterDTO = currentState.currentFilter
 
-    fun isFilterLocked(filter: FilterDTO): Boolean = filterConfig.isFilterLocked(filter.id())
+    fun isFilterLocked(filter: FilterDTO): Boolean = filterConfig.isFilterLocked(filter.id)
 
     fun availableFilters(): List<FilterDTO> = filterConfig.availableFilters
 
@@ -301,7 +301,7 @@ class FilmFilterController(
 
     fun cloneCurrentFilter(): AddFilterResult.Added {
         val sourceState = currentState
-        val newFilter = FilterDTO(UUID.randomUUID(), nextCloneFilterName(sourceState.currentFilter.name()))
+        val newFilter = FilterDTO(UUID.randomUUID(), nextCloneFilterName(sourceState.currentFilter.name))
         logger.trace(
             "Updating filter lifecycle for reason=cloneFilter: sourceFilter={} newFilter={}",
             sourceState.currentFilter,
@@ -326,7 +326,7 @@ class FilmFilterController(
     }
 
     fun renameCurrentFilter(newName: String): RenameFilterResult {
-        if (currentState.currentFilter.name() == newName) {
+        if (currentState.currentFilter.name == newName) {
             return RenameFilterResult.Renamed
         }
         if (filterConfig.findFilterForName(newName).isPresent) {

@@ -761,7 +761,7 @@ class SwingFilterDialog @JvmOverloads internal constructor(
         }
 
         override fun actionPerformed(e: ActionEvent?) {
-            val currentFilterName = filterController.state().currentFilter.name()
+            val currentFilterName = filterController.state().currentFilter.name
             val input = prompts.requestRenameFilterName(currentFilterName) ?: return
 
             if (input.isEmpty()) {

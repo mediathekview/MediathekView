@@ -152,8 +152,7 @@ public class ToastPanelUI extends BasicPanelUI implements StyleableUI, PropertyC
                 c.repaint();
                 break;
             }
-            case STYLE:
-            case STYLE_CLASS: {
+            case STYLE, STYLE_CLASS: {
                 JPanel c = (JPanel) e.getSource();
                 installStyle(c);
                 c.revalidate();
@@ -254,12 +253,9 @@ public class ToastPanelUI extends BasicPanelUI implements StyleableUI, PropertyC
     }
 
     protected void applyStyle(JPanel c, Object style) {
-        boolean oldShowCloseButton = showCloseButton;
         oldStyleValues = FlatStylingSupport.parseAndApply(oldStyleValues, style, (key, value) -> applyStyleProperty(c, key, value));
-        if (oldShowCloseButton != showCloseButton) {
-            uninstallCloseButton(c);
-            installCloseButton(c);
-        }
+        uninstallCloseButton(c);
+        installCloseButton(c);
     }
 
     protected Object applyStyleProperty(JPanel c, String key, Object value) {
