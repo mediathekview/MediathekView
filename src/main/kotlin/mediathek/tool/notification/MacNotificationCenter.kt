@@ -10,13 +10,16 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class MacNotificationCenter : INotificationCenter {
+class MacNotificationCenter(
+    private val fallbackNotificationCenter: INotificationCenter = GenericNotificationCenter()
+) : INotificationCenter {
     override fun displayNotification(msg: NotificationMessage) {
-        UserNotifications.show(msg.title, msg.message)
+        UserNotifications.show(msg, fallbackNotificationCenter)
     }
 
     @Throws(IOException::class)
     override fun close() {
+        fallbackNotificationCenter.close()
     }
 
     private object UserNotifications {
@@ -55,7 +58,7 @@ class MacNotificationCenter : INotificationCenter {
             ),
             "v@?B@"
         )
-        private val pendingNotifications = mutableListOf<Pair<String, String>>()
+        private val pendingNotifications = mutableListOf<PendingNotification>()
         private var authorizationRequestInFlight = false
         private var authorizationGranted = false
         private var unsupportedLaunchLogged = false
@@ -66,18 +69,22 @@ class MacNotificationCenter : INotificationCenter {
             notificationExecutor.execute(AuthorizationResult(granted))
         }
 
-        fun show(title: String, body: String) {
-            notificationExecutor.execute(ShowNotification(title, body))
+        fun show(message: NotificationMessage, fallbackNotificationCenter: INotificationCenter) {
+            notificationExecutor.execute(ShowNotification(PendingNotification(message), fallbackNotificationCenter))
         }
 
-        private fun showOnNotificationThread(title: String, body: String) {
+        private fun showOnNotificationThread(
+            message: PendingNotification,
+            fallbackNotificationCenter: INotificationCenter
+        ) {
             try {
                 if (!isRunningFromAppBundle()) {
                     logUnsupportedLaunch()
+                    fallbackNotificationCenter.displayNotification(message.toNotificationMessage())
                     return
                 }
 
-                pendingNotifications += title to body
+                pendingNotifications += message
 
                 if (authorizationGranted) {
                     deliverPending()
@@ -138,8 +145,8 @@ class MacNotificationCenter : INotificationCenter {
             val notifications = pendingNotifications.toList()
             pendingNotifications.clear()
 
-            notifications.forEach { (title, body) ->
-                deliverModern(title, body)
+            notifications.forEach { message ->
+                deliverModern(message.title, message.body)
             }
         }
 
@@ -320,9 +327,28 @@ class MacNotificationCenter : INotificationCenter {
             }
         }
 
-        private class ShowNotification(private val title: String, private val body: String) : Runnable {
+        private class ShowNotification(
+            private val message: PendingNotification,
+            private val fallbackNotificationCenter: INotificationCenter
+        ) : Runnable {
             override fun run() {
-                showOnNotificationThread(title, body)
+                showOnNotificationThread(message, fallbackNotificationCenter)
+            }
+        }
+
+        private data class PendingNotification(
+            val title: String,
+            val body: String,
+            val type: MessageType
+        ) {
+            constructor(message: NotificationMessage) : this(message.title, message.message, message.type)
+
+            fun toNotificationMessage(): NotificationMessage {
+                return NotificationMessage().also {
+                    it.title = title
+                    it.message = body
+                    it.type = type
+                }
             }
         }
 
