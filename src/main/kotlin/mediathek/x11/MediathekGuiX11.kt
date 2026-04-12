@@ -35,7 +35,7 @@ private val logger = LogManager.getLogger(MediathekGuiX11::class.java)
 
 private fun createNotificationCenter(): INotificationCenter {
     val notificationCenter = LinuxNotificationCenter()
-    if (notificationCenter.hasNativeSupport()) {
+    if (notificationCenter.nativeSupport) {
         return notificationCenter
     }
 
