@@ -52,7 +52,6 @@ object SenderExpirationService {
         TimeUnit.SECONDS
     )
 
-    @JvmStatic
     fun fetchExpiryDate(sender: String, websiteUrl: String): LocalDate? {
         val normalizedSender = normalizeSender(sender)
         val cacheKey = websiteUrl.trim()

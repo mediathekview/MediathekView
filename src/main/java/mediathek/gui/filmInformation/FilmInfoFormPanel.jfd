@@ -3,18 +3,12 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3"
 			"$columnConstraints": "[fill][grow,fill]"
 			"$rowConstraints": "[][][][][][][][][][][][][][][][][grow,fill]"
 		} ) {
 			name: "this"
-			"type": enum java.awt.Window$Type UTILITY
-			"title": "Filminformation"
-			"maximumSize": new java.awt.Dimension( 500, 800 )
-			"minimumSize": new java.awt.Dimension( 320, 240 )
-			"preferredSize": new java.awt.Dimension( 400, 500 )
-			"defaultCloseOperation": 2
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label1"
 				"text": "Sender:"
