@@ -111,13 +111,14 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 0,aligny top"
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) {
+						"rows": 2
+						"columns": 1
+					} ) {
 						name: "jPanelLiveInfo"
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
-						"rows": 2
-						"columns": 1
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabelVideoInfo"
 							"text": "Video: n/a"

@@ -292,13 +292,11 @@ class DialogEditDownload(
     private fun requestLiveInfoForUrl(url: String) {
         val executablePath = ffprobePath ?: return
         if (url.isBlank()) {
-            showLiveInfoError("Keine URL vorhanden.")
+            showLiveInfoErrorDialog("Keine URL vorhanden.")
             return
         }
 
-        requestLiveInfo {
-            DownloadQualitySupport.fetchLiveInfo(executablePath, url)
-        }
+        requestLiveInfoForUrlDialog(executablePath, url)
     }
 
     private fun requestLiveInfo(loadLiveInfo: () -> DownloadQualityLiveInfoText) {
@@ -325,6 +323,43 @@ class DialogEditDownload(
                 setLiveInfoButtonsEnabled(ffprobePath != null)
             }
         }
+    }
+
+    private fun requestLiveInfoForUrlDialog(executablePath: Path, url: String) {
+        liveInfoJob?.cancel()
+        setLiveInfoButtonsEnabled(false)
+        jLabelBusyIndicator.isVisible = true
+        jLabelBusyIndicator.isBusy = true
+        showLiveInfo(DownloadQualityLiveInfoText())
+
+        liveInfoJob = uiScope.launch {
+            try {
+                val (liveInfo, fileSizeInMegabytes) = runInterruptible(Dispatchers.IO) {
+                    DownloadQualitySupport.fetchLiveInfo(executablePath, url) to loadFileSizeInMegabytes(url)
+                }
+                resetBusyIndicator()
+                showLiveInfoDialog(liveInfo, fileSizeInMegabytes)
+            } catch (_: CancellationException) {
+                showLiveInfo(DownloadQualityLiveInfoText())
+            } catch (ex: JaffreeAbnormalExitException) {
+                resetBusyIndicator()
+                showLiveInfoErrorDialog(DownloadQualitySupport.getLiveInfoErrorString(ex))
+            } catch (_: Exception) {
+                resetBusyIndicator()
+                showLiveInfoErrorDialog("Unbekannter Fehler aufgetreten.")
+            } finally {
+                resetBusyIndicator()
+                setLiveInfoButtonsEnabled(ffprobePath != null)
+            }
+        }
+    }
+
+    private fun loadFileSizeInMegabytes(url: String): String {
+        return runCatching {
+            FileSize.getFileLengthFromUrl(url, true)
+        }.onFailure {
+            logger.error("Error occurred while fetching file size for URL", it)
+        }.getOrDefault("")
     }
 
     private fun setLiveInfoButtonsEnabled(enabled: Boolean) {
@@ -357,6 +392,39 @@ class DialogEditDownload(
         jLabelVideoInfo.text = message
         jLabelAudioInfo.foreground = UIManager.getColor(LABEL_FOREGROUND_KEY)
         jLabelAudioInfo.text = ""
+    }
+
+    private fun showLiveInfoDialog(liveInfoText: DownloadQualityLiveInfoText, fileSizeInMegabytes: String = "") {
+        val message = buildString {
+            append("<html>")
+            append("<b>Video:</b> ")
+            append(liveInfoText.video.removePrefix("Video:").trimStart())
+            append("<br><b>Audio:</b> ")
+            append(liveInfoText.audio.removePrefix("Audio:").trimStart())
+
+            if (fileSizeInMegabytes.isNotBlank()) {
+                append("<br><b>Dateigröße:</b> ")
+                append(fileSizeInMegabytes)
+                append(" MB")
+            }
+            append("</html>")
+        }
+
+        JOptionPane.showMessageDialog(
+            this,
+            message,
+            "Codec-Details",
+            JOptionPane.INFORMATION_MESSAGE
+        )
+    }
+
+    private fun showLiveInfoErrorDialog(message: String) {
+        JOptionPane.showMessageDialog(
+            this,
+            message,
+            "Codec-Details",
+            JOptionPane.ERROR_MESSAGE
+        )
     }
 
     private fun updateDiskSpaceIndicatorsAsync() {
@@ -865,9 +933,7 @@ class DialogEditDownload(
             }
 
             logger.info("Datei löschen: {}", file.absolutePath)
-            if (!file.delete()) {
-                throw IllegalStateException("delete failed")
-            }
+            check(file.delete()) { "delete failed" }
             true
         } catch (_: Exception) {
             JOptionPane.showMessageDialog(this, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE)

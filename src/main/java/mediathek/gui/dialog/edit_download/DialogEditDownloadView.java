@@ -101,14 +101,13 @@ public class DialogEditDownloadView extends JDialog {
         {
             jPanelRes.setBorder(new TitledBorder("Download-Qualit\u00e4t:"));
             jPanelRes.setLayout(new MigLayout(
-                new LC().insets("5").hideMode(3).fillX(),
+                new LC().fillX().insets("5").hideMode(3),
                 // columns
                 new AC()
                     .grow().fill(),
                 // rows
                 new AC()
                     .fill().gap()
-                    .fill()
                     .fill()));
 
             //======== jPanelResButtons ========
@@ -141,7 +140,7 @@ public class DialogEditDownloadView extends JDialog {
             //======== jPanelResInfo ========
             {
                 jPanelResInfo.setLayout(new MigLayout(
-                    new LC().insets("0").hideMode(3).fillX().gridGap("10", "0"),
+                    new LC().fillX().insets("0").hideMode(3).gridGap("10", "0"),
                     // columns
                     new AC()
                         .size("pref!").gap()

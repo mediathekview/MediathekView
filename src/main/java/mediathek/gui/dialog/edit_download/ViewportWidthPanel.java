@@ -3,7 +3,7 @@ package mediathek.gui.dialog.edit_download;
 import javax.swing.*;
 import java.awt.*;
 
-class ViewportWidthPanel extends JPanel implements Scrollable {
+public class ViewportWidthPanel extends JPanel implements Scrollable {
     @Override
     public Dimension getPreferredScrollableViewportSize() {
         return getPreferredSize();
