@@ -24,7 +24,6 @@ import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
 import mediathek.gui.messages.DownloadStartEvent
-import mediathek.gui.messages.InstallTabSwitchListenerEvent
 import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.GuiFunktionenProgramme
@@ -32,7 +31,6 @@ import mediathek.tool.MessageBus
 import mediathek.tool.notification.MacNotificationCenter
 import mediathek.tool.threads.IndicatorThread
 import mediathek.tool.timer.TimerPool
-import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -213,14 +211,7 @@ class MediathekGuiMac : MediathekGui {
         }
     }
 
-    override fun installMenuTabSwitchListener() {
-        //do not use on OS X as it violates HIG...
-    }
-
-    @Handler
-    override fun handleInstallTabSwitchListenerEvent(msg: InstallTabSwitchListenerEvent) {
-        //do not use on OS X as it violates HIG...
-    }
+    override fun supportsAutomaticMenuTabSwitching(): Boolean = false
 
     override fun initMenus() {
         super.initMenus()

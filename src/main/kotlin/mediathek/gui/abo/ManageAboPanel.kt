@@ -106,6 +106,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         super.removeNotify()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @Handler
     private fun handleAboListChanged(event: AboListChangedEvent) {
         SwingUtilities.invokeLater {

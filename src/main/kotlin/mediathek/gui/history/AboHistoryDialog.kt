@@ -88,6 +88,7 @@ class AboHistoryDialog(owner: Frame?) : JDialog(owner, "Abo-Historie", true) {
         super.dispose()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @Handler
     private fun handleAboHistoryChanged(event: AboHistoryChangedEvent) {
         uiScope.launch {

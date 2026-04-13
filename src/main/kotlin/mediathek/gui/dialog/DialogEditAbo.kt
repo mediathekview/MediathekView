@@ -25,7 +25,6 @@ class DialogEditAbo(
     /**
      * This determines in multi edit mode, which fields should be applied to all selected abos...
      */
-    @JvmField
     val multiEditCbIndices = BooleanArray(AboTags.entries.size)
 
     /**

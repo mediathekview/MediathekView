@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.config
+package mediathek.tool
 
-enum class ApplicationType {
-    NIGHTLY,
-    PRODUCTION
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+
+class SingleInstanceTest {
+    @Test
+    fun instance1_not_active() {
+        SingleInstance().use { instance1 ->
+            assertFalse(instance1.isAppAlreadyActive())
+        }
+    }
+
+    @Test
+    fun instance2_activity_test() {
+        SingleInstance().use { instance1 ->
+            SingleInstance().use { instance2 ->
+                assertFalse(instance1.isAppAlreadyActive())
+                assertTrue(instance2.isAppAlreadyActive())
+            }
+        }
+    }
 }

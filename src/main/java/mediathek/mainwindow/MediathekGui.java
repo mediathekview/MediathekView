@@ -339,6 +339,10 @@ public class MediathekGui extends JFrame {
         return ui;
     }
 
+    public boolean supportsAutomaticMenuTabSwitching() {
+        return true;
+    }
+
     protected void resetTabPlacement() {
         // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
         MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
@@ -961,6 +965,10 @@ public class MediathekGui extends JFrame {
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
      */
     protected void installMenuTabSwitchListener() {
+        if (!supportsAutomaticMenuTabSwitching()) {
+            return;
+        }
+
         //initial setup
         menuListeners.put(jMenuFilme, new MenuTabSwitchListener(this, TABS.TAB_FILME));
         menuListeners.put(jMenuDownload, new MenuTabSwitchListener(this, TABS.TAB_DOWNLOADS));
@@ -977,6 +985,10 @@ public class MediathekGui extends JFrame {
      */
     @Handler
     protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
+        if (!supportsAutomaticMenuTabSwitching()) {
+            return;
+        }
+
         switch (msg.event) {
             case INSTALL -> SwingUtilities.invokeLater(() -> {
                 jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));

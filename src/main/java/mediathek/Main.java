@@ -48,7 +48,6 @@ import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 
 import javax.imageio.ImageIO;
@@ -90,7 +89,7 @@ public class Main {
                 var oldFilmList = StandardLocations.getSettingsDirectory().resolve(Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
             }
-            catch (IOException ignored) {
+            catch (IOException _) {
             }
         }
     }
@@ -359,7 +358,6 @@ public class Main {
         }
     }
 
-    @NotNull
     private static String getJvmErrorMessageString() {
         var message = "<html>" +
                 "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
@@ -389,7 +387,7 @@ public class Main {
             try {
                 Integer.parseInt(strScale);
             }
-            catch (NumberFormatException ex) {
+            catch (NumberFormatException _) {
                 // not an int -> show warning
                 // fractional scale is NOT supported under Linux, must use integer only.
                 var scaleFactor = Float.parseFloat(strScale);
@@ -848,6 +846,10 @@ public class Main {
     }
 
     static class DarkModeSetup {
+        private DarkModeSetup() {
+            /* This utility class should not be instantiated */
+        }
+
         private static LookAndFeel getCurrentLookAndFeel(boolean darkMode) {
             LookAndFeel laf;
             if (darkMode) {

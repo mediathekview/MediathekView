@@ -181,8 +181,7 @@ public class PanelEinstellungen extends JPanel {
     private static final String NO_INFLUENCE_TEXT = "Einstellung hat unter macOS keine Auswirkung";
 
     private void setupTabSwitchListener() {
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            //deactivated on OS X
+        if (!MediathekGui.ui().supportsAutomaticMenuTabSwitching()) {
             cbAutomaticMenuTabSwitching.setEnabled(false);
             cbAutomaticMenuTabSwitching.setToolTipText(NO_INFLUENCE_TEXT);
             config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
