@@ -15,6 +15,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class DialogAboNoSet extends JDialog {
+    public static boolean ensureAboProgramSetAvailable(JFrame parent) {
+        if (hasAboProgramSet()) {
+            return true;
+        }
+
+        new DialogAboNoSet(parent).setVisible(true);
+        return false;
+    }
+
+    public static boolean hasAboProgramSet() {
+        return Daten.getInstance().getListePset().getListeAbo().getObjectDataCombo().length > 0;
+    }
+
     public DialogAboNoSet(JFrame parent) {
         super(parent, true);
         initComponents();

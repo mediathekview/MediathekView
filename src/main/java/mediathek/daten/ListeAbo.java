@@ -23,6 +23,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.daten.abo.FilmLengthState;
+import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
@@ -41,7 +42,7 @@ public class ListeAbo extends ArrayList<DatenAbo> {
         int min;
         try {
             min = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE));
-        } catch (Exception ex) {
+        } catch (Exception _) {
             min = 0;
             MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, "0");
         }
@@ -65,6 +66,10 @@ public class ListeAbo extends ArrayList<DatenAbo> {
         datenAbo.setFilmLengthState(FilmLengthState.MINIMUM);
         datenAbo.setZielpfad(aboname);
         datenAbo.setPsetName("");
+
+        if (!DialogAboNoSet.ensureAboProgramSetAvailable(MediathekGui.ui())) {
+            return;
+        }
 
         DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), datenAbo, false);
         dialogEditAbo.setVisible(true);

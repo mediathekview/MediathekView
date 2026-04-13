@@ -5,6 +5,7 @@ import mediathek.config.Daten;
 import mediathek.daten.abo.AboTags;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.actions.CreateNewAboAction;
+import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
@@ -227,19 +228,19 @@ public class ManageAboPanel extends JPanel {
     private JPopupMenu createContextMenu() {
         JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
         itemEinschalten.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg"));
-        itemEinschalten.addActionListener(e -> changeAboActiveState(true));
+        itemEinschalten.addActionListener(_ -> changeAboActiveState(true));
 
         JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
         itemDeaktivieren.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/xmark.svg"));
-        itemDeaktivieren.addActionListener(e -> changeAboActiveState(false));
+        itemDeaktivieren.addActionListener(_ -> changeAboActiveState(false));
 
         JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
         itemLoeschen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
-        itemLoeschen.addActionListener(e -> aboLoeschen());
+        itemLoeschen.addActionListener(_ -> aboLoeschen());
 
         JMenuItem itemAendern = new JMenuItem("Abo ändern");
         itemAendern.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg"));
-        itemAendern.addActionListener(e -> editAbo());
+        itemAendern.addActionListener(_ -> editAbo());
 
         JMenuItem itemNeu = new JMenuItem();
         itemNeu.setAction(createAboAction);
@@ -341,6 +342,10 @@ public class ManageAboPanel extends JPanel {
         final int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
         var editedAbo = (DatenAbo) tabelle.getModel().getValueAt(modelRow, DatenAbo.ABO_REF);
+
+        if (!DialogAboNoSet.ensureAboProgramSetAvailable(MediathekGui.ui())) {
+            return;
+        }
 
         DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), editedAbo, tabelle.getSelectedRowCount() > 1);
         dialog.setTitle("Abo ändern");
