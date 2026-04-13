@@ -221,11 +221,10 @@ public class FilmListWriter {
 
     private void writeHighQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) {
         String url = datenFilm.getHighQualityUrl();
-        if (decompressUrls) {
-            if (DatenFilm.isCompressedUrl(url)) {
+        if (decompressUrls && DatenFilm.isCompressedUrl(url)) {
                 url = datenFilm.decompressUrl(url);
             }
-        }
+
 
         jg.writeString(url);
     }
