@@ -138,7 +138,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS -> {
-                    if (mvTable.showSenderIcons() && !mvTable.useSmallSenderIcons) {
+                    if (mvTable.showSenderIcons() && !mvTable.getUseSmallSenderIcons()) {
                         progressBar.setBorder(largeBorder);
                     } else {
                         progressBar.setBorder(emptyBorder);

@@ -19,12 +19,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class MVDownloadsTable extends MVTable {
+public class MVDownloadsTable extends PersistentColumnConfigurationTable {
     public MVDownloadsTable() {
         super(DatenDownload.MAX_ELEM, DatenDownload.getColumnVisibilityStore(),
                 Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN),
                 Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN),
-                Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS));
+                MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS);
 
         setupDragnDrop();
 
@@ -56,7 +56,7 @@ public class MVDownloadsTable extends MVTable {
                 else
                     toolTipText = "";
             }
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException _) {
             //catch null pointer exception if mouse is over an empty line
         }
 

@@ -19,7 +19,7 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
-public class MVFilmTable extends MVTable {
+public class MVFilmTable extends PersistentColumnConfigurationTable {
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
 
@@ -27,7 +27,7 @@ public class MVFilmTable extends MVTable {
         super(DatenFilm.MAX_ELEM, ColumnVisibilityStore.of(GuiFilme.VISIBLE_COLUMNS),
                 Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN),
                 Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN),
-                Optional.of(MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME));
+                MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME);
 
         setAutoCreateRowSorter(false);
         addPropertyChangeListener("model", evt -> {
@@ -118,7 +118,7 @@ public class MVFilmTable extends MVTable {
 
         try {
             return isTitleTruncatedAt(viewRow, viewColumn) ? filmAtViewRow(viewRow).getTitle() : null;
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException _) {
             // catch null pointer exception if mouse is over an empty line
             return null;
         }
@@ -154,8 +154,6 @@ public class MVFilmTable extends MVTable {
 
     @Override
     public void resetTabelle() {
-        //logger.debug("resetTabelle()");
-
         for (int i = 0; i < maxSpalten; ++i) {
             resetFilmeTab(i);
         }
@@ -258,12 +256,7 @@ public class MVFilmTable extends MVTable {
 
         @Override
         public void setSortKeys(List<? extends SortKey> sortKeys) {
-            if (sortKeys != null) {
-                while (sortKeys.size() > 1) {
-                    sortKeys.remove(1);
-                }
-            }
-            super.setSortKeys(sortKeys);
+            super.setSortKeys(sortKeys == null ? null : sortKeys.stream().limit(1).toList());
         }
     }
 }

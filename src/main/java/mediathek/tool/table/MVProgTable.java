@@ -9,7 +9,6 @@ public class MVProgTable extends MVTable {
     public MVProgTable() {
         super(DatenProg.MAX_ELEM, ColumnVisibilityStore.create(DatenProg.MAX_ELEM),
                 Optional.empty(),
-                Optional.empty(),
                 Optional.empty());
 
         setModel(new NonEditableTableModel(new Object[][]{}, DatenProg.COLUMN_NAMES));

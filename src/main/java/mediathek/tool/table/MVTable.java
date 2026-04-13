@@ -10,46 +10,37 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.RowSorter.SortKey;
 import javax.swing.plaf.UIResource;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class MVTable extends JTable {
-    private static final String FELDTRENNER = "|";
-    private static final String SORT_ASCENDING = "ASCENDING";
-    private static final String SORT_DESCENDING = "DESCENDING";
     private static final Logger logger = LogManager.getLogger();
     protected final int[] breite;
     protected final int[] reihe;
     protected final int maxSpalten;
     protected final ColumnVisibilityStore spaltenAnzeigen;
-    protected final Optional<MVConfig.Configs> columnConfigurationDataConfigKey;
     protected final Optional<MVConfig.Configs> showIconsConfigKey;
     protected final Optional<MVConfig.Configs> smallSenderIconConfigKey;
     /**
      * unmodified JTable used to calculate the row height. Reference only.
      */
     private final JTable probe = new JTable();
-    public boolean useSmallSenderIcons;
+    protected boolean useSmallSenderIcons;
     protected List<? extends RowSorter.SortKey> listeSortKeys;
     private int[] selRows = {};
     private boolean showSenderIcon;
     private boolean lineBreak = true;
-
-    public MVTable(int maxColumns, @NotNull ColumnVisibilityStore visibleColumnStore,
+    protected MVTable(int maxColumns, @NotNull ColumnVisibilityStore visibleColumnStore,
                    @NotNull Optional<MVConfig.Configs> showIconsConfigKey,
-                   @NotNull Optional<MVConfig.Configs> smallSenderIconConfigKey,
-                   @NotNull Optional<MVConfig.Configs> columnConfigurationDataConfigKey) {
+                   @NotNull Optional<MVConfig.Configs> smallSenderIconConfigKey) {
         maxSpalten = maxColumns;
         this.showIconsConfigKey = showIconsConfigKey;
         this.smallSenderIconConfigKey = smallSenderIconConfigKey;
-        this.columnConfigurationDataConfigKey = columnConfigurationDataConfigKey;
         spaltenAnzeigen = visibleColumnStore;
         // make all columns visible by default in column store
         spaltenAnzeigen.fill(true);
@@ -71,14 +62,12 @@ public abstract class MVTable extends JTable {
         MessageBus.getMessageBus().subscribe(this);
     }
 
-    /**
-     * Count the number of saved columns within the string.
-     * Counts the number of comma separated entries.
-     * @param s The string to be processed.
-     * @return The number of columns included.
-     */
-    protected static long countNumberOfColumns(@NotNull String s) {
-        return s.chars().filter(ch -> ch == ',').count() + 1;
+    public boolean getUseSmallSenderIcons() {
+        return useSmallSenderIcons;
+    }
+
+    public void setUseSmallSenderIcons(boolean useSmallSenderIcons) {
+        this.useSmallSenderIcons = useSmallSenderIcons;
     }
 
     protected Color defaultRowBackground(int row) {
@@ -100,25 +89,7 @@ public abstract class MVTable extends JTable {
 
     @Handler
     private void handleFontSizeChanged(FontSizeChangedEvent e) {
-        System.out.println("FONT SIZE CHANGED");
         SwingUtilities.invokeLater(this::calculateRowHeight);
-    }
-
-    private SortKey sortKeyLesen(String s, String strSortOrder) {
-        SortKey sk;
-
-        try {
-            final int column = Integer.parseInt(s);
-            SortOrder order = switch (strSortOrder) {
-                case SORT_ASCENDING -> SortOrder.ASCENDING;
-                case SORT_DESCENDING -> SortOrder.DESCENDING;
-                default -> throw new IndexOutOfBoundsException("UNDEFINED SORT KEY");
-            };
-            sk = new SortKey(column,order);
-        } catch (Exception ex) {
-            return null;
-        }
-        return sk;
     }
 
     public boolean showSenderIcons() {
@@ -157,58 +128,6 @@ public abstract class MVTable extends JTable {
         }
 
         setRowHeight(Math.max(minimumHeight, getSizeArea()));
-    }
-
-    /**
-     * Tabelle das erste Mal initialisieren mit den gespeicherten Daten oder den Standardwerten.
-     * Erst die Breite, dann die Reihenfolge.
-     */
-    public void readColumnConfigurationData() {
-        // wird nur für eingerichtete Tabellen gemacht
-        columnConfigurationDataConfigKey.ifPresent(key -> {
-            try {
-                String b = "", r = "", s = "", upDown = "";
-                boolean ok = false;
-                var keyDataStr = MVConfig.get(key);
-                if (!keyDataStr.isEmpty()) {
-                    ok = true;
-                    int f1, f2, f3;
-
-                    if ((f1 = keyDataStr.indexOf(FELDTRENNER)) != -1) {
-                        b = keyDataStr.substring(0, f1);
-                        if ((f2 = keyDataStr.indexOf(FELDTRENNER, f1 + 1)) != -1) {
-                            r = keyDataStr.substring(f1 + 1, f2);
-                        }
-                        if ((f3 = keyDataStr.indexOf(FELDTRENNER, f2 + 1)) != -1) {
-                            s = keyDataStr.substring(f2 + 1, f3);
-                            upDown = keyDataStr.substring(f3 + 1);
-                        }
-                    }
-                    if (!arrLesen(b, breite)) {
-                        ok = false;
-                    }
-                    if (!arrLesen(r, reihe)) {
-                        ok = false;
-                    }
-
-                    SortKey sk = sortKeyLesen(s, upDown);
-                    if (sk != null) {
-                        final ArrayList<SortKey> listSortKeys_ = new ArrayList<>();
-                        listSortKeys_.add(sk);
-                        this.getRowSorter().setSortKeys(listSortKeys_);
-                    }
-                }
-
-                if (ok) {
-                    setSpaltenEinAus(breite);
-                    setSpalten();
-                    calculateRowHeight();
-                } else {
-                    resetTabelle();
-                }
-            } catch (Exception ignored) {
-            }
-        });
     }
 
     private boolean isColumnVisible(int index) {
@@ -368,7 +287,9 @@ public abstract class MVTable extends JTable {
     public void resetTabelle() {
         listeSortKeys = null;
 
-        getRowSorter().setSortKeys(null); // empty sort keys
+        if (getRowSorter() != null) {
+            getRowSorter().setSortKeys(null); // empty sort keys
+        }
         setRowSorter(null);
         setAutoCreateRowSorter(true);
         spaltenAusschalten();
@@ -380,76 +301,10 @@ public abstract class MVTable extends JTable {
     protected abstract void spaltenAusschalten();
 
     /**
-     * Prepare the configuration data.
-     * @return the configuration data as string.
-     */
-    private String prepareTableConfigurationData() {
-        StringBuilder b;
-        StringBuilder r;
-        int[] reihe_ = new int[maxSpalten];
-        int[] breite_ = new int[maxSpalten];
-        for (int i = 0; i < reihe_.length && i < getModel().getColumnCount(); ++i) {
-            reihe_[i] = convertColumnIndexToModel(i);
-        }
-
-        final TableColumnModel model = getColumnModel();
-        for (int i = 0; i < breite_.length && i < getModel().getColumnCount(); ++i) {
-            breite_[i] = model.getColumn(convertColumnIndexToView(i)).getWidth();
-        }
-
-        b = new StringBuilder(Integer.toString(breite_[0]));
-        r = new StringBuilder(Integer.toString(reihe_[0]));
-        for (int i = 1; i < breite.length; i++) {
-            b.append(',').append(breite_[i]);
-            r.append(',').append(reihe_[i]);
-        }
-
-        listeSortKeys = this.getRowSorter().getSortKeys();
-        var sortKeyColumnStr = "";
-        var sortOrderStr = "";
-        if (listeSortKeys != null) {
-            if (!listeSortKeys.isEmpty()) {
-                SortKey sk = listeSortKeys.getFirst();
-                sortKeyColumnStr = String.valueOf(sk.getColumn());
-                sortOrderStr = sk.getSortOrder() == SortOrder.ASCENDING ? SORT_ASCENDING : SORT_DESCENDING;
-            }
-        }
-
-        return b + FELDTRENNER + r + FELDTRENNER + sortKeyColumnStr + FELDTRENNER + sortOrderStr;
-    }
-
-    /**
-     * Write table configuration data to config.
+     * Write table display preferences to config.
      */
     public void writeTableConfigurationData() {
-        columnConfigurationDataConfigKey.ifPresent(key -> MVConfig.add(key, prepareTableConfigurationData()));
         showIconsConfigKey.ifPresent(key -> MVConfig.add(key, String.valueOf(showSenderIcon)));
         smallSenderIconConfigKey.ifPresent(key -> MVConfig.add(key, String.valueOf(useSmallSenderIcons)));
-    }
-
-    private boolean arrLesen(String s, int[] arr) {
-        String sub;
-        if (maxSpalten != countNumberOfColumns(s)) {
-            // dann hat sich die Anzahl der Spalten der Tabelle geändert: Versionswechsel
-            return false;
-        } else {
-            for (int i = 0; i < maxSpalten; i++) {
-                if (!s.isEmpty()) {
-                    if (s.contains(",")) {
-                        sub = s.substring(0, s.indexOf(','));
-                        s = s.replaceFirst(sub + ',', "");
-                    } else {
-                        sub = s;
-                        s = "";
-                    }
-                    try {
-                        arr[i] = Integer.parseInt(sub);
-                    } catch (Exception ex) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
     }
 }

@@ -14,6 +14,7 @@
 - **BUGFIX:** Im Tab Filme führte das Verschieben von Spalten zur fehlerhaften Darstellungen innerhalb der Spalten.
 - **BUGFIX:** Mehrfachauswahl im Tab *Download* wird nun zurückgesetzt nach dem Löschen.
 - **BUGFIX:** Ein Download Verzeichnis wird nun erst beim Downloadbeginn angelegt.
+- **BUGFIX:** Das sortieren der Spalten im *Abos verwalten* funktioniert nun.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
 - **FEATURE:** Tab *Audiothek* zur Suche (offline als auch online), Abspielen und Download von Podcasts der ARD Audiothek und via podcastindex.org.
 - **FEATURE:** Filter können nun kopiert werden.

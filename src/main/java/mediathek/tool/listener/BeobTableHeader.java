@@ -121,12 +121,12 @@ public class BeobTableHeader extends MouseAdapter {
             jPopupMenu.add(item3);
 
             final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Kleine Sendericons anzeigen");
-            item2.setSelected(tabelle.useSmallSenderIcons);
+            item2.setSelected(tabelle.getUseSmallSenderIcons());
             if (!tabelle.showSenderIcons()) {
                 item2.setEnabled(false);
             } else {
                 item2.addActionListener(_ -> {
-                    tabelle.useSmallSenderIcons = item2.isSelected();
+                    tabelle.setUseSmallSenderIcons(item2.isSelected());
                     setSpalten();
                 });
             }
