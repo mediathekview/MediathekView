@@ -415,14 +415,18 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
 
     private fun processAboChanges() {
         uiScope.launch {
-            infiniteProgressPanel.start()
-            infiniteProgressPanel.setText("Verarbeite Abos...")
+            val progressJob = launch {
+                delay(PROGRESS_PANEL_DELAY)
+                infiniteProgressPanel.setText("Verarbeite Abos...")
+                infiniteProgressPanel.start()
+            }
             try {
                 withContext(Dispatchers.Default) {
                     daten.listeAbo.aenderungMelden()
                 }
             } finally {
-                infiniteProgressPanel.stop()
+                progressJob.cancel()
+                infiniteProgressPanel.interrupt()
                 infiniteProgressPanel.setText("")
             }
         }
@@ -431,6 +435,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     private companion object {
         private const val ACTION_MAP_KEY_EDIT_ABO = "edit_abo"
         private const val ACTION_MAP_KEY_DELETE_ABO = "delete_abo"
+        private const val PROGRESS_PANEL_DELAY = 150L
         private val logger = LogManager.getLogger()
     }
 }
