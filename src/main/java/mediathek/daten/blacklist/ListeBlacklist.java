@@ -45,7 +45,8 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * Content is num of days converted to milliseconds from UNIX start.
      */
     private long days_lower_boundary;
-    private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
+    private boolean doNotShowFutureFilms;
+    private boolean doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
     /**
      * The minimum length in minutes a film should have.
@@ -217,7 +218,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
                 var days_ms = TimeUnit.MILLISECONDS.convert(Long.parseLong(strZeitraum), TimeUnit.DAYS);
                 days_lower_boundary = System.currentTimeMillis() - days_ms;
             }
-        } catch (Exception ex) {
+        } catch (Exception _) {
             days_lower_boundary = 0;
         }
     }
@@ -226,7 +227,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         try {
             var filmlength_minutes = Long.parseLong(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE));
             minimumFilmLength = filmlength_minutes * 60; // convert to seconds
-        } catch (Exception ex) {
+        } catch (Exception _) {
             minimumFilmLength = 0;
         }
     }
@@ -292,7 +293,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         }
         return mode.keepFilm(false);
     }
-    final static private String[] EMPTY_STRING_ARRAY = {""};
+    private static final String[] EMPTY_STRING_ARRAY = {""};
 
     private String[] makePattern(String input) {
         return Filter.isPattern(input) ? new String[]{input} : input.toLowerCase().split(",");

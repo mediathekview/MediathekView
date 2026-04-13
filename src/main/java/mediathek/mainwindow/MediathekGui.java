@@ -696,7 +696,7 @@ public class MediathekGui extends JFrame {
 
             setBounds(x, y, width, height);
         }
-        catch (NoSuchElementException e) {
+        catch (NoSuchElementException _) {
             //in case of any error, just make the window maximized
             setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
@@ -897,8 +897,8 @@ public class MediathekGui extends JFrame {
      *
      * @return {@link IndicatorThread} instance for the running platform.
      */
-    protected IndicatorThread createProgressIndicatorThread() throws Exception {
-        throw new Exception("Unsupported Platform");
+    protected IndicatorThread createProgressIndicatorThread() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Unsupported Platform");
     }
 
     /**

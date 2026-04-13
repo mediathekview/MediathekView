@@ -98,7 +98,4 @@ class ApplyBlacklistFilterPredicate implements Predicate<DatenFilm> {
         return lengthCheck(0, filmLaenge) || filmLaenge > 0;
     }
 
-    record CompiledBlacklistRule(BlacklistRule rule, String[] pTitel, String[] pThema) {
-
-    }
 }
