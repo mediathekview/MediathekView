@@ -218,7 +218,11 @@ public class MediathekGui extends JFrame {
         try {
             daten.waitForHistoryDataLoadingToComplete();
         }
-        catch (ExecutionException | InterruptedException e) {
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("waitForHistoryDataLoadingToComplete()", e);
+        }
+        catch (ExecutionException e) {
             logger.error("waitForHistoryDataLoadingToComplete()", e);
         }
 
@@ -290,6 +294,11 @@ public class MediathekGui extends JFrame {
                     return true;
 
                 }
+                catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("Auto DL and Quit: error starting downloads", e);
+                    return false;
+                }
                 catch (Exception e) {
                     logger.error("Auto DL and Quit: error starting downloads", e);
                     return false;
@@ -299,6 +308,10 @@ public class MediathekGui extends JFrame {
                 if (throwable == null) {
                     try {
                         SwingUtilities.invokeAndWait(() -> quitApplication(true));
+                    }
+                    catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        logger.error("Auto DL and Quit: Error in callback...", e);
                     }
                     catch (Exception e) {
                         logger.error("Auto DL and Quit: Error in callback...", e);
@@ -1274,6 +1287,7 @@ public class MediathekGui extends JFrame {
             }
         }
         catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             logger.error("timerPool shutdown exception", e);
         }
         var taskList = timerPool.shutdownNow();
