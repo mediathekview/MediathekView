@@ -13,6 +13,7 @@
 - **BUGFIX(Windows):** Bandbreitenbegrenzung der Downloads funktionierte nicht richtig.
 - **BUGFIX:** Im Tab Filme führte das Verschieben von Spalten zur fehlerhaften Darstellungen innerhalb der Spalten.
 - **BUGFIX:** Mehrfachauswahl im Tab *Download* wird nun zurückgesetzt nach dem Löschen.
+- **BUGFIX:** Mehrfachauswahl im Tab *Filme* wird nun zurückgesetzt nach dem Löschen.
 - **BUGFIX:** Ein Download Verzeichnis wird nun erst beim Downloadbeginn angelegt.
 - **BUGFIX:** Das sortieren der Spalten im *Abos verwalten* funktioniert nun.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
