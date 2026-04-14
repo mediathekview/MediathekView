@@ -22,6 +22,8 @@ import java.util.List;
 public class MVFilmTable extends PersistentColumnConfigurationTable {
     private static final Logger logger = LogManager.getLogger();
     private MyRowSorter<TableModel> sorter;
+    private List<DatenFilm.FilmIdentity> selectedFilmIdentities = List.of();
+    private int selectionAnchorRow = -1;
 
     public MVFilmTable() {
         super(DatenFilm.MAX_ELEM, ColumnVisibilityStore.of(GuiFilme.VISIBLE_COLUMNS),
@@ -185,6 +187,65 @@ public class MVFilmTable extends PersistentColumnConfigurationTable {
 
         var rowSorter = getRowSorter();
         listeSortKeys = rowSorter != null ? rowSorter.getSortKeys() : null;
+    }
+
+    @Override
+    protected void saveSelectedTableRows() {
+        super.saveSelectedTableRows();
+
+        var selectedRows = getSelectedRows();
+        selectionAnchorRow = selectedRows.length > 0 ? selectedRows[0] : -1;
+        if (selectedRows.length == 0) {
+            selectedFilmIdentities = List.of();
+            return;
+        }
+
+        var identities = new ArrayList<DatenFilm.FilmIdentity>(selectedRows.length);
+        for (int selectedRow : selectedRows) {
+            if (selectedRow >= 0 && selectedRow < getRowCount()) {
+                identities.add(filmAtViewRow(selectedRow).getFilmIdentity());
+            }
+        }
+        selectedFilmIdentities = List.copyOf(identities);
+    }
+
+    @Override
+    protected void restoreSelectedTableRows() {
+        if (selectedFilmIdentities.isEmpty()) {
+            super.restoreSelectedTableRows();
+            return;
+        }
+
+        clearSelection();
+
+        int firstVisibleRow = -1;
+        selectionModel.setValueIsAdjusting(true);
+        try {
+            for (int viewRow = 0; viewRow < getRowCount(); viewRow++) {
+                var filmIdentity = filmAtViewRow(viewRow).getFilmIdentity();
+                if (selectedFilmIdentities.contains(filmIdentity)) {
+                    addRowSelectionInterval(viewRow, viewRow);
+                    if (firstVisibleRow == -1) {
+                        firstVisibleRow = viewRow;
+                    }
+                }
+            }
+        } finally {
+            selectionModel.setValueIsAdjusting(false);
+        }
+
+        if (firstVisibleRow != -1) {
+            scrollToIndexDelegate(firstVisibleRow);
+            requestFocus();
+            return;
+        }
+
+        if (getRowCount() > 0 && selectionAnchorRow >= 0) {
+            int fallbackRow = Math.min(selectionAnchorRow, getRowCount() - 1);
+            selectionModel.setSelectionInterval(fallbackRow, fallbackRow);
+            scrollToIndexDelegate(fallbackRow);
+            requestFocus();
+        }
     }
 
     private void reorderColumns() {
