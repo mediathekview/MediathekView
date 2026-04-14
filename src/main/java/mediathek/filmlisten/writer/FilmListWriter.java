@@ -155,6 +155,9 @@ public class FilmListWriter {
                 logger.info("   --> geschrieben!");
                 logger.trace("Write duration: {} ms", TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS));
             }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            logger.error("nach: {}", datei, ex);
         } catch (Exception ex) {
             logger.error("nach: {}", datei, ex);
         }

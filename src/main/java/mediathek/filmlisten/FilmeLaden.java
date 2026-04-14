@@ -471,7 +471,10 @@ public class FilmeLaden {
     private void invokeOnEdtAndWait(Runnable action) {
         try {
             SwingUtilities.invokeAndWait(action);
-        } catch (InterruptedException | InvocationTargetException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
