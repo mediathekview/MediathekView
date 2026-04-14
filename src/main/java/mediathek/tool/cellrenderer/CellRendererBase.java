@@ -51,15 +51,6 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      */
     private final SelfEvictingSenderIconCache senderCellIconCache = new SelfEvictingSenderIconCache();
 
-    /**
-     * Draws the sender icon in the sender model column.
-     *
-     * @param sender Name of the sender.
-     */
-    protected void setSenderIcon(@NotNull String sender, @NotNull Dimension targetDim) {
-        setSenderIcon(sender, targetDim, false);
-    }
-
     protected void setSenderIcon(@NotNull String sender, @NotNull Dimension targetDim, boolean isSelected) {
         String normalizedSender = normalizeSender(sender);
 
@@ -122,42 +113,6 @@ public class CellRendererBase extends DefaultTableCellRenderer {
             return false;
         }
         return !SELECTION_CONTRAST_EXCLUDE_SENDERS.contains(normalizedSender);
-    }
-
-    private static final class SelectionContrastIcon implements Icon {
-        private final Icon delegate;
-        private static final int PADDING_X = 3;
-        private static final int PADDING_Y = 1;
-
-        private SelectionContrastIcon(@NotNull Icon delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public void paintIcon(Component c, Graphics g, int x, int y) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            try {
-                int w = getIconWidth();
-                int h = getIconHeight();
-                g2.setColor(new Color(255, 255, 255, 210));
-                g2.fillRoundRect(x, y, w, h, 6, 6);
-                g2.setColor(new Color(255, 255, 255, 235));
-                g2.drawRoundRect(x, y, w - 1, h - 1, 6, 6);
-                delegate.paintIcon(c, g2, x + PADDING_X, y + PADDING_Y);
-            } finally {
-                g2.dispose();
-            }
-        }
-
-        @Override
-        public int getIconWidth() {
-            return delegate.getIconWidth() + (PADDING_X * 2);
-        }
-
-        @Override
-        public int getIconHeight() {
-            return delegate.getIconHeight() + (PADDING_Y * 2);
-        }
     }
 
     /**
