@@ -55,7 +55,6 @@ class BuildInfo internal constructor(branch: String?, commitId: String?) {
         @JvmStatic
         fun current(): BuildInfo = currentBuildInfo
 
-        @JvmStatic
         internal fun fromProperties(properties: Properties): BuildInfo = BuildInfo(
             branch = properties.getProperty("git.branch"),
             commitId = properties.getProperty("git.commit.id.abbrev"),

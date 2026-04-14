@@ -24,7 +24,6 @@ import org.sqlite.SQLiteDataSource
 import java.nio.file.Path
 
 object SqlDatabaseConfig {
-    @JvmStatic
     val dataSource: SQLiteDataSource
 
     @JvmStatic
@@ -48,7 +47,6 @@ object SqlDatabaseConfig {
         dataSource = createDataSource(historyDbPath)
     }
 
-    @JvmStatic
     fun createDataSource(databasePath: Path): SQLiteDataSource {
         return SQLiteDataSource(config).also {
             it.url = "jdbc:sqlite:" + databasePath.toAbsolutePath()

@@ -21,7 +21,6 @@ package mediathek.tool
 import java.util.*
 
 object ProcessCommandUtils {
-    @JvmStatic
     fun tokenizeCommand(command: String): Array<String> {
         val tokenizer = StringTokenizer(command)
         val tokens = Array(tokenizer.countTokens()) { "" }

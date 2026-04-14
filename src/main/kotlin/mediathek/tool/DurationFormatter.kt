@@ -41,7 +41,6 @@ data class DurationFormatter(val totalMinutes: Long) {
             return DurationFormatter(duration.inWholeMinutes)
         }
 
-        @JvmStatic
         fun from(duration: String = ""): DurationFormatter {
             return fromOrNull(duration) ?: throw IllegalArgumentException("Invalid duration format: $duration")
         }
