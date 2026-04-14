@@ -42,7 +42,6 @@ import java.util.regex.Pattern;
 public class BookmarkTableColumnSettingsManager<E> {
     private static final Logger LOG = LogManager.getLogger();
     private static final String COLUMN_SETTINGS = ".colummn-settings";
-    private static final Pattern ID_PATTERN = Pattern.compile("\"id\"\\s*:\\s*\"((?:\\\\.|[^\"])*)\"");
     private static final Pattern POSITION_PATTERN = Pattern.compile("\"position\"\\s*:\\s*(-?\\d+)");
     private static final Pattern WIDTH_PATTERN = Pattern.compile("\"width\"\\s*:\\s*(-?\\d+)");
     private static final Pattern VISIBLE_PATTERN = Pattern.compile("\"visible\"\\s*:\\s*(true|false)");
@@ -287,7 +286,7 @@ public class BookmarkTableColumnSettingsManager<E> {
     }
 
     private ColumnSetting parseColumnSettingObject(String objectJson) {
-        String id = extractString(ID_PATTERN, objectJson);
+        String id = extractJsonStringValue(objectJson, "id");
         Integer position = extractInt(POSITION_PATTERN, objectJson);
         Integer width = extractInt(WIDTH_PATTERN, objectJson);
         Boolean visible = extractBoolean(VISIBLE_PATTERN, objectJson);
@@ -315,11 +314,22 @@ public class BookmarkTableColumnSettingsManager<E> {
         return result.toString();
     }
 
-    private String extractString(Pattern pattern, String json) {
-        Matcher matcher = pattern.matcher(json);
-        if (!matcher.find())
+    private String extractJsonStringValue(String json, String key) {
+        String fieldName = "\"" + key + "\"";
+        int keyIndex = json.indexOf(fieldName);
+        if (keyIndex < 0)
             return null;
-        return JsonStringUtils.unescapeJsonString(matcher.group(1));
+
+        int colonIndex = json.indexOf(':', keyIndex + fieldName.length());
+        if (colonIndex < 0)
+            return null;
+
+        int valueStart = colonIndex + 1;
+        while (valueStart < json.length() && Character.isWhitespace(json.charAt(valueStart))) {
+            valueStart++;
+        }
+        var parsed = JsonStringUtils.parseQuotedJsonString(json, valueStart);
+        return parsed != null ? parsed.getValue() : null;
     }
 
     private Integer extractInt(Pattern pattern, String json) {

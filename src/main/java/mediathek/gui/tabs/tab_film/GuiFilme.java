@@ -87,8 +87,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GuiFilme extends AGuiTabPanel {
 
@@ -850,7 +848,6 @@ public class GuiFilme extends AGuiTabPanel {
 
         public class SearchHistoryButton extends JButton {
             private static final Logger logger = LogManager.getLogger();
-            private static final Pattern JSON_STRING_PATTERN = Pattern.compile("\"((?:\\\\.|[^\"])*)\"");
             private final EventList<String> historyList = new BasicEventList<>();
             private final JMenuItem miClearHistory = new JMenuItem("Alles löschen");
             private final JMenuItem miEditHistory = new JMenuItem("Einträge bearbeiten");
@@ -985,9 +982,15 @@ public class GuiFilme extends AGuiTabPanel {
                 }
 
                 List<String> entries = new ArrayList<>();
-                Matcher matcher = JSON_STRING_PATTERN.matcher(trimmed);
-                while (matcher.find()) {
-                    entries.add(JsonStringUtils.unescapeJsonString(matcher.group(1)));
+                for (int i = 1; i < trimmed.length() - 1; i++) {
+                    if (trimmed.charAt(i) != '"') {
+                        continue;
+                    }
+                    var parsed = JsonStringUtils.parseQuotedJsonString(trimmed, i);
+                    if (parsed != null) {
+                        entries.add(parsed.getValue());
+                        i = parsed.getEndIndex();
+                    }
                 }
                 return entries;
             }
