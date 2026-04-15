@@ -19,15 +19,19 @@
 package mediathek.daten.abo;
 
 import mediathek.tool.GermanStringSorter;
+import mediathek.tool.datum.DateUtil;
 import mediathek.tool.table.ColumnVisibilityStore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.function.BiConsumer;
 
 public class DatenAbo implements Comparable<DatenAbo> {
@@ -79,7 +83,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     private String thema_titel = "";
     private String irgendwo = "";
     private String zielpfad = "";
-    private String down_datum = ""; //TODO store as date??
+    private LocalDate down_datum;
     private String pSetName = "";
     private boolean doNotStartAutomatically;
     /**
@@ -158,12 +162,30 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.doNotStartAutomatically = doNotStartAutomatically;
     }
 
-    public String getDownDatum() {
+    public @Nullable LocalDate getDownDatum() {
         return down_datum;
     }
 
-    public void setDownDatum(String datum) {
+    public void setDownDatum(@Nullable LocalDate datum) {
         this.down_datum = datum;
+    }
+
+    public void setDownDatum(String datum) {
+        if (datum == null || datum.isBlank()) {
+            down_datum = null;
+            return;
+        }
+
+        try {
+            down_datum = LocalDate.parse(datum, DateUtil.FORMATTER);
+        } catch (DateTimeParseException ex) {
+            logger.error("Invalid down date: {}", datum, ex);
+            down_datum = null;
+        }
+    }
+
+    public @NotNull String getDownDatumText() {
+        return down_datum == null ? "" : DateUtil.FORMATTER.format(down_datum);
     }
 
     public String getZielpfad() {
@@ -309,7 +331,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
             writeElement.accept(AboTags.MINDESTDAUER.getXmlName(), Integer.toString(getMindestDauerMinuten()));
             writeElement.accept(AboTags.MIN.getXmlName(), Boolean.toString(getFilmLengthState() == FilmLengthState.MINIMUM));
             writeElement.accept(AboTags.ZIELPFAD.getXmlName(), getZielpfad());
-            writeElement.accept(AboTags.DOWN_DATUM.getXmlName(), getDownDatum());
+            writeElement.accept(AboTags.DOWN_DATUM.getXmlName(), getDownDatumText());
             writeElement.accept(AboTags.PSET.getXmlName(), getPsetName());
             writeElement.accept(AboTags.DO_NOT_START_AUTOMATICALLY.getXmlName(), Boolean.toString(isDoNotStartAutomatically()));
 

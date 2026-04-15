@@ -21,6 +21,7 @@ package mediathek.tool.models
 import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
+import java.time.LocalDate
 import javax.swing.table.AbstractTableModel
 
 class TModelAbo(private val abos: ListeAbo) : AbstractTableModel() {
@@ -39,6 +40,7 @@ class TModelAbo(private val abos: ListeAbo) : AbstractTableModel() {
         when (columnIndex) {
             DatenAbo.ABO_NR, DatenAbo.ABO_MINDESTDAUER -> Int::class.javaObjectType
             DatenAbo.ABO_EINGESCHALTET, DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY -> Boolean::class.javaObjectType
+            DatenAbo.ABO_DOWN_DATUM -> LocalDate::class.java
             DatenAbo.ABO_REF -> DatenAbo::class.java
             else -> String::class.java
         }
@@ -67,7 +69,7 @@ class TModelAbo(private val abos: ListeAbo) : AbstractTableModel() {
             else -> throw IndexOutOfBoundsException("UNKNOWN COLUMN NAME: $column")
         }
 
-    override fun getValueAt(rowIndex: Int, columnIndex: Int): Any {
+    override fun getValueAt(rowIndex: Int, columnIndex: Int): Any? {
         val abo = visibleAbos[rowIndex]
 
         return when (columnIndex) {

@@ -37,6 +37,7 @@ import mediathek.tool.MessageBus
 import mediathek.tool.NoSelectionErrorDialog
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.cellrenderer.CellRendererBase
+import mediathek.tool.datum.DateUtil
 import mediathek.tool.listener.BeobTableHeader
 import mediathek.tool.models.TModelAbo
 import mediathek.tool.table.MVAbosTable
@@ -54,8 +55,6 @@ import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -139,7 +138,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         }
 
         val dialog = DialogEditAbo(MediathekGui.ui(), editedAbo, tabelle.selectedRowCount > 1)
-        dialog.title = "Abo ändern"
+        dialog.title = EDIT_ABO_TEXT
         dialog.isVisible = true
         if (!dialog.successful()) {
             return
@@ -217,7 +216,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
             aboLoeschen()
         }
 
-        btnEditAbo.toolTipText = "Abo ändern"
+        btnEditAbo.toolTipText = EDIT_ABO_TEXT
         btnEditAbo.addActionListener { editAbo() }
         btnEditAbo.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg")
         swingToolBar.add(btnEditAbo)
@@ -287,7 +286,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         itemLoeschen.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg")
         itemLoeschen.addActionListener { aboLoeschen() }
 
-        val itemAendern = JMenuItem("Abo ändern")
+        val itemAendern = JMenuItem(EDIT_ABO_TEXT)
         itemAendern.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/pen-to-square.svg")
         itemAendern.addActionListener { editAbo() }
 
@@ -390,6 +389,8 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         ): Component {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
 
+            text = (value as? LocalDate)?.format(DateUtil.FORMATTER).orEmpty()
+
             val abo = table.model.getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF) as DatenAbo
             foreground = if (isSelected) {
                 table.selectionForeground
@@ -400,22 +401,14 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
             return this
         }
 
-        private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        private fun colorForDate(date: LocalDate?): Color? {
+            date ?: return null
+            val today = LocalDate.now()
 
-        private fun colorForDate(text: String): Color? {
-            try {
-                val date = LocalDate.parse(text, dateFormatter)
-                val today = LocalDate.now()
-
-                return when {
-                    date.isBefore(today.minusMonths(6)) -> Color.RED
-                    date.isBefore(today.minusMonths(3)) -> Color.YELLOW
-                    else -> null
-                }
-            }
-            catch (_: DateTimeParseException) {
-                LogManager.getLogger().error("Could not parse date {}", text)
-                return null
+            return when {
+                date.isBefore(today.minusMonths(6)) -> Color.RED
+                date.isBefore(today.minusMonths(3)) -> Color.YELLOW
+                else -> null
             }
         }
     }
@@ -545,6 +538,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     }
 
     private companion object {
+        private const val EDIT_ABO_TEXT = "Abo ändern"
         private const val ACTION_MAP_KEY_EDIT_ABO = "edit_abo"
         private const val ACTION_MAP_KEY_DELETE_ABO = "delete_abo"
         private const val PROGRESS_PANEL_DELAY = 150L

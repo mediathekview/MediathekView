@@ -7,6 +7,7 @@ import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
 import mediathek.tool.*
+import mediathek.tool.datum.DateUtil
 import java.awt.Color
 import javax.swing.*
 import javax.swing.border.CompoundBorder
@@ -173,7 +174,7 @@ class DialogEditAbo(
 
     private fun bindPathAndProgramSetFields() {
         comboboxPfad.selectedItem = aktAbo.zielpfad
-        labelDownDatumValue.text = aktAbo.downDatum
+        labelDownDatumValue.text = aktAbo.downDatum?.format(DateUtil.FORMATTER).orEmpty()
         comboboxPSet.selectedItem = aktAbo.psetName
         // falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
         aktAbo.psetName = selectedComboBoxValue(comboboxPSet)

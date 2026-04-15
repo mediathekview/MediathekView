@@ -31,13 +31,13 @@ import mediathek.gui.messages.DownloadQueueRankChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
+import mediathek.tool.datum.DateUtil;
 import mediathek.tool.models.TModelDownload;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -342,7 +342,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
         DatenPset pSet_ = Daten.getInstance().getListePset().getPsetAbo("");
-        var todayDateStr = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now());
+        var today = LocalDate.now(DateUtil.MV_DEFAULT_TIMEZONE);
 
         var daten = Daten.getInstance();
         final var listeAbo = daten.getListeAbo();
@@ -380,7 +380,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 listeUrls.add(urlDownload);
 
                 //diesen Film in die Downloadliste eintragen
-                abo.setDownDatum(todayDateStr);
+                abo.setDownDatum(today);
                 if (!abo.getPsetName().equals(pSet.getName())) {
                     // nur den Namen anpassen, falls geändert
                     abo.setPsetName(pSet.getName());
