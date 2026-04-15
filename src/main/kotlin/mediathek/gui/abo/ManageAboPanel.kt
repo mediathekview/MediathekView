@@ -21,9 +21,11 @@ package mediathek.gui.abo
 import ca.odell.glazedlists.swing.GlazedListsSwing
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import mediathek.audiothek.ui.table.CenteredTextCellRenderer
 import mediathek.config.Daten
 import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
+import mediathek.daten.abo.FilmLengthState
 import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.dialog.DialogAboNoSet
 import mediathek.gui.dialog.DialogEditAbo
@@ -34,21 +36,28 @@ import mediathek.tool.EventListWithEmptyFirstEntry
 import mediathek.tool.MessageBus
 import mediathek.tool.NoSelectionErrorDialog
 import mediathek.tool.SVGIconUtilities
-import mediathek.tool.cellrenderer.CellRendererAbo
+import mediathek.tool.cellrenderer.CellRendererBase
 import mediathek.tool.listener.BeobTableHeader
 import mediathek.tool.models.TModelAbo
 import mediathek.tool.table.MVAbosTable
+import mediathek.tool.table.MVTable
 import mediathek.tool.table.PersistentColumnConfigurationTable
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.JXStatusBar
 import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import javax.swing.*
+import kotlin.time.Duration.Companion.milliseconds
 
 class ManageAboPanel(dialog: JDialog) : JPanel() {
     private val tabelle: PersistentColumnConfigurationTable = MVAbosTable()
@@ -313,12 +322,114 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         add(button)
     }
 
+    private class MinMaxCellRenderer : CenteredTextCellRenderer() {
+        override fun getTableCellRendererComponent(
+            table: JTable,
+            value: Any?,
+            isSelected: Boolean,
+            hasFocus: Boolean,
+            row: Int,
+            column: Int
+        ): Component {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
+
+            val abo = table.model.getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF) as DatenAbo
+            text = when (abo.filmLengthState) {
+                FilmLengthState.MINIMUM -> "min"
+                else -> "max"
+            }
+
+            return this
+        }
+    }
+
+    private class SenderCellRenderer : CellRendererBase() {
+        init {
+            horizontalAlignment = CENTER
+        }
+
+        override fun getTableCellRendererComponent(
+            table: JTable,
+            value: Any?,
+            isSelected: Boolean,
+            hasFocus: Boolean,
+            row: Int,
+            column: Int
+        ): Component {
+            background = null
+            foreground = null
+            font = null
+            icon = null
+
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
+
+            val abo = table.model.getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF) as DatenAbo
+            when ((table as MVTable).showSenderIcons()) {
+                true -> {
+                    val targetDim: Dimension = getSenderCellDimension(table, row, column)
+                    setSenderIcon(abo.sender, targetDim, isSelected)
+                }
+                false -> {
+                    text = abo.sender
+                    icon = null
+                }
+            }
+
+            return this
+        }
+    }
+
+    private class LastUsedCellRenderer : CenteredTextCellRenderer() {
+        override fun getTableCellRendererComponent(
+            table: JTable,
+            value: Any?,
+            isSelected: Boolean,
+            hasFocus: Boolean,
+            row: Int,
+            column: Int
+        ): Component {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
+
+            val abo = table.model.getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF) as DatenAbo
+            foreground = if (isSelected) {
+                table.selectionForeground
+            } else {
+                colorForDate(abo.downDatum) ?: table.foreground
+            }
+
+            return this
+        }
+
+        private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+
+        private fun colorForDate(text: String): Color? {
+            try {
+                val date = LocalDate.parse(text, dateFormatter)
+                val today = LocalDate.now()
+
+                return when {
+                    date.isBefore(today.minusMonths(6)) -> Color.RED
+                    date.isBefore(today.minusMonths(3)) -> Color.YELLOW
+                    else -> null
+                }
+            }
+            catch (_: DateTimeParseException) {
+                LogManager.getLogger().error("Could not parse date {}", text)
+                return null
+            }
+        }
+    }
+
     private fun initListeners() {
         tabelle.componentPopupMenu = createContextMenu()
 
-        tabelle.setDefaultRenderer(Any::class.java, CellRendererAbo())
-
         tabelle.model = TModelAbo(daten.listeAbo)
+        tabelle.columnModel.getColumn(DatenAbo.ABO_NR).cellRenderer = CenteredTextCellRenderer()
+        tabelle.columnModel.getColumn(DatenAbo.ABO_MINDESTDAUER).cellRenderer = CenteredTextCellRenderer()
+        tabelle.columnModel.getColumn(DatenAbo.ABO_DOWN_DATUM).cellRenderer = LastUsedCellRenderer()
+        tabelle.columnModel.getColumn(DatenAbo.ABO_MIN).cellRenderer = MinMaxCellRenderer()
+        tabelle.columnModel.getColumn(DatenAbo.ABO_SENDER).cellRenderer = SenderCellRenderer()
+
         tabelle.isLineBreak = false
         tabelle.tableHeader.addMouseListener(
             BeobTableHeader(
@@ -417,7 +528,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     private fun processAboChanges() {
         uiScope.launch {
             val progressJob = launch {
-                delay(PROGRESS_PANEL_DELAY)
+                delay(PROGRESS_PANEL_DELAY.milliseconds)
                 infiniteProgressPanel.setText("Verarbeite Abos...")
                 infiniteProgressPanel.start()
             }

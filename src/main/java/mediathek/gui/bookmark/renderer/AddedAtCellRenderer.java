@@ -18,13 +18,14 @@
 
 package mediathek.gui.bookmark.renderer;
 
+import mediathek.audiothek.ui.table.CenteredTextCellRenderer;
 import mediathek.tool.datum.DateUtil;
 
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 
-public class AddedAtCellRenderer extends CenteredCellRenderer {
+public class AddedAtCellRenderer extends CenteredTextCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);

@@ -20,7 +20,7 @@ package mediathek.audiothek.ui.table
 
 import javax.swing.table.DefaultTableCellRenderer
 
-class CenteredTextCellRenderer : DefaultTableCellRenderer() {
+open class CenteredTextCellRenderer : DefaultTableCellRenderer() {
     init {
         horizontalAlignment = CENTER
     }

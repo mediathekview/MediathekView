@@ -26,6 +26,7 @@ import ca.odell.glazedlists.impl.beans.BeanTableFormat;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import mediathek.audiothek.ui.table.CenteredTextCellRenderer;
 import mediathek.config.Daten;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.gui.bookmark.renderer.*;
@@ -284,11 +285,11 @@ public class BookmarkDialog extends JDialog {
         colSeen.setCellRenderer(new SeenCellRenderer());
         colSeen.setHeaderRenderer(new IconHeaderCellRenderer(IconUtils.of(MaterialDesignE.EYE), "Gesehen"));
         //sender column
-        columnModel.getColumn(COLUMN_SENDER).setCellRenderer(new CenteredCellRenderer());
+        columnModel.getColumn(COLUMN_SENDER).setCellRenderer(new CenteredTextCellRenderer());
         // dauer column
         columnModel.getColumn(COLUMN_DAUER).setCellRenderer(new FilmLengthCellRenderer());
         //sendedatum column
-        columnModel.getColumn(COLUMN_SENDEDATUM).setCellRenderer(new CenteredCellRenderer());
+        columnModel.getColumn(COLUMN_SENDEDATUM).setCellRenderer(new CenteredTextCellRenderer());
         //verfügbar bis
         columnModel.getColumn(COLUMN_AVAILABLE_UNTIL).setCellRenderer(new AvailableUntilCellRenderer());
 

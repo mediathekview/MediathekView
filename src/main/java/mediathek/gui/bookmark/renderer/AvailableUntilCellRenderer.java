@@ -18,6 +18,7 @@
 
 package mediathek.gui.bookmark.renderer;
 
+import mediathek.audiothek.ui.table.CenteredTextCellRenderer;
 import mediathek.tool.datum.DateUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +27,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-public class AvailableUntilCellRenderer extends CenteredCellRenderer {
+public class AvailableUntilCellRenderer extends CenteredTextCellRenderer {
     private static final long DAYS_UNTIL_END = 5;
 
     @Override

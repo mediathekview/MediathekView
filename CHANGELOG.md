@@ -31,6 +31,7 @@
 - **FEATURE:** Im Tab *Downloads* wurde das Seitenpanel entfernt und in Toolbars ausgelagert. Die Filtereinstellungen sowie der Zustand der Toolbars ist persistent über Neustarts hinweg. Schwebende Toolbars werden nur angezeigt wenn das Tab aktiv ist.
 - **FEATURE:** Unfertige Downloads werden nun automatisch mit Endung `.part` markiert und bei erfolgreichem Download umbenannt.
 - **FEATURE:** Jedes Abo kann nun mittels *Nicht automatisch starten*-Option den automatischen Download der generierten Filme verhindern, wenn *Einstellungen/Erweitert/Downloads aus Abos sofort starten* aktiviert ist.
+- **FEATURE:** Im *Abos verwalten*-Dialog werden Abos, deren letzte Ausführung mehr als 3 Monate zurück liegt *gelb*, nach mehr als 6 Monaten *rot* markiert in der Spalte `letztes Abo`. 
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 
