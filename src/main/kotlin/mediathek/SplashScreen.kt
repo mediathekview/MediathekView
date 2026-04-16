@@ -14,6 +14,7 @@ import kotlin.math.roundToInt
 
 class SplashScreen : JWindow() {
     private val versionLabel = JLabel()
+    private var completedSteps = 0
     private val appTitleLabel = JLabel()
     private val imageLabel = JLabel()
     private val progressBar = JProgressBar()
@@ -44,7 +45,8 @@ class SplashScreen : JWindow() {
 
     fun update(state: UIProgressState) {
         runOnEdt {
-            val pct = (100 * ((state.ordinal + 1.0) / MAXIMUM_STEPS)).roundToInt()
+            completedSteps++
+            val pct = (100 * (completedSteps / MAXIMUM_STEPS)).roundToInt()
             updateStatus(state.toString(), pct)
         }
     }
