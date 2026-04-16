@@ -113,7 +113,7 @@ internal object SeenHistoryCorruptionHandler {
 
     private fun hideSplashScreen() {
         invokeOnEdt {
-            Main.splashScreen.ifPresent { it.isVisible = false }
+            Main.splashScreen.ifPresent { it.close() }
         }
     }
 
