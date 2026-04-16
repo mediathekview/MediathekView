@@ -116,17 +116,18 @@ internal class HlsPlaylistSizeEstimatorTest {
     }
 
     @Test
-    fun measuresBodyWhenContentLengthHeaderIsMissing() {
+    fun readsTotalLengthFromContentRangeWhenProbeReturnsPartialResponse() {
         val response = Response.Builder()
             .request(Request.Builder().url("https://example.org/segment.ts").get().build())
             .protocol(Protocol.HTTP_1_1)
-            .code(200)
-            .message("OK")
-            .body("segment-data".toResponseBody())
+            .code(206)
+            .message("Partial Content")
+            .header("Content-Range", "bytes 0-0/12345")
+            .body("x".toResponseBody())
             .build()
 
         response.use {
-            assertEquals(12L, estimator.contentLengthOrBodyLength(it))
+            assertEquals(12_345L, estimator.contentLengthOrRangeLength(it))
         }
     }
 }

@@ -6,7 +6,6 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.ResponseBody
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import kotlin.math.ceil
@@ -296,9 +295,13 @@ class HlsPlaylistSizeEstimator(
             return@withContext headLength
         }
 
-        val getRequest = Request.Builder().url(url).get().build()
-        execute(getRequest) { response ->
-            val length = contentLengthOrBodyLength(response)
+        val rangeRequest = Request.Builder()
+            .url(url)
+            .header("Range", "bytes=0-0")
+            .get()
+            .build()
+        execute(rangeRequest) { response ->
+            val length = contentLengthOrRangeLength(response)
             if (length <= 0) {
                 throw MissingContentLengthException(url)
             }
@@ -328,16 +331,14 @@ class HlsPlaylistSizeEstimator(
             ?: response.body?.contentLength()
             ?: -1L
 
-    internal fun contentLengthOrBodyLength(response: Response): Long {
-        val length = contentLength(response)
-        if (length > 0) {
-            return length
-        }
-        return response.body.bodyByteLength()
-    }
+    internal fun contentLengthOrRangeLength(response: Response): Long =
+        parseContentRangeLength(response.header("Content-Range"))
+            ?: contentLength(response)
 
-    private fun ResponseBody?.bodyByteLength(): Long =
-        this?.bytes()?.size?.toLong() ?: -1L
+    private fun parseContentRangeLength(contentRange: String?): Long? =
+        contentRange
+            ?.substringAfterLast('/', "")
+            ?.toLongOrNull()
 
     companion object {
         private const val BITS_PER_BYTE = 8.0
