@@ -29,6 +29,7 @@ import mediathek.config.MVColor
 import mediathek.config.MVConfig
 import mediathek.daten.*
 import mediathek.gui.dialog.download.DownloadQualityLiveInfoText
+import mediathek.gui.dialog.download.DownloadQualityResolutionSizeLoadResult
 import mediathek.gui.dialog.download.DownloadQualityResolutionSizes
 import mediathek.gui.dialog.download.DownloadQualitySupport
 import mediathek.gui.messages.DownloadListChangedEvent
@@ -52,6 +53,7 @@ import javax.swing.event.DocumentListener
 import javax.swing.text.JTextComponent
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class DialogAddDownloadWithCoroutines(
     parent: Frame,
@@ -89,6 +91,10 @@ class DialogAddDownloadWithCoroutines(
     private var highQualityMandated: Boolean = false
     private var stopBeob = false
     private var nameGeaendert = false
+    private var isInitialSizeLookupRunning: Boolean = false
+    private var isLiveInfoLookupRunning: Boolean = false
+    private var initialSizeLookupStatusMessage: String? = null
+    private var initialSizeLookupStatusIsError: Boolean = false
     private var ffprobePath: Path? = null
     private var orgPfad = ""
     private val appConfig get() = ApplicationConfiguration.getConfiguration()
@@ -104,6 +110,7 @@ class DialogAddDownloadWithCoroutines(
         private const val TITLED_BORDER_STRING = "Download-Qualität"
         private const val KEY_LABEL_FOREGROUND: String = "Label.foreground"
         private const val KEY_TEXTFIELD_BACKGROUND: String = "TextField.background"
+        private val INITIAL_SIZE_LOOKUP_TIMEOUT = 20.seconds
         private val LIVE_INFO_PLACEHOLDER = DownloadQualityLiveInfoText(
             video = "Video: 1920x1080, 2220 kBit/s, 50 fps (avg), H.264",
             audio = "Audio: 48000 Hz, 128 kBit/s, AAC (Advanced Audio Coding)"
@@ -251,8 +258,39 @@ class DialogAddDownloadWithCoroutines(
 
     private fun loadInitialBackgroundData() {
         uiScope.launch {
-            applyResolutionSizes(loadResolutionSizes())
-            calculateAndCheckDiskSpaceAsync()
+            isInitialSizeLookupRunning = true
+            updateBusyIndicator()
+            btnRequestLiveInfo.isEnabled = false
+
+            try {
+                val sizeLoadResult = withTimeoutOrNull(INITIAL_SIZE_LOOKUP_TIMEOUT) {
+                    loadResolutionSizes()
+                }
+
+                if (sizeLoadResult == null) {
+                    showInitialSizeLookupMessage("Dateigröße konnte nicht rechtzeitig ermittelt werden.")
+                } else {
+                    applyResolutionSizes(sizeLoadResult.sizes)
+                    if (sizeLoadResult.sizes.high.isEmpty() &&
+                        sizeLoadResult.sizes.normal.isEmpty() &&
+                        sizeLoadResult.sizes.low.isEmpty()
+                    ) {
+                        if (sizeLoadResult.httpStatusCode == 403 || sizeLoadResult.httpStatusCode == 404) {
+                            showInitialSizeLookupError("HTTP ${sizeLoadResult.httpStatusCode} beim Ermitteln der Dateigröße.")
+                        } else {
+                            showInitialSizeLookupMessage("Dateigröße konnte nicht ermittelt werden.")
+                        }
+                    } else {
+                        clearInitialSizeLookupMessage()
+                    }
+                }
+
+                calculateAndCheckDiskSpaceAsync()
+            } finally {
+                isInitialSizeLookupRunning = false
+                updateBusyIndicator()
+                btnRequestLiveInfo.isEnabled = ffprobePath != null
+            }
         }
     }
 
@@ -623,17 +661,15 @@ class DialogAddDownloadWithCoroutines(
             isBusy = false
             isVisible = false
         }
-        showLiveInfo(DownloadQualityLiveInfoText())
+        restoreStatusArea()
     }
 
     private suspend fun fetchLiveFilmInfo(resolution: FilmResolution.Enum) {
         val executablePath = ffprobePath ?: return
 
+        isLiveInfoLookupRunning = true
         btnRequestLiveInfo.isEnabled = false
-        lblBusyIndicator.apply {
-            isVisible = true
-            isBusy = true
-        }
+        updateBusyIndicator()
         showLiveInfo(DownloadQualityLiveInfoText())
 
         try {
@@ -649,21 +685,57 @@ class DialogAddDownloadWithCoroutines(
         } catch (_: Exception) {
             showLiveInfoError("Unbekannter Fehler aufgetreten.")
         } finally {
-            resetBusyIndicator()
-            btnRequestLiveInfo.isEnabled = true
+            isLiveInfoLookupRunning = false
+            if (isInitialSizeLookupRunning) {
+                updateBusyIndicator()
+            } else {
+                hideBusyIndicator()
+            }
+            btnRequestLiveInfo.isEnabled = ffprobePath != null && !isInitialSizeLookupRunning
         }
     }
 
-    private fun resetBusyIndicator() {
+    private fun updateBusyIndicator() {
         lblBusyIndicator.apply {
-            isVisible = false
-            isBusy = false
+            when {
+                isLiveInfoLookupRunning -> {
+                    isVisible = true
+                    isBusy = true
+                    text = ""
+                    showBusyStatusMessage("Codec-Details werden geladen...")
+                }
+
+                isInitialSizeLookupRunning -> {
+                    isVisible = true
+                    isBusy = true
+                    text = ""
+                    showBusyStatusMessage("Dateigrößen werden geladen...")
+                }
+
+                else -> {
+                    text = ""
+                    isVisible = false
+                    isBusy = false
+                    restoreStatusArea()
+                }
+            }
         }
     }
 
     private fun resetLiveInfoDisplay() {
-        resetBusyIndicator()
+        if (!isInitialSizeLookupRunning) {
+            isLiveInfoLookupRunning = false
+        }
+        updateBusyIndicator()
         showLiveInfo(DownloadQualityLiveInfoText())
+    }
+
+    private fun hideBusyIndicator() {
+        lblBusyIndicator.apply {
+            text = ""
+            isVisible = false
+            isBusy = false
+        }
     }
 
     private fun showLiveInfo(liveInfoText: DownloadQualityLiveInfoText) {
@@ -679,6 +751,47 @@ class DialogAddDownloadWithCoroutines(
         lblStatus.text = message
         lblAudioInfo.foreground = UIManager.getColor(KEY_LABEL_FOREGROUND)
         lblAudioInfo.text = ""
+    }
+
+    private fun showInitialSizeLookupMessage(message: String) {
+        initialSizeLookupStatusMessage = message
+        initialSizeLookupStatusIsError = false
+        restoreStatusArea()
+    }
+
+    private fun showInitialSizeLookupError(message: String) {
+        initialSizeLookupStatusMessage = message
+        initialSizeLookupStatusIsError = true
+        restoreStatusArea()
+    }
+
+    private fun clearInitialSizeLookupMessage() {
+        initialSizeLookupStatusMessage = null
+        initialSizeLookupStatusIsError = false
+        restoreStatusArea()
+    }
+
+    private fun showBusyStatusMessage(message: String) {
+        lblStatus.foreground = UIManager.getColor(KEY_LABEL_FOREGROUND)
+        lblStatus.text = message
+        lblAudioInfo.foreground = UIManager.getColor(KEY_LABEL_FOREGROUND)
+        lblAudioInfo.text = ""
+    }
+
+    private fun restoreStatusArea() {
+        when {
+            isLiveInfoLookupRunning -> return
+            initialSizeLookupStatusMessage != null -> {
+                lblStatus.foreground = if (initialSizeLookupStatusIsError) Color.RED else Color(180, 110, 0)
+                lblStatus.text = initialSizeLookupStatusMessage
+                lblAudioInfo.foreground = UIManager.getColor(KEY_LABEL_FOREGROUND)
+                lblAudioInfo.text = ""
+            }
+
+            else -> {
+                showLiveInfo(DownloadQualityLiveInfoText())
+            }
+        }
     }
 
     /**
@@ -868,14 +981,14 @@ class DialogAddDownloadWithCoroutines(
         }
     }
 
-    private suspend fun loadResolutionSizes(): DownloadQualityResolutionSizes {
+    private suspend fun loadResolutionSizes(): DownloadQualityResolutionSizeLoadResult {
         return try {
-            withContext(Dispatchers.IO) { DownloadQualitySupport.loadResolutionSizes(film) }
+            withContext(Dispatchers.IO) { DownloadQualitySupport.loadResolutionSizeResult(film) }
         } catch (ex: CancellationException) {
             throw ex
         } catch (ex: Exception) {
             logger.error("Error occurred while fetching file sizes", ex)
-            DownloadQualityResolutionSizes()
+            DownloadQualityResolutionSizeLoadResult()
         }
     }
 

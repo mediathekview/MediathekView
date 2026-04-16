@@ -327,7 +327,7 @@ public class MediathekGui extends JFrame {
         //setup Raven Notification library
         Notifications.getInstance().setJFrame(this);
 
-        performAustrianVlcCheck();
+        performGeoCountryStartupCheck();
     }
 
     /**
@@ -354,6 +354,13 @@ public class MediathekGui extends JFrame {
             //show a link to tutorial if we are in Austria and have never used MV before...
             AustrianVlcCheck vlcCheck = new AustrianVlcCheck(this);
             vlcCheck.perform();
+        }
+    }
+
+    private void performGeoCountryStartupCheck() {
+        if (!Config.shouldDownloadAndQuit()) {
+            GeoCountryStartupCheck geoCountryStartupCheck = new GeoCountryStartupCheck(this, this::performAustrianVlcCheck);
+            geoCountryStartupCheck.perform();
         }
     }
 

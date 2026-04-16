@@ -195,7 +195,7 @@ public abstract class MVTable extends JTable {
                 visibleRow = selRows[0];
             }
             scrollToIndexDelegate(visibleRow);
-            requestFocus();
+            requestFocusInWindow();
         }
     }
 

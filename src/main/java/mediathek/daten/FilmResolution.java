@@ -1,6 +1,5 @@
 package mediathek.daten;
 
-//FIXME convert indices to int!!
 public class FilmResolution {
     public enum Enum {
         LOW,

@@ -107,6 +107,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private int episode = 0;
     private String sha256;
     private FilmIdentity filmIdentity;
+    private final Map<String, FileSize.LookupResult> cachedFileSizeLookups = new HashMap<>();
 
     public DatenFilm() {
         dataMap.put(MapKeys.FILM_NR, FILMNR_GENERATOR.getAndIncrement());
@@ -132,6 +133,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.availableUntil = other.availableUntil;
         this.sha256 = other.sha256;
         this.filmIdentity = other.filmIdentity;
+        this.cachedFileSizeLookups.putAll(other.cachedFileSizeLookups);
     }
 
     /**
@@ -472,12 +474,52 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getFileSizeForUrl(@NotNull String url, boolean forceFetch) {
-        if (url.equalsIgnoreCase(getUrlNormalQuality())) {
-            return getFileSize().toString();
+        return lookupFileSizeForUrl(url, forceFetch).getSizeText();
+    }
+
+    public FileSize.LookupResult lookupFileSizeForUrl(@NotNull String url) {
+        return lookupFileSizeForUrl(url, false, null);
+    }
+
+    public FileSize.LookupResult lookupFileSizeForUrl(@NotNull String url, boolean forceFetch) {
+        return lookupFileSizeForUrl(url, forceFetch, null);
+    }
+
+    public FileSize.LookupResult lookupFileSizeForUrl(@NotNull String url, boolean forceFetch, @Nullable String resolution) {
+        var cachedLookupResult = getCachedFileSizeLookup(url);
+        if (cachedLookupResult != null) {
+            return cachedLookupResult;
         }
-        else {
-            //FIXME this is blocking EDT!
-            return FileSize.getFileLengthFromUrl(url, forceFetch);
+
+        var lookupResult = FileSize.lookupFileSize(url, forceFetch, resolution);
+        cacheFileSizeLookup(url, lookupResult);
+        return lookupResult;
+    }
+
+    private FileSize.LookupResult getCachedFileSizeLookup(@NotNull String url) {
+        var cachedLookupResult = cachedFileSizeLookups.get(url);
+        if (cachedLookupResult != null && !cachedLookupResult.getSizeText().isEmpty()) {
+            return cachedLookupResult;
+        }
+
+        if (url.equalsIgnoreCase(getUrlNormalQuality()) && !getFileSize().toString().isEmpty()) {
+            var cachedSizeInBytes = (long) getFileSize().toInteger() * FileSize.ONE_MiB;
+            var bootstrapLookupResult = new FileSize.LookupResult(cachedSizeInBytes, null, null, null);
+            cachedFileSizeLookups.put(url, bootstrapLookupResult);
+            return bootstrapLookupResult;
+        }
+
+        return null;
+    }
+
+    private void cacheFileSizeLookup(@NotNull String url, @NotNull FileSize.LookupResult lookupResult) {
+        if (lookupResult.getSizeText().isEmpty()) {
+            return;
+        }
+
+        cachedFileSizeLookups.put(url, lookupResult);
+        if (url.equalsIgnoreCase(getUrlNormalQuality())) {
+            getFileSize().setSize(lookupResult.getSizeText());
         }
     }
 

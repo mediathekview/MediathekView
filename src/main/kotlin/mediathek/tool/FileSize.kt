@@ -1,5 +1,9 @@
 package mediathek.tool
 
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import mediathek.config.Konstanten
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -9,14 +13,54 @@ import org.apache.logging.log4j.LogManager
 import java.io.IOException
 
 object FileSize {
+    @Serializable
+    private data class CachedHlsLookupResponse(
+        val found: Boolean,
+        val fileSize: Long? = null,
+        val httpStatus: Int? = null,
+        val resolutionUrl: String? = null,
+        val quality: String? = null,
+    )
+
+    data class LookupResult(
+        val byteLength: Long,
+        val httpStatusCode: Int? = null,
+        val resolutionUrl: HttpUrl? = null,
+        val quality: String? = null,
+    ) {
+        val sizeText: String
+            get() = convertSize(byteLength)
+    }
+
+    data class HlsLookupResult(
+        val byteLength: Long,
+        val resolutionUrl: HttpUrl?,
+    )
+
+    class HttpStatusException(
+        val statusCode: Int,
+        val requestUrl: HttpUrl,
+    ) : IOException("HTTP $statusCode for $requestUrl")
+
     const val ONE_MiB = 1_000_000
     const val INVALID_SIZE: Byte = -1
     private val logger = LogManager.getLogger()
+    private val lookupJson = Json { ignoreUnknownKeys = true }
 
     @JvmStatic
     fun getFileLengthFromUrl(url: String, forceFetch: Boolean = false): String {
-        val okUrl = url.toHttpUrlOrNull() ?: return ""
-        return convertSize(getFileSizeFromUrl(okUrl, forceFetch))
+        return lookupFileSize(url, forceFetch).sizeText
+    }
+
+    @JvmStatic
+    fun lookupFileSize(url: String, forceFetch: Boolean = false): LookupResult {
+        return lookupFileSize(url, forceFetch, null)
+    }
+
+    @JvmStatic
+    fun lookupFileSize(url: String, forceFetch: Boolean = false, quality: String?): LookupResult {
+        val okUrl = url.toHttpUrlOrNull() ?: return LookupResult(INVALID_SIZE.toLong())
+        return lookupFileSize(okUrl, forceFetch, quality)
     }
 
     @JvmStatic
@@ -36,32 +80,183 @@ object FileSize {
 
     @JvmStatic
     fun getFileSizeFromUrl(url: HttpUrl, forceFetch: Boolean = false): Long {
-        if (!url.scheme.startsWith("http") || url.encodedPath.endsWith(".m3u8")) {
-            return INVALID_SIZE.toLong()
-        }
+        return lookupFileSize(url, forceFetch).byteLength
+    }
 
-        val request = Request.Builder().url(url).head().build()
-        var respLength = INVALID_SIZE.toLong()
+    fun lookupFileSize(url: HttpUrl, forceFetch: Boolean = false): LookupResult {
+        return lookupFileSize(url, forceFetch, null)
+    }
+
+    fun lookupFileSize(url: HttpUrl, forceFetch: Boolean = false, quality: String?): LookupResult {
+        return lookupFileSize(
+            url = url,
+            forceFetch = forceFetch,
+            quality = quality,
+            directSizeLoader = ::loadDirectFileSize,
+            hlsSizeLoader = ::loadHlsFileSize,
+        )
+    }
+
+    internal fun lookupFileSize(
+        url: HttpUrl,
+        forceFetch: Boolean = false,
+        quality: String?,
+        cachedHlsLookup: (HttpUrl, String?) -> LookupResult? = ::lookupCachedHlsResult,
+        directSizeLoader: (HttpUrl) -> Long,
+        hlsSizeLoader: (HttpUrl) -> HlsLookupResult,
+    ): LookupResult {
+        if (!url.scheme.startsWith("http")) {
+            return LookupResult(INVALID_SIZE.toLong())
+        }
 
         val fetchSize = forceFetch || ApplicationConfiguration.getConfiguration()
             .getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true)
         if (fetchSize) {
             logger.info("Requesting file size for: {}", url)
-            try {
-                MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
-                    if (response.isSuccessful) {
-                        respLength = getContentLength(response)
-                    }
-                }
-            } catch (_: IOException) {
-            }
         } else {
             logger.info("Skipping file size request due to user setting")
+            return LookupResult(INVALID_SIZE.toLong())
         }
 
-        if (respLength < ONE_MiB) {
-            respLength = INVALID_SIZE.toLong()
+        val result = try {
+            if (url.encodedPath.endsWith(".m3u8")) {
+                cachedHlsLookup(url, quality)?.let { return it }
+                hlsSizeLoader(url)
+            } else {
+                HlsLookupResult(
+                    byteLength = directSizeLoader(url),
+                    resolutionUrl = null,
+                )
+            }
+        } catch (exception: HttpStatusException) {
+            logger.debug("File size lookup failed for {} with HTTP {}", url, exception.statusCode)
+            return logHlsLookupIfNeeded(
+                url = url,
+                lookupResult = LookupResult(
+                    byteLength = INVALID_SIZE.toLong(),
+                    httpStatusCode = exception.statusCode,
+                    resolutionUrl = exception.requestUrl,
+                    quality = quality,
+                ),
+            )
+        } catch (exception: IOException) {
+            logger.debug("File size lookup failed for {}", url, exception)
+            return logHlsLookupIfNeeded(
+                url = url,
+                lookupResult = LookupResult(INVALID_SIZE.toLong()),
+            )
+        } catch (exception: RuntimeException) {
+            logger.debug("File size lookup failed for {}", url, exception)
+            return logHlsLookupIfNeeded(
+                url = url,
+                lookupResult = LookupResult(INVALID_SIZE.toLong()),
+            )
         }
-        return respLength
+
+        val lookupResult = if (result.byteLength < ONE_MiB) {
+            logger.debug("File size lookup for {} was below threshold: {}", url, result.byteLength)
+            LookupResult(
+                byteLength = INVALID_SIZE.toLong(),
+                resolutionUrl = result.resolutionUrl,
+                quality = quality,
+            )
+        } else {
+            LookupResult(
+                byteLength = result.byteLength,
+                resolutionUrl = result.resolutionUrl,
+                quality = quality,
+            )
+        }
+
+        return logHlsLookupIfNeeded(url, lookupResult)
     }
+
+    private fun lookupCachedHlsResult(url: HttpUrl, quality: String?): LookupResult? {
+        val lookupUrl = lookupEndpoint ?: return null
+        val request = Request.Builder()
+            .url(
+                lookupUrl.newBuilder()
+                    .addQueryParameter("m3u8Url", url.toString())
+                    .addQueryParameter("country", ApplicationConfiguration.getInstance().geographicLocation.name)
+                    .apply {
+                        if (!quality.isNullOrBlank()) {
+                            addQueryParameter("quality", quality)
+                        }
+                    }
+                    .build(),
+            )
+            .header(
+                "User-Agent",
+                ApplicationConfiguration.getConfiguration().getString(
+                    ApplicationConfiguration.APPLICATION_USER_AGENT,
+                    Konstanten.PROGRAMMNAME,
+                ),
+            )
+            .header(Konstanten.HLS_STREAM_INFO_TOKEN_HEADER, Konstanten.HLS_STREAM_INFO_TOKEN)
+            .get()
+            .build()
+
+        return runCatching {
+            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    logger.debug("HLS stream info lookup failed for {} with HTTP {}", url, response.code)
+                    return null
+                }
+
+                val payload = response.body?.string().orEmpty()
+                val cachedResult = lookupJson.decodeFromString<CachedHlsLookupResponse>(payload)
+                if (!cachedResult.found) {
+                    return null
+                }
+
+                logger.info("Using cached HLS stream info for {} and quality {}", url, quality)
+                LookupResult(
+                    byteLength = cachedResult.fileSize ?: INVALID_SIZE.toLong(),
+                    httpStatusCode = cachedResult.httpStatus,
+                    resolutionUrl = cachedResult.resolutionUrl?.toHttpUrlOrNull(),
+                    quality = cachedResult.quality ?: quality,
+                )
+            }
+        }.getOrElse { exception ->
+            logger.debug("HLS stream info lookup failed for {}", url, exception)
+            null
+        }
+    }
+
+    private fun loadDirectFileSize(url: HttpUrl): Long {
+        val request = Request.Builder().url(url).head().build()
+        MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            if (response.isSuccessful) {
+                return getContentLength(response)
+            }
+            throw HttpStatusException(response.code, url)
+        }
+    }
+
+    private fun loadHlsFileSize(url: HttpUrl): HlsLookupResult = runBlocking {
+        val estimate = HlsPlaylistSizeEstimator().estimate(url.toString())
+        HlsLookupResult(
+            byteLength = estimate.totalBytes,
+            resolutionUrl = estimate.selectedVariant.playlistUrl,
+        )
+    }
+
+    private fun logHlsLookupIfNeeded(url: HttpUrl, lookupResult: LookupResult): LookupResult {
+        if (url.encodedPath.endsWith(".m3u8")) {
+            if (lookupResult.byteLength == INVALID_SIZE.toLong() && lookupResult.httpStatusCode !in setOf(403, 404)) {
+                return lookupResult
+            }
+            HlsStreamInfoLogger.appendEntry(
+                httpStatusCode = lookupResult.httpStatusCode ?: 200,
+                m3u8Url = url,
+                resolutionUrl = lookupResult.resolutionUrl,
+                quality = lookupResult.quality,
+                fileSize = lookupResult.byteLength,
+            )
+        }
+        return lookupResult
+    }
+
+    private val lookupEndpoint: HttpUrl?
+        get() = Konstanten.HLS_STREAM_INFO_UPLOAD_URL?.newBuilder()?.addPathSegment("lookup")?.build()
 }

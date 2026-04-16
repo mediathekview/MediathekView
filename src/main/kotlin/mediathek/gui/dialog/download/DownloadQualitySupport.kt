@@ -7,6 +7,7 @@ import com.github.kokorin.jaffree.ffprobe.Stream
 import com.github.kokorin.jaffree.process.JaffreeAbnormalExitException
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
+import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.GuiFunktionenProgramme
 import org.apache.logging.log4j.LogManager
@@ -33,15 +34,30 @@ data class DownloadQualityResolutionSizes(
     }
 }
 
+data class DownloadQualityResolutionSizeLoadResult(
+    val sizes: DownloadQualityResolutionSizes = DownloadQualityResolutionSizes(),
+    val httpStatusCode: Int? = null,
+)
+
 object DownloadQualitySupport {
     private val logger = LogManager.getLogger()
     private const val NO_DATA_AVAILABLE = "Keine Daten verfügbar."
 
     fun loadResolutionSizes(film: DatenFilm): DownloadQualityResolutionSizes {
-        return DownloadQualityResolutionSizes(
-            high = fetchFileSizeForQuality(film, FilmResolution.Enum.HIGH_QUALITY),
-            normal = fetchFileSizeForNormalQuality(film),
-            low = fetchFileSizeForQuality(film, FilmResolution.Enum.LOW)
+        return loadResolutionSizeResult(film).sizes
+    }
+
+    fun loadResolutionSizeResult(film: DatenFilm): DownloadQualityResolutionSizeLoadResult {
+        val high = fetchFileSizeForQuality(film, FilmResolution.Enum.HIGH_QUALITY)
+        val normal = fetchFileSizeForNormalQuality(film)
+        val low = fetchFileSizeForQuality(film, FilmResolution.Enum.LOW)
+        return DownloadQualityResolutionSizeLoadResult(
+            sizes = DownloadQualityResolutionSizes(
+                high = high.sizeText,
+                normal = normal.sizeText,
+                low = low.sizeText,
+            ),
+            httpStatusCode = high.httpStatusCode ?: normal.httpStatusCode ?: low.httpStatusCode,
         )
     }
 
@@ -124,18 +140,18 @@ object DownloadQualitySupport {
             ?: "Unbekannter Fehler aufgetreten."
     }
 
-    private fun fetchFileSizeForQuality(film: DatenFilm, resolution: FilmResolution.Enum): String {
+    private fun fetchFileSizeForQuality(film: DatenFilm, resolution: FilmResolution.Enum): FileSize.LookupResult {
         return runCatching {
-            film.getFileSizeForUrl(film.getUrlFuerAufloesung(resolution), true)
+            film.lookupFileSizeForUrl(film.getUrlFuerAufloesung(resolution), true, resolution.name)
         }.onFailure { logger.error("Failed to retrieve file size for $resolution", it) }
-            .getOrDefault("")
+            .getOrDefault(FileSize.LookupResult(FileSize.INVALID_SIZE.toLong()))
     }
 
-    private fun fetchFileSizeForNormalQuality(film: DatenFilm): String {
+    private fun fetchFileSizeForNormalQuality(film: DatenFilm): FileSize.LookupResult {
         return runCatching {
-            film.getFileSizeForUrl(film.urlNormalQuality, true)
+            film.lookupFileSizeForUrl(film.urlNormalQuality, true, FilmResolution.Enum.NORMAL.name)
         }.onFailure { logger.error("Failed to retrieve normal quality size", it) }
-            .getOrDefault("")
+            .getOrDefault(FileSize.LookupResult(FileSize.INVALID_SIZE.toLong()))
     }
 
     private fun buildLiveInfoText(result: FFprobeResult): DownloadQualityLiveInfoText {

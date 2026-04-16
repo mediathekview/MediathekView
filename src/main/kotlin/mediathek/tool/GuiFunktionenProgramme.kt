@@ -50,6 +50,7 @@ object GuiFunktionenProgramme {
      * Use another path var for VLC on windows. Introduced in Version 10.
      */
     private const val ENV_WINDOWS_PATH_VLC = "PATH_VLC"
+    private const val ENV_PATH_FFMPEG = "PATH_FFMPEG"
     private const val PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg"
     private const val PFAD_MAC_FFMPEG = "bin/ffmpeg"
     private const val PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe"
@@ -103,8 +104,9 @@ object GuiFunktionenProgramme {
     }
 
     /**
-     * Liefert den Standardpfad für das entsprechende BS.
-     * Programm muss auf dem Rechner installiert sein.
+     * Liefert einen sinnvollen Standardpfad für VLC für das entsprechende Betriebssystem.
+     * Unter Linux wird zuerst nach {@code vlc} im {@code PATH} gesucht und erst danach auf den
+     * hartcodierten Standardpfad zurückgefallen.
      *
      * @return Pfad als String
      */
@@ -113,7 +115,7 @@ object GuiFunktionenProgramme {
         var pfad = ""
         try {
             pfad = when {
-                SystemUtils.IS_OS_LINUX -> PFAD_LINUX_VLC
+                SystemUtils.IS_OS_LINUX -> findExecutableOnPathOrFallback("vlc", PFAD_LINUX_VLC)
                 SystemUtils.IS_OS_MAC_OSX -> PFAD_MAC_VLC
                 else -> {
                     setWinProgPfade()
@@ -133,10 +135,10 @@ object GuiFunktionenProgramme {
     }
 
     /**
-     * Liefert den Standardpfad für das entsprechende BS.
-     * Bei Win+Mac wird das Programm mitgeliefert und liegt im Ordner "bin" der mit dem Programm
-     * mitgeliefert wird.
-     * Bei Linux muss das Programm auf dem Rechner installiert sein.
+     * Liefert einen sinnvollen Standardpfad für FFmpeg für das entsprechende Betriebssystem.
+     * Unter Linux wird zuerst nach {@code ffmpeg} im {@code PATH} gesucht und erst danach auf den
+     * hartcodierten Standardpfad zurückgefallen.
+     * Bei Win+Mac wird das Programm mitgeliefert und liegt im Ordner {@code bin}.
      *
      * @return Pfad als String
      */
@@ -145,13 +147,13 @@ object GuiFunktionenProgramme {
         var pfad = ""
         try {
             pfad = when {
-                SystemUtils.IS_OS_LINUX -> PFAD_LINUX_FFMPEG
+                SystemUtils.IS_OS_LINUX -> findExecutableOnPathOrFallback("ffmpeg", PFAD_LINUX_FFMPEG)
                 SystemUtils.IS_OS_MAC_OSX -> PFAD_MAC_FFMPEG
                 else -> PFAD_WINDOWS_FFMPEG
             }
 
-            if (!File(pfad).exists() && System.getenv("PATH_FFMPEG") != null) {
-                pfad = System.getenv("PATH_FFMPEG")
+            if (!File(pfad).exists() && System.getenv(ENV_PATH_FFMPEG) != null) {
+                pfad = System.getenv(ENV_PATH_FFMPEG)
             }
             if (!File(pfad).exists()) {
                 pfad = ""
@@ -160,6 +162,9 @@ object GuiFunktionenProgramme {
         }
         return pfad
     }
+
+    private fun findExecutableOnPathOrFallback(name: String, fallbackPath: String): String =
+        runCatching { findExecutableOnPath(name).toString() }.getOrDefault(fallbackPath)
 
     @JvmStatic
     fun addSetVorlagen(parent: JFrame?, daten: Daten, pSet: ListePset?, setVersion: Boolean) {

@@ -1,17 +1,35 @@
 package mediathek.mainwindow
 
+import kotlinx.coroutines.*
+import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.daten.Country
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.timer.TimerPool
 import org.apache.logging.log4j.LogManager
 import java.awt.Font
-import java.util.concurrent.TimeUnit
-import javax.swing.*
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
+import javax.swing.JEditorPane
+import javax.swing.JFrame
+import javax.swing.JOptionPane
+import javax.swing.UIManager
 import javax.swing.event.HyperlinkEvent
+import kotlin.time.Duration.Companion.seconds
 
 class AustrianVlcCheck(val owner: JFrame) {
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(job + Dispatchers.Swing)
+    private var pendingDialogJob: Job? = null
+
+    init {
+        owner.addWindowListener(object : WindowAdapter() {
+            override fun windowClosed(e: WindowEvent) {
+                job.cancel()
+            }
+        })
+    }
+
     private fun getFontWeight(font: Font): String {
         return if (font.isBold) "bold" else "normal"
     }
@@ -42,16 +60,23 @@ class AustrianVlcCheck(val owner: JFrame) {
 
     fun perform() {
         logger.trace("ORF setup tutorial display check started")
-        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, true)) {
-            //we haven´t shown the config help dialog before
-            if (ApplicationConfiguration.getInstance().geographicLocation == Country.AT) {
-                logger.trace("Launching info dialog in 15 seconds...")
-                TimerPool.timerPool.schedule({
-                    SwingUtilities.invokeLater { showSwingMessage() }
-                }, 15, TimeUnit.SECONDS)
+        pendingDialogJob?.cancel()
+
+        if (shouldShowOrfHint()) {
+            pendingDialogJob = scope.launch {
+                delay(5.seconds)
+                if (shouldShowOrfHint() && owner.isDisplayable) {
+                    showSwingMessage()
+                }
             }
         }
         logger.trace("ORF setup tutorial display check finished")
+    }
+
+    private fun shouldShowOrfHint(): Boolean {
+        return ApplicationConfiguration.getConfiguration()
+            .getBoolean(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, true) &&
+            ApplicationConfiguration.getInstance().geographicLocation == Country.AT
     }
 
     companion object {

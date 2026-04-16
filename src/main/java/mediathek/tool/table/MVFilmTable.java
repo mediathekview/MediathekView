@@ -236,7 +236,7 @@ public class MVFilmTable extends PersistentColumnConfigurationTable {
 
         if (firstVisibleRow != -1) {
             scrollToIndexDelegate(firstVisibleRow);
-            requestFocus();
+            requestFocusInWindow();
             return;
         }
 
@@ -244,7 +244,7 @@ public class MVFilmTable extends PersistentColumnConfigurationTable {
             int fallbackRow = Math.min(selectionAnchorRow, getRowCount() - 1);
             selectionModel.setSelectionInterval(fallbackRow, fallbackRow);
             scrollToIndexDelegate(fallbackRow);
-            requestFocus();
+            requestFocusInWindow();
         }
     }
 

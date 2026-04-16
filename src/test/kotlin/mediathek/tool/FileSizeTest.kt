@@ -1,0 +1,80 @@
+package mediathek.tool
+
+import mediathek.config.StandardLocations
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
+
+internal class FileSizeTest {
+    @TempDir
+    lateinit var tempDir: Path
+
+    private var previousPortableBaseDirectory: String? = null
+
+    @AfterEach
+    fun tearDown() {
+        StandardLocations.portableBaseDirectory = previousPortableBaseDirectory
+    }
+
+    @Test
+    fun estimatesM3u8SizeViaHlsEstimator() {
+        val size = FileSize.lookupFileSize(
+            url = "https://example.org/video/master.m3u8".toHttpUrl(),
+            forceFetch = true,
+            quality = "HIGH_QUALITY",
+            cachedHlsLookup = { _, _ -> null },
+            directSizeLoader = { error("direct loader should not be used for m3u8") },
+            hlsSizeLoader = {
+                FileSize.HlsLookupResult(
+                    byteLength = 12_500_000L,
+                    resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
+                )
+            },
+        ).byteLength
+
+        assertEquals(12_500_000L, size)
+    }
+
+    @Test
+    fun returnsInvalidSizeForSmallM3u8Estimate() {
+        val size = FileSize.lookupFileSize(
+            url = "https://example.org/video/master.m3u8".toHttpUrl(),
+            forceFetch = true,
+            quality = "HIGH_QUALITY",
+            cachedHlsLookup = { _, _ -> null },
+            directSizeLoader = { error("direct loader should not be used for m3u8") },
+            hlsSizeLoader = {
+                FileSize.HlsLookupResult(
+                    byteLength = 500_000L,
+                    resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
+                )
+            },
+        ).byteLength
+
+        assertEquals(FileSize.INVALID_SIZE.toLong(), size)
+    }
+
+    @Test
+    fun skipsTelemetryForUnknownHlsLookupFailures() {
+        previousPortableBaseDirectory = StandardLocations.portableBaseDirectory
+        StandardLocations.portableBaseDirectory = tempDir.toString()
+
+        val size = FileSize.lookupFileSize(
+            url = "https://example.org/video/master.m3u8".toHttpUrl(),
+            forceFetch = true,
+            quality = "HIGH_QUALITY",
+            cachedHlsLookup = { _, _ -> null },
+            directSizeLoader = { error("direct loader should not be used for m3u8") },
+            hlsSizeLoader = { throw IOException("network failure") },
+        ).byteLength
+
+        assertEquals(FileSize.INVALID_SIZE.toLong(), size)
+        assertFalse(Files.exists(tempDir.resolve("hls-stream-info-data.ndjson")))
+    }
+}

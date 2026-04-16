@@ -16,6 +16,10 @@
 - **BUGFIX:** Mehrfachauswahl im Tab *Filme* wird nun zurückgesetzt nach dem Löschen.
 - **BUGFIX:** Ein Download Verzeichnis wird nun erst beim Downloadbeginn angelegt.
 - **BUGFIX:** Das sortieren der Spalten im *Abos verwalten* funktioniert nun.
+- **BUGFIX:** Standort-Änderungen in den Einstellungen lassen das Fenster nicht mehr im Hintergrund verschwinden.
+- **BUGFIX:** Die Warnung zur Filtermigration wird nicht mehr beim ersten Start angezeigt.
+- **BUGFIX:** Die Warnung zur Sendermigration wird nicht mehr beim ersten Start angezeigt.
+- **BUGFIX:** Unter Linux werden `vlc` und `ffmpeg` beim ersten Start nun zuerst in $PATH gesucht, erst danach wird einen hard-coded Pfad verwendet.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
 - **FEATURE:** Tab *Audiothek* zur Suche (offline als auch online), Abspielen und Download von Podcasts der ARD Audiothek und via podcastindex.org.
 - **FEATURE:** Filter können nun kopiert werden.
@@ -31,9 +35,12 @@
 - **FEATURE:** Im Tab *Downloads* wurde das Seitenpanel entfernt und in Toolbars ausgelagert. Die Filtereinstellungen sowie der Zustand der Toolbars ist persistent über Neustarts hinweg. Schwebende Toolbars werden nur angezeigt wenn das Tab aktiv ist.
 - **FEATURE:** Unfertige Downloads werden nun automatisch mit Endung `.part` markiert und bei erfolgreichem Download umbenannt.
 - **FEATURE:** Jedes Abo kann nun mittels *Nicht automatisch starten*-Option den automatischen Download der generierten Filme verhindern, wenn *Einstellungen/Erweitert/Downloads aus Abos sofort starten* aktiviert ist.
-- **FEATURE:** Im *Abos verwalten*-Dialog werden Abos, deren letzte Ausführung mehr als 3 Monate zurück liegt *gelb*, nach mehr als 6 Monaten *rot* markiert in der Spalte `letztes Abo`. 
+- **FEATURE:** Im *Abos verwalten*-Dialog werden Abos, deren letzte Ausführung mehr als 3 Monate zurück liegt *gelb*, nach mehr als 6 Monaten *rot* markiert in der Spalte `letztes Abo`.
+- **FEATURE:** Die App überprüft bei jedem Start einmalig, ob der in den Einstellungen gesetzte Standort identisch mit der ermittelten Länderkennung der öffentlichen IP ist und bietet dem Nutzer an, inkorrekte Einstellungen zu korrigieren.
+- **FEATURE:** Bei der erstmaligen Einrichtung wird im Start-Dialog die Zuordnung des Stadorts anhand der öffentlichen IP geprüft und vorab eingestellt.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
+- MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.
 
 # **14.5.0**
 - **BUGFIX(Linux):** Tray-Icon Funktion wird für KDE deaktiviert, das sie hier nicht richtig funktioniert.

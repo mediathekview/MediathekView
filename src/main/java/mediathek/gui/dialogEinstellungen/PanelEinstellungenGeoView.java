@@ -1,98 +1,17 @@
 package mediathek.gui.dialogEinstellungen;
 
-import com.formdev.flatlaf.util.ScaledImageIcon;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.daten.Country;
-import mediathek.gui.dialog.DialogHilfe;
-import mediathek.gui.messages.BlacklistChangedEvent;
-import mediathek.gui.messages.GeoStateChangedEvent;
-import mediathek.tool.*;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.VerticalLayout;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.util.Objects;
 
-public class PanelEinstellungenGeo extends JPanel {
-    private final JFrame parentComponent;
-
-    public PanelEinstellungenGeo(JFrame pparentComponent) {
-        parentComponent = pparentComponent;
-
+public class PanelEinstellungenGeoView extends JPanel {
+    public PanelEinstellungenGeoView() {
         initComponents();
-        setCountryFlags();
-        init();
-    }
-
-    private void setCountryFlags() {
-        lblIcon_DE.setIcon(getScaledIconResource("/icons/countries/162-germany.png"));
-        lblIcon_AT.setIcon(getScaledIconResource("/icons/countries/003-austria.png"));
-        lblIcon_CH.setIcon(getScaledIconResource("/icons/countries/205-switzerland.png"));
-        lblIcon_FR.setIcon(getScaledIconResource("/icons/countries/195-france.png"));
-        lblIcon_EU.setIcon(getScaledIconResource("/icons/countries/259-european-union.png"));
-    }
-
-    private static final Dimension FLAG_DIMENSIONS = new Dimension(32,24);
-
-    private ScaledImageIcon getScaledIconResource(@NotNull String url) {
-        var icon = new ImageIcon(Objects.requireNonNull(getClass().getResource(url)));
-        var imageDim = new Dimension(icon.getIconWidth(), icon.getIconHeight());
-        var destDim = GuiFunktionen.calculateFittedDimension(imageDim, FLAG_DIMENSIONS);
-        return new ScaledImageIcon(icon, destDim.width, destDim.height);
-    }
-
-    private void init() {
-        switch (ApplicationConfiguration.getInstance().getGeographicLocation()) {
-            case CH -> jRadioButtonCH.setSelected(true);
-            case AT -> jRadioButtonAt.setSelected(true);
-            case EU -> jRadioButtonEu.setSelected(true);
-            case FR -> radioButtonFR.setSelected(true);
-            case OTHER -> jRadioButtonSonst.setSelected(true);
-            default -> jRadioButtonDe.setSelected(true);
-        }
-        jRadioButtonDe.addActionListener(_ -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(Country.DE);
-            filterBlacklistAndNotifyChanges();
-        });
-        radioButtonFR.addActionListener(_ -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(Country.FR);
-            filterBlacklistAndNotifyChanges();
-        });
-        jRadioButtonCH.addActionListener(_ -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(Country.CH);
-            filterBlacklistAndNotifyChanges();
-        });
-        jRadioButtonAt.addActionListener(_ -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(Country.AT);
-            filterBlacklistAndNotifyChanges();
-        });
-        jRadioButtonEu.addActionListener(_ -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(Country.EU);
-            filterBlacklistAndNotifyChanges();
-        });
-        jRadioButtonSonst.addActionListener(_ -> {
-            ApplicationConfiguration.getInstance().setGeographicLocation(Country.OTHER);
-            filterBlacklistAndNotifyChanges();
-        });
-
-        jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_GEO)).setVisible(true));
-    }
-
-    /**
-     * Filter blacklist and notify other components that changes were made.
-     */
-    private void filterBlacklistAndNotifyChanges() {
-        Daten.getInstance().getListeBlacklist().filterListe();
-        MessageBus.getMessageBus().publishAsync(new GeoStateChangedEvent());
-        MessageBus.getMessageBus().publishAsync(new BlacklistChangedEvent());
     }
 
     /** This method is called from within the constructor to
@@ -261,20 +180,20 @@ public class PanelEinstellungenGeo extends JPanel {
         buttonGroup1.add(jRadioButtonEu);
         buttonGroup1.add(jRadioButtonSonst);
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JRadioButton jRadioButtonDe;
-    private JLabel lblIcon_DE;
-    private JRadioButton jRadioButtonAt;
-    private JLabel lblIcon_AT;
-    private JRadioButton jRadioButtonCH;
-    private JLabel lblIcon_CH;
-    private JRadioButton radioButtonFR;
-    private JLabel lblIcon_FR;
-    private JRadioButton jRadioButtonEu;
-    private JLabel lblIcon_EU;
-    private JRadioButton jRadioButtonSonst;
-    private JButton jButtonHilfe;
+    protected JRadioButton jRadioButtonDe;
+    protected JLabel lblIcon_DE;
+    protected JRadioButton jRadioButtonAt;
+    protected JLabel lblIcon_AT;
+    protected JRadioButton jRadioButtonCH;
+    protected JLabel lblIcon_CH;
+    protected JRadioButton radioButtonFR;
+    protected JLabel lblIcon_FR;
+    protected JRadioButton jRadioButtonEu;
+    protected JLabel lblIcon_EU;
+    protected JRadioButton jRadioButtonSonst;
+    protected JButton jButtonHilfe;
     // End of variables declaration//GEN-END:variables
-
 }

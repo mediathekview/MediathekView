@@ -71,6 +71,9 @@ public class Konstanten {
     public static final String AUDIOTHEK_ONLINE_SEARCH_PROXY_URL = "https://audiothek.crystalpalace.info";
     public static final String AUDIOTHEK_PROXY_CLIENT_TOKEN_HEADER = "X-MV-Client-Token";
     public static final String AUDIOTHEK_PROXY_CLIENT_TOKEN = "mv-audiothek-static-2026-03";
+    public static final String HLS_STREAM_INFO_TOKEN_HEADER = "X-HLS-Stream-Info-Token";
+    public static final String HLS_STREAM_INFO_TOKEN = "mv-hls-stream-info-test-2026-04-14";
+    public static final HttpUrl HLS_STREAM_INFO_UPLOAD_URL = HttpUrl.get("https://hlssi.crystalpalace.info/v1/hls-stream-info"); // e.g. HttpUrl.get("https://xx.domain.com/v1/hls-stream-info")
     public static final String PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml";
     public static final String PROGRAM_VERSION_PATH = "prog-info-13.xml";
     public static final String ADRESSE_DOWNLOAD = "https://mediathekview.de/download/";
@@ -85,7 +88,7 @@ public class Konstanten {
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
     public static final String JSON_DATEI_FILME = "filme.json";
     public static final String BOOKMARK_FILE = "bookmarks.json";
-    public final static String SHUTDOWN_LINUX = "shutdown -h now";
+    public static final String SHUTDOWN_LINUX = "shutdown -h now";
     public static final String JDOWNLOADER_URL = "http://127.0.0.1:9666/flash/add";
 
     /**
