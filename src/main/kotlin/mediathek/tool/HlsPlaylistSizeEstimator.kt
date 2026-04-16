@@ -281,7 +281,7 @@ class HlsPlaylistSizeEstimator(
 
     private suspend fun loadText(url: HttpUrl): String = withContext(Dispatchers.IO) {
         execute(Request.Builder().url(url).get().build()) { response ->
-            response.body?.string().orEmpty()
+            response.body.string()
         }
     }
 
@@ -328,8 +328,7 @@ class HlsPlaylistSizeEstimator(
 
     private fun contentLength(response: Response): Long =
         response.header("Content-Length")?.toLongOrNull()
-            ?: response.body?.contentLength()
-            ?: -1L
+            ?: response.body.contentLength()
 
     internal fun contentLengthOrRangeLength(response: Response): Long =
         parseContentRangeLength(response.header("Content-Range"))

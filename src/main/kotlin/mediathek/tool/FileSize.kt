@@ -203,7 +203,7 @@ object FileSize {
                     return null
                 }
 
-                val payload = response.body?.string().orEmpty()
+                val payload = response.body.string()
                 val cachedResult = lookupJson.decodeFromString<CachedHlsLookupResponse>(payload)
                 if (!cachedResult.found) {
                     return null
