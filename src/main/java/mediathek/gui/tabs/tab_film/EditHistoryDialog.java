@@ -72,15 +72,15 @@ public class EditHistoryDialog extends JDialog {
         });
         adjustButtons();
 
-        btnDeleteEntries.addActionListener(l -> deleteEntries());
+        btnDeleteEntries.addActionListener(_ -> deleteEntries());
 
-        btnUp.addActionListener(l -> {
+        btnUp.addActionListener(_ -> {
             var idx = list.getSelectedIndex();
             idx = moveEntry(idx, dec_op);
             list.setSelectedIndex(idx);
         });
 
-        btnDown.addActionListener(l -> {
+        btnDown.addActionListener(_ -> {
             var idx = list.getSelectedIndex();
             idx = moveEntry(idx, inc_op);
             list.setSelectedIndex(idx);
@@ -137,7 +137,7 @@ public class EditHistoryDialog extends JDialog {
             setSize(width, height);
             setLocation(x, y);
         }
-        catch (NoSuchElementException ignored) {
+        catch (NoSuchElementException _) {
         }
         catch (Exception ex) {
             logger.error("Unhandled exception", ex);

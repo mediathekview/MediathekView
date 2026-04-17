@@ -52,10 +52,8 @@ data class ViewFilter(
         const val RUN_ONLY = "nur laufende"
         const val FINISHED_ONLY = "nur abgeschlossene"
 
-        @JvmStatic
         fun all(): ViewFilter = ViewFilter(false, false, false, false, false)
 
-        @JvmStatic
         fun from(selectedItem: Any?): ViewFilter = when (selectedItem?.toString() ?: ALL) {
             NOT_STARTED -> ViewFilter(true, false, false, false, false)
             STARTED -> ViewFilter(false, true, false, false, false)

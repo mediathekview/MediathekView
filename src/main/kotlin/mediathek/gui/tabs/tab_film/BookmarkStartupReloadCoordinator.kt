@@ -16,26 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.tabs.tab_film;
+package mediathek.gui.tabs.tab_film
 
-final class BookmarkStartupReloadCoordinator {
-    private boolean waitingForBookmarkRefresh;
+class BookmarkStartupReloadCoordinator {
+    private var waitingForBookmarkRefresh = false
 
-    void onFilmListLoadingStarted() {
-        waitingForBookmarkRefresh = false;
+    fun onFilmListLoadingStarted() {
+        waitingForBookmarkRefresh = false
     }
 
-    boolean onFilmListLoaded(boolean showBookMarkedOnly) {
-        waitingForBookmarkRefresh = showBookMarkedOnly;
-        return !showBookMarkedOnly;
+    fun onFilmListLoaded(showBookMarkedOnly: Boolean): Boolean {
+        waitingForBookmarkRefresh = showBookMarkedOnly
+        return !showBookMarkedOnly
     }
 
-    boolean onBookmarkRefreshCompleted(boolean showBookMarkedOnly) {
+    fun onBookmarkRefreshCompleted(showBookMarkedOnly: Boolean): Boolean {
         if (!waitingForBookmarkRefresh || !showBookMarkedOnly) {
-            return false;
+            return false
         }
 
-        waitingForBookmarkRefresh = false;
-        return true;
+        waitingForBookmarkRefresh = false
+        return true
     }
 }

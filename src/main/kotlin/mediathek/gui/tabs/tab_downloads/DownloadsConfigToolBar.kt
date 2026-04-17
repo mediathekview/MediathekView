@@ -86,14 +86,10 @@ class DownloadsConfigToolBar : JToolBar() {
     }
 
     private fun setupBrDirectDownloadCheckBox() {
-        val config = ApplicationConfiguration.getConfiguration()
-        cbUseCdnAwareDirectDownloader.isSelected =
-            config.getBoolean(ApplicationConfiguration.DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD, true)
+        val config = ApplicationConfiguration.getInstance()
+        cbUseCdnAwareDirectDownloader.isSelected = config.useCdnAwareDirectDownload
         cbUseCdnAwareDirectDownloader.addActionListener {
-            config.setProperty(
-                ApplicationConfiguration.DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD,
-                cbUseCdnAwareDirectDownloader.isSelected
-            )
+            config.useCdnAwareDirectDownload = cbUseCdnAwareDirectDownloader.isSelected
         }
     }
 

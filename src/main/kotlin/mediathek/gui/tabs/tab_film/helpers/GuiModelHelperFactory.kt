@@ -16,33 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.tabs.tab_downloads
+package mediathek.gui.tabs.tab_film.helpers
 
-data class DisplayFilter(
-    val onlyAbos: Boolean,
-    val onlyDownloads: Boolean
-) {
-    fun onlyAbos(): Boolean = onlyAbos
+import mediathek.config.Daten
+import mediathek.daten.IndexedFilmList
+import mediathek.gui.tabs.tab_film.SearchFieldData
+import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 
-    fun onlyDownloads(): Boolean = onlyDownloads
-
-    fun selectedItem(): String = when {
-        onlyDownloads -> DOWNLOADS_ONLY
-        onlyAbos -> ABOS_ONLY
-        else -> ALL
-    }
-
-    companion object {
-        const val ALL = "alle"
-        const val DOWNLOADS_ONLY = "nur Downloads"
-        const val ABOS_ONLY = "nur Abos"
-
-        fun all(): DisplayFilter = DisplayFilter(false, false)
-
-        fun from(selectedItem: Any?): DisplayFilter = when (selectedItem?.toString() ?: ALL) {
-            DOWNLOADS_ONLY -> DisplayFilter(false, true)
-            ABOS_ONLY -> DisplayFilter(true, false)
-            else -> all()
-        }
+object GuiModelHelperFactory {
+    @JvmStatic
+    fun createGuiModelHelper(
+        searchFieldData: SearchFieldData,
+        filterController: FilmFilterController
+    ): GuiModelHelper = if (Daten.getInstance().listeFilmeNachBlackList is IndexedFilmList) {
+        LuceneGuiFilmeModelHelper(searchFieldData, filterController)
+    } else {
+        GuiFilmeModelHelper(searchFieldData, filterController)
     }
 }

@@ -395,7 +395,7 @@ public class StarterClass {
     protected Thread selectDirectDownload(DatenDownload datenDownload) {
         Thread downloadThread;
 
-        var useCdnAwareDirectDownload = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD, true);
+        var useCdnAwareDirectDownload = ApplicationConfiguration.getInstance().getUseCdnAwareDirectDownload();
         var result = CdnDetector.detect(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         if (useCdnAwareDirectDownload && CdnDetector.isCdn(result)) {
             logger.trace("CDN detected: {}", result);

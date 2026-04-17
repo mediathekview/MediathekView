@@ -48,7 +48,7 @@ public class MVHttpClient {
                         //no proxy setup specified...
                         setupNonProxyClients();
                     }
-                } catch (NoSuchElementException e) {
+                } catch (NoSuchElementException _) {
                     setupNonProxyClients();
                 }
             }
@@ -76,7 +76,7 @@ public class MVHttpClient {
             try {
                 var levelName = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL);
                 level = HttpLoggingInterceptor.Level.valueOf(levelName);
-            } catch (Exception ignored) {
+            } catch (Exception _) {
                 logger.error("Error reading http traffic debug trace level, using BASIC");
             }
             interceptor.level(level);
@@ -94,7 +94,6 @@ public class MVHttpClient {
         return builder;
     }
 
-    //TODO make configurable network timeout
     private static final long NETWORK_TIMEOUT = 10;
 
     public ByteCounter getByteCounter() {

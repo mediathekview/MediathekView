@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
  * The global application configuration class. This will contain all the config data in the future.
  */
 public class ApplicationConfiguration {
+    private static final boolean DEFAULT_DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD = false;
     public static final String TOOLBAR_BLACKLIST_ICON_WITH_TEXT = "toolbar.blacklist_icon.text";
     public static final String UI_TAB_FILME_TIME_USE_LONG_FORMAT = "ui.tab.filme.time_use_long_format";
     public static final String APPLICATION_DARK_MODE = "application.dark_mode";
@@ -154,6 +155,14 @@ public class ApplicationConfiguration {
         config.setProperty(BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS, newValue);
     }
 
+    public boolean getUseCdnAwareDirectDownload() {
+        return config.getBoolean(DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD, DEFAULT_DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD);
+    }
+
+    public void setUseCdnAwareDirectDownload(boolean newValue) {
+        config.setProperty(DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD, newValue);
+    }
+
     private void initializeTimedEventWriting() {
         config.addEventListener(ConfigurationEvent.ANY, timerTaskListener);
     }
@@ -201,6 +210,7 @@ public class ApplicationConfiguration {
             config.setProperty(APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME);
             config.setProperty(APPLICATION_JDOWNLOADER_URL, Konstanten.JDOWNLOADER_URL);
             config.setProperty(LUCENE_DIRECTORY_MODE, "auto");
+            config.setProperty(DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD, DEFAULT_DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD);
             setGeographicLocation(Country.DE);
 
             handler.save();
@@ -225,6 +235,9 @@ public class ApplicationConfiguration {
         }
         if (!config.containsKey(LUCENE_DIRECTORY_MODE)) {
             config.setProperty(LUCENE_DIRECTORY_MODE, "auto");
+        }
+        if (!config.containsKey(DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD)) {
+            config.setProperty(DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD, DEFAULT_DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD);
         }
     }
 
