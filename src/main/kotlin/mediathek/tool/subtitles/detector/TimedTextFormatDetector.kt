@@ -57,7 +57,6 @@ object TimedTextFormatDetector {
     /**
      * @param requireAtLeastOneVttCue if true, WebVTT must contain at least one cue.
      */
-    @JvmStatic
     @Throws(Exception::class)
     fun detect(path: Path, requireAtLeastOneVttCue: Boolean): Result {
         // 1) WebVTT: header-based detection + strict validation result
@@ -143,19 +142,16 @@ object TimedTextFormatDetector {
         NOT_TTML
     }
 
-    @JvmRecord
     data class Result(
         val format: Format,
         val valid: Boolean,
         val details: String
     ) {
         companion object {
-            @JvmStatic
             fun ok(format: Format, details: String): Result {
                 return Result(format, true, details)
             }
 
-            @JvmStatic
             fun fail(format: Format, details: String): Result {
                 return Result(format, false, details)
             }

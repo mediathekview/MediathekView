@@ -98,7 +98,6 @@ class MVSubtitle {
          * Move [source] to [target], preferring ATOMIC_MOVE and falling back to non-atomic move/copy-delete.
          * This is intended for files that may cross filesystems or be stored on network shares.
          */
-        @JvmStatic
         @Throws(IOException::class)
         fun moveWithFallback(source: Path, target: Path) {
             try {
@@ -112,7 +111,6 @@ class MVSubtitle {
             moveNonAtomicOrCopyDelete(source, target)
         }
 
-        @JvmStatic
         @Throws(IOException::class)
         fun addFileExtension(selectedFilePath: Path, format: TimedTextFormatDetector.Format): Path {
             return when (format) {

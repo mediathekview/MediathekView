@@ -348,7 +348,6 @@ object WebVttStrictValidator {
         SKIP_UNTIL_BLANK
     }
 
-    @JvmRecord
     data class ValidationResult(
         val headerPresent: Boolean,
         val valid: Boolean,
@@ -356,12 +355,10 @@ object WebVttStrictValidator {
         val cueCount: Int
     ) {
         companion object {
-            @JvmStatic
             fun ok(cueCount: Int): ValidationResult {
                 return ValidationResult(headerPresent = true, valid = true, errors = emptyList(), cueCount = cueCount)
             }
 
-            @JvmStatic
             fun fail(headerPresent: Boolean, errors: List<String>, cueCount: Int): ValidationResult {
                 return ValidationResult(headerPresent, false, errors.toList(), cueCount)
             }

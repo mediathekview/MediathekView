@@ -47,7 +47,6 @@ object ArteExpiryHelper {
         "(Verfügbar bis zum|Available until|Disponible hasta el|Disponible jusqu'?au|Disponibile fino al|Dostępny do)\\s*(\\d{2}/\\d{2}/\\d{4})"
     )
 
-    @JvmStatic
     fun getExpiryInfo(url: String): Optional<ExpiryInfo> {
         val request = Request.Builder()
             .url(url)

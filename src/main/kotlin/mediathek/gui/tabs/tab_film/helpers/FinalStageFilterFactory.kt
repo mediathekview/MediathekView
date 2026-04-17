@@ -34,18 +34,12 @@ fun createFinalStageFilter(
 ): Predicate<DatenFilm> {
     // if arrIrgendwo contains more than one search fields fall back to "old" pattern search
     // otherwise use more optimized search
-    val isPattern = Filter.isPattern(arrIrgendwo[0]) || arrIrgendwo.size > 1
-    return if (searchThroughDescription) {
-        if (isPattern) {
-            FinalStagePatternFilterWithDescription(arrIrgendwo)
-        } else {
-            FinalStageFilterNoPatternWithDescription(arrIrgendwo)
-        }
-    } else {
-        if (isPattern) {
-            FinalStagePatternFilter(arrIrgendwo)
-        } else {
-            FinalStageFilterNoPattern(arrIrgendwo)
-        }
+    val usePatternFilter = arrIrgendwo.size > 1 || Filter.isPattern(arrIrgendwo[0])
+
+    return when {
+        usePatternFilter && searchThroughDescription -> FinalStagePatternFilterWithDescription(arrIrgendwo)
+        usePatternFilter -> FinalStagePatternFilter(arrIrgendwo)
+        searchThroughDescription -> FinalStageFilterNoPatternWithDescription(arrIrgendwo)
+        else -> FinalStageFilterNoPattern(arrIrgendwo)
     }
 }

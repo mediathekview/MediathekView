@@ -23,18 +23,11 @@ import mediathek.tool.Filter
 import java.util.function.Predicate
 
 class FinalStagePatternFilterWithDescription(private val searchStr: Array<String>) : Predicate<DatenFilm> {
-    override fun test(film: DatenFilm): Boolean {
-        var result = searchDefault(film)
+    override fun test(film: DatenFilm): Boolean =
+        film.matchesTopicOrTitle(searchStr) || film.matchesDescription(searchStr)
+}
 
-        // search description if available
-        val description = film.description
-        if (description.isNotEmpty()) {
-            result = Filter.pruefen(searchStr, description) || result
-        }
-
-        return result
-    }
-
-    private fun searchDefault(film: DatenFilm): Boolean =
-        Filter.pruefen(searchStr, film.thema) || Filter.pruefen(searchStr, film.title)
+private fun DatenFilm.matchesDescription(searchStr: Array<String>): Boolean {
+    val description = description
+    return description.isNotEmpty() && Filter.pruefen(searchStr, description)
 }

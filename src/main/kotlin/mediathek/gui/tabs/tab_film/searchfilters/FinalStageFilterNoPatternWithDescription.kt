@@ -19,13 +19,14 @@
 package mediathek.gui.tabs.tab_film.searchfilters
 
 import mediathek.daten.DatenFilm
-import mediathek.tool.Filter
 import java.util.function.Predicate
 
-class FinalStagePatternFilter(private val searchStr: Array<String>) : Predicate<DatenFilm> {
+class FinalStageFilterNoPatternWithDescription(searchStr: Array<String>) : Predicate<DatenFilm> {
+    private val searchText = searchStr[0]
+
     override fun test(film: DatenFilm): Boolean =
-        film.matchesTopicOrTitle(searchStr)
+        film.matchesTopicOrTitle(searchText) || film.matchesDescription(searchText)
 }
 
-internal fun DatenFilm.matchesTopicOrTitle(searchStr: Array<String>): Boolean =
-    Filter.pruefen(searchStr, thema) || Filter.pruefen(searchStr, title)
+private fun DatenFilm.matchesDescription(searchText: String): Boolean =
+    description.let { it.isNotEmpty() && it.lowercase().contains(searchText) }
