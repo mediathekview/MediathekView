@@ -18,7 +18,7 @@
 
 package mediathek.tool;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -206,7 +206,7 @@ public enum LanguageCode {
         this.nativeName = nativeName;
     }
 
-    public static LanguageCode fromNativeName(@NotNull String nativeName) throws IllegalArgumentException {
+    public static LanguageCode fromNativeName(@NonNull String nativeName) throws IllegalArgumentException {
         for (var item : LanguageCode.values()) {
             if (item.nativeName.equals(nativeName))
                 return item;
@@ -222,7 +222,7 @@ public enum LanguageCode {
         return nativeName;
     }
 
-    public @NotNull String getISO3Language() throws IllegalArgumentException {
+    public @NonNull String getISO3Language() throws IllegalArgumentException {
         try {
             var isocode = Locale.of(this.name()).getISO3Language();
             if (isocode.isEmpty()) {

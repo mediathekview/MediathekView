@@ -30,7 +30,7 @@ import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.Filter;
 import mediathek.tool.MessageBus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -305,7 +305,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @param film item to be checked
      * @return true if film can be displayed
      */
-    private boolean checkDate(@NotNull DatenFilm film) {
+    private boolean checkDate(@NonNull DatenFilm film) {
         // always show livestreams
         if (film.isLivestream())
             return true;
@@ -324,7 +324,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @param film item to be checked.
      * @return true if it should be displayed.
      */
-    private boolean checkIfFilmIsInFuture(@NotNull DatenFilm film) {
+    private boolean checkIfFilmIsInFuture(@NonNull DatenFilm film) {
         return film.getDatumFilm().getTime() <= System.currentTimeMillis();
     }
 
@@ -334,7 +334,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
      * @param film item to check
      * @return true if film should be displayed
      */
-    private boolean checkFilmLength(@NotNull DatenFilm film) {
+    private boolean checkFilmLength(@NonNull DatenFilm film) {
         var filmLength = film.getFilmLength();
         return !(filmLength != 0 && minimumFilmLength > filmLength);
     }

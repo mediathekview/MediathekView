@@ -19,7 +19,7 @@
 package mediathek.tool.sender_icon_cache;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,9 +29,9 @@ public final class SenderIconRenderUtil {
     private SenderIconRenderUtil() {
     }
 
-    public static @NotNull Dimension calculateFittedDimensionAllowUpscale(
-            @NotNull Dimension imageSize,
-            @NotNull Dimension boundary
+    public static @NonNull Dimension calculateFittedDimensionAllowUpscale(
+            @NonNull Dimension imageSize,
+            @NonNull Dimension boundary
     ) {
         int iw = Math.max(1, imageSize.width);
         int ih = Math.max(1, imageSize.height);
@@ -44,9 +44,9 @@ public final class SenderIconRenderUtil {
         return new Dimension(w, h);
     }
 
-    public static @NotNull Icon deriveSvgFittedToOpaqueBounds(
-            @NotNull FlatSVGIcon svg,
-            @NotNull Dimension targetBounds
+    public static @NonNull Icon deriveSvgFittedToOpaqueBounds(
+            @NonNull FlatSVGIcon svg,
+            @NonNull Dimension targetBounds
     ) {
         Dimension fitted = calculateFittedDimensionAllowUpscale(
                 new Dimension(svg.getIconWidth(), svg.getIconHeight()),
@@ -82,7 +82,7 @@ public final class SenderIconRenderUtil {
         return svg.derive(outWidth, outHeight);
     }
 
-    private static Rectangle opaqueBounds(@NotNull BufferedImage image) {
+    private static Rectangle opaqueBounds(@NonNull BufferedImage image) {
         int minX = image.getWidth();
         int minY = image.getHeight();
         int maxX = -1;

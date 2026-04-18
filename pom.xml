@@ -90,7 +90,6 @@
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
         <maven.compiler.target>${jvm.target.version}</maven.compiler.target>
 
-        <annotations.version>26.1.0</annotations.version>
         <commons-configuration2.version>2.14.0</commons-configuration2.version>
         <commons-io.version>2.21.0</commons-io.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
@@ -107,6 +106,7 @@
         <jide-oss.version>3.7.15</jide-oss.version>
         <jlibnotify.version>1.2.3</jlibnotify.version>
         <jna.version>5.18.1</jna.version>
+        <jspecify.version>1.0.0</jspecify.version>
         <jsoup.version>1.22.1</jsoup.version>
         <junit.jupiter.version>6.0.3</junit.jupiter.version>
         <kotlinx-coroutines.version>1.10.2</kotlinx-coroutines.version>
@@ -423,10 +423,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>${annotations.version}</version>
-            <scope>compile</scope>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
         </dependency>
 
         <dependency>

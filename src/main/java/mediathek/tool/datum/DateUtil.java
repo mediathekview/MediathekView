@@ -19,8 +19,8 @@
 package mediathek.tool.datum;
 
 import mediathek.daten.DatenFilm;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -34,7 +34,7 @@ public class DateUtil {
             .withZone(MV_DEFAULT_TIMEZONE);
     private static final ZoneId UTC_ZONE_ID = ZoneId.of("UTC");
 
-    public static long convertFilmDateToLuceneDate(@NotNull DatenFilm film) {
+    public static long convertFilmDateToLuceneDate(@NonNull DatenFilm film) {
         var ldt = DateUtil.convertToLocalDate(film.getDatumFilm()).atStartOfDay();
         return ldt.atZone(UTC_ZONE_ID).toInstant().toEpochMilli();
     }
@@ -48,7 +48,7 @@ public class DateUtil {
                 .toLocalDate();
     }
 
-    public static Date convertToDate(@NotNull LocalDate ld) {
+    public static Date convertToDate(@NonNull LocalDate ld) {
         return Date.from(ld.atStartOfDay(MV_DEFAULT_TIMEZONE).toInstant());
     }
 }

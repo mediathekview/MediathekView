@@ -21,7 +21,7 @@ package mediathek.tool;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -111,7 +111,7 @@ public class FilenameUtils {
      * @param input the input string
      * @return the stripped result
      */
-    protected static String stripStartingDots(@NotNull String input) {
+    protected static String stripStartingDots(@NonNull String input) {
         return input.replaceFirst("^\\.+", "");
     }
 

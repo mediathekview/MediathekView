@@ -25,7 +25,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -172,7 +172,7 @@ public class FilmeLaden {
         fillHash(daten.getListeFilme());
     }
 
-    private void displayLogInfo(@NotNull ListeFilme listeFilme) {
+    private void displayLogInfo(@NonNull ListeFilme listeFilme) {
         logger.info("Alte Liste erstellt am: {}", listeFilme.getMetaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
         logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
@@ -383,7 +383,7 @@ public class FilmeLaden {
     /**
      * Search through history and mark new films.
      */
-    private void findAndMarkNewFilms(@NotNull ListeFilme listeFilme) {
+    private void findAndMarkNewFilms(@NonNull ListeFilme listeFilme) {
         //reset all current new films to false
         listeFilme.parallelStream()
                 .filter(DatenFilm::isNew)

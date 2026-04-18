@@ -28,7 +28,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.AboListChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public class ListeAbo extends ArrayList<DatenAbo> {
         add(datenAbo);
     }
 
-    public void aboLoeschen(@NotNull DatenAbo abo) {
+    public void aboLoeschen(@NonNull DatenAbo abo) {
         remove(abo);
         aenderungMelden();
     }
@@ -182,7 +182,7 @@ public class ListeAbo extends ArrayList<DatenAbo> {
      *
      * @param film assignee
      */
-    private void assignAboToFilm(@NotNull DatenFilm film) {
+    private void assignAboToFilm(@NonNull DatenFilm film) {
         stream().filter(abo
                 -> Filter.filterAufFilmPruefen(abo.getSender(), abo.getThema(),
                 abo.getTitelFilterPattern(),

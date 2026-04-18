@@ -20,7 +20,7 @@ package mediathek.controller;
 
 import mediathek.tool.BandwidthFormatter;
 import mediathek.tool.FileUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,7 +57,7 @@ public class MVBandwidthCountingInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte @NotNull [] b) throws IOException {
+    public int read(byte @NonNull [] b) throws IOException {
         final int bytesRead = iStream.read(b);
         if (bytesRead != -1) {
             incrementBytesRead(bytesRead);

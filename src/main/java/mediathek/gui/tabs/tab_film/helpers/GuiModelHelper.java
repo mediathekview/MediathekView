@@ -26,7 +26,7 @@ import mediathek.gui.tabs.tab_film.filter.FilmFilterController;
 import mediathek.gui.tabs.tab_film.filter.FilmFilterState;
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider;
 import mediathek.tool.models.TModelFilm;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
@@ -47,14 +47,14 @@ final class GuiModelHelperSupport {
     private final SearchFieldData searchFieldData;
     private final FilmFilterController filterController;
 
-    GuiModelHelperSupport(@NotNull SearchFieldData searchFieldData,
-                          @NotNull FilmFilterController filterController) {
+    GuiModelHelperSupport(@NonNull SearchFieldData searchFieldData,
+                          @NonNull FilmFilterController filterController) {
         this.searchFieldData = searchFieldData;
         this.filterController = filterController;
     }
 
-    TableModel getFilteredTableModel(@NotNull Collection<DatenFilm> allFilms,
-                                     @NotNull Supplier<Collection<DatenFilm>> filteredFilmSupplier) {
+    TableModel getFilteredTableModel(@NonNull Collection<DatenFilm> allFilms,
+                                     @NonNull Supplier<Collection<DatenFilm>> filteredFilmSupplier) {
         if (allFilms.isEmpty()) {
             return createEmptyFilmTableModel();
         }
@@ -66,7 +66,7 @@ final class GuiModelHelperSupport {
 
     Stream<DatenFilm> applyCommonFilters(Stream<DatenFilm> stream,
                                          final String filterThema,
-                                         @NotNull LengthFilterRange lengthFilterRange) {
+                                         @NonNull LengthFilterRange lengthFilterRange) {
         if (!filterThema.isEmpty()) {
             stream = stream.filter(film -> film.getThema().equalsIgnoreCase(filterThema));
         }
@@ -83,7 +83,7 @@ final class GuiModelHelperSupport {
         return noFiltersAreSet(state()) && searchFieldData.isEmpty();
     }
 
-    private boolean noFiltersAreSet(@NotNull FilmFilterState state) {
+    private boolean noFiltersAreSet(@NonNull FilmFilterState state) {
         return state.getCheckedChannels().isEmpty()
                 && state.getThema().isEmpty()
                 && state.getFilmLengthMin() == 0
@@ -126,7 +126,7 @@ final class GuiModelHelperSupport {
         return filterController.state();
     }
 
-    private boolean minLengthCheck(DatenFilm film, @NotNull LengthFilterRange lengthFilterRange) {
+    private boolean minLengthCheck(DatenFilm film, @NonNull LengthFilterRange lengthFilterRange) {
         var filmLength = film.getFilmLength();
         if (filmLength == 0) {
             return true;
@@ -151,7 +151,7 @@ final class GuiModelHelperSupport {
                 TimeUnit.SECONDS.convert(state.getFilmLengthMax(), TimeUnit.MINUTES));
     }
 
-    private TModelFilm createFilmTableModel(@NotNull Collection<DatenFilm> films) {
+    private TModelFilm createFilmTableModel(@NonNull Collection<DatenFilm> films) {
         var filmModel = new TModelFilm(films.size());
         filmModel.addAll(films instanceof List<DatenFilm> filmList ? filmList : List.copyOf(films));
         return filmModel;

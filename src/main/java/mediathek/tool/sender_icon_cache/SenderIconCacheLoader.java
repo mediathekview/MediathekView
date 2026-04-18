@@ -21,8 +21,8 @@ package mediathek.tool.sender_icon_cache;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Locale;
@@ -33,11 +33,11 @@ class SenderIconCacheLoader {
     private static final Logger logger = LogManager.getLogger();
     private final AtomicBoolean useLocalIcons;
 
-    public SenderIconCacheLoader(@NotNull AtomicBoolean useLocalIcons) {
+    public SenderIconCacheLoader(@NonNull AtomicBoolean useLocalIcons) {
         this.useLocalIcons = useLocalIcons;
     }
 
-    private @Nullable String getSvgResource(@NotNull String sender) {
+    private @Nullable String getSvgResource(@NonNull String sender) {
         return switch (sender.toLowerCase(Locale.ROOT)) {
             case "3sat" -> "/icons/sender/3sat.svg";
             case "ard", "das erste" -> "/icons/sender/ard.svg";
@@ -68,7 +68,7 @@ class SenderIconCacheLoader {
         };
     }
 
-    private @Nullable String getPngResource(@NotNull String sender) {
+    private @Nullable String getPngResource(@NonNull String sender) {
         return switch (sender.toLowerCase(Locale.ROOT)) {
             case "3sat" -> "/mediathek/res/sender/3sat.png";
             case "ard", "das erste" -> "/mediathek/res/sender/ard.png";
@@ -100,7 +100,7 @@ class SenderIconCacheLoader {
         };
     }
 
-    private @Nullable ImageIcon loadResourceIcon(@NotNull String sender, @Nullable String resource) {
+    private @Nullable ImageIcon loadResourceIcon(@NonNull String sender, @Nullable String resource) {
         if (resource == null) {
             return null;
         }
@@ -118,7 +118,7 @@ class SenderIconCacheLoader {
         return new ImageIcon(url);
     }
 
-    public @NotNull Optional<ImageIcon> load(@NotNull String sender) {
+    public @NonNull Optional<ImageIcon> load(@NonNull String sender) {
         String svgResource = getSvgResource(sender);
         String pngResource = getPngResource(sender);
 

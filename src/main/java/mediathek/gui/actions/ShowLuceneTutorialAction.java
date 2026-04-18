@@ -20,7 +20,7 @@ package mediathek.gui.actions;
 
 import mediathek.gui.dialog.lucene_tutorial.LuceneTutorialDialog;
 import mediathek.tool.SVGIconUtilities;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +31,7 @@ import java.awt.event.WindowEvent;
 public final class ShowLuceneTutorialAction extends AbstractAction {
     private final Window owner;
 
-    public ShowLuceneTutorialAction(@NotNull Window owner) {
+    public ShowLuceneTutorialAction(@NonNull Window owner) {
         this.owner = owner;
         putValue(NAME, "Lucene-Suchsyntax anzeigen...");
         putValue(SHORT_DESCRIPTION, "Lucene Query Syntax Hilfe");

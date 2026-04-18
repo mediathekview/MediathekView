@@ -26,7 +26,7 @@ import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -59,9 +59,9 @@ public abstract class AGuiTabPanel extends JPanel {
         }
     }
 
-    protected void setupDescriptionTab(@NotNull JTable table, @NotNull JCheckBoxMenuItem cbmi,
-                                       @NotNull String configKey,
-                                       @NotNull Supplier<Optional<DatenFilm>> datenFilmSupplier) {
+    protected void setupDescriptionTab(@NonNull JTable table, @NonNull JCheckBoxMenuItem cbmi,
+                                       @NonNull String configKey,
+                                       @NonNull Supplier<Optional<DatenFilm>> datenFilmSupplier) {
         descriptionPanel.install(descriptionTab, table, datenFilmSupplier);
         descriptionTab.putClientProperty("JTabbedPane.tabClosable", true);
         descriptionTab.putClientProperty("JTabbedPane.tabCloseCallback",
@@ -75,14 +75,14 @@ public abstract class AGuiTabPanel extends JPanel {
         initDescriptionTabVisibility(configKey);
     }
 
-    protected void updateSelectedListItemsCount(@NotNull JTable table) {
+    protected void updateSelectedListItemsCount(@NonNull JTable table) {
         final int sel = table.getSelectedRowCount();
         mediathekGui.selectedListItemsProperty.setSelectedItems(sel);
     }
 
     protected abstract void setupShowFilmDescriptionMenuItem();
 
-    protected void initDescriptionTabVisibility(@NotNull String configKey) {
+    protected void initDescriptionTabVisibility(@NonNull String configKey) {
         boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(configKey, true);
 
         makeDescriptionTabVisible(visible);

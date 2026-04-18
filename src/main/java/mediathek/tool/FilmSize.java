@@ -2,7 +2,7 @@ package mediathek.tool;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Store film size in Megabytes.
@@ -40,7 +40,7 @@ public class FilmSize implements Comparable<FilmSize> {
     }
 
     @Override
-    public int compareTo(@NotNull FilmSize other) {
+    public int compareTo(@NonNull FilmSize other) {
         return (Integer.compare(size, other.size));
     }
 }

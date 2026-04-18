@@ -23,8 +23,8 @@ import mediathek.tool.datum.DateUtil;
 import mediathek.tool.table.ColumnVisibilityStore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -102,7 +102,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return columnVisibilityStore.isVisible(i);
     }
 
-    public static @NotNull ColumnVisibilityStore getColumnVisibilityStore() {
+    public static @NonNull ColumnVisibilityStore getColumnVisibilityStore() {
         return columnVisibilityStore;
     }
 
@@ -184,7 +184,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
     }
 
-    public @NotNull String getDownDatumText() {
+    public @NonNull String getDownDatumText() {
         return down_datum == null ? "" : DateUtil.FORMATTER.format(down_datum);
     }
 
@@ -303,7 +303,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
      *
      * @param writer the writer used.
      */
-    public void writeToConfig(@NotNull XMLStreamWriter writer) {
+    public void writeToConfig(@NonNull XMLStreamWriter writer) {
         final BiConsumer<String, String> writeElement = (tagName, content) -> {
             try {
                 writer.writeCharacters("\t");
@@ -342,7 +342,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         }
     }
 
-    public void readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException {
+    public void readFromConfig(@NonNull XMLStreamReader parser) throws XMLStreamException {
         while (parser.hasNext()) {
             final int event = parser.next();
             if (event == XMLStreamConstants.END_ELEMENT) {
@@ -424,7 +424,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     }
 
     @Override
-    public int compareTo(@NotNull DatenAbo other) {
+    public int compareTo(@NonNull DatenAbo other) {
         return sorter.compare(getName(), other.getName());
     }
 

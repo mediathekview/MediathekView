@@ -4,7 +4,7 @@ import mediathek.tool.*;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -180,7 +180,7 @@ public class MVConfig {
 
         private static final EnumSet<MVConfig.Configs> CONFIGS_ENUM_SET = EnumSet.allOf(MVConfig.Configs.class);
 
-        public static boolean find(@NotNull final String value) {
+        public static boolean find(@NonNull final String value) {
             return CONFIGS_ENUM_SET.stream().anyMatch(e -> e.cValue.equals(value));
         }
     }

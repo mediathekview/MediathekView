@@ -8,7 +8,7 @@ import mediathek.tool.MessageBus;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,12 +18,12 @@ import java.net.URI;
 
 public class UrlHyperlinkAction extends AbstractAction {
 
-    public UrlHyperlinkAction(@NotNull String url) {
+    public UrlHyperlinkAction(@NonNull String url) {
         super.putValue(Action.NAME, url);
         super.putValue(SHORT_DESCRIPTION, url);
     }
 
-    private static void configureAndStartCustomWebBrowser(@NotNull String url) {
+    private static void configureAndStartCustomWebBrowser(@NonNull String url) {
         try {
             String programm = "";
             if (MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN).isEmpty()) {
@@ -47,7 +47,7 @@ public class UrlHyperlinkAction extends AbstractAction {
         }
     }
 
-    private static void launchApplication(@NotNull String app, @NotNull String url) throws IOException {
+    private static void launchApplication(@NonNull String app, @NonNull String url) throws IOException {
         logger.trace("trying to use xdg-open to start web browser");
         ProcessBuilder builder = new ProcessBuilder(app, url);
         var env = builder.environment();
@@ -55,7 +55,7 @@ public class UrlHyperlinkAction extends AbstractAction {
         builder.start();
     }
 
-    private static void launchMacDefaultBrowser(@NotNull String url) throws IOException {
+    private static void launchMacDefaultBrowser(@NonNull String url) throws IOException {
         logger.trace("trying to launch macOS default web browser");
         final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
         String command = "open location \"" + url + '"';
@@ -63,7 +63,7 @@ public class UrlHyperlinkAction extends AbstractAction {
         builder.start();
     }
 
-    private static void launchWithJavaDesktopServices(@NotNull String url) throws Exception {
+    private static void launchWithJavaDesktopServices(@NonNull String url) throws Exception {
         logger.trace("trying to launch java desktop default web browser");
         final Desktop d = Desktop.getDesktop();
         if (d.isSupported(Desktop.Action.BROWSE)) {
@@ -75,7 +75,7 @@ public class UrlHyperlinkAction extends AbstractAction {
 
     private static final Logger logger = LogManager.getLogger(UrlHyperlinkAction.class);
 
-    public static void openURI(@NotNull URI uri) {
+    public static void openURI(@NonNull URI uri) {
         openURL(uri.toString());
     }
     /**

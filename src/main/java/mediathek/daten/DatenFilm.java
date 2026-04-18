@@ -28,8 +28,8 @@ import mediathek.tool.episodes.SeasonEpisode;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -113,7 +113,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         dataMap.put(MapKeys.FILM_NR, FILMNR_GENERATOR.getAndIncrement());
     }
 
-    public DatenFilm(@NotNull DatenFilm other) {
+    public DatenFilm(@NonNull DatenFilm other) {
         this.datumFilm = other.datumFilm;
         this.filmSize.setSize(other.filmSize.toString());
         this.description = other.description;
@@ -143,7 +143,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @param requestedUrl the string to be checked.
      * @return true if url is compressed, false otherwise.
      */
-    public static boolean isCompressedUrl(@NotNull String requestedUrl) {
+    public static boolean isCompressedUrl(@NonNull String requestedUrl) {
         final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         return indexPipe != -1;
     }
@@ -194,7 +194,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return (String) dataMap.getOrDefault(MapKeys.LOW_QUALITY_URL, "");
     }
 
-    public void setLowQualityUrl(@NotNull String url_low_quality) {
+    public void setLowQualityUrl(@NonNull String url_low_quality) {
         if (url_low_quality.isEmpty())
             dataMap.remove(MapKeys.LOW_QUALITY_URL);
         else
@@ -205,7 +205,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return (String) dataMap.getOrDefault(MapKeys.HIGH_QUALITY_URL, "");
     }
 
-    public void setHighQualityUrl(@NotNull String urlHd) {
+    public void setHighQualityUrl(@NonNull String urlHd) {
         if (urlHd.isEmpty())
             dataMap.remove(MapKeys.HIGH_QUALITY_URL);
         else {
@@ -422,7 +422,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         countrySet = null;
     }
 
-    public void addCountry(@NotNull Country country) {
+    public void addCountry(@NonNull Country country) {
         if (countrySet == null) {
             countrySet = EnumSet.noneOf(Country.class);
         }
@@ -433,11 +433,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return countrySet != null && !countrySet.isEmpty();
     }
 
-    public boolean hasCountry(@NotNull Country country) {
+    public boolean hasCountry(@NonNull Country country) {
         return countrySet != null && countrySet.contains(country);
     }
 
-    public boolean isGeoBlockedForLocation(@NotNull Country location) {
+    public boolean isGeoBlockedForLocation(@NonNull Country location) {
         if (!hasCountries()) {
             return false;
         }
@@ -469,23 +469,23 @@ public class DatenFilm implements Comparable<DatenFilm> {
         };
     }
 
-    public String getFileSizeForUrl(@NotNull String url) {
+    public String getFileSizeForUrl(@NonNull String url) {
         return getFileSizeForUrl(url, false);
     }
 
-    public String getFileSizeForUrl(@NotNull String url, boolean forceFetch) {
+    public String getFileSizeForUrl(@NonNull String url, boolean forceFetch) {
         return lookupFileSizeForUrl(url, forceFetch).getSizeText();
     }
 
-    public FileSize.LookupResult lookupFileSizeForUrl(@NotNull String url) {
+    public FileSize.LookupResult lookupFileSizeForUrl(@NonNull String url) {
         return lookupFileSizeForUrl(url, false, null);
     }
 
-    public FileSize.LookupResult lookupFileSizeForUrl(@NotNull String url, boolean forceFetch) {
+    public FileSize.LookupResult lookupFileSizeForUrl(@NonNull String url, boolean forceFetch) {
         return lookupFileSizeForUrl(url, forceFetch, null);
     }
 
-    public FileSize.LookupResult lookupFileSizeForUrl(@NotNull String url, boolean forceFetch, @Nullable String resolution) {
+    public FileSize.LookupResult lookupFileSizeForUrl(@NonNull String url, boolean forceFetch, @Nullable String resolution) {
         var cachedLookupResult = getCachedFileSizeLookup(url);
         if (cachedLookupResult != null) {
             return cachedLookupResult;
@@ -496,7 +496,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return lookupResult;
     }
 
-    private FileSize.LookupResult getCachedFileSizeLookup(@NotNull String url) {
+    private FileSize.LookupResult getCachedFileSizeLookup(@NonNull String url) {
         var cachedLookupResult = cachedFileSizeLookups.get(url);
         if (cachedLookupResult != null && !cachedLookupResult.getSizeText().isEmpty()) {
             return cachedLookupResult;
@@ -512,7 +512,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return null;
     }
 
-    private void cacheFileSizeLookup(@NotNull String url, @NotNull FileSize.LookupResult lookupResult) {
+    private void cacheFileSizeLookup(@NonNull String url, FileSize.@NonNull LookupResult lookupResult) {
         if (lookupResult.getSizeText().isEmpty()) {
             return;
         }
@@ -575,7 +575,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     @Override
-    public int compareTo(@NotNull DatenFilm other) {
+    public int compareTo(@NonNull DatenFilm other) {
         int ret;
         if ((ret = sorter.compare(getSender(), other.getSender())) == 0) {
             return sorter.compare(getThema(), other.getThema());
@@ -611,7 +611,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @param resolution One of FilmResolution.HIGH_QUALITY,FilmResolution.LOW,FilmResolution.NORMAL.
      * @return An unpacked version of the film url as string.
      */
-    private String getUrlNormalOrRequested(@NotNull FilmResolution.Enum resolution) {
+    private String getUrlNormalOrRequested(FilmResolution.@NonNull Enum resolution) {
         String ret;
         // liefert die kleine normale URL oder die HD URL
         final String requestedUrl = getUrlByResolution(resolution);
@@ -633,7 +633,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return ret;
     }
 
-    public String decompressUrl(@NotNull final String requestedUrl) throws NumberFormatException, IndexOutOfBoundsException {
+    public String decompressUrl(@NonNull final String requestedUrl) throws NumberFormatException, IndexOutOfBoundsException {
         final int indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER);
         final int i = Integer.parseInt(requestedUrl.substring(0, indexPipe));
         return getUrlNormalQuality().substring(0, i) + requestedUrl.substring(indexPipe + 1);
@@ -645,7 +645,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @param resolution One of FilmResolution.AUFLOESUNG_HD,FilmResolution.AUFLOESUNG_KLEIN,FilmResolution.AUFLOESUNG_NORMAL.
      * @return url as String.
      */
-    private String getUrlByResolution(@NotNull final FilmResolution.Enum resolution) {
+    private String getUrlByResolution(final FilmResolution.@NonNull Enum resolution) {
         return switch (resolution) {
             case HIGH_QUALITY -> getHighQualityUrl();
             case LOW -> getLowQualityUrl();
@@ -715,7 +715,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return (String) dataMap.getOrDefault(MapKeys.NORMAL_QUALITY_URL, "");
     }
 
-    public void setNormalQualityUrl(@NotNull String url_normal_quality) {
+    public void setNormalQualityUrl(@NonNull String url_normal_quality) {
         if (url_normal_quality.isEmpty())
             dataMap.remove(MapKeys.NORMAL_QUALITY_URL);
         else
@@ -727,7 +727,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return (String) dataMap.getOrDefault(MapKeys.SUBTITLE_URL, "");
     }
 
-    public void setSubtitleUrl(@NotNull String urlSubtitle) {
+    public void setSubtitleUrl(@NonNull String urlSubtitle) {
         if (urlSubtitle.isEmpty())
             dataMap.remove(MapKeys.SUBTITLE_URL);
         else {

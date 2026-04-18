@@ -20,7 +20,7 @@ package mediathek.gui.bookmark.renderer;
 
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer;
 import mediathek.tool.datum.DateUtil;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,7 +60,7 @@ public class AvailableUntilCellRenderer extends CenteredTextCellRenderer {
         return result;
     }
 
-    private void setTextForeground(@NotNull JTable table, boolean isSelected) {
+    private void setTextForeground(@NonNull JTable table, boolean isSelected) {
         if (isSelected) {
             setForeground(table.getSelectionForeground());
         }

@@ -7,7 +7,7 @@ import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.plaf.UIResource;
@@ -35,9 +35,9 @@ public abstract class MVTable extends JTable {
     private int[] selRows = {};
     private boolean showSenderIcon;
     private boolean lineBreak = true;
-    protected MVTable(int maxColumns, @NotNull ColumnVisibilityStore visibleColumnStore,
-                   @NotNull Optional<MVConfig.Configs> showIconsConfigKey,
-                   @NotNull Optional<MVConfig.Configs> smallSenderIconConfigKey) {
+    protected MVTable(int maxColumns, @NonNull ColumnVisibilityStore visibleColumnStore,
+                   @NonNull Optional<MVConfig.Configs> showIconsConfigKey,
+                   @NonNull Optional<MVConfig.Configs> smallSenderIconConfigKey) {
         maxSpalten = maxColumns;
         this.showIconsConfigKey = showIconsConfigKey;
         this.smallSenderIconConfigKey = smallSenderIconConfigKey;

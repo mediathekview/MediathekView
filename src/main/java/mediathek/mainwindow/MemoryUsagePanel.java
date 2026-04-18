@@ -22,7 +22,6 @@ import com.formdev.flatlaf.FlatLaf;
 import mediathek.gui.messages.DarkModeChangeEvent;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
-import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -36,6 +35,7 @@ import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeriesDataItem;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,7 +63,7 @@ public final class MemoryUsagePanel extends JPanel implements AutoCloseable {
     private final Timer samplingTimer;
     private boolean subscribedToMessageBus;
 
-    public MemoryUsagePanel(@NotNull Duration historyWindow, @NotNull Duration sampleInterval) {
+    public MemoryUsagePanel(@NonNull Duration historyWindow, @NonNull Duration sampleInterval) {
         super(new BorderLayout());
         configuration = new MonitorConfiguration(historyWindow, sampleInterval);
 

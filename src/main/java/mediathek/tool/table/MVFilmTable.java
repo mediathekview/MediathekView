@@ -8,7 +8,7 @@ import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.tool.FilmSize;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -87,11 +87,11 @@ public class MVFilmTable extends PersistentColumnConfigurationTable {
         return (DatenFilm) getModel().getValueAt(convertRowIndexToModel(viewRow), DatenFilm.FILM_REF);
     }
 
-    private Color foregroundFor(@NotNull DatenFilm film) {
+    private Color foregroundFor(@NonNull DatenFilm film) {
         return film.isNew() ? MVColor.NEW_COLOR.getColor() : getForeground();
     }
 
-    private Color backgroundForRow(int viewRow, @NotNull DatenFilm film) {
+    private Color backgroundForRow(int viewRow, @NonNull DatenFilm film) {
         var backgrounds = new ArrayList<Color>(4);
         backgrounds.add(defaultRowBackground(viewRow));
 

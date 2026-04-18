@@ -35,7 +35,7 @@ import mediathek.tool.notification.NotificationService;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 import java.io.File;
@@ -214,7 +214,7 @@ public class StarterClass {
     /**
      * Post a notification dialog whether download was successful or not.
      */
-    private static void addNotification(@NotNull DatenDownload datenDownload, boolean erfolgreich) {
+    private static void addNotification(@NonNull DatenDownload datenDownload, boolean erfolgreich) {
         final NotificationMessage msg = new NotificationMessage();
         final String message;
 
@@ -309,7 +309,7 @@ public class StarterClass {
         }
     }
 
-    public synchronized void urlMitProgrammStarten(DatenPset pSet, @NotNull DatenFilm film, String aufloesung) {
+    public synchronized void urlMitProgrammStarten(DatenPset pSet, @NonNull DatenFilm film, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         String url = film.getUrlNormalQuality();

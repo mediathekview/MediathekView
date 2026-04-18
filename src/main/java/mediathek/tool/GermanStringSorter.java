@@ -1,6 +1,6 @@
 package mediathek.tool;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -25,7 +25,7 @@ public class GermanStringSorter implements Comparator<String> {
     }
 
     @Override
-    public int compare(@NotNull String o1, @NotNull String o2) {
+    public int compare(@NonNull String o1, @NonNull String o2) {
         return collator.compare(o1, o2);
     }
 }

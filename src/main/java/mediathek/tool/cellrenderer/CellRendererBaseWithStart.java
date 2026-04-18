@@ -26,7 +26,7 @@ import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.configuration2.Configuration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -84,7 +84,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         audioDescriptionSelected = FontIcon.of(FontAwesomeSolid.AUDIO_DESCRIPTION, IconUtils.DEFAULT_SIZE, Color.WHITE);
     }
 
-    private static boolean isColumnHidden(@NotNull JTable table, @NotNull String identifier) {
+    private static boolean isColumnHidden(@NonNull JTable table, @NonNull String identifier) {
         try {
             return table.getColumn(identifier).getWidth() == 0;
         } catch (IllegalArgumentException ignored) {
@@ -93,7 +93,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         }
     }
 
-    protected void drawGeolocationIcons(@NotNull DatenFilm film, boolean isSelected) {
+    protected void drawGeolocationIcons(@NonNull DatenFilm film, boolean isSelected) {
         setHorizontalAlignment(SwingConstants.CENTER);
         setText("");
         if (!film.hasCountries()) {
@@ -122,7 +122,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         }
     }
 
-    private boolean filmIsCountryUnlocked(@NotNull DatenFilm film) {
+    private boolean filmIsCountryUnlocked(@NonNull DatenFilm film) {
         var curLocation = ApplicationConfiguration.getInstance().getGeographicLocation();
         return !film.isGeoBlockedForLocation(curLocation);
     }
@@ -141,12 +141,12 @@ public class CellRendererBaseWithStart extends CellRendererBase {
      * @param datenFilm  film information
      * @param isSelected is row selected.
      */
-    protected void setIndicatorIcons(@NotNull JTable table, @NotNull DatenFilm datenFilm, boolean isSelected) {
+    protected void setIndicatorIcons(@NonNull JTable table, @NonNull DatenFilm datenFilm, boolean isSelected) {
         var visibility = getIndicatorColumnVisibility(table);
         setIndicatorIcons(datenFilm, isSelected, visibility.hqColumnHidden, visibility.utColumnHidden);
     }
 
-    protected void setIndicatorIcons(@NotNull DatenFilm datenFilm, boolean isSelected, boolean hqColumnHidden, boolean utColumnHidden) {
+    protected void setIndicatorIcons(@NonNull DatenFilm datenFilm, boolean isSelected, boolean hqColumnHidden, boolean utColumnHidden) {
         if (datenFilm.hasCountries()) {
             if (!filmIsCountryUnlocked(datenFilm)) {
                 //locked
@@ -205,7 +205,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         iconList.clear();
     }
 
-    private IndicatorColumnVisibility getIndicatorColumnVisibility(@NotNull JTable table) {
+    private IndicatorColumnVisibility getIndicatorColumnVisibility(@NonNull JTable table) {
         var cache = (IndicatorVisibilityCache) table.getClientProperty(INDICATOR_VISIBILITY_CACHE_KEY);
         if (cache == null || cache.columnModel != table.getColumnModel()) {
             cache = new IndicatorVisibilityCache(table);
@@ -223,7 +223,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         private boolean dirty = true;
         private IndicatorColumnVisibility visibility = new IndicatorColumnVisibility(true, true);
 
-        private IndicatorVisibilityCache(@NotNull JTable table) {
+        private IndicatorVisibilityCache(@NonNull JTable table) {
             this.table = table;
             this.columnModel = table.getColumnModel();
             this.columnModel.addColumnModelListener(this);

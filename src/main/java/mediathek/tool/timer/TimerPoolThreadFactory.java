@@ -18,7 +18,7 @@
 
 package mediathek.tool.timer;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
@@ -30,7 +30,7 @@ class TimerPoolThreadFactory implements ThreadFactory {
     private final AtomicLong threadNumber = new AtomicLong(1);
 
     @Override
-    public Thread newThread(@NotNull Runnable r) {
+    public Thread newThread(@NonNull Runnable r) {
         return Thread.ofVirtual().name("TimerPool-virtual-thread-" + threadNumber.getAndIncrement()).unstarted(r);
     }
 }

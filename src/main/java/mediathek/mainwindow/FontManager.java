@@ -7,7 +7,7 @@ import mediathek.gui.messages.FontSizeChangedEvent;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
 import org.apache.commons.configuration2.sync.LockMode;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.text.StyleContext;
@@ -32,7 +32,7 @@ public class FontManager {
     private final JMenuItem incrFontMenuItem = new JMenuItem();
     private final JMenuItem decrFontMenuItem = new JMenuItem();
 
-    public FontManager(@NotNull JMenu fontMenu) {
+    public FontManager(@NonNull JMenu fontMenu) {
         this.fontMenu = fontMenu;
 
         availableFontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment()

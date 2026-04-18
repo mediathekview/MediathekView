@@ -1,7 +1,7 @@
 package mediathek.gui.actions;
 
 import mediathek.gui.statistics.FilmStatisticsDialog;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 public class ShowFilmStatisticsAction extends AbstractAction {
     private final Frame owner;
 
-    public ShowFilmStatisticsAction(@NotNull Frame owner) {
+    public ShowFilmStatisticsAction(@NonNull Frame owner) {
         this.owner = owner;
         putValue(Action.NAME, "Filmlisten-Statistik anzeigen...");
     }

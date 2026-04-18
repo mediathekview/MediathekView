@@ -3,7 +3,7 @@ package mediathek.gui.dialogEinstellungen;
 import mediathek.config.Daten;
 import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.daten.blacklist.ListeBlacklist;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -68,7 +68,7 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
      *
      * @param list of objects to be deleted
      */
-    public void removeRules(@NotNull List<BlacklistRule> list) {
+    public void removeRules(@NonNull List<BlacklistRule> list) {
         blacklist.remove(list);
         fireTableDataChanged();
     }
@@ -86,12 +86,12 @@ public class BlacklistRuleTableModel extends AbstractTableModel {
      *
      * @param rule to be added.
      */
-    public void addRule(@NotNull BlacklistRule rule) {
+    public void addRule(@NonNull BlacklistRule rule) {
         blacklist.add(rule);
         fireTableDataChanged();
     }
 
-    public boolean contains(@NotNull BlacklistRule rule) {
+    public boolean contains(@NonNull BlacklistRule rule) {
         return blacklist.contains(rule);
     }
 

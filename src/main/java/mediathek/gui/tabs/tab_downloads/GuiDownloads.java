@@ -45,7 +45,7 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -622,7 +622,7 @@ public class GuiDownloads extends AGuiTabPanel {
         tabelle.setRowSelectionInterval(validRow, validRow);
     }
 
-    private @NotNull List<DatenDownload> addAllDownloadsToList() {
+    private @NonNull List<DatenDownload> addAllDownloadsToList() {
         final var rowCount = tabelle.getRowCount();
         final var tableModel = tabelle.getModel();
         List<DatenDownload> destList = new ArrayList<>();

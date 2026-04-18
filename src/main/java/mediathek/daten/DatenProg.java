@@ -1,7 +1,7 @@
 package mediathek.daten;
 
 import mediathek.tool.GuiFunktionenProgramme;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 
@@ -118,7 +118,7 @@ public class DatenProg implements Comparable<DatenProg> {
     }
 
     @Override
-    public int compareTo(@NotNull DatenProg o) {
+    public int compareTo(@NonNull DatenProg o) {
         return 0;
     }
 }

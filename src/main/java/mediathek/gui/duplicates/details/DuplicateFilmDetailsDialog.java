@@ -15,7 +15,7 @@ import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -34,7 +34,7 @@ public class DuplicateFilmDetailsDialog extends JDialog {
     private static final String CONFIG_WIDTH = "duplicate_film_details_dialog.width";
     private static final Logger logger = LogManager.getLogger();
 
-    public DuplicateFilmDetailsDialog(Window owner, @NotNull DatenFilm film) {
+    public DuplicateFilmDetailsDialog(Window owner, @NonNull DatenFilm film) {
         super(owner);
         initComponents();
 

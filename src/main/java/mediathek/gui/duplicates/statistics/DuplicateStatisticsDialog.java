@@ -12,7 +12,7 @@ import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -38,7 +38,7 @@ public class DuplicateStatisticsDialog extends JDialog {
     private final AbstractAction action;
     private final DuplicateStatisticsTableFormat tableFormat = new DuplicateStatisticsTableFormat();
 
-    public DuplicateStatisticsDialog(@NotNull Window owner, @NotNull AbstractAction action) {
+    public DuplicateStatisticsDialog(@NonNull Window owner, @NonNull AbstractAction action) {
         super(owner);
         this.action = action;
 
@@ -128,7 +128,7 @@ public class DuplicateStatisticsDialog extends JDialog {
         super.dispose();
     }
 
-    private void resizeSenderColumnWidth(@NotNull JTable table) {
+    private void resizeSenderColumnWidth(@NonNull JTable table) {
         final TableColumnModel columnModel = table.getColumnModel();
         int width = 120; // Min width
         for (int row = 0; row < table.getRowCount(); row++) {

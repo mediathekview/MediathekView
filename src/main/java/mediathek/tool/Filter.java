@@ -6,7 +6,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.abo.DatenAbo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -96,10 +96,10 @@ public class Filter {
         return result;
     }
 
-    public static boolean filterAufFilmPruefen(@NotNull final String senderSuchen, @NotNull final String themaSuchen,
-                                               @NotNull final String[] titelSuchen, @NotNull final String[] themaTitelSuchen,
-                                               @NotNull final String[] irgendwoSuchen,
-                                               @NotNull final DatenFilm film) {
+    public static boolean filterAufFilmPruefen(@NonNull final String senderSuchen, @NonNull final String themaSuchen,
+                                               @NonNull final String[] titelSuchen, @NonNull final String[] themaTitelSuchen,
+                                               @NonNull final String[] irgendwoSuchen,
+                                               @NonNull final DatenFilm film) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // senderSuchen exakt mit sender
         // themaSuchen exakt mit thema
@@ -123,29 +123,29 @@ public class Filter {
         return result;
     }
 
-    private static boolean irgendwoConditionExists(@NotNull DatenFilm film, @NotNull String[] irgendwoSuchen, @NotNull String thema, @NotNull String title) {
+    private static boolean irgendwoConditionExists(@NonNull DatenFilm film, @NonNull String[] irgendwoSuchen, @NonNull String thema, @NonNull String title) {
         return irgendwoSuchen.length == 0
                 || pruefen(irgendwoSuchen, film.getDescription())
                 || pruefen(irgendwoSuchen, thema)
                 || pruefen(irgendwoSuchen, title);
     }
 
-    private static boolean themaTitelConditionExists(@NotNull String[] themaTitelSuchen, @NotNull String thema, @NotNull String title) {
+    private static boolean themaTitelConditionExists(@NonNull String[] themaTitelSuchen, @NonNull String thema, @NonNull String title) {
         return themaTitelSuchen.length == 0
                 || pruefen(themaTitelSuchen, thema)
                 || pruefen(themaTitelSuchen, title);
     }
 
-    private static boolean titleConditionExists(@NotNull String[] titelSuchen, @NotNull String title) {
+    private static boolean titleConditionExists(@NonNull String[] titelSuchen, @NonNull String title) {
         //performance bottleneck
         return titelSuchen.length == 0 || pruefen(titelSuchen, title);
     }
 
-    private static boolean conditionExists(@NotNull String obj1, @NotNull String obj2) {
+    private static boolean conditionExists(@NonNull String obj1, @NonNull String obj2) {
         return obj1.isEmpty() || obj2.equalsIgnoreCase(obj1);
     }
 
-    private static boolean senderConditionExists(@NotNull String senderSuchen, @NotNull DatenFilm film) {
+    private static boolean senderConditionExists(@NonNull String senderSuchen, @NonNull DatenFilm film) {
         //performance bottleneck
         return senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0;
     }
@@ -177,7 +177,7 @@ public class Filter {
         return result;
     }
 
-    public static boolean pruefen(@NotNull String[] filter, @NotNull final String im) {
+    public static boolean pruefen(@NonNull String[] filter, @NonNull final String im) {
         // wenn einer passt, dann ists gut
         final var strFilter = filter[0];
         if (filter.length == 1) {
@@ -200,7 +200,7 @@ public class Filter {
      * @param im     checked String IN LOWERCASE!!!!!
      * @return true or false
      */
-    public static boolean checkLowercase(@NotNull String[] filter, @NotNull String im) {
+    public static boolean checkLowercase(@NonNull String[] filter, @NonNull String im) {
         for (String s : filter) {
             // dann jeden Suchbegriff checken
             if (im.contains(s)) {
@@ -211,7 +211,7 @@ public class Filter {
         return false;
     }
 
-    public static boolean isPattern(@NotNull final String textSuchen) {
+    public static boolean isPattern(@NonNull final String textSuchen) {
         return textSuchen.startsWith("#:");
     }
 
@@ -272,7 +272,7 @@ public class Filter {
         return !regExpErrorList.isEmpty();
     }
 
-    private static @NotNull Pattern compilePattern(@NotNull String pattern) throws IllegalArgumentException {
+    private static @NonNull Pattern compilePattern(@NonNull String pattern) throws IllegalArgumentException {
         logger.trace("COMPILING PATTERN: {}", pattern);
         final String regexPattern = pattern.substring(2);
 

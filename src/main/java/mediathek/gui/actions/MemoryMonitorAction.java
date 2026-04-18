@@ -1,7 +1,7 @@
 package mediathek.gui.actions;
 
 import mediathek.gui.dialog.MemoryMonitorDialog;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -10,7 +10,7 @@ public class MemoryMonitorAction extends AbstractAction {
     private MemoryMonitorDialog dialog;
     private final JFrame parent;
 
-    public MemoryMonitorAction(@NotNull JFrame parent) {
+    public MemoryMonitorAction(@NonNull JFrame parent) {
         this.parent = parent;
         putValue(Action.NAME, "Speicherverbrauch anzeigen");
     }

@@ -4,7 +4,7 @@ import mediathek.mainwindow.MemoryUsagePanel;
 import mediathek.tool.ApplicationConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,12 +24,12 @@ public final class MemoryMonitorDialog extends JDialog {
     private final MemoryUsagePanel memoryUsagePanel = new MemoryUsagePanel(HISTORY_WINDOW, SAMPLE_INTERVAL);
     private final Runnable onClose;
 
-    public MemoryMonitorDialog(@NotNull JFrame parent) {
+    public MemoryMonitorDialog(@NonNull JFrame parent) {
         this(parent, () -> {
         });
     }
 
-    public MemoryMonitorDialog(@NotNull JFrame parent, @NotNull Runnable onClose) {
+    public MemoryMonitorDialog(@NonNull JFrame parent, @NonNull Runnable onClose) {
         super(parent, "Speicherverbrauch", false);
         this.onClose = onClose;
 

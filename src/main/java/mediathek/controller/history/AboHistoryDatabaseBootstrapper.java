@@ -20,7 +20,7 @@ package mediathek.controller.history;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.sqlite.SQLiteDataSource;
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ final class AboHistoryDatabaseBootstrapper {
     private final Path databasePath;
     private final SQLiteDataSource dataSource;
 
-    AboHistoryDatabaseBootstrapper(@NotNull Path databasePath, @NotNull SQLiteDataSource dataSource) {
+    AboHistoryDatabaseBootstrapper(@NonNull Path databasePath, @NonNull SQLiteDataSource dataSource) {
         this.databasePath = databasePath;
         this.dataSource = dataSource;
     }

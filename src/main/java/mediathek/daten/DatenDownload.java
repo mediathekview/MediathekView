@@ -33,7 +33,7 @@ import okhttp3.HttpUrl;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -188,7 +188,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         init();
     }
 
-    public DatenDownload(@NotNull DatenPset pSet, @NotNull DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle) {
+    public DatenDownload(@NonNull DatenPset pSet, @NonNull DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle) {
         this(pSet, film, quelle, abo, name, pfad, aufloesung);
         arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
@@ -201,7 +201,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
      * @return A valid DatenDownload object when everything went smooth.
      * @throws XMLStreamException when something went wrong
      */
-    public static DatenDownload readFromConfig(@NotNull XMLStreamReader parser) throws XMLStreamException {
+    public static DatenDownload readFromConfig(@NonNull XMLStreamReader parser) throws XMLStreamException {
         DatenDownload dl = new DatenDownload();
 
         final int maxElem = dl.arr.length;
@@ -238,7 +238,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return columnVisibilityStore.isVisible(i);
     }
 
-    public static @NotNull ColumnVisibilityStore getColumnVisibilityStore() {
+    public static @NonNull ColumnVisibilityStore getColumnVisibilityStore() {
         return columnVisibilityStore;
     }
 
@@ -362,7 +362,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    private void writeEntry(@NotNull XMLStreamWriter writer, int index, @NotNull String data) throws XMLStreamException {
+    private void writeEntry(@NonNull XMLStreamWriter writer, int index, @NonNull String data) throws XMLStreamException {
         writer.writeCharacters("\t"); //Tab
         writer.writeStartElement(XML_NAMES[index]);
         writer.writeCharacters(data);
@@ -408,7 +408,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
-    public void setGroesse(@NotNull String groesse) {
+    public void setGroesse(@NonNull String groesse) {
         if (film != null) {
             if (!groesse.isEmpty()) {
                 mVFilmSize.setSize(groesse);
@@ -871,7 +871,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return replStr;
     }
 
-    protected String replaceResolutionParameter(@NotNull String replStr, @NotNull DatenFilm film) {
+    protected String replaceResolutionParameter(@NonNull String replStr, @NonNull DatenFilm film) {
         String res = "";
         if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(FilmResolution.Enum.NORMAL))) {
             res = "H";

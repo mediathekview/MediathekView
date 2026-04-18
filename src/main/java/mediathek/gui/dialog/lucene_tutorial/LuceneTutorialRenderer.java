@@ -20,7 +20,7 @@ package mediathek.gui.dialog.lucene_tutorial;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public final class LuceneTutorialRenderer {
     private LuceneTutorialRenderer() {
     }
 
-    public static @NotNull String renderMarkdown(@NotNull String markdown) {
+    public static @NonNull String renderMarkdown(@NonNull String markdown) {
         var extensions = List.of(TablesExtension.create());
         var parser = Parser.builder().extensions(extensions).build();
         var renderer = HtmlRenderer.builder().extensions(extensions).build();

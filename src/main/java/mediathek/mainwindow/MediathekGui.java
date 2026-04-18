@@ -72,7 +72,7 @@ import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import raven.toast.Notifications;
 
 import javax.swing.*;
@@ -815,7 +815,7 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    protected JPanel createTabFilme(@NotNull Daten daten) {
+    protected JPanel createTabFilme(@NonNull Daten daten) {
         return new GuiFilme(daten, this);
     }
 
@@ -823,7 +823,7 @@ public class MediathekGui extends JFrame {
         return showLuceneTutorialAction;
     }
 
-    protected JPanel createTabDownloads(@NotNull Daten daten) {
+    protected JPanel createTabDownloads(@NonNull Daten daten) {
         return new GuiDownloads(daten, this);
     }
 
@@ -1353,7 +1353,7 @@ public class MediathekGui extends JFrame {
     }
 
     static class NoIconAwtMenuItem extends MenuItem {
-        public NoIconAwtMenuItem(@NotNull Action action) {
+        public NoIconAwtMenuItem(@NonNull Action action) {
             super((String) action.getValue(Action.NAME));
             addActionListener(action);
         }

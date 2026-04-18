@@ -31,7 +31,7 @@ import mediathek.gui.messages.BookmarkRefreshCompletedEvent;
 import mediathek.tool.MessageBus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -45,7 +45,7 @@ public class BookmarkDataList {
     private static final Logger logger = LogManager.getLogger();
     private final BasicEventList<BookmarkData> bookmarks;
 
-    public BookmarkDataList(@NotNull Daten daten) {
+    public BookmarkDataList(@NonNull Daten daten) {
         bookmarks = new BasicEventList<>();
 
         // Wait until film liste is ready and update references
@@ -78,7 +78,7 @@ public class BookmarkDataList {
         return bookmarks;
     }
 
-    public void removeBookmark(@NotNull BookmarkData bookmark) {
+    public void removeBookmark(@NonNull BookmarkData bookmark) {
         var filmOpt = bookmark.getDatenFilmOptional();
         filmOpt.ifPresent(film -> film.setBookmark(null));
         bookmark.setDatenFilm(null);
@@ -92,7 +92,7 @@ public class BookmarkDataList {
      *
      * @param movies: list of movies to be added
      */
-    public void checkAndBookmarkMovies(@NotNull List<DatenFilm> movies) {
+    public void checkAndBookmarkMovies(@NonNull List<DatenFilm> movies) {
         ArrayList<DatenFilm> addlist = new ArrayList<>();
         ArrayList<BookmarkData> dellist = new ArrayList<>();
         boolean add = false;
@@ -186,7 +186,7 @@ public class BookmarkDataList {
      * @param seen: True if movies are seen
      * @param list: List of movies
      */
-    public void updateSeen(boolean seen, @NotNull List<DatenFilm> list) {
+    public void updateSeen(boolean seen, @NonNull List<DatenFilm> list) {
         list.stream()
                 .filter(DatenFilm::isBookmarked)
                 .forEachOrdered((movie) -> {
@@ -197,7 +197,7 @@ public class BookmarkDataList {
     }
 
     /// called from [SeenHistoryController].
-    public void updateSeen(boolean seen, @NotNull DatenFilm film) {
+    public void updateSeen(boolean seen, @NonNull DatenFilm film) {
         if (film.isBookmarked()) {
             var bookmark = film.getBookmark();
             if (bookmark != null) {
@@ -211,7 +211,7 @@ public class BookmarkDataList {
      * @param film the film object
      * @return the associated bookmark or null.
      */
-    private BookmarkData findBookmarkFromFilm(@NotNull DatenFilm film) {
+    private BookmarkData findBookmarkFromFilm(@NonNull DatenFilm film) {
         for (var bookmark : bookmarks) {
             var bookmarkFilm = bookmark.getDatenFilm();
             if (bookmarkFilm != null && bookmarkFilm.equals(film)) {

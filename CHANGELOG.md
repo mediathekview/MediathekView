@@ -38,6 +38,7 @@
 - **FEATURE:** Im *Abos verwalten*-Dialog werden Abos, deren letzte Ausführung mehr als 3 Monate zurück liegt *gelb*, nach mehr als 6 Monaten *rot* markiert in der Spalte `letztes Abo`.
 - **FEATURE:** Die App überprüft bei jedem Start einmalig, ob der in den Einstellungen gesetzte Standort identisch mit der ermittelten Länderkennung der öffentlichen IP ist und bietet dem Nutzer an, inkorrekte Einstellungen zu korrigieren.
 - **FEATURE:** Bei der erstmaligen Einrichtung wird im Start-Dialog die Zuordnung des Standorts anhand der öffentlichen IP geprüft und vorab eingestellt.
+- **FEATURE:** Im Tab *Filme* kann nun auch der Titel via Kontextmenü zur Blacklist hinzugefügt werden.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.

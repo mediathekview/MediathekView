@@ -24,7 +24,7 @@ import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import mediathek.tool.sender_icon_cache.SenderIconRenderUtil;
 import org.apache.commons.lang3.SystemUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -51,7 +51,7 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      */
     private final SelfEvictingSenderIconCache senderCellIconCache = new SelfEvictingSenderIconCache();
 
-    protected void setSenderIcon(@NotNull String sender, @NotNull Dimension targetDim, boolean isSelected) {
+    protected void setSenderIcon(@NonNull String sender, @NonNull Dimension targetDim, boolean isSelected) {
         String normalizedSender = normalizeSender(sender);
 
         // make target dims for icon slightly smaller
@@ -100,15 +100,15 @@ public class CellRendererBase extends DefaultTableCellRenderer {
         setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    private static @NotNull String normalizeSender(@NotNull String sender) {
+    private static @NonNull String normalizeSender(@NonNull String sender) {
         return sender.toLowerCase(Locale.ROOT);
     }
 
-    private static boolean requiresExtraSvgBoost(@NotNull String normalizedSender) {
+    private static boolean requiresExtraSvgBoost(@NonNull String normalizedSender) {
         return EXTRA_SVG_BOOST_SENDERS.contains(normalizedSender);
     }
 
-    private static boolean shouldApplySelectionContrast(@NotNull String normalizedSender) {
+    private static boolean shouldApplySelectionContrast(@NonNull String normalizedSender) {
         if (normalizedSender.startsWith("arte")) {
             return false;
         }
@@ -123,7 +123,7 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      * @param column           the used view column index.
      * @return the calculated dimension of the available table cell.
      */
-    protected Dimension getSenderCellDimension(@NotNull JTable table, int row, int column) {
+    protected Dimension getSenderCellDimension(@NonNull JTable table, int row, int column) {
         Dimension targetDim = new Dimension();
         targetDim.height = table.getRowHeight(row);
         targetDim.width = table.getColumnModel().getColumn(column).getWidth();

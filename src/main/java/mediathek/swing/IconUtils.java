@@ -20,7 +20,7 @@ package mediathek.swing;
 
 import com.formdev.flatlaf.FlatLaf;
 import org.apache.commons.lang3.SystemUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -72,7 +72,7 @@ public class IconUtils {
         return size;
     }
 
-    public static ImageIcon generateDisabledIcon(@NotNull Action action) {
+    public static ImageIcon generateDisabledIcon(@NonNull Action action) {
         FontIcon normalIcon = (FontIcon) action.getValue(Action.SMALL_ICON);
         if (normalIcon != null) {
             return generateDisabledIcon(normalIcon);
@@ -82,7 +82,7 @@ public class IconUtils {
         }
     }
 
-    public static ImageIcon generateDisabledIcon(@NotNull Icon normalIcon) {
+    public static ImageIcon generateDisabledIcon(@NonNull Icon normalIcon) {
         BufferedImage img = new BufferedImage(normalIcon.getIconWidth(), normalIcon.getIconHeight(),
                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = img.createGraphics();

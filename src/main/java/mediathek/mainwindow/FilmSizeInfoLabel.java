@@ -4,7 +4,7 @@ import mediathek.config.Daten;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +17,7 @@ public class FilmSizeInfoLabel extends JLabel implements ActionListener {
 
     private final Timer timer;
 
-    public FilmSizeInfoLabel(@NotNull MediathekGui mediathekGui) {
+    public FilmSizeInfoLabel(@NonNull MediathekGui mediathekGui) {
         this.mediathekGui = mediathekGui;
 
         timer = new Timer(1000, this);

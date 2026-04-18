@@ -31,7 +31,6 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.sync.LockMode;
-import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -45,6 +44,7 @@ import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeriesDataItem;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,7 +82,7 @@ public class BandwidthDialog extends JDialog {
     private final Timer dataGenerator = createDataGenerator();
     private final ValueMarker averageMarker = createAverageMarker();
 
-    public BandwidthDialog(@NotNull Window owner, @NotNull ShowBandwidthUsageAction menuAction) {
+    public BandwidthDialog(@NonNull Window owner, @NonNull ShowBandwidthUsageAction menuAction) {
         super(owner);
 
         initDialog();

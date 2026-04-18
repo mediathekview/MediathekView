@@ -41,7 +41,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.queryparser.flexible.standard.config.PointsConfig;
 import org.apache.lucene.search.*;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -63,8 +63,8 @@ public final class LuceneGuiFilmeModelHelper implements GuiModelHelper {
 
     private final GuiModelHelperSupport support;
 
-    public LuceneGuiFilmeModelHelper(@NotNull SearchFieldData searchFieldData,
-                                     @NotNull FilmFilterController filterController) {
+    public LuceneGuiFilmeModelHelper(@NonNull SearchFieldData searchFieldData,
+                                     @NonNull FilmFilterController filterController) {
         support = new GuiModelHelperSupport(searchFieldData, filterController);
     }
 
@@ -165,7 +165,7 @@ public final class LuceneGuiFilmeModelHelper implements GuiModelHelper {
         }
     }
 
-    private void addSenderFilterQuery(@NotNull BooleanQuery.Builder qb, @NotNull Collection<String> selectedSenders) {
+    private void addSenderFilterQuery(BooleanQuery.@NonNull Builder qb, @NonNull Collection<String> selectedSenders) {
         if (selectedSenders.isEmpty()) {
             return; // Kein Filter hinzufügen, wenn keine Sender ausgewählt sind
         }
@@ -180,7 +180,7 @@ public final class LuceneGuiFilmeModelHelper implements GuiModelHelper {
         qb.add(booleanQuery.build(), BooleanClause.Occur.FILTER);
     }
 
-    private void applyConfiguredQueries(@NotNull BooleanQuery.Builder queryBuilder) {
+    private void applyConfiguredQueries(BooleanQuery.@NonNull Builder queryBuilder) {
         for (var querySpec : createQuerySpecs()) {
             if (querySpec.enabled().getAsBoolean()) {
                 queryBuilder.add(querySpec.toQuery(), querySpec.occur());
@@ -200,11 +200,11 @@ public final class LuceneGuiFilmeModelHelper implements GuiModelHelper {
                 termQuerySpec(() -> support.state().getShowNewOnly(), LuceneIndexKeys.NEW, BooleanClause.Occur.FILTER));
     }
 
-    private QuerySpec termQuerySpec(@NotNull BooleanSupplier enabled, @NotNull String field, @NotNull BooleanClause.Occur occur) {
+    private QuerySpec termQuerySpec(@NonNull BooleanSupplier enabled, @NonNull String field, BooleanClause.@NonNull Occur occur) {
         return new QuerySpec(enabled, field, "true", occur);
     }
 
-    private Query createZeitraumQuery(@NotNull Analyzer analyzer) throws ParseException {
+    private Query createZeitraumQuery(@NonNull Analyzer analyzer) throws ParseException {
 
         var numDays = Integer.parseInt(support.state().getZeitraum());
         var toDate = LocalDateTime.now();

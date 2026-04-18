@@ -8,7 +8,7 @@ import mediathek.tool.sql.SqlDatabaseConfig;
 import okhttp3.HttpUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.sqlite.SQLiteDataSource;
 
 import java.io.InputStream;
@@ -49,7 +49,7 @@ public class SeenHistoryMigrator implements AutoCloseable {
      * @param txtFilePath path to old file.
      * @param historyDbPath path to new db.
      */
-    public SeenHistoryMigrator(@NotNull Path txtFilePath, @NotNull Path historyDbPath) {
+    public SeenHistoryMigrator(@NonNull Path txtFilePath, @NonNull Path historyDbPath) {
         historyFilePath = txtFilePath;
         this.historyDbPath = historyDbPath;
     }

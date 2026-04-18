@@ -20,7 +20,7 @@ package mediathek.daten;
 
 import mediathek.config.Konstanten;
 import mediathek.tool.GermanStringSorter;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -93,7 +93,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @param senders sender names
      * @return immutable sorted list of distinct themas
      */
-    public List<String> getThemen(@NotNull Collection<String> senders) {
+    public List<String> getThemen(@NonNull Collection<String> senders) {
         List<DatenFilm> snapshot;
         synchronized (this) {
             snapshot = List.copyOf(this);
@@ -121,7 +121,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return List.copyOf(result);
     }
 
-    public synchronized void updateFromFilmList(@NotNull ListeFilme newFilmsList) {
+    public synchronized void updateFromFilmList(@NonNull ListeFilme newFilmsList) {
         // In die vorhandene Liste soll eine andere Filmliste einsortiert werden
         // es werden nur Filme, die noch nicht vorhanden sind, einsortiert
         var hashNewFilms = new HashSet<DatenFilm.FilmIdentity>(newFilmsList.size() + 1, 1);

@@ -27,7 +27,7 @@ import mediathek.tool.datum.DatumFilm;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import tools.jackson.core.JsonEncoding;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.ObjectWriteContext;
@@ -211,7 +211,7 @@ public class FilmListWriter {
         jg.writeEndArray();
     }
 
-    private void writeLowQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) {
+    private void writeLowQualityUrl(@NonNull JsonGenerator jg, @NonNull DatenFilm datenFilm) {
         String url = datenFilm.getLowQualityUrl();
         if (decompressUrls) {
             if (DatenFilm.isCompressedUrl(url)) {
@@ -222,7 +222,7 @@ public class FilmListWriter {
         jg.writeString(url);
     }
 
-    private void writeHighQualityUrl(@NotNull JsonGenerator jg, @NotNull DatenFilm datenFilm) {
+    private void writeHighQualityUrl(@NonNull JsonGenerator jg, @NonNull DatenFilm datenFilm) {
         String url = datenFilm.getHighQualityUrl();
         if (decompressUrls && DatenFilm.isCompressedUrl(url)) {
                 url = datenFilm.decompressUrl(url);

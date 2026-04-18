@@ -1,28 +1,28 @@
 package mediathek.gui.dialog;
 
 import mediathek.tool.EscapeKeyHandler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class DialogHilfe extends JDialog {
 
-    public DialogHilfe(Dialog parent, boolean modal, @NotNull String text) {
+    public DialogHilfe(Dialog parent, boolean modal, @NonNull String text) {
         super(parent, modal);
         initComponents();
 
         setup(text);
     }
 
-    public DialogHilfe(Frame parent, boolean modal, @NotNull String text) {
+    public DialogHilfe(Frame parent, boolean modal, @NonNull String text) {
         super(parent, modal);
         initComponents();
 
         setup(text);
     }
 
-    protected void setup(@NotNull String text) {
+    protected void setup(@NonNull String text) {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         jTextArea1.setEditable(false);

@@ -27,13 +27,13 @@ import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.VerticalLayout;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SwingFilterDialogView extends JDialog {
-    protected SwingFilterDialogView(@NotNull Window owner, @NotNull FilterSelectionComboBoxModel model) {
+    protected SwingFilterDialogView(@NonNull Window owner, @NonNull FilterSelectionComboBoxModel model) {
         super(owner);
         initComponents();
         cboxFilterSelection.setModel(model);

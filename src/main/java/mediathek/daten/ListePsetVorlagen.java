@@ -11,7 +11,7 @@ import okhttp3.ResponseBody;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -72,7 +72,7 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
         }
     }
 
-    private static @NotNull String getOperatingSystemString() {
+    private static @NonNull String getOperatingSystemString() {
         if (SystemUtils.IS_OS_MAC_OSX)
             return "Mac";
         else if (SystemUtils.IS_OS_WINDOWS)
@@ -117,7 +117,7 @@ public class ListePsetVorlagen extends ArrayList<String[]> {
         return listePset;
     }
 
-    private static @NotNull String getProgramSetTemplateFromLocalResources() throws IllegalStateException {
+    private static @NonNull String getProgramSetTemplateFromLocalResources() throws IllegalStateException {
         if (SystemUtils.IS_OS_LINUX)
             return "/mediathek/file/pset_linux.xml";
         else if (SystemUtils.IS_OS_MAC_OSX)

@@ -5,7 +5,7 @@ import mediathek.daten.FilmListMetaData;
 import mediathek.gui.messages.FilmListReadStopEvent;
 import mediathek.tool.MessageBus;
 import net.engio.mbassy.listener.Handler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -21,13 +21,13 @@ public class FilmListCreationDateLabel extends JLabel implements PropertyChangeL
         MessageBus.getMessageBus().subscribe(this);
     }
 
-    private void setText(@NotNull FilmListMetaData metaData) {
+    private void setText(@NonNull FilmListMetaData metaData) {
         var text = String.format("Filmliste erstellt: %s Uhr", metaData.getGenerationDateTimeAsString());
         SwingUtilities.invokeLater(() -> setText(text));
     }
 
     @Handler
-    private void handleFilmListStop(@NotNull FilmListReadStopEvent e) {
+    private void handleFilmListStop(@NonNull FilmListReadStopEvent e) {
         setText(Daten.getInstance().getListeFilmeNachBlackList().getMetaData());
     }
 

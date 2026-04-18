@@ -25,7 +25,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.gui.tabs.tab_film.SearchFieldData;
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController;
 import mediathek.tool.ApplicationConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
@@ -37,8 +37,8 @@ import java.util.stream.Stream;
 public final class GuiFilmeModelHelper implements GuiModelHelper {
     private final GuiModelHelperSupport support;
 
-    public GuiFilmeModelHelper(@NotNull SearchFieldData searchFieldData,
-                               @NotNull FilmFilterController filterController) {
+    public GuiFilmeModelHelper(@NonNull SearchFieldData searchFieldData,
+                               @NonNull FilmFilterController filterController) {
         support = new GuiModelHelperSupport(searchFieldData, filterController);
     }
 
@@ -102,7 +102,7 @@ public final class GuiFilmeModelHelper implements GuiModelHelper {
                 predicateSpec(() -> support.state().getShowSubtitlesOnly(), DatenFilm::hasAnySubtitles));
     }
 
-    private PredicateSpec predicateSpec(@NotNull BooleanSupplier enabled, @NotNull Predicate<DatenFilm> predicate) {
+    private PredicateSpec predicateSpec(@NonNull BooleanSupplier enabled, @NonNull Predicate<DatenFilm> predicate) {
         return new PredicateSpec(enabled, predicate);
     }
 

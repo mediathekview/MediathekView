@@ -24,8 +24,8 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.intellij.lang.annotations.MagicConstant;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,11 +81,11 @@ public class GuiFunktionen {
      * @return the clicked value or the defaultValue.
      */
     public static int createDismissableMessageDialog(@Nullable Component parentComponent,
-                                                     @NotNull String title,
-                                                     @NotNull String message,
+                                                     @NonNull String title,
+                                                     @NonNull String message,
                                                      @MagicConstant(intValues = {JOptionPane.YES_NO_OPTION, JOptionPane.DEFAULT_OPTION, JOptionPane.YES_NO_CANCEL_OPTION}) int optionType,
                                                      @MagicConstant(intValues = {JOptionPane.OK_OPTION, JOptionPane.CANCEL_OPTION, JOptionPane.YES_OPTION, JOptionPane.NO_OPTION}) int defaultValue,
-                                                     int defaultDelay, @NotNull TimeUnit timeUnit,
+                                                     int defaultDelay, @NonNull TimeUnit timeUnit,
                                                      @MagicConstant(intValues = {JOptionPane.WARNING_MESSAGE, JOptionPane.QUESTION_MESSAGE, JOptionPane.INFORMATION_MESSAGE, JOptionPane.ERROR_MESSAGE}) int style) {
         var op = new JOptionPane(message, style, optionType, null, null);
         var dialog = op.createDialog(parentComponent, title);
@@ -99,7 +99,7 @@ public class GuiFunktionen {
      * @param component the target
      * @param hasError if true, set error box around component, otherwise remove it.
      */
-    public static void showErrorIndication(@NotNull JComponent component, boolean hasError) {
+    public static void showErrorIndication(@NonNull JComponent component, boolean hasError) {
         if (hasError)
             component.putClientProperty("JComponent.outline", "error");
         else
@@ -148,7 +148,7 @@ public class GuiFunktionen {
      * Copy string to system clipboard.
      * @param s the data for the clipboard.
      */
-    public static void copyToClipboard(@NotNull String s) {
+    public static void copyToClipboard(@NonNull String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }
 
@@ -286,7 +286,7 @@ public class GuiFunktionen {
      * @param fileName the filename
      * @return the stripped filename
      */
-    public static String getFileNameWithoutExtension(@NotNull String fileName) {
+    public static String getFileNameWithoutExtension(@NonNull String fileName) {
         final int dotIndex = FileNameExtensions.getLikelyExtensionDotIndex(fileName);
         return dotIndex >= 0
                 ? fileName.substring(0, dotIndex)

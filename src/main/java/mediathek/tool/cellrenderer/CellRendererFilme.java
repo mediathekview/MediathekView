@@ -9,7 +9,7 @@ import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -134,7 +134,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
      *
      * @param film input film object.
      */
-    private void drawTime(@NotNull DatenFilm film) {
+    private void drawTime(@NonNull DatenFilm film) {
         var zeit = film.getSendeZeit();
         if (zeit == null || zeit.isBlank()) {
             setText("");

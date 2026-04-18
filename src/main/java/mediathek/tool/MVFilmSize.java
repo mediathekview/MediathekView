@@ -2,7 +2,7 @@ package mediathek.tool;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Store sizes in bytes but return strings in MegaBytes.
@@ -17,7 +17,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
     }
 
     @Override
-    public int compareTo(@NotNull MVFilmSize ll) {
+    public int compareTo(@NonNull MVFilmSize ll) {
         return (sizeL.compareTo(ll.sizeL));
     }
 

@@ -17,9 +17,9 @@
  */
 package mediathek.gui.dialog.lucene_tutorial;
 
-import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.text.html.HTMLDocument;
@@ -42,7 +42,7 @@ final class FlexmarkHtmlPane extends JEditorPane {
         setForeground(resolveColor("TextPane.foreground", "Label.foreground", Color.BLACK));
     }
 
-    void setHtml(@NotNull String html) {
+    void setHtml(@NonNull String html) {
         var document = createDocument();
         setDocument(document);
 
@@ -54,7 +54,7 @@ final class FlexmarkHtmlPane extends JEditorPane {
         }
     }
 
-    private @NotNull HTMLEditorKit createEditorKit() {
+    private @NonNull HTMLEditorKit createEditorKit() {
         var background = resolveColor("TextPane.background", "Panel.background", Color.WHITE);
         var foreground = resolveColor("TextPane.foreground", "Label.foreground", Color.BLACK);
         var border = resolveColor("Component.borderColor", "Separator.foreground", new Color(0xD9D9D9));
@@ -96,7 +96,7 @@ final class FlexmarkHtmlPane extends JEditorPane {
         return editorKit;
     }
 
-    private @NotNull javax.swing.text.Document createDocument() {
+    private javax.swing.text.@NonNull Document createDocument() {
         var document = (HTMLDocument) editorKit.createDefaultDocument();
         document.putProperty("IgnoreCharsetDirective", Boolean.TRUE);
         document.setAsynchronousLoadPriority(-1);
@@ -104,7 +104,7 @@ final class FlexmarkHtmlPane extends JEditorPane {
         return document;
     }
 
-    private @NotNull String normalizeHtmlForSwing(@NotNull String html) {
+    private @NonNull String normalizeHtmlForSwing(@NonNull String html) {
         var doc = Jsoup.parse(html);
         doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
 
@@ -131,7 +131,7 @@ final class FlexmarkHtmlPane extends JEditorPane {
         return doc.outerHtml();
     }
 
-    private @NotNull Color resolveColor(@NotNull String primaryKey, @NotNull String fallbackKey, @NotNull Color defaultColor) {
+    private @NonNull Color resolveColor(@NonNull String primaryKey, @NonNull String fallbackKey, @NonNull Color defaultColor) {
         var color = UIManager.getColor(primaryKey);
         if (color != null) {
             return color;
@@ -140,11 +140,11 @@ final class FlexmarkHtmlPane extends JEditorPane {
         return color != null ? color : defaultColor;
     }
 
-    private @NotNull String toCssColor(@NotNull Color color) {
+    private @NonNull String toCssColor(@NonNull Color color) {
         return "#%02x%02x%02x".formatted(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    private @NotNull Color blend(@NotNull Color base, @NotNull Color overlay, float ratio) {
+    private @NonNull Color blend(@NonNull Color base, @NonNull Color overlay, float ratio) {
         ratio = Math.max(0f, Math.min(1f, ratio));
         var inverse = 1f - ratio;
         return new Color(

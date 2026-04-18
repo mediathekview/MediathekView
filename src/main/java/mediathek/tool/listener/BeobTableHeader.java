@@ -3,7 +3,7 @@ package mediathek.tool.listener;
 import mediathek.config.MVConfig;
 import mediathek.tool.table.ColumnVisibilityStore;
 import mediathek.tool.table.MVTable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -39,7 +39,7 @@ public class BeobTableHeader extends MouseAdapter {
      * @param configKey If not NULL, store config setting for LINEBREAK in this key.
      *                  If NULL, do not store/restore values and do not show LINEBREAK context menu entries.
      */
-    public BeobTableHeader(@NotNull MVTable tabelle, @NotNull ColumnVisibilityStore spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, MVConfig.Configs configKey) {
+    public BeobTableHeader(@NonNull MVTable tabelle, @NonNull ColumnVisibilityStore spalten, int[] hiddenColumns, int[] bbutton, boolean displaySenderIconMenus, MVConfig.Configs configKey) {
         this.tabelle = tabelle;
         this.displaySenderIconMenus = displaySenderIconMenus;
         spaltenAnzeigen = spalten;
