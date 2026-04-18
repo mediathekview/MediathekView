@@ -1,6 +1,6 @@
-package mediathek.tool;
+package mediathek.tool
 
-public enum UIProgressState {
+enum class UIProgressState(val title: String) {
     INIT_FX("UI Toolkit initialisieren..."),
     FILE_CLEANUP("Dateien bereinigen..."),
     START_UI("Anwendungsklassen laden..."),
@@ -15,16 +15,5 @@ public enum UIProgressState {
     CONFIGURE_TABS("Tabs konfigurieren"),
     INIT_MENUS("Menüs initialisieren..."),
     LOAD_MEMORY_MONITOR("Speichermonitor initialisieren..."),
-    FINISHED("Anwendungsfenster wird geöffnet...");
-
-    private final String title;
-
-    UIProgressState(String title) {
-        this.title = title;
-    }
-
-    @Override
-    public String toString() {
-        return title;
-    }
+    FINISHED("Anwendungsfenster wird geöffnet...")
 }

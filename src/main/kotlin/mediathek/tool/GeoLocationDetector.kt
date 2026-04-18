@@ -23,7 +23,7 @@ object GeoLocationDetector {
         userAgent: String = readUserAgent(),
     ): DetectedLocation? {
         return runCatching {
-            val publicIp = Ipify.publicIp
+            val publicIp = Ipify.getPublicIp(httpClient)
             val request = Request.Builder()
                 .url(
                     GEO_LOOKUP_URL.toHttpUrl().newBuilder()
@@ -48,7 +48,11 @@ object GeoLocationDetector {
                 )
             }
         }.onFailure { ex ->
-            logger.debug("Geo location detection failed", ex)
+            if (ex is IOException) {
+                logger.warn("Geo location detection failed: {}", ex.message ?: ex.javaClass.simpleName)
+            } else {
+                logger.debug("Geo location detection failed", ex)
+            }
         }.getOrNull()
     }
 

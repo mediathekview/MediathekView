@@ -47,7 +47,7 @@ class SplashScreen : JWindow() {
         runOnEdt {
             completedSteps++
             val pct = (100 * (completedSteps / MAXIMUM_STEPS)).roundToInt()
-            updateStatus(state.toString(), pct)
+            updateStatus(state.title, pct)
         }
     }
 
