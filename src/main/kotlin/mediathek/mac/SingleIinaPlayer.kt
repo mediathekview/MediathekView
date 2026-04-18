@@ -74,9 +74,6 @@ class SingleIinaPlayer {
     companion object {
         private val ACCESSIBILITY_WARNING_SHOWN = AtomicBoolean(false)
 
-        private fun escapeAppleScriptString(value: String): String =
-            value.replace("\\", "\\\\").replace("\"", "\\\"")
-
         private fun maybeShowAccessibilityWarning() {
             if (!ACCESSIBILITY_WARNING_SHOWN.compareAndSet(false, true)) {
                 return
