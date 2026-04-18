@@ -71,7 +71,6 @@ class SvgSenderIconLabel : JLabel() {
     private fun regionLabelFont(): Font = super.getFont().deriveFont(regionLabelFontSizePt)
 
     companion object {
-        @JvmStatic
         var regionLabelFontSizePt: Float = 10f
 
         private val REGION_LABELS = listOf(

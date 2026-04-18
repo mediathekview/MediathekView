@@ -19,5 +19,4 @@ package mediathek.gui.expiration
 
 import java.time.LocalDate
 
-@JvmRecord
-data class ExpiryInfo(val expiryDate: LocalDate?) 
+data class ExpiryInfo(val expiryDate: LocalDate?)

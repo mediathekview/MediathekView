@@ -54,7 +54,6 @@ object WebVttStrictValidator {
     private val ALIGN = setOf("start", "center", "end", "left", "right", "middle")
     private val VERTICAL = setOf("rl", "lr")
 
-    @JvmStatic
     @Throws(IOException::class)
     fun validate(path: Path, requireAtLeastOneCue: Boolean): ValidationResult {
         val errors = mutableListOf<String>()
