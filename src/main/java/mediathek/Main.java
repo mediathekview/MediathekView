@@ -227,7 +227,7 @@ public class Main {
 
     private static void printVersionInformation() {
         var buildInfo = BuildInfo.current();
-        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(RuntimeStatistics.startZeit));
+        logger.info("Programmstart: {}", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(RuntimeStatistics.INSTANCE.getStartZeit()));
         logger.info("Version: {}", Konstanten.MVVERSION);
         logger.info("Build Git: {}", buildInfo.formatForDisplay());
 

@@ -1,3 +1,3 @@
 package mediathek.gui.messages
 
-data class TableModelChangeEvent(@JvmField val active: Boolean, @JvmField val fromSearchField: Boolean) : BaseEvent()
+data class TableModelChangeEvent(val active: Boolean, val fromSearchField: Boolean) : BaseEvent()

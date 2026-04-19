@@ -41,14 +41,12 @@ object BookmarkJsonStore {
         ignoreUnknownKeys = true
     }
 
-    @JvmStatic
     fun read(path: Path): MutableList<BookmarkData> {
         val content = Files.readString(path)
         val wrapper = json.decodeFromString(BookmarksWrapper.serializer(), content)
         return wrapper.bookmarks.map { it.toBookmarkData() }.toMutableList()
     }
 
-    @JvmStatic
     fun write(path: Path, bookmarks: EventList<BookmarkData>) {
         val wrapper = BookmarksWrapper(bookmarks = bookmarks.map { BookmarkDto.fromBookmarkData(it) })
         val content = json.encodeToString(BookmarksWrapper.serializer(), wrapper)
@@ -97,16 +95,16 @@ private data class BookmarkDto(
 ) {
     fun toBookmarkData(): BookmarkData {
         val result = BookmarkData()
-        result.setSeen(seen)
-        result.setUrl(url)
-        result.setNote(note)
-        result.setAvailableUntil(availableUntil)
-        result.setBookmarkAdded(bookmarkAdded)
+        result.seen = seen
+        result.url = url
+        result.note = note
+        result.availableUntil = availableUntil
+        result.bookmarkAdded = bookmarkAdded
         result.originalSender = originalSender
         result.originalTitle = originalTitle
         result.originalThema = originalThema
         if (filmHashCode != null) {
-            result.setFilmHashCode(filmHashCode)
+            result.filmHashCode = filmHashCode
         }
         return result
     }

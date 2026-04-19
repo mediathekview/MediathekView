@@ -77,7 +77,8 @@ class BookmarkEditNoteDialog(
                 enableBusyIndicator(true)
                 try {
                     val result = withContext(Dispatchers.IO) {
-                        SenderExpirationService.fetchExpiryDate(bm.datenFilm.sender, bm.datenFilm.websiteUrl)
+                        val film = bm.datenFilm!!
+                        SenderExpirationService.fetchExpiryDate(film.sender, film.websiteUrl)
                     }
                     if (result != null) {
                         datePicker.date = DateUtil.convertToDate(result)

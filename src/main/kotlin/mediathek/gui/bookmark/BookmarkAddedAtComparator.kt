@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,19 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.bookmark;
+package mediathek.gui.bookmark
 
-import java.util.Comparator;
+class BookmarkAddedAtComparator : Comparator<BookmarkData> {
+    override fun compare(o1: BookmarkData, o2: BookmarkData): Int {
+        val firstBookmarkAdded = o1.bookmarkAdded
+        val secondBookmarkAdded = o2.bookmarkAdded
 
-public class BookmarkAddedAtComparator implements Comparator<BookmarkData> {
-
-    @Override
-    public int compare(BookmarkData o1, BookmarkData o2) {
-        var o1ba = o1.getBookmarkAdded();
-        var o2ba = o2.getBookmarkAdded();
-        if (o1ba == null || o2ba == null) {
-            return 0;
+        return if (firstBookmarkAdded == null || secondBookmarkAdded == null) {
+            0
+        } else {
+            firstBookmarkAdded.compareTo(secondBookmarkAdded)
         }
-        return o1ba.compareTo(o2ba);
     }
 }

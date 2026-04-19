@@ -1,0 +1,278 @@
+/*
+ * Copyright (c) 2025-2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package mediathek.gui.bookmark
+
+import ca.odell.glazedlists.BasicEventList
+import ca.odell.glazedlists.EventList
+import mediathek.config.Daten
+import mediathek.config.StandardLocations
+import mediathek.controller.history.SeenHistoryController
+import mediathek.daten.DatenFilm
+import mediathek.filmeSuchen.ListenerFilmeLaden
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent
+import mediathek.gui.messages.BookmarkRefreshCompletedEvent
+import mediathek.tool.MessageBus
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import java.time.LocalDate
+import java.util.*
+
+/**
+ * Stores a full list of bookmarked movies.
+ */
+class BookmarkDataList(daten: Daten) {
+    private val bookmarks = BasicEventList<BookmarkData>()
+
+    init {
+        // Wait until film liste is ready and update references.
+        daten.filmeLaden.addAdListener(
+            object : ListenerFilmeLaden() {
+                override fun fertig(event: ListenerFilmeLadenEvent) {
+                    Thread.ofVirtual().start(::refreshFromCurrentFilmList)
+                }
+            },
+        )
+    }
+
+    /**
+     * Remove all bookmarks and deassociate film data
+     */
+    fun clear() {
+        bookmarks.forEach { bookmark ->
+            bookmark.datenFilmOptional.ifPresent { film -> film.bookmark = null }
+        }
+        bookmarks.clear()
+        saveToFile()
+    }
+
+    /**
+     * Return data list for Bookmark window
+     *
+     * @return observable List
+     */
+    fun getEventList(): EventList<BookmarkData> = bookmarks
+
+    fun removeBookmark(bookmark: BookmarkData) {
+        bookmark.datenFilmOptional.ifPresent { film -> film.bookmark = null }
+        bookmark.datenFilm = null
+        bookmarks.remove(bookmark)
+    }
+
+    /**
+     * Add given film(s) to List if not yet in list
+     * otherwise remove them from list
+     * Note: if one of the given films is not bookmarked all are bookmarked
+     *
+     * @param movies list of movies to be added
+     */
+    fun checkAndBookmarkMovies(movies: List<DatenFilm>) {
+        val addList = ArrayList<DatenFilm>()
+        val delList = LinkedHashSet<BookmarkData>()
+        var add = false
+        for (film in movies) {
+            if (!film.isBookmarked) {
+                add = true
+                addList.add(film)
+            } else {
+                val bookmark = findBookmarkFromFilm(film)
+                if (bookmark != null) {
+                    delList.add(bookmark)
+                }
+            }
+        }
+
+        if (add) {
+            // Check if history list is known.
+            val writeLock = bookmarks.readWriteLock.writeLock()
+            writeLock.lock()
+            try {
+                SeenHistoryController().use { history ->
+                    addList.forEach { movie ->
+                        val bookmarkData = BookmarkData(movie)
+                        movie.bookmark = bookmarkData // Link backwards
+                        bookmarkData.seen = history.hasBeenSeen(movie)
+                        bookmarkData.filmHashCode = movie.sha256
+                        bookmarkData.bookmarkAdded = LocalDate.now()
+                        bookmarks.add(bookmarkData)
+                    }
+                }
+            } catch (ex: Exception) {
+                logger.error("history produced error", ex)
+            } finally {
+                writeLock.unlock()
+            }
+        } else {
+            movies.forEach { movie -> movie.bookmark = null }
+            val writeLock = bookmarks.readWriteLock.writeLock()
+            writeLock.lock()
+            try {
+                bookmarks.removeAll(delList)
+            } finally {
+                writeLock.unlock()
+            }
+        }
+    }
+
+    /**
+     * Load Bookmarklist from backup medium
+     */
+    fun loadFromFile() {
+        val filePath = StandardLocations.getBookmarkFilePath()
+
+        try {
+            val bookmarkList = BookmarkJsonStore.read(filePath)
+            bookmarks.addAll(bookmarkList)
+            bookmarkList.clear()
+        } catch (e: Exception) {
+            logger.error("Could not read bookmarks from file {}, error {} => file ignored", filePath.toString(), e.message)
+        }
+    }
+
+    @Synchronized
+    fun saveToFile() {
+        val filePath = StandardLocations.getBookmarkFilePath()
+
+        try {
+            BookmarkJsonStore.write(filePath, bookmarks)
+            logger.trace("Bookmarks written")
+        } catch (e: Exception) {
+            logger.error("Could not save bookmarks to {}", filePath, e)
+        }
+    }
+
+    fun refreshFromCurrentFilmList() {
+        try {
+            updateBookMarksFromFilmList()
+        } finally {
+            MessageBus.messageBus.publishAsync(BookmarkRefreshCompletedEvent())
+        }
+    }
+
+    /**
+     * Updates the seen state
+     *
+     * @param seen True if movies are seen
+     * @param list List of movies
+     */
+    fun updateSeen(seen: Boolean, list: List<DatenFilm>) {
+        list.asSequence()
+            .filter(DatenFilm::isBookmarked)
+            .forEach { movie ->
+                movie.bookmark?.seen = seen
+            }
+    }
+
+    // called from [SeenHistoryController].
+    fun updateSeen(seen: Boolean, film: DatenFilm) {
+        if (film.isBookmarked) {
+            film.bookmark?.seen = seen
+        }
+    }
+
+    /**
+     * Find Bookmark from film object.
+     * @param film the film object
+     * @return the associated bookmark or null.
+     */
+    private fun findBookmarkFromFilm(film: DatenFilm): BookmarkData? {
+        for (bookmark in bookmarks) {
+            val bookmarkFilm = bookmark.datenFilm
+            if (bookmarkFilm != null && bookmarkFilm == film) {
+                return bookmark
+            }
+        }
+        return null
+    }
+
+    /**
+     * Updates the stored bookmark data reference with actual film list
+     * and links the entries
+     * Executed in background
+     */
+    private fun updateBookMarksFromFilmList() {
+        if (bookmarks.isEmpty()) {
+            return
+        }
+
+        val listeFilme = Daten.getInstance().listeFilme
+        val filmSnapshot: List<DatenFilm> =
+            synchronized(listeFilme) {
+                ArrayList(listeFilme)
+            }
+        val filmsByHash = createFilmHashIndex(filmSnapshot)
+        val filmsByUrl = createFilmUrlIndex(filmSnapshot)
+        val readLock = bookmarks.readWriteLock.readLock()
+        val bookmarkSnapshot: List<BookmarkData>
+        readLock.lock()
+        try {
+            bookmarkSnapshot = ArrayList(bookmarks)
+        } finally {
+            readLock.unlock()
+        }
+
+        for (bookmark in bookmarkSnapshot) {
+            val hashCodeStr = bookmark.filmHashCode
+            if (hashCodeStr != null) {
+                val film = filmsByHash[hashCodeStr]
+                assignData(bookmark, film)
+            } else {
+                val url = bookmark.url
+                if (url == null) {
+                    logger.warn("Stored bookmark is invalid, url is null")
+                } else {
+                    val normalizedUrl = url.lowercase(Locale.ROOT)
+                    val film = filmsByUrl[normalizedUrl]
+                    assignData(bookmark, film)
+                    // if we didn't have hashCode, update to new format now if possible...
+                    if (film != null) {
+                        bookmark.filmHashCode = film.sha256
+                    }
+                }
+            }
+        }
+    }
+
+    private fun assignData(bookmark: BookmarkData, film: DatenFilm?) {
+        bookmark.datenFilm = film
+        if (film != null) {
+            film.bookmark = bookmark // Link backwards
+        }
+    }
+
+    private fun createFilmHashIndex(films: List<DatenFilm>): Map<String, DatenFilm> {
+        val filmsByHash = HashMap<String, DatenFilm>(films.size)
+        for (film in films) {
+            filmsByHash.putIfAbsent(film.sha256, film)
+        }
+        return filmsByHash
+    }
+
+    private fun createFilmUrlIndex(films: List<DatenFilm>): Map<String, DatenFilm> {
+        val filmsByUrl = HashMap<String, DatenFilm>(films.size)
+        for (film in films) {
+            val normalizedUrl = film.urlNormalQuality.lowercase(Locale.ROOT)
+            filmsByUrl.putIfAbsent(normalizedUrl, film)
+        }
+        return filmsByUrl
+    }
+
+    private companion object {
+        val logger: Logger = LogManager.getLogger()
+    }
+}

@@ -1275,9 +1275,9 @@ public class MediathekGui extends JFrame {
         logger.trace("Write app config.");
         ApplicationConfiguration.getInstance().writeConfiguration();
 
-        RuntimeStatistics.printRuntimeStatistics();
+        RuntimeStatistics.INSTANCE.printRuntimeStatistics();
         if (Config.isEnhancedLoggingEnabled()) {
-            RuntimeStatistics.printDataUsageStatistics();
+            RuntimeStatistics.INSTANCE.printDataUsageStatistics();
         }
 
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

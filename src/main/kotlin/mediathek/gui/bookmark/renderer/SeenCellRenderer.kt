@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,23 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.bookmark.renderer;
+package mediathek.gui.bookmark.renderer
 
-import mediathek.audiothek.ui.table.CenteredTextCellRenderer;
-import mediathek.tool.datum.DateUtil;
+import java.awt.Component
+import javax.swing.JTable
 
-import javax.swing.*;
-import java.awt.*;
-import java.time.LocalDate;
-
-public class AddedAtCellRenderer extends CenteredTextCellRenderer {
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        var date = (LocalDate) value;
-        if (date != null) {
-            setText(date.format(DateUtil.FORMATTER));
+class SeenCellRenderer : NoteCellRenderer() {
+    override fun getTableCellRendererComponent(
+        table: JTable?,
+        value: Any?,
+        isSelected: Boolean,
+        hasFocus: Boolean,
+        row: Int,
+        column: Int,
+    ): Component {
+        if (table == null) {
+            return this
         }
-        return this;
+
+        performSelectionDrawing(table, isSelected, row)
+
+        checkBox.isSelected = value as Boolean
+        return this
     }
 }

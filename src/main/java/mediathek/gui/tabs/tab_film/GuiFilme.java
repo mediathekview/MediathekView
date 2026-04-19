@@ -343,12 +343,12 @@ public class GuiFilme extends AGuiTabPanel {
             manageBookmarkAction.setEnabled(flag);
             filmToolBar.setEnabled(flag);
         };
-        if (e.active) {
+        if (e.getActive()) {
             SwingUtilities.invokeLater(() -> function.accept(false));
         } else {
             SwingUtilities.invokeLater(() -> {
                 function.accept(true);
-                if (e.fromSearchField)
+                if (e.getFromSearchField())
                     searchField.requestFocusInWindow();
             });
         }
