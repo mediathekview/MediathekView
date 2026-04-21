@@ -320,6 +320,10 @@ public class GuiFilme extends AGuiTabPanel {
         return filterConfiguration;
     }
 
+    public @NonNull String getCurrentZeitraumFilterValue() {
+        return filterController.state().getZeitraum();
+    }
+
     /**
      * Convenience function to update bookmark list and refresh UI.
      * @param filmList the data list
