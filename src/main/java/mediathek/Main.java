@@ -71,7 +71,7 @@ public class Main {
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
     private static final Logger logger = LogManager.getLogger(Main.class);
     public static Optional<SplashScreen> splashScreen = Optional.empty();
-    public static SingleInstance SINGLE_INSTANCE_WATCHER;
+    protected static SingleInstance SINGLE_INSTANCE_WATCHER;
 
     static {
         // set up log4j callback registry
@@ -323,58 +323,17 @@ public class Main {
      * Otherwise display warning dialog.
      */
     private static void checkJVMSettings() {
-        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-        boolean correctParameters = false;
+        var runtimeMXBean = ManagementFactory.getRuntimeMXBean();
         var paramList = runtimeMXBean.getInputArguments();
 
-        var useShenandoahGC = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:+UseShenandoahGC")).findAny().stream().count();
-        var shenandoahHeuristics = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:ShenandoahGCHeuristics=compact")).findAny().stream().count();
-        var stringDedup = paramList.stream().filter(s -> s.equalsIgnoreCase("-XX:+UseStringDeduplication")).findAny().stream().count();
-        var maxRamPct = paramList.stream().filter(s -> s.startsWith("-XX:MaxRAMPercentage=")).findAny().stream().count();
-        var addOpens = paramList.stream().filter(s -> s.equalsIgnoreCase("--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED")).findAny().stream().count();
-
-        //Incorrect VM params
-        var mxParamCount = paramList.stream().filter(s -> s.startsWith("-Xmx")).findAny().stream().count();
-
-        if ((useShenandoahGC > 0)
-                && (shenandoahHeuristics > 0)
-                && (stringDedup > 0)
-                && (maxRamPct > 0)
-                && (mxParamCount == 0))
-            correctParameters = true;
-
-        if (SystemUtils.IS_OS_LINUX) {
-            if (addOpens == 0)
-                correctParameters = false;
-        }
-
-        if (!correctParameters) {
+        if (!JvmSettingsValidator.hasRequiredJvmSettings(paramList)) {
             logger.warn("Detected incorrect JVM parameters! Please modify your settings");
             if (!Config.isDebugModeEnabled()) {
                 //show error dialog
-                JOptionPane.showMessageDialog(null, getJvmErrorMessageString(), Konstanten.PROGRAMMNAME,
+                JOptionPane.showMessageDialog(null, JvmSettingsValidator.getErrorMessageString(), Konstanten.PROGRAMMNAME,
                         JOptionPane.WARNING_MESSAGE);
             }
         }
-    }
-
-    private static String getJvmErrorMessageString() {
-        var message = "<html>" +
-                "<b>Inkorrekte/fehlende JVM Parameter erkannt</b><br/><br/>" +
-                "Bitte stellen Sie sicher, dass die folgenden Parameter an die JVM übergeben werden:<br/>" +
-                "<ul>" +
-                "<li>-XX:+UseShenandoahGC</li>" +
-                "<li>-XX:ShenandoahGCHeuristics=compact</li>" +
-                "<li>-XX:+UseStringDeduplication</li>" +
-                "<li>-XX:MaxRAMPercentage=<b>XX.X</b></li>";
-        if (SystemUtils.IS_OS_LINUX) {
-            message += "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>";
-        }
-
-        message += "</ul><br/>" +
-                "<b>-Xmx</b> sollte nicht mehr genutzt werden!" +
-                "</html>";
-        return message;
     }
 
     /**
