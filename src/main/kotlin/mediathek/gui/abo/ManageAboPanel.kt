@@ -423,7 +423,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         tabelle.columnModel.getColumn(DatenAbo.ABO_MIN).cellRenderer = MinMaxCellRenderer()
         tabelle.columnModel.getColumn(DatenAbo.ABO_SENDER).cellRenderer = SenderCellRenderer()
 
-        tabelle.isLineBreak = false
+        tabelle.setLineBreak(false)
         tabelle.tableHeader.addMouseListener(
             BeobTableHeader(
                 tabelle,

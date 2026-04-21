@@ -7,9 +7,9 @@ import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import mediathek.tool.models.TModelAbo
 import mediathek.tool.models.TModelFilm
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import javax.swing.DefaultRowSorter
 import javax.swing.SortOrder
 
 class MVTableTest {
@@ -37,7 +37,7 @@ class MVTableTest {
 
             table.readColumnConfigurationData()
 
-            assertEquals(DatenFilm.FILM_GEO, table.reihe[7])
+            assertEquals(DatenFilm.FILM_GEO, table.convertColumnIndexToModel(7))
         } finally {
             MVConfig.add(key, originalConfig)
         }
@@ -58,5 +58,22 @@ class MVTableTest {
 
         sorter.toggleSortOrder(DatenAbo.ABO_NAME)
         assertEquals(0, sorter.sortKeys.size)
+    }
+
+    @Test
+    fun filmTableUsesSingleSortKeyRowSorterWhenModelChanges() {
+        val table = MVFilmTable()
+        table.model = TModelFilm()
+
+        val sorter = assertInstanceOf(DefaultRowSorter::class.java, table.rowSorter)
+        sorter.sortKeys = listOf(
+            javax.swing.RowSorter.SortKey(DatenFilm.FILM_TITEL, SortOrder.ASCENDING),
+            javax.swing.RowSorter.SortKey(DatenFilm.FILM_SENDER, SortOrder.DESCENDING),
+        )
+
+        assertEquals(1, sorter.sortKeys.size)
+        assertEquals(DatenFilm.FILM_TITEL, sorter.sortKeys.first().column)
+        assertEquals(SortOrder.ASCENDING, sorter.sortKeys.first().sortOrder)
+        assertTrue(!sorter.isSortable(DatenFilm.FILM_ABSPIELEN))
     }
 }

@@ -21,7 +21,6 @@ package mediathek.swing.table
 import javax.swing.JTable
 
 object TableUtils {
-    @JvmStatic
     fun fitColumnHeaders(table: JTable, padding: Int) {
         val columnModel = table.columnModel
         val header = table.tableHeader

@@ -40,7 +40,6 @@ object DesktopEnvDetector {
         return detect() != DesktopEnvironment.KDE
     }
 
-    @JvmStatic
     fun detect(): DesktopEnvironment = runBlocking {
         detectDesktopEnvironment()
     }

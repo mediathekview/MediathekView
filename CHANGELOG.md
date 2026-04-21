@@ -21,7 +21,7 @@
 - **BUGFIX:** Die Warnung zur Sendermigration wird nicht mehr beim ersten Start angezeigt.
 - **BUGFIX:** Unter Linux werden `vlc` und `ffmpeg` beim ersten Start nun zuerst in $PATH gesucht, erst danach wird einen hard-coded Pfad verwendet.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
-- **FEATURE:** Tab *Audiothek* zur Suche (offline als auch online), Abspielen und Download von Podcasts der ARD Audiothek und via podcastindex.org.
+- **FEATURE:** Tab *Audiothek* zur Suche (offline als auch online), Abspielen und Download von Podcasts mit Hilfe der p2tools' Audiothek-Daten und via podcastindex.org.
 - **FEATURE:** Filter können nun kopiert werden.
 - **FEATURE:** Sperrbare Filter. Änderungen an einem gesperrten Filter wirken sich auf die Filmliste aus, werden jedoch nicht dauerhaft gespeichert und beim nächsten Programmstart zurückgesetzt. Gesperrte Filter werden mit einem Schloß-Symbol in der Filterliste angezeigt.
 - **FEATURE:** *Download ändern*-Dialog bietet nun auch die Möglichkeit, Codec-Details abzurufen.
