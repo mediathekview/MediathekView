@@ -80,7 +80,7 @@ open class SqliteExportAudioSource(
             .get()
             .build()
 
-        logger.info("Starting MediathekView Audiothek download from {}", sourceUrl)
+        logger.trace("Starting MediathekView Audiothek download from {}", sourceUrl)
 
         try {
             client.newCall(request).execute().use { response ->
