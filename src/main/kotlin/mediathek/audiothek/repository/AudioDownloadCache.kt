@@ -18,14 +18,13 @@
 
 package mediathek.audiothek.repository
 
-import mediathek.config.StandardLocations
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
 class AudioDownloadCache(
-    private val cacheDir: Path = StandardLocations.getSettingsDirectory().resolve("audiothek-cache")
+    private val cacheDir: Path = AudiothekPaths.defaultAudiothekCachePath()
 ) {
     private val audioFile: Path = cacheDir.resolve("audios.xz")
     private val metadataFile: Path = cacheDir.resolve("cache.properties")

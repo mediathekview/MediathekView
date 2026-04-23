@@ -10,6 +10,7 @@ Der Suchtext kann über die integrierte Löschen-Funktion im Suchfeld oder mit d
 
 Ohne weiteren Suchschlüssel wird in allen aktuell sichtbaren Suchspalten gesucht:
 
+- `Quelle`
 - `Sender`
 - `Genre`
 - `Thema`
@@ -43,6 +44,7 @@ verwendet.
 
 Verfügbare Suchschlüssel sind:
 
+- `quelle`
 - `sender`
 - `genre`
 - `thema`
@@ -62,6 +64,7 @@ Verfügbare Suchschlüssel sind:
 Beispiele:
 
 ```text
+quelle:mediathekview
 sender:ard
 thema:krimi
 titel:"die drei ???"

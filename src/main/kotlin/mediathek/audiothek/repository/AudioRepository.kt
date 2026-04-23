@@ -21,6 +21,7 @@ package mediathek.audiothek.repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mediathek.audiothek.model.AudioDataset
+import mediathek.audiothek.model.AudioEntry
 import mediathek.tool.http.MVHttpClient
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -45,7 +46,8 @@ class AudioRepository(
         .build(),
     private val resolver: AudioSourceResolver = AudioSourceResolver(client),
     private val parser: AudioParser = AudioParser(),
-    private val cache: AudioDownloadCache = AudioDownloadCache()
+    private val cache: AudioDownloadCache = AudioDownloadCache(),
+    private val sqliteExportSource: SqliteExportAudioSource = SqliteExportAudioSource(),
 ) {
     private val logger = LogManager.getLogger(AudioRepository::class.java)
 
@@ -105,9 +107,9 @@ class AudioRepository(
                         body = bodyBytes
                     )
 
-                    return@withContext AudioLoadResult(
-                        dataset = parseAudioDataset(sourceUrl, ByteArrayInputStream(bodyBytes)),
-                        downloadStatus = AudioDownloadStatus.DOWNLOADED
+                    return@withContext mergeSqliteExportEntries(
+                        p2toolsDataset = parseAudioDataset(sourceUrl, ByteArrayInputStream(bodyBytes)),
+                        downloadStatus = AudioDownloadStatus.DOWNLOADED,
                     )
                 }
             } catch (error: Exception) {
@@ -131,10 +133,11 @@ class AudioRepository(
         throw lastError ?: error("Keine Audiothek-Quelle verfügbar")
     }
 
-    private fun cachedResult(sourceUrl: String, status: AudioDownloadStatus) = AudioLoadResult(
-        dataset = loadCachedDataset(sourceUrl),
-        downloadStatus = status
-    )
+    private fun cachedResult(sourceUrl: String, status: AudioDownloadStatus): AudioLoadResult =
+        mergeSqliteExportEntries(
+            p2toolsDataset = loadCachedDataset(sourceUrl),
+            downloadStatus = status,
+        )
 
     private fun loadCachedDataset(sourceUrl: String): AudioDataset =
         cache.openCachedAudio().use { parseAudioDataset(sourceUrl, it) }
@@ -142,17 +145,112 @@ class AudioRepository(
     private fun parseAudioDataset(sourceUrl: String, body: InputStream): AudioDataset =
         openPayloadStream(sourceUrl, body).use { parser.parse(it, sourceUrl) }
 
+    private fun mergeSqliteExportEntries(
+        p2toolsDataset: AudioDataset,
+        downloadStatus: AudioDownloadStatus,
+    ): AudioLoadResult {
+        val sqliteUpdateStatus = sqliteExportSource.updateLocalDatabase()
+        if (sqliteUpdateStatus == SqliteExportDownloadStatus.FAILED) {
+            logger.warn("MediathekView Audiothek update failed, continuing with the previous local database if available")
+        }
+        val sqliteDataset = runCatching { sqliteExportSource.loadDataset() }
+            .onFailure { logger.warn("Failed to load MediathekView Audiothek data", it) }
+            .getOrNull()
+            ?: return AudioLoadResult(
+                dataset = p2toolsDataset,
+                downloadStatus = downloadStatus,
+                sqliteDownloadStatus = sqliteUpdateStatus,
+            )
+
+        val mergedEntries = LinkedHashMap<String, AudioEntry>()
+        val mergeStats = AudioMergeStats()
+        sqliteDataset.entries.forEach { entry ->
+            val previous = mergedEntries.putIfAbsent(audioEntryMergeKey(entry), entry)
+            if (previous == null) {
+                mergeStats.keptFromSqlite++
+            } else {
+                mergeStats.duplicateSqliteRows++
+            }
+        }
+        p2toolsDataset.entries.forEach { entry ->
+            val previous = mergedEntries.putIfAbsent(audioEntryMergeKey(entry), entry)
+            if (previous == null) {
+                mergeStats.addedFromP2Tools++
+            } else {
+                if (previous.sourceLabel == AudioSourceLabels.MEDIATHEK_VIEW) {
+                    mergeStats.skippedP2ToolsBecauseSqlite++
+                } else {
+                    mergeStats.duplicateP2ToolsRows++
+                }
+            }
+        }
+
+        logger.info(
+            "Audiothek merge: sqlite primary entries={}, kept from sqlite={}, duplicate sqlite rows={}, p2tools entries={}, added from p2tools={}, p2tools rows skipped because sqlite already had them={}, duplicate p2tools rows={}",
+            sqliteDataset.entries.size,
+            mergeStats.keptFromSqlite,
+            mergeStats.duplicateSqliteRows,
+            p2toolsDataset.entries.size,
+            mergeStats.addedFromP2Tools,
+            mergeStats.skippedP2ToolsBecauseSqlite,
+            mergeStats.duplicateP2ToolsRows,
+        )
+
+        return AudioLoadResult(
+            dataset = p2toolsDataset.withEntriesAndSqliteMetadata(
+                entries = mergedEntries.values.toList(),
+                sqliteDataset = sqliteDataset,
+            ),
+            downloadStatus = downloadStatus,
+            sqliteDownloadStatus = sqliteUpdateStatus,
+        )
+    }
+
+    private fun audioEntryMergeKey(entry: AudioEntry): String {
+        entry.audioUrl?.toString()?.takeIf(String::isNotBlank)?.let { return "audio:$it" }
+        entry.websiteUrl?.toString()?.takeIf(String::isNotBlank)?.let { return "website:$it" }
+        return buildString {
+            append(entry.channel.trim())
+            append('|')
+            append(entry.title.trim())
+            append('|')
+            append(entry.publishedAt?.toString().orEmpty())
+            append('|')
+            append(entry.durationMinutes?.toString().orEmpty())
+        }
+    }
+
     private fun openPayloadStream(sourceUrl: String, body: InputStream): InputStream =
         if (sourceUrl.endsWith(".xz")) XZInputStream(body) else body
 }
 
 data class AudioLoadResult(
     val dataset: AudioDataset,
-    val downloadStatus: AudioDownloadStatus
-)
+    val downloadStatus: AudioDownloadStatus,
+    val sqliteDownloadStatus: SqliteExportDownloadStatus,
+) {
+    fun hasUpdatedSource(): Boolean =
+        downloadStatus == AudioDownloadStatus.DOWNLOADED || sqliteDownloadStatus == SqliteExportDownloadStatus.DOWNLOADED
+
+    fun reloadMessage(): String? = when {
+        hasUpdatedSource() -> null
+        downloadStatus == AudioDownloadStatus.USED_CACHE_AFTER_FAILURE ->
+            "Es konnte keine neue Datei geladen werden.\nDie zwischengespeicherte wird weiter verwendet."
+        else ->
+            "Es konnte keine neue Datei geladen werden.\nDie vorhandene ist bereits aktuell."
+    }
+}
 
 enum class AudioDownloadStatus {
     DOWNLOADED,
     NOT_MODIFIED,
     USED_CACHE_AFTER_FAILURE
 }
+
+private data class AudioMergeStats(
+    var keptFromSqlite: Int = 0,
+    var duplicateSqliteRows: Int = 0,
+    var addedFromP2Tools: Int = 0,
+    var skippedP2ToolsBecauseSqlite: Int = 0,
+    var duplicateP2ToolsRows: Int = 0,
+)

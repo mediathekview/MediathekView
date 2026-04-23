@@ -161,6 +161,7 @@ class OnlineSearchProxyRepository(
         }
 
         return AudioEntry(
+            sourceLabel = AudioSourceLabels.NONE,
             channel = channel.ifBlank { "Podcastindex" },
             genre = genre,
             theme = theme,

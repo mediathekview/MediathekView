@@ -24,10 +24,11 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.download.AudioDownloadTaskSnapshot
 import mediathek.audiothek.download.AudioDownloadTaskState
 import mediathek.audiothek.download.PersistentAudioDownloadManager
+import mediathek.audiothek.model.AudioDataset
 import mediathek.audiothek.model.AudioEntry
-import mediathek.audiothek.repository.AudioDownloadStatus
 import mediathek.audiothek.repository.AudioLoadResult
 import mediathek.audiothek.repository.AudioRepository
+import mediathek.audiothek.repository.AudioSourceLabels
 import mediathek.audiothek.repository.OnlineSearchProxyRepository
 import mediathek.audiothek.ui.download.AudioDownloadManagerPanel
 import mediathek.audiothek.ui.download.DownloadSummary
@@ -231,29 +232,38 @@ class AudiothekPanel(
             hideErrorOverlay()
 
             try {
-                runCatching { repository.loadAudiothek(useCachedOnDownloadFailure = !isManualReload) }
-                    .onSuccess { handleLoadSuccess(it, isManualReload) }
-                    .onFailure { handleLoadFailure(it, isManualReload) }
+                try {
+                    val result = repository.loadAudiothek(useCachedOnDownloadFailure = !isManualReload)
+                    handleLoadSuccess(result, isManualReload)
+                } catch (error: Throwable) {
+                    handleLoadFailure(error, isManualReload)
+                }
             } finally {
                 setLoadingState(false)
             }
         }
     }
 
-    private fun handleLoadSuccess(result: AudioLoadResult, isManualReload: Boolean) {
+    private suspend fun handleLoadSuccess(result: AudioLoadResult, isManualReload: Boolean) {
         if (shouldSkipTableRefresh(result, isManualReload)) {
-            showReloadMessage(result.downloadStatus)
+            showReloadMessage(result)
             return
         }
 
+        val query = toolBar.currentQuery()
+        val visibleSearchFields = table.visibleSearchFieldsSnapshot()
+        val preparedRows = withContext(Dispatchers.Default) {
+            AudiothekTable.prepareRows(result.dataset.entries, query, visibleSearchFields)
+        }
+
         datasetTimestamp = result.dataset.metaLocal
-        table.setRows(result.dataset.entries)
-        applyFilterNow(toolBar.currentQuery())
+        table.applyPreparedRows(preparedRows)
         statusPanel.setStandVisible(true)
-        statusPanel.setStand("Podcast-Liste erstellt: ${result.dataset.metaLocal?.format(DATASET_TIMESTAMP_FORMAT) ?: "-"}")
-        refreshSelectionState()
+        statusPanel.setStand(formatDatasetStand(result.dataset))
+        refreshVisibleResults()
+        triggerPodcastSearch(query, resetState = false)
         if (isManualReload) {
-            showReloadMessage(result.downloadStatus)
+            showReloadMessage(result)
         }
     }
 
@@ -261,7 +271,7 @@ class AudiothekPanel(
         if (!isManualReload) {
             return false
         }
-        if (result.downloadStatus == AudioDownloadStatus.DOWNLOADED) {
+        if (result.hasUpdatedSource()) {
             return false
         }
         return datasetTimestamp != null
@@ -285,7 +295,7 @@ class AudiothekPanel(
         showErrorOverlay()
         detailsPanel.setCurrentAudioEntry(null)
         statusPanel.setStandVisible(false)
-        statusPanel.setStand("Podcast-Liste erstellt: -")
+        statusPanel.setStand(emptyDatasetStand())
         statusPanel.setCount("0 Einträge")
     }
 
@@ -297,8 +307,20 @@ class AudiothekPanel(
             .coerceAtLeast(ZERO)
     }
 
+    private fun formatDatasetStand(dataset: AudioDataset): String {
+        val primaryTimestamp = formatDatasetTimestamp(dataset.metaLocal)
+        val sqliteTimestamp = dataset.sqliteMetaLocal?.format(DATASET_TIMESTAMP_FORMAT) ?: return "Podcast-Liste erstellt: $primaryTimestamp"
+        return "Podcast-Liste erstellt: $primaryTimestamp | MV-Audiothek erstellt: $sqliteTimestamp"
+    }
+
+    private fun formatDatasetTimestamp(timestamp: LocalDateTime?): String =
+        timestamp?.format(DATASET_TIMESTAMP_FORMAT) ?: "-"
+
+    private fun emptyDatasetStand(): String = "Podcast-Liste erstellt: -"
+
     private fun setLoadingState(loading: Boolean) {
         toolBar.setLoading(loading)
+        statusPanel.setLoading(loading)
     }
 
     private fun toggleDownloadManager() {
@@ -365,8 +387,13 @@ class AudiothekPanel(
         triggerPodcastSearch(query)
     }
 
-    private fun triggerPodcastSearch(query: String) {
-        resetExternalSearchState()
+    private fun triggerPodcastSearch(query: String, resetState: Boolean = true) {
+        if (resetState) {
+            resetExternalSearchState()
+        } else {
+            podcastSearchJob?.cancel()
+            toolBar.setPodcastSearchBusy(false)
+        }
 
         val normalizedQuery = query.trim()
         if (!shouldRunOnlineSearch(normalizedQuery)) {
@@ -607,12 +634,8 @@ class AudiothekPanel(
         }
     }
 
-    private fun showReloadMessage(downloadStatus: AudioDownloadStatus) {
-        val message = when (downloadStatus) {
-            AudioDownloadStatus.DOWNLOADED -> return
-            AudioDownloadStatus.NOT_MODIFIED -> "Es konnte keine neue Datei geladen werden.\nDie vorhandene ist bereits aktuell."
-            AudioDownloadStatus.USED_CACHE_AFTER_FAILURE -> "Es konnte keine neue Datei geladen werden.\nDie zwischengespeicherte wird weiter verwendet."
-        }
+    private fun showReloadMessage(result: AudioLoadResult) {
+        val message = result.reloadMessage() ?: return
         JOptionPane.showMessageDialog(
             this,
             message,
@@ -646,6 +669,7 @@ class AudiothekPanel(
 
 private fun AudioDownloadTaskSnapshot.toAudioEntry(): AudioEntry {
     return AudioEntry(
+        sourceLabel = AudioSourceLabels.NONE,
         channel = channel,
         genre = "",
         theme = theme,

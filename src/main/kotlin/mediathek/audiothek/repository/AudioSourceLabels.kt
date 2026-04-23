@@ -16,21 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.audiothek.model
+package mediathek.audiothek.repository
 
-import java.time.LocalDateTime
-
-data class AudioDataset(
-    val metaLocal: LocalDateTime?,
-    val sqliteMetaLocal: LocalDateTime? = null,
-    val sourceUrl: String,
-    val entries: List<AudioEntry>
-) {
-    fun withEntriesAndSqliteMetadata(entries: List<AudioEntry>, sqliteDataset: AudioDataset?): AudioDataset =
-        copy(
-            metaLocal = metaLocal,
-            sqliteMetaLocal = sqliteDataset?.sqliteMetaLocal,
-            sourceUrl = sourceUrl,
-            entries = entries,
-        )
+internal object AudioSourceLabels {
+    const val P2TOOLS = "p2tools"
+    const val MEDIATHEK_VIEW = "MediathekView"
+    const val NONE = ""
 }

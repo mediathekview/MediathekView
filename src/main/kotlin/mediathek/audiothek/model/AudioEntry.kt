@@ -22,6 +22,7 @@ import java.net.URI
 import java.time.LocalDateTime
 
 data class AudioEntry(
+    val sourceLabel: String,
     val channel: String,
     val genre: String,
     val theme: String,

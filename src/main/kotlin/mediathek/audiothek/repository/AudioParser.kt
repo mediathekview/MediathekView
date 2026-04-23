@@ -49,20 +49,22 @@ class AudioParser {
             resetCompressionState()
 
             while (parser.nextToken() != JsonToken.END_OBJECT) {
-                val fieldName = parser.currentName() ?: continue
+                val fieldName = parser.currentName()
+                require(!fieldName.isNullOrBlank()) {
+                    "Expected audio payload object field but got ${parser.currentToken()}"
+                }
                 val token = parser.nextToken()
                 when (fieldName) {
                     AUDIO_META_TAG if token == JsonToken.START_ARRAY -> {
-                        parser.nextStringValue().orEmpty()
-                        metaLocal = parseDatasetTimestamp(parser.nextStringValue().orEmpty())
-                        skipUntilArrayEnd(parser)
+                        metaLocal = parseDatasetMetadata(parser)
                     }
                     AUDIO_ROWS_TAG if token == JsonToken.START_ARRAY -> {
-                        val row = parseAudioRow(parser)
-                        if (!skippedHeaderRow && row == AUDIO_HEADER_ROW) {
-                            skippedHeaderRow = true
-                        } else {
-                            entries += mapRowToEntry(row)
+                        parseAudioRowsField(parser) { row ->
+                            if (!skippedHeaderRow && row == AUDIO_HEADER_ROW) {
+                                skippedHeaderRow = true
+                            } else {
+                                entries += mapRowToEntry(row)
+                            }
                         }
                     }
                     else -> parser.skipChildren()
@@ -71,13 +73,14 @@ class AudioParser {
 
             return AudioDataset(
                 metaLocal = metaLocal,
+                sqliteMetaLocal = null,
                 sourceUrl = sourceUrl,
                 entries = entries
             )
         }
     }
 
-    private fun parseAudioRow(parser: JsonParser): List<String> {
+    private fun parseNestedAudioRow(parser: JsonParser): List<String> {
         val fields = mutableListOf<String>()
         var index = 0
         while (parser.nextToken() != JsonToken.END_ARRAY) {
@@ -89,6 +92,48 @@ class AudioParser {
         return fields
     }
 
+    private fun parseFlatAudioRow(parser: JsonParser): List<String> {
+        val fields = mutableListOf<String>()
+        var index = 0
+        do {
+            if (index < JSON_MAX_ELEM) {
+                fields += parser.getValueAsString("").orEmpty()
+            }
+            index++
+        } while (parser.nextToken() != JsonToken.END_ARRAY)
+        return fields
+    }
+
+    private fun parseAudioRowsField(parser: JsonParser, consumer: (List<String>) -> Unit) {
+        val firstToken = parser.nextToken()
+        when (firstToken) {
+            JsonToken.END_ARRAY -> return
+            JsonToken.START_ARRAY -> {
+                consumer(parseNestedAudioRow(parser))
+                while (parser.nextToken() != JsonToken.END_ARRAY) {
+                    require(parser.currentToken() == JsonToken.START_ARRAY) {
+                        "Expected audio row array but got ${parser.currentToken()}"
+                    }
+                    consumer(parseNestedAudioRow(parser))
+                }
+            }
+            else -> consumer(parseFlatAudioRow(parser))
+        }
+    }
+
+    private fun parseDatasetMetadata(parser: JsonParser): LocalDateTime? {
+        var index = 0
+        var datasetTimestamp: LocalDateTime? = null
+        while (parser.nextToken() != JsonToken.END_ARRAY) {
+            val value = parser.getValueAsString("").orEmpty()
+            if (index == 1) {
+                datasetTimestamp = parseDatasetTimestamp(value)
+            }
+            index++
+        }
+        return datasetTimestamp
+    }
+
     private fun mapRowToEntry(row: List<String>): AudioEntry {
         val fields = Array(JSON_MAX_ELEM) { index -> row.getOrElse(index) { "" } }
         val channel = if (fields[0].isNotBlank()) {
@@ -97,17 +142,17 @@ class AudioParser {
         } else {
             lastChannel
         }
-        val genre = if (fields[1].isNotBlank()) {
-            lastGenre = fields[1]
-            lastGenre
+        val theme = if (fields[1].isNotBlank()) {
+            lastTheme = fields[1]
+            lastTheme
         } else {
-            lastGenre
+            lastTheme
         }
-        val theme = if (fields[2].isNotBlank()) {
-            lastTheme = fields[2]
-            lastTheme
+        val genre = if (fields[2].isNotBlank()) {
+            lastGenre = fields[2]
+            lastGenre
         } else {
-            lastTheme
+            lastGenre
         }
         val title = fields[3]
         val date = fields[4]
@@ -119,6 +164,7 @@ class AudioParser {
         val websiteUrl = parseUri(fields[10])
 
         return AudioEntry(
+            sourceLabel = AudioSourceLabels.P2TOOLS,
             channel = channel,
             genre = genre,
             theme = when {
@@ -195,12 +241,6 @@ class AudioParser {
 
     private fun parseDatasetTimestamp(value: String): LocalDateTime? {
         return runCatching { LocalDateTime.parse(value, DATASET_TIMESTAMP_FORMAT) }.getOrNull()
-    }
-
-    private fun skipUntilArrayEnd(parser: JsonParser) {
-        while (parser.currentToken() != JsonToken.END_ARRAY && parser.nextToken() != JsonToken.END_ARRAY) {
-            parser.skipChildren()
-        }
     }
 
     companion object {

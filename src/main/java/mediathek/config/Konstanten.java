@@ -73,7 +73,9 @@ public class Konstanten {
     public static final String AUDIOTHEK_PROXY_CLIENT_TOKEN = "mv-audiothek-static-2026-03";
     public static final String HLS_STREAM_INFO_TOKEN_HEADER = "X-HLS-Stream-Info-Token";
     public static final String HLS_STREAM_INFO_TOKEN = "mv-hls-stream-info-test-2026-04-14";
-    public static final HttpUrl HLS_STREAM_INFO_UPLOAD_URL = HttpUrl.get("https://hlssi.crystalpalace.info/v1/hls-stream-info"); // e.g. HttpUrl.get("https://xx.domain.com/v1/hls-stream-info")
+    public static final HttpUrl HLS_STREAM_INFO_BASE_URL = HttpUrl.get("https://hlssi.crystalpalace.info");
+    public static final HttpUrl HLS_STREAM_INFO_UPLOAD_URL = HLS_STREAM_INFO_BASE_URL.resolve("/v1/hls-stream-info"); // e.g. HttpUrl.get("https://xx.domain.com/v1/hls-stream-info")
+    public static final HttpUrl AUDIOTHEK_DB_DOWNLOAD_URL = HLS_STREAM_INFO_BASE_URL.resolve("/audio-db");
     public static final String PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml";
     public static final String PROGRAM_VERSION_PATH = "prog-info-13.xml";
     public static final String ADRESSE_DOWNLOAD = "https://mediathekview.de/download/";

@@ -64,7 +64,7 @@ class AudiothekTable(
         }
         component
     }
-    private val luceneIndex = AudiothekLuceneIndex()
+    private var luceneIndex = AudiothekLuceneIndex()
     private val customColumnWidths = mutableMapOf<Int, Int>()
     private var allEntries: List<AudioEntry> = emptyList()
     private var externalSearchEntries: List<AudioEntry> = emptyList()
@@ -89,9 +89,18 @@ class AudiothekTable(
     }
 
     fun setRows(entries: List<AudioEntry>) {
-        allEntries = entries
-        luceneIndex.replaceEntries(entries)
-        applyFilter(currentFilterQuery)
+        applyPreparedRows(prepareRows(entries, currentFilterQuery, visibleSearchFields()))
+    }
+
+    fun visibleSearchFieldsSnapshot(): List<String> = visibleSearchFields()
+
+    fun applyPreparedRows(preparedRows: PreparedRows) {
+        allEntries = preparedRows.entries
+        currentFilterQuery = preparedRows.query
+        externalSearchEntries = emptyList()
+        luceneIndex.close()
+        luceneIndex = preparedRows.luceneIndex
+        audioTableModel.setRows(preparedRows.filteredEntries)
     }
 
     fun setExternalSearchEntries(entries: List<AudioEntry>) {
@@ -114,6 +123,7 @@ class AudiothekTable(
     }
 
     fun dispose() {
+        luceneIndex.close()
         seenHistoryController.close()
     }
 
@@ -609,7 +619,48 @@ class AudiothekTable(
             ignoreUnknownKeys = true
             encodeDefaults = true
         }
+
+        fun prepareRows(
+            entries: List<AudioEntry>,
+            query: String,
+            visibleSearchFields: List<String>,
+        ): PreparedRows {
+            val luceneIndex = AudiothekLuceneIndex.build(entries)
+            val filteredEntries = filterEntries(
+                luceneIndex = luceneIndex,
+                entries = entries,
+                query = query,
+                visibleSearchFields = visibleSearchFields,
+            )
+            return PreparedRows(
+                entries = entries,
+                query = query,
+                luceneIndex = luceneIndex,
+                filteredEntries = filteredEntries,
+            )
+        }
+
+        private fun filterEntries(
+            luceneIndex: AudiothekLuceneIndex,
+            entries: List<AudioEntry>,
+            query: String,
+            visibleSearchFields: List<String>,
+        ): List<AudioEntry> {
+            val normalized = query.trim()
+            return if (normalized.isEmpty()) {
+                entries
+            } else {
+                luceneIndex.search(normalized, visibleSearchFields)
+            }
+        }
     }
+
+    data class PreparedRows(
+        val entries: List<AudioEntry>,
+        val query: String,
+        val luceneIndex: AudiothekLuceneIndex,
+        val filteredEntries: List<AudioEntry>,
+    )
 
     @Serializable
     private data class AudiothekTableState(

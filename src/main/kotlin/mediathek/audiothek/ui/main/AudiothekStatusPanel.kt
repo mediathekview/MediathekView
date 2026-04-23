@@ -19,6 +19,7 @@
 package mediathek.audiothek.ui.main
 
 import mediathek.swing.FilmAgeLabel
+import org.jdesktop.swingx.JXBusyLabel
 import org.jdesktop.swingx.JXStatusBar
 import java.awt.FlowLayout
 import javax.swing.JLabel
@@ -30,6 +31,14 @@ class AudiothekStatusPanel(
     private val ageProvider: () -> Duration?
 ) : JXStatusBar() {
     private val sourceLabel = JLabel("Podcast-Liste erstellt: -")
+    private val loadingBusyLabel = JXBusyLabel().apply {
+        isBusy = false
+        isVisible = false
+        toolTipText = "Audiothek-Daten werden aktualisiert"
+    }
+    private val loadingLabel = JLabel("Audiothek wird aktualisiert").apply {
+        isVisible = false
+    }
     private val ageLabel = FilmAgeLabel(
         ageProvider = ageProvider,
         tooltip = "Alter der Podcast-Liste"
@@ -39,6 +48,8 @@ class AudiothekStatusPanel(
     private val leftPanel = JPanel(FlowLayout(FlowLayout.LEFT, 8, 0)).apply {
         isOpaque = false
         add(sourceLabel)
+        add(loadingBusyLabel)
+        add(loadingLabel)
         add(activeDownloadsLabel)
     }
 
@@ -74,5 +85,11 @@ class AudiothekStatusPanel(
             "$count aktive Downloads"
         }
         activeDownloadsLabel.isVisible = true
+    }
+
+    fun setLoading(loading: Boolean) {
+        loadingBusyLabel.isBusy = loading
+        loadingBusyLabel.isVisible = loading
+        loadingLabel.isVisible = loading
     }
 }

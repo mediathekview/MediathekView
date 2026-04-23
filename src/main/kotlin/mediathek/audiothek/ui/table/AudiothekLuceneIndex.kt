@@ -84,6 +84,7 @@ class AudiothekLuceneIndex : Closeable {
     private fun buildDocument(index: Int, entry: AudioEntry): Document {
         return Document().apply {
             add(StoredField(FIELD_ROW_INDEX, index))
+            addSearchField(FIELD_SOURCE, entry.sourceLabel)
             addSearchField(FIELD_SENDER, entry.channel)
             addSearchField(FIELD_GENRE, entry.genre)
             addSearchField(FIELD_THEME, entry.theme)
@@ -169,6 +170,7 @@ class AudiothekLuceneIndex : Closeable {
     }
 
     companion object {
+        const val FIELD_SOURCE = "source"
         const val FIELD_SENDER = "sender"
         const val FIELD_GENRE = "genre"
         const val FIELD_THEME = "theme"
@@ -180,6 +182,7 @@ class AudiothekLuceneIndex : Closeable {
 
         private const val FIELD_ROW_INDEX = "rowIndex"
         private val SEARCH_FIELD_ALIASES = mapOf(
+            "quelle" to FIELD_SOURCE,
             "sender" to FIELD_SENDER,
             "genre" to FIELD_GENRE,
             "thema" to FIELD_THEME,
@@ -199,5 +202,8 @@ class AudiothekLuceneIndex : Closeable {
         private val TOKEN_REGEX = """[^\s:]+:"[^"]*"|[^\s]+""".toRegex()
         private val DATE_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+        fun build(entries: List<AudioEntry>): AudiothekLuceneIndex =
+            AudiothekLuceneIndex().apply { replaceEntries(entries) }
     }
 }

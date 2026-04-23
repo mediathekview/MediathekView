@@ -18,19 +18,12 @@
 
 package mediathek.audiothek.model
 
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
-data class AudioDataset(
-    val metaLocal: LocalDateTime?,
-    val sqliteMetaLocal: LocalDateTime? = null,
-    val sourceUrl: String,
-    val entries: List<AudioEntry>
-) {
-    fun withEntriesAndSqliteMetadata(entries: List<AudioEntry>, sqliteDataset: AudioDataset?): AudioDataset =
-        copy(
-            metaLocal = metaLocal,
-            sqliteMetaLocal = sqliteDataset?.sqliteMetaLocal,
-            sourceUrl = sourceUrl,
-            entries = entries,
-        )
-}
+data class EditorialCategoryProgramSetEntry(
+    val title: String,
+    val nodeId: String,
+    val numberOfElements: Int?,
+    val lastItemAdded: OffsetDateTime?,
+    val category: EditorialCategory,
+)
