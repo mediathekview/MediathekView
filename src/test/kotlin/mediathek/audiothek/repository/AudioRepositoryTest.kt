@@ -2,12 +2,6 @@ package mediathek.audiothek.repository
 
 import kotlinx.coroutines.runBlocking
 import mediathek.tool.sql.SqlDatabaseConfig
-import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Protocol
-import okhttp3.Response
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -18,79 +12,70 @@ class AudioRepositoryTest {
     lateinit var tempDir: Path
 
     @Test
-    fun `loadAudiothek merges normalized sqlite export entries without replacing remote duplicates`() = runBlocking {
+    fun `loadAudiothek returns sqlite export entries`() = runBlocking {
         val exportDatabase = tempDir.resolve("mv-audiothek.db")
         createNormalizedExportDatabase(exportDatabase)
 
-        val client = OkHttpClient.Builder()
-            .addInterceptor(fakeAudiothekResponse())
-            .build()
-
         val repository = AudioRepository(
-            client = client,
-            resolver = AudioSourceResolver(client),
-            parser = AudioParser(),
-            cache = AudioDownloadCache(tempDir.resolve("cache")),
-            sqliteExportSource = object : SqliteExportAudioSource(client) {
+            sqliteExportSource = object : SqliteExportAudioSource() {
                 override fun updateLocalDatabase(): SqliteExportDownloadStatus = SqliteExportDownloadStatus.NOT_MODIFIED
                 override fun exportDatabasePath(): Path = exportDatabase
             },
         )
 
-        try {
-            val result = repository.loadAudiothek()
+        val result = repository.loadAudiothek()
 
-            assertEquals(AudioDownloadStatus.DOWNLOADED, result.downloadStatus)
-            assertEquals(2, result.dataset.entries.size)
-            assertEquals("Remote Titel", result.dataset.entries[0].title)
-            assertEquals("Export Kategorie", result.dataset.entries[0].genre)
-            assertEquals("Export Programmset", result.dataset.entries[0].theme)
-            assertEquals("Export Extra", result.dataset.entries[1].title)
-            assertEquals("Export Kategorie", result.dataset.entries[1].genre)
-            assertEquals("Export Programmset", result.dataset.entries[1].theme)
-            assertEquals("Export Sender", result.dataset.entries[1].channel)
-            assertEquals(3, result.dataset.entries[1].sizeMb)
-            assertNotNull(result.dataset.entries[1].audioUrl)
-            assertNotNull(result.dataset.entries[1].websiteUrl)
-        } finally {
-            client.dispatcher.executorService.shutdownNow()
-            client.connectionPool.evictAll()
-            client.cache?.close()
-        }
+        assertEquals(SqliteExportDownloadStatus.NOT_MODIFIED, result.downloadStatus)
+        assertEquals(2, result.dataset.entries.size)
+        assertEquals("Remote Titel", result.dataset.entries[0].title)
+        assertEquals("Export Kategorie", result.dataset.entries[0].genre)
+        assertEquals("Export Programmset", result.dataset.entries[0].theme)
+        assertEquals("Export Extra", result.dataset.entries[1].title)
+        assertEquals("Export Kategorie", result.dataset.entries[1].genre)
+        assertEquals("Export Programmset", result.dataset.entries[1].theme)
+        assertEquals("Export Sender", result.dataset.entries[1].channel)
+        assertEquals(3, result.dataset.entries[1].sizeMb)
+        assertNotNull(result.dataset.entries[1].audioUrl)
+        assertNotNull(result.dataset.entries[1].websiteUrl)
     }
 
     @Test
-    fun `loadAudiothek reports updated when sqlite export updated but p2tools payload is unchanged`() = runBlocking {
+    fun `loadAudiothek reports updated when sqlite export updated`() = runBlocking {
         val exportDatabase = tempDir.resolve("mv-audiothek.db")
         createNormalizedExportDatabase(exportDatabase)
 
-        val client = OkHttpClient.Builder()
-            .addInterceptor(fakeAudiothekResponse())
-            .build()
-
         val repository = AudioRepository(
-            client = client,
-            resolver = AudioSourceResolver(client),
-            parser = AudioParser(),
-            cache = AudioDownloadCache(tempDir.resolve("cache")),
-            sqliteExportSource = object : SqliteExportAudioSource(client) {
+            sqliteExportSource = object : SqliteExportAudioSource() {
                 override fun updateLocalDatabase(): SqliteExportDownloadStatus = SqliteExportDownloadStatus.DOWNLOADED
                 override fun exportDatabasePath(): Path = exportDatabase
             },
         )
 
-        try {
-            val firstResult = repository.loadAudiothek()
-            val secondResult = repository.loadAudiothek()
+        val result = repository.loadAudiothek()
 
-            assertEquals(AudioDownloadStatus.NOT_MODIFIED, secondResult.downloadStatus)
-            assertEquals(SqliteExportDownloadStatus.DOWNLOADED, secondResult.sqliteDownloadStatus)
-            assertTrue(secondResult.hasUpdatedSource())
-        } finally {
-            client.dispatcher.executorService.shutdownNow()
-            client.connectionPool.evictAll()
-            client.cache?.close()
-        }
+        assertEquals(SqliteExportDownloadStatus.DOWNLOADED, result.downloadStatus)
+        assertTrue(result.hasUpdatedSource())
+        assertNull(result.reloadMessage())
+    }
+
+    @Test
+    fun `loadAudiothek keeps existing sqlite export when update fails`() = runBlocking {
+        val exportDatabase = tempDir.resolve("mv-audiothek.db")
+        createNormalizedExportDatabase(exportDatabase)
+
+        val repository = AudioRepository(
+            sqliteExportSource = object : SqliteExportAudioSource() {
+                override fun updateLocalDatabase(): SqliteExportDownloadStatus = SqliteExportDownloadStatus.FAILED
+                override fun exportDatabasePath(): Path = exportDatabase
+            },
+        )
+
+        val result = repository.loadAudiothek()
+
+        assertEquals(SqliteExportDownloadStatus.FAILED, result.downloadStatus)
+        assertEquals(2, result.dataset.entries.size)
+        assertFalse(result.hasUpdatedSource())
+        assertEquals("Es konnte keine neue Datei geladen werden.\nDie vorhandene wird weiter verwendet.", result.reloadMessage())
     }
 
     private fun createNormalizedExportDatabase(path: Path) {
@@ -181,35 +166,4 @@ class AudioRepositoryTest {
         }
     }
 
-    private fun fakeAudiothekResponse() = Interceptor { chain ->
-        val request = chain.request()
-        val body = when {
-            request.url.toString().contains("storedAtList.xml") -> """
-                <urls>
-                  <url>https://example.invalid/audios.json</url>
-                </urls>
-            """.trimIndent()
-            else -> REMOTE_AUDIO_PAYLOAD
-        }
-
-        Response.Builder()
-            .request(request)
-            .protocol(Protocol.HTTP_1_1)
-            .code(200)
-            .message("OK")
-            .body(body.toResponseBody("application/json".toMediaType()))
-            .build()
-    }
-
-    companion object {
-        private val REMOTE_AUDIO_PAYLOAD = """
-            {
-              "AudioList": ["AudioList", "22.04.2026 10:00:00"],
-              "Audios": [
-                ["Sender", "Genre", "Thema", "Titel", "Datum", "Zeit", "Dauer", "Größe", "Beschreibung", "Url", "Website", "Neu", "Podcast", "Doppelt"],
-                ["Remote Sender", "Remote Genre", "Remote Thema", "Remote Titel", "22.04.2026", "10:15", "120", "2", "Remote Beschreibung", "https://example.invalid/remote.mp3", "https://example.invalid/remote", "false", "true", "false"]
-              ]
-            }
-        """.trimIndent()
-    }
 }

@@ -29,12 +29,6 @@ enum class AudioTableColumn(
     val editable: Boolean = false,
     val valueProvider: (AudioEntry) -> Any
 ) {
-    SOURCE(
-        title = "Quelle",
-        preferredWidth = 140,
-        searchField = AudiothekLuceneIndex.FIELD_SOURCE,
-        valueProvider = { it.sourceLabel }
-    ),
     SENDER(
         title = "Sender",
         preferredWidth = 90,

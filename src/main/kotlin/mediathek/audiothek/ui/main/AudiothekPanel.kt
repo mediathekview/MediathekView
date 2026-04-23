@@ -28,7 +28,6 @@ import mediathek.audiothek.model.AudioDataset
 import mediathek.audiothek.model.AudioEntry
 import mediathek.audiothek.repository.AudioLoadResult
 import mediathek.audiothek.repository.AudioRepository
-import mediathek.audiothek.repository.AudioSourceLabels
 import mediathek.audiothek.repository.OnlineSearchProxyRepository
 import mediathek.audiothek.ui.download.AudioDownloadManagerPanel
 import mediathek.audiothek.ui.download.DownloadSummary
@@ -233,7 +232,7 @@ class AudiothekPanel(
 
             try {
                 try {
-                    val result = repository.loadAudiothek(useCachedOnDownloadFailure = !isManualReload)
+                    val result = repository.loadAudiothek()
                     handleLoadSuccess(result, isManualReload)
                 } catch (error: Throwable) {
                     handleLoadFailure(error, isManualReload)
@@ -256,7 +255,7 @@ class AudiothekPanel(
             AudiothekTable.prepareRows(result.dataset.entries, query, visibleSearchFields)
         }
 
-        datasetTimestamp = result.dataset.metaLocal
+        datasetTimestamp = result.dataset.createdAtLocal
         table.applyPreparedRows(preparedRows)
         statusPanel.setStandVisible(true)
         statusPanel.setStand(formatDatasetStand(result.dataset))
@@ -308,15 +307,13 @@ class AudiothekPanel(
     }
 
     private fun formatDatasetStand(dataset: AudioDataset): String {
-        val primaryTimestamp = formatDatasetTimestamp(dataset.metaLocal)
-        val sqliteTimestamp = dataset.sqliteMetaLocal?.format(DATASET_TIMESTAMP_FORMAT) ?: return "Podcast-Liste erstellt: $primaryTimestamp"
-        return "Podcast-Liste erstellt: $primaryTimestamp | MV-Audiothek erstellt: $sqliteTimestamp"
+        return "Audiothek erstellt: ${formatDatasetTimestamp(dataset.createdAtLocal)}"
     }
 
     private fun formatDatasetTimestamp(timestamp: LocalDateTime?): String =
         timestamp?.format(DATASET_TIMESTAMP_FORMAT) ?: "-"
 
-    private fun emptyDatasetStand(): String = "Podcast-Liste erstellt: -"
+    private fun emptyDatasetStand(): String = "Audiothek erstellt: -"
 
     private fun setLoadingState(loading: Boolean) {
         toolBar.setLoading(loading)
@@ -669,7 +666,6 @@ class AudiothekPanel(
 
 private fun AudioDownloadTaskSnapshot.toAudioEntry(): AudioEntry {
     return AudioEntry(
-        sourceLabel = AudioSourceLabels.NONE,
         channel = channel,
         genre = "",
         theme = theme,

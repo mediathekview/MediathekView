@@ -30,7 +30,7 @@ import kotlin.time.Duration
 class AudiothekStatusPanel(
     private val ageProvider: () -> Duration?
 ) : JXStatusBar() {
-    private val sourceLabel = JLabel("Podcast-Liste erstellt: -")
+    private val sourceLabel = JLabel("Audiothek erstellt: -")
     private val loadingBusyLabel = JXBusyLabel().apply {
         isBusy = false
         isVisible = false
@@ -41,7 +41,7 @@ class AudiothekStatusPanel(
     }
     private val ageLabel = FilmAgeLabel(
         ageProvider = ageProvider,
-        tooltip = "Alter der Podcast-Liste"
+        tooltip = "Alter der Audiothek"
     )
     private val activeDownloadsLabel = JLabel("")
     private val countLabel = JLabel("0 Einträge", SwingConstants.RIGHT)

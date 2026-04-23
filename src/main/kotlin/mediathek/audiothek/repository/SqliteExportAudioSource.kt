@@ -60,9 +60,7 @@ open class SqliteExportAudioSource(
                 return null
             }
             return AudioDataset(
-                metaLocal = null,
-                sqliteMetaLocal = createdAt?.atZone(ZoneId.systemDefault())?.toLocalDateTime(),
-                sourceUrl = exportPath.toUri().toString(),
+                createdAtLocal = createdAt?.atZone(ZoneId.systemDefault())?.toLocalDateTime(),
                 entries = entries,
             )
         }
@@ -178,7 +176,6 @@ open class SqliteExportAudioSource(
                         val programSetTitle = resultSet.getString("program_set_title").orEmpty()
                         add(
                             AudioEntry(
-                                sourceLabel = AudioSourceLabels.MEDIATHEK_VIEW,
                                 channel = sender,
                                 genre = categoryTitle,
                                 theme = programSetTitle.ifBlank { categoryTitle },
