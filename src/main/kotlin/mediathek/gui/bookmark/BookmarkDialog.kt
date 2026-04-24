@@ -30,9 +30,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer
 import mediathek.config.Daten
+import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryController
 import mediathek.gui.bookmark.renderer.*
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
+import mediathek.gui.tabs.tab_film.startDownloads
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconUtils
@@ -59,6 +61,8 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
     private val filmDescriptionPanel = FilmDescriptionPanel()
     private val noteArea = JTextArea()
     private val table = JTable()
+    private val playFilmAction = PlayFilmAction()
+    private val addDownloadAction = AddDownloadAction()
     private val addNoteAction = AddNoteAction()
     private val markSeenAction = MarkSeenAction()
     private val markUnseenAction = MarkUnseenAction()
@@ -90,7 +94,7 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
         installListener()
         restoreBounds()
 
-        updateSingleSelectionActions()
+        updateActionStates()
     }
 
     override fun dispose() {
@@ -103,6 +107,10 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
             object : MouseAdapter() {
                 private fun createPopupMenu(): JPopupMenu =
                     JPopupMenu().apply {
+                        add(NoIconMenuItem(playFilmAction))
+                        addSeparator()
+                        add(NoIconMenuItem(addDownloadAction))
+                        addSeparator()
                         add(NoIconMenuItem(addNoteAction))
                         add(NoIconMenuItem(removeNoteAction))
                         addSeparator()
@@ -257,7 +265,7 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
         selectionModel = DefaultEventSelectionModel(sortedList)
         selectionModel.addListSelectionListener { event ->
             if (!event.valueIsAdjusting) {
-                updateSingleSelectionActions()
+                updateActionStates()
                 updateInfoTabs()
             }
         }
@@ -304,6 +312,10 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
         val toolBar =
             JToolBar().apply {
                 isFloatable = false
+                add(IconOnlyButton(playFilmAction))
+                addSeparator()
+                add(IconOnlyButton(addDownloadAction))
+                addSeparator()
                 add(IconOnlyButton(addNoteAction))
                 add(IconOnlyButton(removeNoteAction))
                 addSeparator()
@@ -316,9 +328,18 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
         contentPane.add(toolBar, BorderLayout.NORTH)
     }
 
-    private fun updateSingleSelectionActions() {
+    private fun updateActionStates() {
+        playFilmAction.isEnabled = selectedPlayableFilm() != null
+        addDownloadAction.isEnabled = selectedDownloadableFilms().isNotEmpty()
         addNoteAction.isEnabled = selectionModel.selected.size == 1 && selectionModel.selected.isNotEmpty()
     }
+
+    private fun selectedPlayableFilm(): mediathek.daten.DatenFilm? =
+        selectionModel.selected.singleOrNull()?.datenFilm
+
+    private fun selectedDownloadableFilms() =
+        selectionModel.selected
+            .mapNotNull { it.datenFilm }
 
     private fun updateInfoTabs() {
         val selectedBookmarks = selectionModel.selected
@@ -337,6 +358,60 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
         uiScope.launch {
             withContext(Dispatchers.IO) {
                 Daten.getInstance().listeBookmarkList.saveToFile()
+            }
+        }
+    }
+
+    inner class PlayFilmAction : AbstractAction() {
+        init {
+            putValue(NAME, "Film abspielen")
+            putValue(SHORT_DESCRIPTION, "Ausgewählten Merklisteintrag abspielen")
+            putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.PLAY))
+        }
+
+        override fun actionPerformed(event: java.awt.event.ActionEvent?) {
+            val film = selectedPlayableFilm() ?: return
+            val pSet = Daten.getInstance().listePset.psetAbspielen
+            if (pSet == null) {
+                JOptionPane.showMessageDialog(
+                    MediathekGui.ui(),
+                    "Es wurde kein Videoplayer eingerichtet.\n" +
+                        "Bitte legen Sie diesen unter \"Einstellungen->Set bearbeiten\" fest.",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.INFORMATION_MESSAGE,
+                )
+                return
+            }
+
+            Daten.getInstance().starterClass.urlMitProgrammStarten(pSet, film, "")
+        }
+    }
+
+    inner class AddDownloadAction : AbstractAction() {
+        init {
+            putValue(NAME, "Download anlegen...")
+            putValue(SHORT_DESCRIPTION, "Download für ausgewählte Merklisteinträge anlegen")
+            putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD))
+        }
+
+        override fun actionPerformed(event: java.awt.event.ActionEvent?) {
+            val selectedBookmarks = ArrayList(selectionModel.selected)
+            val films = selectedBookmarks.mapNotNull { it.datenFilm }
+            if (films.isEmpty()) {
+                return
+            }
+
+            startDownloads(MediathekGui.ui(), films, null, null)
+
+            val skippedBookmarks = selectedBookmarks.size - films.size
+            if (skippedBookmarks > 0) {
+                JOptionPane.showMessageDialog(
+                    this@BookmarkDialog,
+                    "$skippedBookmarks Merklisteinträge konnten nicht geladen werden,\n" +
+                        "weil die Filme nicht mehr in der Filmliste vorhanden sind.",
+                    title,
+                    JOptionPane.INFORMATION_MESSAGE,
+                )
             }
         }
     }

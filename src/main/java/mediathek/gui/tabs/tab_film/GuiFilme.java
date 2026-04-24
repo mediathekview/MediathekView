@@ -24,19 +24,18 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon;
 import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
-import mediathek.daten.*;
+import mediathek.daten.DatenFilm;
+import mediathek.daten.DatenPset;
+import mediathek.daten.FilmResolution;
+import mediathek.daten.IndexedFilmList;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.actions.DeleteBookmarksAction;
 import mediathek.gui.actions.ManageBookmarkAction;
 import mediathek.gui.actions.PlayFilmAction;
 import mediathek.gui.bookmark.BookmarkDialog;
-import mediathek.gui.dialog.DialogAboNoSet;
-import mediathek.gui.dialog.add_download.DialogAddDownloadWithCoroutines;
-import mediathek.gui.dialog.add_download.DialogAddMoreDownload;
 import mediathek.gui.messages.*;
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent;
 import mediathek.gui.tabs.AGuiTabPanel;
@@ -563,78 +562,9 @@ public class GuiFilme extends AGuiTabPanel {
      * @param pSet used for downloads or null.
      */
     private synchronized void saveFilm(@Nullable DatenPset pSet) {
-        if (Daten.getInstance().getListePset().getListeSpeichern().isEmpty()) {
-            // Satz mit x, war wohl nix
-            var dialog = new DialogAboNoSet(mediathekGui);
-            dialog.setVisible(true);
-            return;
-        }
-
-        if (pSet == null) {
-            pSet = Daten.getInstance().getListePset().getListeSpeichern().getFirst();
-        }
-
-        var selectedFilmsList = getSelFilme();
-        var downloadsList = daten.getListeDownloads();
-
-        if (selectedFilmsList.size() > 1) {
-            var damd = new DialogAddMoreDownload(mediathekGui, pSet);
-            var result = damd.showDialog();
-            if (!damd.wasCancelled()) {
-                for (var film : selectedFilmsList) {
-                    // erst mal schauen obs den schon gibt
-                    if (downloadsList.getDownloadUrlFilm(film.getUrlNormalQuality()) != null) {
-                        int ret = JOptionPane.showConfirmDialog(mediathekGui,
-                                "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
-                                Konstanten.PROGRAMMNAME,
-                                JOptionPane.YES_NO_OPTION);
-                        if (ret == JOptionPane.NO_OPTION) {
-                            continue;
-                        }
-                    }
-
-                    if (result.addAllWithDefaults()) {
-                        var datenDownload = new DatenDownload(pSet, film, DatenDownload.QUELLE_DOWNLOAD, null, "",
-                                result.path(), "", result.info(), result.subtitle());
-                        downloadsList.addMitNummer(datenDownload);
-                        MessageBus.getMessageBus().publishAsync(new DownloadListChangedEvent());
-                        if (result.startImmediately()) {
-                            datenDownload.startDownload();
-                        }
-                    } else {
-                        saveFilmObject(film, pSet);
-                    }
-                }
-            }
-        }
-        else { // single download
-            var film = selectedFilmsList.getFirst();
-            // erst mal schauen obs den schon gibt
-            if (downloadsList.getDownloadUrlFilm(film.getUrlNormalQuality()) != null) {
-                int ret = JOptionPane.showConfirmDialog(mediathekGui,
-                        "Download für den Film existiert bereits.\n" + "Nochmal anlegen?",
-                        Konstanten.PROGRAMMNAME,
-                        JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.NO_OPTION) {
-                    return;
-                }
-            }
-
-            saveFilmObject(film, pSet);
-        }
-    }
-
-    /**
-     * Download a single film via add download dialog.
-     * @param datenFilm film of interest
-     * @param pSet the program set, can be null.
-     */
-    private void saveFilmObject(@NonNull DatenFilm datenFilm, @NonNull DatenPset pSet) {
-        // dann alle Downloads im Dialog abfragen
-        Optional<FilmResolution.Enum> res =
-                filterConfiguration.isShowHighQualityOnly() ? Optional.of(FilmResolution.Enum.HIGH_QUALITY) : Optional.empty();
-        var dialog = new DialogAddDownloadWithCoroutines(mediathekGui, datenFilm, pSet, res);
-        dialog.setVisible(true);
+        FilmResolution.Enum requestedResolution =
+                filterConfiguration.isShowHighQualityOnly() ? FilmResolution.Enum.HIGH_QUALITY : null;
+        FilmDownloadStarter.startDownloads(mediathekGui, getSelFilme(), pSet, requestedResolution);
     }
 
     /**

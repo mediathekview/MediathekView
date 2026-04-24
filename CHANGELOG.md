@@ -20,6 +20,7 @@
 - **BUGFIX:** Die Warnung zur Filtermigration wird nicht mehr beim ersten Start angezeigt.
 - **BUGFIX:** Die Warnung zur Sendermigration wird nicht mehr beim ersten Start angezeigt.
 - **BUGFIX:** Unter Linux werden `vlc` und `ffmpeg` beim ersten Start nun zuerst in $PATH gesucht, erst danach wird einen hard-coded Pfad verwendet.
+- **BUGFIX:** Dialog *Merkliste verwalten* stellt Download und Play Funktionalität wieder zur Verfügung.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
 - **FEATURE:** MediathekView enthält nun das Tab *Audiothek* zum Abspielen und Download von Podcasts aus der ARD Sounds Bibliothek. Die Daten sind vollindiziert für die lokale Suche. Zusätzlich können über die Schlagwortsuche auch Einträge von podcastindex.org gesucht und verwendet werden. Die Dokumentation hierfür ist über den Hilfe-Button im Suchfeld erreichbar. 
 - **FEATURE:** Filter können nun kopiert werden.
