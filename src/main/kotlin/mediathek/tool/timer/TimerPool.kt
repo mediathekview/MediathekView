@@ -22,22 +22,74 @@ import mediathek.gui.messages.TimerEvent
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicLong
 
 object TimerPool {
     private val logger: Logger = LogManager.getLogger()
-    @JvmStatic
-    var repeatingTimerFuture: ScheduledFuture<*>
-
-    @JvmStatic
-    val timerPool: ScheduledExecutorService = Executors.newScheduledThreadPool(0, TimerPoolThreadFactory())
+    private val executor = ScheduledThreadPoolExecutor(2, TimerPoolThreadFactory()).apply {
+        removeOnCancelPolicy = true
+        executeExistingDelayedTasksAfterShutdownPolicy = false
+        continueExistingPeriodicTasksAfterShutdownPolicy = false
+    }
+    private val timerEventFuture: ScheduledFuture<*>
 
     init {
         logger.trace("Initializing timer pool...")
-        repeatingTimerFuture = timerPool.scheduleWithFixedDelay({ MessageBus.messageBus.publishAsync(TimerEvent()) }, 4, 1, TimeUnit.SECONDS)
+        timerEventFuture = scheduleWithFixedDelay(
+            { MessageBus.messageBus.publishAsync(TimerEvent()) },
+            4,
+            1,
+            TimeUnit.SECONDS
+        )
     }
 
+    @JvmStatic
+    fun execute(command: Runnable) {
+        executor.execute(command)
+    }
+
+    @JvmStatic
+    fun schedule(command: Runnable, delay: Long, unit: TimeUnit): ScheduledFuture<*> =
+        executor.schedule(command, delay, unit)
+
+    @JvmStatic
+    fun scheduleAtFixedRate(
+        command: Runnable,
+        initialDelay: Long,
+        period: Long,
+        unit: TimeUnit
+    ): ScheduledFuture<*> = executor.scheduleAtFixedRate(command, initialDelay, period, unit)
+
+    @JvmStatic
+    fun scheduleWithFixedDelay(
+        command: Runnable,
+        initialDelay: Long,
+        delay: Long,
+        unit: TimeUnit
+    ): ScheduledFuture<*> = executor.scheduleWithFixedDelay(command, initialDelay, delay, unit)
+
+    @JvmStatic
+    @Throws(InterruptedException::class)
+    fun shutdown(timeout: Long, unit: TimeUnit): List<Runnable> {
+        timerEventFuture.cancel(true)
+        executor.shutdown()
+        if (!executor.awaitTermination(timeout, unit)) {
+            logger.warn("Time out occurred before timer pool termination")
+        }
+
+        return executor.shutdownNow()
+    }
+
+    private class TimerPoolThreadFactory : ThreadFactory {
+        private val threadNumber = AtomicLong(1)
+
+        override fun newThread(runnable: Runnable): Thread =
+            Thread.ofVirtual()
+                .name("TimerPool-virtual-thread-${threadNumber.getAndIncrement()}")
+                .unstarted(runnable)
+    }
 }

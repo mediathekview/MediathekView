@@ -5,9 +5,9 @@ import mediathek.config.Konstanten;
 import mediathek.gui.dialogEinstellungen.allgemein.LuceneDirectoryModePanel;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.res.GetIcon;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
+import mediathek.tool.GetIcon;
 import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;

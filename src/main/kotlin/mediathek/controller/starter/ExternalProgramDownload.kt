@@ -3,6 +3,7 @@ package mediathek.controller.starter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import mediathek.config.Config
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.daten.DatenDownload
@@ -61,9 +62,7 @@ class ExternalProgramDownload(
                 }
             } catch (ex: Exception) {
                 logger.error("run()", ex)
-                SwingUtilities.invokeLater {
-                    MeldungDownloadfehler(MediathekGui.ui(), ex.localizedMessage, datenDownload).isVisible = true
-                }
+                showDownloadError(ex.localizedMessage)
             } finally {
                 StarterClass.finalizeDownload(datenDownload, start, state)
                 waitForPendingDownloads()
@@ -198,6 +197,10 @@ class ExternalProgramDownload(
             return false
         }
 
+        if (Config.isDownloadAndQuit()) {
+            return resolveExistingDownloadForCli()
+        }
+
         dialogAbbrechenIsVis = true
         retAbbrechen = true
         if (SwingUtilities.isEventDispatchThread()) {
@@ -251,6 +254,30 @@ class ExternalProgramDownload(
             }
         }
         return result
+    }
+
+    private fun resolveExistingDownloadForCli(): Boolean {
+        logger.info(
+            "CLI download mode: overwriting existing external-program target for {}",
+            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+        )
+        try {
+            Files.deleteIfExists(file.toPath())
+            file = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+        } catch (ex: Exception) {
+            logger.error("File exists: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], ex)
+        }
+        return false
+    }
+
+    private fun showDownloadError(message: String?) {
+        if (Config.isDownloadAndQuit()) {
+            logger.error("Download failed for {}: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], message)
+            return
+        }
+        SwingUtilities.invokeLater {
+            MeldungDownloadfehler(MediathekGui.ui(), message, datenDownload).isVisible = true
+        }
     }
 
     private fun createDirectory(logFailure: Boolean = true) {

@@ -47,7 +47,7 @@ abstract class MVTable protected constructor(
     protected val reihe = IntArray(maxSpalten) { -1 }
 
     private var useSmallSenderIconsState = false
-    protected var listeSortKeys: List<out RowSorter.SortKey>? = null
+    protected var listeSortKeys: List<RowSorter.SortKey>? = null
 
     /**
      * Unmodified JTable used to calculate the row height. Reference only.

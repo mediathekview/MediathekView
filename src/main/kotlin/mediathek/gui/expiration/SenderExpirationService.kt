@@ -45,7 +45,7 @@ object SenderExpirationService {
     private val negativeTtl: Duration = Duration.ofMinutes(5)
     private const val CLEANUP_INTERVAL_SECONDS: Long = 60
     @Suppress("unused")
-    private val cleanupFuture: ScheduledFuture<*> = TimerPool.timerPool.scheduleWithFixedDelay(
+    private val cleanupFuture: ScheduledFuture<*> = TimerPool.scheduleWithFixedDelay(
         { evictExpiredEntries(Instant.now()) },
         CLEANUP_INTERVAL_SECONDS,
         CLEANUP_INTERVAL_SECONDS,

@@ -26,6 +26,7 @@ import mediathek.daten.DatenFilm;
 import mediathek.daten.ListeFilme;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.filmlisten.FilmListMetadataStore;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.InputStreamProgressMonitor;
 import mediathek.tool.ProgressMonitorInputStream;
@@ -630,6 +631,7 @@ public class FilmListReader implements AutoCloseable {
                 if (Config.isEnhancedLoggingEnabled()) {
                     logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url().toString());
                 }
+                FilmListMetadataStore.writeEtag(source.toString(), response.header("ETag"));
                 ProgressMonitor monitor = new ProgressMonitor(source.toString());
                 try (InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
                      InputStream is = selectDecompressor(source.toString(), input);

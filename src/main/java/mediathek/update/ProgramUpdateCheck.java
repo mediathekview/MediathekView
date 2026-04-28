@@ -132,7 +132,7 @@ public class ProgramUpdateCheck implements AutoCloseable {
 
     public void start() {
         logger.debug("ProgramUpdateCheck Started.");
-        actionFuture = TimerPool.getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::performUpdateCheck), 60L, TimeUnit.SECONDS.convert(24L, TimeUnit.HOURS), TimeUnit.SECONDS);
+        actionFuture = TimerPool.scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::performUpdateCheck), 60L, TimeUnit.SECONDS.convert(24L, TimeUnit.HOURS), TimeUnit.SECONDS);
     }
 
     @Override

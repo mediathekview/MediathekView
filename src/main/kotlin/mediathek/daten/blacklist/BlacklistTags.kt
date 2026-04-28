@@ -9,7 +9,6 @@ enum class BlacklistTags(val index: Int, val xmlName: String) {
     THEMA_TITEL(3, "black-thema-titel");
 
     companion object {
-        @JvmStatic
         fun fromXmlTag(tag: String): Optional<BlacklistTags> {
             return Arrays.stream(entries.toTypedArray()).filter { e: BlacklistTags -> e.xmlName == tag }.findAny()
         }

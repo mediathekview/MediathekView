@@ -18,13 +18,27 @@
 
 package mediathek.tool
 
+import mediathek.config.StandardLocations
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.nio.file.Path
 
 class SingleInstanceTest {
+    @TempDir
+    lateinit var settingsDirectory: Path
+
+    @AfterEach
+    fun tearDown() {
+        StandardLocations.portableBaseDirectory = null
+    }
+
     @Test
     fun instance1_not_active() {
+        StandardLocations.portableBaseDirectory = settingsDirectory.toString()
+
         SingleInstance().use { instance1 ->
             assertFalse(instance1.isAppAlreadyActive())
         }
@@ -32,6 +46,8 @@ class SingleInstanceTest {
 
     @Test
     fun instance2_activity_test() {
+        StandardLocations.portableBaseDirectory = settingsDirectory.toString()
+
         SingleInstance().use { instance1 ->
             SingleInstance().use { instance2 ->
                 assertFalse(instance1.isAppAlreadyActive())

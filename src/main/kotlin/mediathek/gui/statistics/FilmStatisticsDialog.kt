@@ -39,12 +39,10 @@ import org.jfree.chart.ui.RectangleInsets
 import org.jfree.data.category.DefaultCategoryDataset
 import java.awt.*
 import java.awt.geom.Rectangle2D
-import java.lang.Runnable
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.concurrent.Executor
 import javax.swing.*
 import javax.swing.border.EmptyBorder
 import javax.swing.table.AbstractTableModel
@@ -58,8 +56,6 @@ class FilmStatisticsDialog(
 ) : JDialog(owner), CoroutineScope {
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Swing
-
-    private val workerDispatcher = ExecutorBackedDispatcher(Daten.getInstance().decoratedPool)
 
     private val senderTableModel = SenderStatisticsTableModel()
     private val intervalDataset = DefaultCategoryDataset()
@@ -131,7 +127,7 @@ class FilmStatisticsDialog(
         }
     }
 
-    private suspend fun computeStatistics(): ComputedStatistics = withContext(workerDispatcher) {
+    private suspend fun computeStatistics(): ComputedStatistics = withContext(Dispatchers.Default) {
         val sorter = GermanStringSorter.getInstance()
         val today = LocalDate.now()
         val zoneId = ZoneId.systemDefault()
@@ -494,9 +490,4 @@ class FilmStatisticsDialog(
         }
     }
 
-    private class ExecutorBackedDispatcher(private val executor: Executor) : CoroutineDispatcher() {
-        override fun dispatch(context: CoroutineContext, block: Runnable) {
-            executor.execute(block)
-        }
-    }
 }

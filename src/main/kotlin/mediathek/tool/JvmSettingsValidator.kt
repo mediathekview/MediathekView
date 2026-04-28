@@ -29,7 +29,6 @@ object JvmSettingsValidator {
         JvmOptionRequirement { arguments -> !hasJvmOptionStartingWith(arguments, "-Xmx") },
     )
 
-    @JvmStatic
     fun hasRequiredJvmSettings(paramList: List<String>): Boolean {
         val meetsCommonRequirements = requiredOptions.all { requirement -> requirement.matches(paramList) }
         if (!meetsCommonRequirements) {
@@ -40,7 +39,6 @@ object JvmSettingsValidator {
             hasJvmOption(paramList, "--add-opens", "java.desktop/sun.awt.X11=ALL-UNNAMED")
     }
 
-    @JvmStatic
     fun getErrorMessageString(): String {
         val linuxAddOpensMessage = if (SystemUtils.IS_OS_LINUX) {
             "<li><b>--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED</b></li>"

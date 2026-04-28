@@ -398,13 +398,7 @@ class CdnAwareDirectDownloadThread(
         logger.error("HTTP-Fehler: {} {}", response.code, response.message)
 
         if (start.countRestarted >= Konstanten.MAX_DOWNLOAD_RESTARTS) {
-            SwingUtilities.invokeLater {
-                MeldungDownloadfehler(
-                    MediathekGui.ui(),
-                    "URL des Films:\n${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}\n\n$responseCode\n",
-                    datenDownload
-                ).isVisible = true
-            }
+            showDownloadError("URL des Films:\n${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}\n\n$responseCode\n")
         }
 
         state = HttpDownloadState.ERROR
@@ -450,9 +444,7 @@ class CdnAwareDirectDownloadThread(
         state = HttpDownloadState.ERROR
         removeSeenHistoryEntry()
 
-        SwingUtilities.invokeLater {
-            MeldungDownloadfehler(MediathekGui.ui(), ex.localizedMessage, datenDownload).isVisible = true
-        }
+        showDownloadError(ex.localizedMessage)
     }
 
     private fun removeSeenHistoryEntry() {
@@ -467,6 +459,10 @@ class CdnAwareDirectDownloadThread(
     private fun cancelDownload(): Boolean {
         if (!file.exists() && !finalFile.exists()) {
             return false
+        }
+
+        if (Config.isDownloadAndQuit()) {
+            return resolveExistingDownloadForCli()
         }
 
         dialogAbbrechenIsVis = true
@@ -533,6 +529,30 @@ class CdnAwareDirectDownloadThread(
         }
 
         return result
+    }
+
+    private fun resolveExistingDownloadForCli(): Boolean {
+        val hasPartFile = file.exists()
+        logger.info(
+            "CLI download mode: continuing existing direct download for {}",
+            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+        )
+        if (!hasPartFile && !moveLegacyFinalFileToPart()) {
+            state = HttpDownloadState.ERROR
+            return true
+        }
+        alreadyDownloaded = file.length()
+        return false
+    }
+
+    private fun showDownloadError(message: String?) {
+        if (Config.isDownloadAndQuit()) {
+            logger.error("Download failed for {}: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], message)
+            return
+        }
+        SwingUtilities.invokeLater {
+            MeldungDownloadfehler(MediathekGui.ui(), message, datenDownload).isVisible = true
+        }
     }
 
     private fun moveLegacyFinalFileToPart(): Boolean {

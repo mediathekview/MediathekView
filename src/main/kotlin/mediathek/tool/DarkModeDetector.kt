@@ -47,7 +47,6 @@ object DarkModeDetector {
      *
      * @return true if in dark mode, false if otherwise.
      */
-    @JvmStatic
     fun isDarkMode(): Boolean = when {
         SystemUtils.IS_OS_MAC_OSX -> isMacOsDarkMode()
         SystemUtils.IS_OS_WINDOWS -> isWindowsDarkMode()
@@ -64,7 +63,6 @@ object DarkModeDetector {
      * Indicate if dark mode detection is supported on the current platform.
      * @return true if supported, false otherwise.
      */
-    @JvmStatic
     fun hasDarkModeDetectionSupport(): Boolean =
         SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX || (SystemUtils.IS_OS_LINUX && isGnome())
 

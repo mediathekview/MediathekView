@@ -43,7 +43,6 @@ object FileUtils {
     }
 
     @Throws(IOException::class)
-    @JvmStatic
     fun deletePathRecursively(rootPath: Path) {
         Files.walk(rootPath/*, FileVisitOption.FOLLOW_LINKS*/).use { walk ->
             walk.sorted(Comparator.reverseOrder())
@@ -76,7 +75,6 @@ object FileUtils {
      * Downloads the given URI into a fresh temp file and returns its Path.
      * Caller should delete the file when done.
      */
-    @JvmStatic
     @Throws(IOException::class)
     fun downloadToTempFile(uri: String): Path {
         val target = Files.createTempFile("mv-download-", ".tmp")

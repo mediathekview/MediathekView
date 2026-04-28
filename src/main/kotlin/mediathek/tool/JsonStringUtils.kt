@@ -21,7 +21,6 @@ package mediathek.tool
 object JsonStringUtils {
     data class ParsedJsonString(val value: String, val endIndex: Int)
 
-    @JvmStatic
     fun escapeJsonString(value: String): String {
         val result = StringBuilder(value.length + 16)
         for (c in value) {
@@ -66,7 +65,6 @@ object JsonStringUtils {
         return result.toString()
     }
 
-    @JvmStatic
     fun unescapeJsonString(value: String): String {
         val result = StringBuilder(value.length)
         var i = 0

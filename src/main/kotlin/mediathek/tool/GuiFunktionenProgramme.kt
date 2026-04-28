@@ -81,7 +81,6 @@ object GuiFunktionenProgramme {
      *
      * @return The program jar file path with a separator added.
      */
-    @JvmStatic
     fun getPathToApplicationJar(): String {
         // macht Probleme bei Win und Netzwerkpfaden, liefert dann Absolute Pfade zB. \\VBOXSVR\share\Mediathek\...
         val pFilePath = "pFile"
@@ -221,7 +220,6 @@ object GuiFunktionenProgramme {
      *
      * @return the path to the bin directory.
      */
-    @JvmStatic
     fun getBinaryPath(): Path = Paths.get(getPathToApplicationJar()).resolve("bin")
 
     /**
@@ -229,7 +227,6 @@ object GuiFunktionenProgramme {
      *
      * @return return the path to res\bin directory.
      */
-    @JvmStatic
     fun getResBinaryPath(): Path = Paths.get(getPathToApplicationJar()).resolve("res").resolve("bin")
 
     /**
@@ -496,7 +493,6 @@ object GuiFunktionenProgramme {
      * @param path path to the directory
      * @return true if the directory exists and is writable, or the nearest existing parent is writable.
      */
-    @JvmStatic
     fun checkPathWriteableWithoutCreating(path: String): Boolean {
         if (path.isEmpty()) {
             return false

@@ -32,7 +32,7 @@ public class AutomaticFilmlistUpdate implements Closeable {
 
     public void start() {
         logger.debug("AutomaticFilmlistUpdate Started.");
-        actionFuture = TimerPool.getTimerPool().scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::reloadFilmList), 12L, 12L, TimeUnit.HOURS);
+        actionFuture = TimerPool.scheduleWithFixedDelay(() -> SwingUtilities.invokeLater(this::reloadFilmList), 12L, 12L, TimeUnit.HOURS);
     }
 
     @Override

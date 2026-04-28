@@ -16,20 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool.cellrenderer;
+package mediathek.filmlisten
 
-import mediathek.tool.timer.TimerPool;
+@JvmRecord
+data class FilmListLoadOptions(val writeAfterLoad: Boolean) {
+    companion object {
+        @JvmStatic
+        fun normal(): FilmListLoadOptions = FilmListLoadOptions(true)
 
-import javax.swing.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
-/**
- * A cache for sender icons at a specific cell dimension.
- * Will get cleared periodically.
- */
-public class SelfEvictingSenderIconCache extends ConcurrentHashMap<SenderCacheKey, Icon> {
-    public SelfEvictingSenderIconCache() {
-        TimerPool.getTimerPool().scheduleAtFixedRate(this::clear, 5, 5, TimeUnit.MINUTES);
+        @JvmStatic
+        fun readOnly(): FilmListLoadOptions = FilmListLoadOptions(false)
     }
 }

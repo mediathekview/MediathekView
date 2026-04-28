@@ -18,7 +18,6 @@
 
 package mediathek.tool.models;
 
-import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.tool.MVC;
 
@@ -34,7 +33,7 @@ public class TModelColor extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return Daten.getMVColor().getColors().size();
+        return MVColor.getColors().size();
     }
 
     @Override
@@ -76,7 +75,7 @@ public class TModelColor extends AbstractTableModel {
     }
 
     public MVC getEntry(int rowIndex) {
-        return Daten.getMVColor().get(rowIndex);
+        return MVColor.get(rowIndex);
     }
 
     public boolean isDarkMode() {

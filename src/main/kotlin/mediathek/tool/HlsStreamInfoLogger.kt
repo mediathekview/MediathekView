@@ -28,7 +28,7 @@ object HlsStreamInfoLogger {
     private val ioLock = Any()
 
     init {
-        TimerPool.timerPool.scheduleWithFixedDelay(
+        TimerPool.scheduleWithFixedDelay(
             ::uploadPendingEntriesSafely,
             UPLOAD_INTERVAL_SECONDS,
             UPLOAD_INTERVAL_SECONDS,
@@ -63,7 +63,7 @@ object HlsStreamInfoLogger {
         }
 
         if (currentEndpoint != null) {
-            TimerPool.timerPool.execute(::uploadPendingEntriesSafely)
+            TimerPool.execute(::uploadPendingEntriesSafely)
         }
     }
 

@@ -88,7 +88,6 @@ class Stopwatch private constructor() {
             return Stopwatch().start()
         }
 
-        @JvmStatic
         fun createUnstarted(): Stopwatch {
             return Stopwatch()
         }

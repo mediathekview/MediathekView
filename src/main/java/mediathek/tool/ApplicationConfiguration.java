@@ -337,7 +337,7 @@ public class ApplicationConfiguration {
     private final class TimerTaskListener implements EventListener<ConfigurationEvent> {
         private void launchWriterTask() {
             try {
-                future = TimerPool.getTimerPool().schedule(() -> {
+                future = TimerPool.schedule(() -> {
                     try {
                         logger.trace("Writing app configuration file");
                         handler.save();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,21 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool.timer;
+package mediathek.tool
 
-import org.jspecify.annotations.NonNull;
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.name
 
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicLong;
+object PathExtensions {
+    fun withExtension(path: Path, newExtension: String): Path {
+        require(newExtension.isNotBlank()) { "extension must not be blank" }
 
-/**
- * Thread factory to give virtual timer pool threads a recognizable name.
- */
-class TimerPoolThreadFactory implements ThreadFactory {
-    private final AtomicLong threadNumber = new AtomicLong(1);
+        val normalizedExtension = if (newExtension.startsWith(".")) newExtension else ".$newExtension"
+        val name = path.fileName?.name ?: throw IllegalArgumentException("Path has no filename: $path")
+        val lastDot = FileNameExtensions.getLikelyExtensionDotIndex(name)
+        val baseName = if (lastDot > 0) name.substring(0, lastDot) else name
+        val newName = baseName + normalizedExtension
 
-    @Override
-    public Thread newThread(@NonNull Runnable r) {
-        return Thread.ofVirtual().name("TimerPool-virtual-thread-" + threadNumber.getAndIncrement()).unstarted(r);
+        return path.parent?.resolve(newName) ?: Path(newName)
     }
 }

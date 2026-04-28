@@ -18,7 +18,7 @@
 
 package mediathek.sqlite
 
-import mediathek.Main
+import mediathek.SplashScreenLifecycle
 import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryStore
 import mediathek.mainwindow.MediathekGui
@@ -113,7 +113,7 @@ internal object SeenHistoryCorruptionHandler {
 
     private fun hideSplashScreen() {
         invokeOnEdt {
-            Main.splashScreen.ifPresent { it.close() }
+            SplashScreenLifecycle.close()
         }
     }
 

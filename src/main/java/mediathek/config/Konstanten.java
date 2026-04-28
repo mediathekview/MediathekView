@@ -17,8 +17,8 @@
  */
 package mediathek.config;
 
-import mediathek.res.GetIcon;
 import mediathek.tool.FileUtils;
+import mediathek.tool.GetIcon;
 import mediathek.tool.Version;
 import okhttp3.HttpUrl;
 

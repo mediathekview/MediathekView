@@ -32,7 +32,7 @@ object MVSenderIconCache {
     }
 
     private fun setupCleanupScheduler() {
-        TimerPool.timerPool.scheduleAtFixedRate({
+        TimerPool.scheduleAtFixedRate({
             logger.trace("Cleaning sender icon caches")
             senderCache.cleanUp()
         }, 5, 5, TimeUnit.MINUTES)

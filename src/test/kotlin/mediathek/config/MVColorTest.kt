@@ -15,7 +15,7 @@ internal class MVColorTest {
 
     @AfterEach
     fun tearDown() {
-        MVColor().reset()
+        MVColor.reset()
         StandardLocations.portableBaseDirectory = null
         legacyKeys().forEach(MVConfig::remove)
     }
@@ -24,12 +24,11 @@ internal class MVColorTest {
     fun savesAndLoadsOverridesFromJsonFile() {
         StandardLocations.portableBaseDirectory = tempDir.toString()
 
-        val mvColor = MVColor()
-        mvColor.reset()
+        MVColor.reset()
         MVColor.NEW_COLOR.setColor(false, Color(10, 20, 30))
         MVColor.NEW_COLOR.setColor(true, Color(40, 50, 60))
         MVColor.SELECTED_COLOR.setColor(false, Color(70, 80, 90))
-        mvColor.save()
+        MVColor.save()
 
         val storageFile = tempDir.resolve("app-colors.json")
         assertTrue(storageFile.exists())
@@ -42,8 +41,8 @@ internal class MVColorTest {
         assertTrue(savedJson.contains("\"a\": 255"))
         assertTrue(savedJson.contains("\"dark\": {"))
 
-        mvColor.reset()
-        mvColor.load()
+        MVColor.reset()
+        MVColor.load()
 
         assertEquals(Color(10, 20, 30), MVColor.NEW_COLOR.getOverrideColor(false))
         assertEquals(Color(40, 50, 60), MVColor.NEW_COLOR.getOverrideColor(true))
@@ -62,9 +61,8 @@ internal class MVColorTest {
         MVConfig.add("FARBE_FILM_NEU", "${legacyLight.rgb}${MVConfig.TRENNER}${legacyDark.rgb}")
         MVConfig.add("FARBE_SELECTED_ICON", sharedColor.rgb.toString())
 
-        val mvColor = MVColor()
-        mvColor.reset()
-        mvColor.load()
+        MVColor.reset()
+        MVColor.load()
 
         val storageFile = tempDir.resolve("app-colors.json")
         assertTrue(storageFile.exists())
@@ -75,8 +73,8 @@ internal class MVColorTest {
         assertEquals("", MVConfig.get("FARBE_FILM_NEU"))
         assertEquals("", MVConfig.get("FARBE_SELECTED_ICON"))
 
-        mvColor.reset()
-        mvColor.load()
+        MVColor.reset()
+        MVColor.load()
 
         assertEquals(legacyLight, MVColor.NEW_COLOR.getOverrideColor(false))
         assertEquals(legacyDark, MVColor.NEW_COLOR.getOverrideColor(true))

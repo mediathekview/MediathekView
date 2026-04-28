@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -390,6 +391,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 add(new DatenDownload(pSet, film, DatenDownload.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
             } else {
+                if (parent == null || Config.isDownloadAndQuit()) {
+                    throw new IllegalStateException("Kein Programmset für Abo \"" + abo.getName() + "\" konfiguriert.");
+                }
                 new DialogAboNoSet(parent).setVisible(true);
                 break;
             }

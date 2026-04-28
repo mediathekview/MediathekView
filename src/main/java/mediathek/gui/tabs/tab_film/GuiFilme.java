@@ -901,8 +901,13 @@ public class GuiFilme extends AGuiTabPanel {
             }
 
             public void addHistoryEntry(String text) {
-                if (!historyList.contains(text)) {
+                historyList.getReadWriteLock().writeLock().lock();
+                try {
+                    historyList.remove(text);
                     historyList.addFirst(text);
+                }
+                finally {
+                    historyList.getReadWriteLock().writeLock().unlock();
                 }
             }
 

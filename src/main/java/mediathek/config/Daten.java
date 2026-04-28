@@ -3,8 +3,7 @@ package mediathek.config;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
-import mediathek.Main;
-import mediathek.SplashScreen;
+import mediathek.SplashScreenLifecycle;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
@@ -21,33 +20,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Daten {
-    private static final MVColor MV_COLOR = new MVColor(); // verwendete Farben
-    /**
-     * Prevent the unnecessary writing of a filmlist on startup when reading is enough
-     */
-    public static final AtomicBoolean dontWriteFilmlistOnStartup = new AtomicBoolean(true);
     private static final Logger logger = LogManager.getLogger(Daten.class);
-    // flags
-    private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     private final ListePset listePset;
     private final EventList<FilmStatistics> duplicateStatisticsEventList = new BasicEventList<>();
     private final EventList<FilmStatistics> commonStatisticsEventList = new BasicEventList<>();
@@ -73,7 +56,7 @@ public class Daten {
      * erfolgreich geladene Abos.
      */
     private AboHistoryController erledigteAbos;
-    private boolean alreadyMadeBackup;
+    private boolean backupAlreadyHandled;
     private CompletableFuture<AboHistoryController> aboHistoryFuture;
     private EventList<String> allSenderList;
 
@@ -94,25 +77,8 @@ public class Daten {
         setupAllSendersList();
     }
 
-    /**
-     * Indicator if configuration data should be reset.
-     *
-     * @return true if reset is necessary.
-     */
-    public static boolean resetConfigurationData() {
-        return reset;
-    }
-
-    public static void setResetConfigurationData(final boolean aIsReset) {
-        reset = aIsReset;
-    }
-
     public static Daten getInstance() {
         return DatenHolder.INSTANCE;
-    }
-
-    public static MVColor getMVColor() {
-        return MV_COLOR;
     }
 
     /**
@@ -160,18 +126,6 @@ public class Daten {
         return starterClass;
     }
 
-    /**
-     * Return the number of milliseconds from today´s midnight.
-     *
-     * @return Number of milliseconds from today´s midnight.
-     */
-    private long getHeute_0Uhr() {
-        LocalDateTime todayMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
-        var zdt = ZonedDateTime.of(todayMidnight, ZoneId.systemDefault());
-
-        return zdt.toInstant().toEpochMilli();
-    }
-
     public void setAboHistoryList(AboHistoryController controller) {
         erledigteAbos = controller;
     }
@@ -188,7 +142,7 @@ public class Daten {
             return false;
         }
         logger.info("Konfig wurde gelesen!");
-        MV_COLOR.load(); // Farben einrichten
+        MVColor.load(); // Farben einrichten
 
         return true;
     }
@@ -253,6 +207,10 @@ public class Daten {
     }
 
     private boolean askForBackupRestore() {
+        if (Config.isDownloadAndQuit()) {
+            logger.error("CLI download mode does not support interactive backup restore.");
+            return false;
+        }
         var text = """
                 Die Einstellungen sind beschädigt und können nicht geladen werden.
                 Soll versucht werden diese aus einem Backup wiederherzustellen?
@@ -276,7 +234,7 @@ public class Daten {
             return false;
         }
 
-        Main.splashScreen.ifPresent(SplashScreen::close);
+        SplashScreenLifecycle.close();
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
 
@@ -298,82 +256,12 @@ public class Daten {
     }
 
     public void allesSpeichern() {
-        createConfigurationBackupCopies();
+        if (!backupAlreadyHandled) {
+            backupAlreadyHandled = ConfigurationBackupService.createConfigurationBackupCopies();
+        }
 
         final IoXmlSchreiben configWriter = new IoXmlSchreiben();
         configWriter.writeConfigurationFile(StandardLocations.getMediathekXmlFile());
-
-        if (resetConfigurationData()) {
-            // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
-            // dazu wird den Ordner mit den Einstellungen umbenannt
-            String dir1 = StandardLocations.getSettingsDirectory().toString();
-            if (dir1.endsWith(File.separator)) {
-                dir1 = dir1.substring(0, dir1.length() - 1);
-            }
-
-            try {
-                final Path path1 = Paths.get(dir1);
-                final var nowStr = DateTimeFormatter.ofPattern("yyyy.MM.dd__HH.mm.ss").format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
-                final String dir2 = dir1 + "--" + nowStr;
-
-                Files.move(path1, Paths.get(dir2), StandardCopyOption.REPLACE_EXISTING);
-                Files.deleteIfExists(path1);
-            } catch (IOException e) {
-                logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
-                var msg = "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
-                        + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                        + StandardLocations.getSettingsDirectory() + '\n'
-                        + "von Hand löschen und dann das Programm wieder starten.\n\n"
-                        + "Im Forum erhalten Sie weitere Hilfe.";
-                JOptionPane.showMessageDialog(null, Konstanten.PROGRAMMNAME,
-                        msg, JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    /**
-     * Create backup copies of settings file.
-     */
-    private void createConfigurationBackupCopies() {
-        if (!alreadyMadeBackup) {
-            // nur einmal pro Programmstart machen
-            logger.info("-------------------------------------------------------");
-            logger.info("Einstellungen sichern");
-
-            try {
-                final Path xmlFilePath = StandardLocations.getMediathekXmlFile();
-                long creatTime = -1;
-
-                Path xmlFilePathCopy_1 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
-                if (Files.exists(xmlFilePathCopy_1)) {
-                    BasicFileAttributes attrs = Files.readAttributes(xmlFilePathCopy_1, BasicFileAttributes.class);
-                    FileTime d = attrs.lastModifiedTime();
-                    creatTime = d.toMillis();
-                }
-
-                if (creatTime == -1 || creatTime < getHeute_0Uhr()) {
-                    // nur dann ist die letzte Kopie älter als einen Tag
-                    for (int i = Konstanten.MAX_NUM_BACKUP_FILE_COPIES; i > 1; --i) {
-                        xmlFilePathCopy_1 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
-                        final Path xmlFilePathCopy_2 = StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
-                        if (Files.exists(xmlFilePathCopy_1)) {
-                            Files.move(xmlFilePathCopy_1, xmlFilePathCopy_2, StandardCopyOption.REPLACE_EXISTING);
-                        }
-                    }
-                    if (Files.exists(xmlFilePath)) {
-                        Files.move(xmlFilePath, StandardLocations.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
-                    }
-                    logger.info("Einstellungen wurden gesichert");
-                } else {
-                    logger.info("Einstellungen wurden heute schon gesichert");
-                }
-            } catch (IOException e) {
-                logger.error("Die Einstellungen konnten nicht komplett gesichert werden!", e);
-            }
-
-            alreadyMadeBackup = true;
-            logger.info("-------------------------------------------------------");
-        }
     }
 
     public FilmeLaden getFilmeLaden() {

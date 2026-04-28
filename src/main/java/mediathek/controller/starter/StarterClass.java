@@ -150,7 +150,7 @@ public class StarterClass {
     }
 
     private static void makeBeep() {
-        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP, false)) {
+        if (!GraphicsEnvironment.isHeadless() && ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP, false)) {
             Toolkit.getDefaultToolkit().beep();
         }
     }
@@ -273,7 +273,7 @@ public class StarterClass {
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemUtils.IS_OS_MAC_OSX) {
+        if (SystemUtils.IS_OS_MAC_OSX && !GraphicsEnvironment.isHeadless() && Taskbar.isTaskbarSupported()) {
             Taskbar.getTaskbar().requestUserAttention(true, false);
         }
     }

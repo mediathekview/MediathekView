@@ -21,6 +21,7 @@ package mediathek.controller.starter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import mediathek.config.Config
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.controller.ByteRateLimiter
@@ -272,13 +273,7 @@ class DirectHttpDownload(
         logger.error("HTTP-Fehler: {} {}", response.code, response.message)
 
         if (start.countRestarted >= Konstanten.MAX_DOWNLOAD_RESTARTS) {
-            SwingUtilities.invokeLater {
-                MeldungDownloadfehler(
-                    MediathekGui.ui(),
-                    "URL des Films:\n${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}\n\n$responseCode\n",
-                    datenDownload
-                ).isVisible = true
-            }
+            showDownloadError("URL des Films:\n${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}\n\n$responseCode\n")
         }
 
         state = HttpDownloadState.ERROR
@@ -419,9 +414,7 @@ class DirectHttpDownload(
 
                 removeSeenHistoryEntry()
 
-                SwingUtilities.invokeLater {
-                    MeldungDownloadfehler(MediathekGui.ui(), ex.localizedMessage, datenDownload).isVisible = true
-                }
+                showDownloadError(ex.localizedMessage)
             } finally {
                 awaitAncillaryDownloads()
 
@@ -450,6 +443,10 @@ class DirectHttpDownload(
         if (!file.exists() && !finalFile.exists()) {
             // dann ist alles OK
             return false
+        }
+
+        if (Config.isDownloadAndQuit()) {
+            return resolveExistingDownloadForCli()
         }
 
         dialogAbbrechenIsVis = true
@@ -509,6 +506,30 @@ class DirectHttpDownload(
             }
         }
         return result
+    }
+
+    private fun resolveExistingDownloadForCli(): Boolean {
+        val hasPartFile = file.exists()
+        logger.info(
+            "CLI download mode: continuing existing direct download for {}",
+            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+        )
+        if (!hasPartFile && !moveLegacyFinalFileToPart()) {
+            state = HttpDownloadState.ERROR
+            return true
+        }
+        alreadyDownloaded = file.length()
+        return false
+    }
+
+    private fun showDownloadError(message: String?) {
+        if (Config.isDownloadAndQuit()) {
+            logger.error("Download failed for {}: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], message)
+            return
+        }
+        SwingUtilities.invokeLater {
+            MeldungDownloadfehler(MediathekGui.ui(), message, datenDownload).isVisible = true
+        }
     }
 
     private fun moveLegacyFinalFileToPart(): Boolean {

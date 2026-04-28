@@ -33,21 +33,20 @@ import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlin.math.min
 
-class MVColor {
-    companion object {
-        const val MVC_TEXT = 0
-        const val MVC_COLOR = 1
+object MVColor {
+    const val MVC_TEXT = 0
+    const val MVC_COLOR = 1
 
-        private val logger = LogManager.getLogger(MVColor::class.java)
-        private val darkBlue = rgb(137, 192, 255)
-        private const val STORAGE_FILENAME = "app-colors.json"
-        private const val FILE_VERSION = 1
-        @OptIn(ExperimentalSerializationApi::class)
-        private val json = Json {
-            prettyPrint = true
-            prettyPrintIndent = "  "
-            ignoreUnknownKeys = true
-        }
+    private val logger = LogManager.getLogger(MVColor::class.java)
+    private val darkBlue = rgb(137, 192, 255)
+    private const val STORAGE_FILENAME = "app-colors.json"
+    private const val FILE_VERSION = 1
+    @OptIn(ExperimentalSerializationApi::class)
+    private val json = Json {
+        prettyPrint = true
+        prettyPrintIndent = "  "
+        ignoreUnknownKeys = true
+    }
 
         @JvmField
         val FILM_HISTORY = color("film_history", rgb(225, 225, 225), rgb(70, 70, 70), "Filme, gesehen")
@@ -160,7 +159,6 @@ class MVColor {
         @JvmStatic
         fun getRegExPatternColor(): Color = REGEX_PATTERN_COLOR.color
 
-        @JvmStatic
         fun getBlueColor(): Color = getRegExPatternColor()
 
         @JvmStatic
@@ -181,9 +179,9 @@ class MVColor {
             return Color.getHSBColor(hsb[0], hsb[1], min(1f, hsb[2] + factor))
         }
 
-        private fun storagePath() = StandardLocations.getSettingsDirectory().resolve(STORAGE_FILENAME)
-    }
+    private fun storagePath() = StandardLocations.getSettingsDirectory().resolve(STORAGE_FILENAME)
 
+    @JvmStatic
     fun load() {
         reset()
 
@@ -196,6 +194,7 @@ class MVColor {
         clearLegacyConfigEntries()
     }
 
+    @JvmStatic
     fun save() {
         val storagePath = storagePath()
         try {
@@ -206,10 +205,13 @@ class MVColor {
         }
     }
 
+    @JvmStatic
     fun get(index: Int): MVC = colors[index]
 
+    @JvmStatic
     fun getColors(): List<MVC> = colors
 
+    @JvmStatic
     fun reset() {
         colors.forEach(MVC::reset)
     }

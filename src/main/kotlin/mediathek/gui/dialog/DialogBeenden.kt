@@ -37,7 +37,7 @@ import java.awt.event.WindowEvent
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class DialogBeenden(parent: JFrame, shouldDownloadAndQuit: Boolean) : JDialog(parent, true) {
+class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
     /**
      * Indicate whether the application can terminate.
      */
@@ -234,10 +234,5 @@ class DialogBeenden(parent: JFrame, shouldDownloadAndQuit: Boolean) : JDialog(pa
         getRootPane().defaultButton = btnContinue
         restoreSelectedAction()
         updateActionControls()
-
-        if (shouldDownloadAndQuit) {
-            applicationCanTerminate = true
-            SwingUtilities.invokeLater { waitUntilDownloadsHaveFinished() }
-        }
     }
 }

@@ -71,7 +71,6 @@ object StandardLocations {
      *
      * @return Path object of bookmark file
      */
-    @JvmStatic
     fun getBookmarkFilePath(): Path {
         return getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE)
     }
@@ -87,7 +86,6 @@ object StandardLocations {
         return getSettingsDirectory().resolve(Konstanten.CONFIG_FILE)
     }
 
-    @JvmStatic
     @Throws(InvalidPathException::class)
     fun getXDGDownloadDirectory(): Optional<Path> {
         return try {
@@ -157,6 +155,10 @@ object StandardLocations {
         }
     }
 
+    fun getFilmlistMetadataFilePath(): Path {
+        return Paths.get(getFilmlistFilePathString()).resolveSibling(Konstanten.JSON_DATEI_FILME + ".properties")
+    }
+
     /**
      * Return the location of the lucene film index.
      */
@@ -183,7 +185,6 @@ object StandardLocations {
      *
      * @return The Path object to the lockfile
      */
-    @JvmStatic
     fun getLockFilePath(): Path {
         return getSettingsDirectory().resolve(LOCKFILE_NAME)
     }

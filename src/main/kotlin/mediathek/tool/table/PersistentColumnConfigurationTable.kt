@@ -203,7 +203,6 @@ abstract class PersistentColumnConfigurationTable protected constructor(
          * @param s The string to be processed.
          * @return The number of columns included.
          */
-        @JvmStatic
         fun countNumberOfColumns(s: String): Long = s.count { it == ',' }.toLong() + 1
 
         private fun copyToArray(source: List<Int>, target: IntArray) {

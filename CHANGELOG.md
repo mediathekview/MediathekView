@@ -40,6 +40,8 @@
 - **FEATURE:** Die App überprüft bei jedem Start einmalig, ob der in den Einstellungen gesetzte Standort identisch mit der ermittelten Länderkennung der öffentlichen IP ist und bietet dem Nutzer an, inkorrekte Einstellungen zu korrigieren.
 - **FEATURE:** Bei der erstmaligen Einrichtung wird im Start-Dialog die Zuordnung des Standorts anhand der öffentlichen IP geprüft und vorab eingestellt.
 - **FEATURE:** Im Tab *Filme* kann nun auch der Titel via Kontextmenü zur Blacklist hinzugefügt werden.
+- **FEATURE:** Die Suchhistorie ordnet nun die Ergebnisse nach der Zeit der letzten Suche an (Last Recently Used).
+- **FEATURE:** `-dq` bzw. `--download-quit` ist nun ein vollständig CLI-basierter Ausführungsmodus.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.

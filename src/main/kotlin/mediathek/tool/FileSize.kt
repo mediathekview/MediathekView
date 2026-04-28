@@ -47,7 +47,6 @@ object FileSize {
     private val logger = LogManager.getLogger()
     private val lookupJson = Json { ignoreUnknownKeys = true }
 
-    @JvmStatic
     fun getFileLengthFromUrl(url: String, forceFetch: Boolean = false): String {
         return lookupFileSize(url, forceFetch).sizeText
     }
@@ -72,13 +71,11 @@ object FileSize {
         }
     }
 
-    @JvmStatic
     fun getContentLength(response: Response): Long {
         val sizeStr = response.headers["Content-Length"] ?: return INVALID_SIZE.toLong()
         return sizeStr.toLongOrNull() ?: INVALID_SIZE.toLong()
     }
 
-    @JvmStatic
     fun getFileSizeFromUrl(url: HttpUrl, forceFetch: Boolean = false): Long {
         return lookupFileSize(url, forceFetch).byteLength
     }

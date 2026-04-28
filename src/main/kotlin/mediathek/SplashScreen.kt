@@ -55,9 +55,7 @@ class SplashScreen : JWindow() {
         runOnEdt {
             isVisible = false
             dispose()
-            if (Main.splashScreen.orElse(null) === this) {
-                Main.splashScreen = Optional.empty()
-            }
+            SplashScreenLifecycle.clearIfCurrent(this)
         }
     }
 

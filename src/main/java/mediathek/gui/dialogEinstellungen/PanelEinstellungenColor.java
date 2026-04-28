@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MVC;
@@ -63,7 +62,7 @@ public class PanelEinstellungenColor extends JPanel {
                 mvc.setColor(darkMode, selectedColor);
                 refreshColorTables();
                 updateGui();
-                Daten.getMVColor().save();
+                MVColor.save();
             }
         }
     }
@@ -75,12 +74,12 @@ public class PanelEinstellungenColor extends JPanel {
 
     private void resetSelectedThemeColors() {
         boolean darkMode = jTabbedPane1.getSelectedIndex() == 1;
-        for (MVC mvc : Daten.getMVColor().getColors()) {
+        for (MVC mvc : MVColor.getColors()) {
             mvc.reset(darkMode);
         }
         refreshColorTables();
         updateGui();
-        Daten.getMVColor().save();
+        MVColor.save();
     }
 
     private void updateResetButtonText() {

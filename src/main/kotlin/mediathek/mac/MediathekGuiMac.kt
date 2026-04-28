@@ -20,6 +20,8 @@ package mediathek.mac
 
 import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.util.SystemInfo
+import kotlinx.coroutines.*
+import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.DownloadFinishedEvent
@@ -30,7 +32,6 @@ import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.MacNotificationCenter
 import mediathek.tool.threads.IndicatorThread
-import mediathek.tool.timer.TimerPool
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -43,18 +44,26 @@ import java.awt.desktop.QuitResponse
 import java.lang.foreign.*
 import java.nio.file.Path
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JToolBar
-import javax.swing.SwingUtilities
 import kotlin.io.path.absolutePathString
+import kotlin.time.Duration.Companion.seconds
 
 class MediathekGuiMac : MediathekGui {
     private val powerManager = OsxPowerManager()
+    private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     constructor() : super(::MacNotificationCenter) {
-        TimerPool.timerPool.schedule({ checkForCorrectArchitecture() }, 15, TimeUnit.SECONDS)
+        architectureCheckScope.launch {
+            delay(15.seconds)
+            checkForCorrectArchitecture()
+        }
+    }
+
+    override fun dispose() {
+        architectureCheckScope.cancel()
+        super.dispose()
     }
 
     @Throws(Throwable::class)
@@ -105,7 +114,7 @@ class MediathekGuiMac : MediathekGui {
      * Check if MV is running "old" intel application on a new Mac with ARM cpu.
      * Issue warning if true as we have a faster alternative.
      */
-    private fun checkForCorrectArchitecture() {
+    private suspend fun checkForCorrectArchitecture() {
         logger.trace("Checking for correct JVM architecture on macOS...")
         try {
             val jvmBinaryArch = SystemUtils.OS_ARCH.lowercase(Locale.getDefault())
@@ -116,12 +125,12 @@ class MediathekGuiMac : MediathekGui {
 
             if (isAppleSilicon && isJVMIntel) {
                 logger.warn("⚠️ Running an Intel JVM on Apple Silicon. Consider using a native ARM64 JVM for better performance.")
-                SwingUtilities.invokeLater {
+                withContext(Dispatchers.Swing) {
                     val msg = "<html>Ihr Mac hat eine moderne Apple Silicon CPU.<br/>" +
                             "Sie nutzen jedoch eine MediathekView Version für Intel Prozessoren.<br/><br/>" +
                             "Um die Geschwindigkeit des Programms erheblich zu verbessern laden Sie bitte<br/>" +
                             "die passende <b>MediathekView für Apple Silicon</b> herunter.</html>"
-                    JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE)
+                    JOptionPane.showMessageDialog(this@MediathekGuiMac, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE)
                 }
             }
         } catch (e: Throwable) {

@@ -174,10 +174,11 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
     override fun doInBackground(): Void? {
         try {
             SwingUtilities.invokeLater {
-                val ui = MediathekGui.ui()
-                ui.toggleBlacklistAction.isEnabled = false
-                ui.editBlacklistAction.isEnabled = false
-                ui.loadFilmListAction.isEnabled = false
+                MediathekGui.ui()?.let { ui ->
+                    ui.toggleBlacklistAction.isEnabled = false
+                    ui.editBlacklistAction.isEnabled = false
+                    ui.loadFilmListAction.isEnabled = false
+                }
 
                 progLabel.text = "Indiziere Filme"
                 progressBar.isIndeterminate = false
@@ -264,12 +265,14 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
                 LOG.error("Unable to delete lucene index path", e)
             }
             SwingUtilities.invokeLater {
-                SwingErrorDialog.showExceptionMessage(
-                    MediathekGui.ui(),
-                    "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
-                    ex
-                )
-                MediathekGui.ui().quitApplication()
+                MediathekGui.ui()?.let { ui ->
+                    SwingErrorDialog.showExceptionMessage(
+                        ui,
+                        "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
+                        ex
+                    )
+                    ui.quitApplication()
+                }
             }
         }
 
@@ -277,10 +280,11 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
     }
 
     override fun done() {
-        val ui = MediathekGui.ui()
-        ui.toggleBlacklistAction.setEnabled(true)
-        ui.editBlacklistAction.setEnabled(true)
-        ui.loadFilmListAction.setEnabled(true)
+        MediathekGui.ui()?.let { ui ->
+            ui.toggleBlacklistAction.isEnabled = true
+            ui.editBlacklistAction.isEnabled = true
+            ui.loadFilmListAction.isEnabled = true
+        }
     }
 
     companion object {

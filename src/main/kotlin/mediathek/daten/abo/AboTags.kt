@@ -42,7 +42,6 @@ enum class AboTags(val index: Int, val xmlName: String) {
             return Arrays.stream(entries.toTypedArray()).filter { e: AboTags -> e.xmlName == tag }.findAny()
         }
 
-        @JvmStatic
         fun fromIndex(index: Int): Optional<AboTags> {
             return Arrays.stream(entries.toTypedArray()).filter { e: AboTags -> e.index == index }.findAny()
         }
