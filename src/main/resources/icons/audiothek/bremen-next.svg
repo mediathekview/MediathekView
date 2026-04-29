@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+        width="225.052"
+        height="60"
+        viewBox="0 0 225.052 60"
+        version="1.1"
+        id="svg6"
+        sodipodi:docname="bremennext.svg"
+        inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns="http://www.w3.org/2000/svg"
+>
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     showgrid="false"
+     inkscape:zoom="6.109699"
+     inkscape:cx="112.60784"
+     inkscape:cy="30.034213"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg6" />
+  <g
+     id="Gruppe_837"
+     data-name="Gruppe 837"
+     transform="translate(706 4914.558)"
+     style="fill:#000000">
+    <path
+       id="Pfad_1326"
+       data-name="Pfad 1326"
+       d="M-138.805,0V9.412h11.153V32h12.535V9.412h11.147V0Zm-14.221,0-6.449,8.5L-165.538,0h-14.121l11.811,16.192L-179.76,32h12.97l6.545-8.5,6.112,8.5h14.073l-11.766-16.287L-140.009,0Zm-60.647,0V32h30.444V23.144h-18.248V18.822h14.212V12.6h-14.212V8.13h18.248V0ZM-233.16,0V15.087l-2.164-2.5L-246.472,0h-10.562V32h11.48V16.962l2.208,2.542L-232.151,32h10.47V0Z"
+       transform="translate(-376.978 -4890.561)"
+       fill="#fff"
+       style="fill:#000000" />
+    <path
+       id="Pfad_1327"
+       data-name="Pfad 1327"
+       d="M-110.771-14.1l-7.808-8.036-.76-.851V-14.1h-2.251v-12h2.166l7.57,8.015.771.873V-26.1h2.258v12Zm-14.779,0v-1.87H-134.2v-3.356h6.648v-1.818H-134.2v-3.083h8.647V-26.1h-10.9v12Zm-15.877,0v-12h-3.083l-4.69,8.241-.555,1.009-.557-1.009-4.744-8.241h-3.121v12h2.2V-23.59l.592,1.037L-150.4-14.1h1.1l5.028-8.457.6-1.037V-14.1Zm-20.7,0v-1.87h-8.65v-3.356h6.646v-1.818h-6.646v-3.083h8.65V-26.1h-10.906v12Zm-19.946-6.521c1.656,0,2.434-.793,2.434-1.75v-.148c0-.861-.7-1.707-2.632-1.707h-4.61v3.605Zm4.577,4.454a2.652,2.652,0,0,0,.741,2.011v.061H-178.8c-.614,0-.885-.849-.955-1.936l-.069-1.22c-.075-1.19-.564-1.7-2.817-1.7h-4.245v4.854h-2.255V-26.1h6.536c3.61,0,5.233,1.444,5.233,3.3,0,1.315-.67,2.563-3.015,3,2.345.176,2.848,1.242,2.874,2.648Zm-18.015-1.46c0-.9-.684-1.666-2.378-1.666h-4.977v3.394h5.085c1.658,0,2.27-.776,2.27-1.675Zm-7.355-3.227h4.977c1.655,0,2.378-.781,2.378-1.665v-.047c0-.894-.612-1.66-2.27-1.66h-5.085Zm7.011.776c1.914.3,2.7,1.58,2.7,2.575v.162c0,1.948-1.729,3.246-4.723,3.246h-7.246V-26.1h7.19c2.991,0,4.581,1.268,4.581,3.123v.158a2.811,2.811,0,0,1-2.507,2.747"
+       transform="translate(-428.89 -4882.459)"
+       fill="#fff"
+       style="fill:#000000" />
+    <path
+       id="Pfad_1328"
+       data-name="Pfad 1328"
+       d="M-61.049-35.221a22,22,0,0,0-22-22,22,22,0,0,0-22,22,22.006,22.006,0,0,0,18,21.637V-35.221h8v21.637a22.007,22.007,0,0,0,18-21.637m8,0a30,30,0,0,1-30,30,30,30,0,0,1-30-30,30,30,0,0,1,30-30,30,30,0,0,1,30,30"
+       transform="translate(-592.952 -4849.337)"
+       fill="#fff"
+       style="fill:#000000" />
+  </g>
+</svg>

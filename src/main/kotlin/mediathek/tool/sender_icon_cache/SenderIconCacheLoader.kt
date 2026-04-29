@@ -28,30 +28,27 @@ internal class SenderIconCacheLoader(
     private val useLocalIcons: AtomicBoolean,
 ) {
     private fun getSvgResource(sender: String): String? = when (normalizeSenderLookupKey(sender)) {
-        /*
-ARD Kultur
-Bayern 1
-Bayern 2
-Bayern 3
-BR Klassik
-BR Puls
-BR Schlager
-BR24
-Bremen Eins
-Bremen NEXT
-Bremen Vier
-Bremen Zwei
-DASDING
-         */
         "1live" -> "/icons/audiothek/1live.svg"
         "3sat" -> "/icons/sender/3sat.svg"
         "antenne brandenburg" -> "/icons/audiothek/antenne-brandenburg.svg"
-        "ard", "das erste" -> "/icons/sender/ard.svg"
+        "ard", "das erste", "ard kultur" -> "/icons/sender/ard.svg"
         "ard-alpha" -> "/icons/sender/ard-alpha.svg"
         "arte.de", "arte.en", "arte.es", "arte.fr", "arte.it", "arte.pl", "arte" -> "/icons/sender/arte.svg"
         "br" -> "/icons/sender/br.svg"
         "br heimat" -> "/icons/audiothek/br-heimat.svg"
+        "bayern 1" -> "/icons/audiothek/br1.svg"
+        "bayern 2" -> "/icons/audiothek/br2.svg"
+        "bayern 3" -> "/icons/audiothek/br3.svg"
+        "br klassik" -> "/icons/audiothek/br-klassik.svg"
+        "br puls" -> "/icons/audiothek/br-puls.svg"
+        "br schlager" -> "/icons/audiothek/br-schlager.svg"
+        "br24" -> "/icons/audiothek/br24.svg"
+        "bremen eins" -> "/icons/audiothek/bremen-eins.svg"
+        "bremen next" -> "/icons/audiothek/bremen-next.svg"
+        "bremen vier" -> "/icons/audiothek/bremen-vier.svg"
+        "bremen zwei" -> "/icons/audiothek/bremen-zwei.svg"
         "cosmo" -> "/icons/audiothek/cosmo.svg"
+        "dasding" -> "/icons/audiothek/dasding.svg"
         "deutschlandfunk" -> "/icons/audiothek/deutschlandfunk.svg"
         "deutschlandfunk kultur" -> "/icons/audiothek/deutschlandfunk-kultur.svg"
         "deutschlandfunk nova" -> "/icons/audiothek/deutschlandfunk-nova.svg"
