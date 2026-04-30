@@ -2,10 +2,12 @@ package mediathek.tool.table
 
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.MVConfig
+import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import mediathek.tool.models.TModelAbo
+import mediathek.tool.models.TModelDownload
 import mediathek.tool.models.TModelFilm
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -75,5 +77,19 @@ class MVTableTest {
         assertEquals(DatenFilm.FILM_TITEL, sorter.sortKeys.first().column)
         assertEquals(SortOrder.ASCENDING, sorter.sortKeys.first().sortOrder)
         assertTrue(!sorter.isSortable(DatenFilm.FILM_ABSPIELEN))
+    }
+
+    @Test
+    fun downloadModelReturnsLiveValuesForColumnsLoadedWhileHidden() {
+        val download = DatenDownload()
+        download.arr[DatenDownload.DOWNLOAD_ABO] = "Daily Abo"
+
+        val row = Array<Any>(DatenDownload.MAX_ELEM) { "" }
+        row[DatenDownload.DOWNLOAD_REF] = download
+
+        val model = TModelDownload()
+        model.addRow(row)
+
+        assertEquals("Daily Abo", model.getValueAt(0, DatenDownload.DOWNLOAD_ABO))
     }
 }

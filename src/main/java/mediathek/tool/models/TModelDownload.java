@@ -92,6 +92,15 @@ public class TModelDownload extends DefaultTableModel {
             case DatenDownload.DOWNLOAD_SUBTITLE -> download.isSubtitle();
             case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER -> download.isDownloadManager();
             case DatenDownload.DOWNLOAD_ZURUECKGESTELLT -> download.istZurueckgestellt();
+            case DatenDownload.DOWNLOAD_ABO, DatenDownload.DOWNLOAD_SENDER, DatenDownload.DOWNLOAD_THEMA,
+                    DatenDownload.DOWNLOAD_TITEL, DatenDownload.DOWNLOAD_ZEIT, DatenDownload.DOWNLOAD_DAUER,
+                    DatenDownload.DOWNLOAD_GEO, DatenDownload.DOWNLOAD_FILM_URL, DatenDownload.DOWNLOAD_HISTORY_URL,
+                    DatenDownload.DOWNLOAD_URL, DatenDownload.DOWNLOAD_URL_RTMP, DatenDownload.DOWNLOAD_URL_SUBTITLE,
+                    DatenDownload.DOWNLOAD_PROGRAMMSET, DatenDownload.DOWNLOAD_PROGRAMM,
+                    DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF, DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY,
+                    DatenDownload.DOWNLOAD_ZIEL_DATEINAME, DatenDownload.DOWNLOAD_ZIEL_PFAD,
+                    DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME, DatenDownload.DOWNLOAD_ART,
+                    DatenDownload.DOWNLOAD_QUELLE -> download.arr[column];
             default -> super.getValueAt(row, column);
         };
     }

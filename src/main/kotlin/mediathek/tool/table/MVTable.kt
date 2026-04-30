@@ -217,10 +217,12 @@ abstract class MVTable protected constructor(
                 column.minWidth = 0
                 column.preferredWidth = 0
                 column.maxWidth = 0
+                column.width = 0
             } else {
                 column.minWidth = 10
                 column.maxWidth = 3000
                 column.preferredWidth = breite[index]
+                column.width = breite[index]
             }
         }
     }
@@ -238,7 +240,7 @@ abstract class MVTable protected constructor(
         getSpalten()
         changeInternalColumnWidths()
         changeTableModelColumnWidths()
-        validate()
+        refreshTableLayout()
     }
 
     open fun getSpalten() {
@@ -274,10 +276,19 @@ abstract class MVTable protected constructor(
             }
 
             restoreSelectedTableRows()
-            validate()
+            refreshTableLayout()
         } catch (exception: Exception) {
             logger.error("setSpalten", exception)
         }
+    }
+
+    protected fun refreshTableLayout() {
+        revalidate()
+        tableHeader?.revalidate()
+        parent?.revalidate()
+        repaint()
+        tableHeader?.repaint()
+        parent?.repaint()
     }
 
     /**

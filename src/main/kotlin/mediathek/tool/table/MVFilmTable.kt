@@ -127,7 +127,7 @@ class MVFilmTable : PersistentColumnConfigurationTable(
             reorderColumns()
             restoreSortKeys()
             restoreSelectedTableRows()
-            validate()
+            refreshTableLayout()
         } catch (exception: Exception) {
             logger.error("setSpalten", exception)
         }
