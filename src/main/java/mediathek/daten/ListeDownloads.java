@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
@@ -350,6 +351,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         final var listeBlacklist = daten.getListeBlacklist();
         final var aboHistoryController = daten.getAboHistoryController();
         final var listeFilme = daten.getListeFilme();
+        final Predicate<DatenFilm> blacklistFilter = checkWithBlackList
+                ? listeBlacklist.createDownloadsPredicate()
+                : _ -> true;
 
         for (DatenFilm film : listeFilme) {
             DatenAbo abo = listeAbo.getAboFuerFilm_schnell(film, true);
@@ -362,7 +366,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
             if (checkWithBlackList) {
                 //Blacklist auch bei Abos anwenden
-                if (!listeBlacklist.checkBlackOkFilme_Downloads(film)) {
+                if (!blacklistFilter.test(film)) {
                     continue;
                 }
             }
