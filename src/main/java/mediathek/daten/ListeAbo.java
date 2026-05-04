@@ -206,7 +206,7 @@ public class ListeAbo extends ArrayList<DatenAbo> {
         }
 
         // leere Abos löschen, die sind Fehler
-        this.stream().filter(DatenAbo::isInvalid).forEach(this::remove);
+        removeIf(DatenAbo::isInvalid);
 
         // und jetzt erstellen
         forEach(this::createAbo);
