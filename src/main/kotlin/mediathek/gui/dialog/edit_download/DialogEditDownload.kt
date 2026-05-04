@@ -808,14 +808,19 @@ class DialogEditDownload(
     private fun createGeoLabel() = JLabel().apply {
         horizontalAlignment = SwingConstants.LEFT
         val film = datenDownload.film
-        if (film == null || !film.hasCountries()) {
+        val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
+        if (film == null) {
             toolTipText = "Keine Geoinformationen vorhanden"
             icon = IconUtils.of(FontAwesomeSolid.LOCK_OPEN)
             return@apply
         }
 
-        toolTipText = film.countriesAsString
-        val unlocked = !film.isGeoBlockedForLocation(ApplicationConfiguration.getInstance().geographicLocation)
+        val unlocked = !film.isGeoBlockedForLocation(currentLocation)
+        toolTipText = when {
+            !unlocked && !film.hasCountries() -> "Gesperrt für $currentLocation"
+            film.hasCountries() -> film.countriesAsString
+            else -> "Keine Geoinformationen vorhanden"
+        }
         icon = IconUtils.of(if (unlocked) FontAwesomeSolid.LOCK_OPEN else FontAwesomeSolid.LOCK)
         makeShrinkable(this)
     }

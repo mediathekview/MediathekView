@@ -20,6 +20,7 @@ package mediathek.daten;
 
 import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.bookmark.BookmarkData;
+import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.FileSize;
 import mediathek.tool.FilmSize;
 import mediathek.tool.GermanStringSorter;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
+import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -77,6 +79,10 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * List of countries which can view this film.
      */
     private EnumSet<Country> countrySet;
+    /**
+     * Runtime evidence from live URL checks that a film is blocked in specific configured countries.
+     */
+    private final EnumSet<Country> knownBlockedCountries = EnumSet.noneOf(Country.class);
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
     /**
      * File size in MByte
@@ -123,6 +129,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (other.countrySet != null && !other.countrySet.isEmpty()) {
             this.countrySet = EnumSet.copyOf(other.countrySet);
         }
+        this.knownBlockedCountries.addAll(other.knownBlockedCountries);
         this.dataMap.putAll(other.dataMap);
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
@@ -437,7 +444,14 @@ public class DatenFilm implements Comparable<DatenFilm> {
         return countrySet != null && countrySet.contains(country);
     }
 
+    public void markGeoBlockedForLocation(@NonNull Country location) {
+        knownBlockedCountries.add(location);
+    }
+
     public boolean isGeoBlockedForLocation(@NonNull Country location) {
+        if (knownBlockedCountries.contains(location)) {
+            return true;
+        }
         if (!hasCountries()) {
             return false;
         }
@@ -488,17 +502,37 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public FileSize.LookupResult lookupFileSizeForUrl(@NonNull String url, boolean forceFetch, @Nullable String resolution) {
         var cachedLookupResult = getCachedFileSizeLookup(url);
         if (cachedLookupResult != null) {
+            applyFileSizeLookupResult(url, cachedLookupResult);
             return cachedLookupResult;
         }
 
         var lookupResult = FileSize.lookupFileSize(url, forceFetch, resolution);
-        cacheFileSizeLookup(url, lookupResult);
+        applyFileSizeLookupResult(url, lookupResult);
         return lookupResult;
+    }
+
+    void applyFileSizeLookupResult(@NonNull String url, FileSize.@NonNull LookupResult lookupResult) {
+        if (isForbiddenHlsLookup(url, lookupResult)) {
+            markGeoBlockedForLocation(ApplicationConfiguration.getInstance().getGeographicLocation());
+        }
+        cacheFileSizeLookup(url, lookupResult);
+    }
+
+    private boolean isForbiddenHlsLookup(@NonNull String url, FileSize.@NonNull LookupResult lookupResult) {
+        if (lookupResult.getHttpStatusCode() == null || lookupResult.getHttpStatusCode() != HttpURLConnection.HTTP_FORBIDDEN) {
+            return false;
+        }
+
+        if (url.toLowerCase(Locale.ROOT).contains(".m3u8")) {
+            return true;
+        }
+
+        return lookupResult.getResolutionUrl() != null && lookupResult.getResolutionUrl().encodedPath().endsWith(".m3u8");
     }
 
     private FileSize.LookupResult getCachedFileSizeLookup(@NonNull String url) {
         var cachedLookupResult = cachedFileSizeLookups.get(url);
-        if (cachedLookupResult != null && !cachedLookupResult.getSizeText().isEmpty()) {
+        if (cachedLookupResult != null && (!cachedLookupResult.getSizeText().isEmpty() || cachedLookupResult.getHttpStatusCode() != null)) {
             return cachedLookupResult;
         }
 
@@ -513,7 +547,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     private void cacheFileSizeLookup(@NonNull String url, FileSize.@NonNull LookupResult lookupResult) {
-        if (lookupResult.getSizeText().isEmpty()) {
+        if (lookupResult.getSizeText().isEmpty() && lookupResult.getHttpStatusCode() == null) {
             return;
         }
 

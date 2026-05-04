@@ -1,13 +1,13 @@
 package mediathek.tool
 
 import kotlinx.coroutines.runBlocking
+import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.Protocol
-import okhttp3.Request
-import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.net.InetAddress
+import java.net.UnknownHostException
 
 internal class HlsPlaylistSizeEstimatorTest {
     private val estimator = HlsPlaylistSizeEstimator(segmentParallelism = 2)
@@ -129,5 +129,72 @@ internal class HlsPlaylistSizeEstimatorTest {
         response.use {
             assertEquals(12_345L, estimator.contentLengthOrRangeLength(it))
         }
+    }
+
+    @Test
+    fun rejectsPrivateVariantPlaylistUrls() {
+        val masterUrl = "https://example.org/master.m3u8".toHttpUrl()
+        val playlists = mapOf(
+            masterUrl to """
+                #EXTM3U
+                #EXT-X-STREAM-INF:BANDWIDTH=1500000,RESOLUTION=1280x720
+                http://127.0.0.1/private.m3u8
+            """.trimIndent(),
+        )
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            runBlocking {
+                estimator.estimate(
+                    playlistUrl = masterUrl,
+                    textLoader = { url -> playlists.getValue(url) },
+                    contentLengthLoader = { error("private variant should be rejected before size lookup") },
+                )
+            }
+        }
+
+        assertTrue(exception.message!!.contains("HLS URL host is not allowed"))
+    }
+
+    @Test
+    fun rejectsPrivateSegmentUrls() {
+        val mediaUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl()
+        val playlists = mapOf(
+            mediaUrl to """
+                #EXTM3U
+                #EXTINF:5.0,
+                http://192.168.1.10/segment.ts
+            """.trimIndent(),
+        )
+
+        val exception = assertThrows(IllegalArgumentException::class.java) {
+            runBlocking {
+                estimator.estimate(
+                    playlistUrl = mediaUrl,
+                    textLoader = { url -> playlists.getValue(url) },
+                    contentLengthLoader = { error("private segment should be rejected before size lookup") },
+                )
+            }
+        }
+
+        assertTrue(exception.message!!.contains("HLS URL host is not allowed"))
+    }
+
+    @Test
+    fun hlsSpecificClientRejectsPrivateResolvedAddresses() {
+        val client = HlsEgressPolicy.clientFor(
+            OkHttpClient.Builder()
+                .dns(
+                    Dns {
+                        listOf(InetAddress.getByName("10.0.0.5"))
+                    },
+                )
+                .build(),
+        )
+
+        val exception = assertThrows(UnknownHostException::class.java) {
+            client.dns.lookup("cdn.example.org")
+        }
+
+        assertTrue(exception.message!!.contains("local or private address"))
     }
 }

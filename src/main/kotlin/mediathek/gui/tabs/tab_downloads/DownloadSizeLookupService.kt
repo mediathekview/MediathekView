@@ -21,6 +21,7 @@ package mediathek.gui.tabs.tab_downloads
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.daten.DatenDownload
+import mediathek.tool.ApplicationConfiguration
 import org.apache.logging.log4j.LogManager
 import java.lang.Runnable
 import java.util.*
@@ -48,8 +49,11 @@ class DownloadSizeLookupService(
 
                 try {
                     val oldSize = download.mVFilmSize.size
+                    val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
+                    val wasGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
                     download.queryLiveSize()
-                    if (download.mVFilmSize.size != oldSize) {
+                    val isGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
+                    if (download.mVFilmSize.size != oldSize || isGeoBlocked != wasGeoBlocked) {
                         updateNeeded = true
                     }
                 } catch (ex: RuntimeException) {

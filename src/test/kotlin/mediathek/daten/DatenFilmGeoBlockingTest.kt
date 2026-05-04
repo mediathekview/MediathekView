@@ -1,7 +1,9 @@
 package mediathek.daten
 
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.FileSize
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class DatenFilmGeoBlockingTest {
@@ -36,5 +38,32 @@ internal class DatenFilmGeoBlockingTest {
 
         assertFalse(film.isGeoBlockedForLocation(Country.DE))
         assertTrue(film.isGeoBlockedForLocation(Country.AT))
+    }
+
+    @Test
+    fun forbiddenHlsSizeLookupMarksConfiguredCountryBlocked() {
+        val previousLocation = ApplicationConfiguration.getInstance().geographicLocation
+        ApplicationConfiguration.getInstance().geographicLocation = Country.AT
+        try {
+            val film = DatenFilm()
+            val url = "https://example.org/video/master.m3u8"
+
+            film.applyFileSizeLookupResult(
+                url,
+                FileSize.LookupResult(
+                    byteLength = FileSize.INVALID_SIZE.toLong(),
+                    httpStatusCode = 403,
+                    resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
+                    quality = "HIGH_QUALITY",
+                ),
+            )
+
+            assertFalse(film.hasCountries())
+            assertFalse(film.isGeoBlockedForLocation(Country.DE))
+            assertTrue(film.isGeoBlockedForLocation(Country.AT))
+            assertEquals(403, film.lookupFileSizeForUrl(url).httpStatusCode)
+        } finally {
+            ApplicationConfiguration.getInstance().geographicLocation = previousLocation
+        }
     }
 }

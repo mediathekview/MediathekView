@@ -96,7 +96,16 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     protected void drawGeolocationIcons(@NonNull DatenFilm film, boolean isSelected) {
         setHorizontalAlignment(SwingConstants.CENTER);
         setText("");
-        if (!film.hasCountries()) {
+        var curLocation = ApplicationConfiguration.getInstance().getGeographicLocation();
+        var lockedForCurrentLocation = film.isGeoBlockedForLocation(curLocation);
+        if (lockedForCurrentLocation) {
+            setToolTipText(film.hasCountries() ? film.getCountriesAsString() : "Gesperrt für " + curLocation);
+            if (isSelected)
+                setIcon(lockedIconSelected);
+            else
+                setIcon(lockedIcon);
+        }
+        else if (!film.hasCountries()) {
             setToolTipText("Keine Geoinformationen vorhanden");
             if (isSelected)
                 setIcon(unlockedIconSelected);
@@ -105,20 +114,10 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         }
         else {
             setToolTipText(film.getCountriesAsString());
-            if (filmIsCountryUnlocked(film)) {
-                //we are unlocked
-                if (isSelected)
-                    setIcon(unlockedIconSelected);
-                else
-                    setIcon(unlockedIcon);
-            }
-            else {
-                // locked
-                if (isSelected)
-                    setIcon(lockedIconSelected);
-                else
-                    setIcon(lockedIcon);
-            }
+            if (isSelected)
+                setIcon(unlockedIconSelected);
+            else
+                setIcon(unlockedIcon);
         }
     }
 
@@ -147,14 +146,12 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     }
 
     protected void setIndicatorIcons(@NonNull DatenFilm datenFilm, boolean isSelected, boolean hqColumnHidden, boolean utColumnHidden) {
-        if (datenFilm.hasCountries()) {
-            if (!filmIsCountryUnlocked(datenFilm)) {
-                //locked
-                if (isSelected)
-                    iconList.add(lockedIconSelected);
-                else
-                    iconList.add(lockedIcon);
-            }
+        if (!filmIsCountryUnlocked(datenFilm)) {
+            //locked
+            if (isSelected)
+                iconList.add(lockedIconSelected);
+            else
+                iconList.add(lockedIcon);
         }
 
         // if HQ column is NOT visible add icon

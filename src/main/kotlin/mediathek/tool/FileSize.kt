@@ -101,6 +101,7 @@ object FileSize {
         cachedHlsLookup: (HttpUrl, String?) -> LookupResult? = ::lookupCachedHlsResult,
         directSizeLoader: (HttpUrl) -> Long,
         hlsSizeLoader: (HttpUrl) -> HlsLookupResult,
+        hlsLookupLogger: (HttpUrl, LookupResult) -> LookupResult = ::logHlsLookupIfNeeded,
     ): LookupResult {
         if (!url.scheme.startsWith("http")) {
             return LookupResult(INVALID_SIZE.toLong())
@@ -117,6 +118,7 @@ object FileSize {
 
         val result = try {
             if (url.encodedPath.endsWith(".m3u8")) {
+                HlsEgressPolicy.requirePublicHttpUrl(url)
                 cachedHlsLookup(url, quality)?.let { return it }
                 hlsSizeLoader(url)
             } else {
@@ -127,9 +129,9 @@ object FileSize {
             }
         } catch (exception: HttpStatusException) {
             logger.debug("File size lookup failed for {} with HTTP {}", url, exception.statusCode)
-            return logHlsLookupIfNeeded(
-                url = url,
-                lookupResult = LookupResult(
+            return hlsLookupLogger(
+                url,
+                LookupResult(
                     byteLength = INVALID_SIZE.toLong(),
                     httpStatusCode = exception.statusCode,
                     resolutionUrl = exception.requestUrl,
@@ -138,16 +140,10 @@ object FileSize {
             )
         } catch (exception: IOException) {
             logger.debug("File size lookup failed for {}", url, exception)
-            return logHlsLookupIfNeeded(
-                url = url,
-                lookupResult = LookupResult(INVALID_SIZE.toLong()),
-            )
+            return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         } catch (exception: RuntimeException) {
             logger.debug("File size lookup failed for {}", url, exception)
-            return logHlsLookupIfNeeded(
-                url = url,
-                lookupResult = LookupResult(INVALID_SIZE.toLong()),
-            )
+            return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         }
 
         val lookupResult = if (result.byteLength < ONE_MiB) {
@@ -165,7 +161,7 @@ object FileSize {
             )
         }
 
-        return logHlsLookupIfNeeded(url, lookupResult)
+        return hlsLookupLogger(url, lookupResult)
     }
 
     private fun lookupCachedHlsResult(url: HttpUrl, quality: String?): LookupResult? {

@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.apache.logging.log4j.LogManager
@@ -12,6 +13,7 @@ import kotlin.math.ceil
 
 class HlsPlaylistSizeEstimator(
     private val segmentParallelism: Int = DEFAULT_SEGMENT_PARALLELISM,
+    private val httpClient: OkHttpClient = HlsEgressPolicy.clientFor(MVHttpClient.getInstance().httpClient),
 ) {
     data class VariantInfo(
         val bandwidth: Long?,
@@ -30,7 +32,9 @@ class HlsPlaylistSizeEstimator(
     )
 
     suspend fun estimate(url: String): EstimateResult {
-        val playlistUrl = requireNotNull(url.toHttpUrlOrNull()) { "Invalid HLS URL: $url" }
+        val playlistUrl = HlsEgressPolicy.requirePublicHttpUrl(
+            requireNotNull(url.toHttpUrlOrNull()) { "Invalid HLS URL: $url" },
+        )
         return estimate(
             playlistUrl = playlistUrl,
             textLoader = ::loadText,
@@ -43,6 +47,7 @@ class HlsPlaylistSizeEstimator(
         textLoader: suspend (HttpUrl) -> String,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): EstimateResult {
+        HlsEgressPolicy.requirePublicHttpUrl(playlistUrl)
         val playlist = textLoader(playlistUrl)
 
         return if (playlist.isMasterPlaylist()) {
@@ -258,7 +263,9 @@ class HlsPlaylistSizeEstimator(
         lineSequence().map(String::trim).any { it.startsWith(STREAM_INF_TAG) }
 
     private fun resolveUrl(baseUrl: HttpUrl, reference: String): HttpUrl =
-        requireNotNull(baseUrl.resolve(reference)) { "Could not resolve '$reference' against '$baseUrl'" }
+        HlsEgressPolicy.requirePublicHttpUrl(
+            requireNotNull(baseUrl.resolve(reference)) { "Could not resolve '$reference' against '$baseUrl'" },
+        )
 
     private suspend fun sumSegmentUrls(
         segmentUrls: List<HttpUrl>,
@@ -280,12 +287,14 @@ class HlsPlaylistSizeEstimator(
     }
 
     private suspend fun loadText(url: HttpUrl): String = withContext(Dispatchers.IO) {
+        HlsEgressPolicy.requirePublicHttpUrl(url)
         execute(Request.Builder().url(url).get().build()) { response ->
             response.body.string()
         }
     }
 
     private suspend fun loadContentLength(url: HttpUrl): Long = withContext(Dispatchers.IO) {
+        HlsEgressPolicy.requirePublicHttpUrl(url)
         val headRequest = Request.Builder().url(url).head().build()
         val headLength = runCatching {
             execute(headRequest, ::contentLength)
@@ -311,7 +320,7 @@ class HlsPlaylistSizeEstimator(
 
     private fun <T> execute(request: Request, mapper: (Response) -> T): T =
         try {
-            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            httpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     throw FileSize.HttpStatusException(response.code, request.url)
                 }
