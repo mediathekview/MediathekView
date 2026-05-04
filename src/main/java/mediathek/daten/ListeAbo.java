@@ -177,18 +177,19 @@ public class ListeAbo extends ArrayList<DatenAbo> {
     }
 
     /**
-     * Assign found abo to the film objects.
+     * Assign found active abo to the film objects.
      * Time-intensive procedure!
      *
      * @param film assignee
      */
     private void assignAboToFilm(@NonNull DatenFilm film) {
-        stream().filter(abo
-                -> Filter.filterAufFilmPruefen(abo.getSender(), abo.getThema(),
-                abo.getTitelFilterPattern(),
-                abo.getThemaFilterPattern(),
-                abo.getIrgendwoFilterPattern(),
-                film))
+        stream()
+                .filter(DatenAbo::isActive)
+                .filter(abo -> Filter.filterAufFilmPruefen(abo.getSender(), abo.getThema(),
+                        abo.getTitelFilterPattern(),
+                        abo.getThemaFilterPattern(),
+                        abo.getIrgendwoFilterPattern(),
+                        film))
                 .findAny().
                 ifPresentOrElse(film::setAbo, () -> deleteAboInFilm(film));
     }
