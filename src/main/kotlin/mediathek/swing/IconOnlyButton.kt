@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,26 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.swing;
+package mediathek.swing
 
-import javax.swing.*;
+import javax.swing.Action
+import javax.swing.JButton
 
-public class IconOnlyToggleButton extends JToggleButton {
-    public IconOnlyToggleButton(Action action) {
-        super(action);
-        setHideActionText(true);
-        setDisabledIcon(IconUtils.generateDisabledIcon(action));
+open class IconOnlyButton(action: Action) : JButton(action) {
+    init {
+        hideActionText = true
+        disabledIcon = IconUtils.generateDisabledIcon(action)
     }
 
-    @Override
-    public void updateUI() {
-        super.updateUI();
-        var action = getAction();
-        if (action != null) {
-            var icon = IconUtils.generateDisabledIcon(action);
-            if (icon != null) {
-                setDisabledIcon(icon);
-            }
+    override fun updateUI() {
+        super.updateUI()
+        action?.let { currentAction ->
+            IconUtils.generateDisabledIcon(currentAction)?.let { disabledIcon = it }
         }
     }
 }

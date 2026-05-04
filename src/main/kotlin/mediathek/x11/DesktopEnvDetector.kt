@@ -44,7 +44,6 @@ object DesktopEnvDetector {
         detectDesktopEnvironment()
     }
 
-    @JvmSynthetic
     suspend fun detectDesktopEnvironment(): DesktopEnvironment {
         val envValue = getDesktopEnvFromVariables().uppercase(Locale.ROOT)
 

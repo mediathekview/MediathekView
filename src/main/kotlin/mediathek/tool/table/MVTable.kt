@@ -34,16 +34,14 @@ import javax.swing.table.AbstractTableModel
 import javax.swing.table.TableColumnModel
 
 abstract class MVTable protected constructor(
-    @JvmField protected val maxSpalten: Int,
-    @JvmField protected val spaltenAnzeigen: ColumnVisibilityStore,
+    protected val maxSpalten: Int,
+    protected val spaltenAnzeigen: ColumnVisibilityStore,
     protected val showIconsConfigKey: java.util.Optional<MVConfig.Configs>,
     protected val smallSenderIconConfigKey: java.util.Optional<MVConfig.Configs>,
 ) : JTable() {
 
-    @JvmField
     protected val breite = IntArray(maxSpalten) { -1 }
 
-    @JvmField
     protected val reihe = IntArray(maxSpalten) { -1 }
 
     private var useSmallSenderIconsState = false
