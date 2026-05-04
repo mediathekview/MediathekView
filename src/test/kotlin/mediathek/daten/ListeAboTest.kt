@@ -19,6 +19,7 @@
 package mediathek.daten
 
 import mediathek.daten.abo.DatenAbo
+import mediathek.daten.abo.FilmLengthState
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
@@ -47,5 +48,35 @@ class ListeAboTest {
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
         assertSame(activeSpecificAbo, abos.getAboFuerFilm_schnell(film, false))
+    }
+
+    @Test
+    fun lengthValidAboIsPreferredOverEarlierTextOnlyMatch() {
+        val tooLongMinimumAbo = DatenAbo().apply {
+            sender = "ZDF"
+            title = "Heute Journal"
+            mindestDauerMinuten = 60
+            filmLengthState = FilmLengthState.MINIMUM
+        }
+        val validMinimumAbo = DatenAbo().apply {
+            sender = "ZDF"
+            title = "Heute Journal"
+            mindestDauerMinuten = 10
+            filmLengthState = FilmLengthState.MINIMUM
+        }
+        val abos = ListeAbo().apply {
+            addAbo(tooLongMinimumAbo)
+            addAbo(validMinimumAbo)
+        }
+        val film = DatenFilm().apply {
+            sender = "ZDF"
+            thema = "Nachrichten"
+            title = "Heute Journal"
+            setFilmLengthSeconds(30 * 60)
+        }
+
+        abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
+
+        assertSame(validMinimumAbo, abos.getAboFuerFilm_schnell(film, true))
     }
 }

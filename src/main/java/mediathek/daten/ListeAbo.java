@@ -139,15 +139,18 @@ public class ListeAbo extends ArrayList<DatenAbo> {
         final var abo = film.getAbo();
         if (abo == null) {
             return null;
-        } else {
-            if (laengePruefen) {
-                if (!Filter.laengePruefen(abo.getMindestDauerMinuten(), film.getFilmLength(),
-                        abo.getFilmLengthState() == FilmLengthState.MINIMUM)) {
-                    return null;
-                }
-            }
-            return abo;
         }
+
+        if (laengePruefen && !matchesLength(abo, film)) {
+            return null;
+        }
+
+        return abo;
+    }
+
+    private boolean matchesLength(DatenAbo abo, DatenFilm film) {
+        return Filter.laengePruefen(abo.getMindestDauerMinuten(), film.getFilmLength(),
+                abo.getFilmLengthState() == FilmLengthState.MINIMUM);
     }
 
     private void deleteAboInFilm(DatenFilm film) {
@@ -183,15 +186,36 @@ public class ListeAbo extends ArrayList<DatenAbo> {
      * @param film assignee
      */
     private void assignAboToFilm(@NonNull DatenFilm film) {
-        stream()
-                .filter(DatenAbo::isActive)
-                .filter(abo -> Filter.filterAufFilmPruefen(abo.getSender(), abo.getThema(),
-                        abo.getTitelFilterPattern(),
-                        abo.getThemaFilterPattern(),
-                        abo.getIrgendwoFilterPattern(),
-                        film))
-                .findAny().
-                ifPresentOrElse(film::setAbo, () -> deleteAboInFilm(film));
+        DatenAbo textMatch = null;
+
+        for (DatenAbo abo : this) {
+            if (!abo.isActive()) {
+                continue;
+            }
+
+            if (!Filter.filterAufFilmPruefen(abo.getSender(), abo.getThema(),
+                    abo.getTitelFilterPattern(),
+                    abo.getThemaFilterPattern(),
+                    abo.getIrgendwoFilterPattern(),
+                    film)) {
+                continue;
+            }
+
+            if (textMatch == null) {
+                textMatch = abo;
+            }
+
+            if (matchesLength(abo, film)) {
+                film.setAbo(abo);
+                return;
+            }
+        }
+
+        if (textMatch == null) {
+            deleteAboInFilm(film);
+        } else {
+            film.setAbo(textMatch);
+        }
     }
 
     /**
