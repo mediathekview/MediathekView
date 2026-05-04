@@ -62,7 +62,7 @@ class DialogEditAbo(
     }
 
     private fun configurePathValidation(daten: Daten) {
-        val pfade = daten.listeAbo.pfade
+        val pfade = aboTargetPaths(daten)
         if (!pfade.contains(aktAbo.zielpfad)) {
             pfade.add(0, aktAbo.zielpfad)
         }
@@ -74,6 +74,13 @@ class DialogEditAbo(
         editorComp.isOpaque = true
         editorComp.document.addDocumentListener(CheckPathDocListener())
     }
+
+    private fun aboTargetPaths(daten: Daten): MutableList<String> =
+        daten.listeAbo
+            .map { abo -> abo.zielpfad }
+            .distinct()
+            .sortedWith(GermanStringSorter.getInstance())
+            .toMutableList()
 
     private fun configureActions(parent: JFrame) {
         jButtonBeenden.addActionListener {

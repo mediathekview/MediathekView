@@ -3,7 +3,6 @@ package mediathek.tool;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import mediathek.daten.DatenFilm;
-import mediathek.daten.abo.DatenAbo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.NonNull;
@@ -26,43 +25,6 @@ public class Filter {
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(Filter::compilePattern);
     private static final Logger logger = LogManager.getLogger(Filter.class);
-
-    public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
-        // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
-        // Filme findet, dann wäre das neue Abo hinfällig
-
-        String senderExistiert = aboExistiert.getSender();
-        String themaExistiert = aboExistiert.getThema();
-
-        String[] titelExistiert = aboExistiert.getTitle().toLowerCase().split(",");
-        String[] themaTitelExistiert = aboExistiert.getThemaTitel().toLowerCase().split(",");
-        String[] irgendwoExistiert = aboExistiert.getIrgendwo().toLowerCase().split(",");
-
-        // Abos sollen sich nicht nur in der Länge unterscheiden
-        String themaPruefen = aboPruefen.getThema();
-        String titelPruefen = aboPruefen.getTitle();
-        String irgendwoPruefen = aboPruefen.getIrgendwo();
-
-        if (conditionExists(senderExistiert, aboPruefen.getSender())) {
-            if (conditionExists(themaExistiert, themaPruefen)) {
-                if (titleConditionExists(titelExistiert, titelPruefen)) {
-                    if (themaTitelConditionExists(themaTitelExistiert, themaPruefen, titelPruefen)) {
-                        if (aboIrgendwoConditionExists(irgendwoExistiert, themaPruefen, titelPruefen, irgendwoPruefen)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private static boolean aboIrgendwoConditionExists(String[] irgendwoExistiert, String themaPruefen, String titelPruefen, String irgendwoPruefen) {
-        return irgendwoExistiert.length == 0
-                || pruefen(irgendwoExistiert, themaPruefen)
-                || pruefen(irgendwoExistiert, titelPruefen)
-                || pruefen(irgendwoExistiert, irgendwoPruefen);
-    }
 
     public static boolean filterAufFilmPruefenWithLength(final String senderSuchen, final String themaSuchen,
                                                          final String[] titelSuchen, final String[] themaTitelSuchen,

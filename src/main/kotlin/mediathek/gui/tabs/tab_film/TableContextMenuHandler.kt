@@ -28,11 +28,10 @@ import mediathek.controller.starter.Start
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
-import mediathek.daten.abo.DatenAbo
 import mediathek.daten.blacklist.BlacklistRule
 import mediathek.filmlisten.writer.FilmListWriter
+import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.actions.UrlHyperlinkAction
-import mediathek.gui.dialog.DialogAboNoSet
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.ApplicationConfiguration
@@ -74,6 +73,7 @@ class TableContextMenuHandler(
 
     private val daten = Daten.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    private val createAboAction = CreateNewAboAction(daten.listeAbo) { host.gui() }
     private val beobPrint = BeobPrint()
     private val beobAbo = BeobAbo(false)
     private val beobAboMitTitel = BeobAbo(true)
@@ -611,23 +611,22 @@ class TableContextMenuHandler(
         private val mitTitel: Boolean,
     ) : ActionListener {
         override fun actionPerformed(event: ActionEvent?) {
-            if (Daten.getInstance().listePset.listeAbo.isEmpty()) {
-                DialogAboNoSet(host.gui()).isVisible = true
-            } else {
-                selectedFilmAtPopupPoint()?.let { film ->
-                    host.setSelectionUpdatesSuspended(true)
-                    try {
-                        val datenAbo: DatenAbo? = daten.listeAbo.getAboFuerFilm_schnell(film, false)
-                        if (datenAbo != null) {
-                            daten.listeAbo.aboLoeschen(datenAbo)
-                        } else if (mitTitel) {
-                            daten.listeAbo.addAbo(film.thema, film.sender, film.thema, film.title)
-                        } else {
-                            daten.listeAbo.addAbo(film.thema, film.sender, film.thema, "")
-                        }
-                    } finally {
-                        host.setSelectionUpdatesSuspended(false)
+            selectedFilmAtPopupPoint()?.let { film ->
+                host.setSelectionUpdatesSuspended(true)
+                try {
+                    val datenAbo = daten.listeAbo.getAboFuerFilm_schnell(film, false)
+                    if (datenAbo != null) {
+                        daten.listeAbo.aboLoeschen(datenAbo)
+                    } else {
+                        createAboAction.createAbo(
+                            aboname = film.thema,
+                            filmSender = film.sender,
+                            filmThema = film.thema,
+                            filmTitel = if (mitTitel) film.title else "",
+                        )
                     }
+                } finally {
+                    host.setSelectionUpdatesSuspended(false)
                 }
             }
         }
