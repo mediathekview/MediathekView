@@ -252,23 +252,18 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.nr = nr;
     }
 
-    public DatenAbo getCopy() {
-        //FIXME do it correct!
-        DatenAbo ret = new DatenAbo();
-        ret.mindestdauerMinuten = this.mindestdauerMinuten;
-        ret.filmLengthState = this.filmLengthState;
-        ret.active = this.active;
-        ret.name = this.name;
-        ret.sender = this.sender;
-        ret.thema = this.thema;
-        ret.titel = this.titel;
-        ret.thema_titel = this.thema_titel;
-        ret.down_datum = this.down_datum;
-        ret.zielpfad = this.zielpfad;
-        ret.pSetName = this.pSetName;
-        ret.doNotStartAutomatically = this.doNotStartAutomatically;
-        ret.irgendwo = this.irgendwo;
-        return ret;
+    public static boolean isInvalidFilter(
+            @NonNull String sender,
+            @NonNull String thema,
+            @NonNull String title,
+            @NonNull String themaTitel,
+            @NonNull String irgendwo
+    ) {
+        return sender.isEmpty()
+                && thema.isEmpty()
+                && title.isEmpty()
+                && themaTitel.isEmpty()
+                && irgendwo.isEmpty();
     }
 
     /**
@@ -278,11 +273,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
      * @return true wenn Abo leer.
      */
     public boolean isInvalid() {
-        return getSender().isEmpty()
-                && getThema().isEmpty()
-                && getTitle().isEmpty()
-                && getThemaTitel().isEmpty()
-                && getIrgendwo().isEmpty();
+        return isInvalidFilter(getSender(), getThema(), getTitle(), getThemaTitel(), getIrgendwo());
     }
 
     /**

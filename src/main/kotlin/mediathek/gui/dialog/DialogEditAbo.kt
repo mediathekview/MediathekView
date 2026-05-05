@@ -195,9 +195,7 @@ class DialogEditAbo(
     }
 
     private fun applyIfValid(): Boolean {
-        val test = aktAbo.copy
-        writeFieldsToAbo(test)
-        ok = if (test.isInvalid) {
+        ok = if (hasInvalidFilterFields()) {
             false
         } else {
             writeFieldsToAbo(aktAbo)
@@ -205,6 +203,15 @@ class DialogEditAbo(
         }
         return ok
     }
+
+    private fun hasInvalidFilterFields(): Boolean =
+        DatenAbo.isInvalidFilter(
+            selectedComboBoxValue(comboboxSender),
+            textFieldThema.text.trim(),
+            textFieldTitel.text.trim(),
+            textFieldThemaTitel.text.trim(),
+            textFieldIrgendwo.text.trim(),
+        )
 
     private fun writeFieldsToAbo(abo: DatenAbo) {
         // no ABO_NR
