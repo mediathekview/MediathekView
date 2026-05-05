@@ -128,7 +128,7 @@ class FilmStatisticsDialog(
     }
 
     private suspend fun computeStatistics(): ComputedStatistics = withContext(Dispatchers.Default) {
-        val sorter = GermanStringSorter.getInstance()
+        val sorter = GermanStringSorter
         val today = LocalDate.now()
         val zoneId = ZoneId.systemDefault()
         val currentGeoLocation = ApplicationConfiguration.getInstance().geographicLocation

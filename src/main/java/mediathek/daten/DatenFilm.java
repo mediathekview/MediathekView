@@ -72,7 +72,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Compressed URLs are missing the base normal quality URL and are indicated by the pipe-symbol.
      */
     public static final char COMPRESSION_MARKER = '|';
-    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
+    private static final GermanStringSorter sorter = GermanStringSorter.INSTANCE;
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     private final static AtomicInteger FILMNR_GENERATOR = new AtomicInteger(0);
     /**

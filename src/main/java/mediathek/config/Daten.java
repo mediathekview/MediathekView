@@ -105,7 +105,7 @@ public class Daten {
 
     private void setupAllSendersList() {
         var sortedSenderList = new SortedList<>(SenderListBoxModel.getProvidedSenderList());
-        sortedSenderList.setComparator(GermanStringSorter.getInstance());
+        sortedSenderList.setComparator(GermanStringSorter.INSTANCE);
 
         allSenderList = sortedSenderList;
     }

@@ -115,7 +115,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
             "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
             "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
-    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
+    private static final GermanStringSorter sorter = GermanStringSorter.INSTANCE;
     private static final FastDateFormat sdf_datum_zeit = FastDateFormat.getInstance("dd.MM.yyyyHH:mm:ss");
     private static final FastDateFormat sdf_datum = FastDateFormat.getInstance("dd.MM.yyyy");
     private static final Logger logger = LogManager.getLogger(DatenDownload.class);

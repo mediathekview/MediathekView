@@ -26,7 +26,7 @@ internal class BigSenderPenaltyComparatorTest {
         val expectedWithoutPenalty = SenderListBoxModel.providedSenderList
             .toList()
             .filter { sender -> sender != "ARD" && sender != "ZDF" }
-            .sortedWith(GermanStringSorter.getInstance())
+            .sortedWith(GermanStringSorter)
         val actualWithoutPenalty = sortedSenders.subList(0, senderCount - 2)
 
         assertEquals(expectedWithoutPenalty, actualWithoutPenalty)

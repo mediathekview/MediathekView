@@ -101,7 +101,7 @@ public class MVConfig {
             liste.add(new String[]{entry, HASHMAP.get(entry)});
         }
 
-        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        GermanStringSorter sorter = GermanStringSorter.INSTANCE;
         liste.sort((o1, o2) -> sorter.compare(o1[0],o2[0]));
 
         return liste;

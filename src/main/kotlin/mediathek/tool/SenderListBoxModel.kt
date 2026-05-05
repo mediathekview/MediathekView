@@ -60,6 +60,6 @@ object SenderListBoxModel {
         providedSenderList.add("ZDFinfo")
         providedSenderList.add("ZDFneo")
         providedSenderList.add("ZDF-tivi")
-        providedSenderList.sortWith(GermanStringSorter.getInstance())
+        providedSenderList.sortWith(GermanStringSorter)
     }
 }

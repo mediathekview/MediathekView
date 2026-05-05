@@ -211,7 +211,7 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
                 val streams = streamService.getStreams()
                 val entries = streams.map { (key, info) ->
                     LivestreamEntry(key, info.name, info.streamUrl)
-                }.sortedWith(compareBy(GermanStringSorter.getInstance()) { it.streamName })
+                }.sortedWith(compareBy(GermanStringSorter) { it.streamName })
 
                 withContext(Dispatchers.Swing) {
                     if (entries.isEmpty()) {

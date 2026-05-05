@@ -83,7 +83,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
         return mystream.map(DatenFilm::getThema)
                 .filter(distinctByKey(ListeFilme::normalizeKey))
-                .sorted(GermanStringSorter.getInstance()).toList();
+                .sorted(GermanStringSorter.INSTANCE).toList();
     }
 
     /**
@@ -117,7 +117,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             }
         }
 
-        result.sort(GermanStringSorter.getInstance());
+        result.sort(GermanStringSorter.INSTANCE);
         return List.copyOf(result);
     }
 

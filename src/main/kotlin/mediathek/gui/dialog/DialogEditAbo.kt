@@ -79,7 +79,7 @@ class DialogEditAbo(
         daten.listeAbo
             .map { abo -> abo.zielpfad }
             .distinct()
-            .sortedWith(GermanStringSorter.getInstance())
+            .sortedWith(GermanStringSorter)
             .toMutableList()
 
     private fun configureActions(parent: JFrame) {

@@ -57,7 +57,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int MAX_ELEM = 15;
     public static final String TAG = "Abonnement";
     private static final Logger logger = LogManager.getLogger(DatenAbo.class);
-    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final ColumnVisibilityStore columnVisibilityStore = ColumnVisibilityStore.create(MAX_ELEM);
     private String[] irgendwoFilterPattern;
     private String[] themaFilterPattern;
@@ -416,7 +415,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
 
     @Override
     public int compareTo(@NonNull DatenAbo other) {
-        return sorter.compare(getName(), other.getName());
+        return GermanStringSorter.INSTANCE.compare(getName(), other.getName());
     }
 
 }
