@@ -22,7 +22,7 @@ import javax.swing.SortOrder
 import javax.swing.table.TableModel
 import javax.swing.table.TableRowSorter
 
-class TriStateTableRowSorter<M : TableModel>(model: M) : TableRowSorter<M>(model) {
+open class TriStateTableRowSorter<M : TableModel>(model: M) : TableRowSorter<M>(model) {
     override fun toggleSortOrder(column: Int) {
         if (!isSortable(column)) {
             return

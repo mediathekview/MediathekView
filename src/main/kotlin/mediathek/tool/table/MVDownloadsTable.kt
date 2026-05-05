@@ -18,6 +18,7 @@
 
 package mediathek.tool.table
 
+import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
 import mediathek.config.MVConfig
 import mediathek.daten.DatenDownload
@@ -36,6 +37,7 @@ import javax.swing.DropMode
 import javax.swing.JComponent
 import javax.swing.JTable
 import javax.swing.TransferHandler
+import javax.swing.table.TableModel
 
 private val logger = LogManager.getLogger()
 
@@ -46,7 +48,21 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
     Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN),
     MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS,
 ) {
+    private var sorter: DownloadsRowSorter? = null
+
     init {
+        autoCreateRowSorter = false
+        addPropertyChangeListener("model") { event ->
+            val newModel = event.newValue as? TableModel ?: return@addPropertyChangeListener
+            val currentSorter = sorter
+            if (currentSorter == null) {
+                val createdSorter = DownloadsRowSorter(newModel)
+                sorter = createdSorter
+                rowSorter = createdSorter
+            } else {
+                currentSorter.model = newModel
+            }
+        }
         setupDragAndDrop()
         model = TModelDownload()
     }
@@ -88,7 +104,13 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
             resetDownloadsTab(column)
         }
 
-        super.resetTabelle()
+        listeSortKeys = null
+
+        rowSorter?.sortKeys = null
+        spaltenAusschalten()
+        setSpaltenEinAus(breite)
+        setSpalten()
+        calculateRowHeight()
     }
 
     private fun resetDownloadsTab(column: Int) {
@@ -242,8 +264,6 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
 
             daten.listeDownloads.addAll(insertionIndex, downloadsToMove)
             rowSorter?.sortKeys = null
-            rowSorter = null
-            autoCreateRowSorter = true
             restoreSelectedTableRows()
 
             MessageBus.messageBus.publishAsync(DownloadQueueRankChangedEvent())
@@ -253,6 +273,22 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
             if (action == MOVE) {
                 table.cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
             }
+        }
+    }
+
+    private class DownloadsRowSorter(model: TableModel) : TriStateTableRowSorter<TableModel>(model) {
+        override fun setModel(model: TableModel) {
+            super.setModel(model)
+            configureSortableColumns()
+        }
+
+        override fun setSortKeys(sortKeys: MutableList<out SortKey>?) {
+            super.setSortKeys(sortKeys?.filter { isSortable(it.column) })
+        }
+
+        private fun configureSortableColumns() {
+            setSortable(DatenDownload.DOWNLOAD_BUTTON_START, false)
+            setSortable(DatenDownload.DOWNLOAD_BUTTON_DEL, false)
         }
     }
 

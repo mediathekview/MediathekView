@@ -11,6 +11,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
+import java.net.UnknownHostException
 
 object FileSize {
     @Serializable
@@ -139,7 +140,7 @@ object FileSize {
                 ),
             )
         } catch (exception: IOException) {
-            logger.debug("File size lookup failed for {}", url, exception)
+            logLookupFailure(url, exception)
             return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         } catch (exception: RuntimeException) {
             logger.debug("File size lookup failed for {}", url, exception)
@@ -162,6 +163,14 @@ object FileSize {
         }
 
         return hlsLookupLogger(url, lookupResult)
+    }
+
+    private fun logLookupFailure(url: HttpUrl, exception: IOException) {
+        if (exception is UnknownHostException) {
+            logger.debug("File size lookup failed for {}: unknown host ({})", url, exception.message)
+        } else {
+            logger.debug("File size lookup failed for {}", url, exception)
+        }
     }
 
     private fun lookupCachedHlsResult(url: HttpUrl, quality: String?): LookupResult? {
