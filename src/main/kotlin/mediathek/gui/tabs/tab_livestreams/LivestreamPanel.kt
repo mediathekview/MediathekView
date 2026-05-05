@@ -31,7 +31,6 @@ import mediathek.mainwindow.MediathekGui
 import mediathek.swing.OverlayPanel
 import mediathek.tool.GermanStringSorter
 import mediathek.tool.GuiFunktionenProgramme
-import mediathek.tool.http.MVHttpClient
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -81,9 +80,8 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
             ignoreUnknownKeys = true
         }
 
-        val client = MVHttpClient.getInstance().httpClient
-        streamService = StreamService(client, json, Konstanten.ZAPP_API_URL)
-        showService = ShowService(client, json, Konstanten.ZAPP_API_URL)
+        streamService = StreamService(json, Konstanten.ZAPP_API_URL)
+        showService = ShowService(json, Konstanten.ZAPP_API_URL)
 
         refreshTimer.start()
     }

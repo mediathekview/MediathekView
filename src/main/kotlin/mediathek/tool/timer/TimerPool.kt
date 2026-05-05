@@ -47,7 +47,6 @@ object TimerPool {
         )
     }
 
-    @JvmStatic
     fun execute(command: Runnable) {
         executor.execute(command)
     }
@@ -56,7 +55,6 @@ object TimerPool {
     fun schedule(command: Runnable, delay: Long, unit: TimeUnit): ScheduledFuture<*> =
         executor.schedule(command, delay, unit)
 
-    @JvmStatic
     fun scheduleAtFixedRate(
         command: Runnable,
         initialDelay: Long,

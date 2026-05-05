@@ -43,9 +43,11 @@ import java.util.*
 import kotlin.math.ceil
 
 open class SqliteExportAudioSource(
-    private val client: OkHttpClient = MVHttpClient.getInstance().httpClient,
+    private val clientProvider: () -> OkHttpClient = { MVHttpClient.httpClient },
 ) {
     private val logger = LogManager.getLogger(SqliteExportAudioSource::class.java)
+
+    constructor(client: OkHttpClient) : this({ client })
 
     fun loadDataset(): AudioDataset? {
         val exportPath = exportDatabasePath()
@@ -81,7 +83,7 @@ open class SqliteExportAudioSource(
         logger.trace("Starting MediathekView Audiothek download from {}", sourceUrl)
 
         try {
-            client.newCall(request).execute().use { response ->
+            clientProvider().newCall(request).execute().use { response ->
                 when (response.code) {
                     304 -> {
                         if (!Files.exists(exportPath)) {

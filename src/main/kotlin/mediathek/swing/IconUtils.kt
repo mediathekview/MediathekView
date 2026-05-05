@@ -50,13 +50,11 @@ object IconUtils {
     @JvmStatic
     fun of(ikon: Ikon): FontIcon = of(ikon, DEFAULT_SIZE)
 
-    @JvmStatic
     fun generateDisabledIcon(action: Action): ImageIcon? {
         val normalIcon = action.getValue(Action.SMALL_ICON) as? FontIcon
         return normalIcon?.let(::generateDisabledIcon)
     }
 
-    @JvmStatic
     fun generateDisabledIcon(normalIcon: Icon): ImageIcon {
         val image = BufferedImage(normalIcon.iconWidth, normalIcon.iconHeight, BufferedImage.TYPE_INT_ARGB)
         val graphics = image.createGraphics()

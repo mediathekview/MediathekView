@@ -38,7 +38,7 @@ import javax.swing.JOptionPane
 class GeoCountryStartupCheck @JvmOverloads constructor(
     private val owner: JFrame,
     private val onFinished: Runnable = Runnable {},
-    private val httpClient: OkHttpClient = MVHttpClient.getInstance().httpClient,
+    private val httpClient: OkHttpClient = MVHttpClient.httpClient,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
 ) {
     fun perform() {

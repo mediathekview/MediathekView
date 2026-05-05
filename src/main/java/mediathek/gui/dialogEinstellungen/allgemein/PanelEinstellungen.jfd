@@ -69,11 +69,11 @@ new FormModel {
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l:::p {seq l {comp jLabel4:::p::p, space :::p, comp jtfProxyHost:::p:250:p}, seq l {comp jLabel7:::p::p, space :::p, comp jtfProxyUser:::::x}}, space u:::p, par t {comp jLabel8:::p::p, comp jLabel5:::p::p}, space :::p, par l {seq {comp jtfProxyPort:::p:72:p, space :0:187:x}, comp jpfProxyPassword:::::x}, space :::p}}"
-				"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel4::b:p::p, comp jtfProxyHost::b:p::p, comp jLabel5::b:p::p, comp jtfProxyPort::b:p::p}, space :::p, par b {comp jLabel7::b:p::p, comp jtfProxyUser::b:p::p, comp jLabel8::b:p::p, comp jpfProxyPassword::b:p::p}, space :::x}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l:::p {seq l {comp jLabel4:::p::p, space :::p, comp jtfProxyHost:::p:250:p}, seq l {comp jLabel7:::p::p, space :::p, comp jtfProxyUser:::::x}}, space u:::p, par t {comp jLabel8:::p::p, comp jLabel5:::p::p}, space :::p, par l {seq {comp jtfProxyPort:::p:72:p, space :0:187:x}, comp jpfProxyPassword:::::x}, space :::p}, seq t {space :::x, comp jButtonApplyProxySettings:::p::p, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel4::b:p::p, comp jtfProxyHost::b:p::p, comp jLabel5::b:p::p, comp jtfProxyPort::b:p::p}, space :::p, par b {comp jLabel7::b:p::p, comp jtfProxyUser::b:p::p, comp jLabel8::b:p::p, comp jpfProxyPassword::b:p::p}, space :::p, comp jButtonApplyProxySettings:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel4"
-				"border": new javax.swing.border.TitledBorder( "HTTP-Proxy (Neustart erforderlich!)" )
+				"border": new javax.swing.border.TitledBorder( "HTTP-Proxy" )
 				"toolTipText": ""
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
@@ -117,6 +117,10 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JPasswordField" ) {
 					name: "jpfProxyPassword"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonApplyProxySettings"
+					"text": "Proxy übernehmen"
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {

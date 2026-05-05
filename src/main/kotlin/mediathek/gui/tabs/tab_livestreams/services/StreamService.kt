@@ -23,13 +23,14 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
+import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 
 class StreamService(
-    private val httpClient: OkHttpClient,
+    private val httpClientProvider: () -> OkHttpClient,
     private val json: Json,
     baseUrl: String
 ) {
@@ -44,7 +45,7 @@ class StreamService(
             .get()
             .build()
 
-        httpClient.newCall(request).execute().use { response ->
+        httpClientProvider().newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("Failed to fetch streams: HTTP ${response.code}")
             }
@@ -53,4 +54,6 @@ class StreamService(
             json.decodeFromString(MapSerializer(String.serializer(), StreamInfo.serializer()), body)
         }
     }
+
+    constructor(json: Json, baseUrl: String) : this({ MVHttpClient.httpClient }, json, baseUrl)
 }

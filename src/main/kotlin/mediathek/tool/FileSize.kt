@@ -190,7 +190,7 @@ object FileSize {
             .build()
 
         return runCatching {
-            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            MVHttpClient.httpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     logger.debug("HLS stream info lookup failed for {} with HTTP {}", url, response.code)
                     return null
@@ -218,7 +218,7 @@ object FileSize {
 
     private fun loadDirectFileSize(url: HttpUrl): Long {
         val request = Request.Builder().url(url).head().build()
-        MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+        MVHttpClient.httpClient.newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return getContentLength(response)
             }

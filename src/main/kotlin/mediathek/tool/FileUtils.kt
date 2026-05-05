@@ -84,7 +84,7 @@ object FileUtils {
         val request = Request.Builder().url(uri).get().build()
 
         try {
-            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            MVHttpClient.httpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     throw IOException("Download failed: HTTP " + response.code + " " + response.message)
                 }

@@ -62,7 +62,7 @@ class PyLoadHelper {
             .build()
 
         try {
-            val client = MVHttpClient.getInstance()
+            val client = MVHttpClient
                 .httpClient
                 .newBuilder()
                 .connectTimeout(500, TimeUnit.MILLISECONDS)

@@ -6,6 +6,7 @@ import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.cellrenderer.CellRendererBaseWithStart;
+import mediathek.tool.http.MVHttpClient;
 import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import mediathek.x11.DesktopEnvDetector;
 import net.engio.mbassy.listener.Handler;
@@ -43,6 +44,16 @@ public class PanelEinstellungen extends JPanel {
         jpfProxyPassword.setText(config.getString(ApplicationConfiguration.HttpProxy.PASSWORD, ""));
         listener = new TextFieldConfigWriter(jpfProxyPassword,ApplicationConfiguration.HttpProxy.PASSWORD);
         jpfProxyPassword.getDocument().addDocumentListener(new TimedDocumentListener(listener));
+
+        jButtonApplyProxySettings.addActionListener(_ -> applyProxySettings());
+    }
+
+    private void applyProxySettings() {
+        config.setProperty(ApplicationConfiguration.HttpProxy.HOST, jtfProxyHost.getText());
+        config.setProperty(ApplicationConfiguration.HttpProxy.PORT, jtfProxyPort.getText());
+        config.setProperty(ApplicationConfiguration.HttpProxy.USER, jtfProxyUser.getText());
+        config.setProperty(ApplicationConfiguration.HttpProxy.PASSWORD, jpfProxyPassword.getText());
+        MVHttpClient.INSTANCE.reloadProxySettings();
     }
 
     private void setupUserAgentSettings() {
@@ -229,6 +240,7 @@ public class PanelEinstellungen extends JPanel {
         jtfProxyUser = new JTextField();
         var jLabel8 = new JLabel();
         jpfProxyPassword = new JPasswordField();
+        jButtonApplyProxySettings = new JButton();
         var panel1 = new JPanel();
         jCheckBoxTray = new JCheckBox();
         cbShowBlacklistIconWithText = new JCheckBox();
@@ -311,7 +323,7 @@ public class PanelEinstellungen extends JPanel {
 
         //======== jPanel4 ========
         {
-            jPanel4.setBorder(new TitledBorder("HTTP-Proxy (Neustart erforderlich!)"));
+            jPanel4.setBorder(new TitledBorder("HTTP-Proxy"));
             jPanel4.setToolTipText("");
 
             //---- jLabel4 ----
@@ -325,6 +337,9 @@ public class PanelEinstellungen extends JPanel {
 
             //---- jLabel8 ----
             jLabel8.setText("Passwort:");
+
+            //---- jButtonApplyProxySettings ----
+            jButtonApplyProxySettings.setText("Proxy übernehmen");
 
             GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
             jPanel4.setLayout(jPanel4Layout);
@@ -352,6 +367,10 @@ public class PanelEinstellungen extends JPanel {
                                 .addGap(0, 187, Short.MAX_VALUE))
                             .addComponent(jpfProxyPassword))
                         .addContainerGap())
+                    .addGroup(GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonApplyProxySettings)
+                        .addContainerGap())
             );
             jPanel4Layout.setVerticalGroup(
                 jPanel4Layout.createParallelGroup()
@@ -368,6 +387,8 @@ public class PanelEinstellungen extends JPanel {
                             .addComponent(jtfProxyUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8)
                             .addComponent(jpfProxyPassword, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonApplyProxySettings)
                         .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             );
         }
@@ -467,6 +488,7 @@ public class PanelEinstellungen extends JPanel {
     private JTextField jtfProxyPort;
     private JTextField jtfProxyUser;
     private JPasswordField jpfProxyPassword;
+    private JButton jButtonApplyProxySettings;
     private JCheckBox jCheckBoxTray;
     private JCheckBox cbShowBlacklistIconWithText;
     private JCheckBox cbUseWikipediaSenderLogos;

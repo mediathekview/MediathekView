@@ -65,7 +65,7 @@ class CdnAwareDirectDownloadThread(
     private val start = datenDownload.start
     private val rateLimiter = ByteRateLimiter(downloadLimit())
     private val messageBus: MBassador<BaseEvent> = MessageBus.messageBus
-    private val client: OkHttpClient = MVHttpClient.getInstance().httpClient.newBuilder()
+    private val client: OkHttpClient = MVHttpClient.httpClient.newBuilder()
         .protocols(listOf(Protocol.HTTP_1_1))
         .dispatcher(dispatcher)
         .build()

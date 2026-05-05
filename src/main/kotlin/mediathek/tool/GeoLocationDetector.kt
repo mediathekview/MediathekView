@@ -19,7 +19,7 @@ object GeoLocationDetector {
         detectLocation()?.mappedCountry
 
     fun detectLocation(
-        httpClient: OkHttpClient = MVHttpClient.getInstance().httpClient,
+        httpClient: OkHttpClient = MVHttpClient.httpClient,
         userAgent: String = readUserAgent(),
     ): DetectedLocation? {
         return runCatching {

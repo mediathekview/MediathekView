@@ -27,7 +27,7 @@ object RuntimeStatistics {
     }
 
     fun printDataUsageStatistics() {
-        val byteCounter = MVHttpClient.getInstance().byteCounter
+        val byteCounter = MVHttpClient.byteCounter
         logger.info("Total data sent:     ${humanReadableByteCountBinary(byteCounter.totalBytesWritten())}")
         logger.info("Total data received: ${humanReadableByteCountBinary(byteCounter.totalBytesRead())}")
     }

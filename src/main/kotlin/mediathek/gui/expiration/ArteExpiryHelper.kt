@@ -55,7 +55,7 @@ object ArteExpiryHelper {
             .build()
 
         try {
-            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            MVHttpClient.httpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     LOG.error("Could not fetch expiry data from {}", url)
                     return Optional.empty()
@@ -132,7 +132,7 @@ object ArteExpiryHelper {
             .build()
 
         return try {
-            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            MVHttpClient.httpClient.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     LOG.debug("Could not fetch ARTE config JSON from {}", url)
                     null

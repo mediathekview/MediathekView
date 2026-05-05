@@ -109,7 +109,7 @@ public class FilmeLaden {
         }
 
         final Request request = requestBuilder.build();
-        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
+        try (Response response = MVHttpClient.INSTANCE.getHttpClient().newCall(request).execute();
              ResponseBody _ = response.body()) {
             if (response.code() == 304) {
                 result = false;

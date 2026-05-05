@@ -24,7 +24,6 @@ data class FilmListLoadOptions(val writeAfterLoad: Boolean) {
         @JvmStatic
         fun normal(): FilmListLoadOptions = FilmListLoadOptions(true)
 
-        @JvmStatic
         fun readOnly(): FilmListLoadOptions = FilmListLoadOptions(false)
     }
 }

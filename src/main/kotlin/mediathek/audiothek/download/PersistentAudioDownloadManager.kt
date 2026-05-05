@@ -23,6 +23,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.audiothek.model.AudioEntry
 import mediathek.config.StandardLocations
+import mediathek.tool.http.MVHttpClient
 import okhttp3.*
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
@@ -37,14 +38,11 @@ import java.util.*
 import kotlin.io.path.exists
 
 class PersistentAudioDownloadManager(
-    private val httpClient: OkHttpClient,
+    private val httpClientProvider: () -> OkHttpClient,
     private val onDownloadCompleted: (AudioDownloadTaskSnapshot) -> Unit,
     private val onDownloadFailed: (AudioDownloadTaskSnapshot) -> Unit
 ) {
     private val logger = LogManager.getLogger(PersistentAudioDownloadManager::class.java)
-    private val http11Client: OkHttpClient = httpClient.newBuilder()
-        .protocols(listOf(Protocol.HTTP_1_1))
-        .build()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val tasks = linkedMapOf<String, ManagedTask>()
     private val listeners = mutableListOf<(List<AudioDownloadTaskSnapshot>) -> Unit>()
@@ -181,6 +179,7 @@ class PersistentAudioDownloadManager(
     }
 
     private fun executeDownloadWithFallback(task: ManagedTask, url: String, tempFile: Path, targetFile: Path) {
+        val httpClient = httpClientProvider()
         try {
             executeDownload(task, url, tempFile, targetFile, httpClient)
         } catch (ex: Exception) {
@@ -188,9 +187,17 @@ class PersistentAudioDownloadManager(
                 throw ex
             }
             logger.info("Audiothek-Download fehlgeschlagen, versuche HTTP/1.1-Fallback für {}", url, ex)
+            val http11Client = httpClient.newBuilder()
+                .protocols(listOf(Protocol.HTTP_1_1))
+                .build()
             executeDownload(task, url, tempFile, targetFile, http11Client)
         }
     }
+
+    constructor(
+        onDownloadCompleted: (AudioDownloadTaskSnapshot) -> Unit,
+        onDownloadFailed: (AudioDownloadTaskSnapshot) -> Unit,
+    ) : this({ MVHttpClient.httpClient }, onDownloadCompleted, onDownloadFailed)
 
     private fun executeDownload(task: ManagedTask, url: String, tempFile: Path, targetFile: Path, client: OkHttpClient) {
         val downloadedBytes = task.snapshot.downloadedBytes

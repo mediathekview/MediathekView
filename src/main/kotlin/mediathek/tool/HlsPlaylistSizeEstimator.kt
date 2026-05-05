@@ -13,7 +13,7 @@ import kotlin.math.ceil
 
 class HlsPlaylistSizeEstimator(
     private val segmentParallelism: Int = DEFAULT_SEGMENT_PARALLELISM,
-    private val httpClient: OkHttpClient = HlsEgressPolicy.clientFor(MVHttpClient.getInstance().httpClient),
+    private val httpClient: OkHttpClient = HlsEgressPolicy.clientFor(MVHttpClient.httpClient),
 ) {
     data class VariantInfo(
         val bandwidth: Long?,

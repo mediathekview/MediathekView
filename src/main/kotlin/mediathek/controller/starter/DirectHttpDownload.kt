@@ -66,7 +66,7 @@ class DirectHttpDownload(
     private val start: Start = datenDownload.start
     private val rateLimiter = ByteRateLimiter(downloadLimit())
     private val messageBus: MBassador<BaseEvent> = MessageBus.messageBus
-    private val httpClient: OkHttpClient = MVHttpClient.getInstance().httpClient
+    private val httpClient: OkHttpClient = MVHttpClient.httpClient
     private val http11Client: OkHttpClient = httpClient.newBuilder()
         .protocols(listOf(Protocol.HTTP_1_1))
         .build()

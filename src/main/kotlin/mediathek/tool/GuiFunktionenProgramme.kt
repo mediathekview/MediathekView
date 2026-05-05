@@ -299,7 +299,7 @@ object GuiFunktionenProgramme {
                     )
                     .get()
                     .build()
-                MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+                MVHttpClient.httpClient.newCall(request).execute().use { response ->
                     val body = response.body
                     if (response.isSuccessful) {
                         body.byteStream().use { inputStream ->

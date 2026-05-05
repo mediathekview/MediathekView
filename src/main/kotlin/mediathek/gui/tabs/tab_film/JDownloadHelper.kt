@@ -36,7 +36,7 @@ class JDownloadHelper {
                 .header("Origin", "https://mediathekview")
                 .post(formBody)
                 .build()
-            val builder = MVHttpClient.getInstance().httpClient.newBuilder()
+            val builder = MVHttpClient.httpClient.newBuilder()
             builder.connectTimeout(125, TimeUnit.MILLISECONDS)
             val client = builder.build()
             client.newCall(request).execute().use {

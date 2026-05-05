@@ -34,7 +34,6 @@ object DateUtil {
 
     private val UTC_ZONE_ID: ZoneId = ZoneId.of("UTC")
 
-    @JvmStatic
     fun convertFilmDateToLuceneDate(film: DatenFilm): Long =
         convertToLocalDate(film.datumFilm)!!
             .atStartOfDay()
@@ -49,7 +48,6 @@ object DateUtil {
             ?.atZone(MV_DEFAULT_TIMEZONE)
             ?.toLocalDate()
 
-    @JvmStatic
     fun convertToDate(ld: LocalDate): Date =
         Date.from(ld.atStartOfDay(MV_DEFAULT_TIMEZONE).toInstant())
 }

@@ -10,7 +10,6 @@ import java.io.IOException
 
 object Ipify {
     private val json = Json { ignoreUnknownKeys = true }
-    private val client = MVHttpClient.getInstance().httpClient
 
     /**
      * Get the public ip address through ipify's api.
@@ -22,11 +21,11 @@ object Ipify {
         get() = getPublicIp()
 
     @Throws(IOException::class)
-    fun getPublicIp(httpClient: OkHttpClient = client): String =
+    fun getPublicIp(httpClient: OkHttpClient = MVHttpClient.httpClient): String =
         getUrl("https://api64.ipify.org?format=json", httpClient)
 
     @Throws(IOException::class)
-    fun getUrl(url: String, httpClient: OkHttpClient = client): String {
+    fun getUrl(url: String, httpClient: OkHttpClient = MVHttpClient.httpClient): String {
         val request = Request.Builder()
             .url(url)
             .header("Accept", "application/json")

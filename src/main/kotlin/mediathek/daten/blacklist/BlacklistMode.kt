@@ -31,7 +31,6 @@ enum class BlacklistMode {
         }
 
     companion object {
-        @JvmStatic
         fun fromConfig(): BlacklistMode =
             if (MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST).toBoolean()) {
                 WHITELIST

@@ -118,7 +118,7 @@ object HlsStreamInfoLogger {
             .post(json.encodeToString(HlsStreamInfoEventBatch(events = pendingBatch.events)).toRequestBody(JSON_MEDIA_TYPE))
             .build()
 
-        MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+        MVHttpClient.httpClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("HTTP ${response.code} for $endpoint")
             }

@@ -45,7 +45,7 @@ object ArdMediathekExpiryHelper {
             .build()
 
         try {
-            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            MVHttpClient.httpClient.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
                     val doc = Jsoup.parse(response.body.string())
                     val body = doc.body().text()

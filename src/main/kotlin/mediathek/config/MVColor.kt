@@ -211,7 +211,6 @@ object MVColor {
     @JvmStatic
     fun getColors(): List<MVC> = colors
 
-    @JvmStatic
     fun reset() {
         colors.forEach(MVC::reset)
     }

@@ -138,7 +138,7 @@ public class ProgrammUpdateSuchen {
         var url = Konstanten.URL_MEDIATHEKVIEW_RESOURCES.resolve(Konstanten.PROGRAM_VERSION_PATH);
         assert url != null;
         final Request request = new Request.Builder().url(url).get().build();
-        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
+        try (Response response = MVHttpClient.INSTANCE.getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 try (InputStream is = body.byteStream();

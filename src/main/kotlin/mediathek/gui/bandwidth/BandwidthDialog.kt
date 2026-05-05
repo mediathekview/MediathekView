@@ -171,7 +171,7 @@ class BandwidthDialog(
         configureChartPanel(chart)
 
         // Reset counters before sampling to avoid an artificial spike in the first sample.
-        MVHttpClient.getInstance().byteCounter.resetCounters()
+        MVHttpClient.byteCounter.resetCounters()
     }
 
     private fun startSamplingLoop() {
@@ -213,7 +213,7 @@ class BandwidthDialog(
     }
 
     private fun readBitsPerSecond(): Double {
-        val byteCounter = MVHttpClient.getInstance().byteCounter
+        val byteCounter = MVHttpClient.byteCounter
         val bitsPerSecond = maxOf(0.0, byteCounter.bytesRead() * 8.0)
         byteCounter.resetCounters()
         return bitsPerSecond

@@ -21,13 +21,14 @@ package mediathek.gui.tabs.tab_livestreams.services
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 
 class ShowService(
-    private val httpClient: OkHttpClient,
+    private val httpClientProvider: () -> OkHttpClient,
     private val json: Json,
     baseUrl: String
 ) {
@@ -43,7 +44,7 @@ class ShowService(
             .get()
             .build()
 
-        httpClient.newCall(request).execute().use { response ->
+        httpClientProvider().newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("Failed to fetch show '$key': HTTP ${response.code}")
             }
@@ -52,4 +53,6 @@ class ShowService(
             json.decodeFromString(ShowsResponse.serializer(), body)
         }
     }
+
+    constructor(json: Json, baseUrl: String) : this({ MVHttpClient.httpClient }, json, baseUrl)
 }

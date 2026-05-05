@@ -38,11 +38,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 class OnlineSearchProxyRepository(
-    private val client: OkHttpClient = MVHttpClient.getInstance().httpClient.newBuilder()
-        .connectTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .readTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .writeTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .build()
+    private val clientProvider: () -> OkHttpClient = { searchClient() },
 ) {
     private val logger = LogManager.getLogger(OnlineSearchProxyRepository::class.java)
     private val jsonFactory = JsonFactory()
@@ -77,7 +73,7 @@ class OnlineSearchProxyRepository(
             .build()
 
         runCatching {
-            client.newCall(request).execute().use { response ->
+            clientProvider().newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     logger.warn(
                         "Onlinesuche über Proxy fehlgeschlagen für '{}': HTTP {}",
@@ -197,5 +193,14 @@ class OnlineSearchProxyRepository(
         }
 
         return runCatching { LocalDateTime.parse(value) }.getOrNull()
+    }
+
+    private companion object {
+        private fun searchClient(): OkHttpClient =
+            MVHttpClient.httpClient.newBuilder()
+                .connectTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .readTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .writeTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .build()
     }
 }

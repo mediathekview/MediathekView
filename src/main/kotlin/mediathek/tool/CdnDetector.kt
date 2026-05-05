@@ -194,7 +194,7 @@ object CdnDetector {
             .build()
 
         return runCatching {
-            MVHttpClient.getInstance().httpClient.newCall(request).execute().use { response ->
+            MVHttpClient.httpClient.newCall(request).execute().use { response ->
                 buildList {
                     for (headerName in response.headers.names()) {
                         for (value in response.headers.values(headerName)) {

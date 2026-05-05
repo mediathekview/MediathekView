@@ -44,7 +44,6 @@ import mediathek.swing.OverlayPanel
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.FileDialogs
 import mediathek.tool.GuiFunktionenProgramme
-import mediathek.tool.http.MVHttpClient
 import mediathek.tool.notification.MessageType
 import mediathek.tool.notification.NotificationMessage
 import mediathek.tool.notification.NotificationService
@@ -96,9 +95,7 @@ class AudiothekPanel(
         add(detailsPanel)
     }
 
-    private val downloadClient = MVHttpClient.getInstance().httpClient
     private val downloadManager = PersistentAudioDownloadManager(
-        downloadClient,
         ::handleDownloadCompleted,
         ::handleDownloadFailed
     )
