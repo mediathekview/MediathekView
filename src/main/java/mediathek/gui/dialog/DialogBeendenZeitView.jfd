@@ -22,23 +22,37 @@ new FormModel {
 				name: "comboActions"
 				auxiliary() {
 					"JavaCodeGenerator.typeParameters": "String"
+					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnContinue"
 				"text": "Weiter"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "cbShutdownComputer"
 				"text": "Rechner herunterfahren"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnCancel"
 				"text": "Abbrechen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonHilfe"
 				"toolTipText": "Hilfe anzeigen"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/circle-question.svg", 16, 16, 1.0f )
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabel2"
@@ -51,6 +65,7 @@ new FormModel {
 				name: "dateTimePicker1"
 				auxiliary() {
 					"JavaCodeGenerator.variableName": "dateTimePicker"
+					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 		}, new FormLayoutConstraints( null ) {
