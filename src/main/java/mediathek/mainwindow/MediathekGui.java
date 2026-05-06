@@ -30,7 +30,6 @@ import mediathek.daten.IndexedFilmList;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.filmlisten.FilmListLoadOptions;
-import mediathek.filmlisten.FilmeLaden;
 import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.MVTray;
 import mediathek.gui.actions.*;
@@ -575,7 +574,7 @@ public class MediathekGui extends JFrame {
             worker = worker.thenRun(new FilmDuplicateEvaluationTask());
         }
 
-        worker.thenRun(new CommonStatsEvaluationTask())
+        worker = worker.thenRun(new CommonStatsEvaluationTask())
                 .thenRun(new RefreshAboWorker(progressLabel, progressBar))
                 .thenRun(new BlacklistFilterWorker(progressLabel, progressBar));
 
@@ -1101,8 +1100,7 @@ public class MediathekGui extends JFrame {
         }
         else {
             // Filme werden automatisch geladen
-            FilmeLaden filmeLaden = new FilmeLaden(daten);
-            filmeLaden.loadFilmlist("", false);
+            daten.getFilmeLaden().loadFilmlist("", false);
         }
     }
 
