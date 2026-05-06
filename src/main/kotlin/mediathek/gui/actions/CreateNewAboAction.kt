@@ -42,7 +42,6 @@ class CreateNewAboAction @JvmOverloads constructor(
         createAbo()
     }
 
-    @JvmOverloads
     fun createAbo(
         aboname: String = "Neu",
         filmSender: String = "",

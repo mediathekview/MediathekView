@@ -30,7 +30,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 class FixedRedrawStatusBar(mediathekGui: MediathekGui) : JXStatusBar() {
     init {
-        add(SelectedListItemsLabel(mediathekGui))
+        add(SelectedListItemsLabel(mediathekGui.selectedListItemsProperty))
         add(FilmSizeInfoLabel(mediathekGui))
         add(DownloadInformationLabel())
 
