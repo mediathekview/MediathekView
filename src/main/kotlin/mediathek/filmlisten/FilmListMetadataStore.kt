@@ -32,7 +32,6 @@ object FilmListMetadataStore {
     private const val ETAG_PREFIX = "etag."
     private val logger = LogManager.getLogger()
 
-    @JvmStatic
     fun readEtag(sourceUrl: String): String? {
         if (sourceUrl.isBlank()) {
             return null
@@ -40,7 +39,6 @@ object FilmListMetadataStore {
         return loadProperties().getProperty(toEtagKey(sourceUrl))?.takeIf { it.isNotBlank() }
     }
 
-    @JvmStatic
     fun writeEtag(sourceUrl: String, eTag: String?) {
         if (sourceUrl.isBlank()) {
             return

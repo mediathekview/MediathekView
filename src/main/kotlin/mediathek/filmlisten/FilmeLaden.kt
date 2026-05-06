@@ -393,6 +393,7 @@ class FilmeLaden(private val daten: Daten) {
             logger.trace("Filme laden, ende")
             if (result == ImportResult.NO_UPDATE) {
                 istAmLaufen = false
+                notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
                 return@launch
             }
             undEnde(ListenerFilmeLadenEvent("", "", 0, 0, result != ImportResult.SUCCESS), options)

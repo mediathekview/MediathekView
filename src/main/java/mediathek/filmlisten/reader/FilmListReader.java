@@ -631,7 +631,7 @@ public class FilmListReader implements AutoCloseable {
                 if (Config.isEnhancedLoggingEnabled()) {
                     logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url().toString());
                 }
-                FilmListMetadataStore.writeEtag(source.toString(), response.header("ETag"));
+                FilmListMetadataStore.INSTANCE.writeEtag(source.toString(), response.header("ETag"));
                 ProgressMonitor monitor = new ProgressMonitor(source.toString());
                 try (InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
                      InputStream is = selectDecompressor(source.toString(), input);

@@ -18,10 +18,8 @@
 
 package mediathek.filmlisten
 
-@JvmRecord
 data class FilmListLoadOptions(val writeAfterLoad: Boolean) {
     companion object {
-        @JvmStatic
         fun normal(): FilmListLoadOptions = FilmListLoadOptions(true)
 
         fun readOnly(): FilmListLoadOptions = FilmListLoadOptions(false)

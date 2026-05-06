@@ -566,7 +566,7 @@ public class MediathekGui extends JFrame {
                 .thenRun(() -> {
                     logger.trace("Check for filmlist updates");
                     if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
-                        daten.getFilmeLaden().loadFilmlist("", true, FilmListLoadOptions.normal());
+                        daten.getFilmeLaden().loadFilmlist("", true, new FilmListLoadOptions(true));
                     }
                 });
 
