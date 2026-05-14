@@ -21,7 +21,7 @@ public class OpenPlayerAction {
         }
         sFile = new File(datei);
         if (!sFile.exists()) {
-            MVMessageDialog.showMessageDialog(parent, "Film existiert noch nicht!",
+            JOptionPane.showMessageDialog(parent, "Film existiert noch nicht!",
                     "Fehler", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -62,7 +62,7 @@ public class OpenPlayerAction {
             if (!gut) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "");
                 MessageBus.getMessageBus().publishAsync(new ProgramLocationChangedEvent());
-                MVMessageDialog.showMessageDialog(parent, "Kann den Videoplayer nicht öffnen!",
+                JOptionPane.showMessageDialog(parent, "Kann den Videoplayer nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }
         }

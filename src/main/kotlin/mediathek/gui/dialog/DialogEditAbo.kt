@@ -87,7 +87,7 @@ class DialogEditAbo(
             if (applyIfValid()) {
                 dispose()
             } else {
-                MVMessageDialog.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE)
             }
         }
         jButtonAbbrechen.addActionListener { dispose() }

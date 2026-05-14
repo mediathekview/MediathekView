@@ -168,7 +168,7 @@ object GuiFunktionenProgramme {
     @JvmStatic
     fun addSetVorlagen(parent: JFrame?, daten: Daten, pSet: ListePset?, setVersion: Boolean) {
         if (pSet == null) {
-            MVMessageDialog.showMessageDialog(
+            JOptionPane.showMessageDialog(
                 null,
                 MSG_FILE_NOT_IMPORTED,
                 "Fehler",
@@ -180,7 +180,7 @@ object GuiFunktionenProgramme {
         for (ps: DatenPset in pSet) {
             if (ps.addOn.isNotEmpty() && !addOnZip(ps.addOn)) {
                 // und Tschüss
-                MVMessageDialog.showMessageDialog(
+                JOptionPane.showMessageDialog(
                     null,
                     MSG_FILE_NOT_IMPORTED,
                     "Fehler",
@@ -198,14 +198,14 @@ object GuiFunktionenProgramme {
                 if (setVersion) {
                     MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version)
                 }
-                MVMessageDialog.showMessageDialog(
+                JOptionPane.showMessageDialog(
                     null,
                     "${pSet.size} Programmset importiert!",
                     "Ok",
                     JOptionPane.INFORMATION_MESSAGE
                 )
             } else {
-                MVMessageDialog.showMessageDialog(
+                JOptionPane.showMessageDialog(
                     null,
                     "Die Datei wurde nicht importiert!",
                     "Fehler",

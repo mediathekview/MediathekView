@@ -18,6 +18,8 @@
 
 package mediathek.tool.subtitles.vtt;
 
+import mediathek.tool.HtmlUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -452,13 +454,11 @@ public final class WebVttToTtml2Converter {
                 continue;
             }
 
-            switch (ch) {
-                case '&' -> out.append("&amp;");
-                case '<' -> out.append("&lt;");
-                case '>' -> out.append("&gt;");
-                case '"' -> out.append("&quot;");
-                case '\'' -> out.append("&apos;");
-                default -> out.append(ch);
+            final var escapedCharacter = HtmlUtils.escapeHtmlCharacter(ch);
+            if (escapedCharacter != null) {
+                out.append(escapedCharacter);
+            } else {
+                out.append(ch);
             }
 
             i++;

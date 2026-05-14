@@ -524,14 +524,14 @@ public class GuiDownloads extends AGuiTabPanel {
         // Download nur löschen wenn er nicht läuft
         if (datenDownload.start != null) {
             if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                MVMessageDialog.showMessageDialog(mediathekGui, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mediathekGui, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
         try {
             File file = getExistingDownloadFile(datenDownload);
             if (!file.exists()) {
-                MVMessageDialog.showMessageDialog(mediathekGui, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mediathekGui, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int ret = JOptionPane.showConfirmDialog(mediathekGui,
@@ -546,7 +546,7 @@ public class GuiDownloads extends AGuiTabPanel {
             }
         }
         catch (Exception ex) {
-            MVMessageDialog.showMessageDialog(mediathekGui, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mediathekGui, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
             logger.error("Fehler beim löschen: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }

@@ -526,7 +526,7 @@ class DialogAddDownloadWithCoroutines(
         //if (datenDownload == null) return false
 
         if (pfadRaw.isEmpty() || name.isEmpty()) {
-            MVMessageDialog.showMessageDialog(
+            JOptionPane.showMessageDialog(
                 this,
                 "Pfad oder Name ist leer",
                 "Fehlerhafter Pfad/Name!",
@@ -540,7 +540,7 @@ class DialogAddDownloadWithCoroutines(
         return if (GuiFunktionenProgramme.checkPathWriteableWithoutCreating(pfad)) {
             true
         } else {
-            MVMessageDialog.showMessageDialog(
+            JOptionPane.showMessageDialog(
                 this,
                 "Pfad ist nicht beschreibbar",
                 "Fehlerhafter Pfad!",

@@ -5,7 +5,10 @@ import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.shutdown.ShutdownActionComboBox;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.*;
+import mediathek.tool.ApplicationConfiguration;
+import mediathek.tool.MessageBus;
+import mediathek.tool.SVGIconUtilities;
+import mediathek.tool.TextCopyPasteHandler;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -273,9 +276,9 @@ public class PanelEinstellungenErweitert extends JPanel {
             if (!programm.isEmpty()) {
                 try {
                     if (!new File(programm).exists()) {
-                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     } else if (!new File(programm).canExecute()) {
-                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (Exception ignored) {
                 }

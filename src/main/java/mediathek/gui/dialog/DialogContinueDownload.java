@@ -4,7 +4,6 @@ import mediathek.config.Konstanten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +56,7 @@ public class DialogContinueDownload extends JDialog {
             isNewName = mVPanelDownloadZiel.setPfadName_geaendert();
             if (!direkterDownload && !isNewName) {
                 // dann gibts es nur Überschreiben oder anderer Name, sonst zickt ffmpeg
-                MVMessageDialog.showMessageDialog(parent, "Der Dateiname wurde nicht geändert!",
+                JOptionPane.showMessageDialog(parent, "Der Dateiname wurde nicht geändert!",
                         "Datei existiert bereits!", JOptionPane.ERROR_MESSAGE);
             } else {
                 result = DownloadResult.RESTART_WITH_NEW_NAME;

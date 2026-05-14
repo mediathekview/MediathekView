@@ -26,7 +26,6 @@ import mediathek.gui.dialog.DialogAboNoSet
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FilenameUtils
-import mediathek.tool.MVMessageDialog
 import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
 import java.util.*
@@ -62,7 +61,7 @@ class CreateNewAboAction @JvmOverloads constructor(
         }
 
         if (listeAbo.existsAlready(datenAbo)) {
-            MVMessageDialog.showMessageDialog(
+            JOptionPane.showMessageDialog(
                 parent,
                 "Abo existiert bereits",
                 "Abo anlegen",

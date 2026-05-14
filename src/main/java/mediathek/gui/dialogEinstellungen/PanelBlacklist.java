@@ -365,7 +365,7 @@ public class PanelBlacklist extends JPanel {
                         Es existiert bereits eine gleichlautende Regel.
                         Es dürfen keine Duplikate in der Liste vorkommen.
                         """;
-                MVMessageDialog.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
             }
         }
     }

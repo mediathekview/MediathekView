@@ -62,7 +62,7 @@ object DirOpenAction {
             if (!success) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "")
                 MessageBus.messageBus.publishAsync(ProgramLocationChangedEvent())
-                MVMessageDialog.showMessageDialog(
+                JOptionPane.showMessageDialog(
                     parent,
                     "Kann den Dateimanager nicht öffnen!",
                     "Fehler",

@@ -4,7 +4,10 @@ import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.config.StandardLocations;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.*;
+import mediathek.tool.FileSpecifier;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -179,7 +182,7 @@ public class MVPanelDownloadZiel extends JPanel {
         fileSpecifier.checkLength();
 
         if (!fileSpecifier.getPath().equals(pfad) || !fileSpecifier.getFileName().equals(name)) {
-            MVMessageDialog.showMessageDialog(parent, "Dateiname war zu lang und wurde gekürzt!",
+            JOptionPane.showMessageDialog(parent, "Dateiname war zu lang und wurde gekürzt!",
                     "Pfad zu lang!", JOptionPane.ERROR_MESSAGE);
         }
 

@@ -80,6 +80,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -90,6 +91,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK;
 
@@ -413,23 +415,27 @@ public class MediathekGui extends JFrame {
      * So we simply wait 15 seconds until we check.
      */
     private void checkInvalidRegularExpressions() {
-        if (Filter.regExpErrorsOccured()) {
-            final var regexStr = Filter.regExpErrorList.stream()
-                    .reduce("", (p, e) ->
-                            p + "\n" + e);
-            Filter.regExpErrorList.clear();
+        TimerPool.schedule(() -> {
+            final var invalidExpressions = Filter.drainRegExpErrors();
+            if (invalidExpressions.isEmpty()) {
+                return;
+            }
+
+            final var regexStr = invalidExpressions.stream()
+                    .sorted(Comparator.naturalOrder())
+                    .map(HtmlUtils::escapeHtml)
+                    .collect(Collectors.joining("<br/>"));
 
             final var message = String.format(
                     "<html>Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.<br/>" +
                             "<b>Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!</b><br/><br/>" +
                             "Nachfolgende Ausdrücke sind fehlerbehaftet: <br/>%s</html>", regexStr);
 
-            TimerPool.schedule(() -> SwingUtilities.invokeLater(
-                    () -> JOptionPane.showMessageDialog(this,
-                            message,
-                            Konstanten.PROGRAMMNAME,
-                            JOptionPane.ERROR_MESSAGE)), 15, TimeUnit.SECONDS);
-        }
+            MVMessageDialog.showMessageDialog(this,
+                    message,
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.ERROR_MESSAGE);
+        }, 15, TimeUnit.SECONDS);
     }
 
     /**
@@ -472,10 +478,6 @@ public class MediathekGui extends JFrame {
                 }
             });
         });
-    }
-
-    public JTabbedPane getTabbedPane() {
-        return tabbedPane;
     }
 
     private void setupTaskbarMenu() {

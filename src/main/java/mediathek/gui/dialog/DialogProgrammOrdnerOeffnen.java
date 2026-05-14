@@ -1,7 +1,6 @@
 package mediathek.gui.dialog;
 
 import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.SVGIconUtilities;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -55,9 +54,9 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
         if (!programm.isEmpty()) {
             try {
                 if (!new File(programm).exists()) {
-                    MVMessageDialog.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } else if (!new File(programm).canExecute()) {
-                    MVMessageDialog.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(parentComponent, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } else {
                     ziel = programm;
                     ret = true;
