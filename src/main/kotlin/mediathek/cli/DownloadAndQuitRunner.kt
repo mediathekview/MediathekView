@@ -166,7 +166,7 @@ object DownloadAndQuitRunner {
         val loadStarted = daten.filmeLaden.loadFilmlist("", false)
         if (!loadStarted) {
             daten.filmeLaden.removeAdListener(listener)
-            logger.info("Filmlist update skipped because no newer list is available.")
+            logger.info("Filmlist update skipped because another filmlist load is already running.")
             return@withContext true
         }
         completion.get()

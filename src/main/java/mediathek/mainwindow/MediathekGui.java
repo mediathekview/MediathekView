@@ -27,7 +27,6 @@ import mediathek.controller.history.SeenHistoryController;
 import mediathek.daten.IndexedFilmList;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.filmlisten.FilmListLoadOptions;
 import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.MVTray;
 import mediathek.gui.actions.*;
@@ -171,6 +170,11 @@ public class MediathekGui extends JFrame {
     private ProgramUpdateCheck programUpdateChecker;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private boolean resetSettingsOnQuit;
+
+    private enum StartupFilmlistLoadOutcome {
+        LOCAL_LIST_READY,
+        REMOTE_UPDATE_STARTED
+    }
 
     public MediathekGui() {
         this(GenericNotificationCenter::new);
@@ -578,46 +582,71 @@ public class MediathekGui extends JFrame {
 
         var evaluateDuplicates = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
 
-        var worker = CompletableFuture.runAsync(() -> {
-                    logger.trace("Reading local filmlist");
-                    MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
-
-                    try (FilmListReader reader = new FilmListReader()) {
-                        final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
-                        reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), daten.getListeFilme(), num_days);
-                    }
-                    MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
-                })
-                .thenRun(() -> {
-                    logger.trace("Check for filmlist updates");
-                    if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC && daten.getListeFilme().needsUpdate()) {
-                        daten.getFilmeLaden().loadFilmlist("", true, new FilmListLoadOptions(true));
-                    }
-                });
+        CompletableFuture<StartupFilmlistLoadOutcome> worker = CompletableFuture.supplyAsync(this::readStartupFilmlist)
+                .thenApply(this::startRemoteFilmlistUpdateIfNeeded);
 
         if (evaluateDuplicates) {
-            worker = worker.thenRun(new FilmDuplicateEvaluationTask());
+            worker = worker.thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, FilmDuplicateEvaluationTask::new));
         }
 
-        worker = worker.thenRun(new CommonStatsEvaluationTask())
-                .thenRun(new RefreshAboWorker(progressLabel, progressBar))
-                .thenRun(new BlacklistFilterWorker(progressLabel, progressBar));
+        worker = worker.thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, CommonStatsEvaluationTask::new))
+                .thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, () -> new RefreshAboWorker(progressLabel, progressBar)))
+                .thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, () -> new BlacklistFilterWorker(progressLabel, progressBar)));
 
-        if (daten.getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-            worker = worker.thenRun(new LuceneIndexWorker(progressLabel, progressBar));
-        }
+        worker = worker.thenApply(outcome -> {
+            if (shouldProcessStartupFilmlist(outcome) && daten.getListeFilmeNachBlackList() instanceof IndexedFilmList) {
+                new LuceneIndexWorker(progressLabel, progressBar).run();
+            }
+            return outcome;
+        });
 
-        worker.whenComplete((_, throwable) -> finishStartupFilmlistLoad(throwable));
+        worker.whenComplete(this::finishStartupFilmlistLoad);
     }
 
-    private void finishStartupFilmlistLoad(Throwable throwable) {
+    private StartupFilmlistLoadOutcome readStartupFilmlist() {
+        logger.trace("Reading local filmlist");
+        MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
+
+        try (FilmListReader reader = new FilmListReader()) {
+            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
+            reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), daten.getListeFilme(), num_days);
+        }
+        MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
+        return StartupFilmlistLoadOutcome.LOCAL_LIST_READY;
+    }
+
+    private StartupFilmlistLoadOutcome startRemoteFilmlistUpdateIfNeeded(StartupFilmlistLoadOutcome outcome) {
+        logger.trace("Check for filmlist updates");
+        if (daten.getFilmeLaden().startAutomaticStartupUpdateIfNeeded()) {
+            return StartupFilmlistLoadOutcome.REMOTE_UPDATE_STARTED;
+        }
+        return outcome;
+    }
+
+    private StartupFilmlistLoadOutcome runStartupFilmlistPostLoadTask(
+            StartupFilmlistLoadOutcome outcome,
+            Supplier<? extends Runnable> taskFactory
+    ) {
+        if (shouldProcessStartupFilmlist(outcome)) {
+            taskFactory.get().run();
+        }
+        return outcome;
+    }
+
+    private boolean shouldProcessStartupFilmlist(StartupFilmlistLoadOutcome outcome) {
+        return outcome == StartupFilmlistLoadOutcome.LOCAL_LIST_READY;
+    }
+
+    private void finishStartupFilmlistLoad(StartupFilmlistLoadOutcome outcome, Throwable throwable) {
         if (throwable != null) {
             logger.error("loadFilmlist()", throwable);
         }
 
         SwingUtilities.invokeLater(() -> {
             try {
-                Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, throwable != null));
+                if (outcome != StartupFilmlistLoadOutcome.REMOTE_UPDATE_STARTED) {
+                    Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, throwable != null));
+                }
             } finally {
                 swingStatusBar.remove(progressBar);
                 swingStatusBar.remove(progressLabel);
@@ -1211,12 +1240,10 @@ public class MediathekGui extends JFrame {
 
             runShutdownStep("Save bookmark list", () -> daten.getListeBookmarkList().saveToFile());
 
-            // stop the download thread
             runShutdownStep("Stop starter thread", () -> daten.getStarterClass().shutdown());
 
             runShutdownStep("Close notification center", this::closeNotificationCenter);
 
-            // Tabelleneinstellungen merken
             runShutdownStep("Save tab Filme data", () -> tabFilme.disposePanel());
 
             runShutdownStep("Save tab Download data", () -> tabDownloads.tabelleSpeichern());

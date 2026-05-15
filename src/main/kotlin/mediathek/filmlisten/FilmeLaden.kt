@@ -228,9 +228,21 @@ class FilmeLaden(private val daten: Daten) {
     fun loadFilmlist(dateiUrl: String, immerNeuLaden: Boolean): Boolean =
         loadFilmlist(dateiUrl, immerNeuLaden, FilmListLoadOptions.normal())
 
-    fun loadFilmlist(dateiUrl: String, immerNeuLaden: Boolean, options: FilmListLoadOptions): Boolean {
+    fun startAutomaticStartupUpdateIfNeeded(): Boolean {
+        if (!shouldStartAutomaticStartupUpdate()) {
+            return false
+        }
+
+        loadFilmlist("", true, FilmListLoadOptions.normal())
+        return true
+    }
+
+    private fun shouldStartAutomaticStartupUpdate(): Boolean =
+        GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC &&
+            daten.listeFilme.needsUpdate()
+
+    fun loadFilmlist(dateiUrl: String, immerNeuLaden: Boolean, loadOptions: FilmListLoadOptions): Boolean {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
-        val loadOptions = requireNotNull(options)
         val listeFilme = daten.listeFilme
 
         logger.trace("loadFilmlist(String,boolean,FilmListLoadOptions)")
@@ -238,7 +250,7 @@ class FilmeLaden(private val daten: Daten) {
         displayLogInfo(listeFilme)
 
         if (!canStartLoad()) {
-            return true
+            return false
         }
 
         markLoadRunning()
