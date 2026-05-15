@@ -662,9 +662,9 @@ public class FilmListReader implements AutoCloseable {
             progress = max;
         }
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            progressEvent.senderUrl = url;
-            progressEvent.progress = progress;
-            progressEvent.max = max;
+            progressEvent.setSenderUrl(url);
+            progressEvent.setProgress(progress);
+            progressEvent.setMax(max);
             l.progress(progressEvent);
         }
     }
@@ -675,10 +675,10 @@ public class FilmListReader implements AutoCloseable {
         logger.info("  erstellt am: {}", liste.getMetaData().getGenerationDateTimeAsString());
         logger.info("  Anzahl Filme: {}", liste.size());
         for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-            progressEvent.senderUrl = url;
-            progressEvent.text = "";
-            progressEvent.max = max;
-            progressEvent.progress = progress;
+            progressEvent.setSenderUrl(url);
+            progressEvent.setText("");
+            progressEvent.setMax(max);
+            progressEvent.setProgress(progress);
             l.fertig(progressEvent);
         }
     }

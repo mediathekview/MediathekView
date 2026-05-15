@@ -177,13 +177,7 @@ class MediathekGuiMac : MediathekGui(
         contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
     }
 
-    override fun createFontMenu() {
-        //unused on macOS
-    }
-
-    override fun addFontMenu() {
-        //unused on macOS
-    }
+    override fun supportsFontMenu(): Boolean = false
 
     override fun installAdditionalHelpEntries() {
         //unused on macOS

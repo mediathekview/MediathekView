@@ -18,11 +18,11 @@
 
 package mediathek.gui.progress
 
-interface DownloadProgressIndicator {
+interface DownloadProgressIndicator : AutoCloseable {
     fun downloadStarted()
 
     fun downloadFinished()
 
-    fun close() {
+    override fun close() {
     }
 }

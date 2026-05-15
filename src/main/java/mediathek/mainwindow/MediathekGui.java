@@ -140,7 +140,7 @@ public class MediathekGui extends JFrame {
     protected final JToolBar commonToolBar = new JToolBar();
     protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
-    final JMenu fontMenu = new JMenu("Schrift");
+    private final JMenu fontMenu = new JMenu("Schrift");
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
     private final JMenuBar jMenuBar = new JMenuBar();
@@ -152,8 +152,6 @@ public class MediathekGui extends JFrame {
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
-    private final ShowFilmStatisticsAction showFilmStatisticsAction = new ShowFilmStatisticsAction(this);
-    private final ShowDuplicateStatisticsAction showDuplicateStatisticsAction = new ShowDuplicateStatisticsAction(this);
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel();
     private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams);
@@ -167,13 +165,11 @@ public class MediathekGui extends JFrame {
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
-    protected FontManager fontManager;
     private FilmInfoDialog filmInfo;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private ProgramUpdateCheck programUpdateChecker;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
-    private boolean shutdownRequested;
     private boolean resetSettingsOnQuit;
 
     public MediathekGui() {
@@ -195,8 +191,9 @@ public class MediathekGui extends JFrame {
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
-        var progressIndicatorFactory = Objects.requireNonNull(downloadProgressIndicatorFactory);
-        this.downloadProgressIndicator = Objects.requireNonNull(progressIndicatorFactory.apply(this));
+        this.downloadProgressIndicator = Objects.requireNonNull(
+                Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
+        );
         ui = this;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -550,7 +547,9 @@ public class MediathekGui extends JFrame {
         jMenuAbos.setText("Abos");
         jMenuBar.add(jMenuAbos);
 
-        addFontMenu();
+        if (supportsFontMenu()) {
+            jMenuBar.add(fontMenu);
+        }
 
         jMenuAnsicht.setMnemonic('a');
         jMenuAnsicht.setText("Ansicht");
@@ -561,10 +560,6 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuHilfe);
 
         setJMenuBar(jMenuBar);
-    }
-
-    protected void addFontMenu() {
-        jMenuBar.add(fontMenu);
     }
 
     private void createMemoryMonitor() {
@@ -612,11 +607,22 @@ public class MediathekGui extends JFrame {
             worker = worker.thenRun(new LuceneIndexWorker(progressLabel, progressBar));
         }
 
-        worker.thenRun(() -> SwingUtilities.invokeLater(() -> Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, false))))
-                .thenRun(() -> SwingUtilities.invokeLater(() -> {
-                    swingStatusBar.remove(progressBar);
-                    swingStatusBar.remove(progressLabel);
-                }));
+        worker.whenComplete((_, throwable) -> finishStartupFilmlistLoad(throwable));
+    }
+
+    private void finishStartupFilmlistLoad(Throwable throwable) {
+        if (throwable != null) {
+            logger.error("loadFilmlist()", throwable);
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            try {
+                Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, throwable != null));
+            } finally {
+                swingStatusBar.remove(progressBar);
+                swingStatusBar.remove(progressLabel);
+            }
+        });
     }
 
     /**
@@ -639,16 +645,16 @@ public class MediathekGui extends JFrame {
 
             @Override
             public void progress(ListenerFilmeLadenEvent event) {
-                if (event.max == 0 || event.progress == event.max) {
+                if (event.getMax() == 0 || event.getProgress() == event.getMax()) {
                     progressBar.setIndeterminate(true);
                 }
                 else {
                     progressBar.setIndeterminate(false);
                     progressBar.setMinimum(0);
-                    progressBar.setMaximum(event.max);
-                    progressBar.setValue(event.progress);
+                    progressBar.setMaximum(event.getMax());
+                    progressBar.setValue(event.getProgress());
                 }
-                progressLabel.setText(event.text);
+                progressLabel.setText(event.getText());
             }
         });
     }
@@ -989,8 +995,8 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(showMemoryMonitorAction);
         jMenuAnsicht.add(showBandwidthUsageAction);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(showFilmStatisticsAction);
-        jMenuAnsicht.add(showDuplicateStatisticsAction);
+        jMenuAnsicht.add(new ShowFilmStatisticsAction(this));
+        jMenuAnsicht.add(new ShowDuplicateStatisticsAction(this));
         var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
         mi.addActionListener(_ -> {
             FilmDuplicateOverviewDialog dlg = new FilmDuplicateOverviewDialog(this);
@@ -1005,9 +1011,16 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(manageBookmarkAction);
     }
 
-    protected void createFontMenu() {
-        fontManager = new FontManager(fontMenu);
+    private void createFontMenu() {
+        if (!supportsFontMenu()) {
+            return;
+        }
+        var fontManager = new FontManager(fontMenu);
         fontManager.restoreConfigData();
+    }
+
+    protected boolean supportsFontMenu() {
+        return true;
     }
 
     @Handler
@@ -1115,36 +1128,33 @@ public class MediathekGui extends JFrame {
         return dialogEinstellungen;
     }
 
-    public boolean isShutdownRequested() {
-        return shutdownRequested;
-    }
-
-    public void setShutdownRequested(boolean shutdownRequested) {
-        this.shutdownRequested = shutdownRequested;
-    }
-
     public void requestSettingsResetOnQuit() {
         resetSettingsOnQuit = true;
     }
 
     public boolean quitApplication() {
-        if (!confirmApplicationQuit()) {
+        return quitApplication(false);
+    }
+
+    public boolean quitApplication(boolean shutdownComputer) {
+        var confirmation = confirmApplicationQuit(shutdownComputer);
+        if (!confirmation.canQuit()) {
             return false;
         }
 
-        performApplicationShutdown();
+        performApplicationShutdown(confirmation.shutdownComputer());
         return true;
     }
 
-    private boolean confirmApplicationQuit() {
+    private QuitConfirmation confirmApplicationQuit(boolean shutdownComputer) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             DialogBeenden dialogBeenden = new DialogBeenden(this);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.getApplicationCanTerminate()) {
-                return false;
+                return QuitConfirmation.declined();
             }
-            setShutdownRequested(dialogBeenden.isShutdownRequested());
+            shutdownComputer = dialogBeenden.isShutdownRequested();
         }
 
         if (tabAudiothek.activeDownloadCount() > 0) {
@@ -1159,15 +1169,21 @@ public class MediathekGui extends JFrame {
                     JOptionPane.WARNING_MESSAGE
             );
             if (result != JOptionPane.YES_OPTION) {
-                return false;
+                return QuitConfirmation.declined();
             }
             tabAudiothek.pauseDownloadsForShutdown();
         }
 
-        return true;
+        return new QuitConfirmation(true, shutdownComputer);
     }
 
-    private void performApplicationShutdown() {
+    private record QuitConfirmation(boolean canQuit, boolean shutdownComputer) {
+        private static QuitConfirmation declined() {
+            return new QuitConfirmation(false, false);
+        }
+    }
+
+    private void performApplicationShutdown(boolean shutdownComputer) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
             if (automaticFilmlistUpdate != null)
@@ -1241,7 +1257,7 @@ public class MediathekGui extends JFrame {
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
 
-        if (isShutdownRequested()) {
+        if (shutdownComputer) {
             logger.info("Requesting computer shutdown.");
             computerShutdown.requestShutdown();
         }
