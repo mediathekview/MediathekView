@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.gui.tabs.tab_film
 
 import kotlinx.coroutines.*
@@ -8,7 +26,6 @@ import mediathek.tool.FileDialogs
 import mediathek.tool.FileUtils
 import mediathek.tool.PathExtensions
 import mediathek.tool.SwingErrorDialog
-import mediathek.tool.subtitles.MVSubtitle
 import mediathek.tool.subtitles.detector.TimedTextFormatDetector
 import mediathek.tool.subtitles.ttml2.AssExporter
 import mediathek.tool.subtitles.ttml2.SubRipHtmlExporter
@@ -114,7 +131,7 @@ class DownloadSubtitleAction(private val guiFilme: GuiFilme) : AbstractAction() 
             val originalTargetPath = targetPathForDetectedFormat(selectedFilePath, detectedFormat)
             val originalTempPath = createSiblingTempFile(originalTargetPath)
             temporaryArtifacts.add(originalTempPath)
-            MVSubtitle.moveWithFallback(downloadedSubtitlePath, originalTempPath)
+            FileUtils.moveAtomicallyWithFallback(downloadedSubtitlePath, originalTempPath)
             downloadedSubtitlePath = null
 
             val ttmlTargetPath = ttmlTargetPath(originalTargetPath, detectedFormat)
@@ -231,7 +248,7 @@ class DownloadSubtitleAction(private val guiFilme: GuiFilme) : AbstractAction() 
         failures: MutableMap<String, Throwable>
     ) {
         runCatching {
-            MVSubtitle.moveWithFallback(temporaryPath, targetPath)
+            FileUtils.moveAtomicallyWithFallback(temporaryPath, targetPath)
             temporaryArtifacts.remove(temporaryPath)
             successes += label
         }.onFailure { publishError ->

@@ -29,14 +29,15 @@ class FilmlistExportWorker(
     }
 
     private fun exportFilmlist() {
-        val writer = FilmListWriter(true)
-        writer.setCompressSenderTag(exportSettings.compressSender)
-        writer.setCompressThemaTag(exportSettings.compressThema)
-        writer.setDecompressUrls(true)
+        val writer = FilmListWriter(true).apply {
+            compressSenderTag = exportSettings.compressSender
+            compressThemaTag = exportSettings.compressThema
+            decompressUrls = true
+        }
         writer.writeFilmList(
             selectedFile.absolutePath,
             Daten.getInstance().listeFilme
-        ) { prog: Double ->
+        ) { prog ->
             uiScope.launch {
                 onProgress((100.0 * prog).roundToInt())
             }

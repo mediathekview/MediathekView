@@ -28,7 +28,9 @@ import mediathek.tool.subtitles.ttml2.Ttml2Parser
 import mediathek.tool.subtitles.vtt.WebVttToTtml2Converter
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
-import java.nio.file.*
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class MVSubtitle {
     @Throws(Exception::class)
@@ -38,7 +40,7 @@ class MVSubtitle {
 
         try {
             tempSubtitleFile = FileUtils.downloadToTempFile(subtitleUrl)
-            moveWithFallback(tempSubtitleFile, currentPath)
+            FileUtils.moveAtomicallyWithFallback(tempSubtitleFile, currentPath)
 
             val res = TimedTextFormatDetector.detect(currentPath, true)
             if (!res.valid) {
@@ -94,72 +96,24 @@ class MVSubtitle {
     }
 
     companion object {
-        /**
-         * Move [source] to [target], preferring ATOMIC_MOVE and falling back to non-atomic move/copy-delete.
-         * This is intended for files that may cross filesystems or be stored on network shares.
-         */
-        @Throws(IOException::class)
-        fun moveWithFallback(source: Path, target: Path) {
-            try {
-                // Atomic move is preferred but may fail across filesystems.
-                Files.move(source, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
-                return
-            } catch (_: AtomicMoveNotSupportedException) {
-                // Retry below without atomic semantics.
-            }
-
-            moveNonAtomicOrCopyDelete(source, target)
-        }
-
         @Throws(IOException::class)
         fun addFileExtension(selectedFilePath: Path, format: TimedTextFormatDetector.Format): Path {
             return when (format) {
                 TimedTextFormatDetector.Format.WEBVTT -> {
                     val path = PathExtensions.withExtension(selectedFilePath, ".vtt")
-                    moveWithFallback(selectedFilePath, path)
+                    FileUtils.moveAtomicallyWithFallback(selectedFilePath, path)
                     path
                 }
 
                 TimedTextFormatDetector.Format.TTML1,
                 TimedTextFormatDetector.Format.TTML2 -> {
                     val path = PathExtensions.withExtension(selectedFilePath, ".ttml")
-                    moveWithFallback(selectedFilePath, path)
+                    FileUtils.moveAtomicallyWithFallback(selectedFilePath, path)
                     path
                 }
 
                 else -> throw IOException("Unknown subtitle format: $format")
             }
-        }
-
-        @Throws(IOException::class)
-        private fun moveNonAtomicOrCopyDelete(source: Path, target: Path) {
-            try {
-                Files.move(source, target, StandardCopyOption.REPLACE_EXISTING)
-            } catch (e: FileSystemException) {
-                if (isCrossDeviceMoveError(source, target, e)) {
-                    Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING)
-                    Files.delete(source)
-                } else {
-                    throw e
-                }
-            }
-        }
-
-        private fun isCrossDeviceMoveError(source: Path, target: Path, e: FileSystemException): Boolean {
-            try {
-                val targetProbe = if (Files.exists(target)) target else target.parent
-                if (targetProbe != null && Files.getFileStore(source) != Files.getFileStore(targetProbe)) {
-                    return true
-                }
-            } catch (_: IOException) {
-                // Fall back to reason parsing below.
-            }
-
-            val reason = e.reason ?: return false
-            val normalized = reason.lowercase()
-            return normalized.contains("cross-device") ||
-                normalized.contains("exdev") ||
-                (normalized.contains("link") && normalized.contains("device"))
         }
     }
 }

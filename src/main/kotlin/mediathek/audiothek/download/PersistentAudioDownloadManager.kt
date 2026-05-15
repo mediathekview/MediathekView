@@ -23,6 +23,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.audiothek.model.AudioEntry
 import mediathek.config.StandardLocations
+import mediathek.tool.FileUtils
 import mediathek.tool.http.MVHttpClient
 import okhttp3.*
 import org.apache.logging.log4j.LogManager
@@ -418,19 +419,8 @@ class PersistentAudioDownloadManager(
 
     private fun moveDownloadedFile(tempFile: Path, targetFile: Path) {
         ensureParentDirectoryExists(targetFile)
-        try {
-            withFileRetry(targetFile, "atomic-move") {
-                Files.move(
-                    tempFile,
-                    targetFile,
-                    StandardCopyOption.REPLACE_EXISTING,
-                    StandardCopyOption.ATOMIC_MOVE
-                )
-            }
-        } catch (_: AtomicMoveNotSupportedException) {
-            withFileRetry(targetFile, "move") {
-                Files.move(tempFile, targetFile, StandardCopyOption.REPLACE_EXISTING)
-            }
+        withFileRetry(targetFile, "move") {
+            FileUtils.moveAtomicallyWithFallback(tempFile, targetFile)
         }
     }
 

@@ -397,7 +397,6 @@ class TableContextMenuHandler(
                     FilmListWriter(false).writeFilmList(
                         StandardLocations.getFilmlistFilePathString(),
                         completeFilmList,
-                        null,
                     )
                 }
             }

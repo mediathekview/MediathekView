@@ -49,6 +49,12 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         this.pcs.addPropertyChangeListener(PCS_METADATA, listener);
     }
 
+    public List<DatenFilm> snapshot() {
+        synchronized (this) {
+            return List.copyOf(this);
+        }
+    }
+
     /**
      * case-insensitive .distinct() implementation.
      * @param keyExtractor the function to be applied to the key
@@ -71,10 +77,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return IMMUTABLE List of themas as String.
      */
     public List<String> getThemen(String sender) {
-        List<DatenFilm> snapshot;
-        synchronized (this) {
-            snapshot = List.copyOf(this);
-        }
+        List<DatenFilm> snapshot = snapshot();
 
         Stream<DatenFilm> mystream = snapshot.parallelStream();
         //if sender is empty return all themas...
@@ -94,10 +97,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      * @return immutable sorted list of distinct themas
      */
     public List<String> getThemen(@NonNull Collection<String> senders) {
-        List<DatenFilm> snapshot;
-        synchronized (this) {
-            snapshot = List.copyOf(this);
-        }
+        List<DatenFilm> snapshot = snapshot();
 
         var normalizedSenders = new HashSet<String>();
         senders.forEach(sender -> normalizedSenders.add(normalizeKey(sender)));

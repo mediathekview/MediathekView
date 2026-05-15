@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,88 +16,107 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.tasks;
+package mediathek.gui.tasks
 
-public class LuceneIndexKeys {
+object LuceneIndexKeys {
     /**
      * In Abfragen nicht zu verwenden!
      */
-    public static final String ID = "id";
+    const val ID = "id"
+
     /**
      * String-Value
      */
-    public static final String SENDER = "sender";
+    const val SENDER = "sender"
+
     /**
      * String-Value
      */
-    public static final String TITEL = "titel";
+    const val TITEL = "titel"
+
     /**
      * String-Value
      */
-    public static final String THEMA = "thema";
+    const val THEMA = "thema"
+
     /**
      * String-Value
      */
-    public static final String BESCHREIBUNG = "beschreibung";
+    const val BESCHREIBUNG = "beschreibung"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
-    public static final String LIVESTREAM = "livestream";
+    const val LIVESTREAM = "livestream"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
-    public static final String HIGH_QUALITY = "highquality";
+    const val HIGH_QUALITY = "highquality"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
-    public static final String SUBTITLE = "untertitel";
+    const val SUBTITLE = "untertitel"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
-    public static final String TRAILER_TEASER = "trailerteaser";
+    const val TRAILER_TEASER = "trailerteaser"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
-    public static final String AUDIOVERSION = "audioversion";
+    const val AUDIOVERSION = "audioversion"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
-    public static final String SIGN_LANGUAGE = "signlanguage";
+    const val SIGN_LANGUAGE = "signlanguage"
+
     /**
      * Datum im Format "YYYYMMDD". String.
      * Nicht existente Werte sind "19000101".
      */
-    public static final String SENDE_DATUM = "sendedatum";
+    const val SENDE_DATUM = "sendedatum"
+
     /**
      * Wochentag (Montag, Dienstag,...) des Sendedatums. String.
      */
-    public static final String SENDE_WOCHENTAG = "wochentag";
+    const val SENDE_WOCHENTAG = "wochentag"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Bedingung erfüllt. Dann "true".
      */
-    public static final String NEW = "neu";
+    const val NEW = "neu"
+
     /**
      * Filmlänge in Sekunde. Integer-Value. 0 wenn nicht vorhanden.
      */
-    public static final String FILM_LENGTH = "länge";
+    const val FILM_LENGTH = "länge"
+
     /**
      * Filmgröße in Megabytes. Integer-Value. 0 wenn nicht vorhanden.
      */
-    public static final String FILM_SIZE = "größe";
+    const val FILM_SIZE = "größe"
+
     /**
      * Boolean Key ist nur vorhanden, wenn Film als Duplikat klassifiziert wurde. Dann "true".
      */
-    public static final String DUPLICATE = "duplicate";
+    const val DUPLICATE = "duplicate"
+
     /**
      * Startzeit des Films HH:mm:ss. String.
      */
-    public static final String START_TIME = "startzeit";
+    const val START_TIME = "startzeit"
+
     /**
      * Season. Integer. 0 wenn nicht vorhanden.
      */
-    public static final String SEASON = "season";
+    const val SEASON = "season"
+
     /**
      * Episode. Integer. 0 wenn nicht vorhanden.
      */
-    public static final String EPISODE = "episode";
+    const val EPISODE = "episode"
 }

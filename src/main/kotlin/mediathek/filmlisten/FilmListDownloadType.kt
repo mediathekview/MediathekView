@@ -16,27 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.filmlisten
 
-import mediathek.tool.FileUtils
-import java.io.File
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-
-internal object DirectDownloadPartFiles {
-
-    fun partFileFor(target: File): File {
-        return File("${target.path}.part")
-    }
-
-    @Throws(IOException::class)
-    fun moveCompletedPartToFinal(partFile: File, finalFile: File) {
-        FileUtils.moveAtomicallyWithFallback(partFile.toPath(), finalFile.toPath())
-    }
-
-    @Throws(IOException::class)
-    fun moveLegacyFinalFileToPart(finalFile: File, partFile: File) {
-        Files.move(finalFile.toPath(), partFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-    }
+enum class FilmListDownloadType {
+    FULL,
+    DIFF_ONLY,
 }

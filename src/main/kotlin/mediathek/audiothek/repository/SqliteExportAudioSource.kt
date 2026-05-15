@@ -21,6 +21,7 @@ package mediathek.audiothek.repository
 import mediathek.audiothek.model.AudioDataset
 import mediathek.audiothek.model.AudioEntry
 import mediathek.config.Konstanten
+import mediathek.tool.FileUtils
 import mediathek.tool.http.MVHttpClient
 import mediathek.tool.sql.SqlDatabaseConfig
 import okhttp3.OkHttpClient
@@ -30,10 +31,8 @@ import org.tukaani.xz.XZInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.URI
-import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.sql.Connection
 import java.time.Instant
 import java.time.LocalDateTime
@@ -127,7 +126,7 @@ open class SqliteExportAudioSource(
 
                     decompressArchiveToDatabase(tempCompressedPath, tempDatabasePath)
                     validateDatabase(tempDatabasePath)
-                    replaceFileAtomically(tempDatabasePath, exportPath)
+                    FileUtils.moveAtomicallyWithFallback(tempDatabasePath, exportPath)
                     writeDownloadMetadata(
                         SqliteExportDownloadMetadata(
                             sourceUrl = sourceUrl,
@@ -306,14 +305,6 @@ open class SqliteExportAudioSource(
                     }
                 }
             }
-        }
-    }
-
-    private fun replaceFileAtomically(source: Path, target: Path) {
-        try {
-            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
-        } catch (_: AtomicMoveNotSupportedException) {
-            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING)
         }
     }
 

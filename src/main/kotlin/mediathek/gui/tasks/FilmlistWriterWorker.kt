@@ -44,8 +44,7 @@ class FilmlistWriterWorker(progLabel: JLabel, private val progressBar: JProgress
 
     override fun doInBackground(): Void? {
         val writer = FilmListWriter(false)
-        writer.writeFilmList(getFilmlistFilePathString(), Daten.getInstance().listeFilme)
-        { prog: Double ->
+        writer.writeFilmList(getFilmlistFilePathString(), Daten.getInstance().listeFilme) { prog ->
             progress = (100.0 * prog).roundToInt()
         }
         return null

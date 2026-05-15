@@ -7,9 +7,7 @@ import okhttp3.Request
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.StandardCopyOption
+import java.nio.file.*
 import java.text.StringCharacterIterator
 import kotlin.math.abs
 
@@ -40,6 +38,50 @@ object FileUtils {
     @JvmStatic
     fun removeExtension(fileName: String): String {
         return File(fileName).nameWithoutExtension
+    }
+
+    @JvmStatic
+    @Throws(IOException::class)
+    fun moveAtomicallyWithFallback(source: Path, target: Path) {
+        try {
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+            return
+        } catch (_: AtomicMoveNotSupportedException) {
+            // Retry below without atomic semantics.
+        }
+
+        moveNonAtomicOrCopyDelete(source, target)
+    }
+
+    @Throws(IOException::class)
+    private fun moveNonAtomicOrCopyDelete(source: Path, target: Path) {
+        try {
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING)
+        } catch (e: FileSystemException) {
+            if (isCrossDeviceMoveError(source, target, e)) {
+                Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING)
+                Files.delete(source)
+            } else {
+                throw e
+            }
+        }
+    }
+
+    private fun isCrossDeviceMoveError(source: Path, target: Path, e: FileSystemException): Boolean {
+        try {
+            val targetProbe = if (Files.exists(target)) target else target.parent
+            if (targetProbe != null && Files.getFileStore(source) != Files.getFileStore(targetProbe)) {
+                return true
+            }
+        } catch (_: IOException) {
+            // Fall back to reason parsing below.
+        }
+
+        val reason = e.reason ?: return false
+        val normalized = reason.lowercase()
+        return normalized.contains("cross-device") ||
+            normalized.contains("exdev") ||
+            (normalized.contains("link") && normalized.contains("device"))
     }
 
     @Throws(IOException::class)
@@ -93,7 +135,7 @@ object FileUtils {
                         Files.copy(`in`, writing, StandardCopyOption.REPLACE_EXISTING)
                     }
                 }
-                Files.move(writing, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+                moveAtomicallyWithFallback(writing, target)
                 return target
             }
         } catch (e: IOException) {
