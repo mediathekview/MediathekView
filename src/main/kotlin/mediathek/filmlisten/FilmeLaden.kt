@@ -233,8 +233,7 @@ class FilmeLaden(private val daten: Daten) {
             return false
         }
 
-        loadFilmlist("", true, FilmListLoadOptions.normal())
-        return true
+        return loadFilmlist("", true, FilmListLoadOptions(writeAfterLoad = true, postProcessWhenNoUpdate = true))
     }
 
     private fun shouldStartAutomaticStartupUpdate(): Boolean =
@@ -423,7 +422,13 @@ class FilmeLaden(private val daten: Daten) {
             logger.trace("Filme laden, ende")
             if (result == ImportResult.NO_UPDATE) {
                 istAmLaufen = false
-                notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
+                if (options.postProcessWhenNoUpdate) {
+                    val ui = MediathekGui.ui()
+                    val statusBarWidgets = attachStatusBarWidgets(ui)
+                    startPostLoadWork(writeFilmList = false, statusBarWidgets, ui)
+                } else {
+                    notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
+                }
                 return@launch
             }
             undEnde(ListenerFilmeLadenEvent("", "", 0, 0, result != ImportResult.SUCCESS), options)

@@ -18,7 +18,10 @@
 
 package mediathek.filmlisten
 
-data class FilmListLoadOptions(val writeAfterLoad: Boolean) {
+data class FilmListLoadOptions(
+    val writeAfterLoad: Boolean,
+    val postProcessWhenNoUpdate: Boolean = false,
+) {
     companion object {
         fun normal(): FilmListLoadOptions = FilmListLoadOptions(true)
 
