@@ -1186,83 +1186,83 @@ public class MediathekGui extends JFrame {
     private void performApplicationShutdown(boolean shutdownComputer) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            if (automaticFilmlistUpdate != null)
-                automaticFilmlistUpdate.close();
+            runShutdownStep("Close automatic filmlist update", () -> {
+                if (automaticFilmlistUpdate != null)
+                    automaticFilmlistUpdate.close();
+            });
 
-            endProgramUpdateChecker();
+            runShutdownStep("Close program update checker", this::endProgramUpdateChecker);
 
-            showMemoryMonitorAction.closeMemoryMonitor();
+            runShutdownStep("Close memory monitor", showMemoryMonitorAction::closeMemoryMonitor);
 
-            showBandwidthUsageAction.getDialogOptional().ifPresent(dlg -> {
+            runShutdownStep("Close bandwidth monitor", () -> showBandwidthUsageAction.getDialogOptional().ifPresent(dlg -> {
                 dlg.dispose();
                 //little hack, we must preserve the visible state since it was open when app quits...
                 config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, true);
+            }));
+
+            runShutdownStep("Close abo dialog", manageAboAction::closeDialog);
+
+            runShutdownStep("Perform history maintenance", () -> {
+                try (SeenHistoryController history = new SeenHistoryController()) {
+                    history.performMaintenance();
+                }
             });
 
-            manageAboAction.closeDialog();
-
-            logger.trace("Perform history maintenance.");
-            try (SeenHistoryController history = new SeenHistoryController()) {
-                history.performMaintenance();
-            }
-
-            logger.trace("Save bookmark list.");
-            daten.getListeBookmarkList().saveToFile();
+            runShutdownStep("Save bookmark list", () -> daten.getListeBookmarkList().saveToFile());
 
             // stop the download thread
-            logger.trace("Stop Starter Thread.");
-            daten.getStarterClass().shutdown();
+            runShutdownStep("Stop starter thread", () -> daten.getStarterClass().shutdown());
 
-            logger.trace("Close Notification center.");
-            closeNotificationCenter();
+            runShutdownStep("Close notification center", this::closeNotificationCenter);
 
             // Tabelleneinstellungen merken
-            logger.trace("Save Tab Filme data.");
-            tabFilme.disposePanel();
+            runShutdownStep("Save tab Filme data", () -> tabFilme.disposePanel());
 
-            logger.trace("Save Tab Download data.");
-            tabDownloads.tabelleSpeichern();
+            runShutdownStep("Save tab Download data", () -> tabDownloads.tabelleSpeichern());
 
-            logger.trace("Disposing Tab Audiothek");
-            tabAudiothek.disposePanel();
+            runShutdownStep("Dispose tab Audiothek", tabAudiothek::disposePanel);
 
-            logger.trace("Stop all downloads.");
-            daten.getListeDownloads().requestStopForShutdown();
+            runShutdownStep("Stop all downloads", () -> daten.getListeDownloads().requestStopForShutdown());
 
-            logger.trace("Save app data.");
-            daten.allesSpeichern();
+            runShutdownStep("Save app data", daten::allesSpeichern);
 
-            logger.trace("Shutdown pools.");
-            shutdownTimerPool();
-            waitForCommonPoolToComplete();
+            runShutdownStep("Shutdown timer pool", this::shutdownTimerPool);
+            runShutdownStep("Wait for common pool", this::waitForCommonPoolToComplete);
 
-            //close main window
-            logger.trace("Close main window.");
-            dispose();
+            runShutdownStep("Close main window", this::dispose);
 
-            //write all settings if not done already...
-            logger.trace("Write app config.");
-            ApplicationConfiguration.getInstance().writeConfiguration();
+            runShutdownStep("Write app config", () -> ApplicationConfiguration.getInstance().writeConfiguration());
 
             if (resetSettingsOnQuit) {
-                logger.trace("Move settings directory aside for reset.");
-                SettingsResetService.moveSettingsDirectoryAside();
+                runShutdownStep("Move settings directory aside for reset", SettingsResetService::moveSettingsDirectoryAside);
             }
 
-            RuntimeStatistics.INSTANCE.printRuntimeStatistics();
-            if (Config.isEnhancedLoggingEnabled()) {
-                RuntimeStatistics.INSTANCE.printDataUsageStatistics();
-            }
+            runShutdownStep("Print runtime statistics", () -> {
+                RuntimeStatistics.INSTANCE.printRuntimeStatistics();
+                if (Config.isEnhancedLoggingEnabled()) {
+                    RuntimeStatistics.INSTANCE.printDataUsageStatistics();
+                }
+            });
         } finally {
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
 
         if (shutdownComputer) {
-            logger.info("Requesting computer shutdown.");
-            computerShutdown.requestShutdown();
+            runShutdownStep("Request computer shutdown", computerShutdown::requestShutdown);
         }
 
         System.exit(0);
+    }
+
+    private void runShutdownStep(String description, Runnable step) {
+        logger.trace(description);
+        try {
+            step.run();
+        }
+        catch (RuntimeException ex) {
+            logger.error("Shutdown step failed: {}", description, ex);
+        }
     }
 
     private void shutdownTimerPool() {
