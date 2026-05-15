@@ -123,11 +123,11 @@ public class MediathekGui extends JFrame {
     /**
      * Used for status bar progress.
      */
-    public final JLabel progressLabel = new JLabel();
+    private final JLabel progressLabel = new JLabel();
     /**
      * Used for status bar progress.
      */
-    public final JProgressBar progressBar = new JProgressBar();
+    private final JProgressBar progressBar = new JProgressBar();
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
@@ -161,7 +161,7 @@ public class MediathekGui extends JFrame {
     private final Supplier<INotificationCenter> notificationCenterFactory;
     private final ComputerShutdown computerShutdown;
     private final DownloadProgressIndicator downloadProgressIndicator;
-    public FixedRedrawStatusBar swingStatusBar;
+    private FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     private FilmInfoDialog filmInfo;
@@ -169,6 +169,7 @@ public class MediathekGui extends JFrame {
     private DialogEinstellungen dialogEinstellungen;
     private ProgramUpdateCheck programUpdateChecker;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
+    private StatusBarProgressHandle filmlistDownloadProgressHandle;
     private boolean resetSettingsOnQuit;
 
     private enum StartupFilmlistLoadOutcome {
@@ -577,8 +578,7 @@ public class MediathekGui extends JFrame {
      * Read a local filmlist or load a new one in auto mode.
      */
     private void loadFilmlist() {
-        swingStatusBar.add(progressLabel);
-        swingStatusBar.add(progressBar);
+        installStatusBarProgress(progressLabel, progressBar);
 
         var evaluateDuplicates = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
 
@@ -648,8 +648,7 @@ public class MediathekGui extends JFrame {
                     Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, throwable != null));
                 }
             } finally {
-                swingStatusBar.remove(progressBar);
-                swingStatusBar.remove(progressLabel);
+                uninstallStatusBarProgress(progressLabel, progressBar);
             }
         });
     }
@@ -668,12 +667,16 @@ public class MediathekGui extends JFrame {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                swingStatusBar.add(progressLabel);
-                swingStatusBar.add(progressBar);
+                closeFilmlistDownloadProgress();
+                filmlistDownloadProgressHandle = showStatusBarProgress();
             }
 
             @Override
             public void progress(ListenerFilmeLadenEvent event) {
+                if (filmlistDownloadProgressHandle == null) {
+                    return;
+                }
+                var progressBar = filmlistDownloadProgressHandle.progressBar();
                 if (event.getMax() == 0 || event.getProgress() == event.getMax()) {
                     progressBar.setIndeterminate(true);
                 }
@@ -683,9 +686,84 @@ public class MediathekGui extends JFrame {
                     progressBar.setMaximum(event.getMax());
                     progressBar.setValue(event.getProgress());
                 }
-                progressLabel.setText(event.getText());
+                filmlistDownloadProgressHandle.label().setText(event.getText());
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                closeFilmlistDownloadProgress();
             }
         });
+    }
+
+    @Handler
+    private void handleFilmListReadStopEvent(FilmListReadStopEvent event) {
+        SwingUtilities.invokeLater(this::closeFilmlistDownloadProgress);
+    }
+
+    private void closeFilmlistDownloadProgress() {
+        if (filmlistDownloadProgressHandle == null) {
+            return;
+        }
+        filmlistDownloadProgressHandle.close();
+        filmlistDownloadProgressHandle = null;
+    }
+
+    private StatusBarProgressHandle showStatusBarProgress(JLabel label, JProgressBar progressBar) {
+        installStatusBarProgress(label, progressBar);
+        return new StatusBarProgressRegistration(label, progressBar);
+    }
+
+    public StatusBarProgressHandle showStatusBarProgress() {
+        return showStatusBarProgress(new JLabel(), new JProgressBar());
+    }
+
+    private void installStatusBarProgress(JLabel label, JProgressBar progressBar) {
+        if (label.getParent() != swingStatusBar) {
+            swingStatusBar.add(label);
+        }
+        if (progressBar.getParent() != swingStatusBar) {
+            swingStatusBar.add(progressBar);
+        }
+    }
+
+    private void uninstallStatusBarProgress(JLabel label, JProgressBar progressBar) {
+        if (progressBar.getParent() == swingStatusBar) {
+            swingStatusBar.remove(progressBar);
+        }
+        if (label.getParent() == swingStatusBar) {
+            swingStatusBar.remove(label);
+        }
+    }
+
+    private final class StatusBarProgressRegistration implements StatusBarProgressHandle {
+        private final JLabel label;
+        private final JProgressBar progressBar;
+        private boolean closed;
+
+        private StatusBarProgressRegistration(JLabel label, JProgressBar progressBar) {
+            this.label = label;
+            this.progressBar = progressBar;
+        }
+
+        @Override
+        public @NonNull JLabel label() {
+            return label;
+        }
+
+        @Override
+        public @NonNull JProgressBar progressBar() {
+            return progressBar;
+        }
+
+        @Override
+        public void close() {
+            if (closed) {
+                return;
+            }
+            closed = true;
+            uninstallStatusBarProgress(label, progressBar);
+        }
     }
 
     public FilmInfoDialog getFilmInfoDialog() {

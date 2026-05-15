@@ -40,6 +40,7 @@ import mediathek.gui.tasks.FilmlistWriterWorker
 import mediathek.gui.tasks.LuceneIndexWorker
 import mediathek.gui.tasks.RefreshAboWorker
 import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.StatusBarProgressHandle
 import mediathek.tool.*
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -61,7 +62,27 @@ import javax.swing.SwingUtilities
 import javax.swing.event.EventListenerList
 
 class FilmeLaden(private val daten: Daten) {
-    private data class StatusBarWidgets(val label: JLabel, val progressBar: JProgressBar)
+    private data class StatusBarWidgets(
+        val handle: StatusBarProgressHandle,
+        val attachedToStatusBar: Boolean,
+    ) {
+        val label
+            get() = handle.label()
+        val progressBar
+            get() = handle.progressBar()
+    }
+
+    private class NoStatusBarProgressHandle : StatusBarProgressHandle {
+        private val label = JLabel()
+        private val progressBar = JProgressBar()
+
+        override fun label(): JLabel = label
+
+        override fun progressBar(): JProgressBar = progressBar
+
+        override fun close() {
+        }
+    }
 
     private enum class ImportResult {
         SUCCESS,
@@ -425,7 +446,7 @@ class FilmeLaden(private val daten: Daten) {
                 if (options.postProcessWhenNoUpdate) {
                     val ui = MediathekGui.ui()
                     val statusBarWidgets = attachStatusBarWidgets(ui)
-                    startPostLoadWork(writeFilmList = false, statusBarWidgets, ui)
+                    startPostLoadWork(writeFilmList = false, statusBarWidgets)
                 } else {
                     notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
                 }
@@ -497,9 +518,9 @@ class FilmeLaden(private val daten: Daten) {
         logger.info("  Anzahl Neue:  {}", listeFilme.countNewFilms())
         logger.info("")
 
-        MessageBus.messageBus.publishAsync(FilmListReadStopEvent())
+        MessageBus.messageBus.publish(FilmListReadStopEvent())
         val statusBarWidgets = attachStatusBarWidgets(ui)
-        startPostLoadWork(writeFilmList, statusBarWidgets, ui)
+        startPostLoadWork(writeFilmList, statusBarWidgets)
     }
 
     private fun fillHash(listeFilme: ListeFilme) {
@@ -552,34 +573,35 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private fun attachStatusBarWidgets(ui: MediathekGui?): StatusBarWidgets {
-        if (ui == null) {
-            return StatusBarWidgets(JLabel(), JProgressBar())
+        if (ui != null) {
+            return StatusBarWidgets(
+                handle = invokeOnEdtAndWait { ui.showStatusBarProgress() },
+                attachedToStatusBar = true,
+            )
         }
-        val widgets = StatusBarWidgets(ui.progressLabel, ui.progressBar)
-        invokeOnEdtAndWait {
-            ui.swingStatusBar.add(widgets.label)
-            ui.swingStatusBar.add(widgets.progressBar)
-        }
-        return widgets
+        return StatusBarWidgets(NoStatusBarProgressHandle(), attachedToStatusBar = false)
     }
 
-    private fun detachStatusBarWidgets(ui: MediathekGui?, widgets: StatusBarWidgets) {
-        if (ui == null) {
-            return
-        }
-        invokeOnEdtAndWait {
-            ui.swingStatusBar.remove(widgets.progressBar)
-            ui.swingStatusBar.remove(widgets.label)
-        }
-    }
-
-    private fun startPostLoadWork(writeFilmList: Boolean, widgets: StatusBarWidgets, ui: MediathekGui?) {
-        scope.launch {
-            buildPostLoadWorkerChain(writeFilmList, widgets)
-            SwingUtilities.invokeLater {
-                Daten.getInstance().filmeLaden.notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
+    private fun detachStatusBarWidgets(widgets: StatusBarWidgets) {
+        if (widgets.attachedToStatusBar) {
+            invokeOnEdtAndWait {
+                widgets.handle.close()
             }
-            detachStatusBarWidgets(ui, widgets)
+        } else {
+            widgets.handle.close()
+        }
+    }
+
+    private fun startPostLoadWork(writeFilmList: Boolean, widgets: StatusBarWidgets) {
+        scope.launch {
+            try {
+                buildPostLoadWorkerChain(writeFilmList, widgets)
+                SwingUtilities.invokeLater {
+                    Daten.getInstance().filmeLaden.notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
+                }
+            } finally {
+                detachStatusBarWidgets(widgets)
+            }
         }
     }
 
@@ -601,12 +623,17 @@ class FilmeLaden(private val daten: Daten) {
         }
     }
 
-    private fun invokeOnEdtAndWait(action: () -> Unit) {
+    private fun <T> invokeOnEdtAndWait(action: () -> T): T {
         try {
-            if (SwingUtilities.isEventDispatchThread()) {
+            return if (SwingUtilities.isEventDispatchThread()) {
                 action()
             } else {
-                SwingUtilities.invokeAndWait(action)
+                var result: T? = null
+                SwingUtilities.invokeAndWait {
+                    result = action()
+                }
+                @Suppress("UNCHECKED_CAST")
+                result as T
             }
         } catch (ex: InterruptedException) {
             Thread.currentThread().interrupt()
