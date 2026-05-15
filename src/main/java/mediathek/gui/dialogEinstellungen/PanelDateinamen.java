@@ -41,18 +41,18 @@ public class PanelDateinamen extends PanelVorlage {
         jButtonMinus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
         jButtonUp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg"));
         jButtonDown.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg"));
-        jButtonReset.addActionListener(e -> {
+        jButtonReset.addActionListener(_ -> {
             ReplaceList.init();
             tabelleLaden();
             setTextfelder();
         });
-        jButtonPlus.addActionListener(e -> {
+        jButtonPlus.addActionListener(_ -> {
             ReplaceList.list.add(new String[]{"von", "nach"});
             tabelleLaden();
             tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
             setTextfelder();
         });
-        jButtonMinus.addActionListener(e -> {
+        jButtonMinus.addActionListener(_ -> {
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow != -1) {
                 ReplaceList.list.remove(selectedTableRow);
@@ -60,8 +60,8 @@ public class PanelDateinamen extends PanelVorlage {
                 setTextfelder();
             }
         });
-        jButtonUp.addActionListener(e -> upDown(true));
-        jButtonDown.addActionListener(e -> upDown(false));
+        jButtonUp.addActionListener(_ -> upDown(true));
+        jButtonDown.addActionListener(_ -> upDown(false));
         tabelleLaden();
         setTextfelder();
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
@@ -106,10 +106,10 @@ public class PanelDateinamen extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(jTextFieldVon);
         jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
-        jCheckBoxTable.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected())));
+        jCheckBoxTable.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected())));
         jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)));
 
-        jCheckBoxAscii.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected())));
+        jCheckBoxAscii.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected())));
         jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
     }
 

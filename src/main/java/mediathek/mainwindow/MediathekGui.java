@@ -24,8 +24,6 @@ import mediathek.audiothek.repository.AudioRepository;
 import mediathek.audiothek.ui.main.AudiothekPanel;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
-import mediathek.controller.starter.Start;
-import mediathek.daten.DatenDownload;
 import mediathek.daten.IndexedFilmList;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
@@ -48,6 +46,8 @@ import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
 import mediathek.gui.history.ResetDownloadHistoryAction;
 import mediathek.gui.messages.*;
+import mediathek.gui.progress.DownloadProgressIndicator;
+import mediathek.gui.progress.NoDownloadProgressIndicator;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
@@ -55,13 +55,13 @@ import mediathek.gui.tasks.BlacklistFilterWorker;
 import mediathek.gui.tasks.LuceneIndexWorker;
 import mediathek.gui.tasks.RefreshAboWorker;
 import mediathek.logging.LogDialog;
+import mediathek.shutdown.ComputerShutdown;
 import mediathek.sqlite.RecoverHistoryDbAction;
 import mediathek.swing.IconOnlyButton;
 import mediathek.tool.*;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationService;
-import mediathek.tool.threads.IndicatorThread;
 import mediathek.tool.timer.TimerPool;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
@@ -76,7 +76,6 @@ import raven.toast.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -88,8 +87,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -102,13 +100,15 @@ public class MediathekGui extends JFrame {
     private static final String ICON_PATH = "/mediathek/res/";
     private static final int ICON_WIDTH = 58;
     private static final int ICON_HEIGHT = 58;
-    private static final String KEY_F10 = "F10";
-    private static final String NONE = "none";
+    private static final String DISABLED_ACTION_KEY = "none";
     private static final int MIN_WINDOW_WIDTH = 800;
     private static final int MIN_WINDOW_HEIGHT = 600;
     private static final String ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL";
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
     private static final String TABBED_PANE_TRAILING_COMPONENT = "JTabbedPane.trailingComponent";
+    private static final ComputerShutdown NO_COMPUTER_SHUTDOWN = () -> {};
+    private static final Function<MediathekGui, DownloadProgressIndicator> NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY = _ ->
+            NoDownloadProgressIndicator.INSTANCE;
     /**
      * "Pointer" to UI
      */
@@ -129,10 +129,6 @@ public class MediathekGui extends JFrame {
      * Used for status bar progress.
      */
     public final JProgressBar progressBar = new JProgressBar();
-    /**
-     * Number of active downloads
-     */
-    protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
@@ -154,40 +150,53 @@ public class MediathekGui extends JFrame {
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
-    private final FilmInfoDialog filmInfo;
     private final ManageAboAction manageAboAction = new ManageAboAction();
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     private final ShowFilmStatisticsAction showFilmStatisticsAction = new ShowFilmStatisticsAction(this);
     private final ShowDuplicateStatisticsAction showDuplicateStatisticsAction = new ShowDuplicateStatisticsAction(this);
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel();
-    private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabLivestreams);
+    private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams);
     private final AudioRepository audiothekRepository = new AudioRepository();
     private final AudiothekPanel tabAudiothek = new AudiothekPanel(audiothekRepository);
-    private final ToggleAudiothekTabAction toggleAudiothekTabAction = new ToggleAudiothekTabAction(tabAudiothek);
-    private final LogDialog logWindow = new LogDialog(this);
+    private final ToggleAudiothekTabAction toggleAudiothekTabAction = new ToggleAudiothekTabAction(tabbedPane, tabAudiothek);
+    private final LogDialog logDialog = new LogDialog(this);
+    private final Supplier<INotificationCenter> notificationCenterFactory;
+    private final ComputerShutdown computerShutdown;
+    private final DownloadProgressIndicator downloadProgressIndicator;
     public FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     protected FontManager fontManager;
+    private FilmInfoDialog filmInfo;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private ProgramUpdateCheck programUpdateChecker;
-    /**
-     * Progress indicator thread for OS X and windows.
-     */
-    private IndicatorThread progressIndicatorThread;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private boolean shutdownRequested;
     private boolean resetSettingsOnQuit;
-    private final Supplier<INotificationCenter> notificationCenterFactory;
 
     public MediathekGui() {
         this(GenericNotificationCenter::new);
     }
 
     protected MediathekGui(Supplier<INotificationCenter> notificationCenterFactory) {
+        this(notificationCenterFactory, NO_COMPUTER_SHUTDOWN);
+    }
+
+    protected MediathekGui(Supplier<INotificationCenter> notificationCenterFactory, ComputerShutdown computerShutdown) {
+        this(notificationCenterFactory, computerShutdown, NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY);
+    }
+
+    protected MediathekGui(
+            Supplier<INotificationCenter> notificationCenterFactory,
+            ComputerShutdown computerShutdown,
+            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory
+    ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
+        this.computerShutdown = Objects.requireNonNull(computerShutdown);
+        var progressIndicatorFactory = Objects.requireNonNull(downloadProgressIndicatorFactory);
+        this.downloadProgressIndicator = Objects.requireNonNull(progressIndicatorFactory.apply(this));
         ui = this;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -214,19 +223,10 @@ public class MediathekGui extends JFrame {
 
         createMenuBar();
 
-        remapF10Key();
+        configureMenuKeyboardShortcuts();
 
         SplashScreenLifecycle.update(UIProgressState.WAIT_FOR_HISTORY_DATA);
-        try {
-            daten.waitForHistoryDataLoadingToComplete();
-        }
-        catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.error("waitForHistoryDataLoadingToComplete()", e);
-        }
-        catch (ExecutionException e) {
-            logger.error("waitForHistoryDataLoadingToComplete()", e);
-        }
+        waitForHistoryDataLoadingToComplete();
 
         SplashScreenLifecycle.update(UIProgressState.CREATE_STATUS_BAR);
         createStatusBar();
@@ -271,9 +271,7 @@ public class MediathekGui extends JFrame {
 
         loadBandwidthMonitor();
 
-        logger.trace("Loading info dialog");
-        filmInfo = new FilmInfoDialog(this);
-        logger.trace("Finished loading info dialog");
+        setupFilmInfoDialog();
 
         mapFilmUrlCopyCommands();
 
@@ -285,6 +283,12 @@ public class MediathekGui extends JFrame {
         performGeoCountryStartupCheck();
     }
 
+    @Override
+    public void dispose() {
+        downloadProgressIndicator.close();
+        super.dispose();
+    }
+
     /**
      * Return the user interface instance
      *
@@ -292,6 +296,25 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    private void setupFilmInfoDialog() {
+        logger.trace("Loading info dialog");
+        filmInfo = new FilmInfoDialog(this);
+        logger.trace("Finished loading info dialog");
+    }
+
+    private void waitForHistoryDataLoadingToComplete() {
+        try {
+            daten.waitForHistoryDataLoadingToComplete();
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("waitForHistoryDataLoadingToComplete()", e);
+        }
+        catch (ExecutionException e) {
+            logger.error("waitForHistoryDataLoadingToComplete()", e);
+        }
     }
 
     public boolean supportsAutomaticMenuTabSwitching() {
@@ -499,10 +522,15 @@ public class MediathekGui extends JFrame {
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());
     }
 
-    private void remapF10Key() {
-        //Hier wird F10 default Funktion unterbunden:
-        InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
+    private void configureMenuKeyboardShortcuts() {
+        if (shouldDisableF10MenuShortcut()) {
+            var im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), DISABLED_ACTION_KEY);
+        }
+    }
+
+    protected boolean shouldDisableF10MenuShortcut() {
+        return true;
     }
 
     protected void createMenuBar() {
@@ -707,14 +735,13 @@ public class MediathekGui extends JFrame {
      * Reload filmlist every 24h when in automatic mode.
      */
     private void setupAutomaticFilmlistReload() {
-        final AutomaticFilmlistUpdate.IUpdateAction performUpdate = () -> {
+        final Runnable performUpdate = () -> {
             if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
-                loadFilmListAction.setEnabled(false);
                 //if downloads are running, don´t update
                 if (daten.getListeDownloads().unfinishedDownloads() == 0) {
+                    loadFilmListAction.setEnabled(false);
                     performFilmListLoadOperation(false);
                 }
-                loadFilmListAction.setEnabled(true);
             }
         };
 
@@ -732,6 +759,7 @@ public class MediathekGui extends JFrame {
      */
     private void setupUpdateCheck(boolean newState) {
         if (newState) {
+            endProgramUpdateChecker();
             programUpdateChecker = new ProgramUpdateCheck();
             programUpdateChecker.start();
         }
@@ -797,8 +825,6 @@ public class MediathekGui extends JFrame {
 
     protected void installLivestreamsTab() {
         var show = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS, true);
-        tabLivestreams.putClientProperty("JTabbedPane.tabClosable", true);
-        tabLivestreams.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) _ -> toggleZappLivestreamsTabAction.actionPerformed(null));
         if (show) {
             tabbedPane.addTab("zapp Livestreams", tabLivestreams);
         }
@@ -806,8 +832,6 @@ public class MediathekGui extends JFrame {
 
     protected void installAudiothekTab() {
         var show = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_SHOW_AUDIOTHEK, true);
-        tabAudiothek.putClientProperty("JTabbedPane.tabClosable", true);
-        tabAudiothek.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) _ -> toggleAudiothekTabAction.actionPerformed(null));
         if (show) {
             tabbedPane.addTab("Audiothek", tabAudiothek);
         }
@@ -860,31 +884,13 @@ public class MediathekGui extends JFrame {
     }
 
     /**
-     * Create the platform-specific instance of the progress indicator thread.
-     *
-     * @return {@link IndicatorThread} instance for the running platform.
-     */
-    protected IndicatorThread createProgressIndicatorThread() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("Unsupported Platform");
-    }
-
-    /**
      * Message bus handler which gets called when a download is started.
      *
      * @param msg Information about the download
      */
     @Handler
     protected void handleDownloadStart(DownloadStartEvent msg) {
-        numDownloadsStarted.incrementAndGet();
-
-        if (progressIndicatorThread == null) {
-            try {
-                progressIndicatorThread = createProgressIndicatorThread();
-                progressIndicatorThread.start();
-            }
-            catch (Exception _) {
-            }
-        }
+        downloadProgressIndicator.downloadStarted();
     }
 
     /**
@@ -894,12 +900,7 @@ public class MediathekGui extends JFrame {
      */
     @Handler
     protected void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
-        final int numDL = numDownloadsStarted.decrementAndGet();
-
-        if (numDL == 0 && progressIndicatorThread != null) {
-            progressIndicatorThread.interrupt();
-            progressIndicatorThread = null;
-        }
+        downloadProgressIndicator.downloadFinished();
     }
 
     @Handler
@@ -920,8 +921,8 @@ public class MediathekGui extends JFrame {
         }
 
         //initial setup
-        menuListeners.put(jMenuFilme, new MenuTabSwitchListener(this, TABS.TAB_FILME));
-        menuListeners.put(jMenuDownload, new MenuTabSwitchListener(this, TABS.TAB_DOWNLOADS));
+        menuListeners.put(jMenuFilme, new MenuTabSwitchListener(this, tabFilme));
+        menuListeners.put(jMenuDownload, new MenuTabSwitchListener(this, tabDownloads));
 
         //now assign if really necessary
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true)) {
@@ -1031,7 +1032,7 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.add(showLuceneTutorialAction);
         jMenuHilfe.add(new ShowOnlineFaqAction(this));
         jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new ShowLogWindowAction());
+        jMenuHilfe.add(new ShowLogWindowAction(logDialog));
         jMenuHilfe.addSeparator();
         jMenuHilfe.add(new ResetSettingsAction(this, daten));
         jMenuHilfe.add(new ResetDownloadHistoryAction(this));
@@ -1210,7 +1211,7 @@ public class MediathekGui extends JFrame {
             tabAudiothek.disposePanel();
 
             logger.trace("Stop all downloads.");
-            stopDownloads();
+            daten.getListeDownloads().requestStopForShutdown();
 
             logger.trace("Save app data.");
             daten.allesSpeichern();
@@ -1242,7 +1243,7 @@ public class MediathekGui extends JFrame {
 
         if (isShutdownRequested()) {
             logger.info("Requesting computer shutdown.");
-            shutdownComputer();
+            computerShutdown.requestShutdown();
         }
 
         System.exit(0);
@@ -1265,18 +1266,6 @@ public class MediathekGui extends JFrame {
         logger.trace("Leaving shutdownTimerPool()");
     }
 
-    private void stopDownloads() {
-        if (daten.getListeDownloads() != null) {
-            // alle laufenden Downloads/Programme stoppen
-            for (DatenDownload download : daten.getListeDownloads()) {
-                Start s = download.start;
-                if (s != null) {
-                    s.stoppen = true;
-                }
-            }
-        }
-    }
-
     private void waitForCommonPoolToComplete() {
         logger.trace("Entering waitForCommonPoolToComplete()");
 
@@ -1289,90 +1278,6 @@ public class MediathekGui extends JFrame {
         }
 
         logger.trace("Leaving waitForCommonPoolToComplete()");
-    }
-
-    /**
-     * Shutdown the computer depending on Operating System.
-     */
-    protected void shutdownComputer() {
-        //default is none
-    }
-
-    static class NoIconAwtMenuItem extends MenuItem {
-        public NoIconAwtMenuItem(@NonNull Action action) {
-            super((String) action.getValue(Action.NAME));
-            addActionListener(action);
-        }
-    }
-
-    class ShowLogWindowAction extends AbstractAction {
-        public ShowLogWindowAction() {
-            super("Live Programm-Log anzeigen");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!logWindow.isVisible())
-                logWindow.setVisible(true);
-            logWindow.toFront();
-        }
-    }
-
-    public class ToggleZappLivestreamsTabAction extends AbstractAction {
-        private static final String TAB_TITLE = "Zapp Livestreams Tab ein-/ausblenden";
-        private final LivestreamPanel livestreamPanel;
-
-        public ToggleZappLivestreamsTabAction(LivestreamPanel livestreamPanel) {
-            this.livestreamPanel = livestreamPanel;
-            putValue(Action.NAME, TAB_TITLE);
-        }
-
-        private void toggleTab() {
-            var tabIndex = tabbedPane.indexOfComponent(livestreamPanel);
-            if (tabIndex == -1) {
-                //install tab
-                tabbedPane.add("Zapp Livestreams", livestreamPanel);
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS, true);
-            }
-            else {
-                tabbedPane.remove(tabIndex);
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS, false);
-            }
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            toggleTab();
-        }
-    }
-
-    public class ToggleAudiothekTabAction extends AbstractAction {
-        private static final String TAB_TITLE = "Audiothek Tab ein-/ausblenden";
-        private final AudiothekPanel audiothekPanel;
-
-        public ToggleAudiothekTabAction(AudiothekPanel audiothekPanel) {
-            this.audiothekPanel = audiothekPanel;
-            putValue(Action.NAME, TAB_TITLE);
-        }
-
-        private void toggleTab() {
-            var tabIndex = tabbedPane.indexOfComponent(audiothekPanel);
-            if (tabIndex == -1) {
-                audiothekPanel.putClientProperty("JTabbedPane.tabClosable", true);
-                audiothekPanel.putClientProperty("JTabbedPane.tabCloseCallback", (IntConsumer) _ -> actionPerformed(null));
-                tabbedPane.add("Audiothek", audiothekPanel);
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_SHOW_AUDIOTHEK, true);
-            }
-            else {
-                tabbedPane.remove(tabIndex);
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_SHOW_AUDIOTHEK, false);
-            }
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            toggleTab();
-        }
     }
 
 }

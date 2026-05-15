@@ -52,7 +52,6 @@ object FileSize {
         return lookupFileSize(url, forceFetch).sizeText
     }
 
-    @JvmStatic
     fun lookupFileSize(url: String, forceFetch: Boolean = false): LookupResult {
         return lookupFileSize(url, forceFetch, null)
     }

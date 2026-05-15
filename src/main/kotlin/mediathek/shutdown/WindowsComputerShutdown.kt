@@ -16,33 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.mainwindow
+package mediathek.shutdown
 
-import java.awt.Component
-import javax.swing.JTabbedPane
-import javax.swing.event.MenuEvent
-import javax.swing.event.MenuListener
+import org.apache.logging.log4j.LogManager
+import java.io.IOException
 
-internal class MenuTabSwitchListener(
-    private val mediathekGui: MediathekGui,
-    private val targetTab: Component,
-) : MenuListener {
-    private val tabbedPane: JTabbedPane = mediathekGui.tabbedPane
+class WindowsComputerShutdown : ComputerShutdown {
+    private val logger = LogManager.getLogger()
 
-    override fun menuSelected(e: MenuEvent) {
-        setTabIfContain(targetTab)
-    }
-
-    override fun menuDeselected(e: MenuEvent) = Unit
-
-    override fun menuCanceled(e: MenuEvent) = Unit
-
-    private fun setTabIfContain(check: Component) {
-        for (index in 0 until tabbedPane.tabCount) {
-            if (tabbedPane.getComponentAt(index) == check) {
-                tabbedPane.selectedIndex = index
-                return
-            }
+    override fun requestShutdown() {
+        val shutdownCommand = arrayOf("shutdown.exe", "-s", "-t", "0")
+        try {
+            logger.info("Windows shutdown binary called.")
+            Runtime.getRuntime().exec(shutdownCommand)
+        } catch (ex: IOException) {
+            logger.error(ex)
         }
     }
 }

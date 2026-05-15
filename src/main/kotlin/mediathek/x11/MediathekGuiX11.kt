@@ -19,17 +19,14 @@
 package mediathek.x11
 
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
 import mediathek.mainwindow.MediathekGui
+import mediathek.shutdown.X11ComputerShutdown
 import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.ProcessCommandUtils
 import mediathek.tool.notification.GenericNotificationCenter
 import mediathek.tool.notification.INotificationCenter
 import mediathek.tool.notification.LinuxNotificationCenter
-import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.awt.Toolkit
-import java.io.IOException
 
 private val logger = LogManager.getLogger(MediathekGuiX11::class.java)
 
@@ -47,7 +44,7 @@ private fun createNotificationCenter(): INotificationCenter {
     return GenericNotificationCenter()
 }
 
-class MediathekGuiX11 : MediathekGui(::createNotificationCenter) {
+class MediathekGuiX11 : MediathekGui(::createNotificationCenter, X11ComputerShutdown()) {
     init {
         setupX11WindowManagerClassName()
     }
@@ -85,25 +82,4 @@ class MediathekGuiX11 : MediathekGui(::createNotificationCenter) {
         }
     }
 
-    override fun shutdownComputer() {
-        var shutdownCommand: String
-
-        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD) {
-            shutdownCommand = MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN)
-            if (shutdownCommand.isEmpty()) {
-                shutdownCommand = Konstanten.SHUTDOWN_LINUX
-                MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX)
-            }
-        } else {
-            logger.error("shutdown command is unknown for this operating system")
-            return
-        }
-
-        try {
-            logger.info("Shutdown: {}", shutdownCommand)
-            ProcessBuilder(*ProcessCommandUtils.tokenizeCommand(shutdownCommand)).start()
-        } catch (ex: IOException) {
-            logger.error(ex)
-        }
-    }
 }

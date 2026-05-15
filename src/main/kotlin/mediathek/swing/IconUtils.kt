@@ -77,10 +77,8 @@ object IconUtils {
     fun windowBarSpecificToolbarIcon(ikon: Ikon, color: Color): FontIcon =
         FontIcon.of(ikon, windowBarSpecificSize(), color)
 
-    @JvmStatic
     fun of(ikon: Ikon, size: Int): FontIcon = of(ikon, size, defaultColor())
 
-    @JvmStatic
     fun of(ikon: Ikon, size: Int, color: Color): FontIcon {
         val icon = FontIcon.of(ikon, size, color)
         themedIcons += WeakReference(icon)

@@ -143,6 +143,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return stream().filter(DatenDownload::runNotFinished).count();
     }
 
+    public synchronized void requestStopForShutdown() {
+        for (var download : this) {
+            Start start = download.start;
+            if (start != null) {
+                start.stoppen = true;
+            }
+        }
+    }
+
     public synchronized void downloadsVorziehen(ArrayList<DatenDownload> download) {
         for (DatenDownload datenDownload : download) {
             this.remove(datenDownload);

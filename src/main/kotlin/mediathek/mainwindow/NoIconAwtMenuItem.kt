@@ -18,31 +18,11 @@
 
 package mediathek.mainwindow
 
-import java.awt.Component
-import javax.swing.JTabbedPane
-import javax.swing.event.MenuEvent
-import javax.swing.event.MenuListener
+import java.awt.MenuItem
+import javax.swing.Action
 
-internal class MenuTabSwitchListener(
-    private val mediathekGui: MediathekGui,
-    private val targetTab: Component,
-) : MenuListener {
-    private val tabbedPane: JTabbedPane = mediathekGui.tabbedPane
-
-    override fun menuSelected(e: MenuEvent) {
-        setTabIfContain(targetTab)
-    }
-
-    override fun menuDeselected(e: MenuEvent) = Unit
-
-    override fun menuCanceled(e: MenuEvent) = Unit
-
-    private fun setTabIfContain(check: Component) {
-        for (index in 0 until tabbedPane.tabCount) {
-            if (tabbedPane.getComponentAt(index) == check) {
-                tabbedPane.selectedIndex = index
-                return
-            }
-        }
+class NoIconAwtMenuItem(action: Action) : MenuItem(action.getValue(Action.NAME) as String) {
+    init {
+        addActionListener(action)
     }
 }

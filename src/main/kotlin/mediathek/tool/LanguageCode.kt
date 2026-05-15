@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2026 derreisende77.
+ * Copyright (c) 2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool;
+package mediathek.tool
 
-import org.jspecify.annotations.NonNull;
+import java.util.*
 
-import java.util.Locale;
-import java.util.MissingResourceException;
-
-public enum LanguageCode {
+enum class LanguageCode(
+    private val readableNameValue: String,
+    private val nativeNameValue: String,
+) {
     aa("Afar", "Afaraf"),
     ab("Abkhazian", "Аҧсуа"),
     ae("Avestan", "Avesta"),
@@ -39,7 +39,6 @@ public enum LanguageCode {
     be("Belarusian", "Беларуская"),
     bi("Bislama", "Bislama"),
     bg("Bulgarian", "български език"),
-    //bh("Bihari", "भोजपुरी"),
     bm("Bambara", "bamanankan"),
     bn("Bengali", "বাংলা"),
     bo("Tibetan", "བོད་ཡིག"),
@@ -93,7 +92,7 @@ public enum LanguageCode {
     ii("Sichuan Yi", "ꆇꉙ"),
     ik("Inupiaq", "Iñupiaq; Iñupiatun"),
     io("Ido", "Ido"),
-    is("Icelandic", "Íslenska"),
+    `is`("Icelandic", "Íslenska"),
     it("Italian", "Italiano"),
     iu("Inuktitut", "ᐃᓄᒃᑎᑐᑦ"),
     ja("Japanese", "Nihongo"),
@@ -176,7 +175,6 @@ public enum LanguageCode {
     tg("Tajik", "ไทย"),
     ti("Tigrinya", "ትግርኛ"),
     tk("Turkmen", "Türkmen; Түркмен"),
-    //tl("Tagalog", "Tagalog"),
     tn("Tswana", "Setswana"),
     to("Tonga", "faka Tonga"),
     tr("Turkish", "Türkçe"),
@@ -198,40 +196,22 @@ public enum LanguageCode {
     zh("Chinese", "中文 (Zhōngwén), 汉语, 漢語"),
     zu("Zulu", "isiZulu");
 
-    private final String readableName;
-    private final String nativeName;
+    fun readableName(): String = readableNameValue
 
-    LanguageCode(String readableName, String nativeName) {
-        this.readableName = readableName;
-        this.nativeName = nativeName;
-    }
+    fun nativeName(): String = nativeNameValue
 
-    public static LanguageCode fromNativeName(@NonNull String nativeName) throws IllegalArgumentException {
-        for (var item : LanguageCode.values()) {
-            if (item.nativeName.equals(nativeName))
-                return item;
-        }
-        throw new IllegalArgumentException("Language code '" + nativeName + "' not found");
-    }
-
-    public String readableName() {
-        return readableName;
-    }
-
-    public String nativeName() {
-        return nativeName;
-    }
-
-    public @NonNull String getISO3Language() throws IllegalArgumentException {
+    fun getISO3Language(): String =
         try {
-            var isocode = Locale.of(this.name()).getISO3Language();
-            if (isocode.isEmpty()) {
-                throw new IllegalArgumentException("Language code '" + this.name() + "' is empty");
+            Locale.of(name).getISO3Language().also { isoCode ->
+                require(isoCode.isNotEmpty()) { "Language code '$name' is empty" }
             }
-            return isocode;
+        } catch (_: MissingResourceException) {
+            throw IllegalArgumentException("Language code '$name' is empty")
         }
-        catch (MissingResourceException ex) {
-            throw new IllegalArgumentException("Language code '" + this.name() + "' is empty");
-        }
+
+    companion object {
+        fun fromNativeName(nativeName: String): LanguageCode =
+            entries.firstOrNull { it.nativeNameValue == nativeName }
+                ?: throw IllegalArgumentException("Language code '$nativeName' not found")
     }
 }

@@ -62,7 +62,6 @@ object TimerPool {
         unit: TimeUnit
     ): ScheduledFuture<*> = executor.scheduleAtFixedRate(command, initialDelay, period, unit)
 
-    @JvmStatic
     fun scheduleWithFixedDelay(
         command: Runnable,
         initialDelay: Long,

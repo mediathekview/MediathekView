@@ -9,7 +9,6 @@ data class Version(val major: Int, val minor: Int, val patch: Int) {
         val INVALID_VERSION = Version(0, 0, 0)
         private val logger = LogManager.getLogger()
 
-        @JvmStatic
         fun fromString(versionsstring: String): Version {
             val versions = versionsstring.replace("-SNAPSHOT", "").split(".", ignoreCase = true)
             return if (versions.size == 3) {

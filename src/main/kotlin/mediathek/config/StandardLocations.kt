@@ -124,7 +124,6 @@ object StandardLocations {
      * @param type which list to use.
      * @return URL of filmlist as String.
      */
-    @JvmStatic
     fun getFilmListUrl(type: FilmListDownloadType): String {
         return when (type) {
             FilmListDownloadType.FULL -> Konstanten.ROUTER_BASE_URL.resolve(Konstanten.FULL_FILM_LIST).toString()

@@ -18,31 +18,22 @@
 
 package mediathek.mainwindow
 
-import java.awt.Component
+import mediathek.audiothek.ui.main.AudiothekPanel
+import mediathek.tool.ApplicationConfiguration
 import javax.swing.JTabbedPane
-import javax.swing.event.MenuEvent
-import javax.swing.event.MenuListener
 
-internal class MenuTabSwitchListener(
-    private val mediathekGui: MediathekGui,
-    private val targetTab: Component,
-) : MenuListener {
-    private val tabbedPane: JTabbedPane = mediathekGui.tabbedPane
+private const val ACTION_TITLE = "Audiothek Tab ein-/ausblenden"
+private const val TAB_TITLE = "Audiothek"
+private const val PREFERRED_INSERT_INDEX = 3
 
-    override fun menuSelected(e: MenuEvent) {
-        setTabIfContain(targetTab)
-    }
-
-    override fun menuDeselected(e: MenuEvent) = Unit
-
-    override fun menuCanceled(e: MenuEvent) = Unit
-
-    private fun setTabIfContain(check: Component) {
-        for (index in 0 until tabbedPane.tabCount) {
-            if (tabbedPane.getComponentAt(index) == check) {
-                tabbedPane.selectedIndex = index
-                return
-            }
-        }
-    }
-}
+class ToggleAudiothekTabAction(
+    tabbedPane: JTabbedPane,
+    audiothekPanel: AudiothekPanel,
+) : ToggleOptionalTabAction(
+    tabbedPane,
+    audiothekPanel,
+    ACTION_TITLE,
+    TAB_TITLE,
+    ApplicationConfiguration.APPLICATION_UI_SHOW_AUDIOTHEK,
+    PREFERRED_INSERT_INDEX,
+)

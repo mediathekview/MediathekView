@@ -18,31 +18,15 @@
 
 package mediathek.mainwindow
 
-import java.awt.Component
-import javax.swing.JTabbedPane
-import javax.swing.event.MenuEvent
-import javax.swing.event.MenuListener
+import mediathek.logging.LogDialog
+import java.awt.event.ActionEvent
+import javax.swing.AbstractAction
 
-internal class MenuTabSwitchListener(
-    private val mediathekGui: MediathekGui,
-    private val targetTab: Component,
-) : MenuListener {
-    private val tabbedPane: JTabbedPane = mediathekGui.tabbedPane
-
-    override fun menuSelected(e: MenuEvent) {
-        setTabIfContain(targetTab)
-    }
-
-    override fun menuDeselected(e: MenuEvent) = Unit
-
-    override fun menuCanceled(e: MenuEvent) = Unit
-
-    private fun setTabIfContain(check: Component) {
-        for (index in 0 until tabbedPane.tabCount) {
-            if (tabbedPane.getComponentAt(index) == check) {
-                tabbedPane.selectedIndex = index
-                return
-            }
+class ShowLogWindowAction(private val logDialog: LogDialog) : AbstractAction("Live Programm-Log anzeigen") {
+    override fun actionPerformed(e: ActionEvent?) {
+        if (!logDialog.isVisible) {
+            logDialog.isVisible = true
         }
+        logDialog.toFront()
     }
 }

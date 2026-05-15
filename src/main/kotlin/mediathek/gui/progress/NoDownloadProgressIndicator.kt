@@ -16,33 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.mainwindow
+package mediathek.gui.progress
 
-import java.awt.Component
-import javax.swing.JTabbedPane
-import javax.swing.event.MenuEvent
-import javax.swing.event.MenuListener
-
-internal class MenuTabSwitchListener(
-    private val mediathekGui: MediathekGui,
-    private val targetTab: Component,
-) : MenuListener {
-    private val tabbedPane: JTabbedPane = mediathekGui.tabbedPane
-
-    override fun menuSelected(e: MenuEvent) {
-        setTabIfContain(targetTab)
+object NoDownloadProgressIndicator : DownloadProgressIndicator {
+    override fun downloadStarted() {
     }
 
-    override fun menuDeselected(e: MenuEvent) = Unit
-
-    override fun menuCanceled(e: MenuEvent) = Unit
-
-    private fun setTabIfContain(check: Component) {
-        for (index in 0 until tabbedPane.tabCount) {
-            if (tabbedPane.getComponentAt(index) == check) {
-                tabbedPane.selectedIndex = index
-                return
-            }
-        }
+    override fun downloadFinished() {
     }
 }

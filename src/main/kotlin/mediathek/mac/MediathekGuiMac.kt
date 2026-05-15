@@ -24,37 +24,34 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
-import mediathek.gui.messages.DownloadFinishedEvent
-import mediathek.gui.messages.DownloadStartEvent
 import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.GuiFunktionenProgramme
+import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.MacNotificationCenter
-import mediathek.tool.threads.IndicatorThread
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.FlowLayout
-import java.awt.Taskbar
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.lang.foreign.*
-import java.nio.file.Path
 import java.util.*
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JToolBar
-import kotlin.io.path.absolutePathString
 import kotlin.time.Duration.Companion.seconds
 
-class MediathekGuiMac : MediathekGui {
-    private val powerManager = OsxPowerManager()
+class MediathekGuiMac : MediathekGui(
+    ::MacNotificationCenter,
+    MacComputerShutdown(),
+    { _ -> MacDownloadProgressIndicator() },
+) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    constructor() : super(::MacNotificationCenter) {
+    init {
         architectureCheckScope.launch {
             delay(15.seconds)
             checkForCorrectArchitecture()
@@ -65,6 +62,8 @@ class MediathekGuiMac : MediathekGui {
         architectureCheckScope.cancel()
         super.dispose()
     }
+
+    override fun shouldDisableF10MenuShortcut(): Boolean = false
 
     @Throws(Throwable::class)
     private fun processorBrand(): String {
@@ -198,66 +197,11 @@ class MediathekGuiMac : MediathekGui {
         //we don´t use it on macOS
     }
 
-    override fun shutdownComputer() {
-        var exePath: Path? = null
-        try {
-            exePath = GuiFunktionenProgramme.findExecutableOnPath("MVShutdownHelper")
-        } catch (_: Exception) {
-            //try to find older shutdown binary
-            logger.warn("Could not find MVShutdownHelper executable")
-            try {
-                exePath = GuiFunktionenProgramme.findExecutableOnPath("mv_shutdown_helper")
-            }
-            catch (_: Exception) {
-                logger.error("Could not find old mv_shutdown_helper executable")
-            }
-        }
-        if (exePath != null) {
-            Runtime.getRuntime().exec(arrayOf("nohup", exePath.absolutePathString()))
-        }
-        else {
-            logger.error("Could not shutdown mac as executable path is null")
-        }
-    }
-
     override fun supportsAutomaticMenuTabSwitching(): Boolean = false
 
     override fun initMenus() {
         super.initMenus()
         setupUserInterfaceForOsx()
-    }
-
-    override fun createProgressIndicatorThread(): IndicatorThread {
-        return OsxIndicatorThread()
-    }
-
-    override fun handleDownloadStart(msg: DownloadStartEvent) {
-        super.handleDownloadStart(msg)
-        powerManager.disablePowerManagement()
-        setDownloadsBadge(numDownloadsStarted.get())
-    }
-
-    override fun handleDownloadFinishedEvent(msg: DownloadFinishedEvent) {
-        super.handleDownloadFinishedEvent(msg)
-        val numDownloads = numDownloadsStarted.get()
-        if (numDownloads == 0) powerManager.enablePowerManagement()
-        setDownloadsBadge(numDownloads)
-    }
-
-    /**
-     * Set the OS X dock icon badge to the number of running downloads.
-     *
-     * @param numDownloads The number of active downloads.
-     */
-    private fun setDownloadsBadge(numDownloads: Int) {
-        if (Taskbar.isTaskbarSupported()) {
-            val taskbar = Taskbar.getTaskbar()
-            if (taskbar.isSupported(Taskbar.Feature.ICON_BADGE_NUMBER)) {
-                if (numDownloads > 0) taskbar.setIconBadge(numDownloads.toString()) else {
-                    taskbar.setIconBadge("")
-                }
-            }
-        }
     }
 
     /**

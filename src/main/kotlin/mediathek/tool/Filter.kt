@@ -43,7 +43,6 @@ object Filter {
         .expireAfterAccess(5, TimeUnit.MINUTES)
         .build { pattern -> compilePattern(pattern) }
 
-    @JvmStatic
     fun filterAufFilmPruefen(
         senderSuchen: String,
         themaSuchen: String,
@@ -95,7 +94,6 @@ object Filter {
         return senderSuchen.isEmpty() || film.sender.compareTo(senderSuchen) == 0
     }
 
-    @JvmStatic
     fun lengthCheck(filterLaengeInMinuten: Int, filmLaenge: Long): Boolean =
         filterLaengeInMinuten == 0 || filmLaenge == 0L
 
@@ -105,14 +103,12 @@ object Filter {
         return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge < filterLength
     }
 
-    @JvmStatic
     fun checkLengthWithMin(filterLaengeInMinuten: Int, filmLaenge: Long): Boolean {
         val filterLength = filterLaengeInMinuten * 60
 
         return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge > filterLength
     }
 
-    @JvmStatic
     fun laengePruefen(filterLaengeInMinuten: Int, filmLaenge: Long, min: Boolean): Boolean =
         if (min) {
             checkLengthWithMin(filterLaengeInMinuten, filmLaenge)
@@ -120,7 +116,6 @@ object Filter {
             checkLengthNoMin(filterLaengeInMinuten, filmLaenge)
         }
 
-    @JvmStatic
     fun pruefen(filter: Array<String>, im: String): Boolean {
         // wenn einer passt, dann ists gut
         val strFilter = filter[0]
@@ -143,7 +138,6 @@ object Filter {
      * @param im checked String IN LOWERCASE!!!!!
      * @return true or false
      */
-    @JvmStatic
     fun checkLowercase(filter: Array<String>, im: String): Boolean =
         filter.any { token -> im.contains(token) }
 
@@ -157,7 +151,6 @@ object Filter {
      * @param regExpStr regexp to be compiled
      * @return the compiled regexp or null on error.
      */
-    @JvmStatic
     fun makePattern(regExpStr: String): Pattern? {
         if (!isPattern(regExpStr)) {
             return null

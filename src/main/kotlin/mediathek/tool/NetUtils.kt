@@ -15,7 +15,6 @@ class NetUtils {
          * @param unit TimeUnit
          * @return true if reachable, otherwise false
          */
-        @JvmStatic
         fun isReachable(addr: String, value: Long, unit: TimeUnit): Boolean {
             return try {
                 Socket().use { soc ->

@@ -26,7 +26,7 @@ import java.lang.invoke.MethodHandle
 import java.util.concurrent.TimeUnit
 import javax.swing.JFrame
 
-internal class TaskbarIndicatorThread(parent: MediathekGuiWindows) : IndicatorThread() {
+internal class TaskbarIndicatorThread(parent: JFrame) : IndicatorThread() {
     private val parent: JFrame
     private val setThreadExecutionState: MethodHandle?
 
