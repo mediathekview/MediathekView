@@ -3,14 +3,11 @@ package mediathek.filmlisten.writer
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.IOException
-import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.attribute.PosixFilePermissions
 
 class FilmListWriterTest {
     @TempDir
@@ -29,22 +26,19 @@ class FilmListWriterTest {
     }
 
     @Test
-    fun `writeFilmList keeps existing file when replacement cannot be staged`() {
-        assumeTrue(FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
+    fun `writeFilmList keeps existing target when replacement fails`() {
         val target = tempDir.resolve("filmlist.json")
-        Files.writeString(target, "existing filmlist")
-        val originalPermissions = Files.getPosixFilePermissions(tempDir)
+        Files.createDirectory(target)
+        Files.writeString(target.resolve("existing-entry"), "existing filmlist")
 
-        try {
-            Files.setPosixFilePermissions(tempDir, PosixFilePermissions.fromString("r-x------"))
+        assertThrows(IOException::class.java) {
+            FilmListWriter(false).writeFilmList(target.toString(), filmList(film("ARD", "Thema")))
+        }
 
-            assertThrows(IOException::class.java) {
-                FilmListWriter(false).writeFilmList(target.toString(), filmList(film("ARD", "Thema")))
-            }
-
-            assertEquals("existing filmlist", Files.readString(target))
-        } finally {
-            Files.setPosixFilePermissions(tempDir, originalPermissions)
+        assertTrue(Files.isDirectory(target))
+        assertEquals("existing filmlist", Files.readString(target.resolve("existing-entry")))
+        Files.list(tempDir).use { paths ->
+            assertEquals(listOf(target), paths.toList())
         }
     }
 
