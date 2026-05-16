@@ -40,7 +40,6 @@ object FileUtils {
         return File(fileName).nameWithoutExtension
     }
 
-    @JvmStatic
     @Throws(IOException::class)
     fun moveAtomicallyWithFallback(source: Path, target: Path) {
         try {

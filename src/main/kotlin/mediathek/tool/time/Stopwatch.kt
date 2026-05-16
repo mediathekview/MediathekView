@@ -83,7 +83,6 @@ class Stopwatch private constructor() {
     }
 
     companion object {
-        @JvmStatic
         fun createStarted(): Stopwatch {
             return Stopwatch().start()
         }
