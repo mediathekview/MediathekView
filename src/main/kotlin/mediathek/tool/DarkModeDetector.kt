@@ -18,6 +18,8 @@
 
 package mediathek.tool
 
+import mediathek.x11.DesktopEnvDetector
+import mediathek.x11.DesktopEnvDetector.DesktopEnvironment
 import org.apache.commons.lang3.SystemUtils
 import java.io.IOException
 import java.io.InputStreamReader
@@ -26,13 +28,17 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 /**
- * Dark mode detector for macOS and Windows.
+ * Dark mode detector for macOS, Windows, and supported Unix desktops.
  * Based on java code from [this gist](https://gist.github.com/HanSolo/7cf10b86efff8ca2845bf5ec2dd0fe1d).
  */
 object DarkModeDetector {
+    private const val COMMAND_TIMEOUT_SECONDS = 5L
     private const val REGDWORD_TOKEN = "REG_DWORD"
     private const val GNOME_DARK_MODE = "'prefer-dark'"
+    private const val KDE_DARK_COLOR_SCHEME = 1
     private const val MACOS_DARK_MODE = "Dark"
+    private val whitespaceRegex = Regex("\\s+")
+    private val unixSupportedDesktops = setOf(DesktopEnvironment.GNOME, DesktopEnvironment.KDE)
     private val darkThemeCommand = arrayOf(
         "reg",
         "query",
@@ -43,20 +49,14 @@ object DarkModeDetector {
 
     /**
      * Detect whether the running OS is in dark mode.
-     * Works only on windows and macOS.
      *
      * @return true if in dark mode, false if otherwise.
      */
     fun isDarkMode(): Boolean = when {
         SystemUtils.IS_OS_MAC_OSX -> isMacOsDarkMode()
         SystemUtils.IS_OS_WINDOWS -> isWindowsDarkMode()
-        SystemUtils.IS_OS_LINUX && isGnome() -> isGnomeDarkMode()
+        isSupportedUnixDesktopPlatform() -> isUnixDesktopDarkMode()
         else -> false
-    }
-
-    private fun isGnome(): Boolean {
-        val currentDesktop = System.getenv("XDG_CURRENT_DESKTOP")
-        return currentDesktop == "GNOME" || currentDesktop == "ubuntu:GNOME"
     }
 
     /**
@@ -64,7 +64,22 @@ object DarkModeDetector {
      * @return true if supported, false otherwise.
      */
     fun hasDarkModeDetectionSupport(): Boolean =
-        SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_MAC_OSX || (SystemUtils.IS_OS_LINUX && isGnome())
+        SystemUtils.IS_OS_WINDOWS ||
+            SystemUtils.IS_OS_MAC_OSX ||
+            (isSupportedUnixDesktopPlatform() && currentDesktopEnvironment() in unixSupportedDesktops)
+
+    private fun isSupportedUnixDesktopPlatform(): Boolean =
+        SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD
+
+    private fun currentDesktopEnvironment(): DesktopEnvironment =
+        DesktopEnvDetector.detect()
+
+    private fun isUnixDesktopDarkMode(): Boolean =
+        when (currentDesktopEnvironment()) {
+            DesktopEnvironment.GNOME -> isGnomeDarkMode()
+            DesktopEnvironment.KDE -> isKdeDarkMode()
+            else -> false
+        }
 
     private fun isGnomeDarkMode(): Boolean =
         readCommandOutput(
@@ -72,8 +87,26 @@ object DarkModeDetector {
             "get",
             "org.gnome.desktop.interface",
             "color-scheme",
-            timeoutSeconds = 5,
+            timeoutSeconds = COMMAND_TIMEOUT_SECONDS,
         ) == GNOME_DARK_MODE
+
+    private fun isKdeDarkMode(): Boolean =
+        readCommandOutput(
+            "qdbus6",
+            "org.freedesktop.portal.Desktop",
+            "/org/freedesktop/portal/desktop",
+            "org.freedesktop.portal.Settings.Read",
+            "org.freedesktop.appearance",
+            "color-scheme",
+            timeoutSeconds = COMMAND_TIMEOUT_SECONDS,
+        )?.let(::parseKdePortalColorScheme) == true
+
+    internal fun parseKdePortalColorScheme(result: String): Boolean =
+        result
+            .lineSequence()
+            .flatMap { it.splitToSequence(whitespaceRegex) }
+            .mapNotNull { it.toIntOrNull() }
+            .lastOrNull() == KDE_DARK_COLOR_SCHEME
 
     private fun isMacOsDarkMode(): Boolean =
         readCommandOutput("defaults", "read", "-g", "AppleInterfaceStyle")
