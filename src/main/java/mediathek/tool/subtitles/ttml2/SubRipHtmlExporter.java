@@ -18,7 +18,6 @@
 
 package mediathek.tool.subtitles.ttml2;
 
-import mediathek.tool.HtmlUtils;
 import mediathek.tool.subtitles.ttml2.SubtitleDocument.Cue;
 import mediathek.tool.subtitles.ttml2.SubtitleDocument.StyledRun;
 import mediathek.tool.subtitles.ttml2.SubtitleDocument.TextStyle;
@@ -75,6 +74,13 @@ public final class SubRipHtmlExporter {
         return String.format("%02d:%02d:%02d,%03d", h, m, s, r);
     }
 
+    private static String escapeText(String text) {
+        return text
+                .replace("\\n", LINE_SEPARATOR)
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
+    }
+
     public String export(SubtitleDocument doc) {
         StringBuilder sb = new StringBuilder();
         int idx = 1;
@@ -92,7 +98,7 @@ public final class SubRipHtmlExporter {
                 if (prev == null || !prev.equals(cur))
                     sb.append(openTags(cur));
 
-                sb.append(HtmlUtils.escapeHtml(run.text()).replace("\\n", LINE_SEPARATOR));
+                sb.append(escapeText(run.text()));
                 prev = cur;
             }
             if (prev != null)
