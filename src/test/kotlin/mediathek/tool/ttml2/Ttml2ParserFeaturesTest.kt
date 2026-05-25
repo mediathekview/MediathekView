@@ -100,6 +100,6 @@ internal class Ttml2ParserFeaturesTest {
         val doc = Ttml2Parser().parse(writeTtml(xml))
         val srt = SubRipHtmlExporter().export(doc)
 
-        assertTrue(srt.contains("A\nB") || srt.contains("A\n B") || srt.contains("A\r\nB") || srt.contains("A\r\n B"))
+        assertTrue(srt.contains("A\r\nB") || srt.contains("A\r\n B"))
     }
 }

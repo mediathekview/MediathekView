@@ -31,6 +31,7 @@ import java.time.Duration;
  * - <font color="#RRGGBB"> (alpha ignored; SRT has no standard alpha support)
  */
 public final class SubRipHtmlExporter {
+    private static final String LINE_SEPARATOR = "\r\n";
 
     private static String openTags(TextStyle s) {
         if (s == null)
@@ -79,8 +80,8 @@ public final class SubRipHtmlExporter {
         int idx = 1;
 
         for (Cue cue : doc.cues()) {
-            sb.append(idx++).append('\n');
-            sb.append(fmt(cue.start())).append(" --> ").append(fmt(cue.end())).append('\n');
+            sb.append(idx++).append(LINE_SEPARATOR);
+            sb.append(fmt(cue.start())).append(" --> ").append(fmt(cue.end())).append(LINE_SEPARATOR);
 
             TextStyle prev = null;
             for (StyledRun run : cue.runs()) {
@@ -91,13 +92,13 @@ public final class SubRipHtmlExporter {
                 if (prev == null || !prev.equals(cur))
                     sb.append(openTags(cur));
 
-                sb.append(HtmlUtils.escapeHtml(run.text()).replace("\\n", "\n"));
+                sb.append(HtmlUtils.escapeHtml(run.text()).replace("\\n", LINE_SEPARATOR));
                 prev = cur;
             }
             if (prev != null)
                 sb.append(closeTags(prev));
 
-            sb.append("\n\n");
+            sb.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
         }
         return sb.toString();
     }

@@ -3,6 +3,7 @@ package mediathek.tool.ttml2
 import mediathek.tool.subtitles.ttml2.AssExporter
 import mediathek.tool.subtitles.ttml2.SubRipHtmlExporter
 import mediathek.tool.subtitles.ttml2.Ttml2Parser
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -83,9 +84,24 @@ internal class ExportersTest {
         val doc = Ttml2Parser().parse(writeTtml(xml))
 
         val srt = SubRipHtmlExporter().export(doc)
-        assertTrue(srt.contains("A\nB") || srt.contains("A\r\nB"))
+        assertTrue(srt.contains("A\r\nB"))
 
         val ass = AssExporter(AssExporter.Options(384, 288, false)).export(doc)
         assertTrue(ass.contains("A\\\\NB") || ass.contains("A\\NB"))
+    }
+
+    @Test
+    fun exportsSrtWithCrLfLineSeparators() {
+        val xml =
+            "<tt xmlns=\"http://www.w3.org/ns/ttml\">" +
+                "  <body><div>" +
+                "    <p begin=\"0s\" dur=\"1s\">A<br/>B</p>" +
+                "  </div></body>" +
+                "</tt>"
+        val doc = Ttml2Parser().parse(writeTtml(xml))
+
+        val srt = SubRipHtmlExporter().export(doc)
+
+        assertEquals("1\r\n00:00:00,000 --> 00:00:01,000\r\nA\r\nB\r\n\r\n", srt)
     }
 }
