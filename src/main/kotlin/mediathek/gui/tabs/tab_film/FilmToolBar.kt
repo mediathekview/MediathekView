@@ -21,8 +21,13 @@ package mediathek.gui.tabs.tab_film
 import mediathek.gui.actions.DeleteBookmarksAction
 import mediathek.gui.actions.ManageBookmarkAction
 import mediathek.gui.actions.PlayFilmAction
+import mediathek.gui.tabs.tab_film.actions.BookmarkAddFilmAction
+import mediathek.gui.tabs.tab_film.actions.BookmarkRemoveFilmAction
+import mediathek.gui.tabs.tab_film.actions.SaveFilmAction
+import mediathek.gui.tabs.tab_film.actions.ToggleFilterDialogVisibilityAction
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
+import mediathek.gui.tabs.tab_film.search.SearchField
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconOnlyToggleButton
 import mediathek.tool.ApplicationConfiguration
@@ -32,14 +37,14 @@ import javax.swing.JToolBar
 
 class FilmToolBar(
     filterModel: FilterSelectionComboBoxModel,
-    bookmarkAddFilmAction: GuiFilme.BookmarkAddFilmAction,
-    bookmarkRemoveFilmAction: GuiFilme.BookmarkRemoveFilmAction,
+    bookmarkAddFilmAction: BookmarkAddFilmAction,
+    bookmarkRemoveFilmAction: BookmarkRemoveFilmAction,
     bookmarkClearListAction: DeleteBookmarksAction,
     manageBookmarkAction: ManageBookmarkAction,
     playFilmAction: PlayFilmAction,
-    saveFilmAction: GuiFilme.SaveFilmAction,
-    private val searchField: GuiFilme.SearchField,
-    private val toggleFilterDialogVisibilityAction: GuiFilme.ToggleFilterDialogVisibilityAction
+    saveFilmAction: SaveFilmAction,
+    private val searchField: SearchField,
+    private val toggleFilterDialogVisibilityAction: ToggleFilterDialogVisibilityAction
 ) : JToolBar() {
     private val lblSearch = JLabel("Suche:")
     private val filterSelectionComboBox = FilterSelectionComboBox(filterModel)

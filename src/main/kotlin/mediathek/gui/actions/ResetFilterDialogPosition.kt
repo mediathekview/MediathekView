@@ -10,6 +10,6 @@ class ResetFilterDialogPosition(private val mediathekGui: MediathekGui) : Abstra
     }
 
     override fun actionPerformed(e: ActionEvent) {
-        mediathekGui.tabFilme?.swingFilterDialog?.setLocation(100, 100)
+        mediathekGui.tabFilme?.resetFilterDialogPosition()
     }
 }

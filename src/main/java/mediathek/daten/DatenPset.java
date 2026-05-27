@@ -370,7 +370,7 @@ public class DatenPset implements Comparable<DatenPset> {
     }
 
     public void addProg(DatenProg prog) {
-        listeProg.add(prog);
+        listeProg.addEntry(prog);
     }
 
     public ListeProg getListeProg() {

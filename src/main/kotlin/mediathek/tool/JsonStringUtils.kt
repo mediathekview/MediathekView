@@ -47,7 +47,6 @@ object JsonStringUtils {
         return result.toString()
     }
 
-    @JvmStatic
     fun toJsonStringArray(values: Collection<String>): String {
         val result = StringBuilder(values.size * 8 + 2)
         result.append('[')
@@ -106,7 +105,6 @@ object JsonStringUtils {
         return result.toString()
     }
 
-    @JvmStatic
     fun parseQuotedJsonString(value: String, startIndex: Int): ParsedJsonString? {
         if (startIndex !in value.indices || value[startIndex] != '"') {
             return null

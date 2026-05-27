@@ -43,7 +43,7 @@ import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
 import kotlin.time.Duration.Companion.milliseconds
 
-class SwingFilterDialog @JvmOverloads internal constructor(
+class SwingFilterDialog internal constructor(
     owner: Window,
     private val filterSelectionComboBoxModel: FilterSelectionComboBoxModel,
     private val filterToggleButton: JToggleButton,

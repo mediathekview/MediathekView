@@ -32,8 +32,9 @@ import mediathek.gui.actions.*;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.edit_download.DialogEditDownload;
 import mediathek.gui.messages.*;
-import mediathek.gui.tabs.AGuiTabPanel;
-import mediathek.gui.tabs.tab_film.FilmDescriptionPanel;
+import mediathek.gui.tabs.DescriptionTabController;
+import mediathek.gui.tabs.actions.MarkFilmAsSeenAction;
+import mediathek.gui.tabs.actions.MarkFilmAsUnseenAction;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -64,7 +65,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class GuiDownloads extends AGuiTabPanel {
+public class GuiDownloads extends JPanel {
     public static final String NAME = "Downloads";
     private static final String ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern";
     private static final String ACTION_MAP_KEY_DELETE_DOWNLOAD = "dl_delete";
@@ -74,6 +75,8 @@ public class GuiDownloads extends AGuiTabPanel {
     private final static int[] COLUMNS_DISABLED = {DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL,
             DatenDownload.DOWNLOAD_REF, DatenDownload.DOWNLOAD_URL_RTMP};
     private static final Logger logger = LogManager.getLogger(GuiDownloads.class);
+    private final Daten daten;
+    private final MediathekGui mediathekGui;
     protected final StartAllDownloadsAction startAllDownloadsAction = new StartAllDownloadsAction(this);
     protected final StartAllDownloadsTimedAction startAllDownloadsTimedAction = new StartAllDownloadsTimedAction(this);
     protected final StopAllDownloadsAction stopAllDownloadsAction = new StopAllDownloadsAction(this);
@@ -103,8 +106,9 @@ public class GuiDownloads extends AGuiTabPanel {
     private final AtomicLong _lastUpdate = new AtomicLong(0);
     private final JCheckBoxMenuItem cbShowDownloadDescription = new JCheckBoxMenuItem("Filmbeschreibung anzeigen");
     private final Configuration config = ApplicationConfiguration.getConfiguration();
-    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction();
-    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction();
+    private final DescriptionTabController descriptionTabController = new DescriptionTabController();
+    private final MarkFilmAsSeenAction markFilmAsSeenAction = new MarkFilmAsSeenAction(this::getSelFilme);
+    private final MarkFilmAsUnseenAction markFilmAsUnseenAction = new MarkFilmAsUnseenAction(this::getSelFilme);
     private final DownloadsFilterController filterController =
             new DownloadsFilterController(displayFilterToolBar, config, this::reloadTable);
     private final DownloadStartInfoProperty startInfoProperty = new DownloadStartInfoProperty();
@@ -120,17 +124,19 @@ public class GuiDownloads extends AGuiTabPanel {
     private JScrollPane downloadListScrollPane;
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
-        super();
         daten = aDaten;
         this.mediathekGui = mediathekGui;
-        descriptionPanel = new FilmDescriptionPanel();
-
 
         initComponents();
 
         setupDownloadListTable();
 
-        setupDescriptionTab(tabelle, cbShowDownloadDescription, ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, this::getCurrentlySelectedFilm);
+        setupShowFilmDescriptionMenuItem();
+        descriptionTabController.install(
+                tabelle,
+                cbShowDownloadDescription,
+                ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION,
+                this::getCurrentlySelectedFilm);
 
         init();
 
@@ -148,7 +154,6 @@ public class GuiDownloads extends AGuiTabPanel {
         tabelle.getTableHeader().setReorderingAllowed(false);
     }
 
-    @Override
     public void tabelleSpeichern() {
         if (tabelle != null) {
             tabelle.writeTableConfigurationData();
@@ -217,7 +222,6 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    @Override
     public void installMenuEntries(JMenu menu) {
         menu.add(startAllDownloadsAction);
         menu.add(startAllDownloadsTimedAction);
@@ -244,6 +248,14 @@ public class GuiDownloads extends AGuiTabPanel {
 
     public void onComponentShown() {
         updateFilmData();
+    }
+
+    private void updateSelectedListItemsCount(JTable table) {
+        mediathekGui.selectedListItemsProperty.setSelectedItems(table.getSelectedRowCount());
+    }
+
+    private void updateStartInfoProperty() {
+        MessageBus.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
     public void starten(boolean alle) {
@@ -388,17 +400,11 @@ public class GuiDownloads extends AGuiTabPanel {
         });
     }
 
-    /**
-     * Setup and show film description panel.
-     * Most of the setup is done in {@link GuiDownloads} function.
-     * Here we just display the panel
-     */
-    @Override
-    protected void setupShowFilmDescriptionMenuItem() {
+    private void setupShowFilmDescriptionMenuItem() {
         cbShowDownloadDescription.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
         cbShowDownloadDescription.addActionListener(_ -> {
             boolean visible = cbShowDownloadDescription.isSelected();
-            makeDescriptionTabVisible(visible);
+            descriptionTabController.setVisible(visible);
             config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, visible);
         });
     }
@@ -461,7 +467,6 @@ public class GuiDownloads extends AGuiTabPanel {
         return tableSelection.selectedDownloadsOrShowError();
     }
 
-    @Override
     public Optional<DatenFilm> getCurrentlySelectedFilm() {
         return tableSelection.currentlySelectedFilm();
     }
@@ -618,7 +623,7 @@ public class GuiDownloads extends AGuiTabPanel {
             return;
         }
 
-        int validRow = Math.max(0, Math.min(rowToSelect, rowCount - 1));
+        int validRow = Math.clamp(rowToSelect, 0, rowCount - 1);
         tabelle.setRowSelectionInterval(validRow, validRow);
     }
 
@@ -834,7 +839,6 @@ public class GuiDownloads extends AGuiTabPanel {
         }
     }
 
-    @Override
     protected List<DatenFilm> getSelFilme() {
         return tableSelection.selectedFilmsOrShowError();
     }
@@ -851,7 +855,7 @@ public class GuiDownloads extends AGuiTabPanel {
         tempPanel.add(downloadListScrollPane, BorderLayout.CENTER);
         tempPanel.add(statusBar, BorderLayout.SOUTH);
         downloadListArea.add(tempPanel, BorderLayout.CENTER);
-        downloadListArea.add(descriptionTab, BorderLayout.SOUTH);
+        downloadListArea.add(descriptionTabController.getTabbedPane(), BorderLayout.SOUTH);
 
         add(downloadListArea, BorderLayout.CENTER);
         add(toolBarRow, BorderLayout.NORTH);

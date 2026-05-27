@@ -20,11 +20,10 @@ package mediathek.gui.tabs.tab_film.helpers
 
 import mediathek.config.Daten
 import mediathek.daten.IndexedFilmList
-import mediathek.gui.tabs.tab_film.SearchFieldData
+import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 
 object GuiModelHelperFactory {
-    @JvmStatic
     fun createGuiModelHelper(
         searchFieldData: SearchFieldData,
         filterController: FilmFilterController

@@ -1,6 +1,7 @@
 package mediathek.gui.tabs.tab_film
 
 import mediathek.config.Daten
+import mediathek.daten.DatenPset
 import mediathek.gui.messages.ProgramSetChangedEvent
 import mediathek.tool.MessageBus.messageBus
 import net.engio.mbassy.listener.Handler
@@ -8,9 +9,10 @@ import org.jdesktop.swingx.WrapLayout
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.FlowLayout
+import java.util.function.Consumer
 import javax.swing.*
 
-class PsetButtonsPanel(private val guiFilme: GuiFilme) : JPanel() {
+class PsetButtonsPanel(private val startFilmWithPset: Consumer<DatenPset>) : JPanel() {
     private val btnPanel = JPanel()
 
     init {
@@ -48,7 +50,7 @@ class PsetButtonsPanel(private val guiFilme: GuiFilme) : JPanel() {
                     JLabel(pset.name)
                 } else {
                     JButton(pset.name).apply {
-                        addActionListener { guiFilme.playerStarten(pset) }
+                        addActionListener { startFilmWithPset.accept(pset) }
                     }
                 }
 

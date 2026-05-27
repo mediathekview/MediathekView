@@ -22,7 +22,7 @@ import mediathek.config.MVColor
 import mediathek.config.MVConfig
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
-import mediathek.gui.tabs.tab_film.GuiFilme
+import mediathek.gui.tabs.tab_film.table.FilmColumnVisibility
 import mediathek.tool.FilmSize
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
@@ -36,7 +36,7 @@ import javax.swing.table.TableRowSorter
 
 class MVFilmTable : PersistentColumnConfigurationTable(
     DatenFilm.MAX_ELEM,
-    ColumnVisibilityStore.of(GuiFilme.VISIBLE_COLUMNS),
+    FilmColumnVisibility.store(),
     Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN),
     Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN),
     MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME,

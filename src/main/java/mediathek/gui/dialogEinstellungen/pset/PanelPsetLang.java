@@ -18,6 +18,9 @@
 
 package mediathek.gui.dialogEinstellungen.pset;
 
+import ca.odell.glazedlists.swing.AdvancedTableModel;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
+import mediathek.audiothek.ui.table.TriStateTableRowSorter;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -26,15 +29,14 @@ import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.FilmResolution;
+import mediathek.daten.ListeProg;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
-import mediathek.tool.cellrenderer.CellRendererProgramme;
 import mediathek.tool.cellrenderer.CellRendererPset;
 import mediathek.tool.models.NonEditableTableModel;
-import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
@@ -51,26 +53,37 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class PanelPsetLang extends PanelVorlage {
+    private static final ProgramTableFormat PROGRAM_TABLE_FORMAT = new ProgramTableFormat();
+
     private int neuZaehler;
     private final ListePset listePset;
     private final MVTable tabellePset;
-    private final MVTable tabelleProgramme;
+    private final JTable tabelleProgramme;
+    private final ListeProg emptyProgramList = new ListeProg();
+    private TriStateTableRowSorter<TableModel> programTableSorter;
+    private ListeProg currentProgramList;
 
     public PanelPsetLang(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
         tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVProgTable();
+        tabelleProgramme = new JTable();
+        tabelleProgramme.setAutoCreateRowSorter(false);
+        tabelleProgramme.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
@@ -78,12 +91,31 @@ public class PanelPsetLang extends PanelVorlage {
 
     @Handler
     private void handleProgramSetChanged(ProgramSetChangedEvent e) {
-            if (!stopBeob) {
-                tabellePset();
-            }
+        if (!stopBeob) {
+            tabellePset();
+        }
     }
 
     private void init() {
+        configureIcons();
+        MessageBus.getMessageBus().subscribe(this);
+
+        configureProgramTables();
+        installProgramFieldListeners();
+        installProgramFieldPopupMenus();
+        disableProgramFields();
+        installProgramActions();
+
+        installProgramSetActions();
+        installProgramSetDocumentListeners();
+        installHelpAndCheckActions();
+        installTableSelectionListeners();
+
+        tabellePset();
+        selectFirstProgramSet();
+    }
+
+    private void configureIcons() {
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonGruppePfad.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
         jButtonProgPlus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"));
@@ -99,296 +131,134 @@ public class PanelPsetLang extends PanelVorlage {
         var exclamationIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg");
         jLabelMeldungAbspielen.setIcon(exclamationIcon);
         jLabelMeldungSeichern.setIcon(exclamationIcon);
+    }
 
-        MessageBus.getMessageBus().subscribe(this);
-
-        //Programme
+    private void configureProgramTables() {
         tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    }
 
+    private void installProgramFieldListeners() {
         BeobProgDoc beobDoc = new BeobProgDoc();
-        jTextFieldProgPfad.getDocument().addDocumentListener(beobDoc);
-        jTextFieldProgSchalter.getDocument().addDocumentListener(beobDoc);
-        jTextFieldProgName.getDocument().addDocumentListener(beobDoc);
-        jTextFieldProgZielDateiName.getDocument().addDocumentListener(beobDoc);
-        jTextFieldProgPraefix.getDocument().addDocumentListener(beobDoc);
-        jTextFieldProgSuffix.getDocument().addDocumentListener(beobDoc);
+        installDocumentListener(beobDoc,
+                jTextFieldProgPfad,
+                jTextFieldProgSchalter,
+                jTextFieldProgName,
+                jTextFieldProgZielDateiName,
+                jTextFieldProgPraefix,
+                jTextFieldProgSuffix);
+    }
 
-        var handler = new TextCopyPasteHandler<>(jTextFieldProgPfad);
-        jTextFieldProgPfad.setComponentPopupMenu(handler.getPopupMenu());
+    private void installProgramFieldPopupMenus() {
+        installTextPopupMenus(
+                jTextFieldProgPfad,
+                jTextFieldProgSchalter,
+                jTextFieldProgName,
+                jTextFieldProgZielDateiName,
+                jTextFieldProgPraefix,
+                jTextFieldProgSuffix);
+    }
 
-        handler = new TextCopyPasteHandler<>(jTextFieldProgSchalter);
-        jTextFieldProgSchalter.setComponentPopupMenu(handler.getPopupMenu());
+    private void disableProgramFields() {
+        setProgramFieldsEnabled(false);
+    }
 
-        handler = new TextCopyPasteHandler<>(jTextFieldProgName);
-        jTextFieldProgName.setComponentPopupMenu(handler.getPopupMenu());
-
-        handler = new TextCopyPasteHandler<>(jTextFieldProgZielDateiName);
-        jTextFieldProgZielDateiName.setComponentPopupMenu(handler.getPopupMenu());
-
-        handler = new TextCopyPasteHandler<>(jTextFieldProgPraefix);
-        jTextFieldProgPraefix.setComponentPopupMenu(handler.getPopupMenu());
-
-        handler = new TextCopyPasteHandler<>(jTextFieldProgSuffix);
-        jTextFieldProgSuffix.setComponentPopupMenu(handler.getPopupMenu());
-
-        jTextFieldProgPfad.setEnabled(false);
-        jTextFieldProgSchalter.setEnabled(false);
-        jTextFieldProgName.setEnabled(false);
-        jTextFieldProgZielDateiName.setEnabled(false);
-        jTextFieldProgPraefix.setEnabled(false);
-        jTextFieldProgSuffix.setEnabled(false);
-
-        jButtonProgPfad.addActionListener(_ -> {
-            String initialFile = "";
-            if (!jTextFieldProgPfad.getText().isEmpty()) {
-                initialFile = jTextFieldProgPfad.getText();
-            }
-            var destFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Programm auswählen", initialFile);
-            if (destFile != null) {
-                jTextFieldProgPfad.setText(destFile.getAbsolutePath());
-            }
-        });
-
-        jButtonProgPlus.addActionListener(_ -> {
-            DatenProg prog = new DatenProg();
-            progNeueZeile(prog);
-        });
-
-        jButtonProgMinus.addActionListener(_ -> {
-            final int[] rows = tabelleProgramme.getSelectedRows();
-            if (rows.length > 0) {
-                DatenPset pSet = getPset();
-                String text;
-                if (rows.length == 1) {
-                    final int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
-                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
-                } else {
-                    text = rows.length + " Programme löschen?";
-                }
-                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.OK_OPTION) {
-                    for (int i = rows.length - 1; i >= 0; --i) {
-                        final int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
-                        pSet.getListeProg().remove(delRow);
-                    }
-                    tabelleProgramme();
-                }
-            } else {
-                NoSelectionErrorDialog.show(this);
-            }
-        });
-
-        jButtonProgDuplizieren.addActionListener(_ -> {
-            final int rows = tabelleProgramme.getSelectedRow();
-            if (rows != -1) {
-                int row = tabelleProgramme.convertRowIndexToModel(rows);
-                DatenProg prog = getPset().getListeProg().get(row);
-                progNeueZeile(prog.copy());
-            } else {
-                NoSelectionErrorDialog.show(this);
-            }
-        });
-
+    private void installProgramActions() {
+        jButtonProgPfad.addActionListener(_ -> chooseProgramPath());
+        jButtonProgPlus.addActionListener(_ -> progNeueZeile(new DatenProg()));
+        jButtonProgMinus.addActionListener(_ -> deleteSelectedProgramEntries());
+        jButtonProgDuplizieren.addActionListener(_ -> duplicateSelectedProgramEntry());
         jButtonProgAuf.addActionListener(_ -> progAufAb(true));
         jButtonProgAb.addActionListener(_ -> progAufAb(false));
 
         jButtonProgPfad.setEnabled(false);
-        jCheckBoxRestart.addActionListener(_ -> {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
-                }
-            }
-        });
-        jCheckBoxRemoteDownload.addActionListener(_ -> {
-            if (!stopBeob) {
-                final int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    final int modelIndex = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(modelIndex);
-                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), modelIndex, DatenProg.PROGRAMM_DOWNLOADMANAGER);
-                }
-            }
-        });
+        updateProgramMoveButtons(null);
+        jCheckBoxRestart.addActionListener(_ -> updateSelectedProgramFlag(
+                DatenProg.PROGRAMM_RESTART,
+                jCheckBoxRestart.isSelected()));
+        jCheckBoxRemoteDownload.addActionListener(_ -> updateSelectedProgramFlag(
+                DatenProg.PROGRAMM_DOWNLOADMANAGER,
+                jCheckBoxRemoteDownload.isSelected()));
+    }
 
-        //Pset
+    private void installProgramSetActions() {
         jButtonAbspielen.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
+            if (getPset() instanceof DatenPset pset) {
                 Daten.getInstance().getListePset().activateAsPlayer(pset);
                 nurtabellePset();
                 notifyProgramSetChanged();
             }
         });
-        jCheckBoxSpeichern.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setSpeichern(jCheckBoxSpeichern.isSelected());
-                nurtabellePset();
-                notifyProgramSetChanged();
-            }
-        });
-        jCheckBoxButton.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setButton(jCheckBoxButton.isSelected());
-                nurtabellePset();
-                notifyProgramSetChanged();
-            }
-        });
-        jCheckBoxAbo.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setAbo(jCheckBoxAbo.isSelected());
-                nurtabellePset();
-                notifyProgramSetChanged();
-            }
-        });
-        jCheckBoxLaenge.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setLaengeBeschraenken(jCheckBoxLaenge.isSelected());
-                nurtabellePset();
-            }
-        });
-        jCheckBoxField.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setLaengeFieldBeschraenken(jCheckBoxField.isSelected());
-                nurtabellePset();
-            }
-        });
-        jCheckBoxThema.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setThemaAnlegen(jCheckBoxThema.isSelected());
-                nurtabellePset();
-            }
-        });
+        jCheckBoxSpeichern.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setSpeichern(jCheckBoxSpeichern.isSelected()), true));
+        jCheckBoxButton.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setButton(jCheckBoxButton.isSelected()), true));
+        jCheckBoxAbo.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setAbo(jCheckBoxAbo.isSelected()), true));
+        jCheckBoxLaenge.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setLaengeBeschraenken(jCheckBoxLaenge.isSelected()), false));
+        jCheckBoxField.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setLaengeFieldBeschraenken(jCheckBoxField.isSelected()), false));
+        jCheckBoxThema.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setThemaAnlegen(jCheckBoxThema.isSelected()), false));
         jSpinnerLaenge.addChangeListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setMaxLaenge(((Number) jSpinnerLaenge.getModel().getValue()).intValue());
+            if (getPset() instanceof DatenPset pset && jSpinnerLaenge.getModel().getValue() instanceof Number value) {
+                pset.setMaxLaenge(value.intValue());
             }
         });
         jSpinnerField.addChangeListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setMaxLaengeField(((Number) jSpinnerField.getModel().getValue()).intValue());
+            if (getPset() instanceof DatenPset pset && jSpinnerField.getModel().getValue() instanceof Number value) {
+                pset.setMaxLaengeField(value.intValue());
             }
         });
-        jCheckBoxInfodatei.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setInfodatei(jCheckBoxInfodatei.isSelected());
-                nurtabellePset();
-            }
-        });
-        jCheckBoxSubtitle.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setSubtitle(jCheckBoxSubtitle.isSelected());
-                nurtabellePset();
-            }
-        });
+        jCheckBoxInfodatei.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setInfodatei(jCheckBoxInfodatei.isSelected()), false));
+        jCheckBoxSubtitle.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setSubtitle(jCheckBoxSubtitle.isSelected()), false));
 
         jCheckBoxSpotlight.setEnabled(SystemUtils.IS_OS_MAC_OSX);
-        jCheckBoxSpotlight.addActionListener(_ -> {
-            DatenPset pset = getPset();
-            if (pset != null) {
-                pset.setSpotlight(jCheckBoxSpotlight.isSelected());
-                nurtabellePset();
-            }
-        });
+        jCheckBoxSpotlight.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setSpotlight(jCheckBoxSpotlight.isSelected()), false));
 
         jButtonGruppeNeu.addActionListener(_ -> setNeu());
         jButtonGruppeLoeschen.addActionListener(_ -> setLoeschen());
-        jButtonGruppeFarbe.addActionListener(_ -> {
-            DatenPset pSet = getPset();
-            if (pSet != null) {
-                var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
-                if (selectedColor != null) {
-                    pSet.setFarbe(selectedColor);
-                    tabellePset();
-                    notifyProgramSetChanged();
-                }
-            }
-        });
-        jButtonGruppeStandardfarbe.addActionListener(_ -> {
-            DatenPset pSet = getPset();
-            if (pSet != null) {
-                pSet.clearFarbe();
-                tabellePset();
-                notifyProgramSetChanged();
-            }
-        });
-
+        jButtonGruppeFarbe.addActionListener(_ -> chooseProgramSetColor());
+        jButtonGruppeStandardfarbe.addActionListener(_ -> clearProgramSetColor());
         jButtonGruppeAuf.addActionListener(_ -> setAufAb(true));
         jButtonGruppeAb.addActionListener(_ -> setAufAb(false));
-
-        jButtonGruppeDuplizieren.addActionListener(_ -> {
-            final int row = tabellePset.getSelectedRow();
-            if (row != -1) {
-                var gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
-                listePset.addPset(gruppe.copy());
-                tabellePset();
-                notifyProgramSetChanged();
-            } else {
-                NoSelectionErrorDialog.show(this);
-            }
-        });
-
+        jButtonGruppeDuplizieren.addActionListener(_ -> duplicateSelectedProgramSet());
         jButtonExport.addActionListener(_ -> setExport());
+        jButtonGruppePfad.addActionListener(_ -> chooseProgramSetTargetPath());
+    }
 
-        jButtonGruppePfad.addActionListener(_ -> {
-            var initialFile = "";
-            if (!tfGruppeZielPfad.getText().isEmpty()) {
-                initialFile = tfGruppeZielPfad.getText();
-            }
-            var destDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(), "Filme speichern unter", initialFile);
-            if (destDirectory != null) {
-                tfGruppeZielPfad.setText(destDirectory.getAbsolutePath());
-            }
-        });
-
+    private void installProgramSetDocumentListeners() {
         jTextAreaSetBeschreibung.getDocument().addDocumentListener(new BeobDoc(jTextAreaSetBeschreibung, DatenPset.PROGRAMMSET_BESCHREIBUNG));
-        var handler2 = new TextCopyPasteHandler<>(jTextAreaSetBeschreibung);
-        jTextAreaSetBeschreibung.setComponentPopupMenu(handler2.getPopupMenu());
+        installTextPopupMenus(jTextAreaSetBeschreibung);
 
         tfGruppeDirektSuffix.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeDirektSuffix, DatenPset.PROGRAMMSET_SUFFIX_DIREKT, false));
         tfGruppeDirektPraefix.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeDirektPraefix, DatenPset.PROGRAMMSET_PRAEFIX_DIREKT, false));
-
         tfGruppeZielName.getDocument().addDocumentListener(new BeobDoc(tfGruppeZielName,
                 DatenPset.PROGRAMMSET_ZIEL_DATEINAME, false));
-
         tfGruppeZielPfad.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD, false));
 
         jTextFieldSetName.getDocument().addDocumentListener(new DuplicatePsetNameCheckListener(jTextFieldSetName));
         jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
 
-        handler = new TextCopyPasteHandler<>(jTextFieldSetName);
-        jTextFieldSetName.setComponentPopupMenu(handler.getPopupMenu());
+        installTextPopupMenus(
+                jTextFieldSetName,
+                tfGruppeDirektSuffix,
+                tfGruppeDirektPraefix,
+                tfGruppeZielName,
+                tfGruppeZielPfad);
+    }
 
-        handler = new TextCopyPasteHandler<>(tfGruppeDirektSuffix);
-        tfGruppeDirektSuffix.setComponentPopupMenu(handler.getPopupMenu());
+    private void installDocumentListener(DocumentListener documentListener, JTextComponent... textComponents) {
+        for (var textComponent : textComponents) {
+            textComponent.getDocument().addDocumentListener(documentListener);
+        }
+    }
 
-        handler = new TextCopyPasteHandler<>(tfGruppeDirektPraefix);
-        tfGruppeDirektPraefix.setComponentPopupMenu(handler.getPopupMenu());
+    private void installTextPopupMenus(JTextComponent... textComponents) {
+        for (var textComponent : textComponents) {
+            var handler = new TextCopyPasteHandler<>(textComponent);
+            textComponent.setComponentPopupMenu(handler.getPopupMenu());
+        }
+    }
 
-        handler = new TextCopyPasteHandler<>(tfGruppeZielName);
-        tfGruppeZielName.setComponentPopupMenu(handler.getPopupMenu());
-
-        handler = new TextCopyPasteHandler<>(tfGruppeZielPfad);
-        tfGruppeZielPfad.setComponentPopupMenu(handler.getPopupMenu());
-
+    private void installHelpAndCheckActions() {
         jButtonHilfe.addActionListener(_ -> {
             var str = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_PRGRAMME).trim();
             JTextArea area = new JTextArea(str);
@@ -403,8 +273,9 @@ public class PanelPsetLang extends PanelVorlage {
         jRadioButtonAufloesungNormal.addActionListener(_ -> setAufloesung());
         jRadioButtonAufloesungHD.addActionListener(_ -> setAufloesung());
         jButtonPruefen.addActionListener(_ -> programmePruefen());
+    }
 
-
+    private void installTableSelectionListeners() {
         tabelleProgramme.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 if (!stopBeob) {
@@ -412,28 +283,155 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
         });
-        tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme());
-
         tabellePset.setDefaultRenderer(Object.class, new CellRendererPset());
         tabellePset.getSelectionModel().addListSelectionListener(event -> {
             if (!stopBeob) {
                 if (!event.getValueIsAdjusting()) {
                     tabelleProgramme();
-                    DatenPset datenPset;
-                    int row = tabellePset.getSelectedRow();
+                    var row = tabellePset.getSelectedRow();
                     if (row != -1) {
-                        datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
-                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
+                        var modelRow = tabellePset.convertRowIndexToModel(row);
+                        var datenPset = listePset.get(modelRow);
+                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), modelRow, DatenPset.PROGRAMMSET_NAME);
                         jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.getName());
                     }
                 }
             }
         });
-        tabellePset();
+    }
 
+    private void selectFirstProgramSet() {
         if (tabellePset.getRowCount() > 0) {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
+        }
+    }
+
+    private void chooseProgramPath() {
+        var initialFile = "";
+        if (!jTextFieldProgPfad.getText().isEmpty()) {
+            initialFile = jTextFieldProgPfad.getText();
+        }
+        var destFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Programm auswählen", initialFile);
+        if (destFile != null) {
+            jTextFieldProgPfad.setText(destFile.getAbsolutePath());
+        }
+    }
+
+    private void deleteSelectedProgramEntries() {
+        var modelRows = getSelectedProgramModelRows();
+        if (modelRows.length == 0) {
+            NoSelectionErrorDialog.show(this);
+            return;
+        }
+
+        var programList = getCurrentProgramList();
+        String text;
+        if (modelRows.length == 1) {
+            var modelRow = modelRows[0];
+            var prog = programList.get(modelRow);
+            if (isEmptyProgramEntry(prog)) {
+                programList.removeEntryAtIndex(modelRow);
+                tabelleProgramme();
+                return;
+            }
+            text = prog.arr[DatenProg.PROGRAMM_NAME];
+        } else {
+            text = modelRows.length + " Programme löschen?";
+        }
+
+        var ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+        if (ret == JOptionPane.OK_OPTION) {
+            var progsToDelete = Arrays.stream(modelRows)
+                    .mapToObj(programList::get)
+                    .toList();
+            programList.removeAllEntries(progsToDelete);
+            tabelleProgramme();
+        }
+    }
+
+    private int[] getSelectedProgramModelRows() {
+        return Arrays.stream(tabelleProgramme.getSelectedRows())
+                .map(tabelleProgramme::convertRowIndexToModel)
+                .toArray();
+    }
+
+    private void duplicateSelectedProgramEntry() {
+        var rows = tabelleProgramme.getSelectedRow();
+        if (rows != -1) {
+            var row = tabelleProgramme.convertRowIndexToModel(rows);
+            var prog = getCurrentProgramList().get(row);
+            progNeueZeile(prog.copy());
+        } else {
+            NoSelectionErrorDialog.show(this);
+        }
+    }
+
+    private void updateSelectedProgramFlag(int dataIndex, boolean selected) {
+        if (stopBeob) {
+            return;
+        }
+
+        var rows = tabelleProgramme.getSelectedRow();
+        if (rows != -1) {
+            var modelIndex = tabelleProgramme.convertRowIndexToModel(rows);
+            var listeProg = getCurrentProgramList();
+            var prog = listeProg.get(modelIndex);
+            prog.arr[dataIndex] = Boolean.toString(selected);
+            listeProg.fireEntryChanged(modelIndex);
+            updateProgramMoveButtons(prog);
+        }
+    }
+
+    private void chooseProgramSetColor() {
+        if (getPset() instanceof DatenPset pSet) {
+            var selectedColor = JColorChooser.showDialog(PanelPsetLang.this, "Farbe auswählen", pSet.getFarbe());
+            if (selectedColor != null) {
+                pSet.setFarbe(selectedColor);
+                tabellePset();
+                notifyProgramSetChanged();
+            }
+        }
+    }
+
+    private void clearProgramSetColor() {
+        if (getPset() instanceof DatenPset pSet) {
+            pSet.clearFarbe();
+            tabellePset();
+            notifyProgramSetChanged();
+        }
+    }
+
+    private void duplicateSelectedProgramSet() {
+        final int row = tabellePset.getSelectedRow();
+        if (row != -1) {
+            var gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
+            listePset.addPset(gruppe.copy());
+            tabellePset();
+            notifyProgramSetChanged();
+        } else {
+            NoSelectionErrorDialog.show(this);
+        }
+    }
+
+    private void chooseProgramSetTargetPath() {
+        var initialFile = "";
+        if (!tfGruppeZielPfad.getText().isEmpty()) {
+            initialFile = tfGruppeZielPfad.getText();
+        }
+        var destDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(), "Filme speichern unter", initialFile);
+        if (destDirectory != null) {
+            tfGruppeZielPfad.setText(destDirectory.getAbsolutePath());
+        }
+    }
+
+    private void updateSelectedProgramSet(Consumer<DatenPset> update, boolean notifyChange) {
+        if (getPset() instanceof DatenPset pset) {
+            update.accept(pset);
+            nurtabellePset();
+            if (notifyChange) {
+                notifyProgramSetChanged();
+            }
         }
     }
 
@@ -441,18 +439,18 @@ public class PanelPsetLang extends PanelVorlage {
      * Prüfen ob die eingestellten Programmsets passen
      */
     public void programmePruefen() {
-        final String PIPE = "| ";
-        final String LEER = "      ";
-        final String PFEIL = " -> ";
-        List<Boolean> checkResultList = new ArrayList<>();
-        StringBuilder text = new StringBuilder();
+        final var PIPE = "| ";
+        final var LEER = "      ";
+        final var PFEIL = " -> ";
+        var checkResultList = new ArrayList<Boolean>();
+        var text = new StringBuilder();
 
         //check only pset which are not label or free line
         Daten.getInstance().getListePset().stream()
                 .filter(pset -> !pset.isFreeLine())
                 .filter(pset -> !pset.isLabel())
                 .forEach(datenPset -> {
-                    boolean ret = true;
+                    var ret = true;
                     text.append("++++++++++++++++++++++++++++++++++++++++++++" + '\n');
                     text.append(PIPE + "Programmgruppe: ").append(datenPset.getName()).append('\n');
                     var zielPfad = datenPset.getZielPfad();
@@ -483,8 +481,8 @@ public class PanelPsetLang extends PanelVorlage {
                         }
                         else if (!Files.isExecutable(Paths.get(progPfad))) {
                             // dann noch mit RuntimeExec versuchen
-                            RuntimeExec r = new RuntimeExec(progPfad);
-                            Process pr = r.exec(false);
+                            var r = new RuntimeExec(progPfad);
+                            var pr = r.exec(false);
                             if (pr == null) {
                                 // läßt sich nicht starten
                                 ret = false;
@@ -515,7 +513,7 @@ public class PanelPsetLang extends PanelVorlage {
                             """);
                 });
 
-        boolean allTrue = checkResultList.stream().allMatch(Boolean::booleanValue);
+        var allTrue = checkResultList.stream().allMatch(Boolean::booleanValue);
         if (allTrue) {
             JOptionPane.showMessageDialog(this, "Alle Programm-Sets sind in Ordnung.", Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
         }
@@ -524,21 +522,12 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setAufloesung() {
-        if (jRadioButtonAufloesungNormal.isSelected()) {
-            DatenPset pset = getPset();
-            if (pset != null) {
+        if (getPset() instanceof DatenPset pset) {
+            if (jRadioButtonAufloesungNormal.isSelected()) {
                 pset.setAufloesung(FilmResolution.Enum.NORMAL);
-            }
-        }
-        if (jRadioButtonAufloesungHD.isSelected()) {
-            DatenPset pset = getPset();
-            if (pset != null) {
+            } else if (jRadioButtonAufloesungHD.isSelected()) {
                 pset.setAufloesung(FilmResolution.Enum.HIGH_QUALITY);
-            }
-        }
-        if (jRadioButtonAufloesungKlein.isSelected()) {
-            DatenPset pset = getPset();
-            if (pset != null) {
+            } else if (jRadioButtonAufloesungKlein.isSelected()) {
                 pset.setAufloesung(FilmResolution.Enum.LOW);
             }
         }
@@ -583,7 +572,7 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void tabelleProgramme() {
         //Tabelle mit den Programmen füllen
-        DatenPset pSet = getPset();
+        var pSet = getPset();
         stopBeob = true;
 
         GuiFunktionen.enableComponents(jTabbedPane, pSet != null);
@@ -625,7 +614,7 @@ public class PanelPsetLang extends PanelVorlage {
                 case LOW -> jRadioButtonAufloesungKlein.setSelected(true);
                 default -> jRadioButtonAufloesungNormal.setSelected(true);
             }
-            tabelleProgramme.setModel(pSet.getListeProg().createModel());
+            bindProgramTableModel(pSet.getListeProg());
             if (tabelleProgramme.getRowCount() > 0) {
                 spaltenSetzenProgramme();
                 tabelleProgramme.setRowSelectionInterval(0, 0);
@@ -646,25 +635,52 @@ public class PanelPsetLang extends PanelVorlage {
             tfGruppeZielName.setText("");
             tfGruppeZielPfad.setText("");
             jTextAreaSetBeschreibung.setText("");
-            tabelleProgramme.setModel(new NonEditableTableModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
+            bindProgramTableModel(emptyProgramList);
         }
         stopBeob = false;
         fillTextProgramme();
     }
 
+    private void bindProgramTableModel(ListeProg listeProg) {
+        if (currentProgramList == listeProg) {
+            return;
+        }
+        AdvancedTableModel<?> oldModel = null;
+        if (tabelleProgramme.getModel() instanceof AdvancedTableModel<?> model) {
+            oldModel = model;
+        }
+        var newModel = GlazedListsSwing.eventTableModelWithThreadProxyList(listeProg, PROGRAM_TABLE_FORMAT);
+        tabelleProgramme.setRowSorter(null);
+        tabelleProgramme.setModel(newModel);
+        currentProgramList = listeProg;
+        if (programTableSorter == null) {
+            programTableSorter = new TriStateTableRowSorter<>(newModel);
+            programTableSorter.addRowSorterListener(_ -> updateProgramMoveButtonsForSelection());
+        } else {
+            programTableSorter.setModel(newModel);
+        }
+        programTableSorter.setSortKeys(List.of());
+        tabelleProgramme.setRowSorter(programTableSorter);
+        updateProgramMoveButtonsForSelection();
+        if (oldModel != null) {
+            oldModel.dispose();
+        }
+    }
+
     public void spaltenSetzenProgramme() {
         for (int i = 0; i < tabelleProgramme.getColumnCount(); ++i) {
+            var column = tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i));
             if (i == DatenProg.PROGRAMM_PRAEFIX
                     || i == DatenProg.PROGRAMM_RESTART
                     || i == DatenProg.PROGRAMM_DOWNLOADMANAGER
                     || i == DatenProg.PROGRAMM_SUFFIX) {
-                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMinWidth(10);
-                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMaxWidth(3000);
-                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setPreferredWidth(75);
+                column.setMinWidth(10);
+                column.setMaxWidth(3000);
+                column.setPreferredWidth(75);
             } else {
-                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMinWidth(10);
-                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMaxWidth(3000);
-                tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setPreferredWidth(150);
+                column.setMinWidth(10);
+                column.setMaxWidth(3000);
+                column.setPreferredWidth(150);
             }
         }
     }
@@ -679,39 +695,25 @@ public class PanelPsetLang extends PanelVorlage {
     private void fillTextProgramme() {
         //Textfelder mit Programmdaten füllen
         stopBeob = true;
-        final int row = tabelleProgramme.getSelectedRow();
-        final boolean validRowSelected = row != -1;
-        final boolean letzteZeile = tabelleProgramme.getRowCount() <= 1 || row == tabelleProgramme.getRowCount() - 1;
+        var row = tabelleProgramme.getSelectedRow();
+        var validRowSelected = row != -1;
+        var modelRow = validRowSelected ? tabelleProgramme.convertRowIndexToModel(row) : -1;
+        var modelRowCount = tabelleProgramme.getModel().getRowCount();
+        var letzteZeile = modelRowCount <= 1 || modelRow == modelRowCount - 1;
 
-        jTextFieldProgPfad.setEnabled(validRowSelected);
-        jTextFieldProgSchalter.setEnabled(validRowSelected);
-        jTextFieldProgZielDateiName.setEnabled(validRowSelected);
-        jTextFieldProgName.setEnabled(validRowSelected);
-        jTextFieldProgZielDateiName.setEnabled(validRowSelected);
-        jTextFieldProgPraefix.setEnabled(validRowSelected);
-        jTextFieldProgSuffix.setEnabled(validRowSelected);
+        setProgramFieldsEnabled(validRowSelected);
         jButtonProgPfad.setEnabled(validRowSelected);
         jCheckBoxRestart.setEnabled(validRowSelected);
         jCheckBoxRemoteDownload.setEnabled(validRowSelected);
         if (validRowSelected) {
-            DatenProg prog = getPset().getProg(tabelleProgramme.convertRowIndexToModel(row));
-            jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
-            jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER]);
-            jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME]);
-            jTextFieldProgName.setText(prog.arr[DatenProg.PROGRAMM_NAME]);
-            jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME]);
-            jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX]);
-            jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX]);
+            var prog = getCurrentProgramList().get(modelRow);
+            updateProgramMoveButtons(prog);
+            fillProgramFields(prog);
             jCheckBoxRestart.setSelected(prog.isRestart());
             jCheckBoxRemoteDownload.setSelected(prog.isDownloadManager());
         } else {
-            jTextFieldProgPfad.setText("");
-            jTextFieldProgSchalter.setText("");
-            jTextFieldProgZielDateiName.setText("");
-            jTextFieldProgName.setText("");
-            jTextFieldProgZielDateiName.setText("");
-            jTextFieldProgPraefix.setText("");
-            jTextFieldProgSuffix.setText("");
+            clearProgramFields();
+            updateProgramMoveButtons(null);
         }
         if (letzteZeile) {
             jTextFieldProgPraefix.setEnabled(false);
@@ -720,20 +722,47 @@ public class PanelPsetLang extends PanelVorlage {
         stopBeob = false;
     }
 
+    private void setProgramFieldsEnabled(boolean enabled) {
+        jTextFieldProgPfad.setEnabled(enabled);
+        jTextFieldProgSchalter.setEnabled(enabled);
+        jTextFieldProgZielDateiName.setEnabled(enabled);
+        jTextFieldProgName.setEnabled(enabled);
+        jTextFieldProgPraefix.setEnabled(enabled);
+        jTextFieldProgSuffix.setEnabled(enabled);
+    }
+
+    private void fillProgramFields(DatenProg prog) {
+        jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
+        jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER]);
+        jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME]);
+        jTextFieldProgName.setText(prog.arr[DatenProg.PROGRAMM_NAME]);
+        jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX]);
+        jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX]);
+    }
+
+    private void clearProgramFields() {
+        jTextFieldProgPfad.setText("");
+        jTextFieldProgSchalter.setText("");
+        jTextFieldProgZielDateiName.setText("");
+        jTextFieldProgName.setText("");
+        jTextFieldProgPraefix.setText("");
+        jTextFieldProgSuffix.setText("");
+    }
+
     //Pset
     private DatenPset getPset() {
-        DatenPset ret = null;
-        int row = tabellePset.getSelectedRow();
-        if (row != -1) {
-            ret = listePset.get(tabellePset.convertRowIndexToModel(row));
-        }
-        return ret;
+        var row = tabellePset.getSelectedRow();
+        return row == -1 ? null : listePset.get(tabellePset.convertRowIndexToModel(row));
+    }
+
+    private ListeProg getCurrentProgramList() {
+        return Objects.requireNonNull(currentProgramList, "program table model");
     }
 
     private void setAufAb(boolean auf) {
-        int row = tabellePset.getSelectedRow();
+        var row = tabellePset.getSelectedRow();
         if (row != -1) {
-            int neu = listePset.auf(tabellePset.convertRowIndexToModel(row), auf);
+            var neu = listePset.auf(tabellePset.convertRowIndexToModel(row), auf);
             neu = tabellePset.convertRowIndexToView(neu);
             tabellePset.setRowSelectionInterval(neu, neu);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
@@ -750,7 +779,7 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setLoeschen() {
-        int[] rows = tabellePset.getSelectedRows();
+        var rows = tabellePset.getSelectedRows();
         if (rows.length > 0) {
             DatenPset pSet;
             String text;
@@ -760,10 +789,10 @@ public class PanelPsetLang extends PanelVorlage {
             } else {
                 text = rows.length + " Set löschen?";
             }
-            int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+            var ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
                 for (int i = rows.length - 1; i >= 0; --i) {
-                    int delRow = tabellePset.convertRowIndexToModel(rows[i]);
+                    var delRow = tabellePset.convertRowIndexToModel(rows[i]);
                     ((NonEditableTableModel) tabellePset.getModel()).removeRow(delRow);
                     listePset.remove(delRow);
                 }
@@ -776,20 +805,15 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void setExport() {
-        ArrayList<DatenPset> liste = new ArrayList<>();
-        int[] rows = tabellePset.getSelectedRows();
+        var rows = tabellePset.getSelectedRows();
         if (rows.length > 0) {
-            DatenPset pSet;
-            for (int row : rows) {
-                int delRow = tabellePset.convertRowIndexToModel(row);
-                pSet = listePset.get(delRow);
-                if (pSet != null) {
-                    liste.add(pSet);
-                }
-            }
+            var liste = Arrays.stream(rows)
+                    .map(tabellePset::convertRowIndexToModel)
+                    .mapToObj(listePset::get)
+                    .toList();
 
-            final var entryName = liste.getFirst().getName();
-            String name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
+            var entryName = liste.getFirst().getName();
+            var name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
@@ -797,7 +821,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (resultFile != null) {
                 var ziel = resultFile.getAbsolutePath();
 
-                IoXmlSchreiben configWriter = new IoXmlSchreiben();
+                var configWriter = new IoXmlSchreiben();
                 configWriter.exportPset(liste.toArray(new DatenPset[0]), ziel);
                 JOptionPane.showMessageDialog(this,
                         "Das Programmset wurde erfolgreich exportiert.",
@@ -808,22 +832,73 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
+    private boolean isEmptyProgramEntry(DatenProg prog) {
+        for (int i = 0; i < DatenProg.PROGRAMM_RESTART; ++i) {
+            var value = prog.arr[i];
+            if (value != null && !value.isBlank()) {
+                return false;
+            }
+        }
+        return !prog.isRestart() && !prog.isDownloadManager();
+    }
+
+    private void updateProgramMoveButtons(DatenProg prog) {
+        var enabled = prog != null && !isEmptyProgramEntry(prog) && !isProgramTableSorted();
+        jButtonProgAuf.setEnabled(enabled);
+        jButtonProgAb.setEnabled(enabled);
+    }
+
+    private void updateProgramMoveButtonsForSelection() {
+        updateProgramMoveButtons(getSelectedProgramEntry());
+    }
+
+    private DatenProg getSelectedProgramEntry() {
+        if (currentProgramList == null) {
+            return null;
+        }
+        var viewRow = tabelleProgramme.getSelectedRow();
+        if (viewRow == -1) {
+            return null;
+        }
+        var modelRow = tabelleProgramme.convertRowIndexToModel(viewRow);
+        if (modelRow < 0 || modelRow >= currentProgramList.size()) {
+            return null;
+        }
+        return currentProgramList.get(modelRow);
+    }
+
+    private boolean isProgramTableSorted() {
+        return programTableSorter != null && !programTableSorter.getSortKeys().isEmpty();
+    }
+
     private void progNeueZeile(DatenProg prog) {
-        DatenPset gruppe = getPset();
+        var gruppe = getPset();
         if (gruppe != null) {
+            var newRow = gruppe.getListeProg().size();
             gruppe.addProg(prog);
             tabelleProgramme();
+            selectProgramModelRow(newRow);
+        }
+    }
+
+    private void selectProgramModelRow(int modelRow) {
+        var viewRow = tabelleProgramme.convertRowIndexToView(modelRow);
+        if (viewRow != -1) {
+            tabelleProgramme.setRowSelectionInterval(viewRow, viewRow);
+            tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(viewRow, 0, true));
         }
     }
 
     private void progAufAb(boolean auf) {
-        int rows = tabelleProgramme.getSelectedRow();
+        if (isProgramTableSorted()) {
+            return;
+        }
+        var rows = tabelleProgramme.getSelectedRow();
         if (rows != -1) {
-            int row = tabelleProgramme.convertRowIndexToModel(rows);
-            int neu = getPset().getListeProg().auf(row, auf);
+            var row = tabelleProgramme.convertRowIndexToModel(rows);
+            var neu = getCurrentProgramList().moveEntryAtIndex(row, auf);
             tabelleProgramme();
-            tabelleProgramme.setRowSelectionInterval(neu, neu);
-            tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(neu, 0, true));
+            selectProgramModelRow(neu);
         } else {
             NoSelectionErrorDialog.show(this);
         }
@@ -852,19 +927,16 @@ public class PanelPsetLang extends PanelVorlage {
                 int rows = tabelleProgramme.getSelectedRow();
                 if (rows != -1) {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
+                    var listeProg = getCurrentProgramList();
+                    DatenProg prog = listeProg.get(row);
                     prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] = jTextFieldProgPfad.getText();
                     prog.arr[DatenProg.PROGRAMM_SCHALTER] = jTextFieldProgSchalter.getText();
                     prog.arr[DatenProg.PROGRAMM_NAME] = jTextFieldProgName.getText();
                     prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = jTextFieldProgZielDateiName.getText();
                     prog.arr[DatenProg.PROGRAMM_SUFFIX] = jTextFieldProgSuffix.getText();
                     prog.arr[DatenProg.PROGRAMM_PRAEFIX] = jTextFieldProgPraefix.getText();
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX);
+                    listeProg.fireEntryChanged(row);
+                    updateProgramMoveButtons(prog);
 //                    progNamePruefen();
                 }
             }

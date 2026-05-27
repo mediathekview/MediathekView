@@ -51,8 +51,10 @@ public class PanelEinstellungenColor extends JPanel {
 
     private void configureTable(JTable table, TModelColor model) {
         table.addMouseListener(new BeobMausTabelle(table, model));
-        table.setDefaultRenderer(MVC.class, new CellRendererColor());
         table.setModel(model);
+        table.getColumnModel()
+                .getColumn(MVColor.MVC_COLOR)
+                .setCellRenderer(new CellRendererColor(model::isDarkMode));
     }
 
     private void getColor(MVC mvc, boolean darkMode) {

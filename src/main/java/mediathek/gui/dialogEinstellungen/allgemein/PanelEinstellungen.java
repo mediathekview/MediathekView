@@ -52,7 +52,7 @@ public class PanelEinstellungen extends JPanel {
         config.setProperty(ApplicationConfiguration.HttpProxy.HOST, jtfProxyHost.getText());
         config.setProperty(ApplicationConfiguration.HttpProxy.PORT, jtfProxyPort.getText());
         config.setProperty(ApplicationConfiguration.HttpProxy.USER, jtfProxyUser.getText());
-        config.setProperty(ApplicationConfiguration.HttpProxy.PASSWORD, jpfProxyPassword.getText());
+        config.setProperty(ApplicationConfiguration.HttpProxy.PASSWORD, new String(jpfProxyPassword.getPassword()));
         MVHttpClient.INSTANCE.reloadProxySettings();
     }
 

@@ -360,8 +360,8 @@ public class MediathekGui extends JFrame {
                 KeyEvent.SHIFT_DOWN_MASK | KeyEvent.ALT_DOWN_MASK), ACTION_MAP_KEY_COPY_NORMAL_URL);
 
         final var am = jMenuBar.getActionMap();
-        am.put(ACTION_MAP_KEY_COPY_HQ_URL, tabFilme.copyHqUrlToClipboardAction);
-        am.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabFilme.copyNormalUrlToClipboardAction);
+        am.put(ACTION_MAP_KEY_COPY_HQ_URL, tabFilme.copyHqUrlToClipboardAction());
+        am.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabFilme.copyNormalUrlToClipboardAction());
     }
 
     protected void setupScrollBarWidth() {
@@ -1111,7 +1111,7 @@ public class MediathekGui extends JFrame {
         });
         jMenuAnsicht.add(mi);
         jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction);
+        jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction());
         jMenuAnsicht.addSeparator();
         jMenuAnsicht.add(showFilmInformationAction);
         jMenuAnsicht.addSeparator();
