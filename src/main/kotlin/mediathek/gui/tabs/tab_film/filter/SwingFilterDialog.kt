@@ -49,7 +49,7 @@ class SwingFilterDialog internal constructor(
     private val filterToggleButton: JToggleButton,
     private val filterController: FilmFilterController,
     private val prompts: DialogPrompts = JOptionPaneDialogPrompts
-) : SwingFilterDialogView(owner, filterSelectionComboBoxModel) {
+) : SwingFilterDialogBase(owner, filterSelectionComboBoxModel) {
 
     companion object {
         private const val CHECKBOX_RELOAD_DEBOUNCE_MS = 450L

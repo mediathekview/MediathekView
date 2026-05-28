@@ -32,8 +32,8 @@ import org.jspecify.annotations.NonNull;
 import javax.swing.*;
 import java.awt.*;
 
-public class SwingFilterDialogView extends JDialog {
-    protected SwingFilterDialogView(@NonNull Window owner, @NonNull FilterSelectionComboBoxModel model) {
+public class SwingFilterDialogBase extends JDialog {
+    protected SwingFilterDialogBase(@NonNull Window owner, @NonNull FilterSelectionComboBoxModel model) {
         super(owner);
         initComponents();
         cboxFilterSelection.setModel(model);
