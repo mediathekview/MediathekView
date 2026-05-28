@@ -23,6 +23,7 @@ import mediathek.swing.IconUtils
 import mediathek.swing.IconizedCheckBoxMenuItem
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.JsonStringUtils
+import mediathek.tool.withLock
 import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -71,14 +72,9 @@ open class BookmarkTableColumnSettingsManager<E>(
 
     fun load() {
         try {
-            val fileSettings: List<ColumnSetting>
             val config = ApplicationConfiguration.getConfiguration()
-            config.lock(LockMode.READ)
-            try {
-                val json = config.getString(configPrefix + COLUMN_SETTINGS)
-                fileSettings = parseColumnSettingsJson(json)
-            } finally {
-                config.unlock(LockMode.READ)
+            val fileSettings = config.withLock(LockMode.READ) {
+                parseColumnSettingsJson(getString(configPrefix + COLUMN_SETTINGS))
             }
 
             for (fileSetting in fileSettings) {
@@ -131,14 +127,13 @@ open class BookmarkTableColumnSettingsManager<E>(
         }
 
         val config = ApplicationConfiguration.getConfiguration()
-        config.lock(LockMode.WRITE)
         try {
-            val output = toColumnSettingsJson(lastSettings)
-            config.setProperty(configPrefix + COLUMN_SETTINGS, output)
+            config.withLock(LockMode.WRITE) {
+                val output = toColumnSettingsJson(lastSettings)
+                setProperty(configPrefix + COLUMN_SETTINGS, output)
+            }
         } catch (ex: Exception) {
             log.error("Failed to save column settings.", ex)
-        } finally {
-            config.unlock(LockMode.WRITE)
         }
     }
 

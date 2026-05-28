@@ -187,14 +187,16 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
                 progressBar.value = 0
             }
 
-            //index filmlist after blacklist only
-            val filmListe = Daten.getInstance().listeFilmeNachBlackList as IndexedFilmList
+            val daten = Daten.getInstance()
+            val indexList = daten.listeFilmeNachBlackList as IndexedFilmList
+            // Search all films, then map hits through the current blacklist-filtered list at query time.
+            val sourceFilms = daten.listeFilme.snapshot()
             val indexingThreads = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
             val indexingTuning = calculateIndexingTuning(indexingThreads)
-            createIndexWriter(filmListe).use { writer ->
+            createIndexWriter(indexList).use { writer ->
                 val watch = Stopwatch.createStarted()
                 val counter = AtomicInteger(0)
-                val totalCount = filmListe.size
+                val totalCount = sourceFilms.size
                 val oldProgress = AtomicInteger(0)
 
                 val indexingDispatcher = Executors.newFixedThreadPool(indexingThreads).asCoroutineDispatcher()
@@ -210,7 +212,7 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
 
                         val producer = launch(indexingDispatcher) {
                             try {
-                                for (film in filmListe) {
+                                for (film in sourceFilms) {
                                     filmChannel.send(film)
                                 }
                             } finally {
@@ -252,8 +254,8 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
                 watch.stop()
                 LOG.trace("Lucene index creation took {}", watch)
             }
-            filmListe.reader?.close()
-            filmListe.reader = DirectoryReader.open(filmListe.luceneDirectory)
+            indexList.reader?.close()
+            indexList.reader = DirectoryReader.open(indexList.luceneDirectory)
         } catch (ex: Exception) {
             LOG.error("Lucene film index most probably damaged, deleting it.")
             try {

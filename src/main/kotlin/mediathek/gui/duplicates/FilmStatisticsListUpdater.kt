@@ -3,6 +3,7 @@ package mediathek.gui.duplicates
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.TransactionList
 import mediathek.daten.DatenFilm
+import mediathek.tool.withWriteLock
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -14,16 +15,12 @@ internal fun replaceFilmStatistics(
     statistics: Map<String, Long>,
 ) {
     val transactionList = TransactionList(statisticsList)
-    val writeLock = transactionList.readWriteLock.writeLock()
-    writeLock.lock()
-    try {
+    transactionList.withWriteLock {
         transactionList.beginEvent(true)
         transactionList.clear()
         statistics.forEach { (sender, count) ->
             transactionList.add(FilmStatistics(sender, count))
         }
         transactionList.commitEvent()
-    } finally {
-        writeLock.unlock()
     }
 }

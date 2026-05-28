@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.withLock
 import org.apache.commons.configuration2.Configuration
 import org.apache.commons.configuration2.sync.LockMode
 import java.awt.Point
@@ -76,12 +77,7 @@ internal class WindowLocationConfigSaverListener : ComponentAdapter() {
     }
 
     private fun withWriteLock(block: Configuration.() -> Unit) {
-        try {
-            config.lock(LockMode.WRITE)
-            config.block()
-        } finally {
-            config.unlock(LockMode.WRITE)
-        }
+        config.withLock(LockMode.WRITE, block)
     }
 
     private val JFrame.isMaximized: Boolean

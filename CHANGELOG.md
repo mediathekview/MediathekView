@@ -26,6 +26,8 @@
 - **BUGFIX:** SRT-Untertitel nutzen wieder wie im Standard vorgesehen CRLF anstatt LF beim Zeilenumbruch.
 - **BUGFIX(macOS):** Clicks auf die Download-Buttons funktionieren nun mit externer Maus beim 1. Mal.
 - **BUGFIX:** Die Position der Programme im Tab Hilfsprogramme in den Einstellungen kann nicht modifiziert werden solange sortiert wird.
+- **BUGFIX:** Blacklist-Filter wird nun auch bei der Lucene-Suche richtig angewendet.
+- **BUGFIX:** `history.db` wird nun in allen Anwendungsfällen ordnungsgemäß geschlossen.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
 - **FEATURE:** MediathekView enthält nun das Tab *Audiothek* zum Abspielen und Download von Podcasts aus der ARD Sounds Bibliothek. Die Daten sind vollindiziert für die lokale Suche. Zusätzlich können über die Schlagwortsuche auch Einträge von podcastindex.org gesucht und verwendet werden. Die Dokumentation hierfür ist über den Hilfe-Button im Suchfeld erreichbar. 
 - **FEATURE:** Filter können nun kopiert werden.
@@ -49,6 +51,7 @@
 - **FEATURE:** `-dq` bzw. `--download-quit` ist nun ein vollständig CLI-basierter Ausführungsmodus.
 - **FEATURE:** Proxy-Einstellungen werden nun ohne Neustart übernommen.
 - **FEATURE(Unix):** Dark-mode-Erkennung funktioniert nun auch mit KDE6.
+- **FEATURE:** `„`, `“` und `”` werden für Thema und Titel nun in einheitliches `"` konvertiert.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.

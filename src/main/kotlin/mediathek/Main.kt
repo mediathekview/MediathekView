@@ -28,6 +28,7 @@ import mediathek.cli.CliShutdownSignal
 import mediathek.cli.DownloadAndQuitRunner
 import mediathek.config.*
 import mediathek.controller.SenderFilmlistLoadApprover
+import mediathek.controller.history.SeenHistoryController
 import mediathek.controller.history.SeenHistoryMigrator
 import mediathek.daten.IndexedFilmList
 import mediathek.gui.dialog.DialogStarteinstellungen
@@ -109,6 +110,7 @@ object Main {
                     DownloadAndQuitRunner.run()
                 } finally {
                     Daten.getInstance().starterClass.shutdown()
+                    SeenHistoryController.closeSharedStore()
                     ApplicationConfiguration.getInstance().writeConfiguration()
                 }
                 exitProcess(exitCode)

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.util.HexFormat
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
@@ -44,6 +47,20 @@ internal class DatenFilmTest {
     }
 
     @Test
+    fun getSha256KeepsLegacyUtf16LeHashFormat() {
+        val film = DatenFilm()
+        film.sender = "ARTE"
+        film.thema = "München"
+        film.setNormalQualityUrl("https://example.org/äöü-\uD83D\uDE80.mp4")
+        film.websiteUrl = "https://example.org/seite"
+
+        assertEquals(
+            legacySha256("ARTE", "München", "https://example.org/äöü-\uD83D\uDE80.mp4", "https://example.org/seite"),
+            film.sha256,
+        )
+    }
+
+    @Test
     fun setDatumLongAcceptsNegativeValues() {
         val film = DatenFilm()
 
@@ -66,5 +83,13 @@ internal class DatenFilmTest {
                 Arguments.of("1:0:0", 3600L),
                 Arguments.of("100:100:100", 366100L),
             )
+
+        private fun legacySha256(vararg parts: String): String {
+            val digest = MessageDigest.getInstance("SHA-256")
+            for (part in parts) {
+                digest.update(part.toByteArray(StandardCharsets.UTF_16LE))
+            }
+            return HexFormat.of().formatHex(digest.digest())
+        }
     }
 }

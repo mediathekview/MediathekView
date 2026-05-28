@@ -29,6 +29,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.gui.messages.FontSizeChangedEvent
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
+import mediathek.tool.withLock
 import org.apache.commons.configuration2.sync.LockMode
 import java.awt.Component
 import java.awt.GraphicsEnvironment
@@ -132,23 +133,17 @@ class FontManager(private val fontMenu: JMenu) {
         val currentSize = currentFont.size
 
         val config = ApplicationConfiguration.getConfiguration()
-        try {
-            config.lock(LockMode.WRITE)
-            config.setProperty(CONFIG_DEFAULT_FONT_FAMILY, currentFamily)
-            config.setProperty(CONFIG_DEFAULT_FONT_SIZE, currentSize)
-        } finally {
-            config.unlock(LockMode.WRITE)
+        config.withLock(LockMode.WRITE) {
+            setProperty(CONFIG_DEFAULT_FONT_FAMILY, currentFamily)
+            setProperty(CONFIG_DEFAULT_FONT_SIZE, currentSize)
         }
     }
 
     private fun clearConfigData() {
         val config = ApplicationConfiguration.getConfiguration()
-        try {
-            config.lock(LockMode.WRITE)
-            config.clearProperty(CONFIG_DEFAULT_FONT_SIZE)
-            config.clearProperty(CONFIG_DEFAULT_FONT_FAMILY)
-        } finally {
-            config.unlock(LockMode.WRITE)
+        config.withLock(LockMode.WRITE) {
+            clearProperty(CONFIG_DEFAULT_FONT_SIZE)
+            clearProperty(CONFIG_DEFAULT_FONT_FAMILY)
         }
     }
 
@@ -157,17 +152,16 @@ class FontManager(private val fontMenu: JMenu) {
 
         val config = ApplicationConfiguration.getConfiguration()
         try {
-            config.lock(LockMode.READ)
-            val currentFamily = config.getString(CONFIG_DEFAULT_FONT_FAMILY)
-            val currentSize = config.getInt(CONFIG_DEFAULT_FONT_SIZE)
+            config.withLock(LockMode.READ) {
+                val currentFamily = getString(CONFIG_DEFAULT_FONT_FAMILY)
+                val currentSize = getInt(CONFIG_DEFAULT_FONT_SIZE)
 
-            val font = UIManager.getFont(KEY_DEFAULT_FONT)
-            var newFont = StyleContext.getDefaultStyleContext().getFont(currentFamily, font.style, currentSize)
-            newFont = FlatUIUtils.nonUIResource(newFont)
-            UIManager.put(KEY_DEFAULT_FONT, newFont)
+                val font = UIManager.getFont(KEY_DEFAULT_FONT)
+                var newFont = StyleContext.getDefaultStyleContext().getFont(currentFamily, font.style, currentSize)
+                newFont = FlatUIUtils.nonUIResource(newFont)
+                UIManager.put(KEY_DEFAULT_FONT, newFont)
+            }
         } catch (_: Exception) {
-        } finally {
-            config.unlock(LockMode.READ)
         }
 
         FlatLaf.updateUI()

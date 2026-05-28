@@ -28,6 +28,8 @@ import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.messages.BookmarkRefreshCompletedEvent
 import mediathek.tool.MessageBus
+import mediathek.tool.withReadLock
+import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.time.LocalDate
@@ -99,32 +101,26 @@ class BookmarkDataList(daten: Daten) {
 
         if (add) {
             // Check if history list is known.
-            val writeLock = bookmarks.readWriteLock.writeLock()
-            writeLock.lock()
             try {
-                SeenHistoryController().use { history ->
-                    addList.forEach { movie ->
-                        val bookmarkData = BookmarkData(movie)
-                        movie.bookmark = bookmarkData // Link backwards
-                        bookmarkData.seen = history.hasBeenSeen(movie)
-                        bookmarkData.filmHashCode = movie.sha256
-                        bookmarkData.bookmarkAdded = LocalDate.now()
-                        bookmarks.add(bookmarkData)
+                bookmarks.withWriteLock {
+                    SeenHistoryController().use { history ->
+                        addList.forEach { movie ->
+                            val bookmarkData = BookmarkData(movie)
+                            movie.bookmark = bookmarkData // Link backwards
+                            bookmarkData.seen = history.hasBeenSeen(movie)
+                            bookmarkData.filmHashCode = movie.sha256
+                            bookmarkData.bookmarkAdded = LocalDate.now()
+                            bookmarks.add(bookmarkData)
+                        }
                     }
                 }
             } catch (ex: Exception) {
                 logger.error("history produced error", ex)
-            } finally {
-                writeLock.unlock()
             }
         } else {
             movies.forEach { movie -> movie.bookmark = null }
-            val writeLock = bookmarks.readWriteLock.writeLock()
-            writeLock.lock()
-            try {
+            bookmarks.withWriteLock {
                 bookmarks.removeAll(delList)
-            } finally {
-                writeLock.unlock()
             }
         }
     }
@@ -210,21 +206,29 @@ class BookmarkDataList(daten: Daten) {
             return
         }
 
+        val bookmarkSnapshot = bookmarks.withReadLock {
+            ArrayList(bookmarks)
+        }
+        if (bookmarkSnapshot.isEmpty()) {
+            return
+        }
+
         val listeFilme = Daten.getInstance().listeFilme
         val filmSnapshot: List<DatenFilm> =
             synchronized(listeFilme) {
                 ArrayList(listeFilme)
             }
-        val filmsByHash = createFilmHashIndex(filmSnapshot)
-        val filmsByUrl = createFilmUrlIndex(filmSnapshot)
-        val readLock = bookmarks.readWriteLock.readLock()
-        val bookmarkSnapshot: List<BookmarkData>
-        readLock.lock()
-        try {
-            bookmarkSnapshot = ArrayList(bookmarks)
-        } finally {
-            readLock.unlock()
-        }
+        val requestedHashes = bookmarkSnapshot
+            .asSequence()
+            .mapNotNull { bookmark -> bookmark.filmHashCode }
+            .toSet()
+        val requestedUrls = bookmarkSnapshot
+            .asSequence()
+            .filter { bookmark -> bookmark.filmHashCode == null }
+            .mapNotNull { bookmark -> bookmark.url?.lowercase(Locale.ROOT) }
+            .toSet()
+        val filmsByHash = createFilmHashIndex(filmSnapshot, requestedHashes)
+        val filmsByUrl = createFilmUrlIndex(filmSnapshot, requestedUrls)
 
         for (bookmark in bookmarkSnapshot) {
             val hashCodeStr = bookmark.filmHashCode
@@ -255,19 +259,42 @@ class BookmarkDataList(daten: Daten) {
         }
     }
 
-    private fun createFilmHashIndex(films: List<DatenFilm>): Map<String, DatenFilm> {
-        val filmsByHash = HashMap<String, DatenFilm>(films.size)
+    private fun createFilmHashIndex(films: List<DatenFilm>, targetHashes: Set<String>): Map<String, DatenFilm> {
+        if (targetHashes.isEmpty()) {
+            return emptyMap()
+        }
+
+        val unmatchedHashes = HashSet(targetHashes)
+        val filmsByHash = HashMap<String, DatenFilm>(targetHashes.size)
         for (film in films) {
-            filmsByHash.putIfAbsent(film.sha256, film)
+            val hash = film.sha256
+            if (hash in unmatchedHashes) {
+                filmsByHash.putIfAbsent(hash, film)
+                unmatchedHashes.remove(hash)
+                if (unmatchedHashes.isEmpty()) {
+                    break
+                }
+            }
         }
         return filmsByHash
     }
 
-    private fun createFilmUrlIndex(films: List<DatenFilm>): Map<String, DatenFilm> {
-        val filmsByUrl = HashMap<String, DatenFilm>(films.size)
+    private fun createFilmUrlIndex(films: List<DatenFilm>, targetUrls: Set<String>): Map<String, DatenFilm> {
+        if (targetUrls.isEmpty()) {
+            return emptyMap()
+        }
+
+        val unmatchedUrls = HashSet(targetUrls)
+        val filmsByUrl = HashMap<String, DatenFilm>(targetUrls.size)
         for (film in films) {
             val normalizedUrl = film.urlNormalQuality.lowercase(Locale.ROOT)
-            filmsByUrl.putIfAbsent(normalizedUrl, film)
+            if (normalizedUrl in unmatchedUrls) {
+                filmsByUrl.putIfAbsent(normalizedUrl, film)
+                unmatchedUrls.remove(normalizedUrl)
+                if (unmatchedUrls.isEmpty()) {
+                    break
+                }
+            }
         }
         return filmsByUrl
     }

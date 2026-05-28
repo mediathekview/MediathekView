@@ -309,6 +309,22 @@ class SeenHistoryController : AutoCloseable {
         }
 
         @JvmStatic
+        fun closeSharedStore() {
+            runBlocking {
+                withContext(databaseDispatcher) {
+                    val storeToClose = synchronized(sharedStoreLock) {
+                        sharedStore.also { sharedStore = null }
+                    }
+                    runCatching {
+                        storeToClose?.close()
+                    }.onFailure {
+                        logger.warn("Failed to close shared seen history store", it)
+                    }
+                }
+            }
+        }
+
+        @JvmStatic
         fun prepareSharedMemoryCache() {
             SeenHistoryController().use { it.prepareMemoryCache() }
         }

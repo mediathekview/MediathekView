@@ -154,7 +154,7 @@ open class FilmListReader : AutoCloseable {
     }
 
     private fun parseThema(jp: JsonParser, datenFilm: DatenFilm) {
-        val value = checkedString(jp)
+        val value = normalizeTypographicDoubleQuotes(checkedString(jp))
         if (value.isEmpty()) {
             datenFilm.thema = thema
         } else {
@@ -174,6 +174,28 @@ open class FilmListReader : AutoCloseable {
     }
 
     private fun checkedString(jp: JsonParser): String = nextTextValue(jp) ?: ""
+
+    private fun normalizeTypographicDoubleQuotes(value: String): String {
+        for (index in value.indices) {
+            if (isTypographicDoubleQuote(value[index])) {
+                return normalizeTypographicDoubleQuotes(value, index)
+            }
+        }
+        return value
+    }
+
+    private fun normalizeTypographicDoubleQuotes(value: String, firstQuoteIndex: Int): String {
+        val normalized = value.toCharArray()
+        for (index in firstQuoteIndex until normalized.size) {
+            if (isTypographicDoubleQuote(normalized[index])) {
+                normalized[index] = '"'
+            }
+        }
+        return String(normalized)
+    }
+
+    private fun isTypographicDoubleQuote(value: Char): Boolean =
+        value == '„' || value == '“' || value == '”'
 
     private fun nextTextValue(jp: JsonParser): String? {
         val token = jp.nextToken()
@@ -381,7 +403,7 @@ open class FilmListReader : AutoCloseable {
     }
 
     private fun parseTitel(jp: JsonParser, datenFilm: DatenFilm) {
-        val title = checkedString(jp)
+        val title = normalizeTypographicDoubleQuotes(checkedString(jp))
         datenFilm.title = title
         // check title if it is audio version
         parseAudioVersion(title, datenFilm)
@@ -604,15 +626,19 @@ open class FilmListReader : AutoCloseable {
                 }
             }
         } catch (_: FileNotFoundException) {
-            logger.debug("FilmListe existiert nicht: {}", source)
+            logNonExistingFilmList(source)
             listeFilme.clear()
         } catch (_: NoSuchFileException) {
-            logger.debug("FilmListe existiert nicht: {}", source)
+            logNonExistingFilmList(source)
             listeFilme.clear()
         } catch (ex: Exception) {
             logger.error("FilmListe: {}", source, ex)
             listeFilme.clear()
         }
+    }
+
+    private fun logNonExistingFilmList(source: String) {
+        logger.debug("FilmListe existiert nicht: {}", source)
     }
 
     private fun buildClientInfo(): String =

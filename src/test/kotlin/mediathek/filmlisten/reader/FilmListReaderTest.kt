@@ -69,6 +69,23 @@ class FilmListReaderTest {
         assertEquals("", secondFilms[0].thema)
     }
 
+    @Test
+    fun `title and theme normalize typographic double quotes`() {
+        approveOnly("APPROVED")
+        val filmListFile = writeFilmList(
+            "normalized-quotes.json",
+            filmEntry("APPROVED", "„Thema“", "„Solingen, wie geht's dir?”"),
+        )
+
+        val films = ListeFilme()
+
+        FilmListReader().readFilmListe(filmListFile.toString(), films, 0)
+
+        assertEquals(1, films.size)
+        assertEquals("\"Thema\"", films[0].thema)
+        assertEquals("\"Solingen, wie geht's dir?\"", films[0].title)
+    }
+
     private fun approveOnly(vararg senders: String) {
         SenderFilmlistLoadApprover.senderSet.clear()
         SenderFilmlistLoadApprover.senderSet.addAll(senders)
@@ -111,5 +128,9 @@ class FilmListReaderTest {
             "",
             "",
             "false",
-        ).joinToString(prefix = "\"X\":[", postfix = "]") { "\"$it\"" }
+        ).joinToString(prefix = "\"X\":[", postfix = "]") { "\"${it.escapeJson()}\"" }
+
+    private fun String.escapeJson(): String =
+        replace("\\", "\\\\")
+            .replace("\"", "\\\"")
 }

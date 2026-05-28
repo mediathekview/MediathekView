@@ -20,78 +20,55 @@ package mediathek.daten
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
+import mediathek.tool.withWriteLock
 
 class ListeProg(
     private val entries: BasicEventList<DatenProg> = BasicEventList(),
 ) : EventList<DatenProg> by entries {
     fun addEntry(prog: DatenProg) {
-        val lock = entries.readWriteLock.writeLock()
-        lock.lock()
-        try {
+        entries.withWriteLock {
             entries.add(prog)
-        } finally {
-            lock.unlock()
         }
     }
 
     fun removeEntryAtIndex(index: Int): DatenProg {
-        val lock = entries.readWriteLock.writeLock()
-        lock.lock()
-        try {
-            return entries.removeAt(index)
-        } finally {
-            lock.unlock()
+        return entries.withWriteLock {
+            entries.removeAt(index)
         }
     }
 
     fun remove(name: String): DatenProg? {
-        val lock = entries.readWriteLock.writeLock()
-        lock.lock()
-        try {
+        return entries.withWriteLock {
             val index = entries.indexOfFirst { prog -> prog.arr[DatenProg.PROGRAMM_NAME] == name }
-            return if (index != -1) {
+            if (index != -1) {
                 entries.removeAt(index)
             } else {
                 null
             }
-        } finally {
-            lock.unlock()
         }
     }
 
     fun moveEntryAtIndex(idx: Int, up: Boolean): Int {
-        val lock = entries.readWriteLock.writeLock()
-        lock.lock()
-        try {
+        return entries.withWriteLock {
             val newIndex = (idx + if (up) -1 else 1).coerceIn(0, entries.lastIndex)
             if (newIndex == idx) {
-                return idx
+                return@withWriteLock idx
             }
             val prog = entries.removeAt(idx)
             entries.add(newIndex, prog)
-            return newIndex
-        } finally {
-            lock.unlock()
+            newIndex
         }
     }
 
     fun removeAllEntries(progs: Collection<DatenProg>) {
-        val lock = entries.readWriteLock.writeLock()
-        lock.lock()
-        try {
+        entries.withWriteLock {
             entries.removeAll(progs.toSet())
-        } finally {
-            lock.unlock()
         }
     }
 
     fun fireEntryChanged(index: Int) {
-        val lock = entries.readWriteLock.writeLock()
-        lock.lock()
-        try {
+        entries.withWriteLock {
             entries[index] = entries[index]
-        } finally {
-            lock.unlock()
         }
     }
 }

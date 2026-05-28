@@ -20,6 +20,7 @@ package mediathek.gui.dialog
 
 import mediathek.mainwindow.MemoryUsagePanel
 import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.withLock
 import org.apache.commons.configuration2.Configuration
 import org.apache.commons.configuration2.sync.LockMode
 import java.awt.BorderLayout
@@ -80,20 +81,17 @@ class MemoryMonitorDialog(
     }
 
     private fun readStoredBounds(): DialogBounds? {
-        configuration.lock(LockMode.READ)
-        try {
-            val width = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, -1)
-            val height = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, -1)
-            val x = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.X, Int.MIN_VALUE)
-            val y = configuration.getInt(ApplicationConfiguration.MemoryMonitorDialog.Y, Int.MIN_VALUE)
+        return configuration.withLock(LockMode.READ) {
+            val width = getInt(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, -1)
+            val height = getInt(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, -1)
+            val x = getInt(ApplicationConfiguration.MemoryMonitorDialog.X, Int.MIN_VALUE)
+            val y = getInt(ApplicationConfiguration.MemoryMonitorDialog.Y, Int.MIN_VALUE)
 
             if (width <= 0 || height <= 0 || x == Int.MIN_VALUE || y == Int.MIN_VALUE) {
-                return null
+                return@withLock null
             }
 
-            return DialogBounds(x, y, width, height)
-        } finally {
-            configuration.unlock(LockMode.READ)
+            DialogBounds(x, y, width, height)
         }
     }
 
@@ -112,14 +110,11 @@ class MemoryMonitorDialog(
         }
 
         val bounds = bounds
-        configuration.lock(LockMode.WRITE)
-        try {
-            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.X, bounds.x)
-            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.Y, bounds.y)
-            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, bounds.width)
-            configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, bounds.height)
-        } finally {
-            configuration.unlock(LockMode.WRITE)
+        configuration.withLock(LockMode.WRITE) {
+            setProperty(ApplicationConfiguration.MemoryMonitorDialog.X, bounds.x)
+            setProperty(ApplicationConfiguration.MemoryMonitorDialog.Y, bounds.y)
+            setProperty(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, bounds.width)
+            setProperty(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, bounds.height)
         }
     }
 

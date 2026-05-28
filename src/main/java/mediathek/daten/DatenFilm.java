@@ -26,6 +26,7 @@ import mediathek.tool.FilmSize;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.datum.DatumFilm;
 import mediathek.tool.episodes.SeasonEpisode;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,6 +75,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final char COMPRESSION_MARKER = '|';
     private static final GermanStringSorter sorter = GermanStringSorter.INSTANCE;
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
+    private static final boolean USE_WINDOWS_SHA256_FAST_PATH = SystemUtils.IS_OS_WINDOWS;
     private final static AtomicInteger FILMNR_GENERATOR = new AtomicInteger(0);
     /**
      * List of countries which can view this film.
@@ -566,17 +568,25 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (sha256 != null) {
             return sha256;
         }
+        sha256 = USE_WINDOWS_SHA256_FAST_PATH ? WindowsSha256FastPath.hash(this) : getSha256Legacy();
+        return sha256;
+    }
+
+    private String getSha256Legacy() {
+        var digest = createSha256Digest();
+        digest.update(getSender().getBytes(StandardCharsets.UTF_16LE));
+        digest.update(getThema().getBytes(StandardCharsets.UTF_16LE));
+        digest.update(getUrlNormalQuality().getBytes(StandardCharsets.UTF_16LE));
+        digest.update(getWebsiteUrl().getBytes(StandardCharsets.UTF_16LE));
+        return HexFormat.of().formatHex(digest.digest());
+    }
+
+    private static MessageDigest createSha256Digest() {
         try {
-            var digest = MessageDigest.getInstance("SHA-256");
-            digest.update(getSender().getBytes(StandardCharsets.UTF_16LE));
-            digest.update(getThema().getBytes(StandardCharsets.UTF_16LE));
-            digest.update(getUrlNormalQuality().getBytes(StandardCharsets.UTF_16LE));
-            digest.update(getWebsiteUrl().getBytes(StandardCharsets.UTF_16LE));
-            sha256 = HexFormat.of().formatHex(digest.digest());
-            return sha256;
+            return MessageDigest.getInstance("SHA-256");
         }
         catch (NoSuchAlgorithmException e) {
-            logger.error("Failed to get SHA-256 hash for film: {}", this, e);
+            logger.error("Failed to create SHA-256 message digest", e);
             throw new IllegalStateException("SHA-256 algorithm is unavailable", e);
         }
     }
@@ -823,5 +833,47 @@ public class DatenFilm implements Comparable<DatenFilm> {
         BOOKMARK_DATA,
         ABO_DATA,
         TEMP_DATUM_LONG
+    }
+
+    private static final class WindowsSha256FastPath {
+        private static final int UTF16LE_BUFFER_SIZE = 8192;
+        private static final ThreadLocal<MessageDigest> DIGEST = ThreadLocal.withInitial(DatenFilm::createSha256Digest);
+        private static final ThreadLocal<byte[]> UTF16LE_BUFFER =
+                ThreadLocal.withInitial(() -> new byte[UTF16LE_BUFFER_SIZE]);
+
+        private WindowsSha256FastPath() {
+        }
+
+        private static String hash(@NonNull DatenFilm film) {
+            var digest = DIGEST.get();
+            digest.reset();
+            updateDigestUtf16Le(digest, film.getSender());
+            updateDigestUtf16Le(digest, film.getThema());
+            updateDigestUtf16Le(digest, film.getUrlNormalQuality());
+            updateDigestUtf16Le(digest, film.getWebsiteUrl());
+            return HexFormat.of().formatHex(digest.digest());
+        }
+
+        private static void updateDigestUtf16Le(@NonNull MessageDigest digest, @NonNull String value) {
+            byte[] buffer = UTF16LE_BUFFER.get();
+            int position = 0;
+            for (int i = 0; i < value.length(); ++i) {
+                if (position + 2 > buffer.length) {
+                    digest.update(buffer, 0, position);
+                    position = 0;
+                }
+                char ch = value.charAt(i);
+                if (Character.isSurrogate(ch)) {
+                    digest.update(buffer, 0, position);
+                    digest.update(value.substring(i).getBytes(StandardCharsets.UTF_16LE));
+                    return;
+                }
+                buffer[position++] = (byte) ch;
+                buffer[position++] = (byte) (ch >>> 8);
+            }
+            if (position > 0) {
+                digest.update(buffer, 0, position);
+            }
+        }
     }
 }

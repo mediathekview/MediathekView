@@ -118,22 +118,21 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
 
     private fun restoreLocation() {
         val config = ApplicationConfiguration.getConfiguration()
-        config.lock(LockMode.READ)
         try {
-            val newLocation = Point(
-                config.getInt(ApplicationConfiguration.FilmInfoDialog.X),
-                config.getInt(ApplicationConfiguration.FilmInfoDialog.Y)
-            )
-            location = newLocation
+            config.withLock(LockMode.READ) {
+                val newLocation = Point(
+                    getInt(ApplicationConfiguration.FilmInfoDialog.X),
+                    getInt(ApplicationConfiguration.FilmInfoDialog.Y),
+                )
+                location = newLocation
 
-            val w = config.getInt(ApplicationConfiguration.FilmInfoDialog.WIDTH)
-            val h = config.getInt(ApplicationConfiguration.FilmInfoDialog.HEIGHT)
-            if (w > 50 && h > 50) {
-                size = Dimension(w, h)
+                val w = getInt(ApplicationConfiguration.FilmInfoDialog.WIDTH)
+                val h = getInt(ApplicationConfiguration.FilmInfoDialog.HEIGHT)
+                if (w > 50 && h > 50) {
+                    size = Dimension(w, h)
+                }
             }
         } catch (_: NoSuchElementException) {
-        } finally {
-            config.unlock(LockMode.READ)
         }
     }
 
@@ -142,15 +141,12 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
             return
         }
         val config = ApplicationConfiguration.getConfiguration()
-        config.lock(LockMode.WRITE)
-        try {
+        config.withLock(LockMode.WRITE) {
             val location = locationOnScreen
-            config.setProperty(ApplicationConfiguration.FilmInfoDialog.X, location.x)
-            config.setProperty(ApplicationConfiguration.FilmInfoDialog.Y, location.y)
-            config.setProperty(ApplicationConfiguration.FilmInfoDialog.WIDTH, width)
-            config.setProperty(ApplicationConfiguration.FilmInfoDialog.HEIGHT, height)
-        } finally {
-            config.unlock(LockMode.WRITE)
+            setProperty(ApplicationConfiguration.FilmInfoDialog.X, location.x)
+            setProperty(ApplicationConfiguration.FilmInfoDialog.Y, location.y)
+            setProperty(ApplicationConfiguration.FilmInfoDialog.WIDTH, width)
+            setProperty(ApplicationConfiguration.FilmInfoDialog.HEIGHT, height)
         }
     }
 

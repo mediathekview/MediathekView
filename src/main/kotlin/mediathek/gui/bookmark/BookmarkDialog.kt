@@ -44,6 +44,8 @@ import mediathek.swing.table.IconHeaderCellRenderer
 import mediathek.swing.table.TableUtils
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
+import mediathek.tool.withReadLock
+import mediathek.tool.withLock
 import org.apache.commons.configuration2.sync.LockMode
 import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
@@ -166,29 +168,23 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
 
     private fun saveBounds() {
         val config = ApplicationConfiguration.getConfiguration()
-        config.lock(LockMode.WRITE)
-        try {
+        config.withLock(LockMode.WRITE) {
             val bounds = bounds
-            config.setProperty(BOOKMARK_POS_X, bounds.x)
-            config.setProperty(BOOKMARK_POS_Y, bounds.y)
-            config.setProperty(BOOKMARK_WIDTH, bounds.width)
-            config.setProperty(BOOKMARK_HEIGHT, bounds.height)
-        } finally {
-            config.unlock(LockMode.WRITE)
+            setProperty(BOOKMARK_POS_X, bounds.x)
+            setProperty(BOOKMARK_POS_Y, bounds.y)
+            setProperty(BOOKMARK_WIDTH, bounds.width)
+            setProperty(BOOKMARK_HEIGHT, bounds.height)
         }
     }
 
     private fun restoreBounds() {
         val config = ApplicationConfiguration.getConfiguration()
-        config.lock(LockMode.READ)
-        try {
-            val x = config.getInt(BOOKMARK_POS_X, 100)
-            val y = config.getInt(BOOKMARK_POS_Y, 100)
-            val width = config.getInt(BOOKMARK_WIDTH, 800)
-            val height = config.getInt(BOOKMARK_HEIGHT, 600)
+        config.withLock(LockMode.READ) {
+            val x = getInt(BOOKMARK_POS_X, 100)
+            val y = getInt(BOOKMARK_POS_Y, 100)
+            val width = getInt(BOOKMARK_WIDTH, 800)
+            val height = getInt(BOOKMARK_HEIGHT, 600)
             setBounds(x, y, width, height)
-        } finally {
-            config.unlock(LockMode.READ)
         }
     }
 
@@ -250,15 +246,10 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
     private fun setupTable() {
         val bookmarkConnector = GlazedLists.beanConnector(BookmarkData::class.java) as ObservableElementList.Connector<BookmarkData>
         val sourceEventList = Daten.getInstance().listeBookmarkList.getEventList()
-        sourceEventList.readWriteLock.readLock().lock()
 
-        val observedBookmarks: ObservableElementList<BookmarkData>
-        val sortedList: SortedList<BookmarkData>
-        try {
-            observedBookmarks = ObservableElementList(Daten.getInstance().listeBookmarkList.getEventList(), bookmarkConnector)
-            sortedList = SortedList(observedBookmarks, BookmarkAddedAtComparator())
-        } finally {
-            sourceEventList.readWriteLock.readLock().unlock()
+        val sortedList = sourceEventList.withReadLock {
+            val observedBookmarks = ObservableElementList(sourceEventList, bookmarkConnector)
+            SortedList(observedBookmarks, BookmarkAddedAtComparator())
         }
 
         val model = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, getTableFormat())

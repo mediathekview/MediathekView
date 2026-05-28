@@ -1332,6 +1332,8 @@ public class MediathekGui extends JFrame {
 
             runShutdownStep("Save app data", daten::allesSpeichern);
 
+            runShutdownStep("Close seen history database", SeenHistoryController::closeSharedStore);
+
             runShutdownStep("Shutdown timer pool", this::shutdownTimerPool);
             runShutdownStep("Wait for common pool", this::waitForCommonPoolToComplete);
 

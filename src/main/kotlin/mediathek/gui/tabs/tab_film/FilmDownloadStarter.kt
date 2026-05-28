@@ -27,7 +27,7 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
 import mediathek.gui.dialog.DialogAboNoSet
-import mediathek.gui.dialog.add_download.DialogAddDownloadWithCoroutines
+import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.dialog.add_download.DialogAddMoreDownload
 import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.tool.MessageBus
@@ -113,5 +113,5 @@ private fun showSingleDownloadDialog(
     pSet: DatenPset,
     requestedResolution: FilmResolution.Enum?,
 ) {
-    DialogAddDownloadWithCoroutines(parent, datenFilm, pSet, Optional.ofNullable(requestedResolution)).isVisible = true
+    DialogAddDownload(parent, datenFilm, pSet, Optional.ofNullable(requestedResolution)).isVisible = true
 }

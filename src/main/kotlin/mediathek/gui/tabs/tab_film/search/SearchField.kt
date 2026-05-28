@@ -32,6 +32,8 @@ import mediathek.tool.GuiFunktionen
 import mediathek.tool.JsonStringUtils
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.TextCopyPasteHandler
+import mediathek.tool.withReadLock
+import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.Dimension
@@ -141,12 +143,9 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
         }
 
         fun addHistoryEntry(text: String) {
-            historyList.readWriteLock.writeLock().lock()
-            try {
+            historyList.withWriteLock {
                 historyList.remove(text)
                 historyList.add(0, text)
-            } finally {
-                historyList.readWriteLock.writeLock().unlock()
             }
         }
 
@@ -154,8 +153,7 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
             val popupMenu = JPopupMenu()
             popupMenu.add(miClearHistory)
             popupMenu.add(miEditHistory)
-            historyList.readWriteLock.readLock().lock()
-            try {
+            historyList.withReadLock {
                 if (!historyList.isEmpty()) {
                     popupMenu.addSeparator()
                     for (item in historyList) {
@@ -167,8 +165,6 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
                         popupMenu.add(historyItem)
                     }
                 }
-            } finally {
-                historyList.readWriteLock.readLock().unlock()
             }
             popupMenu.show(this, 0, height)
         }
@@ -177,11 +173,8 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
             try {
                 val entries = readHistoryEntries()
                 if (entries.isNotEmpty()) {
-                    historyList.readWriteLock.writeLock().lock()
-                    try {
+                    historyList.withWriteLock {
                         historyList.addAll(entries)
-                    } finally {
-                        historyList.readWriteLock.writeLock().unlock()
                     }
                 }
             } catch (ex: Exception) {
@@ -191,12 +184,9 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
 
         private fun saveHistory() {
             try {
-                historyList.readWriteLock.readLock().lock()
-                try {
+                historyList.withReadLock {
                     val json = JsonStringUtils.toJsonStringArray(ArrayList(historyList))
                     ApplicationConfiguration.getConfiguration().setProperty(historyConfig, json)
-                } finally {
-                    historyList.readWriteLock.readLock().unlock()
                 }
             } catch (ex: Exception) {
                 logger.error("Failed to write search history", ex)
