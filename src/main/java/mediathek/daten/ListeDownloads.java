@@ -23,7 +23,9 @@ import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.starter.Start;
+import mediathek.controller.starter.DownloadProgressText;
+import mediathek.controller.starter.DownloadRunState;
+import mediathek.controller.starter.StartStatus;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.messages.ButtonStartEvent;
@@ -74,11 +76,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (d.start == null) {
                 continue;
             }
-            if (d.start.status == Start.STATUS_FERTIG) {
+            if (d.start.status == StartStatus.FINISHED) {
                 // alles was fertig/fehlerhaft ist, kommt beim putzen weg
                 it.remove();
                 gefunden = true;
-            } else if (d.start.status == Start.STATUS_ERR) {
+            } else if (d.start.status == StartStatus.ERROR) {
                 // fehlerhafte werden zurückgesetzt
                 d.resetDownload();
                 gefunden = true;
@@ -93,11 +95,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // fertigen Download löschen
         boolean gefunden = false;
         if (datenDownload.start != null) {
-            if (datenDownload.start.status == Start.STATUS_FERTIG) {
+            if (datenDownload.start.status == StartStatus.FINISHED) {
                 // alles was fertig/fehlerhaft ist, kommt beim putzen weg
                 remove(datenDownload);
                 gefunden = true;
-            } else if (datenDownload.start.status == Start.STATUS_ERR) {
+            } else if (datenDownload.start.status == StartStatus.ERROR) {
                 // fehlerhafte werden zurückgesetzt
                 datenDownload.resetDownload();
                 gefunden = true;
@@ -125,7 +127,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (d.start == null) {
                 // noch nicht gestartet
                 it.remove();
-            } else if (d.start.status == Start.STATUS_ERR) {
+            } else if (d.start.status == StartStatus.ERROR) {
                 // fehlerhafte
                 d.resetDownload();
             }
@@ -145,9 +147,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized void requestStopForShutdown() {
         for (var download : this) {
-            Start start = download.start;
+            DownloadRunState start = download.start;
             if (start != null) {
-                start.stoppen = true;
+                start.requestStop();
             }
         }
     }
@@ -165,8 +167,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         for (DatenDownload datenDownload : this) {
             if (datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
                 if (datenDownload.start != null) {
-                    if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                        datenDownload.start.stoppen = true;
+                    if (datenDownload.start.status.isBefore(StartStatus.FINISHED)) {
+                        datenDownload.start.requestStop();
                     }
                 }
                 datenDownload.mVFilmSize.reset();
@@ -184,10 +186,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 if (this.contains(down)) {
                     // nur dann ist er in der Liste
                     if (down.start != null) {
-                        if (down.start.status < Start.STATUS_FERTIG) {
-                            down.start.stoppen = true;
+                        if (down.start.status.isBefore(StartStatus.FINISHED)) {
+                            down.start.requestStop();
                         }
-                        if (down.start.status == Start.STATUS_RUN) {
+                        if (down.start.status == StartStatus.RUNNING) {
                             down.interrupt();
                         }
                     }
@@ -206,8 +208,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         if (download != null) {
             for (DatenDownload down : download) {
                 if (down.start != null) {
-                    if (down.start.status < Start.STATUS_FERTIG) {
-                        down.start.stoppen = true;
+                    if (down.start.status.isBefore(StartStatus.FINISHED)) {
+                        down.start.requestStop();
                     }
                 }
                 if (remove(down)) {
@@ -310,14 +312,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     private String setProgress(DatenDownload download) {
         if (download.start != null) {
-            if (1 < download.start.percent && download.start.percent < Start.PROGRESS_FERTIG) {
+            if (1 < download.start.percent && download.start.percent < DownloadRunState.PROGRESS_FERTIG) {
                 StringBuilder s = new StringBuilder(Double.toString(download.start.percent / 10.0) + '%');
                 while (s.length() < 5) {
                     s.insert(0, '0');
                 }
                 return s.toString();
             } else {
-                return Start.getTextProgress(download.isDownloadManager(), download.start);
+                return DownloadProgressText.getTextProgress(download.isDownloadManager(), download.start);
             }
         } else {
             return "";
@@ -330,7 +332,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         for (var item : tModel.getDataVector()) {
             DatenDownload datenDownload = (DatenDownload) item.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
-                if (datenDownload.start.status == Start.STATUS_RUN) {
+                if (datenDownload.start.status == StartStatus.RUNNING) {
                     tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT);
                     tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE);
                     tModel.setValueAt(setProgress(datenDownload), row, DatenDownload.DOWNLOAD_PROGRESS);
@@ -401,7 +403,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
 
                 //dann in die Liste schreiben
-                add(new DatenDownload(pSet, film, DatenDownload.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
+                add(new DatenDownload(pSet, film, DownloadSource.ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
             } else {
                 if (parent == null || Config.isDownloadAndQuit()) {
@@ -439,12 +441,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 info.num_downloads++;
             }
             if (download.start != null) {
-                if (download.quelle == DatenDownload.QUELLE_ABO || download.quelle == DatenDownload.QUELLE_DOWNLOAD) {
+                if (download.quelle == DownloadSource.ABO || download.quelle == DownloadSource.DOWNLOAD) {
                     switch (download.start.status) {
-                        case Start.STATUS_INIT -> info.initialized++;
-                        case Start.STATUS_RUN -> info.running++;
-                        case Start.STATUS_FERTIG -> info.finished++;
-                        case Start.STATUS_ERR -> info.error++;
+                        case INITIALIZED -> info.initialized++;
+                        case RUNNING -> info.running++;
+                        case FINISHED -> info.finished++;
+                        case ERROR -> info.error++;
                     }
                 }
             }
@@ -456,15 +458,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     /**
      * Return a List of all not yet finished downloads.
      *
-     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
+     * @param quelle the download source to include
      * @return A list with all download objects.
      */
-    public synchronized List<DatenDownload> getListOfStartsNotFinished(int quelle) {
+    public synchronized List<DatenDownload> getListOfStartsNotFinished(DownloadSource quelle) {
         final List<DatenDownload> activeDownloads;
         activeDownloads = this.stream()
                 .filter(download -> download.start != null)
-                .filter(download -> download.start.status < Start.STATUS_FERTIG)
-                .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
+                .filter(download -> download.start.status.isBefore(StartStatus.FINISHED))
+                .filter(download -> quelle == DownloadSource.ALL || download.quelle == quelle)
                 .collect(Collectors.toList());
 
         return activeDownloads;
@@ -477,8 +479,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.start != null) {
-                if (d.quelle == DatenDownload.QUELLE_BUTTON) {
-                    if (d.start.status >= Start.STATUS_FERTIG) {
+                if (d.quelle == DownloadSource.BUTTON) {
+                    if (d.start.status.isAtLeast(StartStatus.FINISHED)) {
                         // dann ist er fertig oder abgebrochen
                         it.remove();
                         gefunden = true;
@@ -499,7 +501,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         if (this.size() > 0 && getDown(maxNumDownloads)) {
             nextPossibleDownload().ifPresent(datenDownload -> {
                 if (datenDownload.start != null) {
-                    if (datenDownload.start.status == Start.STATUS_INIT)
+                    if (datenDownload.start.status == StartStatus.INITIALIZED)
                         ret[0] = datenDownload;
                 }
             });
@@ -519,10 +521,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             }
 
-            if (datenDownload.start.status == Start.STATUS_ERR
+            if (datenDownload.start.status == StartStatus.ERROR
                     && datenDownload.start.countRestarted < Konstanten.MAX_DOWNLOAD_RESTARTS) {
                 int restarted = datenDownload.start.countRestarted;
-                if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+                if (datenDownload.art == DownloadType.DIRECT) {
                     datenDownload.resetDownload();
                     datenDownload.startDownload();
                     datenDownload.start.countRestarted = ++restarted; //datenDownload.start ist neu!!!
@@ -536,9 +538,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     private boolean getDown(int max) {
         int count = 0;
         for (DatenDownload datenDownload : this) {
-            Start s = datenDownload.start;
+            DownloadRunState s = datenDownload.start;
             if (s != null) {
-                if (s.status == Start.STATUS_RUN) {
+                if (s.status == StartStatus.RUNNING) {
                     ++count;
                     if (count >= max) {
                         return false;
@@ -552,7 +554,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     private Optional<DatenDownload> nextPossibleDownload() {
         for (DatenDownload datenDownload : this) {
             if (datenDownload.start != null) {
-                if (datenDownload.start.status == Start.STATUS_INIT) {
+                if (datenDownload.start.status == StartStatus.INITIALIZED) {
                     return Optional.of(datenDownload);
                 }
             }

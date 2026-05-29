@@ -22,9 +22,10 @@ import com.github.kokorin.jaffree.process.JaffreeAbnormalExitException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
-import mediathek.controller.starter.Start
+import mediathek.controller.starter.DownloadProgressText
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
+import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
 import mediathek.gui.dialog.DialogHilfe
 import mediathek.gui.dialog.MVPanelDownloadZiel
@@ -165,7 +166,7 @@ class DialogEditDownload(
 
     private fun setupResolutionButtons() {
         disableResolutionButtons()
-        if (datenDownload.art != DatenDownload.ART_DOWNLOAD && datenDownload.pSet == null) {
+        if (datenDownload.art != DownloadType.DIRECT && datenDownload.pSet == null) {
             jPanelRes.isVisible = false
             return
         }
@@ -222,7 +223,7 @@ class DialogEditDownload(
             FilmResolution.Enum.NORMAL -> dateiGroesseHoch
             FilmResolution.Enum.LOW -> dateiGroesseKlein
         }
-        if (datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.pSet != null) {
+        if (datenDownload.art == DownloadType.PROGRAM && datenDownload.pSet != null) {
             updateProgramCallFields(selectedResolution)
         }
         datenDownload.setGroesse(size)
@@ -545,7 +546,7 @@ class DialogEditDownload(
     }
 
     private fun isDirectDownloadProgram(): Boolean =
-        DatenDownload.ART_DOWNLOAD_TXT == datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM]
+        DownloadType.DIRECT.label == datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM]
 
     private fun createLabel(index: Int) = JLabel("${labelText(index)}: ").apply {
         font = font.deriveFont(java.awt.Font.BOLD)
@@ -595,7 +596,7 @@ class DialogEditDownload(
     }
 
     private fun showDownloadTargetEditor(index: Int, label: JLabel): Boolean {
-        if (datenDownload.art != DatenDownload.ART_DOWNLOAD || gestartet) {
+        if (datenDownload.art != DownloadType.DIRECT || gestartet) {
             return false
         }
         if (index != DatenDownload.DOWNLOAD_ZIEL_DATEINAME
@@ -688,7 +689,7 @@ class DialogEditDownload(
         if (index == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF) {
             return true
         }
-        if (index != DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY || datenDownload.art != DatenDownload.ART_PROGRAMM) {
+        if (index != DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY || datenDownload.art != DownloadType.PROGRAM) {
             return false
         }
 
@@ -771,13 +772,13 @@ class DialogEditDownload(
                 textField.text = datenDownload.film.filmNr.toString()
             }
 
-            DatenDownload.DOWNLOAD_URL -> if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+            DatenDownload.DOWNLOAD_URL -> if (datenDownload.art == DownloadType.DIRECT) {
                 label.foreground = hyperlinkColor()
                 makeEditable(textField, index)
             }
 
             DatenDownload.DOWNLOAD_PROGRESS -> textField.text =
-                Start.getTextProgress(datenDownload.isDownloadManager, datenDownload.start)
+                DownloadProgressText.getTextProgress(datenDownload.isDownloadManager, datenDownload.start)
 
             DatenDownload.DOWNLOAD_RESTZEIT -> textField.text = datenDownload.textRestzeit
         }
@@ -856,19 +857,9 @@ class DialogEditDownload(
         }
     }
 
-    private fun downloadArtText(): String = when (datenDownload.art) {
-        DatenDownload.ART_DOWNLOAD -> DatenDownload.ART_DOWNLOAD_TXT
-        DatenDownload.ART_PROGRAMM -> DatenDownload.ART_PROGRAMM_TXT
-        else -> datenDownload.arr[DatenDownload.DOWNLOAD_ART]
-    }
+    private fun downloadArtText(): String = datenDownload.art.label
 
-    private fun downloadQuelleText(): String = when (datenDownload.quelle) {
-        DatenDownload.QUELLE_ALLE -> DatenDownload.QUELLE_ALLE_TXT
-        DatenDownload.QUELLE_ABO -> DatenDownload.QUELLE_ABO_TXT
-        DatenDownload.QUELLE_BUTTON -> DatenDownload.QUELLE_BUTTON_TXT
-        DatenDownload.QUELLE_DOWNLOAD -> DatenDownload.QUELLE_DOWNLOAD_TXT
-        else -> datenDownload.arr[DatenDownload.DOWNLOAD_QUELLE]
-    }
+    private fun downloadQuelleText(): String = datenDownload.quelle.label
 
     private fun addValueComponent(label: JLabel, component: Component) {
         (component as? JComponent)?.let(::makeShrinkable)

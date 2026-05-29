@@ -23,7 +23,7 @@ import mediathek.config.Konstanten
 import mediathek.config.MVConfig
 import mediathek.controller.history.MVUsedUrl
 import mediathek.controller.starter.DirectDownloadPartFiles
-import mediathek.controller.starter.Start
+import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.filmeSuchen.ListenerFilmeLaden
@@ -454,7 +454,7 @@ class GuiDownloads(
     @Synchronized
     fun editDownload() {
         val datenDownload = getSelDownload() ?: return
-        val gestartet = datenDownload.start?.let { it.status >= Start.STATUS_RUN } == true
+        val gestartet = datenDownload.start?.let { it.status >= StartStatus.RUNNING } == true
         val datenDownloadCopy = datenDownload.copy
         val dialog = DialogEditDownload(mediathekGui, datenDownloadCopy, gestartet)
         dialog.isVisible = true
@@ -487,7 +487,7 @@ class GuiDownloads(
     fun filmLoeschen_() {
         val datenDownload = getSelDownload() ?: return
 
-        if (datenDownload.start != null && datenDownload.start.status < Start.STATUS_FERTIG) {
+        if (datenDownload.start != null && datenDownload.start.status < StartStatus.FINISHED) {
             JOptionPane.showMessageDialog(mediathekGui, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
             return
         }
@@ -614,10 +614,10 @@ class GuiDownloads(
 
         for (download in allDownloads) {
             if (download.start != null) {
-                if (download.start.status == Start.STATUS_RUN) {
+                if (download.start.status == StartStatus.RUNNING) {
                     continue
                 }
-                if (download.start.status > Start.STATUS_RUN) {
+                if (download.start.status > StartStatus.RUNNING) {
                     val reply = GuiFunktionen.createDismissableMessageDialog(
                         mediathekGui,
                         "Fertiger Download",
@@ -671,19 +671,19 @@ class GuiDownloads(
         val selectedDownloads = if (processAllDownloads) addAllDownloadsToList() else getSelDownloads()
 
         if (!starten) {
-            daten.starterClass.delayNewStarts()
+            daten.downloadStartCoordinator.delayNewStarts()
         }
 
         var answer = -1
         for (download in selectedDownloads) {
             if (starten) {
                 if (download.start != null) {
-                    if (download.start.status == Start.STATUS_RUN ||
-                        !restartFinishedDownloads && download.start.status > Start.STATUS_RUN
+                    if (download.start.status == StartStatus.RUNNING ||
+                        !restartFinishedDownloads && download.start.status > StartStatus.RUNNING
                     ) {
                         continue
                     }
-                    if (download.start.status > Start.STATUS_RUN) {
+                    if (download.start.status > StartStatus.RUNNING) {
                         if (answer == -1) {
                             val text = if (selectedDownloads.size > 1) {
                                 "Es sind bereits fertige Filme dabei,\n" +
@@ -715,7 +715,7 @@ class GuiDownloads(
                     }
                 }
                 downloadsToStart.add(download)
-            } else if (download.start != null && download.start.status <= Start.STATUS_RUN) {
+            } else if (download.start != null && download.start.status <= StartStatus.RUNNING) {
                 downloadsToCancel.add(download)
             }
         }
@@ -740,7 +740,7 @@ class GuiDownloads(
                 tabelle.convertRowIndexToModel(i),
                 DatenDownload.DOWNLOAD_REF,
             ) as DatenDownload
-            if (datenDownload.start != null && datenDownload.start.status < Start.STATUS_RUN) {
+            if (datenDownload.start != null && datenDownload.start.status < StartStatus.RUNNING) {
                 downloadsToStop.add(datenDownload)
             }
         }

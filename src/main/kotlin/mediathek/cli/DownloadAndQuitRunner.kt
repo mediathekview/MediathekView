@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import mediathek.config.StandardLocations
 import mediathek.controller.history.SeenHistoryController
-import mediathek.controller.starter.Start
+import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
@@ -207,10 +207,10 @@ object DownloadAndQuitRunner {
         var lastSummary = ""
         while (true) {
             val trackedDownloads = downloads.filter { it.start != null }
-            val waiting = trackedDownloads.count { it.start?.status == Start.STATUS_INIT }
-            val runningDownloads = trackedDownloads.filter { it.start?.status == Start.STATUS_RUN }
-            val finished = trackedDownloads.count { it.start?.status == Start.STATUS_FERTIG }
-            val errors = trackedDownloads.count { it.start?.status == Start.STATUS_ERR }
+            val waiting = trackedDownloads.count { it.start?.status == StartStatus.INITIALIZED }
+            val runningDownloads = trackedDownloads.filter { it.start?.status == StartStatus.RUNNING }
+            val finished = trackedDownloads.count { it.start?.status == StartStatus.FINISHED }
+            val errors = trackedDownloads.count { it.start?.status == StartStatus.ERROR }
             val unfinished = waiting + runningDownloads.size
             val averageProgress = if (runningDownloads.isEmpty()) {
                 0
@@ -268,7 +268,7 @@ object DownloadAndQuitRunner {
             return
         }
 
-        Daten.getInstance().starterClass.delayNewStarts()
+        Daten.getInstance().downloadStartCoordinator.delayNewStarts()
         for (download in downloads) {
             val start = download.start
             if (start == null) {
@@ -276,11 +276,11 @@ object DownloadAndQuitRunner {
                 continue
             }
 
-            if (start.status < Start.STATUS_FERTIG) {
-                start.stoppen = true
+            if (start.status < StartStatus.FINISHED) {
+                start.requestStop()
                 download.interrupt()
-                if (start.status == Start.STATUS_INIT) {
-                    start.status = Start.STATUS_ERR
+                if (start.status == StartStatus.INITIALIZED) {
+                    start.status = StartStatus.ERROR
                 }
             }
         }

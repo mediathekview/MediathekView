@@ -36,7 +36,7 @@ import javax.swing.event.TableColumnModelListener
 import javax.swing.table.TableColumnModel
 
 /**
- * CellRenderer base class for all custom renderer associated with a Start.
+ * CellRenderer base class for custom renderers associated with download run state.
  */
 open class CellRendererBaseWithStart : CellRendererBase() {
     protected val lockedIcon: FontIcon = IconUtils.of(FontAwesomeSolid.LOCK)

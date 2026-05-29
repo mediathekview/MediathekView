@@ -35,7 +35,7 @@ import java.util.*
  */
 class RuntimeExec(
     private val mVFilmSize: MVFilmSize?,
-    private val start: Start?,
+    private val start: DownloadRunState?,
     private val strProgCall: String,
     strProgCallArray: String,
 ) {
@@ -143,7 +143,7 @@ class RuntimeExec(
 
             val elapsedSecs = secondsSinceStart()
             if (oldBandwidthSampleSecs < elapsedSecs - 5) {
-                currentStart.bandbreite = (sizeBytes - oldSizeBytes) / (elapsedSecs - oldBandwidthSampleSecs)
+                currentStart.updateBandwidth((sizeBytes - oldSizeBytes) / (elapsedSecs - oldBandwidthSampleSecs))
                 oldBandwidthSampleSecs = elapsedSecs
                 oldSizeBytes = sizeBytes
             }
@@ -162,7 +162,7 @@ class RuntimeExec(
 
             // nur ganze Int speichern, und 1000 Schritte
             val newPercent = (percentValue * 10).toInt()
-            currentStart.percent = newPercent
+            currentStart.updateProgress(newPercent)
             if (newPercent == percent) {
                 return
             }
@@ -177,7 +177,7 @@ class RuntimeExec(
                 val elapsedSecs = secondsSinceStart()
                 val progressed = percent - percentStart
                 val remaining = 1000 - percent
-                currentStart.restSekunden = elapsedSecs * remaining / progressed
+                currentStart.updateRemainingSeconds(elapsedSecs * remaining / progressed)
             }
             DownloadProgressEventPublisher.publishThrottled()
         }

@@ -19,7 +19,7 @@
 package mediathek.tool.cellrenderer
 
 import mediathek.config.Daten
-import mediathek.controller.starter.Start
+import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.swing.IconUtils
@@ -158,7 +158,7 @@ class CellRendererFilme : CellRendererBaseWithStart() {
     }
 
     private fun handleButtonStartColumn(datenDownload: DatenDownload?, isSelected: Boolean) {
-        if (datenDownload?.start?.status == Start.STATUS_RUN) {
+        if (datenDownload?.start?.status == StartStatus.RUNNING) {
             setSelectedIconAndToolTip(isSelected, stopIcons, "Film stoppen")
         }
 

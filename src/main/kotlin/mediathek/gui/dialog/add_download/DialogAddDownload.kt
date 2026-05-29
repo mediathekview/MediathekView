@@ -385,7 +385,7 @@ class DialogAddDownload(
         datenDownload = DatenDownload(
             activeProgramSet,
             film,
-            DatenDownload.QUELLE_DOWNLOAD,
+            DownloadSource.DOWNLOAD,
             null,
             jTextFieldName.text,
             jComboBoxPfad.selectedItem?.toString() ?: "",
@@ -468,7 +468,7 @@ class DialogAddDownload(
             datenDownload = DatenDownload(
                 activeProgramSet,
                 film,
-                DatenDownload.QUELLE_DOWNLOAD,
+                DownloadSource.DOWNLOAD,
                 null,
                 "",
                 "",

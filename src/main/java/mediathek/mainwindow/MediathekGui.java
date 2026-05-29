@@ -1318,7 +1318,7 @@ public class MediathekGui extends JFrame {
 
             runShutdownStep("Save bookmark list", () -> daten.getListeBookmarkList().saveToFile());
 
-            runShutdownStep("Stop starter thread", () -> daten.getStarterClass().shutdown());
+            runShutdownStep("Stop starter thread", () -> daten.getDownloadStartCoordinator().shutdown());
 
             runShutdownStep("Close notification center", this::closeNotificationCenter);
 

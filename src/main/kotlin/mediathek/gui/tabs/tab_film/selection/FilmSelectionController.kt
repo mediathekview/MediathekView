@@ -63,7 +63,7 @@ class FilmSelectionController(private val host: Host) {
             }
 
             getCurrentlySelectedFilm().ifPresent { film ->
-                host.daten().starterClass.urlMitProgrammStarten(pSet, film, resolution)
+                host.daten().downloadStartCoordinator.urlMitProgrammStarten(pSet, film, resolution)
             }
         }
     }

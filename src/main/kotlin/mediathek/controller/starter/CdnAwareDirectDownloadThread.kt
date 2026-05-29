@@ -29,6 +29,7 @@ import mediathek.controller.MVBandwidthCountingInputStream
 import mediathek.controller.ThrottlingInputStream
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.*
@@ -87,8 +88,8 @@ class CdnAwareDirectDownloadThread(
 
     init {
         messageBus.subscribe(this)
-        start.status = Start.STATUS_RUN
-        StarterClass.notifyStartEvent(datenDownload)
+        start.markRunning()
+        DownloadStartEventPublisher.publish(datenDownload)
     }
 
     @Handler
@@ -100,7 +101,7 @@ class CdnAwareDirectDownloadThread(
 
     @Synchronized
     override fun run() {
-        StarterClass.startmeldung(datenDownload, start)
+        DownloadLogMessages.logStart(datenDownload, start)
         messageBus.publishAsync(DownloadStartEvent())
 
         runBlocking {
@@ -129,7 +130,7 @@ class CdnAwareDirectDownloadThread(
                 handleDownloadFailure(ex)
             } finally {
                 awaitAncillaryDownloads()
-                StarterClass.finalizeDownload(datenDownload, start, state)
+                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
                 messageBus.publishAsync(DownloadFinishedEvent())
                 messageBus.unsubscribe(this@CdnAwareDirectDownloadThread)
             }
@@ -208,7 +209,7 @@ class CdnAwareDirectDownloadThread(
                         HttpURLConnection.HTTP_NOT_FOUND -> {
                             logger.error("HTTP error 404 received for URL: {}", request.url)
                             state = HttpDownloadState.ERROR
-                            start.status = Start.STATUS_ERR
+                            start.markError()
                             return
                         }
 
@@ -300,24 +301,24 @@ class CdnAwareDirectDownloadThread(
                                     startProgress = progress
                                 }
                                 progress = when {
-                                    progress == 0L -> Start.PROGRESS_GESTARTET.toLong()
+                                    progress == 0L -> DownloadRunState.PROGRESS_GESTARTET.toLong()
                                     progress >= 1000L -> 999L
                                     else -> progress
                                 }
-                                start.percent = progress.toInt()
+                                start.updateProgress(progress.toInt())
                                 if (progress != previousProgress) {
                                     previousProgress = progress
                                     if (progress > 2 && progress > startProgress) {
                                         val elapsed = Duration.between(start.startTime, LocalDateTime.now()).seconds
                                         val remainingProgress = 1000L - progress
-                                        start.restSekunden = elapsed * remainingProgress / (progress - startProgress)
+                                        start.updateRemainingSeconds(elapsed * remainingProgress / (progress - startProgress))
                                     }
                                     notifyProgress = true
                                 }
                             }
 
                             if (liveBandwidth != start.bandbreite) {
-                                start.bandbreite = liveBandwidth
+                                start.updateBandwidth(liveBandwidth)
                                 notifyProgress = true
                             }
 
@@ -328,7 +329,7 @@ class CdnAwareDirectDownloadThread(
                         }
 
                         bufferedSink.flush()
-                        start.bandbreite = overallAverageBandwidth()
+                        start.updateBandwidth(overallAverageBandwidth())
                     }
                 }
             }
@@ -380,16 +381,19 @@ class CdnAwareDirectDownloadThread(
             DirectDownloadPartFiles.moveCompletedPartToFinal(file, finalFile)
         } catch (ex: IOException) {
             logger.error("Failed to finalize download file", ex)
-            start.status = Start.STATUS_ERR
+            start.markError()
             state = HttpDownloadState.ERROR
             removeSeenHistoryEntry()
             return
         }
 
-        start.status = when {
-            datenDownload.quelle == DatenDownload.QUELLE_BUTTON -> Start.STATUS_FERTIG
-            StarterClass.pruefen(Daten.getInstance(), datenDownload, start) -> Start.STATUS_FERTIG
-            else -> Start.STATUS_ERR
+        if (
+            datenDownload.quelle == DownloadSource.BUTTON ||
+            DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(Daten.getInstance(), datenDownload, start)
+        ) {
+            start.markFinished()
+        } else {
+            start.markError()
         }
     }
 
@@ -402,7 +406,7 @@ class CdnAwareDirectDownloadThread(
         }
 
         state = HttpDownloadState.ERROR
-        start.status = Start.STATUS_ERR
+        start.markError()
     }
 
     private fun isRetryableStreamException(ex: IOException): Boolean {
@@ -440,7 +444,7 @@ class CdnAwareDirectDownloadThread(
 
     private fun handleDownloadFailure(ex: IOException) {
         logger.error("run()", ex)
-        start.status = Start.STATUS_ERR
+        start.markError()
         state = HttpDownloadState.ERROR
         removeSeenHistoryEntry()
 

@@ -29,6 +29,7 @@ import mediathek.controller.MVBandwidthCountingInputStream
 import mediathek.controller.ThrottlingInputStream
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.*
@@ -63,7 +64,7 @@ class DirectHttpDownload(
     private val datenDownload: DatenDownload
 ) : Thread() {
 
-    private val start: Start = datenDownload.start
+    private val start: DownloadRunState = datenDownload.start
     private val rateLimiter = ByteRateLimiter(downloadLimit())
     private val messageBus: MBassador<BaseEvent> = MessageBus.messageBus
     private val httpClient: OkHttpClient = MVHttpClient.httpClient
@@ -83,8 +84,8 @@ class DirectHttpDownload(
         messageBus.subscribe(this)
         name = "DIRECT DL THREAD_${datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]}"
 
-        start.status = Start.STATUS_RUN
-        StarterClass.notifyStartEvent(datenDownload)
+        start.markRunning()
+        DownloadStartEventPublisher.publish(datenDownload)
     }
 
     /**
@@ -218,11 +219,11 @@ class DirectHttpDownload(
                                 }
                                 // p muss zwischen 1 und 999 liegen
                                 progress = when {
-                                    progress == 0L -> Start.PROGRESS_GESTARTET.toLong()
+                                    progress == 0L -> DownloadRunState.PROGRESS_GESTARTET.toLong()
                                     progress >= 1000L -> 999L
                                     else -> progress
                                 }
-                                start.percent = progress.toInt()
+                                start.updateProgress(progress.toInt())
                                 if (progress != previousProgress) {
                                     previousProgress = progress
                                     // Restzeit ermitteln
@@ -230,14 +231,14 @@ class DirectHttpDownload(
                                         // sonst macht es noch keinen Sinn
                                         val diffZeit = Duration.between(start.startTime, LocalDateTime.now()).seconds
                                         val restProzent = 1000L - progress
-                                        start.restSekunden = diffZeit * restProzent / (progress - startProgress)
+                                        start.updateRemainingSeconds(diffZeit * restProzent / (progress - startProgress))
                                     }
                                     melden = true
                                 }
                             }
                             val aktBandwidth = bandwidthInput.bandwidth // bytes per second
                             if (aktBandwidth != start.bandbreite) {
-                                start.bandbreite = aktBandwidth
+                                start.updateBandwidth(aktBandwidth)
                                 melden = true
                             }
                             if (melden) {
@@ -251,7 +252,7 @@ class DirectHttpDownload(
             }
         }
 
-        start.bandbreite = start.mVBandwidthCountingInputStream.sumBandwidth
+        start.updateBandwidth(start.mVBandwidthCountingInputStream!!.sumBandwidth)
         finishSuccessfulDownload()
     }
 
@@ -260,10 +261,13 @@ class DirectHttpDownload(
         if (!start.stoppen) {
             DirectDownloadPartFiles.moveCompletedPartToFinal(file, finalFile)
 
-            start.status = when {
-                datenDownload.quelle == DatenDownload.QUELLE_BUTTON -> Start.STATUS_FERTIG
-                StarterClass.pruefen(daten, datenDownload, start) -> Start.STATUS_FERTIG
-                else -> Start.STATUS_ERR
+            if (
+                datenDownload.quelle == DownloadSource.BUTTON ||
+                DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(daten, datenDownload, start)
+            ) {
+                start.markFinished()
+            } else {
+                start.markError()
             }
         }
     }
@@ -277,7 +281,7 @@ class DirectHttpDownload(
         }
 
         state = HttpDownloadState.ERROR
-        start.status = Start.STATUS_ERR
+        start.markError()
     }
 
     private fun buildDownloadRequest(url: HttpUrl): Request {
@@ -317,7 +321,7 @@ class DirectHttpDownload(
             if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
                 logger.error("HTTP error 404 received for URL: {}", request.url.toString())
                 state = HttpDownloadState.ERROR
-                start.status = Start.STATUS_ERR
+                start.markError()
             } else {
                 printHttpErrorMessage(response)
             }
@@ -373,7 +377,7 @@ class DirectHttpDownload(
 
     @Synchronized
     override fun run() {
-        StarterClass.startmeldung(datenDownload, start)
+        DownloadLogMessages.logStart(datenDownload, start)
 
         messageBus.publishAsync(DownloadStartEvent())
 
@@ -409,7 +413,7 @@ class DirectHttpDownload(
                 }
             } catch (ex: IOException) {
                 logger.error("run()", ex)
-                start.status = Start.STATUS_ERR
+                start.markError()
                 state = HttpDownloadState.ERROR
 
                 removeSeenHistoryEntry()
@@ -418,7 +422,7 @@ class DirectHttpDownload(
             } finally {
                 awaitAncillaryDownloads()
 
-                StarterClass.finalizeDownload(datenDownload, start, state)
+                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
 
                 messageBus.publishAsync(DownloadFinishedEvent())
                 messageBus.unsubscribe(this@DirectHttpDownload)

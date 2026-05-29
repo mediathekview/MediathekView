@@ -109,7 +109,7 @@ object Main {
                 val exitCode = try {
                     DownloadAndQuitRunner.run()
                 } finally {
-                    Daten.getInstance().starterClass.shutdown()
+                    Daten.getInstance().downloadStartCoordinator.shutdown()
                     SeenHistoryController.closeSharedStore()
                     ApplicationConfiguration.getInstance().writeConfiguration()
                 }

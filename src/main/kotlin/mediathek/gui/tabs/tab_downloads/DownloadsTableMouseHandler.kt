@@ -19,7 +19,7 @@
 package mediathek.gui.tabs.tab_downloads
 
 import mediathek.config.Daten
-import mediathek.controller.starter.Start
+import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
@@ -107,10 +107,10 @@ class DownloadsTableMouseHandler(
     private fun handleStartButton() {
         val download = datenDownload ?: return
         if (download.start != null && !download.isDownloadManager) {
-            if (download.start.status == Start.STATUS_FERTIG) {
+            if (download.start.status == StartStatus.FINISHED) {
                 downloadsTab.filmAbspielen()
             } else {
-                downloadsTab.filmStartenWiederholenStoppen(false, download.start.status == Start.STATUS_ERR, true, false)
+                downloadsTab.filmStartenWiederholenStoppen(false, download.start.status == StartStatus.ERROR, true, false)
             }
         } else {
             downloadsTab.filmStartenWiederholenStoppen(false, true, true, false)
@@ -119,7 +119,7 @@ class DownloadsTableMouseHandler(
 
     private fun handleDeleteButton() {
         val download = datenDownload ?: return
-        if (download.start != null && download.start.status >= Start.STATUS_FERTIG) {
+        if (download.start != null && download.start.status >= StartStatus.FINISHED) {
             downloadsTab.downloadsAufraeumen(download)
         } else {
             downloadsTab.downloadLoeschen(true)
@@ -188,7 +188,7 @@ class DownloadsTableMouseHandler(
         }
 
         val download = downloadAtViewRow(row)
-        return download.start != null && download.start.status <= Start.STATUS_RUN
+        return download.start != null && download.start.status <= StartStatus.RUNNING
     }
 
     private fun addAboMenu(popupMenu: JPopupMenu) {
@@ -263,7 +263,7 @@ class DownloadsTableMouseHandler(
             setNormalQualityUrl(download.arr[DatenDownload.DOWNLOAD_URL])
             lowQualityUrl = ""
         }
-        daten.starterClass.urlMitProgrammStarten(gruppe, filmClone, "")
+        daten.downloadStartCoordinator.urlMitProgrammStarten(gruppe, filmClone, "")
     }
 
     private fun showMissingPlayerMessage() {

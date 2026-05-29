@@ -25,6 +25,7 @@ import mediathek.config.Konstanten
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
+import mediathek.daten.DownloadSource
 import mediathek.daten.FilmResolution
 import mediathek.gui.dialog.DialogAboNoSet
 import mediathek.gui.dialog.add_download.DialogAddDownload
@@ -69,7 +70,7 @@ fun startDownloads(
                 val datenDownload = DatenDownload(
                     effectiveProgramSet,
                     film,
-                    DatenDownload.QUELLE_DOWNLOAD,
+                    DownloadSource.DOWNLOAD,
                     null,
                     "",
                     result.path(),

@@ -22,7 +22,8 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.StandardLocations;
 import mediathek.controller.history.SeenHistoryController;
-import mediathek.controller.starter.Start;
+import mediathek.controller.starter.DownloadRunState;
+import mediathek.controller.starter.StartStatus;
 import mediathek.daten.abo.DatenAbo;
 import mediathek.gui.messages.RestartDownloadEvent;
 import mediathek.gui.messages.StartEvent;
@@ -50,21 +51,6 @@ import java.util.Arrays;
 
 public class DatenDownload implements Comparable<DatenDownload> {
 
-    // Quelle - start über einen Button - Download - Abo
-    public static final byte QUELLE_ALLE = -1;
-    public static final byte QUELLE_BUTTON = 1;
-    public static final byte QUELLE_DOWNLOAD = 2;
-    public static final byte QUELLE_ABO = 3;
-    public static final String QUELLE_ALLE_TXT = "Alle";
-    public static final String QUELLE_BUTTON_TXT = "Button";
-    public static final String QUELLE_DOWNLOAD_TXT = "Download";
-    public static final String QUELLE_ABO_TXT = "Abo";
-
-    // Art: direkter Download: http... oder über ein externes Programm: rtmp...
-    public static final byte ART_DOWNLOAD = 1; // direkter Download
-    public static final byte ART_PROGRAMM = 2; // Download über ein Programm
-    public static final String ART_DOWNLOAD_TXT = "direkter Download";
-    public static final String ART_PROGRAMM_TXT = "Programm";
     public static final int DOWNLOAD_NR = 0;
     public static final int DOWNLOAD_FILM_NR = 1;// nur ein Platzhalter für: "film.nr"
     public static final int DOWNLOAD_ABO = 2; // wenn das Feld gefüllt ist, ist der Download ein Abo
@@ -129,23 +115,24 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public Datum datumFilm = new Datum(0);
     public DatenFilm film;
     public MVFilmSize mVFilmSize = new MVFilmSize();
-    public Start start;
+    public DownloadRunState start;
     public DatenPset pSet;
     public DatenAbo abo;
     public int nr;
-    public byte quelle = QUELLE_ALLE;
-    public byte art = ART_DOWNLOAD;
+    public DownloadSource quelle = DownloadSource.ALL;
+    public DownloadType art = DownloadType.DIRECT;
     private String websiteUrl = "";
 
     public DatenDownload() {
         initialize();
     }
 
-    public DatenDownload(DatenPset pSet, DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
+    public DatenDownload(DatenPset pSet, DatenFilm film, @NonNull DownloadSource quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
         initialize();
         this.film = film;
         this.pSet = pSet;
         this.abo = abo;
+        this.quelle = quelle;
         arr[DOWNLOAD_FILM_NR] = Long.toString(film.getFilmNr());
         arr[DOWNLOAD_SENDER] = film.getSender();
         arr[DOWNLOAD_THEMA] = film.getThema();
@@ -157,7 +144,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_DAUER] = film.getFilmLengthAsString();
         arr[DOWNLOAD_HD] = film.isHighQuality() ? "1" : "0";
         arr[DOWNLOAD_UT] = film.hasSubtitle() ? "1" : "0";
-        arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
+        arr[DOWNLOAD_QUELLE] = Byte.toString(quelle.getLegacyId());
         arr[DOWNLOAD_HISTORY_URL] = film.getUrlNormalQuality();
         if (aufloesung.isEmpty()) {
             arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(pSet.getAufloesung());
@@ -188,7 +175,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         init();
     }
 
-    public DatenDownload(@NonNull DatenPset pSet, @NonNull DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle) {
+    public DatenDownload(@NonNull DatenPset pSet, @NonNull DatenFilm film, @NonNull DownloadSource quelle, DatenAbo abo, String name, String pfad, String aufloesung, boolean info, boolean subtitle) {
         this(pSet, film, quelle, abo, name, pfad, aufloesung);
         arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
@@ -248,10 +235,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
      * @param downloads the list of downloads
      */
     public static void startenDownloads(ArrayList<DatenDownload> downloads) {
-        // Start erstellen und zur Liste hinzufügen
+        // Download state erstellen und zur Liste hinzufügen
         try (var historyController = new SeenHistoryController()) {
             for (DatenDownload d : downloads) {
-                d.start = new Start();
+                d.start = new DownloadRunState();
                 historyController.markSeen(d.film);
             }
         }
@@ -302,8 +289,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public void startDownload() {
-        // Start erstellen und zur Liste hinzufügen
-        this.start = new Start();
+        // Download state erstellen und zur Liste hinzufügen
+        this.start = new DownloadRunState();
 
         try (var historyController = new SeenHistoryController()) {
             historyController.markSeen(film);
@@ -385,6 +372,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     var size = mVFilmSize.getSize();
                     size /= FileSize.ONE_MiB;
                     writeEntry(writer, DatenDownload.DOWNLOAD_GROESSE, Long.toString(size));
+                } else if (i == DatenDownload.DOWNLOAD_ART) {
+                    writeEntry(writer, DatenDownload.DOWNLOAD_ART, Byte.toString(art.getLegacyId()));
+                } else if (i == DatenDownload.DOWNLOAD_QUELLE) {
+                    writeEntry(writer, DatenDownload.DOWNLOAD_QUELLE, Byte.toString(quelle.getLegacyId()));
                 } else {
                     if (!arr[i].isEmpty()) {
                         writeEntry(writer, i, arr[i]);
@@ -429,12 +420,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public void init() {
         datumFilm = getDatumForObject();
         try {
-            art = Byte.parseByte(arr[DOWNLOAD_ART]);
-            quelle = Byte.parseByte(arr[DOWNLOAD_QUELLE]);
+            art = DownloadType.fromLegacyText(arr[DOWNLOAD_ART]);
+            quelle = DownloadSource.fromLegacyText(arr[DOWNLOAD_QUELLE]);
         } catch (Exception ex) {
             logger.error("Art: {}, Quelle: {}", arr[DOWNLOAD_ART], arr[DOWNLOAD_QUELLE], ex);
-            art = ART_PROGRAMM;
-            quelle = QUELLE_BUTTON;
+            art = DownloadType.PROGRAM;
+            quelle = DownloadSource.BUTTON;
         }
         if (film == null) {
             //damit die Sortierunt bei gespeicherten Downloads bei denen der
@@ -462,7 +453,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void zurueckstellen() {
         if (start != null) {
-            if (start.status > Start.STATUS_INIT) {
+            if (start.status.isAfter(StartStatus.INITIALIZED)) {
                 // zu spät
                 return;
             }
@@ -489,19 +480,19 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public boolean isWaiting() {
-        return (start != null) && (start.status == Start.STATUS_INIT);
+        return (start != null) && (start.status == StartStatus.INITIALIZED);
     }
 
     public boolean isFinished() {
-        return (start != null) && (start.status == Start.STATUS_FERTIG);
+        return (start != null) && (start.status == StartStatus.FINISHED);
     }
 
     public boolean runNotFinished() {
-        return start != null && start.status < Start.STATUS_FERTIG;
+        return start != null && start.status.isBefore(StartStatus.FINISHED);
     }
 
     public boolean running() {
-        return start != null && start.status == Start.STATUS_RUN;
+        return start != null && start.status == StartStatus.RUNNING;
     }
 
     public void resetDownload() {
@@ -610,7 +601,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public String getTextRestzeit() {
         if (start != null) {
-            if (start.status < Start.STATUS_FERTIG && start.status == Start.STATUS_RUN && start.restSekunden > 0) {
+            if (start.status == StartStatus.RUNNING && start.restSekunden > 0) {
                 return formatTimeRemaining(start.restSekunden);
             }
         }
@@ -620,7 +611,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public String getTextBandbreite() {
         // start.bandbreite -->> bytes per second
         if (start != null) {
-            if (start.status >= Start.STATUS_RUN) {
+            if (start.status.isAtLeast(StartStatus.RUNNING)) {
                 return BandwidthFormatter.format(start.bandbreite);
             }
         }
@@ -655,10 +646,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
             // Direkter Download nur wenn url passt und wenn im Programm ein Zielpfad ist sonst Abspielen
             art = (pSet.checkDownloadDirekt(arr[DOWNLOAD_URL])
-                    && pSet.progsContainPath()/*legt fest, dass NICHT Abspielen, Abspielen immer über Programm!*/) ? ART_DOWNLOAD : ART_PROGRAMM;
-            arr[DOWNLOAD_ART] = String.valueOf(art);
-            if (art == ART_DOWNLOAD) {
-                arr[DatenDownload.DOWNLOAD_PROGRAMM] = ART_DOWNLOAD_TXT;
+                    && pSet.progsContainPath()/*legt fest, dass NICHT Abspielen, Abspielen immer über Programm!*/) ? DownloadType.DIRECT : DownloadType.PROGRAM;
+            arr[DOWNLOAD_ART] = Byte.toString(art.getLegacyId());
+            if (art == DownloadType.DIRECT) {
+                arr[DatenDownload.DOWNLOAD_PROGRAMM] = DownloadType.DIRECT.getLabel();
             } else {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm != null ? programm.arr[DatenProg.PROGRAMM_NAME] : "Unknown";
             }
@@ -674,7 +665,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private void programmaufrufBauen(DatenProg programm) {
-        if (art == ART_DOWNLOAD) {
+        if (art == DownloadType.DIRECT) {
             arr[DOWNLOAD_PROGRAMM_AUFRUF] = "";
             arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY] = "";
         } else {

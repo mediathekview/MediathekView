@@ -7,6 +7,7 @@ import mediathek.config.Config
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.DownloadFinishedEvent
@@ -29,7 +30,7 @@ class ExternalProgramDownload(
     private val datenDownload: DatenDownload
 ) : Thread("EXTERNAL PROGRAM DL THREAD: ${datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]}") {
 
-    private val start: Start = datenDownload.start
+    private val start: DownloadRunState = datenDownload.start
     private var file: File
     private var retAbbrechen = false
     private var dialogAbbrechenIsVis = false
@@ -37,7 +38,7 @@ class ExternalProgramDownload(
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
 
     init {
-        start.status = Start.STATUS_RUN
+        start.markRunning()
         var fileName = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
 
         // JDK 25+ workaround
@@ -46,7 +47,7 @@ class ExternalProgramDownload(
         }
 
         file = File(fileName)
-        StarterClass.notifyStartEvent(datenDownload)
+        DownloadStartEventPublisher.publish(datenDownload)
         createDirectory()
     }
 
@@ -64,7 +65,7 @@ class ExternalProgramDownload(
                 logger.error("run()", ex)
                 showDownloadError(ex.localizedMessage)
             } finally {
-                StarterClass.finalizeDownload(datenDownload, start, state)
+                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
                 waitForPendingDownloads()
                 MessageBus.messageBus.publish(DownloadFinishedEvent())
             }
@@ -97,9 +98,9 @@ class ExternalProgramDownload(
                 }
 
                 STAT_PRUEFEN -> {
-                    if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isDownloadManager) {
+                    if (datenDownload.quelle == DownloadSource.BUTTON || datenDownload.isDownloadManager) {
                         STAT_FERTIG_OK
-                    } else if (StarterClass.pruefen(Daten.getInstance(), datenDownload, start)) {
+                    } else if (DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(Daten.getInstance(), datenDownload, start)) {
                         STAT_FERTIG_OK
                     } else {
                         STAT_FERTIG_FEHLER
@@ -107,12 +108,12 @@ class ExternalProgramDownload(
                 }
 
                 STAT_FERTIG_FEHLER -> {
-                    start.status = Start.STATUS_ERR
+                    start.markError()
                     STAT_ENDE
                 }
 
                 STAT_FERTIG_OK -> {
-                    start.status = Start.STATUS_FERTIG
+                    start.markFinished()
                     STAT_ENDE
                 }
 
@@ -126,7 +127,7 @@ class ExternalProgramDownload(
             if (start.stoppen) {
                 start.process?.destroy()
                 STAT_FERTIG_OK
-            } else if (start.process.exitValue() != 0) {
+            } else if (start.process!!.exitValue() != 0) {
                 STAT_RESTART
             } else {
                 /*
@@ -134,7 +135,7 @@ class ExternalProgramDownload(
                  * we therefore make percent max when the process terminated without error.
                  */
                 if (start.percent > 990) {
-                    start.percent = 1000
+                    start.updateProgress(DownloadRunState.PROGRESS_FERTIG)
                 }
                 STAT_PRUEFEN
             }
@@ -154,7 +155,7 @@ class ExternalProgramDownload(
         }
 
         if (filesize == -1L) {
-            StarterClass.deleteIfEmpty(file.toPath())
+            DownloadFileCleanup.deleteIfEmpty(file.toPath())
             return when {
                 file.exists() -> STAT_START
                 start.startcounter < Konstanten.MAX_EXTERNAL_STARTS -> STAT_START
@@ -174,9 +175,9 @@ class ExternalProgramDownload(
     }
 
     private fun starten(): Boolean {
-        // die Reihenfolge: startcounter - startmeldung ist wichtig!
-        start.startcounter++
-        StarterClass.startmeldung(datenDownload, start)
+        // die Reihenfolge: startcounter - logStart ist wichtig!
+        start.incrementStartCounter()
+        DownloadLogMessages.logStart(datenDownload, start)
         val runtimeExec = RuntimeExec(
             datenDownload.mVFilmSize,
             datenDownload.start,

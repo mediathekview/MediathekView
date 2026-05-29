@@ -374,7 +374,7 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
                 return
             }
 
-            Daten.getInstance().starterClass.urlMitProgrammStarten(pSet, film, "")
+            Daten.getInstance().downloadStartCoordinator.urlMitProgrammStarten(pSet, film, "")
         }
     }
 

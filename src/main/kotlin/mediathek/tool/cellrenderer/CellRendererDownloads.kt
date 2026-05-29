@@ -2,7 +2,9 @@ package mediathek.tool.cellrenderer
 
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import mediathek.config.MVColor
-import mediathek.controller.starter.Start
+import mediathek.controller.starter.DownloadProgressText
+import mediathek.controller.starter.DownloadRunState
+import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.swing.IconUtils
 import mediathek.tool.SVGIconUtilities
@@ -57,20 +59,19 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
             DatenDownload.DOWNLOAD_DAUER,
             DatenDownload.DOWNLOAD_BANDBREITE,
             DatenDownload.DOWNLOAD_RESTZEIT,
-                -> horizontalAlignment = SwingConstants.CENTER
+                -> horizontalAlignment = CENTER
 
-            DatenDownload.DOWNLOAD_GROESSE -> horizontalAlignment = SwingConstants.RIGHT
+            DatenDownload.DOWNLOAD_GROESSE -> horizontalAlignment = RIGHT
         }
     }
 
-    private fun setBackgroundColor(c: Component, s: Start?, isSelected: Boolean) {
+    private fun setBackgroundColor(c: Component, s: DownloadRunState?, isSelected: Boolean) {
         if (s != null) {
             val color = when (s.status) {
-                Start.STATUS_INIT -> if (isSelected) MVColor.DOWNLOAD_WAIT_SEL.color else MVColor.DOWNLOAD_WAIT.color
-                Start.STATUS_RUN -> if (isSelected) MVColor.DOWNLOAD_RUN_SEL.color else MVColor.DOWNLOAD_RUN.color
-                Start.STATUS_FERTIG -> if (isSelected) MVColor.DOWNLOAD_FERTIG_SEL.color else MVColor.DOWNLOAD_FERTIG.color
-                Start.STATUS_ERR -> if (isSelected) MVColor.DOWNLOAD_FEHLER_SEL.color else MVColor.DOWNLOAD_FEHLER.color
-                else -> null
+                StartStatus.INITIALIZED -> if (isSelected) MVColor.DOWNLOAD_WAIT_SEL.color else MVColor.DOWNLOAD_WAIT.color
+                StartStatus.RUNNING -> if (isSelected) MVColor.DOWNLOAD_RUN_SEL.color else MVColor.DOWNLOAD_RUN.color
+                StartStatus.FINISHED -> if (isSelected) MVColor.DOWNLOAD_FERTIG_SEL.color else MVColor.DOWNLOAD_FERTIG.color
+                StartStatus.ERROR -> if (isSelected) MVColor.DOWNLOAD_FEHLER_SEL.color else MVColor.DOWNLOAD_FEHLER.color
             }
             c.background = color
         }
@@ -94,8 +95,8 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
             val mvTable = table as MVTable
 
             if (mvTable.isLineBreak()) {
-                horizontalAlignment = SwingConstants.LEFT
-                verticalAlignment = SwingConstants.TOP
+                horizontalAlignment = LEFT
+                verticalAlignment = TOP
 
                 when (columnModelIndex) {
                     DatenDownload.DOWNLOAD_TITEL,
@@ -159,7 +160,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
             return null
         }
 
-        if (1 < start.percent && start.percent < Start.PROGRESS_FERTIG) {
+        if (1 < start.percent && start.percent < DownloadRunState.PROGRESS_FERTIG) {
             setBackgroundColor(panel, start, isSelected)
             setBackgroundColor(progressBar, start, isSelected)
 
@@ -170,7 +171,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
             return panel
         }
 
-        text = Start.getTextProgress(datenDownload.isDownloadManager, start)
+        text = DownloadProgressText.getTextProgress(datenDownload.isDownloadManager, start)
         return null
     }
 
@@ -181,21 +182,11 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun renderDownloadType(datenDownload: DatenDownload) {
-        text = when (datenDownload.art.toInt()) {
-            DatenDownload.ART_DOWNLOAD.toInt() -> DatenDownload.ART_DOWNLOAD_TXT
-            DatenDownload.ART_PROGRAMM.toInt() -> DatenDownload.ART_PROGRAMM_TXT
-            else -> text
-        }
+        text = datenDownload.art.label
     }
 
     private fun renderDownloadSource(datenDownload: DatenDownload) {
-        text = when (datenDownload.quelle.toInt()) {
-            DatenDownload.QUELLE_ALLE.toInt() -> DatenDownload.QUELLE_ALLE_TXT
-            DatenDownload.QUELLE_ABO.toInt() -> DatenDownload.QUELLE_ABO_TXT
-            DatenDownload.QUELLE_BUTTON.toInt() -> DatenDownload.QUELLE_BUTTON_TXT
-            DatenDownload.QUELLE_DOWNLOAD.toInt() -> DatenDownload.QUELLE_DOWNLOAD_TXT
-            else -> text
-        }
+        text = datenDownload.quelle.label
     }
 
     private fun createTextArea(
@@ -216,12 +207,12 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
         val start = datenDownload.start
         if (start != null && !datenDownload.isDownloadManager) {
             when (start.status) {
-                Start.STATUS_FERTIG -> {
+                StartStatus.FINISHED -> {
                     icon = filmStartIcons.icon(isSelected)
                     toolTipText = PLAY_DOWNLOADED_FILM
                 }
 
-                Start.STATUS_ERR -> {
+                StartStatus.ERROR -> {
                     icon = downloadStartIcons.icon(isSelected)
                     toolTipText = DOWNLOAD_STARTEN
                 }
@@ -238,7 +229,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun handleButtonStartColumn(datenDownload: DatenDownload, isSelected: Boolean) {
-        horizontalAlignment = SwingConstants.CENTER
+        horizontalAlignment = CENTER
         setIconsAndToolTips(datenDownload, isSelected)
     }
 
@@ -252,7 +243,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun handleAboColumn(datenDownload: DatenDownload) {
-        horizontalAlignment = SwingConstants.CENTER
+        horizontalAlignment = CENTER
         if (datenDownload.arr[DatenDownload.DOWNLOAD_ABO].isNotEmpty()) {
             foreground = MVColor.DOWNLOAD_IST_ABO.color
         } else {
@@ -262,10 +253,10 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun handleButtonDeleteColumn(datenDownload: DatenDownload, isSelected: Boolean) {
-        horizontalAlignment = SwingConstants.CENTER
+        horizontalAlignment = CENTER
         val start = datenDownload.start
         if (start != null) {
-            if (start.status >= Start.STATUS_FERTIG) {
+            if (start.status >= StartStatus.FINISHED) {
                 setIcon(downloadClearIcons, DOWNLOAD_ENTFERNEN, isSelected)
             } else {
                 setupDownloadLoeschen(isSelected)

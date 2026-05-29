@@ -7,7 +7,7 @@ import mediathek.SplashScreenLifecycle;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.history.AboHistoryController;
-import mediathek.controller.starter.StarterClass;
+import mediathek.controller.starter.DownloadStartCoordinator;
 import mediathek.daten.*;
 import mediathek.daten.blacklist.ListeBlacklist;
 import mediathek.filmlisten.FilmeLaden;
@@ -45,7 +45,7 @@ public class Daten {
     private final BookmarkDataList listeBookmarkList;
     private final ListeAbo listeAbo;
     private final DownloadInfos downloadInfos = new DownloadInfos();
-    private final StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    private final DownloadStartCoordinator downloadStartCoordinator; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private final ExecutorService decoratedPool = Executors.newVirtualThreadPerTaskExecutor();
     /**
      * "the" final list of films after all filtering is done.
@@ -72,7 +72,7 @@ public class Daten {
         listeDownloads = new ListeDownloads();
         listeDownloadsButton = new ListeDownloads();
 
-        starterClass = new StarterClass(this);
+        downloadStartCoordinator = new DownloadStartCoordinator(this);
 
         setupAllSendersList();
     }
@@ -122,8 +122,8 @@ public class Daten {
         return listePset;
     }
 
-    public StarterClass getStarterClass() {
-        return starterClass;
+    public DownloadStartCoordinator getDownloadStartCoordinator() {
+        return downloadStartCoordinator;
     }
 
     public void setAboHistoryList(AboHistoryController controller) {
