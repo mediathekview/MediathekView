@@ -26,16 +26,11 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
-import mediathek.daten.DatenProg;
-import mediathek.daten.DatenPset;
-import mediathek.daten.FilmResolution;
-import mediathek.daten.ListeProg;
-import mediathek.daten.ListePset;
-import mediathek.gui.PanelVorlage;
+import mediathek.daten.*;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
-import mediathek.tool.cellrenderer.CellRendererPset;
+import mediathek.tool.cellrenderer.PsetNameCellRenderer;
 import mediathek.tool.models.NonEditableTableModel;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
@@ -65,19 +60,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class PanelPsetLang extends PanelVorlage {
+public class PanelPsetLang extends JPanel {
     private static final ProgramTableFormat PROGRAM_TABLE_FORMAT = new ProgramTableFormat();
 
     private int neuZaehler;
     private final ListePset listePset;
     private final MVTable tabellePset;
     private final JTable tabelleProgramme;
+    private final PsetNameCellRenderer psetNameRenderer = new PsetNameCellRenderer();
+    private final JFrame parentComponent;
     private final ListeProg emptyProgramList = new ListeProg();
     private TriStateTableRowSorter<TableModel> programTableSorter;
     private ListeProg currentProgramList;
+    private boolean stopBeob;
 
     public PanelPsetLang(Daten d, JFrame parentComponent, ListePset llistePset) {
-        super(d, parentComponent);
+        this.parentComponent = parentComponent;
         initComponents();
         tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
@@ -283,7 +281,6 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
         });
-        tabellePset.setDefaultRenderer(Object.class, new CellRendererPset());
         tabellePset.getSelectionModel().addListSelectionListener(event -> {
             if (!stopBeob) {
                 if (!event.getValueIsAdjusting()) {
@@ -554,6 +551,7 @@ public class PanelPsetLang extends PanelVorlage {
         for (int i = 0; i < tabellePset.getColumnCount(); ++i) {
             var column = columnModel.getColumn(tabellePset.convertColumnIndexToView(i));
             if (i == DatenPset.PROGRAMMSET_NAME) {
+                column.setCellRenderer(psetNameRenderer);
                 column.setMinWidth(10);
                 column.setPreferredWidth(120);
                 column.setMaxWidth(1000);

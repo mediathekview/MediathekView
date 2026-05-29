@@ -28,8 +28,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class DialogEditDownloadView extends JDialog {
-    protected DialogEditDownloadView(Frame owner) {
+public class DialogEditDownloadBase extends JDialog {
+    protected DialogEditDownloadBase(Frame owner) {
         super(owner);
         initComponents();
     }

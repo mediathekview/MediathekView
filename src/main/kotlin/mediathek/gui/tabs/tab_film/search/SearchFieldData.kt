@@ -3,7 +3,6 @@ package mediathek.gui.tabs.tab_film.search
 import mediathek.tool.Filter
 import java.util.regex.Pattern
 
-@JvmRecord
 data class SearchFieldData(val searchFieldText: String, val searchMode: SearchControlFieldMode) {
     fun searchThroughDescriptions(): Boolean {
         return searchMode == SearchControlFieldMode.IRGENDWO

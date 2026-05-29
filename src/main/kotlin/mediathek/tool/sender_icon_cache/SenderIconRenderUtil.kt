@@ -28,7 +28,6 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 object SenderIconRenderUtil {
-    @JvmStatic
     fun calculateFittedDimensionAllowUpscale(
         imageSize: Dimension,
         boundary: Dimension,
@@ -44,7 +43,6 @@ object SenderIconRenderUtil {
         return Dimension(width, height)
     }
 
-    @JvmStatic
     fun deriveSvgFittedToOpaqueBounds(
         svg: FlatSVGIcon,
         targetBounds: Dimension,

@@ -12,7 +12,6 @@ import javax.swing.JOptionPane
 object DirOpenAction {
     private val logger = LogManager.getLogger()
 
-    @JvmStatic
     fun zielordnerOeffnen(parent: Frame, ordner: String) {
         if (ordner.isEmpty()) {
             return

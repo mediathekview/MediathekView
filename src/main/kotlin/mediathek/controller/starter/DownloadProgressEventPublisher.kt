@@ -16,34 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter;
+package mediathek.controller.starter
 
-import mediathek.gui.messages.DownloadProgressChangedEvent;
-import mediathek.tool.MessageBus;
-
-import java.util.concurrent.atomic.AtomicLong;
+import mediathek.gui.messages.DownloadProgressChangedEvent
+import mediathek.tool.MessageBus
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * Coalesce high-frequency progress updates to avoid async message bus backlog.
  */
-final class DownloadProgressEventPublisher {
-    private static final long MIN_INTERVAL_MS = 250;
-    private static final AtomicLong LAST_PUBLISH_MS = new AtomicLong(0L);
+internal object DownloadProgressEventPublisher {
+    private const val MIN_INTERVAL_MS = 250L
+    private val lastPublishMs = AtomicLong(0L)
 
-    private DownloadProgressEventPublisher() {
-    }
-
-    static void publishThrottled() {
-        final long now = System.currentTimeMillis();
+    @JvmStatic
+    fun publishThrottled() {
+        val now = System.currentTimeMillis()
 
         while (true) {
-            final long last = LAST_PUBLISH_MS.get();
+            val last = lastPublishMs.get()
             if (now - last < MIN_INTERVAL_MS) {
-                return;
+                return
             }
-            if (LAST_PUBLISH_MS.compareAndSet(last, now)) {
-                MessageBus.getMessageBus().publishAsync(new DownloadProgressChangedEvent());
-                return;
+            if (lastPublishMs.compareAndSet(last, now)) {
+                MessageBus.messageBus.publishAsync(DownloadProgressChangedEvent())
+                return
             }
         }
     }

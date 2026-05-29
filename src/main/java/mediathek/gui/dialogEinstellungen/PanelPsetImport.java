@@ -4,7 +4,6 @@ import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
-import mediathek.gui.PanelVorlage;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.swing.IconUtils;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -27,12 +26,15 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Arrays;
 
-public class PanelPsetImport extends PanelVorlage {
+public class PanelPsetImport extends JPanel {
     private final ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
     private static final Logger logger = LogManager.getLogger();
+    private final Daten daten;
+    private final JFrame parentComponent;
 
     public PanelPsetImport(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+        daten = d;
+        this.parentComponent = parentComponent;
         initComponents();
         init();
     }

@@ -31,7 +31,6 @@ import javax.swing.JOptionPane
 object OpenPlayerAction {
     private val logger = LogManager.getLogger(OpenPlayerAction::class.java)
 
-    @JvmStatic
     fun filmAbspielen(parent: Frame, datei: String) {
         var success = false
         if (datei.isEmpty()) {

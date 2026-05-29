@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter;
+package mediathek.controller.starter
 
-public enum HttpDownloadState {
-
-    CANCEL, ERROR, DOWNLOAD
+enum class HttpDownloadState {
+    CANCEL,
+    ERROR,
+    DOWNLOAD,
 }

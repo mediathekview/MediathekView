@@ -24,13 +24,13 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.tool.MessageBus;
-import mediathek.tool.models.NonEditableTableModel;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -271,22 +271,39 @@ public class ListePset extends ArrayList<DatenPset> {
     }
 
     public TableModel createModel() {
-        TableModel model;
-        Object[][] object;
-        DatenPset datenPset;
+        Object[][] object = new Object[this.size()][DatenPset.MAX_ELEM];
         int i = 0;
-        if (this.size() > 0) {
-            Iterator<DatenPset> iterator = this.iterator();
-            object = new Object[this.size()][DatenPset.MAX_ELEM];
-            while (iterator.hasNext()) {
-                datenPset = iterator.next();
-                object[i] = datenPset.toArray();
-                ++i;
-            }
-            model = new NonEditableTableModel(object, DatenPset.COLUMN_NAMES);
-        } else {
-            model = new NonEditableTableModel(new Object[0][DatenPset.MAX_ELEM], DatenPset.COLUMN_NAMES);
+        for (DatenPset datenPset : this) {
+            object[i] = createModelRow(datenPset);
+            ++i;
         }
-        return model;
+        return new PsetTableModel(object);
+    }
+
+    private static Object[] createModelRow(DatenPset datenPset) {
+        Object[] row = Arrays.copyOf(datenPset.toArray(), DatenPset.MAX_ELEM, Object[].class);
+        row[DatenPset.PROGRAMMSET_IST_ABSPIELEN] = datenPset.istAbspielen();
+        row[DatenPset.PROGRAMMSET_IST_SPEICHERN] = datenPset.istSpeichern();
+        return row;
+    }
+
+    private static final class PsetTableModel extends DefaultTableModel {
+        private PsetTableModel(Object[][] data) {
+            super(data, DatenPset.COLUMN_NAMES);
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return switch (columnIndex) {
+                case DatenPset.PROGRAMMSET_IST_ABSPIELEN,
+                     DatenPset.PROGRAMMSET_IST_SPEICHERN -> Boolean.class;
+                default -> String.class;
+            };
+        }
     }
 }

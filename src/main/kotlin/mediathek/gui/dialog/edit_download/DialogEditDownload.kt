@@ -34,6 +34,9 @@ import mediathek.gui.dialog.download.DownloadQualitySupport
 import mediathek.swing.IconUtils
 import mediathek.swing.MultilineLabel
 import mediathek.tool.*
+import net.miginfocom.layout.AC
+import net.miginfocom.layout.CC
+import net.miginfocom.layout.LC
 import net.miginfocom.swing.MigLayout
 import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
@@ -55,7 +58,7 @@ class DialogEditDownload(
     parent: JFrame,
     private val datenDownload: DatenDownload,
     private val gestartet: Boolean
-) : DialogEditDownloadView(parent) {
+) : DialogEditDownloadBase(parent) {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val logger = LogManager.getLogger(javaClass)
     private val jCheckBoxRestart = JCheckBox()
@@ -706,7 +709,11 @@ class DialogEditDownload(
 
     private fun createProgramCallPanel() = JPanel().apply {
         border = BorderFactory.createTitledBorder("")
-        layout = MigLayout("insets 2, fillx", "[][grow,fill]", "")
+        layout = MigLayout(
+            LC().insets("2").fillX(),
+            AC().count(2).index(1).grow().fill(),
+            AC()
+        )
         val programmField = requireNotNull(programmAufrufField)
         val programmArrayField = requireNotNull(programmAufrufArrayField)
 
@@ -728,9 +735,9 @@ class DialogEditDownload(
         }
 
         add(helpButton)
-        add(programmField, "growx, pushx, wmin 0, wrap")
+        add(programmField, CC().growX().pushX().minWidth("0").wrap())
         add(resetButton)
-        add(programmArrayField, "growx, pushx, wmin 0, wrap")
+        add(programmArrayField, CC().growX().pushX().minWidth("0").wrap())
     }
 
     private fun addDefaultField(index: Int, label: JLabel, textField: JTextField) {
@@ -782,7 +789,11 @@ class DialogEditDownload(
     }
 
     private fun createDownloadUrlPanel(textField: JTextField) = JPanel().apply {
-        layout = MigLayout("insets 0, fillx", "[grow,fill][]", "")
+        layout = MigLayout(
+            LC().insets("0").fillX(),
+            AC().count(2).grow().fill(),
+            AC()
+        )
         makeShrinkable(textField)
 
         val queryCodecDetailsButton = JButton("").apply {
@@ -794,14 +805,14 @@ class DialogEditDownload(
         }
         btnQuerCodecDetailsForLocalUrl = queryCodecDetailsButton
 
-        add(textField, "growx, pushx, wmin 0")
-        add(queryCodecDetailsButton, "gapleft 5")
+        add(textField, CC().growX().pushX().minWidth("0"))
+        add(queryCodecDetailsButton, CC().gapLeft("5"))
     }
 
     private fun createValueLabel(text: String) = JLabel(text).apply(::makeShrinkable)
 
     private fun createMultilineLabel(text: String) = MultilineLabel().apply {
-        setText(text)
+        this.text = text
         makeShrinkable(this)
     }
 
@@ -862,7 +873,7 @@ class DialogEditDownload(
     private fun addValueComponent(label: JLabel, component: Component) {
         (component as? JComponent)?.let(::makeShrinkable)
         jPanelExtra.add(label)
-        jPanelExtra.add(component, "growx, pushx, wmin 0, wrap")
+        jPanelExtra.add(component, CC().growX().pushX().minWidth("0").wrap())
     }
 
     private fun makeShrinkable(component: JComponent) {

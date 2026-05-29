@@ -44,7 +44,6 @@ object LuceneDefaultAnalyzer {
             StandardAnalyzer()
         }
 
-    @JvmStatic
     fun buildPerFieldAnalyzer(): Analyzer =
         PerFieldAnalyzerWrapper(
             buildAnalyzer(),

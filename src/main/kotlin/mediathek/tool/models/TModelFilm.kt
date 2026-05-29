@@ -23,7 +23,7 @@ import mediathek.tool.FilmSize
 import mediathek.tool.datum.DatumFilm
 import javax.swing.table.AbstractTableModel
 
-class TModelFilm @JvmOverloads constructor(capacity: Int = 0) : AbstractTableModel() {
+class TModelFilm(capacity: Int = 0) : AbstractTableModel() {
     private val dataList = ArrayList<DatenFilm>(capacity)
 
     override fun getRowCount(): Int = dataList.size

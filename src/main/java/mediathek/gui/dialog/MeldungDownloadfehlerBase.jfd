@@ -23,6 +23,9 @@ new FormModel {
 					"lineWrap": true
 					"rows": 4
 					"wrapStyleWord": true
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 1,grow,push"
@@ -49,18 +52,27 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JTextField" ) {
 				name: "jTextFieldTitel"
 				"editable": false
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "growx,pushx"
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabelTime"
 				"text": "0 s"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 2"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonOk"
 				"text": "Ok"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 2,alignx center,growx 0"
 			} )

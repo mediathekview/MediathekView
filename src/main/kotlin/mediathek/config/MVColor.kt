@@ -205,7 +205,6 @@ object MVColor {
         }
     }
 
-    @JvmStatic
     fun get(index: Int): MVC = colors[index]
 
     @JvmStatic

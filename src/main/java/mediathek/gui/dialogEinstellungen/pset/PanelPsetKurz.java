@@ -22,7 +22,6 @@ import mediathek.config.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
-import mediathek.gui.PanelVorlage;
 import mediathek.gui.messages.ProgramSetChangedEvent;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MessageBus;
@@ -41,13 +40,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class PanelPsetKurz extends PanelVorlage {
+public class PanelPsetKurz extends JPanel {
     private DatenPset pSet;
     private final ListePset listePset;
     private static final Logger logger = LogManager.getLogger();
+    private boolean stopBeob;
 
     public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
-        super(d, parentComponent);
         initComponents();
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
