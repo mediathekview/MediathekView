@@ -21,7 +21,7 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.MVConfig
-import mediathek.controller.history.MVUsedUrl
+import mediathek.controller.history.AboHistoryEntry
 import mediathek.controller.starter.DirectDownloadPartFiles
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
@@ -54,10 +54,6 @@ import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
 import java.io.File
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.Optional
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
@@ -535,18 +531,15 @@ class GuiDownloads(
                 return
             }
 
-            val date = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-                .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
             val downloadsToDelete = ArrayList<DatenDownload>()
-            val aboUrls = mutableListOf<MVUsedUrl>()
+            val aboUrls = mutableListOf<AboHistoryEntry>()
 
             for (datenDownload in downloads) {
                 if (permanentDeletion) {
                     downloadsToDelete.add(datenDownload)
                     if (datenDownload.isFromAbo) {
                         aboUrls.add(
-                            MVUsedUrl(
-                                date,
+                            AboHistoryEntry.today(
                                 datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
                                 datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                                 datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL],

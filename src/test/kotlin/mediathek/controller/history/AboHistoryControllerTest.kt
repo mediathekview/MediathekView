@@ -40,6 +40,7 @@ internal class AboHistoryControllerTest {
                 02.11.2020 |#| Thema B |#| Titel B  |###|  https://example.org/b.mp4
                 02.11.2020 |#| Thema B |#| Titel B  |###|  https://example.org/b.mp4
                 invalid line
+                not-a-date |#| Thema C |#| Titel C  |###|  https://example.org/c.mp4
                 02.11.2020 |#| Thema C |#| Titel C  |###|  rtmp://example.org/c
             """.trimIndent(),
             StandardCharsets.UTF_8,
@@ -58,11 +59,35 @@ internal class AboHistoryControllerTest {
     }
 
     @Test
+    fun ignoresDatabaseRowsWithInvalidDates() {
+        AboHistoryController(legacyFile, databaseFile)
+
+        DriverManager.getConnection("jdbc:sqlite:${databaseFile.toAbsolutePath()}").use { connection ->
+            connection.createStatement().use { statement ->
+                statement.executeUpdate(
+                    """
+                        INSERT INTO abo_history(datum, thema, titel, url) VALUES
+                        ('02.11.2020', 'Thema A', 'Titel A', 'https://example.org/a.mp4'),
+                        ('not-a-date', 'Thema B', 'Titel B', 'https://example.org/b.mp4')
+                    """.trimIndent()
+                )
+            }
+        }
+
+        val controller = AboHistoryController(legacyFile, databaseFile)
+        val entries = controller.getDataList()
+
+        assertEquals(1, entries.size)
+        assertEquals("https://example.org/a.mp4", entries.single().url)
+        assertFalse(controller.urlExists("https://example.org/b.mp4"))
+    }
+
+    @Test
     fun persistsEntriesInSqliteAcrossControllerInstances() {
         val controller = AboHistoryController(legacyFile, databaseFile)
-        controller.add(MVUsedUrl("02.11.2020", "Thema A", "Titel A", "https://example.org/a.mp4"))
-        controller.add(MVUsedUrl("02.11.2020", "Thema A", "Titel A", "https://example.org/a.mp4"))
-        controller.add(MVUsedUrl("02.11.2020", "Thema B", "Titel B", "https://example.org/b.mp4"))
+        controller.add(historyEntry("Thema A", "Titel A", "https://example.org/a.mp4"))
+        controller.add(historyEntry("Thema A", "Titel A", "https://example.org/a.mp4"))
+        controller.add(historyEntry("Thema B", "Titel B", "https://example.org/b.mp4"))
 
         assertEquals(2, controller.getDataList().size)
         assertTrue(controller.urlExists("https://example.org/a.mp4"))
@@ -81,9 +106,9 @@ internal class AboHistoryControllerTest {
     @Test
     fun removesMultipleEntriesAtOnce() {
         val controller = AboHistoryController(legacyFile, databaseFile)
-        controller.add(MVUsedUrl("02.11.2020", "Thema A", "Titel A", "https://example.org/a.mp4"))
-        controller.add(MVUsedUrl("02.11.2020", "Thema B", "Titel B", "https://example.org/b.mp4"))
-        controller.add(MVUsedUrl("02.11.2020", "Thema C", "Titel C", "https://example.org/c.mp4"))
+        controller.add(historyEntry("Thema A", "Titel A", "https://example.org/a.mp4"))
+        controller.add(historyEntry("Thema B", "Titel B", "https://example.org/b.mp4"))
+        controller.add(historyEntry("Thema C", "Titel C", "https://example.org/c.mp4"))
 
         val removedCount = controller.removeUrls(
             listOf(
@@ -113,4 +138,7 @@ internal class AboHistoryControllerTest {
             }
         }
     }
+
+    private fun historyEntry(theme: String, title: String, url: String): AboHistoryEntry =
+        requireNotNull(AboHistoryEntry.parse("02.11.2020", theme, title, url))
 }

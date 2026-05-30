@@ -22,7 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
-import mediathek.controller.history.MVUsedUrl
+import mediathek.controller.history.AboHistoryEntry
 import mediathek.gui.messages.history.AboHistoryChangedEvent
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GuiFunktionen
@@ -205,7 +205,7 @@ class AboHistoryDialog(owner: Frame?) : JDialog(owner, "Abo-Historie", true) {
         updateUiState()
     }
 
-    private fun selectedEntries(): List<MVUsedUrl> =
+    private fun selectedEntries(): List<AboHistoryEntry> =
         table.selectedRows
             .asSequence()
             .map(table::convertRowIndexToModel)
@@ -237,7 +237,7 @@ class AboHistoryDialog(owner: Frame?) : JDialog(owner, "Abo-Historie", true) {
             return
         }
 
-        val urls = selectedEntries.map(MVUsedUrl::getUrl)
+        val urls = selectedEntries.map(AboHistoryEntry::url)
         setLoading(true)
         uiScope.launch {
             val removedCount = withContext(Dispatchers.IO) { controller.removeUrls(urls) }
@@ -255,7 +255,7 @@ class AboHistoryDialog(owner: Frame?) : JDialog(owner, "Abo-Historie", true) {
 
     private fun copySelectedUrls() {
         val selectedUrls = selectedEntries()
-            .map(MVUsedUrl::getUrl)
+            .map(AboHistoryEntry::url)
             .distinct()
         if (selectedUrls.isEmpty()) {
             return
@@ -311,15 +311,15 @@ class AboHistoryDialog(owner: Frame?) : JDialog(owner, "Abo-Historie", true) {
     }
 
     private class AboHistoryTableModel : AbstractTableModel() {
-        private val entries = mutableListOf<MVUsedUrl>()
+        private val entries = mutableListOf<AboHistoryEntry>()
 
-        fun setEntries(newEntries: List<MVUsedUrl>) {
+        fun setEntries(newEntries: List<AboHistoryEntry>) {
             entries.clear()
             entries.addAll(newEntries)
             fireTableDataChanged()
         }
 
-        fun getEntryAt(modelRow: Int): MVUsedUrl = entries[modelRow]
+        fun getEntryAt(modelRow: Int): AboHistoryEntry = entries[modelRow]
 
         fun removeUrls(urlsToRemove: Set<String>) {
             if (urlsToRemove.isEmpty()) {
@@ -338,9 +338,9 @@ class AboHistoryDialog(owner: Frame?) : JDialog(owner, "Abo-Historie", true) {
         override fun getValueAt(rowIndex: Int, columnIndex: Int): String {
             val entry = entries[rowIndex]
             return when (columnIndex) {
-                COLUMN_DATE -> entry.datum
-                COLUMN_THEME -> entry.thema
-                COLUMN_TITLE -> entry.titel
+                COLUMN_DATE -> entry.formattedDate
+                COLUMN_THEME -> entry.theme
+                COLUMN_TITLE -> entry.title
                 COLUMN_URL -> entry.url
                 else -> throw IllegalArgumentException("Unknown column $columnIndex")
             }

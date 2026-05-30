@@ -365,7 +365,7 @@ object Main {
         //regular users may have DEBUG output in log file but not TRACE
         if (!Config.isEnhancedLoggingEnabled() && !Config.isDebugModeEnabled()) {
             val thresholdFilter = ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY)
-            fileAppenderBuilder.setFilter(thresholdFilter)
+            fileAppenderBuilder.filter = thresholdFilter
         }
 
         var asyncAppender: AsyncAppender? = null
@@ -724,12 +724,9 @@ object Main {
      */
     private suspend fun migrateSeenHistory() {
         try {
-            withContext(Dispatchers.IO) {
-                SeenHistoryMigrator().use { migrator ->
-                    if (migrator.needsMigration()) {
-                        migrator.migrate()
-                    }
-                }
+            val migrator = SeenHistoryMigrator()
+            if (migrator.needsMigration()) {
+                migrator.migrate()
             }
         } catch (e: Exception) {
             logger.error("migrateSeenHistory", e)

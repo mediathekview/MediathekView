@@ -236,9 +236,9 @@ class DirectHttpDownload(
                                     melden = true
                                 }
                             }
-                            val aktBandwidth = bandwidthInput.bandwidth // bytes per second
-                            if (aktBandwidth != start.bandbreite) {
-                                start.updateBandwidth(aktBandwidth)
+                            val currentBandwidth = bandwidthInput.currentBandwidth // bytes per second
+                            if (currentBandwidth != start.bandbreite) {
+                                start.updateBandwidth(currentBandwidth)
                                 melden = true
                             }
                             if (melden) {
@@ -252,7 +252,7 @@ class DirectHttpDownload(
             }
         }
 
-        start.updateBandwidth(start.mVBandwidthCountingInputStream!!.sumBandwidth)
+        start.updateBandwidth(start.mVBandwidthCountingInputStream!!.averageBandwidth)
         finishSuccessfulDownload()
     }
 

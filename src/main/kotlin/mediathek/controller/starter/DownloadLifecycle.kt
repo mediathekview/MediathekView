@@ -2,7 +2,7 @@ package mediathek.controller.starter
 
 import mediathek.config.Daten
 import mediathek.config.Konstanten
-import mediathek.controller.history.MVUsedUrl
+import mediathek.controller.history.AboHistoryEntry
 import mediathek.daten.*
 import mediathek.gui.messages.ButtonStartEvent
 import mediathek.gui.messages.StartEvent
@@ -35,12 +35,12 @@ internal object DownloadCompletionValidator {
         }
 
         if (datenDownload.isFromAbo) {
-            val usedUrl = MVUsedUrl(
+            val entry = AboHistoryEntry.today(
                 datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
                 datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                 datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL],
             )
-            daten.aboHistoryController.add(usedUrl)
+            daten.aboHistoryController.add(entry)
         }
 
         return true
@@ -259,8 +259,8 @@ internal object DownloadLogMessages {
 
         if (datenDownload.art == DownloadType.DIRECT) {
             start.mVBandwidthCountingInputStream?.let { bandwidthInput ->
-                text.add("Bytes gelesen: ${FileUtils.humanReadableByteCountBinary(bandwidthInput.sumByte)}")
-                text.add("Bandbreite: ${BandwidthFormatter.format(bandwidthInput.sumBandwidth)}")
+                text.add("Bytes gelesen: ${FileUtils.humanReadableByteCountBinary(bandwidthInput.totalBytesRead)}")
+                text.add("Bandbreite: ${BandwidthFormatter.format(bandwidthInput.averageBandwidth)}")
             }
         }
         text.addUrl(datenDownload)

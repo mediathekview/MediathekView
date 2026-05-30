@@ -40,7 +40,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.concurrent.ConcurrentHashMap
 
-class AboHistoryController @JvmOverloads constructor(
+class AboHistoryController(
     private val legacyFilePath: Path = StandardLocations.getSettingsDirectory().resolve(LEGACY_FILENAME),
     private val databasePath: Path = StandardLocations.getSettingsDirectory().resolve(DATABASE_FILENAME),
     private val databaseDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
@@ -56,7 +56,7 @@ class AboHistoryController @JvmOverloads constructor(
         }
     }
 
-    fun getDataList(): List<MVUsedUrl> = runOnDatabase { loadEntries() }
+    fun getDataList(): List<AboHistoryEntry> = runOnDatabase { loadEntries() }
 
     fun urlExists(urlFilm: String): Boolean = isSupportedUrl(urlFilm) && urlCache.contains(urlFilm)
 
@@ -87,10 +87,10 @@ class AboHistoryController @JvmOverloads constructor(
         return removedCount
     }
 
-    fun add(usedUrl: MVUsedUrl) = add(listOf(usedUrl))
+    fun add(entry: AboHistoryEntry) = add(listOf(entry))
 
-    fun add(mvuuList: List<MVUsedUrl>) {
-        val candidates = mvuuList.filter(::isPersistable)
+    fun add(entries: List<AboHistoryEntry>) {
+        val candidates = entries.filter(::isPersistable)
         if (candidates.isEmpty()) {
             return
         }
@@ -116,7 +116,7 @@ class AboHistoryController @JvmOverloads constructor(
         archiveLegacyFile()
     }
 
-    private fun readLegacyEntries(): List<MVUsedUrl>? {
+    private fun readLegacyEntries(): List<AboHistoryEntry>? {
         return try {
             Files.newBufferedReader(legacyFilePath, StandardCharsets.UTF_8).use { reader ->
                 generateSequence { reader.readLine() }
@@ -167,7 +167,7 @@ class AboHistoryController @JvmOverloads constructor(
         }
     }
 
-    private fun isPersistable(entry: MVUsedUrl): Boolean = isSupportedUrl(entry.url)
+    private fun isPersistable(entry: AboHistoryEntry): Boolean = isSupportedUrl(entry.url)
 
     private fun isSupportedUrl(url: String): Boolean {
         if (url.isBlank()) {
@@ -193,14 +193,14 @@ class AboHistoryController @JvmOverloads constructor(
         }
     }
 
-    private fun loadEntries(): List<MVUsedUrl> {
+    private fun loadEntries(): List<AboHistoryEntry> {
         return try {
             openConnection().use { connection ->
                 connection.prepareStatement(SELECT_ALL_SQL).use { statement ->
                     statement.executeQuery().use { resultSet ->
                         buildList {
                             while (resultSet.next()) {
-                                add(resultSet.toUsedUrl())
+                                resultSet.toAboHistoryEntryOrNull()?.let(::add)
                             }
                         }
                     }
@@ -212,7 +212,7 @@ class AboHistoryController @JvmOverloads constructor(
         }
     }
 
-    private fun insertEntries(entries: List<MVUsedUrl>): Boolean {
+    private fun insertEntries(entries: List<AboHistoryEntry>): Boolean {
         return runLoggedDatabaseOperation(
             errorMessage = "Could not append abo history entries",
             fallback = false
@@ -262,25 +262,17 @@ class AboHistoryController @JvmOverloads constructor(
             errorMessage = "Could not reload abo history cache",
             fallback = emptySet()
         ) {
-            openConnection().use { connection ->
-                connection.prepareStatement(SELECT_URLS_SQL).use { statement ->
-                    statement.executeQuery().use { resultSet ->
-                        buildSet {
-                            while (resultSet.next()) {
-                                add(resultSet.getString(1))
-                            }
-                        }
-                    }
-                }
-            }
+            loadEntries().asSequence()
+                .map(AboHistoryEntry::url)
+                .toSet()
         }
         urlCache.clear()
         urlCache.addAll(loadedUrls)
     }
 
-    private fun parseLegacyLine(line: String): MVUsedUrl? {
+    private fun parseLegacyLine(line: String): AboHistoryEntry? {
         if (!line.contains(LEGACY_ENTRY_SEPARATOR)) {
-            return if (isSupportedUrl(line)) MVUsedUrl("", "", line) else null
+            return null
         }
 
         val urlSeparatorIndex = line.lastIndexOf(LEGACY_ENTRY_SEPARATOR)
@@ -308,7 +300,7 @@ class AboHistoryController @JvmOverloads constructor(
         val theme = metadata.substring(firstSeparatorIndex + LEGACY_FIELD_SEPARATOR.length, secondSeparatorIndex).trim()
         val title = metadata.substring(secondSeparatorIndex + LEGACY_FIELD_SEPARATOR.length).trim()
 
-        return MVUsedUrl(date, theme, title, url)
+        return createEntryOrNull(date, theme, title, url)
     }
 
     private fun <T> Connection.inTransaction(block: Connection.() -> T): T {
@@ -326,10 +318,10 @@ class AboHistoryController @JvmOverloads constructor(
         }
     }
 
-    private fun PreparedStatement.bindInsertEntry(entry: MVUsedUrl) {
-        setString(1, entry.datum)
-        setString(2, entry.thema)
-        setString(3, entry.titel)
+    private fun PreparedStatement.bindInsertEntry(entry: AboHistoryEntry) {
+        setString(1, entry.formattedDate)
+        setString(2, entry.theme)
+        setString(3, entry.title)
         setString(4, entry.url)
         addBatch()
     }
@@ -362,13 +354,21 @@ class AboHistoryController @JvmOverloads constructor(
         }
     }
 
-    private fun ResultSet.toUsedUrl(): MVUsedUrl =
-        MVUsedUrl(
+    private fun ResultSet.toAboHistoryEntryOrNull(): AboHistoryEntry? =
+        createEntryOrNull(
             getString("datum"),
             getString("thema"),
             getString("titel"),
             getString("url")
         )
+
+    private fun createEntryOrNull(date: String, theme: String, title: String, url: String): AboHistoryEntry? {
+        return AboHistoryEntry.parse(date, theme, title, url).also { entry ->
+            if (entry == null) {
+                logger.warn("Ignoring abo history entry with invalid date \"{}\" and URL \"{}\"", date, url)
+            }
+        }
+    }
 
     private fun publishChangeEvent() {
         MessageBus.messageBus.publishAsync(AboHistoryChangedEvent())
@@ -386,7 +386,6 @@ class AboHistoryController @JvmOverloads constructor(
             FROM abo_history
             ORDER BY id ASC
         """
-        private const val SELECT_URLS_SQL = "SELECT url FROM abo_history"
         private const val INSERT_SQL = """
             INSERT OR IGNORE INTO abo_history(datum, thema, titel, url)
             VALUES (?, ?, ?, ?)
