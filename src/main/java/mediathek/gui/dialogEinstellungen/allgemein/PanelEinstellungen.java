@@ -211,9 +211,9 @@ public class PanelEinstellungen extends JPanel {
                 config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, isOn);
                 final InstallTabSwitchListenerEvent evt = new InstallTabSwitchListenerEvent();
                 if (isOn) {
-                    evt.event = InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL;
+                    evt.setEvent(InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL);
                 } else {
-                    evt.event = InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE;
+                    evt.setEvent(InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE);
                 }
                 MessageBus.getMessageBus().publishAsync(evt);
             });

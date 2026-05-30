@@ -1053,7 +1053,7 @@ public class MediathekGui extends JFrame {
             return;
         }
 
-        switch (msg.event) {
+        switch (msg.getEvent()) {
             case INSTALL -> SwingUtilities.invokeLater(() -> {
                 jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
                 jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
