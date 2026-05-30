@@ -86,7 +86,11 @@ Wenn die Checkbox **Online-Suche** aktiviert ist, werden zusätzlich passende Er
 
 Diese Suche läuft parallel zur lokalen Suche. Währenddessen zeigt die Werkzeugleiste rechts neben **Online-Suche** einen Aktivitätsindikator an.
 
-Die Online-Suche wird nur bei freiem Suchtext verwendet. Sobald ein Suchschlüssel wie `sender:`, `titel:`, `thema:` oder `datum:` verwendet wird, findet nur noch die lokale Audiothek-Suche statt.
+Die Online-Suche wird bei freiem Suchtext sowie bei den Suchschlüsseln `titel:`, `title:`, `thema:` und `theme:` verwendet. Bei diesen Suchschlüsseln wird der Wert ohne Suchschlüssel an Podcastindex gesendet. Die zurückgelieferten Online-Ergebnisse werden anschließend auf das angegebene Feld eingeschränkt.
+
+Der Suchschlüssel `genre:` wird nur auf zurückgelieferte Online-Ergebnisse angewendet und nicht an Podcastindex gesendet. Eine reine `genre:`-Suche bleibt deshalb lokal.
+
+Bei anderen Suchschlüsseln wie `sender:`, `datum:` oder `größe:` findet nur die lokale Audiothek-Suche statt.
 
 Wird die Checkbox ausgeschaltet, werden nur noch die lokalen Audiothek-Einträge angezeigt.
 

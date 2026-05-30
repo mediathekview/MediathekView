@@ -108,6 +108,9 @@ class AudiothekTable(
         applyFilter(currentFilterQuery)
     }
 
+    fun hasCurrentFilterQuery(query: String): Boolean =
+        currentFilterQuery == query.trim()
+
     fun selectedEntry(): AudioEntry? {
         val viewRow = selectedRow
         if (viewRow < 0) {

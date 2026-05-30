@@ -324,12 +324,10 @@ class SeenHistoryController : AutoCloseable {
             }
         }
 
-        @JvmStatic
         fun prepareSharedMemoryCache() {
             SeenHistoryController().use { it.prepareMemoryCache() }
         }
 
-        @JvmStatic
         fun hasBeenSeenFromSharedCache(film: DatenFilm): Boolean {
             if (!SeenHistoryCache.isPrepared()) {
                 prepareSharedMemoryCache()

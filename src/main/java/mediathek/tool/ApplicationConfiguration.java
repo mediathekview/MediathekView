@@ -62,6 +62,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_SHOW_AUDIOTHEK = "application.ui.audiothek.show";
     public static final String APPLICATION_UI_AUDIOTHEK_TABLE_STATE = "application.ui.audiothek.table.state";
     public static final String APPLICATION_UI_AUDIOTHEK_ONLINE_SEARCH = "application.ui.audiothek.online_search";
+    public static final String APPLICATION_UI_AUDIOTHEK_SEARCH_HISTORY = "application.ui.audiothek.search.history";
     public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show";
     public static final String APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help";
     /**

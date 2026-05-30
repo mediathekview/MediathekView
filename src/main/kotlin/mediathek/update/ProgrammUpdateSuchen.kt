@@ -36,7 +36,7 @@ import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
 
-class ProgrammUpdateSuchen @JvmOverloads constructor(
+class ProgrammUpdateSuchen(
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
         logger.error("Program update search failed", ex)
     }),
@@ -48,7 +48,6 @@ class ProgrammUpdateSuchen @JvmOverloads constructor(
      * @param showAllInformation show all(outdated) infos
      * @param silent If true, do not show no program info dialog
      */
-    @JvmOverloads
     fun checkVersion(
         showAlert: Boolean,
         showProgramInformation: Boolean,

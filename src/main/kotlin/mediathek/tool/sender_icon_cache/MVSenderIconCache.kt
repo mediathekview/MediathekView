@@ -44,7 +44,6 @@ object MVSenderIconCache {
      * @param sender The name of the supported sender.
      * @return The [javax.swing.ImageIcon] for the sender or null.
      */
-    @JvmStatic
     operator fun get(sender: String): Optional<ImageIcon> {
         if (sender.isBlank()) {
             return Optional.empty()

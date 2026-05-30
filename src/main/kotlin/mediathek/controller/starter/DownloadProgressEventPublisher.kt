@@ -29,7 +29,6 @@ internal object DownloadProgressEventPublisher {
     private const val MIN_INTERVAL_MS = 250L
     private val lastPublishMs = AtomicLong(0L)
 
-    @JvmStatic
     fun publishThrottled() {
         val now = System.currentTimeMillis()
 

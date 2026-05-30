@@ -18,14 +18,21 @@
 
 package mediathek.audiothek.ui.main
 
+import ca.odell.glazedlists.BasicEventList
+import ca.odell.glazedlists.EventList
 import com.formdev.flatlaf.FlatClientProperties
+import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon
 import mediathek.audiothek.ui.download.CircularProgressIcon
 import mediathek.audiothek.ui.download.DownloadSummary
+import mediathek.gui.tabs.tab_film.EditHistoryDialog
+import mediathek.tool.withReadLock
+import mediathek.tool.withWriteLock
 import org.jdesktop.swingx.JXBusyLabel
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT
 import org.kordamp.ikonli.swing.FontIcon
 import java.awt.Dimension
+import java.awt.Window
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.function.Consumer
@@ -41,6 +48,12 @@ class AudiothekToolBar : JToolBar() {
     }
 
     private val searchField = JTextField(SEARCH_FIELD_COLUMNS)
+    private val searchHistory = AudiothekSearchHistory()
+    private val searchHistoryList: EventList<String> = BasicEventList()
+    private val searchHistoryButton = JButton(FlatSearchWithHistoryIcon(true)).apply {
+        toolTipText = "Vorherige Suchen"
+        isFocusable = false
+    }
     private val reloadButton = JButton().apply {
         icon = FontIcon.of(FontAwesomeSolid.RECYCLE, ICON_SIZE)
         toolTipText = "Lokale Podcast-Daten aktualisieren"
@@ -63,12 +76,16 @@ class AudiothekToolBar : JToolBar() {
         isFloatable = false
         configureSearchField()
         configureButtons()
+        configureSearchHistory()
         configureEmbeddedSearchActions()
         buildLayout()
     }
 
     fun addFilterSubmitListener(action: (String) -> Unit) {
-        searchField.addActionListener { action(searchField.text) }
+        searchField.addActionListener {
+            addSearchHistoryEntry(searchField.text)
+            action(searchField.text)
+        }
     }
 
     fun addReloadListener(action: () -> Unit) {
@@ -145,6 +162,7 @@ class AudiothekToolBar : JToolBar() {
         searchField.maximumSize = Dimension(MAX_SEARCH_FIELD_WIDTH, searchField.preferredSize.height)
         searchField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Audiothek-Suche")
         searchField.putClientProperty(FlatClientProperties.TEXT_FIELD_SHOW_CLEAR_BUTTON, true)
+        searchField.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_COMPONENT, searchHistoryButton)
     }
 
     private fun configureButtons() {
@@ -154,6 +172,68 @@ class AudiothekToolBar : JToolBar() {
         downloadManagerButton.icon = downloadManagerIdleIcon
         downloadManagerButton.horizontalTextPosition = RIGHT
         downloadManagerButton.iconTextGap = 6
+    }
+
+    private fun configureSearchHistory() {
+        searchHistoryList.withWriteLock {
+            addAll(searchHistory.load())
+        }
+        searchHistoryList.addListEventListener { saveSearchHistory() }
+        searchHistoryButton.addActionListener { showSearchHistoryPopup() }
+    }
+
+    private fun addSearchHistoryEntry(query: String) {
+        val normalized = query.trim()
+        if (normalized.isEmpty()) {
+            return
+        }
+
+        searchHistoryList.withWriteLock {
+            remove(normalized)
+            add(0, normalized)
+        }
+    }
+
+    private fun showSearchHistoryPopup() {
+        val popupMenu = JPopupMenu()
+        val clearHistoryItem = JMenuItem("Alles löschen").apply {
+            addActionListener {
+                searchHistoryList.withWriteLock {
+                    clear()
+                }
+            }
+        }
+        val editHistoryItem = JMenuItem("Einträge bearbeiten").apply {
+            addActionListener { showEditHistoryDialog(this) }
+        }
+
+        popupMenu.add(clearHistoryItem)
+        popupMenu.add(editHistoryItem)
+        searchHistoryList.withReadLock {
+            if (isNotEmpty()) {
+                popupMenu.addSeparator()
+                forEach { item ->
+                    popupMenu.add(JMenuItem(item).apply {
+                        addActionListener {
+                            searchField.text = item
+                            searchField.postActionEvent()
+                        }
+                    })
+                }
+            }
+        }
+        popupMenu.show(searchHistoryButton, 0, searchHistoryButton.height)
+    }
+
+    private fun showEditHistoryDialog(menuItem: JMenuItem) {
+        val owner = SwingUtilities.getWindowAncestor(this) as? Window ?: JOptionPane.getRootFrame()
+        EditHistoryDialog(owner, menuItem, searchHistoryList).isVisible = true
+    }
+
+    private fun saveSearchHistory() {
+        searchHistoryList.withReadLock {
+            searchHistory.save(this)
+        }
     }
 
     private fun buildLayout() {

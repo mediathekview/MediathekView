@@ -183,10 +183,7 @@ class AudiothekPanel(
         }
         toolBar.addFilterSubmitListener(::applyFilterNow)
         toolBar.addClearSearchListener { applyFilterNow("") }
-        toolBar.addOnlineSearchToggleListener { enabled ->
-            persistOnlineSearchEnabled(enabled)
-            applyFilterNow(toolBar.currentQuery())
-        }
+        toolBar.addOnlineSearchToggleListener(::handleOnlineSearchToggled)
         toolBar.addDownloadManagerListener(::toggleDownloadManager)
         downloadManagerPanel.addProgressListener(::updateDownloadSummary)
         downloadManagerPanel.addPrimaryActionListener(::handleDownloadPrimaryAction)
@@ -381,6 +378,20 @@ class AudiothekPanel(
         triggerPodcastSearch(query)
     }
 
+    private fun handleOnlineSearchToggled(enabled: Boolean) {
+        persistOnlineSearchEnabled(enabled)
+
+        val query = toolBar.currentQuery()
+        if (query.isBlank() && table.hasCurrentFilterQuery(query)) {
+            podcastSearchJob?.cancel()
+            toolBar.setPodcastSearchBusy(false)
+            refreshResultCount()
+            return
+        }
+
+        applyFilterNow(query)
+    }
+
     private fun triggerPodcastSearch(query: String, resetState: Boolean = true) {
         if (resetState) {
             resetExternalSearchState()
@@ -390,7 +401,11 @@ class AudiothekPanel(
         }
 
         val normalizedQuery = query.trim()
-        if (!shouldRunOnlineSearch(normalizedQuery)) {
+        if (!toolBar.isOnlineSearchEnabled()) {
+            refreshSelectionState()
+            return
+        }
+        val onlineSearchQuery = AudiothekOnlineSearchQuery.from(normalizedQuery) ?: run {
             refreshSelectionState()
             return
         }
@@ -398,9 +413,9 @@ class AudiothekPanel(
         podcastSearchJob = uiScope.launch {
             toolBar.setPodcastSearchBusy(true)
             try {
-                val externalEntries = loadExternalSearchEntries(normalizedQuery)
+                val externalEntries = onlineSearchQuery.filter(loadExternalSearchEntries(onlineSearchQuery.query))
 
-                if (!isCurrentQuery(normalizedQuery)) {
+                if (!isCurrentQuery(normalizedQuery) || !toolBar.isOnlineSearchEnabled()) {
                     return@launch
                 }
 
@@ -430,12 +445,6 @@ class AudiothekPanel(
         statusPanel.setCount("${table.rowCount} Treffer")
     }
 
-    private fun shouldRunOnlineSearch(query: String): Boolean {
-        return query.isNotEmpty() &&
-            !containsLuceneFieldToken(query) &&
-            toolBar.isOnlineSearchEnabled()
-    }
-
     private suspend fun loadExternalSearchEntries(query: String): List<AudioEntry> {
         return runCatching { onlineSearchProxyRepository.search(query) }
             .onFailure { logger.warn("Online-Suche über Proxy fehlgeschlagen für '{}'", query, it) }
@@ -444,18 +453,6 @@ class AudiothekPanel(
 
     private fun isCurrentQuery(query: String): Boolean {
         return toolBar.currentQuery().trim() == query
-    }
-
-    private fun containsLuceneFieldToken(query: String): Boolean {
-        return PODCAST_QUERY_TOKEN_REGEX.findAll(query)
-            .map { it.value.trim() }
-            .filter(String::isNotEmpty)
-            .any { token ->
-                val separatorIndex = token.indexOf(':')
-                separatorIndex > 0 &&
-                    separatorIndex < token.lastIndex &&
-                    token.substring(0, separatorIndex).lowercase() in PODCAST_EXCLUDED_FIELD_KEYS
-            }
     }
 
     private fun refreshSelectionState() {
@@ -640,24 +637,6 @@ class AudiothekPanel(
 
     companion object {
         private val DATASET_TIMESTAMP_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-        private val PODCAST_QUERY_TOKEN_REGEX = """[^\s:]+:"[^"]*"|[^\s]+""".toRegex()
-        private val PODCAST_EXCLUDED_FIELD_KEYS = setOf(
-            "sender",
-            "genre",
-            "thema",
-            "theme",
-            "titel",
-            "title",
-            "datum",
-            "date",
-            "zeit",
-            "time",
-            "dauer",
-            "duration",
-            "groesse",
-            "größe",
-            "size"
-        )
     }
 }
 

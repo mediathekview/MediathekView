@@ -34,10 +34,8 @@ import javax.naming.directory.InitialDirContext
  * It distinguishes the edge CDN from Akamai-backed origin storage.
  */
 object CdnDetector {
-    @JvmStatic
     fun detect(input: String?): Result = detect(input, ::collectDnsEvidence, ::collectHeaderEvidence)
 
-    @JvmStatic
     fun isCdn(result: Result): Boolean = when (result.classification) {
         Classification.LIKELY_CLOUDFRONT,
         Classification.LIKELY_AKAMAI,
