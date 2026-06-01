@@ -48,55 +48,39 @@ object MVColor {
         ignoreUnknownKeys = true
     }
 
-        @JvmField
         val FILM_HISTORY = color("film_history", rgb(225, 225, 225), rgb(70, 70, 70), "Filme, gesehen")
 
-        @JvmField
         val FILM_BOOKMARKED = color("film_bookmarked", rgb(204, 238, 255), rgb(33, 66, 84), "Filme, gemerkt")
 
-        @JvmField
         val FILM_DUPLICATE = color("film_duplicate", rgb(255, 209, 220), rgb(92, 52, 67), "Film, Duplikat")
 
-        @JvmField
         val NEW_COLOR = color("film_new", Color.BLUE, darkBlue, "Film, neu")
 
-        @JvmField
         val REGEX_PATTERN_COLOR = color("filter_regex", Color.BLUE, darkBlue, "Filter, Regex")
 
-        @JvmField
         val SELECTED_COLOR = color("selected_icon", Color.BLUE, darkBlue, "Auswahl, Icon")
 
-        @JvmField
         val ALTERNATE_ROW_COLOR = color("table_alternate_row", rgb(247, 247, 247), rgb(51, 51, 51), "Tabelle, Alternierende Zeilen")
 
-        @JvmField
         val DOWNLOAD_IST_ABO = color("download_is_abo", rgb(138, 67, 0), rgb(255, 191, 117), "Download ist ein Abo")
 
-        @JvmField
         val DOWNLOAD_IST_DIREKTER_DOWNLOAD = color("download_is_direct", rgb(0, 72, 138), darkBlue, "Download ist ein direkter Download")
 
-        @JvmField
         val DOWNLOAD_WAIT = color("download_wait", rgb(239, 244, 255), rgb(49, 56, 72), "Download, noch nicht gestartet")
 
-        @JvmField
         val DOWNLOAD_WAIT_SEL = color("download_wait_selected", rgb(199, 206, 222), rgb(72, 82, 103), "Download, noch nicht gestartet, selektiert")
 
-        @JvmField
         val DOWNLOAD_RUN = color("download_run", rgb(241, 228, 188), rgb(88, 74, 39), "Download, läuft")
 
-        @JvmField
         val DOWNLOAD_RUN_SEL = color("download_run_selected", rgb(206, 178, 92), rgb(122, 102, 54), "Download, läuft, selektiert")
 
-        @JvmField
         val DOWNLOAD_FERTIG = color("download_finished", rgb(188, 241, 195), rgb(43, 88, 50), "Download, fertig")
 
-        @JvmField
         val DOWNLOAD_FERTIG_SEL = color("download_finished_selected", rgb(115, 206, 92), rgb(60, 123, 67), "Download, fertig, selektiert")
 
         @JvmField
         val DOWNLOAD_FEHLER = color("download_error", rgb(241, 188, 221), rgb(102, 53, 82), "Download, fehlerhaft")
 
-        @JvmField
         val DOWNLOAD_FEHLER_SEL = color("download_error_selected", rgb(206, 92, 128), rgb(143, 67, 95), "Download, fehlerhaft, selektiert")
 
         @JvmField

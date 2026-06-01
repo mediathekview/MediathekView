@@ -1,5 +1,3 @@
-@file:JvmName("FilmDownloadStarter")
-
 /*
  * Copyright (c) 2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView

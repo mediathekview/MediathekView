@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("FinalStageFilterFactory")
-
 package mediathek.gui.tabs.tab_film.helpers
 
 import mediathek.daten.DatenFilm

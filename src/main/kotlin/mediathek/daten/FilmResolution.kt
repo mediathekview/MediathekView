@@ -10,7 +10,6 @@ class FilmResolution private constructor() {
         override fun toString(): String = legacyText
 
         companion object {
-            @JvmStatic
             fun fromLegacyString(input: String): Enum =
                 when (input) {
                     FilmResolution.LOW -> LOW

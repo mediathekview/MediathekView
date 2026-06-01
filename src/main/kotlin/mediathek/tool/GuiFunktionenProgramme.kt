@@ -385,7 +385,6 @@ object GuiFunktionenProgramme {
      * - Empty [prefixes] -> returns true.
      * - Otherwise: return true if [url] starts with at least one prefix.
      */
-    @JvmStatic
     fun checkPrefix(prefixes: String, url: String): Boolean {
         if (prefixes.isEmpty()) {
             return true
@@ -419,7 +418,6 @@ object GuiFunktionenProgramme {
         return false
     }
 
-    @JvmStatic
     fun checkSuffix(suffixes: String, url: String): Boolean {
         if (suffixes.isEmpty()) {
             return true

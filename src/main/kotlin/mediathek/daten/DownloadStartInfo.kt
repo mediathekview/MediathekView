@@ -10,10 +10,8 @@ class DownloadStartInfo {
     @JvmField
     var total_starts: Int = 0
 
-    @JvmField
     var num_abos: Int = 0
 
-    @JvmField
     var num_downloads: Int = 0
 
     /**
