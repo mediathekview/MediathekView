@@ -104,7 +104,7 @@ class GuiDownloads(
     private val filterController = DownloadsFilterController(displayFilterToolBar, config, ::reloadTable)
     private val startInfoProperty = DownloadStartInfoProperty()
     private val statusBar = DownloadsStatusBar(startInfoProperty)
-    private val downloadSizeLookupService = DownloadSizeLookupService(::reloadTable)
+    private val downloadSizeLookupService = DownloadSizeLookupService(::reloadAndSave)
 
     private var loadFilmlist = false
     private lateinit var model: TModelDownload
@@ -429,8 +429,9 @@ class GuiDownloads(
 
         val listeDownloads = daten.listeDownloads
         listeDownloads.abosAuffrischen()
-        listeDownloads.abosSuchen(mediathekGui)
+        val addedDownloads = listeDownloads.abosSuchen(mediathekGui)
         reloadTable()
+        downloadSizeLookupService.updateFilmSizes(addedDownloads)
 
         if (MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN).toBoolean()) {
             filmStartenWiederholenStoppen(true, starten = true, restartFinishedDownloads = false, skipManualDownloads = true)

@@ -26,7 +26,7 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.DownloadSource
 import mediathek.daten.FilmResolution
-import mediathek.gui.dialog.DialogAboNoSet
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.dialog.add_download.DialogAddMoreDownload
 import mediathek.gui.messages.DownloadListChangedEvent
@@ -45,8 +45,8 @@ fun startDownloads(
         return
     }
 
-    if (Daten.getInstance().listePset.listeSpeichern.isEmpty()) {
-        DialogAboNoSet(parent).isVisible = true
+    if (!Daten.getInstance().listePset.hasDownloadProgramSet()) {
+        MissingProgramSetDialog.showMissingDownloadProgramSet(parent)
         return
     }
 

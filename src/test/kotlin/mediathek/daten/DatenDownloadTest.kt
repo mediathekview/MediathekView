@@ -129,6 +129,43 @@ internal class DatenDownloadTest {
     }
 
     @Test
+    fun constructorSeedsNormalQualitySizeFromFilmList() {
+        val film = DatenFilm().apply {
+            sender = "Sender One"
+            thema = "Topic One"
+            title = "Title One"
+            sendeDatum = "01.06.2026"
+            sendeZeit = "20:15:00"
+            setNormalQualityUrl("https://example.invalid/video.mp4")
+            fileSize.setSize("123")
+        }
+        val programSet = createProgramSet()
+
+        val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "")
+
+        assertEquals(123L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+    }
+
+    @Test
+    fun constructorSeedsNormalQualitySizeWhenDownloadUrlParametersAreRemoved() {
+        val film = DatenFilm().apply {
+            sender = "Sender One"
+            thema = "Topic One"
+            title = "Title One"
+            sendeDatum = "01.06.2026"
+            sendeZeit = "20:15:00"
+            setNormalQualityUrl("https://example.invalid/video.mp4?token=temporary")
+            fileSize.setSize("456")
+        }
+        val programSet = createProgramSet()
+
+        val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "")
+
+        assertEquals("https://example.invalid/video.mp4", download.downloadUrl)
+        assertEquals(456L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+    }
+
+    @Test
     fun copyPreservesWebsiteUrlForProgramInvocationRebuilds() {
         val film = DatenFilm().apply {
             sender = "Sender One"
@@ -161,4 +198,12 @@ internal class DatenDownloadTest {
 
         assertTrue(copiedDownload.programInvocation.contains("--web https://example.invalid/film-page"))
     }
+
+    private fun createProgramSet(): DatenPset =
+        DatenPset("Set").apply {
+            aufloesung = FilmResolution.Enum.NORMAL
+            zielDateiname = "%t.%S"
+            zielPfad = "/downloads"
+            addProg(DatenProg("Program", "program", "--target **", false.toString(), false.toString()))
+        }
 }

@@ -25,7 +25,7 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.DownloadColumns
 import mediathek.daten.abo.DatenAbo
-import mediathek.gui.dialog.DialogAboNoSet
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
@@ -220,7 +220,7 @@ class DownloadsTableMouseHandler(
     private fun enableAboActions(itemChangeAbo: JMenuItem, itemDelAbo: JMenuItem, datenAbo: DatenAbo) {
         itemDelAbo.addActionListener { daten.listeAbo.aboLoeschen(datenAbo) }
         itemChangeAbo.addActionListener {
-            if (!DialogAboNoSet.ensureAboProgramSetAvailable(mediathekGui)) {
+            if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(mediathekGui)) {
                 return@addActionListener
             }
             val dialog = DialogEditAbo(mediathekGui, datenAbo, false)

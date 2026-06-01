@@ -101,11 +101,15 @@ class ListePset : ArrayList<DatenPset>() {
     val listeSpeichern: ListePset
         get() = filterTo(ListePset()) { pset -> pset.istSpeichern() }
 
+    fun hasDownloadProgramSet(): Boolean = any { pset -> pset.istSpeichern() }
+
     val listeButton: ListePset
         get() = filterTo(ListePset()) { pset -> pset.istButton() }
 
     val listeAbo: ListePset
         get() = filterTo(ListePset()) { pset -> pset.istAbo() }
+
+    fun hasAboProgramSet(): Boolean = any { pset -> pset.istAbo() }
 
     val objectDataCombo: Array<String>
         get() = Array(size) { index -> this[index].name }
@@ -160,7 +164,7 @@ class ListePset : ArrayList<DatenPset>() {
             when (columnIndex) {
                 DatenPset.PROGRAMMSET_IST_ABSPIELEN,
                 DatenPset.PROGRAMMSET_IST_SPEICHERN,
-                -> java.lang.Boolean::class.java
+                -> Boolean::class.javaObjectType
                 else -> String::class.java
             }
     }

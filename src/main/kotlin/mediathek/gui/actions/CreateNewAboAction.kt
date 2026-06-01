@@ -22,7 +22,7 @@ import mediathek.config.MVConfig
 import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
-import mediathek.gui.dialog.DialogAboNoSet
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FilenameUtils
@@ -50,7 +50,7 @@ class CreateNewAboAction @JvmOverloads constructor(
         val parent = parentProvider()
         val datenAbo = createAboDraft(aboname, filmSender, filmThema, filmTitel)
 
-        if (!DialogAboNoSet.ensureAboProgramSetAvailable(parent)) {
+        if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(parent)) {
             return
         }
 

@@ -26,7 +26,7 @@ import mediathek.config.MVConfig
 import mediathek.controller.starter.DownloadLifecycleActions
 import mediathek.controller.starter.DownloadStartActions
 import mediathek.controller.starter.StartStatus
-import mediathek.gui.dialog.DialogAboNoSet
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.messages.ButtonStartEvent
 import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.gui.messages.DownloadQueueRankChangedEvent
@@ -240,14 +240,13 @@ class ListeDownloads : LinkedList<DatenDownload>() {
     }
 
     @Synchronized
-    fun abosSuchen(parent: JFrame?) {
+    fun abosSuchen(parent: JFrame?): List<DatenDownload> {
         // in der Filmliste nach passenden Filmen suchen und
         // in die Liste der Downloads eintragen
         val downloadUrls = HashSet<String>()
+        val addedDownloads = mutableListOf<DatenDownload>()
         // mit den bereits enthaltenen URL füllen
         forEach { download -> downloadUrls.add(download.downloadUrl) }
-
-        var found = false
 
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         val checkWithBlackList = MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO).toBoolean()
@@ -295,21 +294,22 @@ class ListeDownloads : LinkedList<DatenDownload>() {
                 }
 
                 // dann in die Liste schreiben
-                add(DatenDownload(pset, film, DownloadSource.ABO, abo, "", "", ""))
-                found = true
+                val download = DatenDownload(pset, film, DownloadSource.ABO, abo, "", "", "")
+                add(download)
+                addedDownloads.add(download)
             } else {
                 if (parent == null || Config.isDownloadAndQuit()) {
                     throw IllegalStateException("Kein Programmset für Abo \"${abo.name}\" konfiguriert.")
                 }
-                DialogAboNoSet(parent).isVisible = true
+                MissingProgramSetDialog.showMissingAboProgramSet(parent)
                 break
             }
         }
 
-        if (found) {
+        if (addedDownloads.isNotEmpty()) {
             listeNummerieren()
         }
-        downloadUrls.clear()
+        return addedDownloads
     }
 
     @Synchronized

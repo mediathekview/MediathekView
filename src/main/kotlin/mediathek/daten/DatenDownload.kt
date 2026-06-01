@@ -90,7 +90,7 @@ class DatenDownload() : Comparable<DatenDownload> {
 
         websiteUrl = film.websiteUrl
 
-        setGroesse("")
+        setGroesseFromFilm()
 
         aufrufBauen(pSet, film, abo, name, pfad)
         init()
@@ -211,12 +211,20 @@ class DatenDownload() : Comparable<DatenDownload> {
 
     fun setGroesseFromFilm() {
         val currentFilm = film ?: return
-        if (currentFilm.urlNormalQuality == downloadUrl) {
+        val normalQualityUrl = currentFilm.urlNormalQuality
+        val normalizedNormalQualityUrl = normalQualityUrl.withoutParameters()
+        if (
+            normalQualityUrl.equals(downloadUrl, ignoreCase = true) ||
+            normalizedNormalQualityUrl.equals(downloadUrl, ignoreCase = true)
+        ) {
             runtime.filmSize.setSize(currentFilm.fileSize.toString())
         } else {
             runtime.filmSize.size = 0
         }
     }
+
+    private fun String.withoutParameters(): String =
+        if (contains("?")) getUrlWithoutParameters(this) else this
 
     fun setGroesse(groesse: String) {
         if (film != null && groesse.isNotEmpty()) {
