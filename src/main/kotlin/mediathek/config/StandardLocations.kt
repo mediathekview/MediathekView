@@ -165,6 +165,7 @@ object StandardLocations {
     /**
      * Return the location of the lucene film index.
      */
+    @JvmStatic
     fun getFilmIndexPath(): Path {
         val indexDirectory = "mv_index"
 
