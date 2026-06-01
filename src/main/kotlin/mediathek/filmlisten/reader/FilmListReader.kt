@@ -214,10 +214,10 @@ open class FilmListReader : AutoCloseable {
             if (jp.isExpectedStartArrayToken) {
                 val meta = listeFilme.metaData
                 nextTextValue(jp)
-                meta.datum = nextTextValue(jp)
+                meta.datum = nextTextValue(jp).orEmpty()
                 nextTextValue(jp)
                 nextTextValue(jp)
-                meta.id = nextTextValue(jp)
+                meta.id = nextTextValue(jp).orEmpty()
                 // update to fire pcs
                 listeFilme.metaData = meta
 
