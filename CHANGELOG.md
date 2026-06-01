@@ -54,6 +54,7 @@
 - **FEATURE:** `„`, `“` und `”` werden für Thema und Titel nun in einheitliches `"` konvertiert.
 - **FEATURE:** Für Abo-Einträge im Tab *Downloads* wird nun nach der entsprechenden Größe gesucht.
 - **FEATURE:** Downloads werden nun in `downloads.json` anstatt der XML-Konfiguration gespeichert.
+- **FEATURE:** In der Infodatei wird nun auch die URL zum Untertitel gespeichert wenn verfügbar.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.
