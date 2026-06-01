@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 derreisende77.
+ * Copyright (c) 2025-2026 derreisende77.
  * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
  * This program is free software: you can redistribute it and/or modify
@@ -73,6 +73,10 @@ object StandardLocations {
      */
     fun getBookmarkFilePath(): Path {
         return getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE)
+    }
+
+    fun getDownloadsFilePath(): Path {
+        return getSettingsDirectory().resolve("downloads.json")
     }
 
     /**

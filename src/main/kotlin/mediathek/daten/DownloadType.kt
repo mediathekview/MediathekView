@@ -29,7 +29,6 @@ enum class DownloadType(
     companion object {
         private val byLegacyId = entries.associateBy { it.legacyId }
 
-        @JvmStatic
         fun fromLegacyText(legacyText: String): DownloadType =
             byLegacyId[legacyText.toByte()]
                 ?: throw IllegalArgumentException("Unknown download type: $legacyText")

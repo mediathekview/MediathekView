@@ -63,12 +63,12 @@ class DownloadInfos {
 
         for (download in activeDownloads) {
             anzDownloadsRun++
-            val start = download.start
+            val start = download.runtime.runState
             if (start != null && start.status == StartStatus.RUNNING) {
                 // die Downloads laufen gerade
                 bandwidth += start.bandbreite // bytes per second
-                byteAktDownloads += download.mVFilmSize.aktSize.coerceAtLeast(0)
-                byteAlleDownloads += download.mVFilmSize.size.coerceAtLeast(0)
+                byteAktDownloads += download.runtime.filmSize.aktSize.coerceAtLeast(0)
+                byteAlleDownloads += download.runtime.filmSize.size.coerceAtLeast(0)
                 if (start.restSekunden > timeRestAktDownloads) {
                     // der laengste gibt die aktuelle Restzeit vor
                     timeRestAktDownloads = start.restSekunden

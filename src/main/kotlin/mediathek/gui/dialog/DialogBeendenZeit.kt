@@ -22,6 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.controller.starter.DownloadStartActions
 import mediathek.daten.DatenDownload
 import mediathek.swing.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
@@ -120,7 +121,7 @@ class DialogBeendenZeit(
                 }
 
                 progressPanel?.setMessage("Warte auf Abschluss der Downloads...")
-                DatenDownload.startenDownloads(listeDownloadsStarten)
+                DownloadStartActions.startAll(listeDownloadsStarten)
 
                 withContext(Dispatchers.IO) {
                     while (Daten.getInstance().listeDownloads.unfinishedDownloads() > 0) {

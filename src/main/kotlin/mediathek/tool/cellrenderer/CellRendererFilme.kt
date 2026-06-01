@@ -158,7 +158,7 @@ class CellRendererFilme : CellRendererBaseWithStart() {
     }
 
     private fun handleButtonStartColumn(datenDownload: DatenDownload?, isSelected: Boolean) {
-        if (datenDownload?.start?.status == StartStatus.RUNNING) {
+        if (datenDownload?.runtime?.runState?.status == StartStatus.RUNNING) {
             setSelectedIconAndToolTip(isSelected, stopIcons, "Film stoppen")
         }
 

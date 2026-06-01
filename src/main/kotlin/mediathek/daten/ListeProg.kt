@@ -39,7 +39,7 @@ class ListeProg(
 
     fun remove(name: String): DatenProg? {
         return entries.withWriteLock {
-            val index = entries.indexOfFirst { prog -> prog.arr[DatenProg.PROGRAMM_NAME] == name }
+            val index = entries.indexOfFirst { prog -> prog.name == name }
             if (index != -1) {
                 entries.removeAt(index)
             } else {

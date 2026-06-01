@@ -3,6 +3,7 @@ package mediathek.tool.table
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.MVConfig
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadColumns
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
@@ -82,14 +83,14 @@ class MVTableTest {
     @Test
     fun downloadModelReturnsLiveValuesForColumnsLoadedWhileHidden() {
         val download = DatenDownload()
-        download.arr[DatenDownload.DOWNLOAD_ABO] = "Daily Abo"
+        download.aboName = "Daily Abo"
 
-        val row = Array<Any>(DatenDownload.MAX_ELEM) { "" }
-        row[DatenDownload.DOWNLOAD_REF] = download
+        val row = Array<Any>(DownloadColumns.COUNT) { "" }
+        row[DownloadColumns.REF] = download
 
         val model = TModelDownload()
         model.addRow(row)
 
-        assertEquals("Daily Abo", model.getValueAt(0, DatenDownload.DOWNLOAD_ABO))
+        assertEquals("Daily Abo", model.getValueAt(0, DownloadColumns.ABO))
     }
 }

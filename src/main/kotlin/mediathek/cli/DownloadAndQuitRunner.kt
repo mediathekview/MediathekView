@@ -24,6 +24,8 @@ import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import mediathek.config.StandardLocations
 import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.starter.DownloadLifecycleActions
+import mediathek.controller.starter.DownloadStartActions
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.filmeSuchen.ListenerFilmeLaden
@@ -101,7 +103,7 @@ object DownloadAndQuitRunner {
         }
 
         logger.info("Starting {} abo download(s)...", downloadsToStart.size)
-        DatenDownload.startenDownloads(downloadsToStart)
+        DownloadStartActions.startAll(downloadsToStart)
         if (shutdownRequested.get()) {
             stopDownloads(downloadsToStart)
         }
@@ -193,10 +195,10 @@ object DownloadAndQuitRunner {
     private fun collectDownloadsToStart(daten: Daten): ArrayList<DatenDownload> {
         val downloadsToStart = ArrayList<DatenDownload>()
         for (download in daten.listeDownloads) {
-            if (!download.isFromAbo() || download.isAutomaticStartBlockedByAbo()) {
+            if (!download.isFromAbo || download.isAutomaticStartBlockedByAbo) {
                 continue
             }
-            if (download.start == null) {
+            if (download.runtime.runState == null) {
                 downloadsToStart.add(download)
             }
         }
@@ -206,23 +208,23 @@ object DownloadAndQuitRunner {
     private suspend fun monitorDownloads(downloads: List<DatenDownload>): Int {
         var lastSummary = ""
         while (true) {
-            val trackedDownloads = downloads.filter { it.start != null }
-            val waiting = trackedDownloads.count { it.start?.status == StartStatus.INITIALIZED }
-            val runningDownloads = trackedDownloads.filter { it.start?.status == StartStatus.RUNNING }
-            val finished = trackedDownloads.count { it.start?.status == StartStatus.FINISHED }
-            val errors = trackedDownloads.count { it.start?.status == StartStatus.ERROR }
+            val trackedDownloads = downloads.filter { it.runtime.runState != null }
+            val waiting = trackedDownloads.count { it.runtime.runState?.status == StartStatus.INITIALIZED }
+            val runningDownloads = trackedDownloads.filter { it.runtime.runState?.status == StartStatus.RUNNING }
+            val finished = trackedDownloads.count { it.runtime.runState?.status == StartStatus.FINISHED }
+            val errors = trackedDownloads.count { it.runtime.runState?.status == StartStatus.ERROR }
             val unfinished = waiting + runningDownloads.size
             val averageProgress = if (runningDownloads.isEmpty()) {
                 0
             } else {
                 runningDownloads
-                    .mapNotNull { it.start?.percent }
+                    .mapNotNull { it.runtime.runState?.percent }
                     .map { it.coerceAtLeast(0) }
                     .average()
                     .div(10.0)
                     .roundToInt()
             }
-            val bandwidth = runningDownloads.sumOf { it.start?.bandbreite?.coerceAtLeast(0) ?: 0L }
+            val bandwidth = runningDownloads.sumOf { it.runtime.runState?.bandbreite?.coerceAtLeast(0) ?: 0L }
 
             val summary = buildString {
                 append("Downloads: ")
@@ -270,15 +272,15 @@ object DownloadAndQuitRunner {
 
         Daten.getInstance().downloadStartCoordinator.delayNewStarts()
         for (download in downloads) {
-            val start = download.start
+            val start = download.runtime.runState
             if (start == null) {
-                download.interrupt()
+                DownloadLifecycleActions.markInterrupted(download)
                 continue
             }
 
             if (start.status < StartStatus.FINISHED) {
                 start.requestStop()
-                download.interrupt()
+                DownloadLifecycleActions.markInterrupted(download)
                 if (start.status == StartStatus.INITIALIZED) {
                     start.status = StartStatus.ERROR
                 }
@@ -287,7 +289,7 @@ object DownloadAndQuitRunner {
     }
 
     private fun markDownloadsInterrupted(downloads: List<DatenDownload>) {
-        downloads.forEach(DatenDownload::interrupt)
+        downloads.forEach(DownloadLifecycleActions::markInterrupted)
     }
 
     private fun persistState(daten: Daten) {

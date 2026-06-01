@@ -44,9 +44,9 @@ public class MVPanelDownloadZiel extends JPanel {
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
-            jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]}));
+            jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.getTargetPath()}));
         });
-        jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME]);
+        jTextFieldName.setText(datenDownload.getTargetFileName());
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -76,7 +76,7 @@ public class MVPanelDownloadZiel extends JPanel {
                 }
             }
         });
-        setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
+        setModelPfad(datenDownload.getTargetPath());
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setOpaque(true);
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
 
@@ -150,8 +150,8 @@ public class MVPanelDownloadZiel extends JPanel {
             if (file.exists()) {
                 jLabelExists.setForeground(Color.RED);
                 jLabelExists.setText("Datei existiert schon!");
-            } else if (!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME])
-                    || !(((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD])) {
+            } else if (!jTextFieldName.getText().equals(datenDownload.getTargetFileName())
+                    || !(((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText()).equals(datenDownload.getTargetPath())) {
                 jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_NEU.getColor());
                 jLabelExists.setText("Neuer Name");
             } else {
@@ -175,7 +175,7 @@ public class MVPanelDownloadZiel extends JPanel {
             pfad = StandardLocations.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
-            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + '_' + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + '-' + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
+            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + '_' + datenDownload.getTopic() + '-' + datenDownload.getTitle() + ".mp4";
         }
 
         FileSpecifier fileSpecifier = new FileSpecifier(pfad,name);
@@ -186,14 +186,11 @@ public class MVPanelDownloadZiel extends JPanel {
                     "Pfad zu lang!", JOptionPane.ERROR_MESSAGE);
         }
 
-        String orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME];
+        String orgPfad = datenDownload.getTargetPathFileName();
 
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = fileSpecifier.getFileName();
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD] = fileSpecifier.getPath();
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME] = GuiFunktionen.addsPfad(fileSpecifier.getPath(),
-                fileSpecifier.getFileName());
+        datenDownload.setTarget(fileSpecifier);
 
-        return !orgPfad.equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        return !orgPfad.equals(datenDownload.getTargetPathFileName());
     }
 
     public String getCurrentPath() {

@@ -22,51 +22,50 @@ import mediathek.controller.MVBandwidthCountingInputStream
 import java.time.LocalDateTime
 
 class DownloadRunState {
-    @JvmField
     var status: StartStatus = StartStatus.INITIALIZED
 
-    @JvmField
     var startcounter: Int = 0
 
     /**
      * Prozess des Download
      */
-    @JvmField
     var process: Process? = null
 
     /**
      * Prozent fertiggestellt: -1=nix, 999=99,9%
      */
-    @JvmField
     var percent: Int = -1
 
     /**
      * Downloadbandbreite: bytes per second
      */
-    @JvmField
     var bandbreite: Long = -1
 
     @Volatile
-    @JvmField
     var stoppen: Boolean = false
 
-    @JvmField
     var countRestarted: Int = 0
 
-    @JvmField
     var startTime: LocalDateTime? = null
 
-    @JvmField
     var restSekunden: Long = -1
 
-    @JvmField
     var mVBandwidthCountingInputStream: MVBandwidthCountingInputStream? = null
 
     val isFinished: Boolean
         get() = status == StartStatus.FINISHED
 
+    val isRunning: Boolean
+        get() = status == StartStatus.RUNNING
+
     val isError: Boolean
         get() = status == StartStatus.ERROR
+
+    val isBeforeFinished: Boolean
+        get() = status.isBefore(StartStatus.FINISHED)
+
+    val isAtLeastFinished: Boolean
+        get() = status.isAtLeast(StartStatus.FINISHED)
 
     fun markRunning() {
         status = StartStatus.RUNNING

@@ -48,7 +48,7 @@ public class DialogContinueDownload extends JDialog {
         }
 
         String dialogText = "<html>Der Film \""
-                + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]
+                + datenDownload.getTitle()
                 + "\" existiert bereits.<br>Wie möchten Sie fortfahren?</html>";
         jLabel1.setText(dialogText);
 

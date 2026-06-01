@@ -27,6 +27,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.MVColor
 import mediathek.config.MVConfig
+import mediathek.controller.starter.DownloadStartActions
 import mediathek.daten.*
 import mediathek.gui.dialog.download.DownloadQualityLiveInfoText
 import mediathek.gui.dialog.download.DownloadQualityResolutionSizeLoadResult
@@ -392,8 +393,8 @@ class DialogAddDownload(
             getFilmResolution().toString()
         ).apply {
             setGroesse(getFilmSize())
-            arr[DatenDownload.DOWNLOAD_INFODATEI] = jCheckBoxInfodatei.isSelected.toString()
-            arr[DatenDownload.DOWNLOAD_SUBTITLE] = jCheckBoxSubtitle.isSelected.toString()
+            isInfoFile = jCheckBoxInfodatei.isSelected
+            isSubtitle = jCheckBoxSubtitle.isSelected
         }
 
         addDownloadToQueue(startAutomatically)
@@ -480,7 +481,7 @@ class DialogAddDownload(
     }
 
     private fun applyDownloadTargetFields(download: DatenDownload) {
-        val generatedName = download.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME]
+        val generatedName = download.targetFileName
         if (generatedName.isEmpty()) {
             // dann wird nicht gespeichert → eigentlich falsche Seteinstellungen?
             setTargetInputsEnabled(false)
@@ -490,7 +491,7 @@ class DialogAddDownload(
         }
 
         setTargetInputsEnabled(true)
-        val targetPath = download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]
+        val targetPath = download.targetPath
         setModelPfad(targetPath, jComboBoxPfad)
         orgPfad = targetPath
         if (!nameGeaendert) {
@@ -509,7 +510,7 @@ class DialogAddDownload(
         messageBus.publishAsync(DownloadListChangedEvent())
 
         if (startAutomatically) {
-            datenDownload.startDownload()
+            DownloadStartActions.start(datenDownload)
         }
     }
 
@@ -573,7 +574,7 @@ class DialogAddDownload(
     }
 
     private fun setupPSetComboBox() {
-        val model = DefaultComboBoxModel(listeSpeichern.getObjectDataCombo())
+        val model = DefaultComboBoxModel(listeSpeichern.objectDataCombo)
         jComboBoxPset.apply {
             // disable when only one entry...
             setEnabled(listeSpeichern.size > 1)

@@ -19,7 +19,6 @@
 package mediathek.controller.starter
 
 object DownloadProgressText {
-    @JvmStatic
     fun getTextProgress(isDownloadManager: Boolean, state: DownloadRunState?): String {
         if (state == null) {
             return ""

@@ -28,9 +28,9 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 class ExternalProgramDownload(
     private val datenDownload: DatenDownload
-) : Thread("EXTERNAL PROGRAM DL THREAD: ${datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]}") {
+) : Thread("EXTERNAL PROGRAM DL THREAD: ${datenDownload.title}") {
 
-    private val start: DownloadRunState = datenDownload.start
+    private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
     private var file: File
     private var retAbbrechen = false
     private var dialogAbbrechenIsVis = false
@@ -39,7 +39,7 @@ class ExternalProgramDownload(
 
     init {
         start.markRunning()
-        var fileName = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+        var fileName = datenDownload.targetPathFileName
 
         // JDK 25+ workaround
         if (Runtime.version().feature() > 24 && fileName.isEmpty()) {
@@ -179,10 +179,10 @@ class ExternalProgramDownload(
         start.incrementStartCounter()
         DownloadLogMessages.logStart(datenDownload, start)
         val runtimeExec = RuntimeExec(
-            datenDownload.mVFilmSize,
-            datenDownload.start,
-            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF],
-            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]
+            datenDownload.runtime.filmSize,
+            datenDownload.runtime.runState,
+            datenDownload.programInvocation,
+            datenDownload.programInvocationArray
         )
         start.process = runtimeExec.exec(true)
         return start.process != null
@@ -236,10 +236,10 @@ class ExternalProgramDownload(
                     // dann mit gleichem Namen und Datei vorher loeschen
                     try {
                         Files.deleteIfExists(file.toPath())
-                        file = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                        file = File(datenDownload.targetPathFileName)
                     } catch (ex: Exception) {
                         // kann nicht geloescht werden, evtl. klappt ja das Ueberschreiben
-                        logger.error("File exists: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], ex)
+                        logger.error("File exists: {}", datenDownload.targetPathFileName, ex)
                     }
                 }
 
@@ -249,7 +249,7 @@ class ExternalProgramDownload(
                         datenDownload.aufrufBauen()
                         MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                         createDirectory(logFailure = false)
-                        file = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                        file = File(datenDownload.targetPathFileName)
                     }
                 }
             }
@@ -260,20 +260,20 @@ class ExternalProgramDownload(
     private fun resolveExistingDownloadForCli(): Boolean {
         logger.info(
             "CLI download mode: overwriting existing external-program target for {}",
-            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+            datenDownload.targetPathFileName
         )
         try {
             Files.deleteIfExists(file.toPath())
-            file = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+            file = File(datenDownload.targetPathFileName)
         } catch (ex: Exception) {
-            logger.error("File exists: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], ex)
+            logger.error("File exists: {}", datenDownload.targetPathFileName, ex)
         }
         return false
     }
 
     private fun showDownloadError(message: String?) {
         if (Config.isDownloadAndQuit()) {
-            logger.error("Download failed for {}: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], message)
+            logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }
         SwingUtilities.invokeLater {
@@ -283,7 +283,7 @@ class ExternalProgramDownload(
 
     private fun createDirectory(logFailure: Boolean = true) {
         try {
-            Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]))
+            Files.createDirectories(Paths.get(datenDownload.targetPath))
         } catch (ex: IOException) {
             if (logFailure) {
                 logger.error("Failed to create directories", ex)

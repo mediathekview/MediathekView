@@ -31,7 +31,6 @@ abstract class ColumnVisibilityStore {
         @JvmStatic
         fun create(length: Int): ColumnVisibilityStore = of(BooleanArray(length))
 
-        @JvmStatic
         fun of(visibilityStore: BooleanArray): ColumnVisibilityStore = BooleanArrayColumnVisibilityStore(visibilityStore)
     }
 }

@@ -48,16 +48,16 @@ class DownloadSizeLookupService(
                 }
 
                 try {
-                    val oldSize = download.mVFilmSize.size
+                    val oldSize = download.runtime.filmSize.size
                     val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
                     val wasGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
                     download.queryLiveSize()
                     val isGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
-                    if (download.mVFilmSize.size != oldSize || isGeoBlocked != wasGeoBlocked) {
+                    if (download.runtime.filmSize.size != oldSize || isGeoBlocked != wasGeoBlocked) {
                         updateNeeded = true
                     }
                 } catch (ex: RuntimeException) {
-                    logger.debug("Could not update live size for download {}", download.arr[DatenDownload.DOWNLOAD_TITEL], ex)
+                    logger.debug("Could not update live size for download {}", download.title, ex)
                 } finally {
                     inFlight.remove(download)
                 }
@@ -72,5 +72,5 @@ class DownloadSizeLookupService(
     }
 
     private fun DatenDownload.needsLiveSizeLookup(): Boolean =
-        film != null && mVFilmSize.size == 0L
+        film != null && runtime.filmSize.size == 0L
 }

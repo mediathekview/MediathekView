@@ -146,8 +146,8 @@ public class PanelPsetKurz extends JPanel {
             DatenProg prog = pSet.getProg(i);
             name = "Programmpfad";
             JPanel panel = new JPanel();
-            panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new Color(80, 80, 80), 1), prog.arr[DatenProg.PROGRAMM_NAME]));
-            setFeld(panel, name, prog.arr);
+            panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new Color(80, 80, 80), 1), prog.getName()));
+            setFeld(panel, name, prog);
             gridbag.setConstraints(panel, c);
             jPanelExtra.add(panel);
             ++c.gridy;
@@ -158,7 +158,7 @@ public class PanelPsetKurz extends JPanel {
         jPanelExtra.add(label);
     }
 
-    private void setFeld(JPanel panel, String name, String[] arr) {
+    private void setFeld(JPanel panel, String name, DatenProg prog) {
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         panel.setLayout(gridbag);
@@ -179,8 +179,8 @@ public class PanelPsetKurz extends JPanel {
         // Textfeld
         c.gridx = 1;
         c.weightx = 10;
-        JTextField textField = new JTextField(arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
-        textField.getDocument().addDocumentListener(new BeobDoc(textField, arr, DatenProg.PROGRAMM_PROGRAMMPFAD));
+        JTextField textField = new JTextField(prog.getProgramPath());
+        textField.getDocument().addDocumentListener(new BeobDoc(textField, prog, DatenProg.PROGRAMM_PROGRAMMPFAD));
         var handler = new TextCopyPasteHandler<>(textField);
         textField.setComponentPopupMenu(handler.getPopupMenu());
         gridbag.setConstraints(textField, c);
@@ -190,7 +190,7 @@ public class PanelPsetKurz extends JPanel {
         c.weightx = 0;
         JButton button = new JButton();
         button.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        button.addActionListener(new ZielBeobachter(textField, arr, DatenProg.PROGRAMM_PROGRAMMPFAD));
+        button.addActionListener(new ZielBeobachter(textField, prog, DatenProg.PROGRAMM_PROGRAMMPFAD));
         button.setToolTipText("Programm auswählen");
         gridbag.setConstraints(button, c);
         panel.add(button);
@@ -203,13 +203,13 @@ public class PanelPsetKurz extends JPanel {
     private class ZielBeobachter implements ActionListener {
 
         final JTextField textField;
-        String[] arr;
+        DatenProg prog;
         final int idx;
         final boolean file;
 
-        public ZielBeobachter(JTextField tt, String[] aarr, int iidx) {
+        public ZielBeobachter(JTextField tt, DatenProg pprog, int iidx) {
             textField = tt;
-            arr = aarr; // Programmarray
+            prog = pprog;
             idx = iidx;
             file = true;
         }
@@ -238,10 +238,10 @@ public class PanelPsetKurz extends JPanel {
                     //A directory was selected, that means Cancel was not pressed
                     try {
                         textField.setText(chooser.getDirectory() + chooser.getFile());
-                        if (arr == null) {
+                        if (prog == null) {
                             pSet.set(idx, textField.getText());
                         } else {
-                            arr[idx] = textField.getText();
+                            prog.set(idx, textField.getText());
                         }
                     } catch (Exception ex) {
                         logger.error(ex);
@@ -260,10 +260,10 @@ public class PanelPsetKurz extends JPanel {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
-                        if (arr == null) {
+                        if (prog == null) {
                             pSet.set(idx, textField.getText());
                         } else {
-                            arr[idx] = textField.getText();
+                            prog.set(idx, textField.getText());
                         }
                     } catch (Exception ex) {
                         logger.error(ex);
@@ -277,11 +277,11 @@ public class PanelPsetKurz extends JPanel {
 
         private final JTextField textField;
         private final int idx;
-        private String[] arr; // das Programmarray
+        private DatenProg prog;
 
-        public BeobDoc(JTextField tt, String[] aarr, int iidx) {
+        public BeobDoc(JTextField tt, DatenProg pprog, int iidx) {
             textField = tt;
-            arr = aarr;
+            prog = pprog;
             idx = iidx;
         }
 
@@ -312,10 +312,10 @@ public class PanelPsetKurz extends JPanel {
             }
             if (!stopBeob) {
                 stopBeob = true;
-                if (arr == null) {
+                if (prog == null) {
                     pSet.set(idx, textField.getText());
                 } else {
-                    arr[idx] = textField.getText();
+                    prog.set(idx, textField.getText());
                 }
                 stopBeob = false;
             }

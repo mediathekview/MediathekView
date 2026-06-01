@@ -31,7 +31,7 @@ class MeldungDownloadfehler(
         EscapeKeyHandler.installHandler(this) { dispose() }
 
         jTextArea1.text = text
-        jTextFieldTitel.text = datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]
+        jTextFieldTitel.text = datenDownload.title
         jButtonOk.addActionListener { dispose() }
 
         startCountdown()

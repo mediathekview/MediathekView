@@ -1,41 +1,164 @@
 package mediathek.daten
 
+import mediathek.tool.FileSize
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
 
 internal class DatenDownloadTest {
 
     @Test
-    fun stripDotsAndColons() {
-        val download = DatenDownload()
-
-        assertEquals("20250927", download.stripDotsAndColons("2025.09.27"))
-        assertEquals("201500", download.stripDotsAndColons("20:15:00"))
-    }
-
-    @Test
     fun formatTimeRemaining() {
-        val download = DatenDownload()
-
-        assertEquals("6 Min.", download.formatTimeRemaining(360))
-        assertEquals("5 Min.", download.formatTimeRemaining(240))
-        assertEquals("4 Min.", download.formatTimeRemaining(180))
-        assertEquals("3 Min.", download.formatTimeRemaining(120))
-        assertEquals("2 Min.", download.formatTimeRemaining(70))
-        assertEquals("1 Min.", download.formatTimeRemaining(40))
-        assertEquals("30 s", download.formatTimeRemaining(25))
-        assertEquals("20 s", download.formatTimeRemaining(15))
-        assertEquals("10 s", download.formatTimeRemaining(8))
+        assertEquals("6 Min.", DownloadRuntimeText.formatTimeRemaining(360))
+        assertEquals("5 Min.", DownloadRuntimeText.formatTimeRemaining(240))
+        assertEquals("4 Min.", DownloadRuntimeText.formatTimeRemaining(180))
+        assertEquals("3 Min.", DownloadRuntimeText.formatTimeRemaining(120))
+        assertEquals("2 Min.", DownloadRuntimeText.formatTimeRemaining(70))
+        assertEquals("1 Min.", DownloadRuntimeText.formatTimeRemaining(40))
+        assertEquals("30 s", DownloadRuntimeText.formatTimeRemaining(25))
+        assertEquals("20 s", DownloadRuntimeText.formatTimeRemaining(15))
+        assertEquals("10 s", DownloadRuntimeText.formatTimeRemaining(8))
     }
 
     @Test
-    fun replaceYearParameter() {
-        val film = DatenFilm()
-        val download = DatenDownload()
-        val year = LocalDateTime.now().year.toString()
+    fun convertsDownloadConfigAtModelBoundary() {
+        val config = DownloadConfig(
+            aboName = "Abo",
+            sender = "Sender",
+            topic = "Topic",
+            title = "Title",
+            sizeInMiB = 42,
+            date = "01.06.2026",
+            time = "20:15:00",
+            duration = "00:45:00",
+            interrupted = true,
+            filmUrl = "https://example.invalid/film",
+            historyUrl = "https://example.invalid/history",
+            url = "https://example.invalid/download.mp4",
+            rtmpUrl = "rtmp://example.invalid/download",
+            subtitleUrl = "https://example.invalid/subtitle.vtt",
+            programSet = "Set",
+            program = "Program",
+            programInvocation = "program invocation",
+            programInvocationArray = "program|invocation",
+            restart = true,
+            targetFileName = "target.mp4",
+            targetPath = "/tmp",
+            targetPathFileName = "/tmp/target.mp4",
+            type = DownloadType.PROGRAM,
+            source = DownloadSource.DOWNLOAD,
+            deferred = true,
+            infoFile = true,
+            spotlight = true,
+            subtitle = true,
+            downloadManager = true,
+        )
 
-        assertEquals(year, download.replaceYearParameter("%3", film))
-        assertEquals(year.takeLast(2), download.replaceYearParameter("%3_2", film))
+        val download = DatenDownload.fromConfig(config)
+        val roundTripConfig = download.toConfig()
+
+        assertEquals(config, roundTripConfig)
+        assertEquals(DownloadType.PROGRAM, download.art)
+        assertEquals(DownloadSource.DOWNLOAD, download.quelle)
+        assertEquals(42L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+    }
+
+    @Test
+    fun buildsProgramInvocationFromDownloadContext() {
+        val program = DatenProg(
+            "Program",
+            "program",
+            "--target ** --url %f --rtmp %F --path %a --name %b --web %w",
+            false.toString(),
+            false.toString(),
+        )
+
+        val invocation = DownloadProgramInvocationBuilder.build(
+            downloadType = DownloadType.PROGRAM,
+            program = program,
+            request = DownloadInvocationRequest(
+                downloadUrl = "https://example.invalid/download.mp4",
+                rtmpUrl = "rtmp://example.invalid/download",
+                targetPath = "/tmp",
+                targetFileName = "download.mp4",
+                targetPathFileName = "/tmp/download.mp4",
+                websiteUrl = "https://example.invalid/film",
+            ),
+        )
+
+        assertEquals(
+            "program --target /tmp/download.mp4 --url https://example.invalid/download.mp4 " +
+                "--rtmp rtmp://example.invalid/download --path /tmp --name download.mp4 " +
+                "--web https://example.invalid/film",
+            invocation.command,
+        )
+    }
+
+    @Test
+    fun buildsTargetFromProgramSetAndFilmFields() {
+        val film = DatenFilm().apply {
+            sender = "Sender One"
+            thema = "Topic One"
+            title = "Title One"
+            sendeDatum = "01.06.2026"
+            sendeZeit = "20:15:00"
+            setNormalQualityUrl("https://example.invalid/video.mp4")
+        }
+        val programSet = DatenPset("Set").apply {
+            zielDateiname = "%s-%t-%T.%S"
+            zielPfad = "/downloads/%s"
+            addProg(DatenProg("Program", "program", "--target **", false.toString(), false.toString()))
+        }
+
+        val target = DownloadTargetBuilder.build(
+            DownloadTargetRequest(
+                pSet = programSet,
+                film = film,
+                abo = null,
+                requestedFileName = "",
+                requestedPath = "",
+                downloadUrl = film.urlNormalQuality,
+                topic = "Topic One",
+                title = "Title One",
+            ),
+        )
+
+        assertEquals("Sender One-Topic One-Title One.mp4", target.fileName)
+        assertEquals("/downloads/Sender One/Topic One", target.path)
+        assertEquals("/downloads/Sender One/Topic One/Sender One-Topic One-Title One.mp4", target.pathFileName)
+    }
+
+    @Test
+    fun copyPreservesWebsiteUrlForProgramInvocationRebuilds() {
+        val film = DatenFilm().apply {
+            sender = "Sender One"
+            thema = "Topic One"
+            title = "Title One"
+            sendeDatum = "01.06.2026"
+            sendeZeit = "20:15:00"
+            setNormalQualityUrl("https://example.invalid/video.mp4")
+            websiteUrl = "https://example.invalid/film-page"
+        }
+        val programSet = DatenPset("Set").apply {
+            zielDateiname = "%s-%t-%T.%S"
+            zielPfad = "/downloads/%s"
+            addProg(DatenProg("Program", "program", "--web %w --target **", false.toString(), false.toString()))
+        }
+
+        val copiedDownload = DatenDownload(
+            programSet,
+            film,
+            DownloadSource.DOWNLOAD,
+            null,
+            "",
+            "",
+            "",
+        ).copy
+
+        copiedDownload.programInvocation = ""
+        copiedDownload.programInvocationArray = ""
+        copiedDownload.aufrufBauen()
+
+        assertTrue(copiedDownload.programInvocation.contains("--web https://example.invalid/film-page"))
     }
 }

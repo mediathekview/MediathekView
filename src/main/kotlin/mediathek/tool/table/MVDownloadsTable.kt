@@ -22,6 +22,7 @@ import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
 import mediathek.config.MVConfig
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadColumns
 import mediathek.gui.messages.DownloadQueueRankChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.models.TModelDownload
@@ -42,8 +43,8 @@ import javax.swing.table.TableModel
 private val logger = LogManager.getLogger()
 
 class MVDownloadsTable : PersistentColumnConfigurationTable(
-    DatenDownload.MAX_ELEM,
-    DatenDownload.getColumnVisibilityStore(),
+    DownloadColumns.COUNT,
+    DownloadColumns.visibilityStore(),
     Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN),
     Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN),
     MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS,
@@ -72,7 +73,7 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
         val viewColumn = columnAtPoint(point)
         val modelColumnIndex = convertColumnIndexToModel(viewColumn)
 
-        if (modelColumnIndex != DatenDownload.DOWNLOAD_TITEL) {
+        if (modelColumnIndex != DownloadColumns.TITLE) {
             return super.getToolTipText(event)
         }
 
@@ -83,7 +84,7 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
         return try {
             if (component.preferredSize.width > bounds.width) {
                 val modelRowIndex = convertRowIndexToModel(viewRow)
-                val download = model.getValueAt(modelRowIndex, DatenDownload.DOWNLOAD_REF) as DatenDownload
+                val download = model.getValueAt(modelRowIndex, DownloadColumns.REF) as DatenDownload
                 download.film?.title.orEmpty()
             } else {
                 null
@@ -116,37 +117,37 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
     private fun resetDownloadsTab(column: Int) {
         reihe[column] = column
         breite[column] = when (column) {
-            DatenDownload.DOWNLOAD_NR,
-            DatenDownload.DOWNLOAD_FILM_NR,
+            DownloadColumns.NR,
+            DownloadColumns.FILM_NR,
                 -> 75
 
-            DatenDownload.DOWNLOAD_BUTTON_START,
-            DatenDownload.DOWNLOAD_BUTTON_DEL,
-            DatenDownload.DOWNLOAD_PROGRAMM_RESTART,
-            DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER,
-            DatenDownload.DOWNLOAD_UNTERBROCHEN,
-            DatenDownload.DOWNLOAD_SPOTLIGHT,
-            DatenDownload.DOWNLOAD_SUBTITLE,
-            DatenDownload.DOWNLOAD_INFODATEI,
-            DatenDownload.DOWNLOAD_HD,
-            DatenDownload.DOWNLOAD_UT,
+            DownloadColumns.BUTTON_START,
+            DownloadColumns.BUTTON_DELETE,
+            DownloadColumns.PROGRAM_RESTART,
+            DownloadColumns.DOWNLOAD_MANAGER,
+            DownloadColumns.INTERRUPTED,
+            DownloadColumns.SPOTLIGHT,
+            DownloadColumns.SUBTITLE,
+            DownloadColumns.INFO_FILE,
+            DownloadColumns.HIGH_QUALITY,
+            DownloadColumns.SUBTITLE_AVAILABLE,
                 -> 50
 
-            DatenDownload.DOWNLOAD_TITEL -> 250
+            DownloadColumns.TITLE -> 250
 
-            DatenDownload.DOWNLOAD_ABO,
-            DatenDownload.DOWNLOAD_THEMA,
+            DownloadColumns.ABO,
+            DownloadColumns.TOPIC,
                 -> 150
 
-            DatenDownload.DOWNLOAD_DATUM,
-            DatenDownload.DOWNLOAD_ZEIT,
-            DatenDownload.DOWNLOAD_GROESSE,
-            DatenDownload.DOWNLOAD_BANDBREITE,
-            DatenDownload.DOWNLOAD_SENDER,
-            DatenDownload.DOWNLOAD_PROGRESS,
-            DatenDownload.DOWNLOAD_RESTZEIT,
-            DatenDownload.DOWNLOAD_DAUER,
-            DatenDownload.DOWNLOAD_GEO,
+            DownloadColumns.DATE,
+            DownloadColumns.TIME,
+            DownloadColumns.SIZE,
+            DownloadColumns.BANDWIDTH,
+            DownloadColumns.SENDER,
+            DownloadColumns.PROGRESS,
+            DownloadColumns.REMAINING_TIME,
+            DownloadColumns.DURATION,
+            DownloadColumns.GEO,
                 -> 100
 
             else -> 200
@@ -163,7 +164,7 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
         val downloads = Daten.getInstance().listeDownloads
 
         for (row in 0 until rowCount) {
-            val download = tableModel.getValueAt(convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF) as DatenDownload
+            val download = tableModel.getValueAt(convertRowIndexToModel(row), DownloadColumns.REF) as DatenDownload
             downloads.remove(download)
             downloads.add(download)
         }
@@ -172,25 +173,25 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
     override fun spaltenAusschalten() {
         for (column in 0 until maxSpalten) {
             when (column) {
-                DatenDownload.DOWNLOAD_FILM_URL,
-                DatenDownload.DOWNLOAD_URL_RTMP,
-                DatenDownload.DOWNLOAD_URL_SUBTITLE,
-                DatenDownload.DOWNLOAD_PROGRAMM,
-                DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF,
-                DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY,
-                DatenDownload.DOWNLOAD_PROGRAMM_RESTART,
-                DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER,
-                DatenDownload.DOWNLOAD_ZIEL_DATEINAME,
-                DatenDownload.DOWNLOAD_ZIEL_PFAD,
-                DatenDownload.DOWNLOAD_ART,
-                DatenDownload.DOWNLOAD_QUELLE,
-                DatenDownload.DOWNLOAD_ZURUECKGESTELLT,
-                DatenDownload.DOWNLOAD_HISTORY_URL,
-                DatenDownload.DOWNLOAD_REF,
-                DatenDownload.DOWNLOAD_SPOTLIGHT,
-                DatenDownload.DOWNLOAD_INFODATEI,
-                DatenDownload.DOWNLOAD_SUBTITLE,
-                DatenDownload.DOWNLOAD_UNTERBROCHEN,
+                DownloadColumns.FILM_URL,
+                DownloadColumns.RTMP_URL,
+                DownloadColumns.SUBTITLE_URL,
+                DownloadColumns.PROGRAM,
+                DownloadColumns.PROGRAM_INVOCATION,
+                DownloadColumns.PROGRAM_INVOCATION_ARRAY,
+                DownloadColumns.PROGRAM_RESTART,
+                DownloadColumns.DOWNLOAD_MANAGER,
+                DownloadColumns.TARGET_FILE_NAME,
+                DownloadColumns.TARGET_PATH,
+                DownloadColumns.TYPE,
+                DownloadColumns.SOURCE,
+                DownloadColumns.DEFERRED,
+                DownloadColumns.HISTORY_URL,
+                DownloadColumns.REF,
+                DownloadColumns.SPOTLIGHT,
+                DownloadColumns.INFO_FILE,
+                DownloadColumns.SUBTITLE,
+                DownloadColumns.INTERRUPTED,
                     -> breite[column] = 0
             }
         }
@@ -257,7 +258,7 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
                     --insertionIndex
                 }
 
-                val download = tableModel.getValueAt(convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF) as DatenDownload
+                val download = tableModel.getValueAt(convertRowIndexToModel(row), DownloadColumns.REF) as DatenDownload
                 downloadsToMove.add(download)
                 daten.listeDownloads.remove(download)
             }
@@ -287,8 +288,8 @@ class MVDownloadsTable : PersistentColumnConfigurationTable(
         }
 
         private fun configureSortableColumns() {
-            setSortable(DatenDownload.DOWNLOAD_BUTTON_START, false)
-            setSortable(DatenDownload.DOWNLOAD_BUTTON_DEL, false)
+            setSortable(DownloadColumns.BUTTON_START, false)
+            setSortable(DownloadColumns.BUTTON_DELETE, false)
         }
     }
 

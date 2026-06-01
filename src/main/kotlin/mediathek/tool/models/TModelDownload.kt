@@ -1,6 +1,7 @@
 package mediathek.tool.models
 
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadColumns
 import mediathek.tool.MVFilmSize
 import mediathek.tool.datum.Datum
 import javax.swing.table.DefaultTableModel
@@ -8,25 +9,25 @@ import javax.swing.table.DefaultTableModel
 class TModelDownload : DefaultTableModel() {
     override fun getColumnClass(columnIndex: Int): Class<*> =
         when (columnIndex) {
-            DatenDownload.DOWNLOAD_NR,
-            DatenDownload.DOWNLOAD_FILM_NR,
+            DownloadColumns.NR,
+            DownloadColumns.FILM_NR,
             -> Int::class.javaObjectType
 
-            DatenDownload.DOWNLOAD_DATUM -> Datum::class.java
-            DatenDownload.DOWNLOAD_GROESSE -> MVFilmSize::class.java
+            DownloadColumns.DATE -> Datum::class.java
+            DownloadColumns.SIZE -> MVFilmSize::class.java
 
-            DatenDownload.DOWNLOAD_HD,
-            DatenDownload.DOWNLOAD_UT,
-            DatenDownload.DOWNLOAD_SPOTLIGHT,
-            DatenDownload.DOWNLOAD_UNTERBROCHEN,
-            DatenDownload.DOWNLOAD_PROGRAMM_RESTART,
-            DatenDownload.DOWNLOAD_INFODATEI,
-            DatenDownload.DOWNLOAD_SUBTITLE,
-            DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER,
-            DatenDownload.DOWNLOAD_ZURUECKGESTELLT,
+            DownloadColumns.HIGH_QUALITY,
+            DownloadColumns.SUBTITLE_AVAILABLE,
+            DownloadColumns.SPOTLIGHT,
+            DownloadColumns.INTERRUPTED,
+            DownloadColumns.PROGRAM_RESTART,
+            DownloadColumns.INFO_FILE,
+            DownloadColumns.SUBTITLE,
+            DownloadColumns.DOWNLOAD_MANAGER,
+            DownloadColumns.DEFERRED,
             -> Boolean::class.javaObjectType
 
-            DatenDownload.DOWNLOAD_REF -> DatenDownload::class.java
+            DownloadColumns.REF -> DatenDownload::class.java
             else -> String::class.java
         }
 
@@ -34,88 +35,88 @@ class TModelDownload : DefaultTableModel() {
 
     override fun getColumnName(column: Int): String =
         when (column) {
-            DatenDownload.DOWNLOAD_NR -> "DL Nr"
-            DatenDownload.DOWNLOAD_FILM_NR -> "Film Nr."
-            DatenDownload.DOWNLOAD_ABO -> "Abo"
-            DatenDownload.DOWNLOAD_SENDER -> "Sender"
-            DatenDownload.DOWNLOAD_THEMA -> "Thema"
-            DatenDownload.DOWNLOAD_TITEL -> "Titel"
-            DatenDownload.DOWNLOAD_BUTTON_START,
-            DatenDownload.DOWNLOAD_BUTTON_DEL,
+            DownloadColumns.NR -> "DL Nr"
+            DownloadColumns.FILM_NR -> "Film Nr."
+            DownloadColumns.ABO -> "Abo"
+            DownloadColumns.SENDER -> "Sender"
+            DownloadColumns.TOPIC -> "Thema"
+            DownloadColumns.TITLE -> "Titel"
+            DownloadColumns.BUTTON_START,
+            DownloadColumns.BUTTON_DELETE,
             -> ""
 
-            DatenDownload.DOWNLOAD_PROGRESS -> "Fortschritt"
-            DatenDownload.DOWNLOAD_RESTZEIT -> "Restzeit"
-            DatenDownload.DOWNLOAD_BANDBREITE -> "Geschwindigkeit"
-            DatenDownload.DOWNLOAD_GROESSE -> "Größe [MB]"
-            DatenDownload.DOWNLOAD_DATUM -> "Datum"
-            DatenDownload.DOWNLOAD_ZEIT -> "Zeit"
-            DatenDownload.DOWNLOAD_DAUER -> "Dauer"
-            DatenDownload.DOWNLOAD_HD -> "HQ"
-            DatenDownload.DOWNLOAD_UT -> "UT"
-            DatenDownload.DOWNLOAD_UNTERBROCHEN -> "Pause"
-            DatenDownload.DOWNLOAD_GEO -> "Geo"
-            DatenDownload.DOWNLOAD_FILM_URL -> "URL Film"
-            DatenDownload.DOWNLOAD_HISTORY_URL -> "URL History"
-            DatenDownload.DOWNLOAD_URL -> "URL"
-            DatenDownload.DOWNLOAD_URL_RTMP -> "URL RTMP"
-            DatenDownload.DOWNLOAD_URL_SUBTITLE -> "URL Untertitel"
-            DatenDownload.DOWNLOAD_PROGRAMMSET -> "Programmset"
-            DatenDownload.DOWNLOAD_PROGRAMM -> "Programm"
-            DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF -> "Programmaufruf"
-            DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY -> "Programmaufruf Array"
-            DatenDownload.DOWNLOAD_PROGRAMM_RESTART -> "Restart"
-            DatenDownload.DOWNLOAD_ZIEL_DATEINAME -> "Dateiname"
-            DatenDownload.DOWNLOAD_ZIEL_PFAD -> "Pfad"
-            DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME -> "Pfad-Dateiname"
-            DatenDownload.DOWNLOAD_ART -> "Art"
-            DatenDownload.DOWNLOAD_QUELLE -> "Quelle"
-            DatenDownload.DOWNLOAD_ZURUECKGESTELLT -> "Zurückgestellt"
-            DatenDownload.DOWNLOAD_INFODATEI -> "Infodatei"
-            DatenDownload.DOWNLOAD_SPOTLIGHT -> "Spotlight"
-            DatenDownload.DOWNLOAD_SUBTITLE -> "Untertitel"
-            DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER -> "Remote DL"
-            DatenDownload.DOWNLOAD_REF -> "Ref"
+            DownloadColumns.PROGRESS -> "Fortschritt"
+            DownloadColumns.REMAINING_TIME -> "Restzeit"
+            DownloadColumns.BANDWIDTH -> "Geschwindigkeit"
+            DownloadColumns.SIZE -> "Größe [MB]"
+            DownloadColumns.DATE -> "Datum"
+            DownloadColumns.TIME -> "Zeit"
+            DownloadColumns.DURATION -> "Dauer"
+            DownloadColumns.HIGH_QUALITY -> "HQ"
+            DownloadColumns.SUBTITLE_AVAILABLE -> "UT"
+            DownloadColumns.INTERRUPTED -> "Pause"
+            DownloadColumns.GEO -> "Geo"
+            DownloadColumns.FILM_URL -> "URL Film"
+            DownloadColumns.HISTORY_URL -> "URL History"
+            DownloadColumns.URL -> "URL"
+            DownloadColumns.RTMP_URL -> "URL RTMP"
+            DownloadColumns.SUBTITLE_URL -> "URL Untertitel"
+            DownloadColumns.PROGRAM_SET -> "Programmset"
+            DownloadColumns.PROGRAM -> "Programm"
+            DownloadColumns.PROGRAM_INVOCATION -> "Programmaufruf"
+            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> "Programmaufruf Array"
+            DownloadColumns.PROGRAM_RESTART -> "Restart"
+            DownloadColumns.TARGET_FILE_NAME -> "Dateiname"
+            DownloadColumns.TARGET_PATH -> "Pfad"
+            DownloadColumns.TARGET_PATH_FILE_NAME -> "Pfad-Dateiname"
+            DownloadColumns.TYPE -> "Art"
+            DownloadColumns.SOURCE -> "Quelle"
+            DownloadColumns.DEFERRED -> "Zurückgestellt"
+            DownloadColumns.INFO_FILE -> "Infodatei"
+            DownloadColumns.SPOTLIGHT -> "Spotlight"
+            DownloadColumns.SUBTITLE -> "Untertitel"
+            DownloadColumns.DOWNLOAD_MANAGER -> "Remote DL"
+            DownloadColumns.REF -> "Ref"
             else -> throw IndexOutOfBoundsException("UNKNOWN COLUMN NAME: $column")
         }
 
-    override fun getColumnCount(): Int = DatenDownload.MAX_ELEM
+    override fun getColumnCount(): Int = DownloadColumns.COUNT
 
     override fun getValueAt(row: Int, column: Int): Any? {
-        val download = dataVector[row][DatenDownload.DOWNLOAD_REF] as DatenDownload
+        val download = dataVector[row][DownloadColumns.REF] as DatenDownload
 
         return when (column) {
-            DatenDownload.DOWNLOAD_HD -> download.film != null && download.film.isHighQuality
-            DatenDownload.DOWNLOAD_UT -> download.film != null && download.film.hasSubtitle()
-            DatenDownload.DOWNLOAD_SPOTLIGHT -> download.isSpotlight
-            DatenDownload.DOWNLOAD_UNTERBROCHEN -> download.isInterrupted
-            DatenDownload.DOWNLOAD_PROGRAMM_RESTART -> download.isRestart
-            DatenDownload.DOWNLOAD_INFODATEI -> download.isInfoFile
-            DatenDownload.DOWNLOAD_SUBTITLE -> download.isSubtitle
-            DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER -> download.isDownloadManager
-            DatenDownload.DOWNLOAD_ZURUECKGESTELLT -> download.istZurueckgestellt()
-            DatenDownload.DOWNLOAD_ABO,
-            DatenDownload.DOWNLOAD_SENDER,
-            DatenDownload.DOWNLOAD_THEMA,
-            DatenDownload.DOWNLOAD_TITEL,
-            DatenDownload.DOWNLOAD_ZEIT,
-            DatenDownload.DOWNLOAD_DAUER,
-            DatenDownload.DOWNLOAD_GEO,
-            DatenDownload.DOWNLOAD_FILM_URL,
-            DatenDownload.DOWNLOAD_HISTORY_URL,
-            DatenDownload.DOWNLOAD_URL,
-            DatenDownload.DOWNLOAD_URL_RTMP,
-            DatenDownload.DOWNLOAD_URL_SUBTITLE,
-            DatenDownload.DOWNLOAD_PROGRAMMSET,
-            DatenDownload.DOWNLOAD_PROGRAMM,
-            DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF,
-            DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY,
-            DatenDownload.DOWNLOAD_ZIEL_DATEINAME,
-            DatenDownload.DOWNLOAD_ZIEL_PFAD,
-            DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME,
-            DatenDownload.DOWNLOAD_ART,
-            DatenDownload.DOWNLOAD_QUELLE,
-            -> download.arr[column]
+            DownloadColumns.HIGH_QUALITY -> download.film?.isHighQuality == true
+            DownloadColumns.SUBTITLE_AVAILABLE -> download.film?.hasSubtitle() == true
+            DownloadColumns.SPOTLIGHT -> download.isSpotlight
+            DownloadColumns.INTERRUPTED -> download.isInterrupted
+            DownloadColumns.PROGRAM_RESTART -> download.isRestart
+            DownloadColumns.INFO_FILE -> download.isInfoFile
+            DownloadColumns.SUBTITLE -> download.isSubtitle
+            DownloadColumns.DOWNLOAD_MANAGER -> download.isDownloadManager
+            DownloadColumns.DEFERRED -> download.isDeferred
+            DownloadColumns.TYPE -> download.art.legacyId.toString()
+            DownloadColumns.SOURCE -> download.quelle.legacyId.toString()
+            DownloadColumns.GEO -> download.geo
+
+            DownloadColumns.ABO -> download.aboName
+            DownloadColumns.SENDER -> download.sender
+            DownloadColumns.TOPIC -> download.topic
+            DownloadColumns.TITLE -> download.title
+            DownloadColumns.TIME -> download.time
+            DownloadColumns.DURATION -> download.duration
+            DownloadColumns.FILM_URL -> download.filmUrl
+            DownloadColumns.HISTORY_URL -> download.historyUrl
+            DownloadColumns.URL -> download.downloadUrl
+            DownloadColumns.RTMP_URL -> download.rtmpUrl
+            DownloadColumns.SUBTITLE_URL -> download.subtitleUrl
+            DownloadColumns.PROGRAM_SET -> download.programSetName
+            DownloadColumns.PROGRAM -> download.programName
+            DownloadColumns.PROGRAM_INVOCATION -> download.programInvocation
+            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> download.programInvocationArray
+            DownloadColumns.TARGET_FILE_NAME -> download.targetFileName
+            DownloadColumns.TARGET_PATH -> download.targetPath
+            DownloadColumns.TARGET_PATH_FILE_NAME -> download.targetPathFileName
 
             else -> super.getValueAt(row, column)
         }

@@ -332,7 +332,7 @@ public class PanelPsetLang extends JPanel {
                 tabelleProgramme();
                 return;
             }
-            text = prog.arr[DatenProg.PROGRAMM_NAME];
+            text = prog.getName();
         } else {
             text = modelRows.length + " Programme löschen?";
         }
@@ -374,7 +374,11 @@ public class PanelPsetLang extends JPanel {
             var modelIndex = tabelleProgramme.convertRowIndexToModel(rows);
             var listeProg = getCurrentProgramList();
             var prog = listeProg.get(modelIndex);
-            prog.arr[dataIndex] = Boolean.toString(selected);
+            if (dataIndex == DatenProg.PROGRAMM_RESTART) {
+                prog.setRestart(selected);
+            } else if (dataIndex == DatenProg.PROGRAMM_DOWNLOADMANAGER) {
+                prog.setDownloadManager(selected);
+            }
             listeProg.fireEntryChanged(modelIndex);
             updateProgramMoveButtons(prog);
         }
@@ -468,8 +472,8 @@ public class PanelPsetLang extends JPanel {
 
                     for (var datenProg : datenPset.getListeProg()) {
                         // Programmpfad prüfen
-                        final var progPfad = datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD];
-                        final var progName = datenProg.arr[DatenProg.PROGRAMM_NAME];
+                        final var progPfad = datenProg.getProgramPath();
+                        final var progName = datenProg.getName();
                         if (progPfad.isEmpty()) {
                             ret = false;
                             text.append(PIPE + LEER + "Kein Programm angegeben!\n");
@@ -730,12 +734,12 @@ public class PanelPsetLang extends JPanel {
     }
 
     private void fillProgramFields(DatenProg prog) {
-        jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
-        jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER]);
-        jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME]);
-        jTextFieldProgName.setText(prog.arr[DatenProg.PROGRAMM_NAME]);
-        jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX]);
-        jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX]);
+        jTextFieldProgPfad.setText(prog.getProgramPath());
+        jTextFieldProgSchalter.setText(prog.getSwitches());
+        jTextFieldProgZielDateiName.setText(prog.getTargetFileName());
+        jTextFieldProgName.setText(prog.getName());
+        jTextFieldProgPraefix.setText(prog.getPrefix());
+        jTextFieldProgSuffix.setText(prog.getSuffix());
     }
 
     private void clearProgramFields() {
@@ -832,7 +836,7 @@ public class PanelPsetLang extends JPanel {
 
     private boolean isEmptyProgramEntry(DatenProg prog) {
         for (int i = 0; i < DatenProg.PROGRAMM_RESTART; ++i) {
-            var value = prog.arr[i];
+            var value = prog.get(i);
             if (value != null && !value.isBlank()) {
                 return false;
             }
@@ -927,12 +931,12 @@ public class PanelPsetLang extends JPanel {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
                     var listeProg = getCurrentProgramList();
                     DatenProg prog = listeProg.get(row);
-                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] = jTextFieldProgPfad.getText();
-                    prog.arr[DatenProg.PROGRAMM_SCHALTER] = jTextFieldProgSchalter.getText();
-                    prog.arr[DatenProg.PROGRAMM_NAME] = jTextFieldProgName.getText();
-                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = jTextFieldProgZielDateiName.getText();
-                    prog.arr[DatenProg.PROGRAMM_SUFFIX] = jTextFieldProgSuffix.getText();
-                    prog.arr[DatenProg.PROGRAMM_PRAEFIX] = jTextFieldProgPraefix.getText();
+                    prog.setProgramPath(jTextFieldProgPfad.getText());
+                    prog.setSwitches(jTextFieldProgSchalter.getText());
+                    prog.setName(jTextFieldProgName.getText());
+                    prog.setTargetFileName(jTextFieldProgZielDateiName.getText());
+                    prog.setSuffix(jTextFieldProgSuffix.getText());
+                    prog.setPrefix(jTextFieldProgPraefix.getText());
                     listeProg.fireEntryChanged(row);
                     updateProgramMoveButtons(prog);
 //                    progNamePruefen();

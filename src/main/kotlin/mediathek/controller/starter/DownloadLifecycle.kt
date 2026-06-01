@@ -36,9 +36,9 @@ internal object DownloadCompletionValidator {
 
         if (datenDownload.isFromAbo) {
             val entry = AboHistoryEntry.today(
-                datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
-                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
-                datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL],
+                datenDownload.topic,
+                datenDownload.title,
+                datenDownload.historyUrl,
             )
             daten.aboHistoryController.add(entry)
         }
@@ -48,7 +48,7 @@ internal object DownloadCompletionValidator {
 
     private fun isSuccessfulDownload(datenDownload: DatenDownload, start: DownloadRunState?): Boolean {
         // prüfen ob der Download geklappt hat und die Datei existiert und eine min. Größe hat
-        val filePath = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+        val filePath = datenDownload.targetPathFileName
 
         if (start != null && start.percent > -1 && start.percent < MIN_COMPLETED_DOWNLOAD_PERCENT) {
             // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
@@ -94,7 +94,7 @@ internal object DownloadFileCleanup {
 
 internal object DownloadCompletionHandler {
     fun finalizeDownload(datenDownload: DatenDownload, start: DownloadRunState, state: HttpDownloadState) {
-        DownloadFileCleanup.deleteIfEmpty(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]))
+        DownloadFileCleanup.deleteIfEmpty(Paths.get(datenDownload.targetPathFileName))
         setFileSize(datenDownload)
 
         if (SystemUtils.IS_OS_MAC_OSX) {
@@ -108,10 +108,10 @@ internal object DownloadCompletionHandler {
         }
 
         if (state == HttpDownloadState.CANCEL) {
-            datenDownload.resetDownload()
+            DownloadLifecycleActions.reset(datenDownload)
         } else {
             start.markCompletedProgress()
-            datenDownload.mVFilmSize.aktSize = -1
+            datenDownload.runtime.filmSize.aktSize = -1
         }
         DownloadStartEventPublisher.publish(datenDownload)
 
@@ -142,16 +142,16 @@ internal object DownloadCompletionHandler {
             msg.title = "Download erfolgreich"
             message = String.format(
                 "\"%s\" vom %s wurde geladen.",
-                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
-                datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
+                datenDownload.title,
+                datenDownload.sender,
             )
         } else {
             msg.type = MessageType.ERROR
             msg.title = "Download fehlerhaft"
             message = String.format(
                 "Fehler beim Laden von \"%s\" des Senders %s aufgetreten.",
-                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
-                datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
+                datenDownload.title,
+                datenDownload.sender,
             )
         }
         msg.message = message
@@ -162,10 +162,10 @@ internal object DownloadCompletionHandler {
     private fun writeSpotlightComment(datenDownload: DatenDownload?, state: HttpDownloadState) {
         // we don´t write comments if download was cancelled...
         if (state != HttpDownloadState.CANCEL && datenDownload != null) {
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT].toBoolean()) {
-                val filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+            if (datenDownload.isSpotlight) {
+                val filmPath = Paths.get(datenDownload.targetPathFileName)
                 if (Files.exists(filmPath)) {
-                    val strComment = datenDownload.film.description
+                    val strComment = datenDownload.film?.description
                     if (!strComment.isNullOrEmpty()) {
                         FinderCommentService.writeFinderComment(filmPath, strComment, true)
                     }
@@ -181,17 +181,17 @@ internal object DownloadCompletionHandler {
      */
     private fun setFileSize(datenDownload: DatenDownload) {
         try {
-            val testFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+            val testFile = File(datenDownload.targetPathFileName)
             if (testFile.exists()) {
                 val length = testFile.length()
                 if (length > 0) {
-                    datenDownload.mVFilmSize.size = length
+                    datenDownload.runtime.filmSize.size = length
                 }
             }
         } catch (_: Exception) {
             logger.error(
                 "Fehler beim Ermitteln der Dateigröße: {}",
-                datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME],
+                datenDownload.targetPathFileName,
             )
         }
     }
@@ -274,20 +274,20 @@ internal object DownloadLogMessages {
     }
 
     private fun MutableList<String>.addProgramSetAndTarget(datenDownload: DatenDownload) {
-        add("Programmset: ${datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET]}")
-        add("Ziel: ${datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]}")
+        add("Programmset: ${datenDownload.programSetName}")
+        add("Ziel: ${datenDownload.targetPathFileName}")
     }
 
     private fun MutableList<String>.addUrl(datenDownload: DatenDownload) {
-        add("URL: ${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}")
+        add("URL: ${datenDownload.downloadUrl}")
     }
 
     private fun MutableList<String>.addInvocation(datenDownload: DatenDownload) {
         if (datenDownload.art == DownloadType.DIRECT) {
             add(DownloadType.DIRECT.label)
         } else {
-            add("Programmaufruf: ${datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]}")
-            add("Programmaufruf[]: ${datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]}")
+            add("Programmaufruf: ${datenDownload.programInvocation}")
+            add("Programmaufruf[]: ${datenDownload.programInvocationArray}")
         }
     }
 

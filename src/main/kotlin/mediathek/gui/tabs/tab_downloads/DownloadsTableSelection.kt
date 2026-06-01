@@ -20,6 +20,7 @@ package mediathek.gui.tabs.tab_downloads
 
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
+import mediathek.daten.DownloadColumns
 import mediathek.tool.NoSelectionErrorDialog
 import mediathek.tool.table.MVDownloadsTable
 import org.apache.logging.log4j.LogManager
@@ -107,5 +108,5 @@ class DownloadsTableSelection(
         downloadAtModelRow(table.convertRowIndexToModel(row)) as DatenDownload
 
     private fun downloadAtModelRow(row: Int): DatenDownload? =
-        table.model.getValueAt(row, DatenDownload.DOWNLOAD_REF) as? DatenDownload
+        table.model.getValueAt(row, DownloadColumns.REF) as? DatenDownload
 }

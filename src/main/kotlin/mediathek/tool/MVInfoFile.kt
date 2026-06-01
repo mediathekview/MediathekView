@@ -104,12 +104,12 @@ open class MVInfoFile {
 
     @Throws(IOException::class)
     fun writeInfoFile(datenDownload: DatenDownload) {
-        File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs()
+        File(datenDownload.targetPath).mkdirs()
         val path = Paths.get(datenDownload.fileNameWithoutSuffix + ".txt")
         val film = datenDownload.film
         // this is the URL that will be used during download.
         // write this into info file and calculate size from it
-        val url = datenDownload.arr[DatenDownload.DOWNLOAD_URL].toHttpUrl()
+        val url = datenDownload.downloadUrl.toHttpUrl()
         film?.let { writeInfoFile(it, path, url) }
     }
 

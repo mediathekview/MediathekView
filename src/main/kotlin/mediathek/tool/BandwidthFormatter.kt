@@ -25,7 +25,6 @@ object BandwidthFormatter {
     private const val MB = 1_000_000L
     private const val GB = 1_000_000_000L
 
-    @JvmStatic
     fun format(bytesPerSecond: Long): String = when {
         bytesPerSecond <= 1 -> ""
         bytesPerSecond >= GB -> String.format(Locale.GERMANY, "%.1f GB/s", bytesPerSecond.toDouble() / GB)

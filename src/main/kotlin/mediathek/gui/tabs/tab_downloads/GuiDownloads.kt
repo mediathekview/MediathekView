@@ -23,9 +23,13 @@ import mediathek.config.Konstanten
 import mediathek.config.MVConfig
 import mediathek.controller.history.AboHistoryEntry
 import mediathek.controller.starter.DirectDownloadPartFiles
+import mediathek.controller.starter.DownloadLifecycleActions
+import mediathek.controller.starter.DownloadStartActions
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
+import mediathek.daten.DownloadColumns
+import mediathek.daten.DownloadListFilter
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.actions.*
@@ -287,9 +291,9 @@ class GuiDownloads(
         tabelle.tableHeader.addMouseListener(
             BeobTableHeader(
                 tabelle,
-                DatenDownload.getColumnVisibilityStore(),
+                DownloadColumns.visibilityStore(),
                 COLUMNS_DISABLED,
-                intArrayOf(DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL),
+                intArrayOf(DownloadColumns.BUTTON_START, DownloadColumns.BUTTON_DELETE),
                 true,
                 MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK,
             )
@@ -396,13 +400,15 @@ class GuiDownloads(
         val viewFilter = filterController.viewFilter
         daten.listeDownloads.getModel(
             model,
-            displayFilter.onlyAbos(),
-            displayFilter.onlyDownloads(),
-            viewFilter.onlyNotStarted(),
-            viewFilter.onlyStarted(),
-            viewFilter.onlyWaiting(),
-            viewFilter.onlyRun(),
-            viewFilter.onlyFinished(),
+            DownloadListFilter(
+                onlyAbos = displayFilter.onlyAbos(),
+                onlyDownloads = displayFilter.onlyDownloads(),
+                onlyNotStarted = viewFilter.onlyNotStarted(),
+                onlyStarted = viewFilter.onlyStarted(),
+                onlyWaiting = viewFilter.onlyWaiting(),
+                onlyRun = viewFilter.onlyRun(),
+                onlyFinished = viewFilter.onlyFinished(),
+            ),
         )
         tabelle.setSpalten()
         updateFilmData()
@@ -450,7 +456,7 @@ class GuiDownloads(
     @Synchronized
     fun editDownload() {
         val datenDownload = getSelDownload() ?: return
-        val gestartet = datenDownload.start?.let { it.status >= StartStatus.RUNNING } == true
+        val gestartet = datenDownload.runtime.runState?.let { it.status >= StartStatus.RUNNING } == true
         val datenDownloadCopy = datenDownload.copy
         val dialog = DialogEditDownload(mediathekGui, datenDownloadCopy, gestartet)
         dialog.isVisible = true
@@ -470,20 +476,21 @@ class GuiDownloads(
 
     fun zielordnerOeffnen() {
         val datenDownload = getSelDownload() ?: return
-        val targetPath = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]
+        val targetPath = datenDownload.targetPath
         DirOpenAction.zielordnerOeffnen(mediathekGui, targetPath)
     }
 
     fun filmAbspielen() {
         val datenDownload = getSelDownload() ?: return
-        val targetFile = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+        val targetFile = datenDownload.targetPathFileName
         OpenPlayerAction.filmAbspielen(mediathekGui, targetFile)
     }
 
     fun filmLoeschen_() {
         val datenDownload = getSelDownload() ?: return
 
-        if (datenDownload.start != null && datenDownload.start.status < StartStatus.FINISHED) {
+        val currentStart = datenDownload.runtime.runState
+        if (currentStart != null && currentStart.status < StartStatus.FINISHED) {
             JOptionPane.showMessageDialog(mediathekGui, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
             return
         }
@@ -509,12 +516,12 @@ class GuiDownloads(
             }
         } catch (_: Exception) {
             JOptionPane.showMessageDialog(mediathekGui, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
-            logger.error("Fehler beim löschen: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+            logger.error("Fehler beim löschen: {}", datenDownload.targetPathFileName)
         }
     }
 
     private fun getExistingDownloadFile(datenDownload: DatenDownload): File {
-        val finalFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+        val finalFile = File(datenDownload.targetPathFileName)
         if (finalFile.exists()) {
             return finalFile
         }
@@ -540,14 +547,14 @@ class GuiDownloads(
                     if (datenDownload.isFromAbo) {
                         aboUrls.add(
                             AboHistoryEntry.today(
-                                datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
-                                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
-                                datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL],
+                                datenDownload.topic,
+                                datenDownload.title,
+                                datenDownload.historyUrl,
                             )
                         )
                     }
                 } else {
-                    datenDownload.zurueckstellen()
+                    DownloadLifecycleActions.defer(datenDownload)
                 }
             }
 
@@ -582,7 +589,7 @@ class GuiDownloads(
         for (i in 0 until rowCount) {
             val datenDownload = tableModel.getValueAt(
                 tabelle.convertRowIndexToModel(i),
-                DatenDownload.DOWNLOAD_REF,
+                DownloadColumns.REF,
             ) as DatenDownload
             downloads.add(datenDownload)
         }
@@ -606,15 +613,16 @@ class GuiDownloads(
         val downloadsToStart = ArrayList<DatenDownload>()
 
         for (download in allDownloads) {
-            if (download.start != null) {
-                if (download.start.status == StartStatus.RUNNING) {
+            val start = download.runtime.runState
+            if (start != null) {
+                if (start.status == StartStatus.RUNNING) {
                     continue
                 }
-                if (download.start.status > StartStatus.RUNNING) {
+                if (start.status > StartStatus.RUNNING) {
                     val reply = GuiFunktionen.createDismissableMessageDialog(
                         mediathekGui,
                         "Fertiger Download",
-                        "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
+                        "Film nochmal starten?  ==> " + download.title,
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.NO_OPTION,
                         10,
@@ -626,7 +634,7 @@ class GuiDownloads(
                     }
                     downloadsToCancel.add(download)
                     if (download.isFromAbo) {
-                        daten.aboHistoryController.removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL])
+                        daten.aboHistoryController.removeUrl(download.historyUrl)
                     }
                 }
             }
@@ -669,20 +677,21 @@ class GuiDownloads(
 
         var answer = -1
         for (download in selectedDownloads) {
+            val start = download.runtime.runState
             if (starten) {
-                if (download.start != null) {
-                    if (download.start.status == StartStatus.RUNNING ||
-                        !restartFinishedDownloads && download.start.status > StartStatus.RUNNING
+                if (start != null) {
+                    if (start.status == StartStatus.RUNNING ||
+                        !restartFinishedDownloads && start.status > StartStatus.RUNNING
                     ) {
                         continue
                     }
-                    if (download.start.status > StartStatus.RUNNING) {
+                    if (start.status > StartStatus.RUNNING) {
                         if (answer == -1) {
                             val text = if (selectedDownloads.size > 1) {
                                 "Es sind bereits fertige Filme dabei,\n" +
                                     "diese nochmal starten?"
                             } else {
-                                "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL]
+                                "Film nochmal starten?  ==> " + download.title
                             }
                             answer = GuiFunktionen.createDismissableMessageDialog(
                                 mediathekGui,
@@ -703,12 +712,12 @@ class GuiDownloads(
                         }
                         downloadsToCancel.add(download)
                         if (download.isFromAbo) {
-                            daten.aboHistoryController.removeUrl(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL])
+                            daten.aboHistoryController.removeUrl(download.historyUrl)
                         }
                     }
                 }
                 downloadsToStart.add(download)
-            } else if (download.start != null && download.start.status <= StartStatus.RUNNING) {
+            } else if (start != null && start.status <= StartStatus.RUNNING) {
                 downloadsToCancel.add(download)
             }
         }
@@ -720,7 +729,7 @@ class GuiDownloads(
         }
 
         if (starten) {
-            DatenDownload.startenDownloads(downloadsToStart)
+            DownloadStartActions.startAll(downloadsToStart)
         }
 
         reloadTable()
@@ -731,9 +740,10 @@ class GuiDownloads(
         for (i in 0 until tabelle.rowCount) {
             val datenDownload = tabelle.model.getValueAt(
                 tabelle.convertRowIndexToModel(i),
-                DatenDownload.DOWNLOAD_REF,
+                DownloadColumns.REF,
             ) as DatenDownload
-            if (datenDownload.start != null && datenDownload.start.status < StartStatus.RUNNING) {
+            val start = datenDownload.runtime.runState
+            if (start != null && start.status < StartStatus.RUNNING) {
                 downloadsToStop.add(datenDownload)
             }
         }
@@ -797,10 +807,10 @@ class GuiDownloads(
         private const val ACTION_MAP_KEY_MARK_AS_UNSEEN = "unseen"
         private const val ACTION_MAP_KEY_START_DOWNLOAD = "dl_start"
         private val COLUMNS_DISABLED = intArrayOf(
-            DatenDownload.DOWNLOAD_BUTTON_START,
-            DatenDownload.DOWNLOAD_BUTTON_DEL,
-            DatenDownload.DOWNLOAD_REF,
-            DatenDownload.DOWNLOAD_URL_RTMP,
+            DownloadColumns.BUTTON_START,
+            DownloadColumns.BUTTON_DELETE,
+            DownloadColumns.REF,
+            DownloadColumns.RTMP_URL,
         )
         private val logger = LogManager.getLogger(GuiDownloads::class.java)
     }

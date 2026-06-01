@@ -31,7 +31,6 @@ enum class DownloadSource(
     companion object {
         private val byLegacyId = entries.associateBy { it.legacyId }
 
-        @JvmStatic
         fun fromLegacyText(legacyText: String): DownloadSource =
             byLegacyId[legacyText.toByte()]
                 ?: throw IllegalArgumentException("Unknown download source: $legacyText")

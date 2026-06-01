@@ -33,8 +33,7 @@ class NetUtils {
          * @param str The string to be checked.
          * @return true if string is an URL, otherwise false
          */
-        @JvmStatic
-        fun isUrl(str: String) : Boolean {
+        fun isUrl(str: String): Boolean {
             //TODO it may be better to really check if we are a valid URL. use HttpUrl?
             return str.startsWith("http") || str.startsWith("www")
         }

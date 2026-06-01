@@ -48,7 +48,7 @@ internal class DirectDownloadAncillaryFiles private constructor(
         }
 
         fun start(scope: CoroutineScope, datenDownload: DatenDownload, logger: Logger): DirectDownloadAncillaryFiles {
-            val infoJob = if (datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI].toBoolean()) {
+            val infoJob = if (datenDownload.isInfoFile) {
                 scope.async(Dispatchers.IO) {
                     try {
                         MVInfoFile().writeInfoFile(datenDownload)
@@ -60,7 +60,7 @@ internal class DirectDownloadAncillaryFiles private constructor(
                 null
             }
 
-            val subtitleJob = if (datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE].toBoolean()) {
+            val subtitleJob = if (datenDownload.isSubtitle) {
                 scope.async(Dispatchers.IO) {
                     try {
                         MVSubtitle().writeSubtitle(datenDownload)

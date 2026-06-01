@@ -82,7 +82,7 @@ class MVSubtitle {
     }
 
     fun writeSubtitle(datenDownload: DatenDownload) {
-        val urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE]
+        val urlSubtitle = datenDownload.subtitleUrl
         if (urlSubtitle.isEmpty()) {
             return
         }

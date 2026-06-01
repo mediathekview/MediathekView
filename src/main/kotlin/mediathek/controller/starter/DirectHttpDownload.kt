@@ -64,7 +64,7 @@ class DirectHttpDownload(
     private val datenDownload: DatenDownload
 ) : Thread() {
 
-    private val start: DownloadRunState = datenDownload.start
+    private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
     private val rateLimiter = ByteRateLimiter(downloadLimit())
     private val messageBus: MBassador<BaseEvent> = MessageBus.messageBus
     private val httpClient: OkHttpClient = MVHttpClient.httpClient
@@ -82,7 +82,7 @@ class DirectHttpDownload(
 
     init {
         messageBus.subscribe(this)
-        name = "DIRECT DL THREAD_${datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]}"
+        name = "DIRECT DL THREAD_${datenDownload.title}"
 
         start.markRunning()
         DownloadStartEventPublisher.publish(datenDownload)
@@ -178,8 +178,8 @@ class DirectHttpDownload(
     @Throws(IOException::class)
     private fun CoroutineScope.downloadContent(inputStream: InputStream) {
         ancillaryDownloads = DirectDownloadAncillaryFiles.start(this, datenDownload, logger)
-        datenDownload.interruptRestart()
-        datenDownload.mVFilmSize.aktSize = alreadyDownloaded
+        DownloadLifecycleActions.restartInterrupted(datenDownload)
+        datenDownload.runtime.filmSize.aktSize = alreadyDownloaded
 
         val options = if (alreadyDownloaded != 0L) {
             arrayOf(StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND)
@@ -205,15 +205,15 @@ class DirectHttpDownload(
                             }
                             alreadyDownloaded += len.toLong()
                             bufferedSink.write(buffer, 0, len)
-                            datenDownload.mVFilmSize.addAktSize(len.toLong())
+                            datenDownload.runtime.filmSize.addAktSize(len.toLong())
 
                             //für die Anzeige prüfen ob sich was geändert hat
-                            if (aktSize != datenDownload.mVFilmSize.aktSize) {
-                                aktSize = datenDownload.mVFilmSize.aktSize
+                            if (aktSize != datenDownload.runtime.filmSize.aktSize) {
+                                aktSize = datenDownload.runtime.filmSize.aktSize
                                 melden = true
                             }
-                            if (datenDownload.mVFilmSize.size > 0) {
-                                var progress = aktSize * 1000L / datenDownload.mVFilmSize.size
+                            if (datenDownload.runtime.filmSize.size > 0) {
+                                var progress = aktSize * 1000L / datenDownload.runtime.filmSize.size
                                 if (startProgress == -1L) {
                                     startProgress = progress
                                 }
@@ -277,7 +277,7 @@ class DirectHttpDownload(
         logger.error("HTTP-Fehler: {} {}", response.code, response.message)
 
         if (start.countRestarted >= Konstanten.MAX_DOWNLOAD_RESTARTS) {
-            showDownloadError("URL des Films:\n${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}\n\n$responseCode\n")
+            showDownloadError("URL des Films:\n${datenDownload.downloadUrl}\n\n$responseCode\n")
         }
 
         state = HttpDownloadState.ERROR
@@ -384,14 +384,14 @@ class DirectHttpDownload(
         runBlocking {
             try {
                 createDirectory()
-                finalFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                finalFile = File(datenDownload.targetPathFileName)
                 file = DirectDownloadPartFiles.partFileFor(finalFile)
 
                 if (!cancelDownload()) {
-                    val url = datenDownload.arr[DatenDownload.DOWNLOAD_URL].toHttpUrlOrNull()
-                        ?: throw IOException("Invalid download URL: ${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}")
-                    datenDownload.mVFilmSize.size = getContentLengthWithFallback(url)
-                    datenDownload.mVFilmSize.aktSize = 0
+                    val url = datenDownload.downloadUrl.toHttpUrlOrNull()
+                        ?: throw IOException("Invalid download URL: ${datenDownload.downloadUrl}")
+                    datenDownload.runtime.filmSize.size = getContentLengthWithFallback(url)
+                    datenDownload.runtime.filmSize.aktSize = 0
                     var retryCount = 0
                     var forceHttp11 = false
 
@@ -471,7 +471,7 @@ class DirectHttpDownload(
 
     private fun createDirectory() {
         try {
-            Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]))
+            Files.createDirectories(Paths.get(datenDownload.targetPath))
         } catch (_: IOException) {
         }
     }
@@ -503,7 +503,7 @@ class DirectHttpDownload(
                     if (dialogContinueDownload.isNewName) {
                         MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                         createDirectory()
-                        finalFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                        finalFile = File(datenDownload.targetPathFileName)
                         file = DirectDownloadPartFiles.partFileFor(finalFile)
                     }
                 }
@@ -516,7 +516,7 @@ class DirectHttpDownload(
         val hasPartFile = file.exists()
         logger.info(
             "CLI download mode: continuing existing direct download for {}",
-            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+            datenDownload.targetPathFileName
         )
         if (!hasPartFile && !moveLegacyFinalFileToPart()) {
             state = HttpDownloadState.ERROR
@@ -528,7 +528,7 @@ class DirectHttpDownload(
 
     private fun showDownloadError(message: String?) {
         if (Config.isDownloadAndQuit()) {
-            logger.error("Download failed for {}: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], message)
+            logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }
         SwingUtilities.invokeLater {

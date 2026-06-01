@@ -67,13 +67,10 @@ object IconUtils {
         return ImageIcon(GrayFilter.createDisabledImage(image))
     }
 
-    @JvmStatic
     fun windowBarSpecificToolbarIcon(ikon: Ikon): FontIcon = of(ikon, windowBarSpecificSize())
 
-    @JvmStatic
     fun toolbarIcon(ikon: Ikon): FontIcon = of(ikon, DEFAULT_TOOLBAR_SIZE)
 
-    @JvmStatic
     fun windowBarSpecificToolbarIcon(ikon: Ikon, color: Color): FontIcon =
         FontIcon.of(ikon, windowBarSpecificSize(), color)
 

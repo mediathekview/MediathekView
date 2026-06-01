@@ -26,10 +26,8 @@ import java.nio.file.Path
 object SqlDatabaseConfig {
     val dataSource: SQLiteDataSource
 
-    @JvmStatic
     val historyDbPath: Path = StandardLocations.getSettingsDirectory().resolve("history.db")
 
-    @JvmStatic
     val config: SQLiteConfig
         get() {
             val conf = SQLiteConfig()

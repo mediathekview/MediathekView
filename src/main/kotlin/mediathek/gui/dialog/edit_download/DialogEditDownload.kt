@@ -25,6 +25,7 @@ import mediathek.config.Konstanten
 import mediathek.controller.starter.DownloadProgressText
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
+import mediathek.daten.DownloadColumns
 import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
 import mediathek.gui.dialog.DialogHilfe
@@ -67,7 +68,7 @@ class DialogEditDownload(
     private val jCheckBoxSubtitle = JCheckBox()
     private val jCheckBoxSpotlight = JCheckBox()
     private val mVPanelDownloadZiel = MVPanelDownloadZiel(parent, datenDownload, false)
-    private val orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]
+    private val orgProgArray = datenDownload.programInvocationArray
     private val cbHighQuality = JCheckBox().apply { isEnabled = false }
     private val cbSubtitleAvailable = JCheckBox().apply { isEnabled = false }
 
@@ -192,7 +193,7 @@ class DialogEditDownload(
         }
 
         button.isEnabled = !gestartet
-        button.isSelected = datenDownload.arr[DatenDownload.DOWNLOAD_URL] == url
+        button.isSelected = datenDownload.downloadUrl == url
     }
 
     private fun setupResolutionButtonListeners() {
@@ -215,8 +216,8 @@ class DialogEditDownload(
     private fun changeRes() {
         val film = datenDownload.film ?: return
         val selectedResolution = selectedResolution()
-        datenDownload.arr[DatenDownload.DOWNLOAD_URL] = film.getUrlFuerAufloesung(selectedResolution)
-        urlField?.text = datenDownload.arr[DatenDownload.DOWNLOAD_URL]
+        datenDownload.downloadUrl = film.getUrlFuerAufloesung(selectedResolution)
+        urlField?.text = datenDownload.downloadUrl
 
         val size = when (selectedResolution) {
             FilmResolution.Enum.HIGH_QUALITY -> dateiGroesseHD
@@ -230,22 +231,24 @@ class DialogEditDownload(
     }
 
     private fun updateProgramCallFields(selectedResolution: FilmResolution.Enum) {
+        val pSet = datenDownload.pSet ?: return
+        val film = datenDownload.film ?: return
         val newDownload = DatenDownload(
-            datenDownload.pSet,
-            datenDownload.film,
+            pSet,
+            film,
             datenDownload.quelle,
             datenDownload.abo,
-            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME],
-            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD],
+            datenDownload.targetFileName,
+            datenDownload.targetPath,
             selectedResolution.toString()
         )
 
-        datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF] =
-            newDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]
-        datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY] =
-            newDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]
-        programmAufrufField?.text = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]
-        programmAufrufArrayField?.text = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]
+        datenDownload.programInvocation =
+            newDownload.programInvocation
+        datenDownload.programInvocationArray =
+            newDownload.programInvocationArray
+        programmAufrufField?.text = datenDownload.programInvocation
+        programmAufrufArrayField?.text = datenDownload.programInvocationArray
     }
 
     private fun loadResolutionSizesAsync() {
@@ -476,43 +479,43 @@ class DialogEditDownload(
         }
     }
 
-    private fun currentPathText(): String = mVPanelDownloadZiel.currentPath ?: datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]
+    private fun currentPathText(): String = mVPanelDownloadZiel.currentPath ?: datenDownload.targetPath
 
     private fun buildLayout() {
         jPanelExtra.removeAll()
-        addRow(DatenDownload.DOWNLOAD_ABO)
-        addRow(DatenDownload.DOWNLOAD_SENDER)
-        addRow(DatenDownload.DOWNLOAD_THEMA)
-        addRow(DatenDownload.DOWNLOAD_TITEL)
-        addRow(DatenDownload.DOWNLOAD_GROESSE)
-        addRow(DatenDownload.DOWNLOAD_DATUM)
-        addRow(DatenDownload.DOWNLOAD_ZEIT)
-        addRow(DatenDownload.DOWNLOAD_DAUER)
-        addRow(DatenDownload.DOWNLOAD_HD)
-        addRow(DatenDownload.DOWNLOAD_UT)
-        addRow(DatenDownload.DOWNLOAD_GEO)
-        addRow(DatenDownload.DOWNLOAD_FILM_URL)
-        addRow(DatenDownload.DOWNLOAD_URL)
-        addRow(DatenDownload.DOWNLOAD_URL_SUBTITLE)
-        addRow(DatenDownload.DOWNLOAD_PROGRAMMSET)
-        addRow(DatenDownload.DOWNLOAD_PROGRAMM)
-        addRow(DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF)
-        addRow(DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY)
-        addRow(DatenDownload.DOWNLOAD_PROGRAMM_RESTART)
-        addRow(DatenDownload.DOWNLOAD_ZIEL_DATEINAME)
-        addRow(DatenDownload.DOWNLOAD_ZIEL_PFAD)
-        addRow(DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME)
-        addRow(DatenDownload.DOWNLOAD_ART)
-        addRow(DatenDownload.DOWNLOAD_QUELLE)
-        addRow(DatenDownload.DOWNLOAD_INFODATEI)
-        addRow(DatenDownload.DOWNLOAD_SPOTLIGHT)
-        addRow(DatenDownload.DOWNLOAD_SUBTITLE)
+        addRow(DownloadColumns.ABO)
+        addRow(DownloadColumns.SENDER)
+        addRow(DownloadColumns.TOPIC)
+        addRow(DownloadColumns.TITLE)
+        addRow(DownloadColumns.SIZE)
+        addRow(DownloadColumns.DATE)
+        addRow(DownloadColumns.TIME)
+        addRow(DownloadColumns.DURATION)
+        addRow(DownloadColumns.HIGH_QUALITY)
+        addRow(DownloadColumns.SUBTITLE_AVAILABLE)
+        addRow(DownloadColumns.GEO)
+        addRow(DownloadColumns.FILM_URL)
+        addRow(DownloadColumns.URL)
+        addRow(DownloadColumns.SUBTITLE_URL)
+        addRow(DownloadColumns.PROGRAM_SET)
+        addRow(DownloadColumns.PROGRAM)
+        addRow(DownloadColumns.PROGRAM_INVOCATION)
+        addRow(DownloadColumns.PROGRAM_INVOCATION_ARRAY)
+        addRow(DownloadColumns.PROGRAM_RESTART)
+        addRow(DownloadColumns.TARGET_FILE_NAME)
+        addRow(DownloadColumns.TARGET_PATH)
+        addRow(DownloadColumns.TARGET_PATH_FILE_NAME)
+        addRow(DownloadColumns.TYPE)
+        addRow(DownloadColumns.SOURCE)
+        addRow(DownloadColumns.INFO_FILE)
+        addRow(DownloadColumns.SPOTLIGHT)
+        addRow(DownloadColumns.SUBTITLE)
         jPanelExtra.validate()
     }
 
     private fun addRow(index: Int) {
-        if (isDirectDownloadProgram() && (index == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF
-                    || index == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY)
+        if (isDirectDownloadProgram() && (index == DownloadColumns.PROGRAM_INVOCATION
+                    || index == DownloadColumns.PROGRAM_INVOCATION_ARRAY)
         ) {
             return
         }
@@ -526,19 +529,69 @@ class DialogEditDownload(
     }
 
     private fun isEmptyOptionalRow(index: Int): Boolean = when (index) {
-        DatenDownload.DOWNLOAD_ABO, DatenDownload.DOWNLOAD_DAUER -> datenDownload.arr[index].isBlank()
+        DownloadColumns.ABO -> datenDownload.aboName.isBlank()
+        DownloadColumns.DURATION -> datenDownload.duration.isBlank()
         else -> false
     }
 
     private fun createTextField(index: Int): JTextField {
-        val textField = createReadOnlyTextField(datenDownload.arr[index])
+        val textField = createReadOnlyTextField(textFieldValue(index))
         when (index) {
-            DatenDownload.DOWNLOAD_URL -> urlField = textField
-            DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF -> programmAufrufField = textField
-            DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY -> programmAufrufArrayField = textField
+            DownloadColumns.URL -> urlField = textField
+            DownloadColumns.PROGRAM_INVOCATION -> programmAufrufField = textField
+            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> programmAufrufArrayField = textField
         }
         return textField
     }
+
+    private fun textFieldValue(index: Int): String =
+        when (index) {
+            DownloadColumns.ABO -> datenDownload.aboName
+            DownloadColumns.SENDER -> datenDownload.sender
+            DownloadColumns.TOPIC -> datenDownload.topic
+            DownloadColumns.TITLE -> datenDownload.title
+            DownloadColumns.DATE -> datenDownload.date
+            DownloadColumns.TIME -> datenDownload.time
+            DownloadColumns.DURATION -> datenDownload.duration
+            DownloadColumns.FILM_URL -> datenDownload.filmUrl
+            DownloadColumns.HISTORY_URL -> datenDownload.historyUrl
+            DownloadColumns.URL -> datenDownload.downloadUrl
+            DownloadColumns.RTMP_URL -> datenDownload.rtmpUrl
+            DownloadColumns.SUBTITLE_URL -> datenDownload.subtitleUrl
+            DownloadColumns.PROGRAM_SET -> datenDownload.programSetName
+            DownloadColumns.PROGRAM -> datenDownload.programName
+            DownloadColumns.PROGRAM_INVOCATION -> datenDownload.programInvocation
+            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray
+            DownloadColumns.TARGET_FILE_NAME -> datenDownload.targetFileName
+            DownloadColumns.TARGET_PATH -> datenDownload.targetPath
+            DownloadColumns.TARGET_PATH_FILE_NAME -> datenDownload.targetPathFileName
+            DownloadColumns.NR -> datenDownload.nr.toString()
+            DownloadColumns.FILM_NR -> datenDownload.film?.filmNr?.toString().orEmpty()
+            DownloadColumns.BUTTON_START,
+            DownloadColumns.BUTTON_DELETE,
+            -> ""
+
+            DownloadColumns.PROGRESS ->
+                DownloadProgressText.getTextProgress(datenDownload.isDownloadManager, datenDownload.runtime.runState)
+
+            DownloadColumns.REMAINING_TIME -> datenDownload.textRestzeit
+            DownloadColumns.BANDWIDTH -> datenDownload.textBandbreite
+            DownloadColumns.SIZE -> datenDownload.runtime.filmSize.toString()
+            DownloadColumns.HIGH_QUALITY -> (datenDownload.film?.isHighQuality == true).toString()
+            DownloadColumns.SUBTITLE_AVAILABLE -> (datenDownload.film?.hasSubtitle() == true).toString()
+            DownloadColumns.INTERRUPTED -> datenDownload.isInterrupted.toString()
+            DownloadColumns.GEO -> datenDownload.geo
+            DownloadColumns.PROGRAM_RESTART -> datenDownload.isRestart.toString()
+            DownloadColumns.TYPE -> datenDownload.art.label
+            DownloadColumns.SOURCE -> datenDownload.quelle.label
+            DownloadColumns.DEFERRED -> datenDownload.isDeferred.toString()
+            DownloadColumns.INFO_FILE -> datenDownload.isInfoFile.toString()
+            DownloadColumns.SPOTLIGHT -> datenDownload.isSpotlight.toString()
+            DownloadColumns.SUBTITLE -> datenDownload.isSubtitle.toString()
+            DownloadColumns.DOWNLOAD_MANAGER -> datenDownload.isDownloadManager.toString()
+            DownloadColumns.REF -> ""
+            else -> ""
+        }
 
     private fun createReadOnlyTextField(text: String) = JTextField().apply {
         isEditable = false
@@ -546,40 +599,40 @@ class DialogEditDownload(
     }
 
     private fun isDirectDownloadProgram(): Boolean =
-        DownloadType.DIRECT.label == datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM]
+        DownloadType.DIRECT.label == datenDownload.programName
 
     private fun createLabel(index: Int) = JLabel("${labelText(index)}: ").apply {
         font = font.deriveFont(java.awt.Font.BOLD)
     }
 
     private fun labelText(index: Int): String = when (index) {
-        DatenDownload.DOWNLOAD_ABO -> "Abo"
-        DatenDownload.DOWNLOAD_SENDER -> "Sender"
-        DatenDownload.DOWNLOAD_THEMA -> "Thema"
-        DatenDownload.DOWNLOAD_TITEL -> "Titel"
-        DatenDownload.DOWNLOAD_GROESSE -> "Größe"
-        DatenDownload.DOWNLOAD_DATUM -> "Datum"
-        DatenDownload.DOWNLOAD_ZEIT -> "Zeit"
-        DatenDownload.DOWNLOAD_DAUER -> "Dauer"
-        DatenDownload.DOWNLOAD_HD -> "HD"
-        DatenDownload.DOWNLOAD_UT -> "UT"
-        DatenDownload.DOWNLOAD_GEO -> "Geo"
-        DatenDownload.DOWNLOAD_FILM_URL -> "Film-URL"
-        DatenDownload.DOWNLOAD_URL -> "URL"
-        DatenDownload.DOWNLOAD_URL_SUBTITLE -> "URL-Untertitel"
-        DatenDownload.DOWNLOAD_PROGRAMMSET -> "Programmset"
-        DatenDownload.DOWNLOAD_PROGRAMM -> "Programm"
-        DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF -> "Programmaufruf_"
-        DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY -> "Programmaufruf"
-        DatenDownload.DOWNLOAD_PROGRAMM_RESTART -> "Restart"
-        DatenDownload.DOWNLOAD_ZIEL_DATEINAME -> "Dateiname"
-        DatenDownload.DOWNLOAD_ZIEL_PFAD -> "Pfad"
-        DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME -> "Pfad-Dateiname"
-        DatenDownload.DOWNLOAD_ART -> "Art"
-        DatenDownload.DOWNLOAD_QUELLE -> "Quelle"
-        DatenDownload.DOWNLOAD_INFODATEI -> "Infodatei"
-        DatenDownload.DOWNLOAD_SPOTLIGHT -> "Spotlight"
-        DatenDownload.DOWNLOAD_SUBTITLE -> "Untertitel"
+        DownloadColumns.ABO -> "Abo"
+        DownloadColumns.SENDER -> "Sender"
+        DownloadColumns.TOPIC -> "Thema"
+        DownloadColumns.TITLE -> "Titel"
+        DownloadColumns.SIZE -> "Größe"
+        DownloadColumns.DATE -> "Datum"
+        DownloadColumns.TIME -> "Zeit"
+        DownloadColumns.DURATION -> "Dauer"
+        DownloadColumns.HIGH_QUALITY -> "HD"
+        DownloadColumns.SUBTITLE_AVAILABLE -> "UT"
+        DownloadColumns.GEO -> "Geo"
+        DownloadColumns.FILM_URL -> "Film-URL"
+        DownloadColumns.URL -> "URL"
+        DownloadColumns.SUBTITLE_URL -> "URL-Untertitel"
+        DownloadColumns.PROGRAM_SET -> "Programmset"
+        DownloadColumns.PROGRAM -> "Programm"
+        DownloadColumns.PROGRAM_INVOCATION -> "Programmaufruf_"
+        DownloadColumns.PROGRAM_INVOCATION_ARRAY -> "Programmaufruf"
+        DownloadColumns.PROGRAM_RESTART -> "Restart"
+        DownloadColumns.TARGET_FILE_NAME -> "Dateiname"
+        DownloadColumns.TARGET_PATH -> "Pfad"
+        DownloadColumns.TARGET_PATH_FILE_NAME -> "Pfad-Dateiname"
+        DownloadColumns.TYPE -> "Art"
+        DownloadColumns.SOURCE -> "Quelle"
+        DownloadColumns.INFO_FILE -> "Infodatei"
+        DownloadColumns.SPOTLIGHT -> "Spotlight"
+        DownloadColumns.SUBTITLE -> "Untertitel"
         else -> error("Unknown download label index: $index")
     }
 
@@ -599,21 +652,21 @@ class DialogEditDownload(
         if (datenDownload.art != DownloadType.DIRECT || gestartet) {
             return false
         }
-        if (index != DatenDownload.DOWNLOAD_ZIEL_DATEINAME
-            && index != DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME
-            && index != DatenDownload.DOWNLOAD_ZIEL_PFAD
+        if (index != DownloadColumns.TARGET_FILE_NAME
+            && index != DownloadColumns.TARGET_PATH_FILE_NAME
+            && index != DownloadColumns.TARGET_PATH
         ) {
             return false
         }
 
-        if (index == DatenDownload.DOWNLOAD_ZIEL_DATEINAME) {
+        if (index == DownloadColumns.TARGET_FILE_NAME) {
             addValueComponent(label, mVPanelDownloadZiel)
         }
         return true
     }
 
     private fun addCheckboxField(index: Int, label: JLabel): Boolean = when (index) {
-        DatenDownload.DOWNLOAD_PROGRAMM_RESTART -> {
+        DownloadColumns.PROGRAM_RESTART -> {
             configureCheckbox(
                 label,
                 jCheckBoxRestart,
@@ -623,31 +676,31 @@ class DialogEditDownload(
             true
         }
 
-        DatenDownload.DOWNLOAD_INFODATEI -> {
+        DownloadColumns.INFO_FILE -> {
             configureCheckbox(
                 label,
                 jCheckBoxInfodatei,
-                datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI].toBoolean(),
+                datenDownload.isInfoFile,
                 !gestartet
             )
             true
         }
 
-        DatenDownload.DOWNLOAD_SUBTITLE -> {
+        DownloadColumns.SUBTITLE -> {
             configureCheckbox(
                 label,
                 jCheckBoxSubtitle,
-                datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE].toBoolean(),
+                datenDownload.isSubtitle,
                 !gestartet
             )
             true
         }
 
-        DatenDownload.DOWNLOAD_SPOTLIGHT -> {
+        DownloadColumns.SPOTLIGHT -> {
             configureCheckbox(
                 label,
                 jCheckBoxSpotlight,
-                datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT].toBoolean(),
+                datenDownload.isSpotlight,
                 !gestartet
             )
             true
@@ -666,12 +719,12 @@ class DialogEditDownload(
     }
 
     private fun addAvailabilityField(index: Int, label: JLabel): Boolean = when (index) {
-        DatenDownload.DOWNLOAD_HD -> {
+        DownloadColumns.HIGH_QUALITY -> {
             addAvailabilityComponent(label, cbHighQuality, datenDownload.film?.isHighQuality == true)
             true
         }
 
-        DatenDownload.DOWNLOAD_UT -> {
+        DownloadColumns.SUBTITLE_AVAILABLE -> {
             addAvailabilityComponent(label, cbSubtitleAvailable, datenDownload.film?.hasSubtitle() == true)
             true
         }
@@ -686,17 +739,17 @@ class DialogEditDownload(
     }
 
     private fun addProgramCallField(index: Int, label: JLabel, textField: JTextField): Boolean {
-        if (index == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF) {
+        if (index == DownloadColumns.PROGRAM_INVOCATION) {
             return true
         }
-        if (index != DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY || datenDownload.art != DownloadType.PROGRAM) {
+        if (index != DownloadColumns.PROGRAM_INVOCATION_ARRAY || datenDownload.art != DownloadType.PROGRAM) {
             return false
         }
 
-        if (datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].isEmpty()) {
+        if (datenDownload.programInvocationArray.isEmpty()) {
             label.foreground = hyperlinkColor()
             programmAufrufField?.let {
-                makeEditable(it, DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF)
+                makeEditable(it, DownloadColumns.PROGRAM_INVOCATION)
                 addValueComponent(label, it)
             }
             return true
@@ -743,23 +796,23 @@ class DialogEditDownload(
 
     private fun addDefaultField(index: Int, label: JLabel, textField: JTextField) {
         when (index) {
-            DatenDownload.DOWNLOAD_ABO,
-            DatenDownload.DOWNLOAD_SENDER,
-            DatenDownload.DOWNLOAD_ZEIT,
-            DatenDownload.DOWNLOAD_URL_SUBTITLE,
-            DatenDownload.DOWNLOAD_PROGRAMMSET,
-            DatenDownload.DOWNLOAD_PROGRAMM,
-            DatenDownload.DOWNLOAD_DATUM -> addValueComponent(label, createValueLabel(datenDownload.arr[index]))
-            DatenDownload.DOWNLOAD_ART -> addValueComponent(label, createValueLabel(downloadArtText()))
-            DatenDownload.DOWNLOAD_QUELLE -> addValueComponent(label, createValueLabel(downloadQuelleText()))
-            DatenDownload.DOWNLOAD_DAUER -> {
-                val durationText = DurationFormatter.fromOrNull(datenDownload.arr[index])?.toDisplayText() ?: ""
+            DownloadColumns.ABO -> addValueComponent(label, createValueLabel(datenDownload.aboName))
+            DownloadColumns.SENDER -> addValueComponent(label, createValueLabel(datenDownload.sender))
+            DownloadColumns.PROGRAM_SET -> addValueComponent(label, createValueLabel(datenDownload.programSetName))
+            DownloadColumns.PROGRAM -> addValueComponent(label, createValueLabel(datenDownload.programName))
+            DownloadColumns.SUBTITLE_URL -> addValueComponent(label, createValueLabel(datenDownload.subtitleUrl))
+            DownloadColumns.DATE -> addValueComponent(label, createValueLabel(datenDownload.date))
+            DownloadColumns.TIME -> addValueComponent(label, createValueLabel(datenDownload.time))
+            DownloadColumns.TYPE -> addValueComponent(label, createValueLabel(downloadArtText()))
+            DownloadColumns.SOURCE -> addValueComponent(label, createValueLabel(downloadQuelleText()))
+            DownloadColumns.DURATION -> {
+                val durationText = DurationFormatter.fromOrNull(datenDownload.duration)?.toDisplayText() ?: ""
                 addValueComponent(label, createValueLabel(durationText))
             }
-            DatenDownload.DOWNLOAD_GEO -> addValueComponent(label, createGeoLabel())
-            DatenDownload.DOWNLOAD_GROESSE -> addValueComponent(label, createValueLabel("${datenDownload.mVFilmSize} MB"))
-            DatenDownload.DOWNLOAD_THEMA,
-            DatenDownload.DOWNLOAD_TITEL -> addValueComponent(label, createMultilineLabel(datenDownload.arr[index]))
+            DownloadColumns.GEO -> addValueComponent(label, createGeoLabel())
+            DownloadColumns.SIZE -> addValueComponent(label, createValueLabel("${datenDownload.runtime.filmSize} MB"))
+            DownloadColumns.TOPIC -> addValueComponent(label, createMultilineLabel(datenDownload.topic))
+            DownloadColumns.TITLE -> addValueComponent(label, createMultilineLabel(datenDownload.title))
 
             else -> addTextFieldValue(index, label, textField)
         }
@@ -767,22 +820,22 @@ class DialogEditDownload(
 
     private fun addTextFieldValue(index: Int, label: JLabel, textField: JTextField) {
         when (index) {
-            DatenDownload.DOWNLOAD_NR -> textField.text = datenDownload.nr.toString()
-            DatenDownload.DOWNLOAD_FILM_NR -> if (datenDownload.film != null) {
-                textField.text = datenDownload.film.filmNr.toString()
+            DownloadColumns.NR -> textField.text = datenDownload.nr.toString()
+            DownloadColumns.FILM_NR -> datenDownload.film?.let { film ->
+                textField.text = film.filmNr.toString()
             }
 
-            DatenDownload.DOWNLOAD_URL -> if (datenDownload.art == DownloadType.DIRECT) {
+            DownloadColumns.URL -> if (datenDownload.art == DownloadType.DIRECT) {
                 label.foreground = hyperlinkColor()
                 makeEditable(textField, index)
             }
 
-            DatenDownload.DOWNLOAD_PROGRESS -> textField.text =
-                DownloadProgressText.getTextProgress(datenDownload.isDownloadManager, datenDownload.start)
+            DownloadColumns.PROGRESS -> textField.text =
+                DownloadProgressText.getTextProgress(datenDownload.isDownloadManager, datenDownload.runtime.runState)
 
-            DatenDownload.DOWNLOAD_RESTZEIT -> textField.text = datenDownload.textRestzeit
+            DownloadColumns.REMAINING_TIME -> textField.text = datenDownload.textRestzeit
         }
-        if (index == DatenDownload.DOWNLOAD_URL) {
+        if (index == DownloadColumns.URL) {
             addValueComponent(label, createDownloadUrlPanel(textField))
             return
         }
@@ -849,11 +902,20 @@ class DialogEditDownload(
     }
 
     private fun updateDownloadValue(textField: JTextField, index: Int) {
-        datenDownload.arr[index] = textField.text.trim()
-        if (index == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY) {
-            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF] =
-                DatenProg.makeProgAufrufArray(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY])
-            programmAufrufField?.text = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]
+        val value = textField.text.trim()
+        when (index) {
+            DownloadColumns.URL -> datenDownload.downloadUrl = value
+            DownloadColumns.PROGRAM_INVOCATION -> datenDownload.programInvocation = value
+            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray = value
+            else -> {
+                logger.warn("Ignoring unsupported editable download column: {}", index)
+                return
+            }
+        }
+        if (index == DownloadColumns.PROGRAM_INVOCATION_ARRAY) {
+            datenDownload.programInvocation =
+                DatenProg.makeProgAufrufArray(datenDownload.programInvocationArray)
+            programmAufrufField?.text = datenDownload.programInvocation
         }
     }
 
@@ -875,10 +937,10 @@ class DialogEditDownload(
     private fun hyperlinkColor(): Color? = UIManager.getColor("Hyperlink.linkColor")
 
     private fun updateCheckboxValues() {
-        datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART] = jCheckBoxRestart.isSelected.toString()
-        datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = jCheckBoxInfodatei.isSelected.toString()
-        datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = jCheckBoxSubtitle.isSelected.toString()
-        datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = jCheckBoxSpotlight.isSelected.toString()
+        datenDownload.isRestart = jCheckBoxRestart.isSelected
+        datenDownload.isInfoFile = jCheckBoxInfodatei.isSelected
+        datenDownload.isSubtitle = jCheckBoxSubtitle.isSelected
+        datenDownload.isSpotlight = jCheckBoxSpotlight.isSelected
     }
 
     private fun setupComponentListeners() {
@@ -924,7 +986,7 @@ class DialogEditDownload(
 
     private fun downloadDateiLoeschen(download: DatenDownload): Boolean {
         return try {
-            val file = File(download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+            val file = File(download.targetPathFileName)
             if (!file.exists()) {
                 return true
             }
@@ -944,7 +1006,7 @@ class DialogEditDownload(
             true
         } catch (_: Exception) {
             JOptionPane.showMessageDialog(this, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
-            logger.error("Fehler beim löschen: {}", download.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+            logger.error("Fehler beim löschen: {}", download.targetPathFileName)
             true
         }
     }

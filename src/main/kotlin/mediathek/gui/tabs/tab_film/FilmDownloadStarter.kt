@@ -22,6 +22,7 @@ package mediathek.gui.tabs.tab_film
 
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.controller.starter.DownloadStartActions
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
@@ -81,7 +82,7 @@ fun startDownloads(
                 downloadsList.addMitNummer(datenDownload)
                 MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                 if (result.startImmediately()) {
-                    datenDownload.startDownload()
+                    DownloadStartActions.start(datenDownload)
                 }
             } else {
                 showSingleDownloadDialog(parent, film, effectiveProgramSet, requestedResolution)

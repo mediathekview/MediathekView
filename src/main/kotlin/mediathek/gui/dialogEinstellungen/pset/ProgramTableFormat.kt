@@ -55,6 +55,6 @@ class ProgramTableFormat : AdvancedTableFormat<DatenProg> {
         when (column) {
             DatenProg.PROGRAMM_RESTART -> baseObject.isRestart
             DatenProg.PROGRAMM_DOWNLOADMANAGER -> baseObject.isDownloadManager
-            else -> baseObject.arr[column]
+            else -> baseObject[column]
         }
 }

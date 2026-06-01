@@ -56,7 +56,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
         val url = film.urlNormalQuality
         if (url.isNotEmpty()) {
             val download = DatenDownload(pSet, film, DownloadSource.BUTTON, null, "", "", aufloesung)
-            download.start = DownloadRunState()
+            download.runtime.startRun()
             launchDownloadThread(download)
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             SeenHistoryController().use { historyController ->
@@ -82,10 +82,11 @@ class DownloadStartCoordinator(private val daten: Daten) {
     }
 
     private fun reStartmeldung(datenDownload: DatenDownload) {
+        val start = checkNotNull(datenDownload.runtime.runState)
         val text = mutableListOf<String>()
-        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: ${datenDownload.start.countRestarted})")
-        text.add("Ziel: ${datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]}")
-        text.add("URL: ${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}")
+        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: ${start.countRestarted})")
+        text.add("Ziel: ${datenDownload.targetPathFileName}")
+        text.add("URL: ${datenDownload.downloadUrl}")
         logger.info(text)
     }
 
@@ -135,7 +136,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
 
     private fun selectDirectDownload(datenDownload: DatenDownload): Thread {
         val useCdnAwareDirectDownload = ApplicationConfiguration.getInstance().useCdnAwareDirectDownload
-        val result = CdnDetector.detect(datenDownload.arr[DatenDownload.DOWNLOAD_URL])
+        val result = CdnDetector.detect(datenDownload.downloadUrl)
         return if (useCdnAwareDirectDownload && CdnDetector.isCdn(result)) {
             logger.trace("CDN detected: {}", result)
             CdnAwareDirectDownloadThread(datenDownload)
@@ -155,7 +156,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
      * @param datenDownload The [DatenDownload] info object for download.
      */
     private fun launchDownloadThread(datenDownload: DatenDownload) {
-        datenDownload.start.startTime = LocalDateTime.now()
+        checkNotNull(datenDownload.runtime.runState).startTime = LocalDateTime.now()
         DownloadProgressEventPublisher.publishThrottled()
 
         val downloadThread = when (datenDownload.art) {

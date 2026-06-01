@@ -6,6 +6,7 @@ import mediathek.controller.starter.DownloadProgressText
 import mediathek.controller.starter.DownloadRunState
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadColumns
 import mediathek.swing.IconUtils
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.table.MVTable
@@ -51,17 +52,17 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
 
     private fun applyHorizontalAlignment(colIndex: Int) {
         when (colIndex) {
-            DatenDownload.DOWNLOAD_PROGRESS,
-            DatenDownload.DOWNLOAD_FILM_NR,
-            DatenDownload.DOWNLOAD_NR,
-            DatenDownload.DOWNLOAD_DATUM,
-            DatenDownload.DOWNLOAD_ZEIT,
-            DatenDownload.DOWNLOAD_DAUER,
-            DatenDownload.DOWNLOAD_BANDBREITE,
-            DatenDownload.DOWNLOAD_RESTZEIT,
+            DownloadColumns.PROGRESS,
+            DownloadColumns.FILM_NR,
+            DownloadColumns.NR,
+            DownloadColumns.DATE,
+            DownloadColumns.TIME,
+            DownloadColumns.DURATION,
+            DownloadColumns.BANDWIDTH,
+            DownloadColumns.REMAINING_TIME,
                 -> horizontalAlignment = CENTER
 
-            DatenDownload.DOWNLOAD_GROESSE -> horizontalAlignment = RIGHT
+            DownloadColumns.SIZE -> horizontalAlignment = RIGHT
         }
     }
 
@@ -91,7 +92,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
 
             val rowModelIndex = table.convertRowIndexToModel(row)
             val columnModelIndex = table.convertColumnIndexToModel(column)
-            val datenDownload = table.model.getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF) as DatenDownload
+            val datenDownload = table.model.getValueAt(rowModelIndex, DownloadColumns.REF) as DatenDownload
             val mvTable = table as MVTable
 
             if (mvTable.isLineBreak()) {
@@ -99,17 +100,17 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
                 verticalAlignment = TOP
 
                 when (columnModelIndex) {
-                    DatenDownload.DOWNLOAD_TITEL,
-                    DatenDownload.DOWNLOAD_THEMA,
-                    DatenDownload.DOWNLOAD_URL,
-                    DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF,
-                    DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY,
-                    DatenDownload.DOWNLOAD_FILM_URL,
-                    DatenDownload.DOWNLOAD_URL_SUBTITLE,
-                    DatenDownload.DOWNLOAD_ZIEL_DATEINAME,
-                    DatenDownload.DOWNLOAD_ZIEL_PFAD,
-                    DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME,
-                    DatenDownload.DOWNLOAD_ABO,
+                    DownloadColumns.TITLE,
+                    DownloadColumns.TOPIC,
+                    DownloadColumns.URL,
+                    DownloadColumns.PROGRAM_INVOCATION,
+                    DownloadColumns.PROGRAM_INVOCATION_ARRAY,
+                    DownloadColumns.FILM_URL,
+                    DownloadColumns.SUBTITLE_URL,
+                    DownloadColumns.TARGET_FILE_NAME,
+                    DownloadColumns.TARGET_PATH,
+                    DownloadColumns.TARGET_PATH_FILE_NAME,
+                    DownloadColumns.ABO,
                         -> return createTextArea(valueText(value), datenDownload, columnModelIndex, isSelected)
                 }
             } else {
@@ -117,30 +118,30 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
             }
 
             when (columnModelIndex) {
-                DatenDownload.DOWNLOAD_PROGRESS -> renderProgressColumn(datenDownload, mvTable, isSelected)?.let { return it }
-                DatenDownload.DOWNLOAD_FILM_NR -> hideZeroFilmNumber(table, rowModelIndex)
-                DatenDownload.DOWNLOAD_ART -> renderDownloadType(datenDownload)
-                DatenDownload.DOWNLOAD_QUELLE -> renderDownloadSource(datenDownload)
-                DatenDownload.DOWNLOAD_BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected)
-                DatenDownload.DOWNLOAD_BUTTON_DEL -> handleButtonDeleteColumn(datenDownload, isSelected)
-                DatenDownload.DOWNLOAD_ABO -> handleAboColumn(datenDownload)
-                DatenDownload.DOWNLOAD_SENDER -> {
+                DownloadColumns.PROGRESS -> renderProgressColumn(datenDownload, mvTable, isSelected)?.let { return it }
+                DownloadColumns.FILM_NR -> hideZeroFilmNumber(table, rowModelIndex)
+                DownloadColumns.TYPE -> renderDownloadType(datenDownload)
+                DownloadColumns.SOURCE -> renderDownloadSource(datenDownload)
+                DownloadColumns.BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected)
+                DownloadColumns.BUTTON_DELETE -> handleButtonDeleteColumn(datenDownload, isSelected)
+                DownloadColumns.ABO -> handleAboColumn(datenDownload)
+                DownloadColumns.SENDER -> {
                     if (mvTable.showSenderIcons()) {
                         val targetDim = getSenderCellDimension(table, row, column)
                         setSenderIcon(valueText(value), targetDim, isSelected)
                     }
                 }
 
-                DatenDownload.DOWNLOAD_GEO -> drawGeolocationIcons(datenDownload.film, isSelected)
+                DownloadColumns.GEO -> datenDownload.film?.let { film -> drawGeolocationIcons(film, isSelected) }
             }
 
-            if (columnModelIndex == DatenDownload.DOWNLOAD_TITEL) {
+            if (columnModelIndex == DownloadColumns.TITLE) {
                 datenDownload.film?.let { film ->
                     setIndicatorIcons(table, film, isSelected)
                 }
             }
 
-            setBackgroundColor(this, datenDownload.start, isSelected)
+            setBackgroundColor(this, datenDownload.runtime.runState, isSelected)
         } catch (ex: Exception) {
             logger.error(ex)
         }
@@ -154,7 +155,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
             emptyBorder
         }
 
-        val start = datenDownload.start
+        val start = datenDownload.runtime.runState
         if (start == null) {
             text = ""
             return null
@@ -176,7 +177,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun hideZeroFilmNumber(table: JTable, rowModelIndex: Int) {
-        if (table.model.getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_FILM_NR) as Int == 0) {
+        if (table.model.getValueAt(rowModelIndex, DownloadColumns.FILM_NR) as Int == 0) {
             text = ""
         }
     }
@@ -196,15 +197,15 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
         isSelected: Boolean,
     ): JTextArea {
         val textArea = createWrappedTextArea(value)
-        if (columnModelIndex == DatenDownload.DOWNLOAD_ABO) {
+        if (columnModelIndex == DownloadColumns.ABO) {
             handleAboColumn(textArea, datenDownload)
         }
-        setBackgroundColor(textArea, datenDownload.start, isSelected)
+        setBackgroundColor(textArea, datenDownload.runtime.runState, isSelected)
         return textArea
     }
 
     private fun setIconsAndToolTips(datenDownload: DatenDownload, isSelected: Boolean) {
-        val start = datenDownload.start
+        val start = datenDownload.runtime.runState
         if (start != null && !datenDownload.isDownloadManager) {
             when (start.status) {
                 StartStatus.FINISHED -> {
@@ -234,7 +235,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun handleAboColumn(a: JTextArea, datenDownload: DatenDownload) {
-        if (datenDownload.arr[DatenDownload.DOWNLOAD_ABO].isNotEmpty()) {
+        if (datenDownload.isFromAbo) {
             a.foreground = MVColor.DOWNLOAD_IST_ABO.color
         } else {
             a.foreground = MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color
@@ -244,7 +245,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
 
     private fun handleAboColumn(datenDownload: DatenDownload) {
         horizontalAlignment = CENTER
-        if (datenDownload.arr[DatenDownload.DOWNLOAD_ABO].isNotEmpty()) {
+        if (datenDownload.isFromAbo) {
             foreground = MVColor.DOWNLOAD_IST_ABO.color
         } else {
             foreground = MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color
@@ -254,7 +255,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
 
     private fun handleButtonDeleteColumn(datenDownload: DatenDownload, isSelected: Boolean) {
         horizontalAlignment = CENTER
-        val start = datenDownload.start
+        val start = datenDownload.runtime.runState
         if (start != null) {
             if (start.status >= StartStatus.FINISHED) {
                 setIcon(downloadClearIcons, DOWNLOAD_ENTFERNEN, isSelected)

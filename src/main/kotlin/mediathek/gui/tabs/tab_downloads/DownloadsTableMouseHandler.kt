@@ -23,6 +23,7 @@ import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
+import mediathek.daten.DownloadColumns
 import mediathek.daten.abo.DatenAbo
 import mediathek.gui.dialog.DialogAboNoSet
 import mediathek.gui.dialog.DialogEditAbo
@@ -90,7 +91,7 @@ class DownloadsTableMouseHandler(
     }
 
     private fun downloadAtViewRow(row: Int): DatenDownload =
-        tabelle.model.getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF) as DatenDownload
+        tabelle.model.getValueAt(tabelle.convertRowIndexToModel(row), DownloadColumns.REF) as DatenDownload
 
     private fun buttonTable(row: Int, column: Int) {
         if (row == -1) {
@@ -99,18 +100,19 @@ class DownloadsTableMouseHandler(
 
         datenDownload = downloadAtViewRow(row)
         when (tabelle.convertColumnIndexToModel(column)) {
-            DatenDownload.DOWNLOAD_BUTTON_START -> handleStartButton()
-            DatenDownload.DOWNLOAD_BUTTON_DEL -> handleDeleteButton()
+            DownloadColumns.BUTTON_START -> handleStartButton()
+            DownloadColumns.BUTTON_DELETE -> handleDeleteButton()
         }
     }
 
     private fun handleStartButton() {
         val download = datenDownload ?: return
-        if (download.start != null && !download.isDownloadManager) {
-            if (download.start.status == StartStatus.FINISHED) {
+        val start = download.runtime.runState
+        if (start != null && !download.isDownloadManager) {
+            if (start.status == StartStatus.FINISHED) {
                 downloadsTab.filmAbspielen()
             } else {
-                downloadsTab.filmStartenWiederholenStoppen(false, download.start.status == StartStatus.ERROR, true, false)
+                downloadsTab.filmStartenWiederholenStoppen(false, start.status == StartStatus.ERROR, true, false)
             }
         } else {
             downloadsTab.filmStartenWiederholenStoppen(false, true, true, false)
@@ -119,7 +121,8 @@ class DownloadsTableMouseHandler(
 
     private fun handleDeleteButton() {
         val download = datenDownload ?: return
-        if (download.start != null && download.start.status >= StartStatus.FINISHED) {
+        val start = download.runtime.runState
+        if (start != null && start.status >= StartStatus.FINISHED) {
             downloadsTab.downloadsAufraeumen(download)
         } else {
             downloadsTab.downloadLoeschen(true)
@@ -188,7 +191,8 @@ class DownloadsTableMouseHandler(
         }
 
         val download = downloadAtViewRow(row)
-        return download.start != null && download.start.status <= StartStatus.RUNNING
+        val start = download.runtime.runState
+        return start != null && start.status <= StartStatus.RUNNING
     }
 
     private fun addAboMenu(popupMenu: JPopupMenu) {
@@ -260,7 +264,7 @@ class DownloadsTableMouseHandler(
         val download = downloadAtViewRow(row)
         val film = download.film ?: return
         val filmClone = DatenFilm(film).apply {
-            setNormalQualityUrl(download.arr[DatenDownload.DOWNLOAD_URL])
+            setNormalQualityUrl(download.downloadUrl)
             lowQualityUrl = ""
         }
         daten.downloadStartCoordinator.urlMitProgrammStarten(gruppe, filmClone, "")
@@ -286,7 +290,7 @@ class DownloadsTableMouseHandler(
             GuiFunktionen.copyToClipboard(
                 tabelle.model.getValueAt(
                     tabelle.convertRowIndexToModel(row),
-                    DatenDownload.DOWNLOAD_URL
+                    DownloadColumns.URL
                 ).toString()
             )
         }

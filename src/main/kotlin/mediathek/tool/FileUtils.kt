@@ -16,7 +16,6 @@ object FileUtils {
      * Move a file to the OS trash if supported, otherwise delete it.
      * @param filePath the pathe to the file to be deleted.
      */
-    @JvmStatic
     fun moveToTrash(filePath: Path) {
         try {
             if (SystemUtils.IS_OS_MAC_OSX) {
@@ -35,7 +34,6 @@ object FileUtils {
     const val ONE_MB: Long = ONE_KB * ONE_KB
     const val ONE_GB: Long = ONE_KB * ONE_MB
 
-    @JvmStatic
     fun removeExtension(fileName: String): String {
         return File(fileName).nameWithoutExtension
     }
@@ -93,7 +91,6 @@ object FileUtils {
         }
     }
 
-    @JvmStatic
     fun humanReadableByteCountBinary(bytes: Long): String {
         val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
         if (absB < ONE_KB) {

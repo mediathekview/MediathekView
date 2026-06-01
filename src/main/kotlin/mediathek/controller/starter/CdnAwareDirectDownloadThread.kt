@@ -60,10 +60,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class CdnAwareDirectDownloadThread(
     private val datenDownload: DatenDownload
-) : Thread("CDN AWARE DIRECT DL THREAD_${datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]}") {
+) : Thread("CDN AWARE DIRECT DL THREAD_${datenDownload.title}") {
 
     private val logger = LogManager.getLogger(javaClass)
-    private val start = datenDownload.start
+    private val start = checkNotNull(datenDownload.runtime.runState)
     private val rateLimiter = ByteRateLimiter(downloadLimit())
     private val messageBus: MBassador<BaseEvent> = MessageBus.messageBus
     private val client: OkHttpClient = MVHttpClient.httpClient.newBuilder()
@@ -107,14 +107,14 @@ class CdnAwareDirectDownloadThread(
         runBlocking {
             try {
                 createDirectory()
-                finalFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                finalFile = File(datenDownload.targetPathFileName)
                 file = DirectDownloadPartFiles.partFileFor(finalFile)
 
                 if (!cancelDownload()) {
-                    val url = requireNotNull(datenDownload.arr[DatenDownload.DOWNLOAD_URL].toHttpUrlOrNull())
+                    val url = parseDownloadUrl()
                     logger.info(
                         "Using dedicated HTTP/1.1 chunked downloader for sender {}",
-                        datenDownload.arr[DatenDownload.DOWNLOAD_SENDER]
+                        datenDownload.sender
                     )
 
                     val contentLength = getContentLength(url)
@@ -122,7 +122,7 @@ class CdnAwareDirectDownloadThread(
                         throw IOException("Could not determine content length for download")
                     }
 
-                    datenDownload.mVFilmSize.size = contentLength
+                    datenDownload.runtime.filmSize.size = contentLength
                     prepareAncillaryDownloads()
                     executeChunkedDownload(url, contentLength)
                 }
@@ -136,6 +136,11 @@ class CdnAwareDirectDownloadThread(
             }
         }
     }
+
+    @Throws(IOException::class)
+    private fun parseDownloadUrl(): HttpUrl =
+        datenDownload.downloadUrl.toHttpUrlOrNull()
+            ?: throw IOException("Invalid download URL: ${datenDownload.downloadUrl}")
 
     private fun downloadLimit(): Long {
         val configuredLimit = ApplicationConfiguration.getConfiguration()
@@ -180,8 +185,8 @@ class CdnAwareDirectDownloadThread(
     }
 
     private suspend fun prepareAncillaryDownloads() = coroutineScope {
-        datenDownload.interruptRestart()
-        datenDownload.mVFilmSize.aktSize = alreadyDownloaded
+        DownloadLifecycleActions.restartInterrupted(datenDownload)
+        datenDownload.runtime.filmSize.aktSize = alreadyDownloaded
         ancillaryDownloads = DirectDownloadAncillaryFiles.start(this, datenDownload, logger)
     }
 
@@ -276,7 +281,7 @@ class CdnAwareDirectDownloadThread(
                     MVBandwidthCountingInputStream(throttledInput).use { bandwidthInput ->
                         start.mVBandwidthCountingInputStream = bandwidthInput
                         val buffer = ByteArray(DOWNLOAD_BUFFER_SIZE)
-                        var displayedBytes = datenDownload.mVFilmSize.aktSize
+                        var displayedBytes = datenDownload.runtime.filmSize.aktSize
                         var notifyProgress = false
 
                         while (!start.stoppen) {
@@ -287,16 +292,16 @@ class CdnAwareDirectDownloadThread(
 
                             alreadyDownloaded += len
                             bufferedSink.write(buffer, 0, len)
-                            datenDownload.mVFilmSize.addAktSize(len.toLong())
+                            datenDownload.runtime.filmSize.addAktSize(len.toLong())
                             val liveBandwidth = updateBandwidth(len.toLong())
 
-                            if (displayedBytes != datenDownload.mVFilmSize.aktSize) {
-                                displayedBytes = datenDownload.mVFilmSize.aktSize
+                            if (displayedBytes != datenDownload.runtime.filmSize.aktSize) {
+                                displayedBytes = datenDownload.runtime.filmSize.aktSize
                                 notifyProgress = true
                             }
 
-                            if (datenDownload.mVFilmSize.size > 0) {
-                                var progress = displayedBytes * 1000L / datenDownload.mVFilmSize.size
+                            if (datenDownload.runtime.filmSize.size > 0) {
+                                var progress = displayedBytes * 1000L / datenDownload.runtime.filmSize.size
                                 if (startProgress == -1L) {
                                     startProgress = progress
                                 }
@@ -402,7 +407,7 @@ class CdnAwareDirectDownloadThread(
         logger.error("HTTP-Fehler: {} {}", response.code, response.message)
 
         if (start.countRestarted >= Konstanten.MAX_DOWNLOAD_RESTARTS) {
-            showDownloadError("URL des Films:\n${datenDownload.arr[DatenDownload.DOWNLOAD_URL]}\n\n$responseCode\n")
+            showDownloadError("URL des Films:\n${datenDownload.downloadUrl}\n\n$responseCode\n")
         }
 
         state = HttpDownloadState.ERROR
@@ -460,7 +465,7 @@ class CdnAwareDirectDownloadThread(
         }
     }
 
-    private fun cancelDownload(): Boolean {
+    private suspend fun cancelDownload(): Boolean {
         if (!file.exists() && !finalFile.exists()) {
             return false
         }
@@ -482,17 +487,14 @@ class CdnAwareDirectDownloadThread(
         }
 
         while (dialogAbbrechenIsVis) {
-            try {
-                sleep(100)
-            } catch (_: Exception) {
-            }
+            delay(DIALOG_POLL_DELAY_MILLIS.milliseconds)
         }
         return retAbbrechen
     }
 
     private fun createDirectory() {
         try {
-            Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]))
+            Files.createDirectories(Paths.get(datenDownload.targetPath))
         } catch (_: IOException) {
         }
     }
@@ -526,7 +528,7 @@ class CdnAwareDirectDownloadThread(
                 if (dialog.isNewName) {
                     MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                     createDirectory()
-                    finalFile = File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME])
+                    finalFile = File(datenDownload.targetPathFileName)
                     file = DirectDownloadPartFiles.partFileFor(finalFile)
                 }
             }
@@ -539,7 +541,7 @@ class CdnAwareDirectDownloadThread(
         val hasPartFile = file.exists()
         logger.info(
             "CLI download mode: continuing existing direct download for {}",
-            datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]
+            datenDownload.targetPathFileName
         )
         if (!hasPartFile && !moveLegacyFinalFileToPart()) {
             state = HttpDownloadState.ERROR
@@ -551,7 +553,7 @@ class CdnAwareDirectDownloadThread(
 
     private fun showDownloadError(message: String?) {
         if (Config.isDownloadAndQuit()) {
-            logger.error("Download failed for {}: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], message)
+            logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }
         SwingUtilities.invokeLater {
@@ -578,6 +580,7 @@ class CdnAwareDirectDownloadThread(
         private const val MAX_CHUNK_RETRIES = 25
         private const val DOWNLOAD_CHUNK_SIZE = 16L * 1024L * 1024L
         private const val DOWNLOAD_BUFFER_SIZE = 256 * 1024
+        private const val DIALOG_POLL_DELAY_MILLIS = 100L
         private const val NANOS_PER_SECOND = 1_000_000_000L
 
         private val dispatcher: Dispatcher = Dispatcher().apply {
