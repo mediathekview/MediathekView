@@ -19,6 +19,7 @@
 package mediathek.gui.tabs.tab_film.context
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,11 +64,26 @@ class FilmFileAndDuplicateContextActions(
         JMenuItem("Infodatei erzeugen...").apply {
             addActionListener {
                 val file = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infodatei speichern", "")
-                if (file != null) {
+                    ?: return@addActionListener
+
+                isEnabled = false
+                uiScope.launch {
                     try {
-                        MVInfoFile().writeManualInfoFile(film, file.toPath())
-                    } catch (e: Exception) {
-                        throw RuntimeException(e)
+                        withContext(Dispatchers.IO) {
+                            MVInfoFile().writeManualInfoFile(film, file.toPath())
+                        }
+                    } catch (ex: CancellationException) {
+                        throw ex
+                    } catch (ex: Exception) {
+                        logger.error("Could not write info file.", ex)
+                        JOptionPane.showMessageDialog(
+                            host.gui(),
+                            "Infodatei konnte nicht geschrieben werden.",
+                            Konstanten.PROGRAMMNAME,
+                            JOptionPane.ERROR_MESSAGE,
+                        )
+                    } finally {
+                        isEnabled = true
                     }
                 }
             }

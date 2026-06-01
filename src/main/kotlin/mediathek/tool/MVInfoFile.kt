@@ -3,114 +3,122 @@ package mediathek.tool
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.commons.text.WordUtils
 import org.apache.logging.log4j.LogManager
-import java.io.*
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
 
-open class MVInfoFile {
-    private fun formatFilmAsString(film: DatenFilm?, url: HttpUrl?, extended: Boolean = false): String {
-        if (null == film || url == null)
-            return ""
-
-        //calculate file size based on actual used URL
-        val fileSize = FileSize.getFileSizeFromUrl(url)
+class MVInfoFile(
+    private val fileSizeLookup: (HttpUrl) -> Long = FileSize::getFileSizeFromUrl,
+) {
+    private fun formatFilmAsString(film: DatenFilm, url: HttpUrl, extended: Boolean = false): String {
+        val fileSize = fileSizeLookup(url)
 
         val formatString = String.format("%%-%ds %%s", MAX_HEADER_LENGTH)
-        var sb = StringBuilder()
-        sb = appendFormattedTableLine(sb, formatString, FILM_SENDER, film.sender)
-        sb = appendFormattedTableLine(sb, formatString, FILM_THEMA, film.thema).append(System.lineSeparator())
-        sb = appendFormattedTableLine(sb, formatString, FILM_TITEL, film.title).append(System.lineSeparator())
-        sb = appendFormattedTableLine(sb, formatString, FILM_DATUM, film.sendeDatum)
-        sb = appendFormattedTableLine(sb, formatString, FILM_ZEIT, film.sendeZeit)
-        sb = appendFormattedTableLine(sb, formatString, FILM_DAUER, film.filmLengthAsString)
-        if (fileSize > FileSize.INVALID_SIZE)
-            sb = appendFormattedTableLine(sb, formatString, FILM_GROESSE, FileUtils.humanReadableByteCountBinary(fileSize))
-        else
-            sb.append(System.lineSeparator())
+        return buildString {
+            appendFormattedTableLine(this, formatString, FILM_SENDER, film.sender)
+            appendFormattedTableLine(this, formatString, FILM_THEMA, film.thema).append(System.lineSeparator())
+            appendFormattedTableLine(this, formatString, FILM_TITEL, film.title).append(System.lineSeparator())
+            appendFormattedTableLine(this, formatString, FILM_DATUM, film.sendeDatum)
+            appendFormattedTableLine(this, formatString, FILM_ZEIT, film.sendeZeit)
+            appendFormattedTableLine(this, formatString, FILM_DAUER, film.filmLengthAsString)
+            if (fileSize > FileSize.INVALID_SIZE) {
+                appendFormattedTableLine(this, formatString, FILM_GROESSE, FileUtils.humanReadableByteCountBinary(fileSize))
+            } else {
+                append(System.lineSeparator())
+            }
 
-        sb.append(System.lineSeparator())
-        sb.append("Website")
-        sb.append(System.lineSeparator())
-        sb.append(film.websiteUrl)
-        sb.append(System.lineSeparator())
-        sb.append(System.lineSeparator())
-        sb.append("URL")
-        sb.append(System.lineSeparator())
-        if (!extended)
-            sb.append(url)
-        else {
-            if (film.isHighQuality)
-                sb.append("HQ: ${film.decompressUrl(film.highQualityUrl)}\n")
-            sb.append("Normal: ${film.urlNormalQuality}\n")
-            sb.append("LQ: ${film.decompressUrl(film.lowQualityUrl)}\n")
+            append(System.lineSeparator())
+            append("Website")
+            append(System.lineSeparator())
+            append(film.websiteUrl)
+            append(System.lineSeparator())
+            append(System.lineSeparator())
+            append("URL")
+            append(System.lineSeparator())
+            if (extended) {
+                appendExtendedUrls(film)
+            } else {
+                append(url)
+            }
+            append(System.lineSeparator())
+            append(System.lineSeparator())
+            appendSubtitleUrl(film)
+            append(splitStringIntoMaxFixedLengthLines(film.description, MAX_LINE_LENGTH))
+            append(System.lineSeparator())
+            append(System.lineSeparator())
         }
-        sb.append(System.lineSeparator())
-        sb.append(System.lineSeparator())
-        sb.append(splitStringIntoMaxFixedLengthLines(film.description, MAX_LINE_LENGTH))
-        sb.append(System.lineSeparator())
-        sb.append(System.lineSeparator())
-        return sb.toString()
     }
 
-    protected fun appendFormattedTableLine(sb: StringBuilder, formatString: String?, keyTitle: String?, value: String?): StringBuilder {
-        return sb.append(String.format(formatString!!, String.format("%s:", keyTitle), value))
-                .append(System.lineSeparator())
+    private fun StringBuilder.appendSubtitleUrl(film: DatenFilm) {
+        if (!film.hasSubtitle()) {
+            return
+        }
+
+        append("Subtitle-URL")
+        append(System.lineSeparator())
+        append(film.subtitleUrl)
+        append(System.lineSeparator())
+        append(System.lineSeparator())
     }
 
-    protected fun splitStringIntoMaxFixedLengthLines(input: String?, lineLength: Int): String {
-        return Optional.ofNullable(input)
-                .map { s: String? -> WordUtils.wrap(s, lineLength) }
-                .orElse("")
+    private fun StringBuilder.appendExtendedUrls(film: DatenFilm) {
+        if (film.isHighQuality) {
+            append("HQ: ${film.decompressUrl(film.highQualityUrl)}")
+            append(System.lineSeparator())
+        }
+        append("Normal: ${film.urlNormalQuality}")
+        append(System.lineSeparator())
+        append("LQ: ${film.decompressUrl(film.lowQualityUrl)}")
+        append(System.lineSeparator())
     }
+
+    internal fun appendFormattedTableLine(
+        sb: StringBuilder,
+        formatString: String,
+        keyTitle: String,
+        value: String?,
+    ): StringBuilder =
+        sb.append(String.format(formatString, "$keyTitle:", value))
+            .append(System.lineSeparator())
+
+    internal fun splitStringIntoMaxFixedLengthLines(input: String?, lineLength: Int): String =
+        input?.let { WordUtils.wrap(it, lineLength) }.orEmpty()
 
     @Throws(IOException::class)
     fun writeInfoFile(film: DatenFilm?, path: Path, url: HttpUrl?) {
-        logger.info("Infofile schreiben nach: {}", path.toAbsolutePath().toString())
-        path.toFile().parentFile.mkdirs()
+        val currentFilm = film ?: throw IOException("Cannot write info file without film data.")
+        val currentUrl = url ?: throw IOException("Cannot write info file without download URL.")
 
-        Files.newOutputStream(path).use { os ->
-            DataOutputStream(os).use { dos ->
-                OutputStreamWriter(dos).use { osw ->
-                    BufferedWriter(osw).use { br ->
-                        br.write(formatFilmAsString(film, url))
-                        br.flush()
-                    }
-                }
-            }
-        }
+        logger.info("Infofile schreiben nach: {}", path.toAbsolutePath().toString())
+        writeString(path, formatFilmAsString(currentFilm, currentUrl))
         logger.info("Infodatei geschrieben")
     }
 
     @Throws(IOException::class)
     fun writeManualInfoFile(film: DatenFilm, path: Path) {
-        path.toFile().parentFile.mkdirs()
-
-        Files.newOutputStream(path).use { os ->
-            DataOutputStream(os).use { dos ->
-                OutputStreamWriter(dos).use { osw ->
-                    BufferedWriter(osw).use { br ->
-                        br.write(formatFilmAsString(film, film.urlNormalQuality.toHttpUrl(), extended = true))
-                        br.flush()
-                    }
-                }
-            }
-        }
+        val url = film.urlNormalQuality.toHttpUrlOrNull()
+            ?: throw IOException("Cannot write info file for invalid download URL: ${film.urlNormalQuality}")
+        writeString(path, formatFilmAsString(film, url, extended = true))
     }
 
     @Throws(IOException::class)
     fun writeInfoFile(datenDownload: DatenDownload) {
-        File(datenDownload.targetPath).mkdirs()
         val path = Paths.get(datenDownload.fileNameWithoutSuffix + ".txt")
-        val film = datenDownload.film
-        // this is the URL that will be used during download.
-        // write this into info file and calculate size from it
-        val url = datenDownload.downloadUrl.toHttpUrl()
-        film?.let { writeInfoFile(it, path, url) }
+        val film = datenDownload.film ?: throw IOException("Cannot write info file without film data.")
+        val url = datenDownload.downloadUrl.toHttpUrlOrNull()
+            ?: throw IOException("Cannot write info file for invalid download URL: ${datenDownload.downloadUrl}")
+        writeInfoFile(film, path, url)
+    }
+
+    private fun writeString(path: Path, content: String) {
+        path.parent?.let { parent -> Files.createDirectories(parent) }
+        Files.newBufferedWriter(path, Charsets.UTF_8).use { writer ->
+            writer.write(content)
+        }
     }
 
     private companion object {
