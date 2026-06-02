@@ -18,44 +18,58 @@
 
 package mediathek.gui.tasks
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.StandardLocations.getFilmlistFilePathString
 import mediathek.filmlisten.writer.FilmListWriter
-import java.beans.PropertyChangeEvent
-import java.beans.PropertyChangeListener
 import javax.swing.JLabel
 import javax.swing.JProgressBar
-import javax.swing.SwingUtilities
-import javax.swing.SwingWorker
 import kotlin.math.roundToInt
 
-class FilmlistWriterWorker(progLabel: JLabel, private val progressBar: JProgressBar) : SwingWorker<Void?, Int?>(),
-    PropertyChangeListener {
-    init {
-        addPropertyChangeListener(this)
-        SwingUtilities.invokeLater {
-            progLabel.text = "Schreibe Filmliste"
-            progressBar.isIndeterminate = false
-            progressBar.minimum = 0
-            progressBar.maximum = 100
-            progressBar.value = 0
+class FilmlistWriterWorker(
+    private val progLabel: JLabel,
+    private val progressBar: JProgressBar,
+) {
+    suspend fun run() = coroutineScope {
+        val progressUpdates = Channel<Int>(Channel.CONFLATED)
+        val progressJob = launch(Dispatchers.Swing) {
+            for (progress in progressUpdates) {
+                applyProgress(progress)
+            }
+        }
+
+        try {
+            withContext(Dispatchers.Swing) {
+                progLabel.text = "Schreibe Filmliste"
+                applyProgress(0)
+            }
+
+            withContext(Dispatchers.IO) {
+                var lastProgress = 0
+                FilmListWriter(false).writeFilmList(getFilmlistFilePathString(), Daten.getInstance().listeFilme) { prog ->
+                    val progress = (100.0 * prog).roundToInt().coerceIn(0, 100)
+                    if (progress >= lastProgress + 1) {
+                        lastProgress = progress
+                        progressUpdates.trySend(progress)
+                    }
+                }
+            }
+            progressUpdates.trySend(100)
+        } finally {
+            progressUpdates.close()
+            progressJob.join()
         }
     }
 
-    override fun doInBackground(): Void? {
-        val writer = FilmListWriter(false)
-        writer.writeFilmList(getFilmlistFilePathString(), Daten.getInstance().listeFilme) { prog ->
-            progress = (100.0 * prog).roundToInt()
-        }
-        return null
-    }
-
-    override fun propertyChange(evt: PropertyChangeEvent) {
-        if (evt.propertyName.equals("progress", ignoreCase = true)) {
-            val newValue = evt.newValue as Int
-            val oldValue = evt.oldValue as Int
-            if (newValue >= oldValue + 1)
-                SwingUtilities.invokeLater { progressBar.value = newValue }
-        }
+    private fun applyProgress(progress: Int) {
+        progressBar.isIndeterminate = false
+        progressBar.minimum = 0
+        progressBar.maximum = 100
+        progressBar.value = progress
     }
 }

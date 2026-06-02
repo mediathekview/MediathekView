@@ -29,10 +29,10 @@ internal class SeqContainerTest {
                 "  </body>" +
                 "</tt>"
         val doc = Ttml2Parser().parse(writeTtml(xml))
-        assertEquals(2, doc.cues().size)
-        assertEquals(Duration.ZERO, doc.cues()[0].start())
-        assertEquals(Duration.ofSeconds(1), doc.cues()[0].end())
-        assertEquals(Duration.ofSeconds(1), doc.cues()[1].start())
-        assertEquals(Duration.ofSeconds(3), doc.cues()[1].end())
+        assertEquals(2, doc.cues.size)
+        assertEquals(Duration.ZERO, doc.cues[0].start)
+        assertEquals(Duration.ofSeconds(1), doc.cues[0].end)
+        assertEquals(Duration.ofSeconds(1), doc.cues[1].start)
+        assertEquals(Duration.ofSeconds(3), doc.cues[1].end)
     }
 }

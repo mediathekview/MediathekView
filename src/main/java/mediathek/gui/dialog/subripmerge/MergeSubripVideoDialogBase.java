@@ -18,181 +18,20 @@
 
 package mediathek.gui.dialog.subripmerge;
 
-import com.github.kokorin.jaffree.ffmpeg.FFmpeg;
-import com.github.kokorin.jaffree.ffmpeg.UrlInput;
-import com.github.kokorin.jaffree.ffmpeg.UrlOutput;
-import mediathek.config.Konstanten;
-import mediathek.tool.FileDialogs;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.LanguageCode;
-import mediathek.tool.SwingErrorDialog;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.JXBusyLabel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * @author christianfranzke
+ * Base class for UI Designer.
+ * Subclasses contain the hand-written dialog behavior.
  */
-public class MergeSubripVideoDialog extends JDialog {
-    private static final Logger logger = LogManager.getLogger();
-    private static final Pattern PATTERN = Pattern.compile("\\[(.*?)]");
-
-    public MergeSubripVideoDialog(Window owner) {
+public class MergeSubripVideoDialogBase extends JDialog {
+    public MergeSubripVideoDialogBase(Window owner) {
         super(owner);
         initComponents();
-
-        getRootPane().setDefaultButton(btnMerge);
-        busyLabel.setVisible(false);
-        btnMerge.setEnabled(false);
-
-        fillLanguageComboBox();
-        cbLanguage.setSelectedItem(getLanguageText(LanguageCode.de));
-
-        btnCancel.addActionListener(e -> dispose());
-
-        setupTextFieldListener();
-
-        btnSelectInputSubrip.addActionListener(e -> {
-            var file = FileDialogs.chooseLoadFileLocation(this, "Untertitel wählen", "");
-            if (file != null) {
-                var fileStr = file.getAbsolutePath();
-                if (!fileStr.toLowerCase().endsWith(".srt")) {
-                    JOptionPane.showMessageDialog(this, "Untertiteldatei muss auf .srt enden.", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
-                    tfSubripFilePath.setText("");
-                }
-                else {
-                    tfSubripFilePath.setText(file.getAbsolutePath());
-                }
-            }
-        });
-        btnSelectInputVideo.addActionListener(e -> {
-            var file = FileDialogs.chooseLoadFileLocation(this, "Video wählen", "");
-            if (file != null) {
-                tfVideoFilePath.setText(file.getAbsolutePath());
-            }
-            else {
-                tfVideoFilePath.setText("");
-            }
-        });
-
-        btnSelectVideoOutputPath.addActionListener(e -> {
-            var file = FileDialogs.chooseSaveFileLocation(this, "Videospeicherort wählen", "");
-            if (file != null) {
-                tfVideoOutputPath.setText(file.getAbsolutePath());
-            }
-            else {
-                tfVideoOutputPath.setText("");
-            }
-        });
-
-        btnMerge.addActionListener(evt -> {
-            try {
-                var lang = (String) cbLanguage.getSelectedItem();
-                if (lang == null)
-                    throw new IllegalArgumentException("Native language selected is null");
-
-                Matcher matcher = PATTERN.matcher(lang);
-
-                if (matcher.find()) {
-                    lang = matcher.group(1);
-                } else {
-                    throw new IllegalArgumentException("Could not get ISO 639 3 letter code");
-                }
-
-                busyLabel.setVisible(true);
-                busyLabel.setBusy(true);
-                btnMerge.setEnabled(false);
-                btnCancel.setEnabled(false);
-
-                var ffmpegPath = GuiFunktionenProgramme.findExecutableOnPath("ffmpeg").getParent();
-                var ffmpeg = FFmpeg.atPath(ffmpegPath)
-                        .setOverwriteOutput(true)
-                        .addArgument("-xerror")
-                        .addInput(UrlInput.fromUrl(tfVideoFilePath.getText()))
-                        .addInput(UrlInput.fromUrl(tfSubripFilePath.getText()))
-                        .addOutput(UrlOutput.toUrl(tfVideoOutputPath.getText()))
-                        .addArguments("-c", "copy")
-                        .addArguments("-c:s", "mov_text")
-                        .addArgument("-metadata:s:s:0")
-                        .addArgument("language=" + lang);
-                ffmpeg.executeAsync().toCompletableFuture()
-                        .thenAccept(e -> SwingUtilities.invokeLater(() -> {
-                            shutdownMergeProcess();
-                            JOptionPane.showMessageDialog(MergeSubripVideoDialog.this, "Das Zusammenführen war erfolgreich", Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);
-                            dispose();
-                        }))
-                        .exceptionally(ex -> {
-                            SwingUtilities.invokeLater(() -> {
-                                shutdownMergeProcess();
-                                SwingErrorDialog.showExceptionMessage(MergeSubripVideoDialog.this, "Der Vorgang war fehlerhaft", ex);
-                                dispose();
-                            });
-                            return null;
-                        });
-            } catch (Exception e) {
-                logger.error("Error occured while merging video", e);
-                shutdownMergeProcess();
-                SwingErrorDialog.showExceptionMessage(this, "Es ist ein Fehler aufgetreten.", e);
-            }
-        });
-    }
-
-    private void setupTextFieldListener() {
-        DocumentListener documentListener = new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateButtonState();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateButtonState();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateButtonState();
-            }
-
-            private void updateButtonState() {
-                boolean allFieldsFilled = !tfSubripFilePath.getText().trim().isEmpty() &&
-                        !tfVideoFilePath.getText().trim().isEmpty() &&
-                        !tfVideoOutputPath.getText().trim().isEmpty();
-                btnMerge.setEnabled(allFieldsFilled);
-            }
-        };
-
-        tfSubripFilePath.getDocument().addDocumentListener(documentListener);
-        tfVideoFilePath.getDocument().addDocumentListener(documentListener);
-        tfVideoOutputPath.getDocument().addDocumentListener(documentListener);
-    }
-
-    private void shutdownMergeProcess() {
-        busyLabel.setBusy(false);
-        busyLabel.setVisible(false);
-        btnCancel.setEnabled(true);
-    }
-
-    private String getLanguageText(LanguageCode code) {
-        return String.format("%s [%s]", code.nativeName(), code.getISO3Language());
-    }
-
-    public void fillLanguageComboBox() {
-        List<String> languages = new ArrayList<>();
-        for (var item : LanguageCode.values()) {
-            languages.add(getLanguageText(item));
-        }
-        cbLanguage.setModel(new DefaultComboBoxModel<>(languages.toArray(new String[0])));
     }
 
     private void initComponents() {
@@ -366,15 +205,15 @@ public class MergeSubripVideoDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
     // Generated using JFormDesigner non-commercial license
-    private JTextField tfSubripFilePath;
-    private JButton btnSelectInputSubrip;
-    private JTextField tfVideoFilePath;
-    private JButton btnSelectInputVideo;
-    private JComboBox<String> cbLanguage;
-    private JTextField tfVideoOutputPath;
-    private JButton btnSelectVideoOutputPath;
-    private JXBusyLabel busyLabel;
-    private JButton btnCancel;
-    private JButton btnMerge;
+    protected JTextField tfSubripFilePath;
+    protected JButton btnSelectInputSubrip;
+    protected JTextField tfVideoFilePath;
+    protected JButton btnSelectInputVideo;
+    protected JComboBox<String> cbLanguage;
+    protected JTextField tfVideoOutputPath;
+    protected JButton btnSelectVideoOutputPath;
+    protected JXBusyLabel busyLabel;
+    protected JButton btnCancel;
+    protected JButton btnMerge;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

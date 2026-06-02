@@ -18,26 +18,31 @@
 
 package mediathek.gui.tasks
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import javax.swing.JLabel
 import javax.swing.JProgressBar
-import javax.swing.SwingUtilities
-import javax.swing.SwingWorker
 
 class RefreshAboWorker(
-    progLabel: JLabel,
-    progressBar: JProgressBar,
-) : SwingWorker<Void?, Int>() {
-    init {
-        SwingUtilities.invokeLater {
+    private val progLabel: JLabel,
+    private val progressBar: JProgressBar,
+) : Runnable {
+    override fun run() = runBlocking {
+        execute()
+    }
+
+    suspend fun execute() {
+        withContext(Dispatchers.Swing) {
             progLabel.text = "Abos eintragen"
             progressBar.isIndeterminate = true
         }
-    }
 
-    override fun doInBackground(): Void? {
-        val daten = Daten.getInstance()
-        daten.listeAbo.setAboFuerFilm(daten.listeFilme, false)
-        return null
+        withContext(Dispatchers.IO) {
+            val daten = Daten.getInstance()
+            daten.listeAbo.setAboFuerFilm(daten.listeFilme, false)
+        }
     }
 }

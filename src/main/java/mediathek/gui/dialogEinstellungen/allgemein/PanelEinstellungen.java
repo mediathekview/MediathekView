@@ -209,12 +209,10 @@ public class PanelEinstellungen extends JPanel {
             cbAutomaticMenuTabSwitching.addActionListener(_ -> {
                 final boolean isOn = cbAutomaticMenuTabSwitching.isSelected();
                 config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, isOn);
-                final InstallTabSwitchListenerEvent evt = new InstallTabSwitchListenerEvent();
-                if (isOn) {
-                    evt.setEvent(InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL);
-                } else {
-                    evt.setEvent(InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE);
-                }
+                final var eventType = isOn
+                        ? InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL
+                        : InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE;
+                final InstallTabSwitchListenerEvent evt = new InstallTabSwitchListenerEvent(eventType);
                 MessageBus.getMessageBus().publishAsync(evt);
             });
         }

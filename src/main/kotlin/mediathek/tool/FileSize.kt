@@ -110,7 +110,7 @@ object FileSize {
         val fetchSize = forceFetch || ApplicationConfiguration.getConfiguration()
             .getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true)
         if (fetchSize) {
-            logger.info("Requesting file size for: {}", url)
+            logger.trace("Requesting file size for: {}", url)
         } else {
             logger.info("Skipping file size request due to user setting")
             return LookupResult(INVALID_SIZE.toLong())

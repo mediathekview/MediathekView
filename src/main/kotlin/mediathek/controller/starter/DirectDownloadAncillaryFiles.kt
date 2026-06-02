@@ -21,9 +21,11 @@ package mediathek.controller.starter
 import kotlinx.coroutines.*
 import mediathek.daten.DatenDownload
 import mediathek.tool.MVInfoFile
-import mediathek.tool.subtitles.MVSubtitle
+import mediathek.tool.subtitles.SubtitleExportResult
+import mediathek.tool.subtitles.SubtitleExportService
 import org.apache.logging.log4j.Logger
 import java.io.IOException
+import java.nio.file.Paths
 
 internal class DirectDownloadAncillaryFiles private constructor(
     private val jobs: List<Deferred<Unit>>,
@@ -61,18 +63,36 @@ internal class DirectDownloadAncillaryFiles private constructor(
             }
 
             val subtitleJob = if (datenDownload.isSubtitle) {
-                scope.async(Dispatchers.IO) {
-                    try {
-                        MVSubtitle().writeSubtitle(datenDownload)
-                    } catch (ex: Exception) {
-                        logger.error("Failed to write subtitle file", ex)
-                    }
+                scope.async {
+                    writeSubtitleFile(datenDownload, logger)
                 }
             } else {
                 null
             }
 
             return DirectDownloadAncillaryFiles(listOfNotNull(infoJob, subtitleJob), logger)
+        }
+
+        private suspend fun writeSubtitleFile(datenDownload: DatenDownload, logger: Logger) {
+            val subtitleUrl = datenDownload.subtitleUrl
+            if (subtitleUrl.isEmpty()) {
+                return
+            }
+
+            val destinationPath = Paths.get(datenDownload.fileNameWithoutSuffix)
+            when (val result = SubtitleExportService.downloadAndExport(subtitleUrl, destinationPath)) {
+                SubtitleExportResult.InvalidFormat -> logger.error("Invalid subtitle format.")
+                SubtitleExportResult.UnsupportedFormat -> logger.error("Unsupported subtitle format.")
+                is SubtitleExportResult.Failure -> logger.error("Failed to write subtitle file", result.exception)
+                is SubtitleExportResult.Success -> {
+                    if (result.failures.isNotEmpty()) {
+                        logger.warn(
+                            "Subtitle export partially failed: {}",
+                            result.failures.keys.joinToString(", ")
+                        )
+                    }
+                }
+            }
         }
     }
 }

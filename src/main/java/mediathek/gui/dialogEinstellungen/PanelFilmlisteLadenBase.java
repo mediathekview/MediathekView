@@ -1,231 +1,25 @@
 package mediathek.gui.dialogEinstellungen;
 
-import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.jidesoft.swing.CheckBoxList;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
-import mediathek.controller.SenderFilmlistLoadApprover;
-import mediathek.gui.messages.FilmListImportTypeChangedEvent;
-import mediathek.mainwindow.MediathekGui;
-import mediathek.swing.IconUtils;
 import mediathek.swing.MultilineLabel;
-import mediathek.tool.*;
-import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.VerticalLayout;
-import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class PanelFilmlisteLaden extends JPanel {
-    private final Configuration config = ApplicationConfiguration.getConfiguration();
-    private boolean warningDialogShown;
-    private boolean senderSelectionChanged;
-
-    public PanelFilmlisteLaden(boolean inSettingsDialog) {
+/**
+ * Base class for UI Designer.
+ * Subclasses contain the hand-written panel behavior.
+ */
+public class PanelFilmlisteLadenBase extends JPanel {
+    public PanelFilmlisteLadenBase() {
         super();
-
-        MessageBus.getMessageBus().subscribe(this);
-
         initComponents();
-        jButtonDateiAuswaehlen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        init();
-        initReloadButton();
-
-        setupCheckBoxes();
-
-        btnReloadFilmlist.setVisible(inSettingsDialog);
-        //in settings we cannot load a list, therefore these controls make no sense
-        if (inSettingsDialog) {
-            prepareSettingsLayout();
-        }
-        else {
-            //we are in LoadFilmListDialog integrated...
-            panel1.setToolTipText("<html>Bei Änderungen wird eine komplette Filmliste vom Server geladen.<br>" +
-                    "Dies funktioniert <b>NICHT im Erweiterungsmodus</b>!!!</html>");
-            panel1.setBorder(new TitledBorder("Ausgewählte Sender laden:"));
-        }
-
-        setupSenderList();
-
-        jRadioButtonManuell.addChangeListener(_ -> {
-            final var selected = jRadioButtonManuell.isSelected();
-            jTextFieldUrl.setEnabled(selected);
-            jButtonDateiAuswaehlen.setEnabled(selected);
-            jCheckBoxUpdate.setEnabled(selected);
-        });
-
-        // Duplicate evaluation
-        var enableDuplicateEvaluation = config.getBoolean(
-                ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
-        cbEvaluateDuplicates.setSelected(enableDuplicateEvaluation);
-        cbEvaluateDuplicates.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES,
-                cbEvaluateDuplicates.isSelected()));
-    }
-
-    private void initReloadButton() {
-        btnReloadFilmlist.setIcon(IconUtils.of(FontAwesomeSolid.REDO_ALT));
-        btnReloadFilmlist.addActionListener(_ -> {
-            final var daten = Daten.getInstance();
-            daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
-            daten.getFilmeLaden().loadFilmlist("", hasSenderSelectionChanged());
-        });
-    }
-
-    private void setupSenderList() {
-        var model = GlazedListsSwing.eventComboBoxModelWithThreadProxyList(SenderListBoxModel.getProvidedSenderList());
-        senderCheckBoxList.setModel(model);
-
-        final var cblsm = senderCheckBoxList.getCheckBoxListSelectionModel();
-        //load initial settings
-        for (int i = 0; i < model.getSize(); i++) {
-            var item = model.getElementAt(i);
-            if (SenderFilmlistLoadApprover.isApproved(item)) {
-                cblsm.addSelectionInterval(i, i);
-            }
-            else {
-                cblsm.removeSelectionInterval(i, i);
-            }
-        }
-
-        //now add the item listeners for update
-        cblsm.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                for (int i = 0; i < model.getSize(); i++) {
-                    var item = model.getElementAt(i);
-                    if (cblsm.isSelectedIndex(i)) {
-                        SenderFilmlistLoadApprover.approve(item);
-                    }
-                    else {
-                        SenderFilmlistLoadApprover.deny(item);
-                    }
-                }
-
-                senderSelectionChanged = true;
-                SwingUtilities.invokeLater(() -> {
-                    if (!warningDialogShown) {
-                        var msg = "<html>Bei Änderungen an den Sendern <b>muss</b> zwingend ein Neustart durchgeführt werden.</html>";
-                        JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE);
-                        warningDialogShown = true;
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Deactivate controls which are useless in the settings dialog.
-     */
-    private void prepareSettingsLayout() {
-        lblUrl.setVisible(false);
-        jTextFieldUrl.setVisible(false);
-        jButtonDateiAuswaehlen.setVisible(false);
-    }
-
-    private void setupCheckBoxes() {
-        cbSign.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true));
-        cbSign.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, cbSign.isSelected()));
-
-        cbAudio.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true));
-        cbAudio.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, cbAudio.isSelected()));
-
-        cbTrailer.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER, true));
-        cbTrailer.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_TRAILER, cbTrailer.isSelected()));
-
-        cbLivestreams.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true));
-        cbLivestreams.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, cbLivestreams.isSelected()));
-
-        jCheckBoxUpdate.setSelected(config.getBoolean(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, false));
-        jCheckBoxUpdate.addActionListener(_ -> config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected()));
-    }
-
-    public boolean hasSenderSelectionChanged() {
-        return senderSelectionChanged;
-    }
-
-    private void init() {
-        initRadio();
-
-        jButtonDateiAuswaehlen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-        jButtonDateiAuswaehlen.addActionListener(_ -> {
-            var loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(), "Filmliste laden", "");
-            if (loadFile != null) {
-                jTextFieldUrl.setText(loadFile.getAbsolutePath());
-            }
-        });
-
-        var listener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jRadioButtonManuell.isSelected())
-                    GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
-                else
-                    GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.AUTOMATIC);
-
-                MessageBus.getMessageBus().publishAsync(new FilmListImportTypeChangedEvent());
-            }
-        };
-        jRadioButtonManuell.addActionListener(listener);
-        jRadioButtonAuto.addActionListener(listener);
-
-        jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        TextCopyPasteHandler<JTextField> handler = new TextCopyPasteHandler<>(jTextFieldUrl);
-        jTextFieldUrl.setComponentPopupMenu(handler.getPopupMenu());
-    }
-
-    @Handler
-    private void handleFilmListImportTypeChanged(FilmListImportTypeChangedEvent e) {
-        SwingUtilities.invokeLater(this::initRadio);
-    }
-
-    private void initRadio() {
-        switch (GuiFunktionen.getFilmListUpdateType()) {
-            case MANUAL -> jRadioButtonManuell.setSelected(true);
-            case AUTOMATIC -> jRadioButtonAuto.setSelected(true);
-        }
-
-        jTextFieldUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL));
-    }
-
-    public JCheckBox getJCheckBoxUpdate() {
-        return jCheckBoxUpdate;
-    }
-
-    public JTextField getJTextFieldUrl() {
-        return jTextFieldUrl;
-    }
-
-    private class BeobDateiUrl implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            turnOnManualImport();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            turnOnManualImport();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            turnOnManualImport();
-        }
-
-        private void turnOnManualImport() {
-            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -453,19 +247,19 @@ public class PanelFilmlisteLaden extends JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JLabel lblUrl;
-    private JTextField jTextFieldUrl;
-    private JButton jButtonDateiAuswaehlen;
-    private JCheckBox jCheckBoxUpdate;
-    private JRadioButton jRadioButtonAuto;
-    private JRadioButton jRadioButtonManuell;
-    private JCheckBox cbEvaluateDuplicates;
-    private JButton btnReloadFilmlist;
-    private JCheckBox cbSign;
-    private JCheckBox cbTrailer;
-    private JCheckBox cbAudio;
-    private JCheckBox cbLivestreams;
-    private JPanel panel1;
-    private CheckBoxList senderCheckBoxList;
+    protected JLabel lblUrl;
+    protected JTextField jTextFieldUrl;
+    protected JButton jButtonDateiAuswaehlen;
+    protected JCheckBox jCheckBoxUpdate;
+    protected JRadioButton jRadioButtonAuto;
+    protected JRadioButton jRadioButtonManuell;
+    protected JCheckBox cbEvaluateDuplicates;
+    protected JButton btnReloadFilmlist;
+    protected JCheckBox cbSign;
+    protected JCheckBox cbTrailer;
+    protected JCheckBox cbAudio;
+    protected JCheckBox cbLivestreams;
+    protected JPanel panel1;
+    protected CheckBoxList senderCheckBoxList;
     // End of variables declaration//GEN-END:variables
 }

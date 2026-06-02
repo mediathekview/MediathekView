@@ -20,25 +20,21 @@ package mediathek.filmlisten
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.swing.Swing
 import mediathek.config.Config
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenFilm
-import mediathek.daten.IndexedFilmList
 import mediathek.daten.ListeFilme
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.reader.FilmListReader
-import mediathek.gui.duplicates.CommonStatsEvaluationTask
-import mediathek.gui.duplicates.FilmDuplicateEvaluationTask
 import mediathek.gui.messages.FilmListReadStopEvent
-import mediathek.gui.tasks.BlacklistFilterWorker
-import mediathek.gui.tasks.FilmlistWriterWorker
-import mediathek.gui.tasks.LuceneIndexWorker
-import mediathek.gui.tasks.RefreshAboWorker
 import mediathek.mainwindow.MediathekGui
 import mediathek.mainwindow.StatusBarProgressHandle
 import mediathek.tool.*
@@ -48,18 +44,18 @@ import okhttp3.Request
 import org.apache.logging.log4j.LogManager
 import java.awt.GraphicsEnvironment
 import java.io.IOException
-import java.lang.reflect.InvocationTargetException
 import java.net.UnknownHostException
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JLabel
 import javax.swing.JOptionPane
 import javax.swing.JProgressBar
-import javax.swing.SwingUtilities
 import javax.swing.event.EventListenerList
+import kotlin.coroutines.cancellation.CancellationException
 
 class FilmeLaden(private val daten: Daten) {
     private data class StatusBarWidgets(
@@ -95,9 +91,7 @@ class FilmeLaden(private val daten: Daten) {
     private val filmListReader = FilmListReader()
     private val listeners = EventListenerList()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    @Volatile
-    private var istAmLaufen = false
+    private val loadRunning = AtomicBoolean(false)
     private var onlyOne = false
 
     private val canShowUiDialogs: Boolean
@@ -126,7 +120,7 @@ class FilmeLaden(private val daten: Daten) {
     private fun showNoUpdateAvailableDialog() {
         val ui = MediathekGui.ui()
         if (canShowUiDialogs && ui != null) {
-            SwingUtilities.invokeLater {
+            runOnSwing {
                 JOptionPane.showMessageDialog(
                     ui,
                     NO_UPDATE_AVAILABLE,
@@ -142,7 +136,7 @@ class FilmeLaden(private val daten: Daten) {
     private fun showExceptionMessage(message: String, ex: Exception, showDialogs: Boolean) {
         val ui = MediathekGui.ui()
         if (showDialogs && canShowUiDialogs && ui != null) {
-            SwingUtilities.invokeLater {
+            runOnSwing {
                 SwingErrorDialog.showExceptionMessage(ui, message, ex)
             }
         }
@@ -269,11 +263,9 @@ class FilmeLaden(private val daten: Daten) {
         logger.info("")
         displayLogInfo(listeFilme)
 
-        if (!canStartLoad()) {
+        if (!tryMarkLoadRunning()) {
             return false
         }
-
-        markLoadRunning()
 
         val days = loadNumDays
         if (dateiUrl.isEmpty()) {
@@ -293,11 +285,9 @@ class FilmeLaden(private val daten: Daten) {
         logger.info("")
         displayLogInfo(daten.listeFilme)
 
-        if (!canStartLoad()) {
+        if (!beginLoad()) {
             return
         }
-
-        beginLoad()
 
         logger.info("Filmliste laden von: {}", dateiUrl)
         val sourceUrl = dateiUrl.ifEmpty {
@@ -314,15 +304,18 @@ class FilmeLaden(private val daten: Daten) {
         listeners.remove(ListenerFilmeLaden::class.java, listener)
     }
 
-    private fun canStartLoad(): Boolean = !istAmLaufen
+    private fun tryMarkLoadRunning(): Boolean = loadRunning.compareAndSet(false, true)
 
-    private fun markLoadRunning() {
-        istAmLaufen = true
+    private fun finishLoadRunning() {
+        loadRunning.set(false)
     }
 
-    private fun beginLoad() {
-        markLoadRunning()
+    private fun beginLoad(): Boolean {
+        if (!tryMarkLoadRunning()) {
+            return false
+        }
         prepareLoad()
+        return true
     }
 
     private fun prepareLoad() {
@@ -371,10 +364,6 @@ class FilmeLaden(private val daten: Daten) {
                     return@runImportAsync ImportResult.NO_UPDATE
                 }
                 prepareLoad()
-                if (immerNeuLaden) {
-                    // dann die alte löschen, damit immer komplett geladen wird, aber erst nach dem Hash!!
-                    listeFilme.clear() // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
-                }
                 listeFilme.clear()
                 urlLaden(pfad, listeFilme, days).toImportResult()
             },
@@ -435,14 +424,16 @@ class FilmeLaden(private val daten: Daten) {
         scope.launch {
             val result = try {
                 importAction()
-            } catch (throwable: Throwable) {
-                logger.error(operationName, throwable)
+            } catch (ex: CancellationException) {
+                throw ex
+            } catch (ex: Exception) {
+                logger.error(operationName, ex)
                 ImportResult.FAILURE
             }
 
             logger.trace("Filme laden, ende")
             if (result == ImportResult.NO_UPDATE) {
-                istAmLaufen = false
+                finishLoadRunning()
                 if (options.postProcessWhenNoUpdate) {
                     val ui = MediathekGui.ui()
                     val statusBarWidgets = attachStatusBarWidgets(ui)
@@ -452,15 +443,15 @@ class FilmeLaden(private val daten: Daten) {
                 }
                 return@launch
             }
-            undEnde(ListenerFilmeLadenEvent("", "", 0, 0, result != ImportResult.SUCCESS), options)
+            finishImport(ListenerFilmeLadenEvent("", "", 0, 0, result != ImportResult.SUCCESS), options)
         }
     }
 
-    private fun undEnde(event: ListenerFilmeLadenEvent, options: FilmListLoadOptions) {
+    private suspend fun finishImport(event: ListenerFilmeLadenEvent, options: FilmListLoadOptions) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
 
-        logger.debug("undEnde()")
+        logger.debug("finishImport()")
         val listeFilme = daten.listeFilme
         val readDate = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
             .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
@@ -484,12 +475,12 @@ class FilmeLaden(private val daten: Daten) {
         findAndMarkNewFilms(daten.listeFilme)
 
         val ui = MediathekGui.ui()
-        istAmLaufen = false
+        finishLoadRunning()
         val writeFilmList = if (event.fehler) {
             logger.info("")
             logger.info("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen")
             if (canShowUiDialogs && ui != null) {
-                SwingUtilities.invokeLater {
+                runOnSwing {
                     JOptionPane.showMessageDialog(
                         ui,
                         "Das Laden der Filmliste hat nicht geklappt!",
@@ -572,19 +563,21 @@ class FilmeLaden(private val daten: Daten) {
         }
     }
 
-    private fun attachStatusBarWidgets(ui: MediathekGui?): StatusBarWidgets {
+    private suspend fun attachStatusBarWidgets(ui: MediathekGui?): StatusBarWidgets {
         if (ui != null) {
-            return StatusBarWidgets(
-                handle = invokeOnEdtAndWait { ui.showStatusBarProgress() },
-                attachedToStatusBar = true,
-            )
+            return withContext(Dispatchers.Swing) {
+                StatusBarWidgets(
+                    handle = ui.showStatusBarProgress(),
+                    attachedToStatusBar = true,
+                )
+            }
         }
         return StatusBarWidgets(NoStatusBarProgressHandle(), attachedToStatusBar = false)
     }
 
-    private fun detachStatusBarWidgets(widgets: StatusBarWidgets) {
+    private suspend fun detachStatusBarWidgets(widgets: StatusBarWidgets) {
         if (widgets.attachedToStatusBar) {
-            invokeOnEdtAndWait {
+            withContext(Dispatchers.Swing) {
                 widgets.handle.close()
             }
         } else {
@@ -594,64 +587,49 @@ class FilmeLaden(private val daten: Daten) {
 
     private fun startPostLoadWork(writeFilmList: Boolean, widgets: StatusBarWidgets) {
         scope.launch {
+            var completionEvent: ListenerFilmeLadenEvent? = null
             try {
                 buildPostLoadWorkerChain(writeFilmList, widgets)
-                SwingUtilities.invokeLater {
-                    Daten.getInstance().filmeLaden.notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
-                }
+                completionEvent = ListenerFilmeLadenEvent("", "", 100, 100, false)
+            } catch (ex: CancellationException) {
+                throw ex
+            } catch (ex: Exception) {
+                logger.error("Post-load filmlist work failed", ex)
+                completionEvent = ListenerFilmeLadenEvent("", "", 100, 100, true)
             } finally {
-                detachStatusBarWidgets(widgets)
-            }
-        }
-    }
-
-    private fun buildPostLoadWorkerChain(writeFilmList: Boolean, widgets: StatusBarWidgets) {
-        RefreshAboWorker(widgets.label, widgets.progressBar).run()
-        BlacklistFilterWorker(widgets.label, widgets.progressBar).run()
-
-        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true)) {
-            FilmDuplicateEvaluationTask().run()
-        }
-
-        CommonStatsEvaluationTask().run()
-
-        if (writeFilmList) {
-            FilmlistWriterWorker(widgets.label, widgets.progressBar).run()
-        }
-        if (daten.listeFilmeNachBlackList is IndexedFilmList) {
-            LuceneIndexWorker(widgets.label, widgets.progressBar).run()
-        }
-    }
-
-    private fun <T> invokeOnEdtAndWait(action: () -> T): T {
-        try {
-            return if (SwingUtilities.isEventDispatchThread()) {
-                action()
-            } else {
-                var result: T? = null
-                SwingUtilities.invokeAndWait {
-                    result = action()
+                withContext(NonCancellable) {
+                    try {
+                        completionEvent?.let { event ->
+                            withContext(Dispatchers.Swing) {
+                                Daten.getInstance().filmeLaden.notifyFertig(event)
+                            }
+                        }
+                    } finally {
+                        detachStatusBarWidgets(widgets)
+                    }
                 }
-                @Suppress("UNCHECKED_CAST")
-                result as T
             }
-        } catch (ex: InterruptedException) {
-            Thread.currentThread().interrupt()
-            throw RuntimeException(ex)
-        } catch (ex: InvocationTargetException) {
-            throw RuntimeException(ex)
+        }
+    }
+
+    private suspend fun buildPostLoadWorkerChain(writeFilmList: Boolean, widgets: StatusBarWidgets) =
+        FilmlistPostLoadTasks(daten, widgets.label, widgets.progressBar).run(writeFilmList)
+
+    private fun runOnSwing(action: () -> Unit) {
+        scope.launch(Dispatchers.Swing) {
+            action()
         }
     }
 
     private fun notifyListenersAsync(action: (ListenerFilmeLaden) -> Unit) {
         val currentListeners = listeners.getListeners(ListenerFilmeLaden::class.java)
-        val runnable = Runnable {
+        val notifyListeners = {
             currentListeners.forEach { listener -> action(listener) }
         }
         if (Config.isDownloadAndQuit() || GraphicsEnvironment.isHeadless()) {
-            runnable.run()
+            notifyListeners()
         } else {
-            SwingUtilities.invokeLater(runnable)
+            runOnSwing(notifyListeners)
         }
     }
 

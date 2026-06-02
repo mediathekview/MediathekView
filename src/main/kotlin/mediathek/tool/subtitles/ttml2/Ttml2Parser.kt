@@ -18,10 +18,14 @@
 
 package mediathek.tool.subtitles.ttml2
 
-import mediathek.tool.subtitles.ttml2.SubtitleDocument.*
+import mediathek.tool.subtitles.SubtitleDocument
+import mediathek.tool.subtitles.SubtitleDocument.*
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+import java.io.ByteArrayInputStream
+import java.io.InputStream
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Duration
@@ -43,7 +47,21 @@ import javax.xml.parsers.DocumentBuilderFactory
  */
 class Ttml2Parser {
     fun parse(path: Path): SubtitleDocument {
-        val doc = parseXml(path)
+        val doc = Files.newInputStream(path).use(::parseXml)
+        return parse(doc)
+    }
+
+    fun parse(content: String): SubtitleDocument =
+        ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8)).use { inputStream ->
+            parse(inputStream)
+        }
+
+    fun parse(inputStream: InputStream): SubtitleDocument {
+        val doc = parseXml(inputStream)
+        return parse(doc)
+    }
+
+    private fun parse(doc: Document): SubtitleDocument {
         val tt = requireNotNull(doc.documentElement) { "Not a TTML document (missing <tt>)" }
         require(tt.localName == "tt") { "Not a TTML document (missing <tt>)" }
 
@@ -93,6 +111,7 @@ class Ttml2Parser {
                         val childBegin =
                             if (hasAttr(element, "begin")) {
                                 TtmlTime.parseTimeExpression(XmlUtil.attr(element, null, "begin"), timeCtx)
+                                    ?: seqCursor
                             } else {
                                 seqCursor
                             }
@@ -120,8 +139,8 @@ class Ttml2Parser {
                     val cue = parseCue(element, timeCtx, styleIndex, scope, seqCursor)
                     if (cue != null) {
                         out.add(cue)
-                        if (scope.timeContainer.equals("seq", ignoreCase = true) && cue.end() > seqCursor) {
-                            seqCursor = cue.end()
+                        if (scope.timeContainer.equals("seq", ignoreCase = true) && cue.end > seqCursor) {
+                            seqCursor = cue.end
                         }
                     }
                 }
@@ -158,7 +177,7 @@ class Ttml2Parser {
             mergedRuns = normalizeRunsWhitespace(mergedRuns)
         }
 
-        val anyText = mergedRuns.any { !it.text().isBlank() && it.text() != "\\n" }
+        val anyText = mergedRuns.any { it.text.isNotBlank() && it.text != "\\n" }
         if (!anyText) {
             return null
         }
@@ -229,19 +248,19 @@ class Ttml2Parser {
 
         val out = ArrayList<StyledRun>()
         var current = runs.first()
-        var text = StringBuilder(current.text())
+        var text = StringBuilder(current.text)
 
         for (run in runs.drop(1)) {
-            if (run.style() == current.style()) {
-                text.append(run.text())
+            if (run.style == current.style) {
+                text.append(run.text)
             } else {
-                out.add(StyledRun(text.toString(), current.style()))
+                out.add(StyledRun(text.toString(), current.style))
                 current = run
-                text = StringBuilder(current.text())
+                text = StringBuilder(current.text)
             }
         }
 
-        out.add(StyledRun(text.toString(), current.style()))
+        out.add(StyledRun(text.toString(), current.style))
         return out
     }
 
@@ -249,24 +268,24 @@ class Ttml2Parser {
         val out = ArrayList<StyledRun>(runs.size)
         for (run in runs) {
             val normalized =
-                run.text()
+                run.text
                     .replace("\\n", "\u0000")
                     .replace(Regex("[ \\t\\x0B\\f\\r]+"), " ")
                     .replace("\u0000", "\\n")
-            out.add(StyledRun(normalized, run.style()))
+            out.add(StyledRun(normalized, run.style))
         }
 
         for (i in out.indices) {
             val run = out[i]
-            val normalized = run.text().replace(Regex(" *\\\\n *"), "\\\\n").trim()
-            out[i] = StyledRun(normalized, run.style())
+            val normalized = run.text.replace(Regex(" *\\\\n *"), "\\\\n").trim()
+            out[i] = StyledRun(normalized, run.style)
         }
         return out
     }
 
     private fun resolveBegin(el: Element, parentBegin: Duration, ctx: TtmlTime.TimeContext): Duration {
         val begin = XmlUtil.attr(el, null, "begin") ?: return parentBegin
-        return TtmlTime.parseTimeExpression(begin, ctx)
+        return TtmlTime.parseTimeExpression(begin, ctx) ?: parentBegin
     }
 
     private fun resolveEnd(
@@ -280,23 +299,21 @@ class Ttml2Parser {
 
         return when {
             end != null -> TtmlTime.parseTimeExpression(end, ctx)
-            duration != null -> begin.plus(TtmlTime.parseTimeExpression(duration, ctx))
+            duration != null -> TtmlTime.parseTimeExpression(duration, ctx)?.let { begin.plus(it) }
             else -> parentEnd
         }
     }
 
-    private fun hasAttr(el: Element, name: String): Boolean = el.hasAttribute(name) && !el.getAttribute(name).isBlank()
+    private fun hasAttr(el: Element, name: String): Boolean = el.hasAttribute(name) && el.getAttribute(name).isNotBlank()
 
-    private fun parseXml(path: Path): Document {
+    private fun parseXml(inputStream: InputStream): Document {
         val documentBuilderFactory = DocumentBuilderFactory.newInstance()
         documentBuilderFactory.isNamespaceAware = true
         documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
         documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "")
         documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "")
 
-        Files.newInputStream(path).use { inputStream ->
-            return documentBuilderFactory.newDocumentBuilder().parse(inputStream)
-        }
+        return documentBuilderFactory.newDocumentBuilder().parse(inputStream)
     }
 
     private data class TimingScope(

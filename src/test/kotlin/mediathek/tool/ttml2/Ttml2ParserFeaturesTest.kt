@@ -1,6 +1,6 @@
 package mediathek.tool.ttml2
 
-import mediathek.tool.subtitles.ttml2.Rgba
+import mediathek.tool.subtitles.Rgba
 import mediathek.tool.subtitles.ttml2.SubRipHtmlExporter
 import mediathek.tool.subtitles.ttml2.Ttml2Parser
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -29,10 +29,10 @@ internal class Ttml2ParserFeaturesTest {
                 "  </div></body>" +
                 "</tt>"
         val doc = Ttml2Parser().parse(writeTtml(xml))
-        assertEquals(1, doc.cues().size)
-        val cue = doc.cues().first()
-        assertEquals(Duration.ofMillis(1000), cue.start())
-        assertEquals(Duration.ofMillis(2500), cue.end())
+        assertEquals(1, doc.cues.size)
+        val cue = doc.cues.first()
+        assertEquals(Duration.ofMillis(1000), cue.start)
+        assertEquals(Duration.ofMillis(2500), cue.end)
         assertEquals("Hello", cue.plainText())
     }
 
@@ -49,10 +49,10 @@ internal class Ttml2ParserFeaturesTest {
                 "  </div></body>" +
                 "</tt>"
         val doc = Ttml2Parser().parse(writeTtml(xml))
-        val runs = doc.cues().first().runs()
-        assertTrue(runs.any { run -> run.text().contains("B") && run.style().bold() })
-        assertTrue(runs.any { run -> run.text().contains("I") && run.style().italic() })
-        assertTrue(runs.any { run -> run.text().contains("U") && run.style().underline() })
+        val runs = doc.cues.first().runs
+        assertTrue(runs.any { run -> run.text.contains("B") && run.style.bold })
+        assertTrue(runs.any { run -> run.text.contains("I") && run.style.italic })
+        assertTrue(runs.any { run -> run.text.contains("U") && run.style.underline })
     }
 
     @Test
@@ -69,11 +69,11 @@ internal class Ttml2ParserFeaturesTest {
                 "  </div></body>" +
                 "</tt>"
         val doc = Ttml2Parser().parse(writeTtml(xml))
-        val runs = doc.cues().first().runs()
-        assertTrue(runs.any { run -> run.text().contains("R") && Rgba(255, 0, 0, 255) == run.style().color() })
-        assertTrue(runs.any { run -> run.text().contains("G") && Rgba(0, 255, 0, 255) == run.style().color() })
-        assertTrue(runs.any { run -> run.text().contains("B") && Rgba(0, 0, 255, 128) == run.style().color() })
-        assertTrue(runs.any { run -> run.text().contains("W") && Rgba(255, 255, 255, 255) == run.style().color() })
+        val runs = doc.cues.first().runs
+        assertTrue(runs.any { run -> run.text.contains("R") && Rgba(255, 0, 0, 255) == run.style.color })
+        assertTrue(runs.any { run -> run.text.contains("G") && Rgba(0, 255, 0, 255) == run.style.color })
+        assertTrue(runs.any { run -> run.text.contains("B") && Rgba(0, 0, 255, 128) == run.style.color })
+        assertTrue(runs.any { run -> run.text.contains("W") && Rgba(255, 255, 255, 255) == run.style.color })
     }
 
     @Test
@@ -85,7 +85,7 @@ internal class Ttml2ParserFeaturesTest {
                 "  </div></body>" +
                 "</tt>"
         val doc = Ttml2Parser().parse(writeTtml(xml))
-        val concat = doc.cues().first().plainText()
+        val concat = doc.cues.first().plainText()
         assertTrue(concat.contains("A") && concat.contains("B"))
     }
 

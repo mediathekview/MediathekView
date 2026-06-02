@@ -1,6 +1,6 @@
 package mediathek.tool.ttml2
 
-import mediathek.tool.subtitles.ttml2.Rgba
+import mediathek.tool.subtitles.Rgba
 import mediathek.tool.subtitles.ttml2.Ttml2Color
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows

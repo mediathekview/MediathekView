@@ -33,10 +33,16 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfSubripFilePath"
 						"toolTipText": "Pfad zur Untertiteldatei im Subrip Text Format (.srt)"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectInputSubrip"
 						"text": "..."
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
@@ -49,10 +55,16 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfVideoFilePath"
 						"toolTipText": "Pfad zu einer von ffmpeg unterstützten Videodatei als Eingabemedium"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectInputVideo"
 						"text": "..."
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label3"
@@ -67,6 +79,7 @@ new FormModel {
 						"toolTipText": "Sprache der Untertitel"
 						auxiliary() {
 							"JavaCodeGenerator.typeParameters": "String"
+							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -79,14 +92,23 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfVideoOutputPath"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectVideoOutputPath"
 						"text": "..."
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 					add( new FormComponent( "org.jdesktop.swingx.JXBusyLabel" ) {
 						name: "busyLabel"
 						"text": "Führe Video und Untertitel zusammen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -105,6 +127,9 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnCancel"
 						"text": "Abbrechen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 					} )
@@ -113,6 +138,7 @@ new FormModel {
 						"text": "Zusammenführen"
 						auxiliary() {
 							"JavaCodeGenerator.variableName": "btnMerge"
+							"JavaCodeGenerator.variableModifiers": 4
 						}
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 0

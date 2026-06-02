@@ -17,11 +17,15 @@
  */
 package mediathek.gui.tasks
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.StandardLocations.getFilmIndexPath
 import mediathek.daten.DatenFilm
@@ -48,11 +52,9 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import javax.swing.JLabel
 import javax.swing.JProgressBar
-import javax.swing.SwingUtilities
-import javax.swing.SwingWorker
+import kotlin.coroutines.cancellation.CancellationException
 
-class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: JProgressBar) :
-    SwingWorker<Void?, Void?>() {
+class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: JProgressBar) : Runnable {
 
     private data class IndexingTuning(val queueCapacity: Int, val writeBatchSize: Int)
 
@@ -142,19 +144,19 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
         return IndexingTuning(queueCapacity, writeBatchSize)
     }
 
-    private fun updateProgress(processedCount: Int, totalCount: Int, oldProgress: AtomicInteger) {
+    private suspend fun updateProgress(processedCount: Int, totalCount: Int, oldProgress: AtomicInteger) {
         val progress = if (totalCount == 0) 100 else (processedCount * 100) / totalCount
         var previous = oldProgress.get()
         while (progress > previous) {
             if (oldProgress.compareAndSet(previous, progress)) {
-                SwingUtilities.invokeLater { progressBar.value = progress }
+                withContext(Dispatchers.Swing) { progressBar.value = progress }
                 break
             }
             previous = oldProgress.get()
         }
     }
 
-    private fun flushBatch(
+    private suspend fun flushBatch(
         writer: IndexWriter,
         batch: MutableList<Document>,
         counter: AtomicInteger,
@@ -171,93 +173,112 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
         batch.clear()
     }
 
-    override fun doInBackground(): Void? {
+    override fun run() = runBlocking {
+        execute()
+    }
+
+    suspend fun execute() {
         try {
-            SwingUtilities.invokeLater {
-                MediathekGui.ui()?.let { ui ->
-                    ui.toggleBlacklistAction.isEnabled = false
-                    ui.editBlacklistAction.isEnabled = false
-                    ui.loadFilmListAction.isEnabled = false
-                }
-
-                progLabel.text = "Indiziere Filme"
-                progressBar.isIndeterminate = false
-                progressBar.minimum = 0
-                progressBar.maximum = 100
-                progressBar.value = 0
-            }
-
-            val daten = Daten.getInstance()
-            val indexList = daten.listeFilmeNachBlackList as IndexedFilmList
-            // Search all films, then map hits through the current blacklist-filtered list at query time.
-            val sourceFilms = daten.listeFilme.snapshot()
-            val indexingThreads = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
-            val indexingTuning = calculateIndexingTuning(indexingThreads)
-            createIndexWriter(indexList).use { writer ->
-                val watch = Stopwatch.createStarted()
-                val counter = AtomicInteger(0)
-                val totalCount = sourceFilms.size
-                val oldProgress = AtomicInteger(0)
-
-                val indexingDispatcher = Executors.newFixedThreadPool(indexingThreads).asCoroutineDispatcher()
-                LOG.trace(
-                    "Lucene indexing uses {} worker(s), queue capacity {}, batch size {}",
-                    indexingThreads,
-                    indexingTuning.queueCapacity,
-                    indexingTuning.writeBatchSize
-                )
-                indexingDispatcher.use { indexingDispatcher ->
-                    runBlocking {
-                        val filmChannel = Channel<DatenFilm>(indexingTuning.queueCapacity)
-
-                        val producer = launch(indexingDispatcher) {
-                            try {
-                                for (film in sourceFilms) {
-                                    filmChannel.send(film)
-                                }
-                            } finally {
-                                filmChannel.close()
-                            }
-                        }
-
-                        val consumers = List(indexingThreads) {
-                            launch(indexingDispatcher) {
-                                val batch = ArrayList<Document>(indexingTuning.writeBatchSize)
-                                for (film in filmChannel) {
-                                    try {
-                                        batch.add(createIndexDocument(film))
-                                        if (batch.size >= indexingTuning.writeBatchSize) {
-                                            flushBatch(writer, batch, counter, totalCount, oldProgress)
-                                        }
-                                    } catch (ex: IOException) {
-                                        LOG.error("Lucene indexing failed for a film entry", ex)
-                                    }
-                                }
-
-                                try {
-                                    flushBatch(writer, batch, counter, totalCount, oldProgress)
-                                } catch (ex: IOException) {
-                                    LOG.error("Lucene indexing failed while flushing a document batch", ex)
-                                }
-                            }
-                        }
-
-                        producer.join()
-                        consumers.joinAll()
-                    }
-                }
-                SwingUtilities.invokeLater { progressBar.value = 100 }
-                SwingUtilities.invokeLater {
-                    progLabel.text = "Schreibe Index"
-                    progressBar.isIndeterminate = true
-                }
-                watch.stop()
-                LOG.trace("Lucene index creation took {}", watch)
-            }
-            indexList.reader?.close()
-            indexList.reader = DirectoryReader.open(indexList.luceneDirectory)
+            setupIndexingUi()
+            rebuildIndex()
+        } catch (ex: CancellationException) {
+            throw ex
         } catch (ex: Exception) {
-            LOG.error("Lucene film index most probably damaged, deleting it.")
+            handleDamagedIndex(ex)
+        } finally {
+            enableFilmListActions()
+        }
+    }
+
+    private suspend fun setupIndexingUi() = withContext(Dispatchers.Swing) {
+        MediathekGui.ui()?.let { ui ->
+            ui.toggleBlacklistAction.isEnabled = false
+            ui.editBlacklistAction.isEnabled = false
+            ui.loadFilmListAction.isEnabled = false
+        }
+
+        progLabel.text = "Indiziere Filme"
+        progressBar.isIndeterminate = false
+        progressBar.minimum = 0
+        progressBar.maximum = 100
+        progressBar.value = 0
+    }
+
+    private suspend fun rebuildIndex() = withContext(Dispatchers.IO) {
+        val daten = Daten.getInstance()
+        val indexList = daten.listeFilmeNachBlackList as IndexedFilmList
+        // Search all films, then map hits through the current blacklist-filtered list at query time.
+        val sourceFilms = daten.listeFilme.snapshot()
+        val indexingThreads = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
+        val indexingTuning = calculateIndexingTuning(indexingThreads)
+        createIndexWriter(indexList).use { writer ->
+            val watch = Stopwatch.createStarted()
+            val counter = AtomicInteger(0)
+            val totalCount = sourceFilms.size
+            val oldProgress = AtomicInteger(0)
+
+            val indexingDispatcher = Executors.newFixedThreadPool(indexingThreads).asCoroutineDispatcher()
+            LOG.trace(
+                "Lucene indexing uses {} worker(s), queue capacity {}, batch size {}",
+                indexingThreads,
+                indexingTuning.queueCapacity,
+                indexingTuning.writeBatchSize
+            )
+            indexingDispatcher.use { dispatcher ->
+                coroutineScope {
+                    val filmChannel = Channel<DatenFilm>(indexingTuning.queueCapacity)
+
+                    val producer = launch(dispatcher) {
+                        try {
+                            for (film in sourceFilms) {
+                                filmChannel.send(film)
+                            }
+                        } finally {
+                            filmChannel.close()
+                        }
+                    }
+
+                    val consumers = List(indexingThreads) {
+                        launch(dispatcher) {
+                            val batch = ArrayList<Document>(indexingTuning.writeBatchSize)
+                            for (film in filmChannel) {
+                                try {
+                                    batch.add(createIndexDocument(film))
+                                    if (batch.size >= indexingTuning.writeBatchSize) {
+                                        flushBatch(writer, batch, counter, totalCount, oldProgress)
+                                    }
+                                } catch (ex: IOException) {
+                                    LOG.error("Lucene indexing failed for a film entry", ex)
+                                }
+                            }
+
+                            try {
+                                flushBatch(writer, batch, counter, totalCount, oldProgress)
+                            } catch (ex: IOException) {
+                                LOG.error("Lucene indexing failed while flushing a document batch", ex)
+                            }
+                        }
+                    }
+
+                    producer.join()
+                    consumers.joinAll()
+                }
+            }
+            withContext(Dispatchers.Swing) {
+                progressBar.value = 100
+                progLabel.text = "Schreibe Index"
+                progressBar.isIndeterminate = true
+            }
+            watch.stop()
+            LOG.trace("Lucene index creation took {}", watch)
+        }
+        indexList.reader?.close()
+        indexList.reader = DirectoryReader.open(indexList.luceneDirectory)
+    }
+
+    private suspend fun handleDamagedIndex(ex: Exception) {
+        LOG.error("Lucene film index most probably damaged, deleting it.")
+        withContext(Dispatchers.IO) {
             try {
                 val indexPath = getFilmIndexPath()
                 if (Files.exists(indexPath)) {
@@ -266,22 +287,20 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
             } catch (e: IOException) {
                 LOG.error("Unable to delete lucene index path", e)
             }
-            SwingUtilities.invokeLater {
-                MediathekGui.ui()?.let { ui ->
-                    SwingErrorDialog.showExceptionMessage(
-                        ui,
-                        "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
-                        ex
-                    )
-                    ui.quitApplication()
-                }
+        }
+        withContext(Dispatchers.Swing) {
+            MediathekGui.ui()?.let { ui ->
+                SwingErrorDialog.showExceptionMessage(
+                    ui,
+                    "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
+                    ex
+                )
+                ui.quitApplication()
             }
         }
-
-        return null
     }
 
-    override fun done() {
+    private suspend fun enableFilmListActions() = withContext(Dispatchers.Swing) {
         MediathekGui.ui()?.let { ui ->
             ui.toggleBlacklistAction.isEnabled = true
             ui.editBlacklistAction.isEnabled = true

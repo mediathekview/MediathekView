@@ -24,10 +24,8 @@ import mediathek.audiothek.repository.AudioRepository;
 import mediathek.audiothek.ui.main.AudiothekPanel;
 import mediathek.config.*;
 import mediathek.controller.history.SeenHistoryController;
-import mediathek.daten.IndexedFilmList;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.MVTray;
 import mediathek.gui.actions.*;
 import mediathek.gui.actions.export.ExportDecompressedFilmlistAction;
@@ -38,8 +36,6 @@ import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.duplicates.CommonStatsEvaluationTask;
-import mediathek.gui.duplicates.FilmDuplicateEvaluationTask;
 import mediathek.gui.duplicates.overview.FilmDuplicateOverviewDialog;
 import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.history.ResetAboHistoryAction;
@@ -50,9 +46,6 @@ import mediathek.gui.progress.NoDownloadProgressIndicator;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
-import mediathek.gui.tasks.BlacklistFilterWorker;
-import mediathek.gui.tasks.LuceneIndexWorker;
-import mediathek.gui.tasks.RefreshAboWorker;
 import mediathek.logging.LogDialog;
 import mediathek.shutdown.ComputerShutdown;
 import mediathek.sqlite.RecoverHistoryDbAction;
@@ -82,7 +75,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -171,11 +163,6 @@ public class MediathekGui extends JFrame {
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private StatusBarProgressHandle filmlistDownloadProgressHandle;
     private boolean resetSettingsOnQuit;
-
-    private enum StartupFilmlistLoadOutcome {
-        LOCAL_LIST_READY,
-        REMOTE_UPDATE_STARTED
-    }
 
     public MediathekGui() {
         this(GenericNotificationCenter::new);
@@ -579,78 +566,17 @@ public class MediathekGui extends JFrame {
      */
     private void loadFilmlist() {
         installStatusBarProgress(progressLabel, progressBar);
+        new StartupFilmlistLoader(daten, progressLabel, progressBar, this::finishStartupFilmlistLoad).start();
+    }
 
-        var evaluateDuplicates = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true);
-
-        CompletableFuture<StartupFilmlistLoadOutcome> worker = CompletableFuture.supplyAsync(this::readStartupFilmlist)
-                .thenApply(this::startRemoteFilmlistUpdateIfNeeded);
-
-        if (evaluateDuplicates) {
-            worker = worker.thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, FilmDuplicateEvaluationTask::new));
-        }
-
-        worker = worker.thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, CommonStatsEvaluationTask::new))
-                .thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, () -> new RefreshAboWorker(progressLabel, progressBar)))
-                .thenApply(outcome -> runStartupFilmlistPostLoadTask(outcome, () -> new BlacklistFilterWorker(progressLabel, progressBar)));
-
-        worker = worker.thenApply(outcome -> {
-            if (shouldProcessStartupFilmlist(outcome) && daten.getListeFilmeNachBlackList() instanceof IndexedFilmList) {
-                new LuceneIndexWorker(progressLabel, progressBar).run();
+    private void finishStartupFilmlistLoad(boolean remoteUpdateStarted, boolean failed) {
+        try {
+            if (!remoteUpdateStarted) {
+                Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, failed));
             }
-            return outcome;
-        });
-
-        worker.whenComplete(this::finishStartupFilmlistLoad);
-    }
-
-    private StartupFilmlistLoadOutcome readStartupFilmlist() {
-        logger.trace("Reading local filmlist");
-        MessageBus.getMessageBus().publishAsync(new FilmListReadStartEvent());
-
-        try (FilmListReader reader = new FilmListReader()) {
-            final int num_days = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0);
-            reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), daten.getListeFilme(), num_days);
+        } finally {
+            uninstallStatusBarProgress(progressLabel, progressBar);
         }
-        MessageBus.getMessageBus().publishAsync(new FilmListReadStopEvent());
-        return StartupFilmlistLoadOutcome.LOCAL_LIST_READY;
-    }
-
-    private StartupFilmlistLoadOutcome startRemoteFilmlistUpdateIfNeeded(StartupFilmlistLoadOutcome outcome) {
-        logger.trace("Check for filmlist updates");
-        if (daten.getFilmeLaden().startAutomaticStartupUpdateIfNeeded()) {
-            return StartupFilmlistLoadOutcome.REMOTE_UPDATE_STARTED;
-        }
-        return outcome;
-    }
-
-    private StartupFilmlistLoadOutcome runStartupFilmlistPostLoadTask(
-            StartupFilmlistLoadOutcome outcome,
-            Supplier<? extends Runnable> taskFactory
-    ) {
-        if (shouldProcessStartupFilmlist(outcome)) {
-            taskFactory.get().run();
-        }
-        return outcome;
-    }
-
-    private boolean shouldProcessStartupFilmlist(StartupFilmlistLoadOutcome outcome) {
-        return outcome == StartupFilmlistLoadOutcome.LOCAL_LIST_READY;
-    }
-
-    private void finishStartupFilmlistLoad(StartupFilmlistLoadOutcome outcome, Throwable throwable) {
-        if (throwable != null) {
-            logger.error("loadFilmlist()", throwable);
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            try {
-                if (outcome != StartupFilmlistLoadOutcome.REMOTE_UPDATE_STARTED) {
-                    Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, throwable != null));
-                }
-            } finally {
-                uninstallStatusBarProgress(progressLabel, progressBar);
-            }
-        });
     }
 
     /**
@@ -666,13 +592,13 @@ public class MediathekGui extends JFrame {
     private void createFilmlistDownloadProgress() {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(ListenerFilmeLadenEvent event) {
+            public void start(@NonNull ListenerFilmeLadenEvent event) {
                 closeFilmlistDownloadProgress();
                 filmlistDownloadProgressHandle = showStatusBarProgress();
             }
 
             @Override
-            public void progress(ListenerFilmeLadenEvent event) {
+            public void progress(@NonNull ListenerFilmeLadenEvent event) {
                 if (filmlistDownloadProgressHandle == null) {
                     return;
                 }
@@ -690,7 +616,7 @@ public class MediathekGui extends JFrame {
             }
 
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig(@NonNull ListenerFilmeLadenEvent event) {
                 closeFilmlistDownloadProgress();
             }
         });
@@ -827,18 +753,18 @@ public class MediathekGui extends JFrame {
     private void setupFilmListListener() {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(ListenerFilmeLadenEvent event) {
+            public void start(@NonNull ListenerFilmeLadenEvent event) {
                 loadFilmListAction.setEnabled(false);
             }
 
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig(@NonNull ListenerFilmeLadenEvent event) {
                 loadFilmListAction.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
 
             @Override
-            public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
+            public void fertigOnlyOne(@NonNull ListenerFilmeLadenEvent event) {
                 setupAutomaticFilmlistReload();
             }
         });

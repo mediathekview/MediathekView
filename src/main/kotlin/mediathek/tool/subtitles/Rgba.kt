@@ -16,20 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool.subtitles.ttml2;
+package mediathek.tool.subtitles
 
-public record Rgba(int r, int g, int b, int a) {
-    public Rgba {
-        if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255 || a < 0 || a > 255) {
-            throw new IllegalArgumentException("RGBA components must be in [0,255]");
+data class Rgba(
+    val r: Int,
+    val g: Int,
+    val b: Int,
+    val a: Int,
+) {
+    init {
+        require(r in RGBA_RANGE && g in RGBA_RANGE && b in RGBA_RANGE && a in RGBA_RANGE) {
+            "RGBA components must be in [0,255]"
         }
     }
 
-    public boolean isOpaque() {
-        return a == 255;
-    }
+    fun isOpaque(): Boolean = a == 255
 
-    public boolean isTransparent() {
-        return a == 0;
+    fun isTransparent(): Boolean = a == 0
+
+    companion object {
+        private val RGBA_RANGE = 0..255
     }
 }

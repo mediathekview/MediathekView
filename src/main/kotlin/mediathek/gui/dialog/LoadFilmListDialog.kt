@@ -34,7 +34,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
         btn.addActionListener {
             val filmeLaden = Daten.getInstance().filmeLaden
             val immerNeuLaden = contentPanel.hasSenderSelectionChanged()
-            if (immerNeuLaden && !contentPanel.jCheckBoxUpdate.isSelected) {
+            if (immerNeuLaden && !contentPanel.updateCheckBox.isSelected) {
                 logger.trace("Sender list was changed loading full list...")
             }
 
@@ -43,7 +43,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
                 filmeLaden.loadFilmlist("", immerNeuLaden)
             } else {
                 //manual or extend
-                val strUrl = contentPanel.jTextFieldUrl.text
+                val strUrl = contentPanel.urlTextField.text
                 if (strUrl.contains("mediathekview.de", true)) {
                     JOptionPane.showMessageDialog(
                         this, """
@@ -57,7 +57,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
                     """.trimIndent(), Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE
                     )
                 }
-                if (contentPanel.jCheckBoxUpdate.isSelected)
+                if (contentPanel.updateCheckBox.isSelected)
                     filmeLaden.updateFilmlist(strUrl)
                 else
                     filmeLaden.loadFilmlist(strUrl, immerNeuLaden)

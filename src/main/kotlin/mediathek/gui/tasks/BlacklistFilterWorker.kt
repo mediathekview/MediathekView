@@ -18,25 +18,30 @@
 
 package mediathek.gui.tasks
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import javax.swing.JLabel
 import javax.swing.JProgressBar
-import javax.swing.SwingUtilities
-import javax.swing.SwingWorker
 
 class BlacklistFilterWorker(
-    progLabel: JLabel,
-    progressBar: JProgressBar,
-) : SwingWorker<Void?, Void?>() {
-    init {
-        SwingUtilities.invokeLater {
+    private val progLabel: JLabel,
+    private val progressBar: JProgressBar,
+) : Runnable {
+    override fun run() = runBlocking {
+        execute()
+    }
+
+    suspend fun execute() {
+        withContext(Dispatchers.Swing) {
             progLabel.text = "Blacklist anwenden"
             progressBar.isIndeterminate = true
         }
-    }
 
-    override fun doInBackground(): Void? {
-        Daten.getInstance().listeBlacklist.filterListe()
-        return null
+        withContext(Dispatchers.IO) {
+            Daten.getInstance().listeBlacklist.filterListe()
+        }
     }
 }
