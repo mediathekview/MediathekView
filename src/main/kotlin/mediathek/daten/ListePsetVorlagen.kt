@@ -47,7 +47,7 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
             val request = Request.Builder().url(url).get().build()
             MVHttpClient.httpClient.newCall(request).execute().use { response ->
                 response.body.use { body ->
-                    if (!response.isSuccessful || body == null) {
+                    if (!response.isSuccessful) {
                         return false
                     }
 
@@ -149,7 +149,7 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
                     val request = Request.Builder().url(dateiUrl).get().build()
                     MVHttpClient.httpClient.newCall(request).execute().use { response ->
                         response.body.use { body ->
-                            if (response.isSuccessful && body != null) {
+                            if (response.isSuccessful) {
                                 body.byteStream().use { input ->
                                     InputStreamReader(input, StandardCharsets.UTF_8).use { reader ->
                                         importPset(reader, log)
