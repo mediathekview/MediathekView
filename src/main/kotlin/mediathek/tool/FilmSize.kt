@@ -16,25 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.tool
 
-import mediathek.tool.DownloadSizeState
+import org.apache.logging.log4j.LogManager
 
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
-) {
-    fun startRun() {
-        runState = DownloadRunState()
+/**
+ * Store film size in megabytes.
+ */
+class FilmSize : Comparable<FilmSize> {
+    private var size = 0
+
+    fun setSize(strSize: String) {
+        try {
+            size = FileSize.megabyteTextToInt(strSize)
+        } catch (ex: NumberFormatException) {
+            logger.error("String: {}", strSize, ex)
+            size = 0
+        }
     }
 
-    fun reset() {
-        filmSize.reset()
-        runState = null
-    }
+    fun toInteger(): Int = size
 
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
+    override fun toString(): String = if (size == 0) "" else size.toString()
+
+    override fun compareTo(other: FilmSize): Int = size.compareTo(other.size)
+
+    private companion object {
+        private val logger = LogManager.getLogger()
     }
 }

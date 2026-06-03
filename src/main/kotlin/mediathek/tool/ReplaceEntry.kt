@@ -16,25 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.tool
 
-import mediathek.tool.DownloadSizeState
-
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
+data class ReplaceEntry(
+    var from: String,
+    var to: String,
 ) {
-    fun startRun() {
-        runState = DownloadRunState()
-    }
-
-    fun reset() {
-        filmSize.reset()
-        runState = null
-    }
-
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
-    }
+    fun toArray(): Array<String> = arrayOf(from, to)
 }

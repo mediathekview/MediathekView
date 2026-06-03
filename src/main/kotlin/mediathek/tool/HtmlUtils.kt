@@ -8,7 +8,6 @@ object HtmlUtils {
         }
     }
 
-    @JvmStatic
     fun escapeHtmlCharacter(character: Char): String? = when (character) {
         '&' -> "&amp;"
         '<' -> "&lt;"

@@ -4,8 +4,8 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class DialogStarteinstellungenView extends JDialog {
-    public DialogStarteinstellungenView(JFrame parent) {
+public class DialogStarteinstellungenBase extends JDialog {
+    public DialogStarteinstellungenBase(JFrame parent) {
         super(parent, true);
         initComponents();
     }

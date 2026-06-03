@@ -9,8 +9,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
-public class DialogEditAboView extends JDialog {
-    protected DialogEditAboView(JFrame parent) {
+public class DialogEditAboBase extends JDialog {
+    protected DialogEditAboBase(JFrame parent) {
         super(parent, true);
         initComponents();
     }

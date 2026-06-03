@@ -28,7 +28,6 @@ import java.io.StringWriter
 import javax.swing.*
 
 object SwingErrorDialog {
-    @JvmStatic
     @Throws(HeadlessException::class)
     fun showExceptionMessage(parentComponent: Component?, messageText: String, exception: Throwable) {
         val stringWriter = StringWriter()

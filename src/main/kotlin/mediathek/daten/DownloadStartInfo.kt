@@ -4,7 +4,6 @@ class DownloadStartInfo {
     /**
      * Size of the download list.
      */
-    @JvmField
     var total_num_download_list_entries: Int = 0
 
     @JvmField

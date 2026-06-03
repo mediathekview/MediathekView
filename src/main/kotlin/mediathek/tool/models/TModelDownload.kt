@@ -2,7 +2,7 @@ package mediathek.tool.models
 
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadColumns
-import mediathek.tool.MVFilmSize
+import mediathek.tool.DownloadSizeState
 import mediathek.tool.datum.Datum
 import javax.swing.table.DefaultTableModel
 
@@ -14,7 +14,7 @@ class TModelDownload : DefaultTableModel() {
             -> Int::class.javaObjectType
 
             DownloadColumns.DATE -> Datum::class.java
-            DownloadColumns.SIZE -> MVFilmSize::class.java
+            DownloadColumns.SIZE -> DownloadSizeState::class.java
 
             DownloadColumns.HIGH_QUALITY,
             DownloadColumns.SUBTITLE_AVAILABLE,

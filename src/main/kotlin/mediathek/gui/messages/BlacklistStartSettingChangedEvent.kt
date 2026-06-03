@@ -16,25 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.gui.messages
 
-import mediathek.tool.DownloadSizeState
-
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
-) {
-    fun startRun() {
-        runState = DownloadRunState()
-    }
-
-    fun reset() {
-        filmSize.reset()
-        runState = null
-    }
-
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
-    }
-}
+/**
+ * Synchronizes the blacklist startup checkbox between concurrently open blacklist panels.
+ */
+class BlacklistStartSettingChangedEvent(
+    val sourceName: String,
+) : BaseEvent()

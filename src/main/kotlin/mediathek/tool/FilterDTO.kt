@@ -16,25 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.tool
 
-import mediathek.tool.DownloadSizeState
+import java.util.UUID
 
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
+@JvmRecord
+data class FilterDTO(
+    val id: UUID,
+    val name: String
 ) {
-    fun startRun() {
-        runState = DownloadRunState()
-    }
-
-    fun reset() {
-        filmSize.reset()
-        runState = null
-    }
-
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
-    }
+    override fun toString(): String = name
 }

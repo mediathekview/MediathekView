@@ -128,8 +128,8 @@ class IoXmlSchreiben(
         // writer.writeComment("Ersetzungstabelle");
         writeNewLine(writer)
 
-        for (values in ReplaceList.list) {
-            xmlSchreibenDaten(writer, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, values, false)
+        for (values in ReplaceList.valuesForXml()) {
+            xmlSchreibenDaten(writer, ReplaceList.REPLACELIST, ReplaceList.columnNames(), values, false)
         }
     }
 

@@ -16,25 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.tool
 
-import mediathek.tool.DownloadSizeState
+import ca.odell.glazedlists.EventList
+import ca.odell.glazedlists.TransformedList
+import ca.odell.glazedlists.event.ListEvent
 
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
-) {
-    fun startRun() {
-        runState = DownloadRunState()
+/**
+ * Read-only event list which also contains an empty entry for a "select all" selection.
+ */
+class EventListWithEmptyFirstEntry(sourceList: EventList<String>) : TransformedList<String, String>(sourceList) {
+    init {
+        source.addListEventListener(this)
     }
 
-    fun reset() {
-        filmSize.reset()
-        runState = null
+    override fun isWritable(): Boolean = false
+
+    override fun listChanged(listChanges: ListEvent<String>) {
+        updates.forwardEvent(listChanges)
     }
 
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
-    }
+    override fun get(index: Int): String =
+        if (index == 0) "" else source[index - 1]
+
+    override val size: Int
+        get() = source.size + 1
 }

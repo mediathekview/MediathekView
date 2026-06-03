@@ -16,25 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.tool.datum
 
-import mediathek.tool.DownloadSizeState
+import java.util.Date
 
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
-) {
-    fun startRun() {
-        runState = DownloadRunState()
-    }
+class Datum : Date {
+    constructor() : super()
 
-    fun reset() {
-        filmSize.reset()
-        runState = null
-    }
+    constructor(time: Long) : super(time)
 
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
-    }
+    override fun toString(): String =
+        if (time == 0L) {
+            ""
+        } else {
+            DateUtil.FORMATTER.format(DateUtil.convertToLocalDate(this))
+        }
 }

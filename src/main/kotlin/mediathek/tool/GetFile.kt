@@ -16,35 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool;
+package mediathek.tool
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager
+import java.io.IOException
 
 /**
  * @author emil
  */
-public class GetFile {
+object GetFile {
+    private val logger = LogManager.getLogger()
 
-    private static final Logger logger = LogManager.getLogger();
-
-    public static String getHilfeSuchen(String pfad) {
-        if (pfad == null || pfad.isBlank()) {
-            return "";
+    @JvmStatic
+    fun getHilfeSuchen(pfad: String?): String {
+        if (pfad.isNullOrBlank()) {
+            return ""
         }
 
-        try (var is = GetFile.class.getResourceAsStream(pfad)) {
-            if (is == null) {
-                logger.warn("getHilfeSuchen(): resource not found: {}", pfad);
-                return "";
+        return try {
+            GetFile::class.java.getResourceAsStream(pfad).use { input ->
+                if (input == null) {
+                    logger.warn("getHilfeSuchen(): resource not found: {}", pfad)
+                    ""
+                } else {
+                    input.readAllBytes().toString(Charsets.UTF_8)
+                }
             }
-            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            logger.error("getHilfeSuchen()", ex);
-            return "";
+        } catch (ex: IOException) {
+            logger.error("getHilfeSuchen()", ex)
+            ""
         }
     }
 }

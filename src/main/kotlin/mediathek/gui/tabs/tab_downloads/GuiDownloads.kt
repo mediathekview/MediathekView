@@ -275,7 +275,7 @@ class GuiDownloads(
         val cellRenderer = CellRendererDownloads()
         tabelle.setDefaultRenderer(Any::class.java, cellRenderer)
         tabelle.setDefaultRenderer(Datum::class.java, cellRenderer)
-        tabelle.setDefaultRenderer(MVFilmSize::class.java, cellRenderer)
+        tabelle.setDefaultRenderer(DownloadSizeState::class.java, cellRenderer)
         tabelle.setDefaultRenderer(Int::class.javaObjectType, cellRenderer)
 
         model = TModelDownload()
@@ -352,14 +352,16 @@ class GuiDownloads(
 
     private fun addListenerMediathekView() {
         MessageBus.messageBus.subscribe(this)
+    }
 
-        Listener.addListener(object : Listener(EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, GuiDownloads::class.simpleName) {
-            override fun ping() {
-                if (MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN).toBoolean()) {
-                    updateDownloads()
-                }
+    @Suppress("UNUSED_PARAMETER")
+    @Handler
+    private fun handleBlacklistAboSettingChangedEvent(event: BlacklistAboSettingChangedEvent) {
+        SwingUtilities.invokeLater {
+            if (MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN).toBoolean()) {
+                updateDownloads()
             }
-        })
+        }
     }
 
     @Suppress("UNUSED_PARAMETER")

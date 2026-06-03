@@ -25,7 +25,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 object DateUtil {
-    @JvmField
     val MV_DEFAULT_TIMEZONE: ZoneId = ZoneId.of("Europe/Berlin")
 
     @JvmField
@@ -35,18 +34,20 @@ object DateUtil {
     private val UTC_ZONE_ID: ZoneId = ZoneId.of("UTC")
 
     fun convertFilmDateToLuceneDate(film: DatenFilm): Long =
-        convertToLocalDate(film.datumFilm)!!
+        convertToLocalDate(film.datumFilm)
             .atStartOfDay()
             .atZone(UTC_ZONE_ID)
             .toInstant()
             .toEpochMilli()
 
-    @JvmStatic
-    fun convertToLocalDate(dateToConvert: Date?): LocalDate? =
+    fun convertToLocalDate(dateToConvert: Date): LocalDate =
         dateToConvert
-            ?.toInstant()
-            ?.atZone(MV_DEFAULT_TIMEZONE)
-            ?.toLocalDate()
+            .toInstant()
+            .atZone(MV_DEFAULT_TIMEZONE)
+            .toLocalDate()
+
+    fun convertToLocalDateOrNull(dateToConvert: Date?): LocalDate? =
+        dateToConvert?.let(::convertToLocalDate)
 
     fun convertToDate(ld: LocalDate): Date =
         Date.from(ld.atStartOfDay(MV_DEFAULT_TIMEZONE).toInstant())

@@ -42,6 +42,7 @@ import javax.swing.text.BadLocationException
 import javax.swing.text.DefaultCaret
 import javax.swing.text.Document
 import javax.swing.text.PlainDocument
+import kotlin.time.Duration.Companion.milliseconds
 
 class LogPanel(
     private val repo: LogRepositoryFacade = DefaultRepoFacade,
@@ -209,7 +210,7 @@ class LogPanel(
                         }
                     }
 
-                    onTimeout(flushIntervalMs) {
+                    onTimeout(flushIntervalMs.milliseconds) {
                         if (buffer.isNotEmpty())
                             flush(buffer)
                     }

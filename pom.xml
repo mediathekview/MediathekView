@@ -84,7 +84,9 @@
         <jvm.target.version>25</jvm.target.version>
         <kotlin.language.target>25</kotlin.language.target>
 
-        <kotlin.version>2.3.21</kotlin.version>
+        <kotlin.version>2.4.0</kotlin.version>
+        <kotlin.language.version>2.4</kotlin.language.version>
+        <kotlin.api.version>2.4</kotlin.api.version>
         <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
 
         <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
@@ -105,7 +107,7 @@
         <jfreechart.version>1.5.6</jfreechart.version>
         <jide-oss.version>3.7.15</jide-oss.version>
         <jlibnotify.version>1.3.0</jlibnotify.version>
-        <jna.version>5.18.1</jna.version>
+        <jna.version>5.19.0</jna.version>
         <jspecify.version>1.0.0</jspecify.version>
         <jsoup.version>1.22.2</jsoup.version>
         <junit.jupiter.version>6.1.0</junit.jupiter.version>
@@ -605,6 +607,8 @@
                 </executions>
                 <configuration>
                     <jvmTarget>${jdk.language.version}</jvmTarget>
+                    <languageVersion>${kotlin.language.version}</languageVersion>
+                    <apiVersion>${kotlin.api.version}</apiVersion>
                     <compilerPlugins>
                         <plugin>kotlinx-serialization</plugin>
                     </compilerPlugins>

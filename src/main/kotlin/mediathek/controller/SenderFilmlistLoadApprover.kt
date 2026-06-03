@@ -27,7 +27,6 @@ object SenderFilmlistLoadApprover {
     /**
      * Check if a sender is approved to be loaded into the program.
      */
-    @JvmStatic
     fun isApproved(sender: String): Boolean {
         return senderSet.contains(sender)
     }
@@ -35,7 +34,6 @@ object SenderFilmlistLoadApprover {
     /**
      * Approve that a sender may be loaded from filmlist.
      */
-    @JvmStatic
     fun approve(sender: String) {
         if (!senderSet.contains(sender)) {
             senderSet.add(sender)
@@ -56,7 +54,6 @@ object SenderFilmlistLoadApprover {
     /**
      * Deny a sender from being loaded.
      */
-    @JvmStatic
     fun deny(sender: String) {
         if (senderSet.contains(sender)) {
             senderSet.remove(sender)

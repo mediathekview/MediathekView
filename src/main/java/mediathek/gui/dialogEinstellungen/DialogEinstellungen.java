@@ -185,7 +185,7 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_aufzeichnen -> jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
                     case NAME_dateiname -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelDateinamen(daten, this));
+                        jPanelExtra.add(new PanelDateinamen());
                     }
                     case NAME_programmset -> {
                         jPanelExtra.removeAll();

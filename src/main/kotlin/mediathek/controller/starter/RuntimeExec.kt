@@ -19,7 +19,7 @@
 package mediathek.controller.starter
 
 import mediathek.config.Config
-import mediathek.tool.MVFilmSize
+import mediathek.tool.DownloadSizeState
 import mediathek.tool.ProcessCommandUtils
 import org.apache.logging.log4j.LogManager
 import java.io.BufferedReader
@@ -34,7 +34,7 @@ import java.util.*
  * Responsible for the interaction with ffmpeg/avconv.
  */
 class RuntimeExec(
-    private val mVFilmSize: MVFilmSize?,
+    private val downloadSizeState: DownloadSizeState?,
     private val start: DownloadRunState?,
     private val strProgCall: String,
     strProgCallArray: String,
@@ -108,7 +108,7 @@ class RuntimeExec(
             IoType.ERROR -> StreamContext("ERRORSTREAM [${process.pid()}]", process.errorStream, parseProgress = true)
         }
 
-    private fun canTrackProgress(): Boolean = start?.startTime != null && mVFilmSize != null
+    private fun canTrackProgress(): Boolean = start?.startTime != null && downloadSizeState != null
 
     private fun secondsSinceStart(): Long =
         Duration.between(start!!.startTime, LocalDateTime.now()).toSeconds()
@@ -137,9 +137,9 @@ class RuntimeExec(
         }
 
         private fun updateTransferredBytes(sizeBytes: Long) {
-            val currentFilmSize = mVFilmSize ?: return
+            val currentFilmSize = downloadSizeState ?: return
             val currentStart = start ?: return
-            currentFilmSize.setAktSize(sizeBytes)
+            currentFilmSize.aktSize = sizeBytes
 
             val elapsedSecs = secondsSinceStart()
             if (oldBandwidthSampleSecs < elapsedSecs - 5) {

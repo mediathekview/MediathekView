@@ -43,7 +43,7 @@ import kotlin.time.Duration.Companion.seconds
 class DialogBeendenZeit(
     parent: JFrame?,
     private val listeDownloadsStarten: ArrayList<DatenDownload>,
-) : DialogBeendenZeitView(parent) {
+) : DialogBeendenZeitBase(parent) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private var downloadMonitorJob: Job? = null
 

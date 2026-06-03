@@ -8,7 +8,9 @@ import mediathek.daten.blacklist.BlacklistRule;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.BlacklistAboSettingChangedEvent;
 import mediathek.gui.messages.BlacklistChangedEvent;
+import mediathek.gui.messages.BlacklistStartSettingChangedEvent;
 import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
@@ -18,6 +20,7 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdesktop.swingx.VerticalLayout;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -41,12 +44,12 @@ public class PanelBlacklist extends JPanel {
     private final Daten daten;
     private final JFrame parentComponent;
 
-    public PanelBlacklist(Daten d, JFrame parentComponent, String nname) {
-        daten = d;
+    public PanelBlacklist(Daten daten, JFrame parentComponent, String name) {
+        this.daten = daten;
         this.parentComponent = parentComponent;
 
         initComponents();
-        name = nname;
+        this.name = name;
         jButtonHilfe.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
         jButtonTabelleLoeschen.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
 
@@ -65,7 +68,7 @@ public class PanelBlacklist extends JPanel {
             }
         });
 
-        jCheckBoxGeo.addActionListener(e -> {
+        jCheckBoxGeo.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setBlacklistDoNotShowGeoblockedFilms(jCheckBoxGeo.isSelected());
             notifyBlacklistChanged();
         });
@@ -75,21 +78,9 @@ public class PanelBlacklist extends JPanel {
 
         MessageBus.getMessageBus().subscribe(this);
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
-            @Override
-            public void ping() {
-                jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
-            @Override
-            public void ping() {
-                init_();
-            }
-        });
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
+            public void fertig(@NonNull ListenerFilmeLadenEvent event) {
                 comboThemaLaden();
             }
         });
@@ -137,6 +128,23 @@ public class PanelBlacklist extends JPanel {
     @Handler
     private void handleBlacklistChangedEvent(BlacklistChangedEvent e) {
         SwingUtilities.invokeLater(this::init_);
+    }
+
+    @Handler
+    private void handleBlacklistStartSettingChangedEvent(BlacklistStartSettingChangedEvent event) {
+        // Keep standalone and settings-window blacklist panels in sync.
+        if (!Objects.equals(event.getSourceName(), name)) {
+            SwingUtilities.invokeLater(() ->
+                    jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)))
+            );
+        }
+    }
+
+    @Handler
+    private void handleBlacklistAboSettingChangedEvent(BlacklistAboSettingChangedEvent event) {
+        if (!Objects.equals(event.getSourceName(), name)) {
+            SwingUtilities.invokeLater(this::init_);
+        }
     }
 
     /**
@@ -190,11 +198,12 @@ public class PanelBlacklist extends JPanel {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
             // bei den Downloads melden
             // damit die Änderungen im Eigenschaftendialog auch übernommen werden
-            Listener.notify(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
+            MessageBus.getMessageBus().publishAsync(new BlacklistAboSettingChangedEvent(name));
         });
         jCheckBoxStart.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
-            Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
+            // A second blacklist panel can be open through the standalone edit action.
+            MessageBus.getMessageBus().publishAsync(new BlacklistStartSettingChangedEvent(name));
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(_ -> {
             ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, jCheckBoxBlacklistEingeschaltet.isSelected());

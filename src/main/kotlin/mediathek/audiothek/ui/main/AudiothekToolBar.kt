@@ -32,7 +32,6 @@ import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT
 import org.kordamp.ikonli.swing.FontIcon
 import java.awt.Dimension
-import java.awt.Window
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.function.Consumer
@@ -226,7 +225,7 @@ class AudiothekToolBar : JToolBar() {
     }
 
     private fun showEditHistoryDialog(menuItem: JMenuItem) {
-        val owner = SwingUtilities.getWindowAncestor(this) as? Window ?: JOptionPane.getRootFrame()
+        val owner = SwingUtilities.getWindowAncestor(this) ?: JOptionPane.getRootFrame()
         EditHistoryDialog(owner, menuItem, searchHistoryList).isVisible = true
     }
 

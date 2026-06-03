@@ -28,7 +28,7 @@ object PathExtensions {
 
         val normalizedExtension = if (newExtension.startsWith(".")) newExtension else ".$newExtension"
         val name = path.fileName?.name ?: throw IllegalArgumentException("Path has no filename: $path")
-        val lastDot = FileNameExtensions.getLikelyExtensionDotIndex(name)
+        val lastDot = getLikelyExtensionDotIndex(name)
         val baseName = if (lastDot > 0) name.substring(0, lastDot) else name
         val newName = baseName + normalizedExtension
 

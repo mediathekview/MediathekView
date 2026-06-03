@@ -20,7 +20,7 @@ class DialogEditAbo(
     parent: JFrame,
     private val aktAbo: DatenAbo,
     private val isMultiEditMode: Boolean,
-) : DialogEditAboView(parent) {
+) : DialogEditAboBase(parent) {
     private val emptyBorder = EmptyBorder(5, 5, 5, 5)
 
     /**

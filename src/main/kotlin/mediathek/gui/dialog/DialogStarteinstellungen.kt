@@ -19,7 +19,7 @@ import java.awt.event.WindowEvent
 import javax.swing.JFrame
 import kotlin.coroutines.CoroutineContext
 
-class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenView(parent), CoroutineScope {
+class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(parent), CoroutineScope {
     private enum class State { START, PFAD, PSET, FERTIG }
 
     enum class ResultCode {

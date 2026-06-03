@@ -9,8 +9,8 @@ import org.jdesktop.swingx.VerticalLayout;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-public class PanelEinstellungenGeoView extends JPanel {
-    public PanelEinstellungenGeoView() {
+public class PanelEinstellungenGeoBase extends JPanel {
+    public PanelEinstellungenGeoBase() {
         initComponents();
     }
 

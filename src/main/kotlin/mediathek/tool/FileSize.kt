@@ -62,7 +62,6 @@ object FileSize {
         return lookupFileSize(okUrl, forceFetch, quality)
     }
 
-    @JvmStatic
     fun convertSize(byteLength: Long): String {
         return when {
             byteLength > ONE_MiB -> (byteLength / ONE_MiB).toString()
@@ -70,6 +69,12 @@ object FileSize {
             else -> ""
         }
     }
+
+    fun megabyteTextToBytes(sizeText: String): Long =
+        sizeText.toLong() * ONE_MiB
+
+    fun megabyteTextToInt(sizeText: String): Int =
+        sizeText.ifEmpty { "0" }.toInt()
 
     fun getContentLength(response: Response): Long {
         val sizeStr = response.headers["Content-Length"] ?: return INVALID_SIZE.toLong()

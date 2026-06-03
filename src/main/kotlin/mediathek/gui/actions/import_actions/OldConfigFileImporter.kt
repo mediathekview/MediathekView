@@ -94,22 +94,18 @@ class OldConfigFileImporter {
     }
 
     private fun importReplaceList(parser: XMLStreamReader): Boolean {
-        val sa = arrayOfNulls<String>(ReplaceList.MAX_ELEM)
+        val sa = Array(ReplaceList.MAX_ELEM) { "" }
         val success = get(parser, sa)
         return if (success) {
-            ReplaceList.list.add(sa)
+            ReplaceList.add(sa)
             true
         } else
             false
     }
 
-    private operator fun get(parser: XMLStreamReader, strRet: Array<String?>): Boolean {
+    private fun get(parser: XMLStreamReader, strRet: Array<String>): Boolean {
         val maxElem = strRet.size
-        for (i in 0 until maxElem) {
-            if (strRet[i] == null) {
-                strRet[i] = ""
-            }
-        }
+        val columnNames = ReplaceList.columnNames()
 
         return try {
             while (parser.hasNext()) {
@@ -121,7 +117,7 @@ class OldConfigFileImporter {
                 }
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     for (i in 0 until maxElem) {
-                        if (parser.localName == ReplaceList.COLUMN_NAMES[i]) {
+                        if (parser.localName == columnNames[i]) {
                             strRet[i] = parser.elementText
                             break
                         }

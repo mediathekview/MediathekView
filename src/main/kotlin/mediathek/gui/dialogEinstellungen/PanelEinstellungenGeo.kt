@@ -19,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
 class PanelEinstellungenGeo @JvmOverloads constructor(
     private val parentComponent: JFrame?,
     private val preselectFromPublicIp: Boolean = false,
-) : PanelEinstellungenGeoView(), CoroutineScope {
+) : PanelEinstellungenGeoBase(), CoroutineScope {
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Swing
 
     private var userChangedSelection = false

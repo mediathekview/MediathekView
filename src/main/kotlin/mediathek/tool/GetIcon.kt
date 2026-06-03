@@ -16,25 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.tool
 
-import mediathek.tool.DownloadSizeState
+import java.awt.Image
+import javax.swing.ImageIcon
 
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
-) {
-    fun startRun() {
-        runState = DownloadRunState()
+object GetIcon {
+    private const val PFAD_PROGRAMM = "/mediathek/res/programm/"
+
+    @JvmStatic
+    fun getProgramIcon(strIcon: String, w: Int, h: Int): ImageIcon =
+        getIcon(strIcon, PFAD_PROGRAMM, w, h)
+
+    @JvmStatic
+    fun getIcon(strIcon: String, path: String, w: Int, h: Int): ImageIcon {
+        val icon = getStandard(strIcon, path)
+
+        if (w > 0 && h > 0 && (icon.iconWidth != w || icon.iconHeight != h)) {
+            icon.image = icon.image.getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING)
+        }
+        return icon
     }
 
-    fun reset() {
-        filmSize.reset()
-        runState = null
-    }
-
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
-    }
+    private fun getStandard(strIcon: String, path: String): ImageIcon =
+        ImageIcon(GetIcon::class.java.getResource(path + strIcon))
 }

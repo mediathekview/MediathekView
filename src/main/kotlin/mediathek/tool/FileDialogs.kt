@@ -52,7 +52,6 @@ object FileDialogs {
             )
         }
 
-    @JvmStatic
     fun chooseLoadFileLocation(parent: JDialog, title: String, initialFile: String): File? =
         if (prefersNativeFileDialogs) {
             showNativeDialog(parent, title, mode = FileDialog.LOAD, initialDirectory = initialFile)
@@ -102,7 +101,6 @@ object FileDialogs {
             )
         }
 
-    @JvmStatic
     fun chooseSaveFileLocation(parent: JDialog, title: String, initialFile: String): File? =
         if (prefersNativeFileDialogs) {
             showNativeDialog(parent, title, mode = FileDialog.SAVE, initialFile = initialFile)

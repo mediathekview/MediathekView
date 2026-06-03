@@ -23,9 +23,9 @@ import com.github.lgooddatepicker.components.DateTimePicker;
 
 import javax.swing.*;
 
-public class DialogBeendenZeitView extends JDialog {
+public class DialogBeendenZeitBase extends JDialog {
 
-    protected DialogBeendenZeitView(JFrame parent) {
+    protected DialogBeendenZeitBase(JFrame parent) {
         super(parent, true);
         initComponents();
     }

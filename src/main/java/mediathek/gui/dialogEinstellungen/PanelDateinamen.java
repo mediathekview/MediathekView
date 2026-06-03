@@ -1,6 +1,5 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.*;
@@ -29,7 +28,7 @@ public class PanelDateinamen extends JPanel {
         });
     }
 
-    public PanelDateinamen(Daten d, JFrame pparentComponent) {
+    public PanelDateinamen() {
         initComponents();
         MessageBus.getMessageBus().subscribe(this);
 
@@ -46,7 +45,7 @@ public class PanelDateinamen extends JPanel {
             setTextfelder();
         });
         jButtonPlus.addActionListener(_ -> {
-            ReplaceList.list.add(new String[]{"von", "nach"});
+            ReplaceList.add("von", "nach");
             tabelleLaden();
             tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
             setTextfelder();
@@ -54,7 +53,7 @@ public class PanelDateinamen extends JPanel {
         jButtonMinus.addActionListener(_ -> {
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow != -1) {
-                ReplaceList.list.remove(selectedTableRow);
+                ReplaceList.removeAt(selectedTableRow);
                 tabelleLaden();
                 setTextfelder();
             }
@@ -116,7 +115,7 @@ public class PanelDateinamen extends JPanel {
         if (!stopBeob) {
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow != -1) {
-                ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
+                ReplaceList.setFrom(tabelle.convertRowIndexToModel(selectedTableRow), jTextFieldVon.getText()); // leer wird beim suchen aussortiert
                 tabelleLaden();
             }
         }
@@ -126,7 +125,7 @@ public class PanelDateinamen extends JPanel {
         if (!stopBeob) {
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow != -1) {
-                ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.NACH_NR] = jTextFieldNach.getText();
+                ReplaceList.setTo(tabelle.convertRowIndexToModel(selectedTableRow), jTextFieldNach.getText());
                 tabelleLaden();
             }
         }
@@ -152,14 +151,10 @@ public class PanelDateinamen extends JPanel {
         if (selectedTableRow != -1)
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
 
-        var model = new NonEditableTableModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
+        var model = new NonEditableTableModel(new Object[][]{}, ReplaceList.columnNames());
         model.setRowCount(0);
-        Object[] object = new Object[ReplaceList.MAX_ELEM];
-        for (String[] s : ReplaceList.list) {
-            //object[i] = datenAbo.arr;
-            object[0] = s[0];
-            object[1] = s[1];
-            model.addRow(object);
+        for (ReplaceEntry entry : ReplaceList.entries()) {
+            model.addRow(entry.toArray());
         }
 
         tabelle.setModel(model);
@@ -181,8 +176,10 @@ public class PanelDateinamen extends JPanel {
     private void setTextfelder() {
         final int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow != -1) {
-            jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.VON_NR).toString());
-            jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.NACH_NR).toString());
+            var model = tabelle.getModel();
+            var modelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+            jTextFieldVon.setText(model.getValueAt(modelRow, ReplaceList.VON_NR).toString());
+            jTextFieldNach.setText(model.getValueAt(modelRow, ReplaceList.NACH_NR).toString());
         } else {
             jTextFieldVon.setText("");
             jTextFieldNach.setText("");

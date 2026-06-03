@@ -16,25 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.tool
 
-import mediathek.tool.DownloadSizeState
+import org.apache.commons.configuration2.convert.DefaultConversionHandler
+import org.apache.commons.configuration2.interpol.ConfigurationInterpolator
+import java.util.UUID
 
-class DownloadRuntimeState(
-    var filmSize: DownloadSizeState = DownloadSizeState(),
-    var runState: DownloadRunState? = null,
-) {
-    fun startRun() {
-        runState = DownloadRunState()
-    }
+class CustomConversionHandler : DefaultConversionHandler() {
+    protected override fun <T> convertValue(src: Any?, targetCls: Class<T>, ci: ConfigurationInterpolator): T? {
+        if (src == null) {
+            return null
+        }
 
-    fun reset() {
-        filmSize.reset()
-        runState = null
-    }
+        if (UUID::class.java == targetCls) {
+            val uuidAsString = super.convertValue(src, String::class.java, ci)
+            @Suppress("UNCHECKED_CAST")
+            return UUID.fromString(uuidAsString) as T
+        }
 
-    fun copyFrom(other: DownloadRuntimeState) {
-        filmSize = other.filmSize
-        runState = other.runState
+        return super.convertValue(src, targetCls, ci)
     }
 }

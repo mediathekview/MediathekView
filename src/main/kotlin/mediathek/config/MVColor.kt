@@ -19,7 +19,6 @@
 package mediathek.config
 
 import com.formdev.flatlaf.FlatLaf
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.tool.MVC
@@ -41,7 +40,6 @@ object MVColor {
     private val darkBlue = rgb(137, 192, 255)
     private const val STORAGE_FILENAME = "app-colors.json"
     private const val FILE_VERSION = 1
-    @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
         prettyPrint = true
         prettyPrintIndent = "  "
@@ -111,7 +109,7 @@ object MVColor {
             DOWNLOAD_DATEINAME_ALT
         )
 
-        private val colorsByKey = colors.associateBy(MVC::getKey)
+        private val colorsByKey = colors.associateBy(MVC::key)
 
         private val legacyKeysByColorKey = mapOf(
             FILM_HISTORY.key to "FARBE_FILM_HISTORY",

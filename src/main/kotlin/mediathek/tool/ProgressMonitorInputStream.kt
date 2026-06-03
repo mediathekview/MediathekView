@@ -25,7 +25,7 @@ import java.io.InputStream
 class ProgressMonitorInputStream(
     input: InputStream,
     private val size: Long,
-    private val monitor: InputStreamProgressMonitor?,
+    private val monitor: ((bytesRead: Long, size: Long) -> Unit)?,
 ) : FilterInputStream(input) {
 
     private var bytesRead = 0L
@@ -65,6 +65,6 @@ class ProgressMonitorInputStream(
 
     private fun updateProgress(readBytes: Long) {
         bytesRead += readBytes
-        monitor?.progress(bytesRead, size)
+        monitor?.invoke(bytesRead, size)
     }
 }

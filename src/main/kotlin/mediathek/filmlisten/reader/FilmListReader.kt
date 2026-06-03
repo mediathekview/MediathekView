@@ -29,7 +29,6 @@ import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmListMetadataStore
 import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.InputStreamProgressMonitor
 import mediathek.tool.ProgressMonitorInputStream
 import mediathek.tool.TrailerTeaserChecker
 import mediathek.tool.datum.DateUtil
@@ -612,7 +611,7 @@ open class FilmListReader : AutoCloseable {
                 Files.deleteIfExists(filePath)
             }
 
-            val monitor = ProgressMonitor(source)
+            val monitor = progressMonitor(source)
 
             Files.newInputStream(filePath).use { sourceFile ->
                 BufferedInputStream(sourceFile, BUFFER_SIZE).use { bufferedSource ->
@@ -672,7 +671,7 @@ open class FilmListReader : AutoCloseable {
                             logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url.toString())
                         }
                         FilmListMetadataStore.writeEtag(source.toString(), response.header("ETag"))
-                        val monitor = ProgressMonitor(source.toString())
+                        val monitor = progressMonitor(source.toString())
                         ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor).use { input ->
                             selectDecompressor(source.toString(), input).use { inputStream ->
                                 JsonFactory().createParser(ObjectReadContext.empty(), inputStream).use { jp ->
@@ -736,22 +735,20 @@ open class FilmListReader : AutoCloseable {
         removeRegisteredListeners()
     }
 
-    private inner class ProgressMonitor(private val sourceString: String) : InputStreamProgressMonitor {
-        private var oldProgress = 0
-        private var lastUpdate = 0L
+    private fun progressMonitor(sourceString: String): (bytesRead: Long, size: Long) -> Unit {
+        var oldProgress = 0
+        var lastUpdate = 0L
 
-        override fun progress(bytesRead: Long, size: Long) {
-            if (size <= 0) {
-                return
-            }
+        return { bytesRead, size ->
+            if (size > 0) {
+                val iProgress = (bytesRead * 100 / size).toInt()
+                val now = System.currentTimeMillis()
 
-            val iProgress = (bytesRead * 100 / size).toInt()
-            val now = System.currentTimeMillis()
-
-            if (iProgress >= oldProgress + 1 || now - lastUpdate > MIN_TIME_BETWEEN_UPDATES_MS) {
-                oldProgress = iProgress
-                lastUpdate = now
-                notifyProgress(sourceString, iProgress)
+                if (iProgress >= oldProgress + 1 || now - lastUpdate > MIN_TIME_BETWEEN_UPDATES_MS) {
+                    oldProgress = iProgress
+                    lastUpdate = now
+                    notifyProgress(sourceString, iProgress)
+                }
             }
         }
     }

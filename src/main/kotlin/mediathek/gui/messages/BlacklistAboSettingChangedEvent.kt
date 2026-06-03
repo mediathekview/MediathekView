@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.daten;
+package mediathek.gui.messages
 
-public enum Country {
-    DE, AT, CH, EU, FR, OTHER
-}
+class BlacklistAboSettingChangedEvent(
+    val sourceName: String,
+) : BaseEvent()

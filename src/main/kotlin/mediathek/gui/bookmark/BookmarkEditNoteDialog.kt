@@ -126,7 +126,7 @@ class BookmarkEditNoteDialog(
 
     fun getNotiz(): String = textArea.text
 
-    fun getAvailableUntilDate(): LocalDate? = DateUtil.convertToLocalDate(datePicker.date)
+    fun getAvailableUntilDate(): LocalDate? = DateUtil.convertToLocalDateOrNull(datePicker.date)
 
     fun isOkPressed(): Boolean = okPressed
 

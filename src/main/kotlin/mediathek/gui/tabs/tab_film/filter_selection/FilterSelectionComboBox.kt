@@ -76,7 +76,7 @@ class FilterSelectionComboBox() : JComboBox<FilterDTO>() {
             iconLabel.background = bg
             iconLabel.foreground = fg
             textLabel.font = list?.font ?: font
-            textLabel.text = value?.name() ?: ""
+            textLabel.text = value?.name ?: ""
 
             val model = (list?.model as? FilterSelectionComboBoxModel)
             val isLocked = model?.isFilterLocked(value) == true

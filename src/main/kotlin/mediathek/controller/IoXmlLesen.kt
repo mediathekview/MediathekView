@@ -166,8 +166,8 @@ class IoXmlLesen(
 
     private fun readReplacementList(parser: XMLStreamReader) {
         val values = Array(ReplaceList.MAX_ELEM) { "" }
-        if (get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, values)) {
-            ReplaceList.list.add(values)
+        if (get(parser, ReplaceList.REPLACELIST, ReplaceList.columnNames(), values)) {
+            ReplaceList.add(values)
         }
     }
 
