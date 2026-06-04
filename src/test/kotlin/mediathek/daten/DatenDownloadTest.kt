@@ -166,6 +166,22 @@ internal class DatenDownloadTest {
     }
 
     @Test
+    fun setGroesseFromFilmSeedsNormalQualitySizeWhenDownloadUrlHasParameters() {
+        val film = DatenFilm().apply {
+            setNormalQualityUrl("https://example.invalid/video.mp4")
+            fileSize.setSize("789")
+        }
+        val download = DatenDownload().apply {
+            this.film = film
+            downloadUrl = "https://example.invalid/video.mp4?token=temporary"
+        }
+
+        download.setGroesseFromFilm()
+
+        assertEquals(789L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+    }
+
+    @Test
     fun copyPreservesWebsiteUrlForProgramInvocationRebuilds() {
         val film = DatenFilm().apply {
             sender = "Sender One"

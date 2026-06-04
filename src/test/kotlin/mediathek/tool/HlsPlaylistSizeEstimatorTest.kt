@@ -116,6 +116,37 @@ internal class HlsPlaylistSizeEstimatorTest {
     }
 
     @Test
+    fun estimatesFromVariantBandwidthWithoutSegmentProbing() {
+        val masterUrl = "https://example.org/master.m3u8".toHttpUrl()
+        val playlists = mapOf(
+            masterUrl to """
+                #EXTM3U
+                #EXT-X-STREAM-INF:BANDWIDTH=800000,RESOLUTION=960x540
+                stream.m3u8
+            """.trimIndent(),
+            "https://example.org/stream.m3u8".toHttpUrl() to """
+                #EXTM3U
+                #EXTINF:4.0,
+                seg-1.ts
+                #EXTINF:6.0,
+                seg-2.ts
+            """.trimIndent(),
+        )
+
+        val result = runBlocking {
+            estimator.estimate(
+                playlistUrl = masterUrl,
+                probeSegments = false,
+                textLoader = { url -> playlists.getValue(url) },
+                contentLengthLoader = { error("segment sizes should not be requested") },
+            )
+        }
+
+        assertEquals(2, result.segmentCount)
+        assertEquals(1_000_000L, result.totalBytes)
+    }
+
+    @Test
     fun readsTotalLengthFromContentRangeWhenProbeReturnsPartialResponse() {
         val response = Response.Builder()
             .request(Request.Builder().url("https://example.org/segment.ts").get().build())

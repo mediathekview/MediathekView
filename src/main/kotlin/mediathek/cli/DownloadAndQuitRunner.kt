@@ -33,6 +33,7 @@ import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.reader.FilmListReader
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.BandwidthFormatter
+import mediathek.tool.FileSize
 import org.apache.logging.log4j.LogManager
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicBoolean
@@ -181,9 +182,17 @@ object DownloadAndQuitRunner {
     }
 
     private suspend fun updateAboDownloadSizes(downloads: List<DatenDownload>) = withContext(Dispatchers.IO) {
+        val lookupResults = mutableMapOf<String, FileSize.LookupResult>()
         downloads.forEach { download ->
             runCatching {
-                download.queryLiveSize(forceFetch = true)
+                val cachedResult = lookupResults[download.downloadUrl]
+                if (cachedResult != null) {
+                    download.applyLiveSizeLookupResult(cachedResult)
+                } else {
+                    download.queryLiveSize(forceFetch = false, probeHlsSegments = false)?.let { lookupResult ->
+                        lookupResults[download.downloadUrl] = lookupResult
+                    }
+                }
             }.onFailure { error ->
                 logger.debug("Could not update live size for abo download {}", download.title, error)
             }

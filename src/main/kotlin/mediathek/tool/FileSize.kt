@@ -58,8 +58,13 @@ object FileSize {
 
     @JvmStatic
     fun lookupFileSize(url: String, forceFetch: Boolean = false, quality: String?): LookupResult {
+        return lookupFileSize(url, forceFetch, quality, probeHlsSegments = true)
+    }
+
+    @JvmStatic
+    fun lookupFileSize(url: String, forceFetch: Boolean, quality: String?, probeHlsSegments: Boolean): LookupResult {
         val okUrl = url.toHttpUrlOrNull() ?: return LookupResult(INVALID_SIZE.toLong())
-        return lookupFileSize(okUrl, forceFetch, quality)
+        return lookupFileSize(okUrl, forceFetch, quality, probeHlsSegments)
     }
 
     fun convertSize(byteLength: Long): String {
@@ -90,10 +95,15 @@ object FileSize {
     }
 
     fun lookupFileSize(url: HttpUrl, forceFetch: Boolean = false, quality: String?): LookupResult {
+        return lookupFileSize(url, forceFetch, quality, probeHlsSegments = true)
+    }
+
+    fun lookupFileSize(url: HttpUrl, forceFetch: Boolean, quality: String?, probeHlsSegments: Boolean): LookupResult {
         return lookupFileSize(
             url = url,
             forceFetch = forceFetch,
             quality = quality,
+            probeHlsSegments = probeHlsSegments,
             directSizeLoader = ::loadDirectFileSize,
             hlsSizeLoader = ::loadHlsFileSize,
         )
@@ -103,9 +113,10 @@ object FileSize {
         url: HttpUrl,
         forceFetch: Boolean = false,
         quality: String?,
+        probeHlsSegments: Boolean = true,
         cachedHlsLookup: (HttpUrl, String?) -> LookupResult? = ::lookupCachedHlsResult,
         directSizeLoader: (HttpUrl) -> Long,
-        hlsSizeLoader: (HttpUrl) -> HlsLookupResult,
+        hlsSizeLoader: (HttpUrl, Boolean) -> HlsLookupResult,
         hlsLookupLogger: (HttpUrl, LookupResult) -> LookupResult = ::logHlsLookupIfNeeded,
     ): LookupResult {
         if (!url.scheme.startsWith("http")) {
@@ -125,7 +136,7 @@ object FileSize {
             if (url.encodedPath.endsWith(".m3u8")) {
                 HlsEgressPolicy.requirePublicHttpUrl(url)
                 cachedHlsLookup(url, quality)?.let { return it }
-                hlsSizeLoader(url)
+                hlsSizeLoader(url, probeHlsSegments)
             } else {
                 HlsLookupResult(
                     byteLength = directSizeLoader(url),
@@ -239,8 +250,8 @@ object FileSize {
         }
     }
 
-    private fun loadHlsFileSize(url: HttpUrl): HlsLookupResult = runBlocking {
-        val estimate = HlsPlaylistSizeEstimator().estimate(url.toString())
+    private fun loadHlsFileSize(url: HttpUrl, probeSegments: Boolean): HlsLookupResult = runBlocking {
+        val estimate = HlsPlaylistSizeEstimator().estimate(url.toString(), probeSegments)
         HlsLookupResult(
             byteLength = estimate.totalBytes,
             resolutionUrl = estimate.selectedVariant.playlistUrl,

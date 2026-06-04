@@ -18,21 +18,32 @@
 
 package mediathek.gui.tabs.tab_downloads
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import mediathek.daten.Country
 import mediathek.daten.DatenDownload
 import mediathek.tool.ApplicationConfiguration
+import mediathek.tool.FileSize
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
 import java.lang.Runnable
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
-class DownloadSizeLookupService(
-    private val reloadTable: Runnable
+internal class DownloadSizeLookupService(
+    private val reloadTable: Runnable,
+    persistedLookupResults: List<PersistentLookupCacheEntry> = emptyList(),
 ) {
     private val logger = LogManager.getLogger(DownloadSizeLookupService::class.java)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO.limitedParallelism(1))
-    private val inFlight: MutableSet<DatenDownload> = Collections.newSetFromMap(ConcurrentHashMap())
+    private val cachedLookupResults = Caffeine.newBuilder()
+        .maximumSize(CACHE_MAXIMUM_SIZE)
+        .build<LookupKey, CachedLookupResult>()
+
+    init {
+        persistedLookupResults.forEach { entry ->
+            cachedLookupResults.put(entry.toLookupKey(), entry.toCachedLookupResult())
+        }
+    }
 
     fun updateFilmSizes(downloads: List<DatenDownload>, forceLookup: Boolean = false) {
         if (downloads.isEmpty()) {
@@ -43,23 +54,50 @@ class DownloadSizeLookupService(
             var updateNeeded = false
 
             for (download in downloads) {
-                if (!download.needsLiveSizeLookup(forceLookup) || !inFlight.add(download)) {
+                if (!download.needsLiveSizeLookup(forceLookup)) {
                     continue
+                }
+
+                val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
+                val fetchSizeEnabled = ApplicationConfiguration.getConfiguration()
+                    .getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true)
+                val probeHlsSegments = forceLookup
+                val lookupKey = LookupKey(
+                    url = download.downloadUrl,
+                    location = currentLocation,
+                    fetchSizeEnabled = fetchSizeEnabled,
+                    probeHlsSegments = probeHlsSegments,
+                )
+
+                if (!forceLookup) {
+                    val cachedResult = cachedLookupResults.getIfPresent(lookupKey)
+                    if (cachedResult != null) {
+                        updateNeeded = download.applyLookupResultIfChanged(cachedResult.lookupResult, currentLocation) || updateNeeded
+                        continue
+                    }
                 }
 
                 try {
                     val oldSize = download.runtime.filmSize.size
-                    val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
-                    val wasGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
-                    download.queryLiveSize(forceLookup)
-                    val isGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
-                    if (download.runtime.filmSize.size != oldSize || isGeoBlocked != wasGeoBlocked) {
+                    val wasGeoBlocked = download.isGeoBlockedFor(currentLocation)
+                    val lookupResult = download.queryLiveSize(
+                        forceFetch = forceLookup,
+                        probeHlsSegments = probeHlsSegments,
+                    )
+                    if (lookupResult != null && lookupResult.byteLength > 0 && !forceLookup) {
+                        cachedLookupResults.put(
+                            lookupKey,
+                            CachedLookupResult(
+                                lookupResult = lookupResult,
+                                storedAtMillis = System.currentTimeMillis(),
+                            ),
+                        )
+                    }
+                    if (download.runtime.filmSize.size != oldSize || download.isGeoBlockedFor(currentLocation) != wasGeoBlocked) {
                         updateNeeded = true
                     }
                 } catch (ex: RuntimeException) {
                     logger.debug("Could not update live size for download {}", download.title, ex)
-                } finally {
-                    inFlight.remove(download)
                 }
             }
 
@@ -71,6 +109,69 @@ class DownloadSizeLookupService(
         }
     }
 
+    fun snapshotLookupResults(): List<PersistentLookupCacheEntry> =
+        cachedLookupResults.asMap().map { (key, value) ->
+            PersistentLookupCacheEntry(
+                url = key.url,
+                location = key.location,
+                fetchSizeEnabled = key.fetchSizeEnabled,
+                probeHlsSegments = key.probeHlsSegments,
+                byteLength = value.lookupResult.byteLength,
+                storedAtMillis = value.storedAtMillis,
+                httpStatusCode = value.lookupResult.httpStatusCode,
+                resolutionUrl = value.lookupResult.resolutionUrl?.toString(),
+                quality = value.lookupResult.quality,
+            )
+        }
+
     private fun DatenDownload.needsLiveSizeLookup(forceLookup: Boolean): Boolean =
         film != null && (forceLookup || runtime.filmSize.size == 0L)
+
+    private fun DatenDownload.applyLookupResultIfChanged(
+        lookupResult: FileSize.LookupResult,
+        location: Country,
+    ): Boolean {
+        val oldSize = runtime.filmSize.size
+        val wasGeoBlocked = isGeoBlockedFor(location)
+        applyLiveSizeLookupResult(lookupResult)
+        return runtime.filmSize.size != oldSize || isGeoBlockedFor(location) != wasGeoBlocked
+    }
+
+    private fun DatenDownload.isGeoBlockedFor(location: Country): Boolean =
+        film?.isGeoBlockedForLocation(location) ?: false
+
+    private data class LookupKey(
+        val url: String,
+        val location: Country,
+        val fetchSizeEnabled: Boolean,
+        val probeHlsSegments: Boolean,
+    )
+
+    private data class CachedLookupResult(
+        val lookupResult: FileSize.LookupResult,
+        val storedAtMillis: Long,
+    )
+
+    private fun PersistentLookupCacheEntry.toLookupKey(): LookupKey =
+        LookupKey(
+            url = url,
+            location = location,
+            fetchSizeEnabled = fetchSizeEnabled,
+            probeHlsSegments = probeHlsSegments,
+        )
+
+    private fun PersistentLookupCacheEntry.toCachedLookupResult(): CachedLookupResult =
+        CachedLookupResult(
+            lookupResult = FileSize.LookupResult(
+                byteLength = byteLength,
+                httpStatusCode = httpStatusCode,
+                resolutionUrl = resolutionUrl?.toHttpUrlOrNull(),
+                quality = quality,
+            ),
+            storedAtMillis = storedAtMillis,
+        )
+
+    private companion object {
+        private const val CACHE_MAXIMUM_SIZE = 4096L
+    }
 }

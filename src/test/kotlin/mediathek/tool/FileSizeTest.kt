@@ -37,7 +37,7 @@ internal class FileSizeTest {
             quality = "TEST_ONLY",
             cachedHlsLookup = { _, _ -> null },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = {
+            hlsSizeLoader = { _, _ ->
                 FileSize.HlsLookupResult(
                     byteLength = 12_500_000L,
                     resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
@@ -57,7 +57,7 @@ internal class FileSizeTest {
             quality = "TEST_ONLY",
             cachedHlsLookup = { _, _ -> null },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = {
+            hlsSizeLoader = { _, _ ->
                 FileSize.HlsLookupResult(
                     byteLength = 500_000L,
                     resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
@@ -70,6 +70,50 @@ internal class FileSizeTest {
     }
 
     @Test
+    fun usesHlsEstimatorWithoutSegmentProbeWhenSegmentProbeIsDisabled() {
+        val size = FileSize.lookupFileSize(
+            url = "https://example.org/video/master.m3u8".toHttpUrl(),
+            forceFetch = true,
+            quality = "TEST_ONLY",
+            probeHlsSegments = false,
+            cachedHlsLookup = { _, _ -> null },
+            directSizeLoader = { error("direct loader should not be used for m3u8") },
+            hlsSizeLoader = { _, probeSegments ->
+                assertFalse(probeSegments)
+                FileSize.HlsLookupResult(
+                    byteLength = 23_000_000L,
+                    resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
+                )
+            },
+            hlsLookupLogger = { _, result -> result },
+        ).byteLength
+
+        assertEquals(23_000_000L, size)
+    }
+
+    @Test
+    fun usesCachedHlsResultWhenSegmentProbeIsDisabled() {
+        val size = FileSize.lookupFileSize(
+            url = "https://example.org/video/master.m3u8".toHttpUrl(),
+            forceFetch = true,
+            quality = "TEST_ONLY",
+            probeHlsSegments = false,
+            cachedHlsLookup = { _, _ ->
+                FileSize.LookupResult(
+                    byteLength = 23_000_000L,
+                    resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
+                    quality = "TEST_ONLY",
+                )
+            },
+            directSizeLoader = { error("direct loader should not be used for m3u8") },
+            hlsSizeLoader = { _, _ -> error("HLS segment probe should not be used") },
+            hlsLookupLogger = { _, result -> result },
+        ).byteLength
+
+        assertEquals(23_000_000L, size)
+    }
+
+    @Test
     fun skipsTelemetryForUnknownHlsLookupFailures() {
         val size = FileSize.lookupFileSize(
             url = "https://example.org/video/master.m3u8".toHttpUrl(),
@@ -77,7 +121,7 @@ internal class FileSizeTest {
             quality = "HIGH_QUALITY",
             cachedHlsLookup = { _, _ -> null },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = { throw IOException("network failure") },
+            hlsSizeLoader = { _, _ -> throw IOException("network failure") },
             hlsLookupLogger = { _, result -> result },
         ).byteLength
 

@@ -213,9 +213,11 @@ class DatenDownload() : Comparable<DatenDownload> {
         val currentFilm = film ?: return
         val normalQualityUrl = currentFilm.urlNormalQuality
         val normalizedNormalQualityUrl = normalQualityUrl.withoutParameters()
+        val normalizedDownloadUrl = downloadUrl.withoutParameters()
         if (
             normalQualityUrl.equals(downloadUrl, ignoreCase = true) ||
-            normalizedNormalQualityUrl.equals(downloadUrl, ignoreCase = true)
+            normalizedNormalQualityUrl.equals(downloadUrl, ignoreCase = true) ||
+            normalizedNormalQualityUrl.equals(normalizedDownloadUrl, ignoreCase = true)
         ) {
             runtime.filmSize.setSize(currentFilm.fileSize.toString())
         } else {
@@ -232,9 +234,19 @@ class DatenDownload() : Comparable<DatenDownload> {
         }
     }
 
-    fun queryLiveSize(forceFetch: Boolean = false) {
-        val currentFilm = film ?: return
-        val lookupResult = currentFilm.lookupFileSizeForUrl(downloadUrl, forceFetch)
+    fun queryLiveSize(forceFetch: Boolean = false, probeHlsSegments: Boolean = true): FileSize.LookupResult? {
+        val currentFilm = film ?: return null
+        val lookupResult = currentFilm.lookupFileSizeForUrl(downloadUrl, forceFetch, null, probeHlsSegments)
+        applyRuntimeSizeLookupResult(lookupResult)
+        return lookupResult
+    }
+
+    fun applyLiveSizeLookupResult(lookupResult: FileSize.LookupResult) {
+        film?.applyFileSizeLookupResult(downloadUrl, lookupResult)
+        applyRuntimeSizeLookupResult(lookupResult)
+    }
+
+    private fun applyRuntimeSizeLookupResult(lookupResult: FileSize.LookupResult) {
         val sizeText = lookupResult.sizeText
         if (sizeText.isNotEmpty() || runtime.filmSize.size == 0L) {
             runtime.filmSize.setSize(sizeText)

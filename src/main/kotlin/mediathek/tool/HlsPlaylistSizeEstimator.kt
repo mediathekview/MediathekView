@@ -31,12 +31,13 @@ class HlsPlaylistSizeEstimator(
         val totalBytes: Long,
     )
 
-    suspend fun estimate(url: String): EstimateResult {
+    suspend fun estimate(url: String, probeSegments: Boolean = true): EstimateResult {
         val playlistUrl = HlsEgressPolicy.requirePublicHttpUrl(
             requireNotNull(url.toHttpUrlOrNull()) { "Invalid HLS URL: $url" },
         )
         return estimate(
             playlistUrl = playlistUrl,
+            probeSegments = probeSegments,
             textLoader = ::loadText,
             contentLengthLoader = ::loadContentLength,
         )
@@ -44,6 +45,7 @@ class HlsPlaylistSizeEstimator(
 
     internal suspend fun estimate(
         playlistUrl: HttpUrl,
+        probeSegments: Boolean = true,
         textLoader: suspend (HttpUrl) -> String,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): EstimateResult {
@@ -51,7 +53,7 @@ class HlsPlaylistSizeEstimator(
         val playlist = textLoader(playlistUrl)
 
         return if (playlist.isMasterPlaylist()) {
-            estimateMasterPlaylist(playlistUrl, playlist, textLoader, contentLengthLoader)
+            estimateMasterPlaylist(playlistUrl, playlist, probeSegments, textLoader, contentLengthLoader)
         } else {
             estimateMediaPlaylist(
                 selectedVariant = VariantInfo(
@@ -62,6 +64,7 @@ class HlsPlaylistSizeEstimator(
                     playlistUrl = playlistUrl,
                 ),
                 availableVariants = emptyList(),
+                probeSegments = probeSegments,
                 textLoader = textLoader,
                 contentLengthLoader = contentLengthLoader,
             )
@@ -71,6 +74,7 @@ class HlsPlaylistSizeEstimator(
     private suspend fun estimateMasterPlaylist(
         masterUrl: HttpUrl,
         playlist: String,
+        probeSegments: Boolean,
         textLoader: suspend (HttpUrl) -> String,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): EstimateResult {
@@ -82,12 +86,13 @@ class HlsPlaylistSizeEstimator(
                 .thenBy { it.averageBandwidth ?: Long.MIN_VALUE },
         )
 
-        return estimateMediaPlaylist(selectedVariant, variants, textLoader, contentLengthLoader)
+        return estimateMediaPlaylist(selectedVariant, variants, probeSegments, textLoader, contentLengthLoader)
     }
 
     private suspend fun estimateMediaPlaylist(
         selectedVariant: VariantInfo,
         availableVariants: List<VariantInfo>,
+        probeSegments: Boolean,
         textLoader: suspend (HttpUrl) -> String,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): EstimateResult {
@@ -97,6 +102,17 @@ class HlsPlaylistSizeEstimator(
         val videoDurationSeconds = parsePlaylistDurationSeconds(videoPlaylist)
 
         val bitrateFallbackBytes = selectedVariant.estimatedTotalBytes(videoDurationSeconds)
+        if (!probeSegments) {
+            return buildEstimateResult(
+                selectedVariant = selectedVariant,
+                availableVariants = availableVariants,
+                segmentCount = videoSegmentUrls.size,
+                totalBytes = requireNotNull(bitrateFallbackBytes) {
+                    "Could not determine HLS size for ${selectedVariant.playlistUrl} without segment probing because bitrate metadata is unavailable"
+                },
+            )
+        }
+
         val exactVideoBytes = runCatching {
             sumSegmentUrls(videoSegmentUrls, contentLengthLoader)
         }.getOrElse { exception ->
@@ -130,16 +146,29 @@ class HlsPlaylistSizeEstimator(
             }
         }
 
-        return EstimateResult(
+        return buildEstimateResult(
+            selectedVariant = selectedVariant,
+            availableVariants = availableVariants,
+            segmentCount = videoSegmentUrls.size,
+            totalBytes = totalBytes,
+        )
+    }
+
+    private fun buildEstimateResult(
+        selectedVariant: VariantInfo,
+        availableVariants: List<VariantInfo>,
+        segmentCount: Int,
+        totalBytes: Long,
+    ): EstimateResult =
+        EstimateResult(
             selectedVariant = selectedVariant,
             availableVariants = availableVariants.sortedWith(
                 compareByDescending<VariantInfo> { it.bandwidth ?: Long.MIN_VALUE }
                     .thenByDescending { it.averageBandwidth ?: Long.MIN_VALUE },
             ),
-            segmentCount = videoSegmentUrls.size,
+            segmentCount = segmentCount,
             totalBytes = totalBytes,
         )
-    }
 
     private fun VariantInfo.estimatedTotalBytes(durationSeconds: Double): Long? {
         val bitsPerSecond = averageBandwidth ?: bandwidth ?: return null

@@ -18,6 +18,7 @@
 
 package mediathek.gui.tabs.tab_downloads
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.MVConfig
@@ -104,7 +105,25 @@ class GuiDownloads(
     private val filterController = DownloadsFilterController(displayFilterToolBar, config, ::reloadTable)
     private val startInfoProperty = DownloadStartInfoProperty()
     private val statusBar = DownloadsStatusBar(startInfoProperty)
-    private val downloadSizeLookupService = DownloadSizeLookupService(::reloadAndSave)
+    private val downloadSizeCacheSnapshot = DownloadSizeCacheStorage.load()
+    private val downloadSizeLookupService = DownloadSizeLookupService(
+        reloadTable = ::reloadAndSave,
+        persistedLookupResults = downloadSizeCacheSnapshot.lookupResults,
+    )
+    private val knownAboSizes = Caffeine.newBuilder()
+        .maximumSize(KNOWN_ABO_SIZE_CACHE_MAXIMUM_SIZE)
+        .build<String, CachedAboSize>()
+        .apply {
+            downloadSizeCacheSnapshot.knownAboSizes.forEach { entry ->
+                put(
+                    entry.key,
+                    CachedAboSize(
+                        byteLength = entry.byteLength,
+                        storedAtMillis = entry.storedAtMillis,
+                    ),
+                )
+            }
+        }
 
     private var loadFilmlist = false
     private lateinit var model: TModelDownload
@@ -141,6 +160,12 @@ class GuiDownloads(
         if (::tabelle.isInitialized) {
             tabelle.writeTableConfigurationData()
         }
+        DownloadSizeCacheStorage.save(
+            DownloadSizeCacheSnapshot(
+                lookupResults = downloadSizeLookupService.snapshotLookupResults(),
+                knownAboSizes = snapshotKnownAboSizes(),
+            )
+        )
     }
 
     private fun getSelectedDownloadsFromTable(): List<DatenDownload> = tableSelection.selectedDownloadsForLookup()
@@ -431,16 +456,61 @@ class GuiDownloads(
         }
 
         val listeDownloads = daten.listeDownloads
+        rememberAboSizes(listeDownloads)
         listeDownloads.abosAuffrischen()
-        val addedDownloads = listeDownloads.abosSuchen(mediathekGui)
+        listeDownloads.abosSuchen(mediathekGui)
+        listeDownloads.restoreKnownAboSizes()
+        rememberAboSizes(listeDownloads)
         reloadTable()
         updateUnknownDownloadSizes()
-        downloadSizeLookupService.updateFilmSizes(addedDownloads, forceLookup = true)
 
         if (MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN).toBoolean()) {
             filmStartenWiederholenStoppen(true, starten = true, restartFinishedDownloads = false, skipManualDownloads = true)
         }
     }
+
+    private fun rememberAboSizes(downloads: Iterable<DatenDownload>) {
+        for (download in downloads) {
+            if (download.isFromAbo && download.runtime.filmSize.size > 0L) {
+                rememberAboSizeKeys(download)
+            }
+        }
+    }
+
+    private fun rememberAboSizeKeys(download: DatenDownload) {
+        val size = download.runtime.filmSize.size
+        val storedAtMillis = System.currentTimeMillis()
+        download.sizeMemoryKeys().forEach { key ->
+            knownAboSizes.put(key, CachedAboSize(size, storedAtMillis))
+        }
+    }
+
+    private fun Iterable<DatenDownload>.restoreKnownAboSizes() {
+        for (download in this) {
+            if (download.runtime.filmSize.size == 0L) {
+                download.findKnownAboSize()?.let { knownSize ->
+                    download.runtime.filmSize.size = knownSize
+                }
+            }
+        }
+    }
+
+    private fun DatenDownload.findKnownAboSize(): Long? =
+        sizeMemoryKeys()
+            .firstNotNullOfOrNull { key -> knownAboSizes.getIfPresent(key)?.byteLength }
+
+    private fun DatenDownload.sizeMemoryKeys(): Sequence<String> =
+        sequenceOf(downloadUrl, historyUrl, filmUrl)
+            .filter(String::isNotBlank)
+
+    private fun snapshotKnownAboSizes(): List<PersistentKnownAboSize> =
+        knownAboSizes.asMap().map { (key, value) ->
+            PersistentKnownAboSize(
+                key = key,
+                byteLength = value.byteLength,
+                storedAtMillis = value.storedAtMillis,
+            )
+        }
 
     private fun updateUnknownDownloadSizes() {
         downloadSizeLookupService.updateFilmSizes(daten.listeDownloads.toList())
@@ -808,6 +878,11 @@ class GuiDownloads(
         })
     }
 
+    private data class CachedAboSize(
+        val byteLength: Long,
+        val storedAtMillis: Long,
+    )
+
     companion object {
         const val NAME = "Downloads"
         private const val ACTION_MAP_KEY_EDIT_DOWNLOAD = "dl_aendern"
@@ -815,6 +890,7 @@ class GuiDownloads(
         private const val ACTION_MAP_KEY_MARK_AS_SEEN = "seen"
         private const val ACTION_MAP_KEY_MARK_AS_UNSEEN = "unseen"
         private const val ACTION_MAP_KEY_START_DOWNLOAD = "dl_start"
+        private const val KNOWN_ABO_SIZE_CACHE_MAXIMUM_SIZE = 4096L
         private val COLUMNS_DISABLED = intArrayOf(
             DownloadColumns.BUTTON_START,
             DownloadColumns.BUTTON_DELETE,
