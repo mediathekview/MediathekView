@@ -37,13 +37,7 @@ public class Konstanten {
     public static final Version MVVERSION = new Version(14, 6, 0);
 
     public static final ApplicationType APPLICATION_TYPE = ApplicationType.NIGHTLY;
-    public static final String MACOS_OFFICIAL_APP = "OSX_OFFICIAL_APP";
 
-    public static final String FORMAT_ZIP = ".zip";
-    public static final String FORMAT_XZ = ".xz";
-
-    public static final String FULL_FILM_LIST = "Filmliste-akt.xz";
-    public static final String DIFF_FILM_LIST = "Filmliste-diff.xz";
     public static final long AUDIOTHEK_SEARCH_TIMEOUT_SECONDS = 45;
 
     public static final long ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
@@ -59,10 +53,9 @@ public class Konstanten {
     public static final byte MAX_DOWNLOAD_RESTARTS = 2;
     public static final byte MAX_EXTERNAL_STARTS = 3;
     /**
-     * Default time for automatic continuation of existing downloads.
+     * Default time in seconds for automatic continuation of existing downloads.
      */
-    public static final byte DOWNLOAD_CONTINUATION_DEFAULT_TIME = 60; //seconds
-    public static final byte DOWNLOAD_ERROR_DISPLAY_DURATION = 60;
+    public static final byte DOWNLOAD_CONTINUATION_DEFAULT_TIME = 60;
 
     // MediathekView URLs
     public static final HttpUrl ROUTER_BASE_URL = HttpUrl.get("https://liste.mediathekview.de");
@@ -89,7 +82,6 @@ public class Konstanten {
     public static final String VERZEICHNIS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
     public static final String JSON_DATEI_FILME = "filme.json";
-    public static final String BOOKMARK_FILE = "bookmarks.json";
     public static final String SHUTDOWN_LINUX = "shutdown -h now";
     public static final String JDOWNLOADER_URL = "http://127.0.0.1:9666/flash/add";
 
@@ -97,12 +89,15 @@ public class Konstanten {
      * Minimum file size which won´t be regarded as an error.
      */
     public static final long MIN_FILM_FILE_SIZE_KB = 256 * FileUtils.ONE_KB;
-    public static final String XML_START = "Mediathek";
-
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
-
-    public static final int LAENGE_DATEINAME = 25; // Standardwert für die Länge des Zieldateinamens
-    public static final int LAENGE_FELD = 10; // Standardwert für die Länge des Feldes des Zieldateinamens zB. %T
+    /**
+     * Standardwert für die Länge des Zieldateinamens
+     */
+    public static final int LAENGE_DATEINAME = 25;
+    /**
+     * Standardwert für die Länge des Feldes des Zieldateinamens zB. %T
+     */
+    public static final int LAENGE_FELD = 10;
 
     public static final String PFAD_HILFETEXT_BEENDEN = "/mediathek/file/hilfetext_beenden.txt";
     public static final String PFAD_HILFETEXT_GEO = "/mediathek/file/hilfetext_geo.txt";

@@ -84,7 +84,7 @@ open class FilmListReader : AutoCloseable {
 
     private fun selectDecompressor(source: String, input: InputStream): InputStream =
         when (source.substring(source.lastIndexOf('.'))) {
-            Konstanten.FORMAT_XZ -> XZInputStream(input, DECOMPRESSOR_MEMORY_LIMIT, false)
+            ".xz" -> XZInputStream(input, DECOMPRESSOR_MEMORY_LIMIT, false)
             ".json" -> input
             else -> throw UnsupportedOperationException("Unbekanntes Dateiformat entdeckt.")
         }

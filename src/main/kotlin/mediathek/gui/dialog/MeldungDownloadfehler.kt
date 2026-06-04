@@ -1,13 +1,7 @@
 package mediathek.gui.dialog
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Konstanten
 import mediathek.config.MVConfig
 import mediathek.daten.DatenDownload
 import mediathek.tool.EscapeKeyHandler
@@ -20,6 +14,9 @@ class MeldungDownloadfehler(
     datenDownload: DatenDownload,
 ) : MeldungDownloadfehlerBase(parent) {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    companion object {
+        private const val DOWNLOAD_ERROR_DISPLAY_DURATION = 60
+    }
 
     init {
         focusableWindowState = false
@@ -53,7 +50,7 @@ class MeldungDownloadfehler(
 
     private fun startCountdown() {
         uiScope.launch {
-            for (secondsRemaining in Konstanten.DOWNLOAD_ERROR_DISPLAY_DURATION downTo 1) {
+            for (secondsRemaining in DOWNLOAD_ERROR_DISPLAY_DURATION downTo 1) {
                 jLabelTime.text = "$secondsRemaining s"
                 delay(1.seconds)
             }

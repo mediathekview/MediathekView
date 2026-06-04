@@ -19,7 +19,6 @@
 package mediathek.tool
 
 import mediathek.config.Daten
-import mediathek.config.Konstanten
 import mediathek.config.MVConfig
 import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
@@ -42,6 +41,7 @@ object GuiFunktionenProgramme {
     private val winPfade = ArrayList<String>()
     private val logger = LogManager.getLogger()
 
+    private const val FORMAT_ZIP = ".zip"
     private const val PFAD_LINUX_VLC = "/usr/bin/vlc"
     private const val PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC"
     private const val PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe"
@@ -277,7 +277,7 @@ object GuiFunktionenProgramme {
                     // und Tschüss
                     return false
                 }
-                if (datei.endsWith(Konstanten.FORMAT_ZIP)) {
+                if (datei.endsWith(FORMAT_ZIP)) {
                     if (!entpacken(zipFile, File(zielPfad))) {
                         // und Tschüss
                         return false
@@ -304,7 +304,7 @@ object GuiFunktionenProgramme {
                     if (response.isSuccessful) {
                         body.byteStream().use { inputStream ->
                             BufferedInputStream(inputStream).use { bufferedInput ->
-                                if (datei.endsWith(Konstanten.FORMAT_ZIP)) {
+                                if (datei.endsWith(FORMAT_ZIP)) {
                                     val tmpFile = File.createTempFile("mediathek", null)
                                     tmpFile.deleteOnExit()
                                     FileOutputStream(tmpFile).use { output ->

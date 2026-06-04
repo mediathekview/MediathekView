@@ -847,7 +847,7 @@ object Main {
     }
 
     private fun checkForOfficialOSXAppUse() {
-        val osxOfficialApp = System.getProperty(Konstanten.MACOS_OFFICIAL_APP)
+        val osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP")
         if (osxOfficialApp.isNullOrEmpty() || osxOfficialApp.equals("false", ignoreCase = true)) {
             logger.warn("WARN: macOS app NOT launched from official launcher!")
         }

@@ -25,6 +25,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
+import mediathek.config.Konstanten
 import mediathek.config.MVColor
 import mediathek.config.MVConfig
 import mediathek.controller.starter.DownloadStartActions
@@ -137,7 +138,7 @@ class DialogAddDownload(
             if (pfade.isNotEmpty()) {
                 val joined = pfade
                     .filter { it.isNotEmpty() }
-                    .take(mediathek.config.Konstanten.MAX_PFADE_DIALOG_DOWNLOAD)
+                    .take(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD)
                     .joinToString("<>")
                 MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, joined)
             }

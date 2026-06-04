@@ -18,7 +18,6 @@
 package mediathek.controller
 
 import mediathek.config.Daten
-import mediathek.config.Konstanten
 import mediathek.config.MVConfig
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenProg
@@ -72,7 +71,7 @@ class IoXmlSchreiben(
     private fun writeFileHeader(writer: XMLStreamWriter) {
         writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0")
         writeNewLine(writer)
-        writer.writeStartElement(Konstanten.XML_START)
+        writer.writeStartElement("Mediathek")
         writeNewLine(writer)
     }
 

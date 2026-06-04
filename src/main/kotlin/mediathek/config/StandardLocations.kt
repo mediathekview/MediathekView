@@ -72,7 +72,7 @@ object StandardLocations {
      * @return Path object of bookmark file
      */
     fun getBookmarkFilePath(): Path {
-        return getSettingsDirectory().resolve(Konstanten.BOOKMARK_FILE)
+        return getSettingsDirectory().resolve("bookmarks.json")
     }
 
     fun getDownloadsFilePath(): Path {
@@ -130,8 +130,8 @@ object StandardLocations {
      */
     fun getFilmListUrl(type: FilmListDownloadType): String {
         return when (type) {
-            FilmListDownloadType.FULL -> Konstanten.ROUTER_BASE_URL.resolve(Konstanten.FULL_FILM_LIST).toString()
-            FilmListDownloadType.DIFF_ONLY -> Konstanten.ROUTER_BASE_URL.resolve(Konstanten.DIFF_FILM_LIST).toString()
+            FilmListDownloadType.FULL -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-akt.xz").toString()
+            FilmListDownloadType.DIFF_ONLY -> Konstanten.ROUTER_BASE_URL.resolve("Filmliste-diff.xz").toString()
         }
     }
 
