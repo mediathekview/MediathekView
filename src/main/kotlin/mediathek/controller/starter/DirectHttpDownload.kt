@@ -424,7 +424,7 @@ class DirectHttpDownload(
 
                 DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
 
-                messageBus.publishAsync(DownloadFinishedEvent())
+                messageBus.publishAsync(DownloadFinishedEvent(datenDownload))
                 messageBus.unsubscribe(this@DirectHttpDownload)
             }
         }

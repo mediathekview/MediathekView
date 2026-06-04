@@ -1,3 +1,7 @@
 package mediathek.gui.messages
 
-class DownloadFinishedEvent : BaseEvent()
+import mediathek.daten.DatenDownload
+
+class DownloadFinishedEvent(
+    val download: DatenDownload,
+) : BaseEvent()

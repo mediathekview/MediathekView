@@ -67,7 +67,7 @@ class ExternalProgramDownload(
             } finally {
                 DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
                 waitForPendingDownloads()
-                MessageBus.messageBus.publish(DownloadFinishedEvent())
+                MessageBus.messageBus.publish(DownloadFinishedEvent(datenDownload))
             }
         }
     }

@@ -63,6 +63,7 @@ import java.util.Optional
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import javax.swing.*
+import kotlin.time.toJavaDuration
 
 class GuiDownloads(
     private val daten: Daten,
@@ -111,7 +112,8 @@ class GuiDownloads(
         persistedLookupResults = downloadSizeCacheSnapshot.lookupResults,
     )
     private val knownAboSizes = Caffeine.newBuilder()
-        .maximumSize(KNOWN_ABO_SIZE_CACHE_MAXIMUM_SIZE)
+        .maximumSize(DownloadSizeCachePolicy.MAXIMUM_ENTRIES.toLong())
+        .expireAfterWrite(DownloadSizeCachePolicy.maximumEntryAge.toJavaDuration())
         .build<String, CachedAboSize>()
         .apply {
             downloadSizeCacheSnapshot.knownAboSizes.forEach { entry ->
@@ -402,6 +404,11 @@ class GuiDownloads(
         }
     }
 
+    @Handler
+    private fun handleDownloadFinishedEvent(event: DownloadFinishedEvent) {
+        evictFinishedDownloadSize(event.download)
+    }
+
     @Suppress("UNUSED_PARAMETER")
     @Handler
     private fun handleGeoStateChangedEvent(event: GeoStateChangedEvent) {
@@ -483,6 +490,23 @@ class GuiDownloads(
         download.sizeMemoryKeys().forEach { key ->
             knownAboSizes.put(key, CachedAboSize(size, storedAtMillis))
         }
+    }
+
+    private fun evictFinishedDownloadSize(download: DatenDownload) {
+        if (download.runtime.runState?.status != StartStatus.FINISHED) {
+            return
+        }
+
+        evictDownloadSizeCache(download)
+    }
+
+    private fun evictDownloadSizeCache(download: DatenDownload) {
+        downloadSizeLookupService.invalidate(download)
+        forgetAboSizeKeys(download)
+    }
+
+    private fun forgetAboSizeKeys(download: DatenDownload) {
+        download.sizeMemoryKeys().forEach(knownAboSizes::invalidate)
     }
 
     private fun Iterable<DatenDownload>.restoreKnownAboSizes() {
@@ -641,6 +665,7 @@ class GuiDownloads(
                 daten.aboHistoryController.add(aboUrls)
             }
 
+            downloadsToDelete.forEach(::evictDownloadSizeCache)
             daten.listeDownloads.downloadLoeschen(downloadsToDelete)
             reloadTable()
             selectSingleRowAfterDeletion(rowToSelectAfterDeletion)
@@ -890,7 +915,6 @@ class GuiDownloads(
         private const val ACTION_MAP_KEY_MARK_AS_SEEN = "seen"
         private const val ACTION_MAP_KEY_MARK_AS_UNSEEN = "unseen"
         private const val ACTION_MAP_KEY_START_DOWNLOAD = "dl_start"
-        private const val KNOWN_ABO_SIZE_CACHE_MAXIMUM_SIZE = 4096L
         private val COLUMNS_DISABLED = intArrayOf(
             DownloadColumns.BUTTON_START,
             DownloadColumns.BUTTON_DELETE,

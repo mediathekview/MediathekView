@@ -31,13 +31,10 @@ import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
-import kotlin.time.Duration.Companion.days
 
 internal object DownloadSizeCacheStorage {
     private const val FILE_VERSION = 1
     private const val STORAGE_FILENAME = "download-size-cache.json"
-    private const val MAXIMUM_PERSISTED_ENTRIES = 4096
-    private val maximumEntryAge = 30.days
     private val logger = LogManager.getLogger(DownloadSizeCacheStorage::class.java)
     private val json = Json {
         ignoreUnknownKeys = true
@@ -64,13 +61,13 @@ internal object DownloadSizeCacheStorage {
                     .asSequence()
                     .filter { it.isFresh(nowMillis) }
                     .filter { it.byteLength > 0 }
-                    .take(MAXIMUM_PERSISTED_ENTRIES)
+                    .take(DownloadSizeCachePolicy.MAXIMUM_ENTRIES)
                     .toList(),
                 knownAboSizes = cacheFile.knownAboSizes
                     .asSequence()
                     .filter { it.isFresh(nowMillis) }
                     .filter { it.byteLength > 0 }
-                    .take(MAXIMUM_PERSISTED_ENTRIES)
+                    .take(DownloadSizeCachePolicy.MAXIMUM_ENTRIES)
                     .toList(),
             )
         }.getOrElse { ex ->
@@ -90,13 +87,13 @@ internal object DownloadSizeCacheStorage {
                 .asSequence()
                 .filter { it.isFresh(nowMillis) }
                 .filter { it.byteLength > 0 }
-                .take(MAXIMUM_PERSISTED_ENTRIES)
+                .take(DownloadSizeCachePolicy.MAXIMUM_ENTRIES)
                 .toList(),
             knownAboSizes = snapshot.knownAboSizes
                 .asSequence()
                 .filter { it.isFresh(nowMillis) }
                 .filter { it.byteLength > 0 }
-                .take(MAXIMUM_PERSISTED_ENTRIES)
+                .take(DownloadSizeCachePolicy.MAXIMUM_ENTRIES)
                 .toList(),
         )
         val temporaryPath = storagePath.resolveSibling(storagePath.fileName.toString() + ".tmp")
@@ -115,7 +112,7 @@ internal object DownloadSizeCacheStorage {
     private fun PersistentCacheEntry.isFresh(nowMillis: Long): Boolean =
         storedAtMillis > 0 &&
             storedAtMillis <= nowMillis &&
-            nowMillis - storedAtMillis <= maximumEntryAge.inWholeMilliseconds
+            nowMillis - storedAtMillis <= DownloadSizeCachePolicy.maximumEntryAge.inWholeMilliseconds
 
     private fun storagePath(): Path = StandardLocations.getSettingsDirectory().resolve(STORAGE_FILENAME)
 }

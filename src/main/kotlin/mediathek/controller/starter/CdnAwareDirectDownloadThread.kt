@@ -131,7 +131,7 @@ class CdnAwareDirectDownloadThread(
             } finally {
                 awaitAncillaryDownloads()
                 DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
-                messageBus.publishAsync(DownloadFinishedEvent())
+                messageBus.publishAsync(DownloadFinishedEvent(datenDownload))
                 messageBus.unsubscribe(this@CdnAwareDirectDownloadThread)
             }
         }

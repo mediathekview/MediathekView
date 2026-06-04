@@ -28,6 +28,7 @@ import mediathek.tool.FileSize
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
 import java.lang.Runnable
+import kotlin.time.toJavaDuration
 
 internal class DownloadSizeLookupService(
     private val reloadTable: Runnable,
@@ -36,7 +37,8 @@ internal class DownloadSizeLookupService(
     private val logger = LogManager.getLogger(DownloadSizeLookupService::class.java)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO.limitedParallelism(1))
     private val cachedLookupResults = Caffeine.newBuilder()
-        .maximumSize(CACHE_MAXIMUM_SIZE)
+        .maximumSize(DownloadSizeCachePolicy.MAXIMUM_ENTRIES.toLong())
+        .expireAfterWrite(DownloadSizeCachePolicy.maximumEntryAge.toJavaDuration())
         .build<LookupKey, CachedLookupResult>()
 
     init {
@@ -124,6 +126,15 @@ internal class DownloadSizeLookupService(
             )
         }
 
+    fun invalidate(download: DatenDownload) {
+        val url = download.downloadUrl
+        if (url.isBlank()) {
+            return
+        }
+
+        cachedLookupResults.asMap().keys.removeIf { key -> key.url == url }
+    }
+
     private fun DatenDownload.needsLiveSizeLookup(forceLookup: Boolean): Boolean =
         film != null && (forceLookup || runtime.filmSize.size == 0L)
 
@@ -171,7 +182,4 @@ internal class DownloadSizeLookupService(
             storedAtMillis = storedAtMillis,
         )
 
-    private companion object {
-        private const val CACHE_MAXIMUM_SIZE = 4096L
-    }
 }
