@@ -1,6 +1,6 @@
 package mediathek.tool.http
 
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.dns.DnsSelector
 import okhttp3.ConnectionSpec
@@ -62,7 +62,7 @@ object MVHttpClient {
 
     private fun defaultClientBuilder(): OkHttpClient.Builder =
         OkHttpClient.Builder().apply {
-            if (Config.isHttpTrafficDebuggingEnabled()) {
+            if (CommandLineOptions.isHttpTrafficDebuggingEnabled()) {
                 val interceptor = HttpLoggingInterceptor(logger::trace)
                 val level = try {
                     val levelName = ApplicationConfiguration.getConfiguration()

@@ -19,7 +19,7 @@
 package mediathek.filmlisten.reader
 
 import kotlinx.coroutines.*
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import mediathek.config.Konstanten
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.daten.Country
@@ -286,7 +286,7 @@ open class FilmListReader : AutoCloseable {
     }
 
     private fun logDatumLongParseError(value: String) {
-        if (Config.isDebugModeEnabled()) {
+        if (CommandLineOptions.isDebugModeEnabled()) {
             logger.error("Failed to parse datum long string: {}", value)
         }
     }
@@ -667,7 +667,7 @@ open class FilmListReader : AutoCloseable {
                 response.body.use { body ->
                     if (response.isSuccessful) {
                         val endRequest = response.request
-                        if (Config.isEnhancedLoggingEnabled()) {
+                        if (CommandLineOptions.isEnhancedLoggingEnabled()) {
                             logger.trace("Final Endpoint URL for filmlist: {}", endRequest.url.toString())
                         }
                         FilmListMetadataStore.writeEtag(source.toString(), response.header("ETag"))

@@ -146,7 +146,7 @@ object StandardLocations {
     @JvmStatic
     fun getFilmlistFilePathString(): String {
         val filePart = File.separator + Konstanten.JSON_DATEI_FILME
-        return if (Config.isPortableMode())
+        return if (CommandLineOptions.isPortableMode())
             getSettingsDirectory().toString() + filePart
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {
@@ -168,7 +168,7 @@ object StandardLocations {
     fun getFilmIndexPath(): Path {
         val indexDirectory = "mv_index"
 
-        return if (Config.isPortableMode())
+        return if (CommandLineOptions.isPortableMode())
             getSettingsDirectory().resolve(indexDirectory)
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {

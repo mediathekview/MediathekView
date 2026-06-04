@@ -4,7 +4,7 @@ import es.blackleg.jlibnotify.JLibnotify
 import es.blackleg.jlibnotify.core.DefaultJLibnotifyLoader
 import es.blackleg.jlibnotify.exception.JLibnotifyInitException
 import es.blackleg.jlibnotify.exception.JLibnotifyLoadException
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.Closeable
@@ -24,7 +24,7 @@ class LinuxNotificationCenter : INotificationCenter, Closeable {
             val serverInfo = libNotify!!.serverInfo
             logger.info(serverInfo)
 
-            if (Config.isDebugModeEnabled()) {
+            if (CommandLineOptions.isDebugModeEnabled()) {
                 logger.debug("Server capabilities:")
                 val caps = libNotify!!.serverCapabilities
                 for (cap in caps) {

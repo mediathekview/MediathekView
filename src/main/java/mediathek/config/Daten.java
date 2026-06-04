@@ -207,7 +207,7 @@ public class Daten {
     }
 
     private boolean askForBackupRestore() {
-        if (Config.isDownloadAndQuit()) {
+        if (CommandLineOptions.isDownloadAndQuit()) {
             logger.error("CLI download mode does not support interactive backup restore.");
             return false;
         }

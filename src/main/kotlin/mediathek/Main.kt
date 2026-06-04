@@ -88,14 +88,14 @@ object Main {
         setupEnvironmentProperties()
 
         val parseResult = parseCommandLine(args)
-        if (GraphicsEnvironment.isHeadless() && !Config.isDownloadAndQuit()) {
+        if (GraphicsEnvironment.isHeadless() && !CommandLineOptions.isDownloadAndQuit()) {
             System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.")
             exitProcess(1)
         }
         configureStartup(parseResult, args)
         printDirectoryPaths()
 
-        if (Config.isDownloadAndQuit()) {
+        if (CommandLineOptions.isDownloadAndQuit()) {
             CliShutdownSignal.install(DownloadAndQuitRunner::requestShutdown).use {
                 installSingleInstanceHandler(false)
                 performBackgroundStartup(cleanupMediaDb = !GraphicsEnvironment.isHeadless())
@@ -144,7 +144,7 @@ object Main {
     }
 
     private suspend fun parseCommandLine(args: Array<String>): CommandLine.ParseResult {
-        val cmd = CommandLine(Config::class.java)
+        val cmd = CommandLine(CommandLineOptions)
 
         try {
             val parseResult = cmd.parseArgs(*args)
@@ -153,9 +153,9 @@ object Main {
                 exitProcess(cmd.commandSpec.exitCodeOnUsageHelp())
             }
 
-            Config.setPortableMode(parseResult.hasMatchedPositional(0))
-            if (Config.isPortableMode()) {
-                StandardLocations.portableBaseDirectory = Config.baseFilePath
+            CommandLineOptions.setPortableMode(parseResult.hasMatchedPositional(0))
+            if (CommandLineOptions.isPortableMode()) {
+                StandardLocations.portableBaseDirectory = CommandLineOptions.baseFilePath
             }
 
             return parseResult
@@ -190,8 +190,8 @@ object Main {
         setupLogging()
 
         val level = when {
-            Config.isEnhancedLoggingEnabled() && Config.isDebugModeEnabled() -> Level.TRACE
-            Config.isEnhancedLoggingEnabled() -> Level.DEBUG
+            CommandLineOptions.isEnhancedLoggingEnabled() && CommandLineOptions.isDebugModeEnabled() -> Level.TRACE
+            CommandLineOptions.isEnhancedLoggingEnabled() -> Level.DEBUG
             else -> Level.INFO
         }
         registerSwingAppender(level)
@@ -205,7 +205,7 @@ object Main {
     }
 
     private suspend fun initializeSwingEnvironment() = withContext(Dispatchers.Swing) {
-        if (SystemUtils.IS_OS_LINUX && !Config.isDisableFlatLafDecorations()) {
+        if (SystemUtils.IS_OS_LINUX && !CommandLineOptions.isDisableFlatLafDecorations()) {
             // enable custom window decorations
             JFrame.setDefaultLookAndFeelDecorated(true)
             JDialog.setDefaultLookAndFeelDecorated(true)
@@ -221,7 +221,7 @@ object Main {
             checkUiScaleSetting()
         }
 
-        if (!Config.isDisableJvmParameterChecks()) {
+        if (!CommandLineOptions.isDisableJvmParameterChecks()) {
             checkJVMSettings()
         }
 
@@ -239,7 +239,7 @@ object Main {
                 null
             }
 
-            Config.isSplashScreenDisabled() -> {
+            CommandLineOptions.isSplashScreenDisabled() -> {
                 logger.warn("Splash screen disabled...")
                 null
             }
@@ -273,7 +273,7 @@ object Main {
      * In portable mode we MUST NOT delete the files.
      */
     private fun cleanupOsxFiles() {
-        if (!Config.isPortableMode()) {
+        if (!CommandLineOptions.isPortableMode()) {
             try {
                 val oldFilmList = StandardLocations.getSettingsDirectory().resolve(Konstanten.JSON_DATEI_FILME)
                 Files.deleteIfExists(oldFilmList)
@@ -335,13 +335,13 @@ object Main {
         val loggerContext = LogManager.getContext(false) as LoggerContext
         val config = loggerContext.configuration
         val fileName = "/mediathekview.log"
-        val path = if (!Config.isPortableMode()) {
+        val path = if (!CommandLineOptions.isPortableMode()) {
             "${StandardLocations.getSettingsDirectory()}$fileName"
         } else {
-            "${Config.baseFilePath}$fileName"
+            "${CommandLineOptions.baseFilePath}$fileName"
         }
 
-        val consolePattern = if (Config.isEnhancedLoggingEnabled() || Config.isDebugModeEnabled()) {
+        val consolePattern = if (CommandLineOptions.isEnhancedLoggingEnabled() || CommandLineOptions.isDebugModeEnabled()) {
             PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build()
         } else {
             PatternLayout.newBuilder().withPattern(". %msg%n").build()
@@ -349,7 +349,7 @@ object Main {
 
         val consoleAppender = ConsoleAppender.createDefaultAppenderForLayout(consolePattern)
         //for normal users only show INFO and higher messages
-        if (!Config.isEnhancedLoggingEnabled() && !Config.isDebugModeEnabled()) {
+        if (!CommandLineOptions.isEnhancedLoggingEnabled() && !CommandLineOptions.isDebugModeEnabled()) {
             val thresholdFilter = ThresholdFilter.createFilter(Level.INFO, Filter.Result.ACCEPT, Filter.Result.DENY)
             consoleAppender.addFilter(thresholdFilter)
         }
@@ -363,13 +363,13 @@ object Main {
             .setConfiguration(config)
 
         //regular users may have DEBUG output in log file but not TRACE
-        if (!Config.isEnhancedLoggingEnabled() && !Config.isDebugModeEnabled()) {
+        if (!CommandLineOptions.isEnhancedLoggingEnabled() && !CommandLineOptions.isDebugModeEnabled()) {
             val thresholdFilter = ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY)
             fileAppenderBuilder.filter = thresholdFilter
         }
 
         var asyncAppender: AsyncAppender? = null
-        if (!Config.isFileLoggingDisabled()) {
+        if (!CommandLineOptions.isFileLoggingDisabled()) {
             val fileAppender = fileAppenderBuilder.build()
             fileAppender.start()
             config.addAppender(fileAppender)
@@ -389,7 +389,7 @@ object Main {
         val rootLogger = loggerContext.rootLogger
         rootLogger.level = Level.TRACE
         rootLogger.addAppender(consoleAppender)
-        if (!Config.isFileLoggingDisabled()) {
+        if (!CommandLineOptions.isFileLoggingDisabled()) {
             rootLogger.addAppender(asyncAppender)
         }
 
@@ -460,8 +460,8 @@ object Main {
     }
 
     private fun printPortableModeInfo() {
-        if (Config.isPortableMode()) {
-            logger.info("Configuring baseFilePath {} for portable mode", Config.baseFilePath)
+        if (CommandLineOptions.isPortableMode()) {
+            logger.info("Configuring baseFilePath {} for portable mode", CommandLineOptions.baseFilePath)
         } else {
             logger.info("Configuring for non-portable mode")
         }
@@ -469,7 +469,7 @@ object Main {
 
     private fun setupCpuAffinity() {
         try {
-            val numCpus = Config.getNumCpus()
+            val numCpus = CommandLineOptions.getNumCpus()
             if (numCpus != 0) {
                 val affinity = Affinity.affinityImpl
                 affinity.setDesiredCpuAffinity(numCpus)
@@ -509,7 +509,7 @@ object Main {
 
         if (!JvmSettingsValidator.hasRequiredJvmSettings(paramList)) {
             logger.warn("Detected incorrect JVM parameters! Please modify your settings")
-            if (!Config.isDebugModeEnabled()) {
+            if (!CommandLineOptions.isDebugModeEnabled()) {
                 //show error dialog
                 JOptionPane.showMessageDialog(
                     null,
@@ -557,19 +557,19 @@ object Main {
             logger.trace("Dns preference mode set via CLI, storing config value")
             config.setProperty(
                 ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE,
-                Config.getDnsIpPreferenceMode().toString()
+                CommandLineOptions.getDnsIpPreferenceMode().toString()
             )
         } else {
             logger.trace("Dns preference mode NOT set, using config setting")
             val mode = IPvPreferenceMode.fromString(
                 config.getString(
                     ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE,
-                    Config.getDnsIpPreferenceMode().toString()
+                    CommandLineOptions.getDnsIpPreferenceMode().toString()
                 )
             )
-            Config.setDnsIpPreferenceMode(mode)
+            CommandLineOptions.setDnsIpPreferenceMode(mode)
         }
-        logger.trace("Setting DNS selector to mode: {}", Config.getDnsIpPreferenceMode().toString())
+        logger.trace("Setting DNS selector to mode: {}", CommandLineOptions.getDnsIpPreferenceMode().toString())
     }
 
     private fun registerFlatLafCustomization() {
@@ -731,7 +731,7 @@ object Main {
         } catch (e: Exception) {
             logger.error("migrateSeenHistory", e)
             SplashScreenLifecycle.close()
-            if (Config.isDownloadAndQuit() || GraphicsEnvironment.isHeadless()) {
+            if (CommandLineOptions.isDownloadAndQuit() || GraphicsEnvironment.isHeadless()) {
                 logger.error("Die Migration der Historie ist fehlgeschlagen. Das Programm wird beendet.")
             } else {
                 withContext(Dispatchers.Swing) {
@@ -863,7 +863,7 @@ object Main {
             cleanupOsxFiles()
         }
 
-        if (Config.isDebugModeEnabled() || Config.isInstallThreadCheckingRepaintManager()) {
+        if (CommandLineOptions.isDebugModeEnabled() || CommandLineOptions.isInstallThreadCheckingRepaintManager()) {
             // use for debugging EDT violations
             RepaintManager.setCurrentManager(ThreadCheckingRepaintManager())
             logger.debug("Swing Thread checking repaint manager installed.")

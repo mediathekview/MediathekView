@@ -1,6 +1,6 @@
 package mediathek.tool.dns
 
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import okhttp3.Dns
 import org.apache.logging.log4j.LogManager
 import java.net.Inet4Address
@@ -14,7 +14,7 @@ class DnsSelector : Dns {
     override fun lookup(hostname: String): List<InetAddress> {
         var addresses = Dns.SYSTEM.lookup(hostname)
 
-        addresses = when (Config.getDnsIpPreferenceMode()) {
+        addresses = when (CommandLineOptions.getDnsIpPreferenceMode()) {
             IPvPreferenceMode.IPV6_FIRST -> addresses.sortedBy { Inet4Address::class.java.isInstance(it) }
             IPvPreferenceMode.IPV4_FIRST -> addresses.sortedBy { Inet6Address::class.java.isInstance(it) }
             IPvPreferenceMode.IPV6_ONLY -> addresses.filter { Inet6Address::class.java.isInstance(it) }

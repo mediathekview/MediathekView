@@ -19,7 +19,7 @@
  */
 package mediathek.daten
 
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.MVConfig
@@ -298,7 +298,7 @@ class ListeDownloads : LinkedList<DatenDownload>() {
                 add(download)
                 addedDownloads.add(download)
             } else {
-                if (parent == null || Config.isDownloadAndQuit()) {
+                if (parent == null || CommandLineOptions.isDownloadAndQuit()) {
                     throw IllegalStateException("Kein Programmset für Abo \"${abo.name}\" konfiguriert.")
                 }
                 MissingProgramSetDialog.showMissingAboProgramSet(parent)

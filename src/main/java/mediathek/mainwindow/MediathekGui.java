@@ -740,7 +740,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setApplicationWindowSize() {
-        if (Config.isStartMaximized() ||
+        if (CommandLineOptions.isStartMaximized() ||
                 ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, true)) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
@@ -1117,7 +1117,7 @@ public class MediathekGui extends JFrame {
         createViewMenu();
 
         createAboMenu();
-        if (Config.isDebugModeEnabled())
+        if (CommandLineOptions.isDebugModeEnabled())
             createDeveloperMenu();
         createHelpMenu();
     }
@@ -1273,7 +1273,7 @@ public class MediathekGui extends JFrame {
 
             runShutdownStep("Print runtime statistics", () -> {
                 RuntimeStatistics.INSTANCE.printRuntimeStatistics();
-                if (Config.isEnhancedLoggingEnabled()) {
+                if (CommandLineOptions.isEnhancedLoggingEnabled()) {
                     RuntimeStatistics.INSTANCE.printDataUsageStatistics();
                 }
             });
@@ -1303,7 +1303,7 @@ public class MediathekGui extends JFrame {
 
         try {
             var taskList = TimerPool.shutdown(500, TimeUnit.MILLISECONDS);
-            if (Config.isDebugModeEnabled() && !taskList.isEmpty()) {
+            if (CommandLineOptions.isDebugModeEnabled() && !taskList.isEmpty()) {
                 logger.trace("timerPool taskList was not empty: {}", taskList.toString());
             }
         }

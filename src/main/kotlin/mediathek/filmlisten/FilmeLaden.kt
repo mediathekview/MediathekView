@@ -25,7 +25,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
@@ -95,7 +95,7 @@ class FilmeLaden(private val daten: Daten) {
     private var onlyOne = false
 
     private val canShowUiDialogs: Boolean
-        get() = MediathekGui.ui() != null && !Config.isDownloadAndQuit() && !GraphicsEnvironment.isHeadless()
+        get() = MediathekGui.ui() != null && !CommandLineOptions.isDownloadAndQuit() && !GraphicsEnvironment.isHeadless()
 
     init {
         filmListReader.addAdListener(object : ListenerFilmeLaden() {
@@ -626,7 +626,7 @@ class FilmeLaden(private val daten: Daten) {
         val notifyListeners = {
             currentListeners.forEach { listener -> action(listener) }
         }
-        if (Config.isDownloadAndQuit() || GraphicsEnvironment.isHeadless()) {
+        if (CommandLineOptions.isDownloadAndQuit() || GraphicsEnvironment.isHeadless()) {
             notifyListeners()
         } else {
             runOnSwing(notifyListeners)

@@ -21,7 +21,7 @@ package mediathek.controller.starter
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.controller.ByteRateLimiter
@@ -227,7 +227,7 @@ class CdnAwareDirectDownloadThread(
             } catch (ex: IOException) {
                 when {
                     isRetryableStreamException(ex) && alreadyDownloaded > chunkStart -> {
-                        if (Config.isDebugModeEnabled())
+                        if (CommandLineOptions.isDebugModeEnabled())
                             logger.warn(
                                 "Transient chunk error after partial progress, resuming at byte {}",
                                 alreadyDownloaded,
@@ -424,7 +424,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private suspend fun waitForRetry(retryCount: Int, ex: IOException) {
-        if (Config.isDebugModeEnabled()) {
+        if (CommandLineOptions.isDebugModeEnabled()) {
             logger.warn(
                 "Transient chunk error (retry {}/{}), resuming at byte {}",
                 retryCount,
@@ -470,7 +470,7 @@ class CdnAwareDirectDownloadThread(
             return false
         }
 
-        if (Config.isDownloadAndQuit()) {
+        if (CommandLineOptions.isDownloadAndQuit()) {
             return resolveExistingDownloadForCli()
         }
 
@@ -552,7 +552,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private fun showDownloadError(message: String?) {
-        if (Config.isDownloadAndQuit()) {
+        if (CommandLineOptions.isDownloadAndQuit()) {
             logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }

@@ -18,7 +18,7 @@
 
 package mediathek.controller.starter
 
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import mediathek.tool.DownloadSizeState
 import mediathek.tool.ProcessCommandUtils
 import org.apache.logging.log4j.LogManager
@@ -92,7 +92,7 @@ class RuntimeExec(
                     if (streamContext.parseProgress) {
                         progressTracker.acceptErrorLine(line)
                     }
-                    if (Config.isEnhancedLoggingEnabled()) {
+                    if (CommandLineOptions.isEnhancedLoggingEnabled()) {
                         logger.trace("  >> {}: {}", streamContext.title, line)
                     }
                 }

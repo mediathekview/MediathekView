@@ -21,7 +21,7 @@ package mediathek.controller.starter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import mediathek.config.Config
+import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.controller.ByteRateLimiter
@@ -449,7 +449,7 @@ class DirectHttpDownload(
             return false
         }
 
-        if (Config.isDownloadAndQuit()) {
+        if (CommandLineOptions.isDownloadAndQuit()) {
             return resolveExistingDownloadForCli()
         }
 
@@ -527,7 +527,7 @@ class DirectHttpDownload(
     }
 
     private fun showDownloadError(message: String?) {
-        if (Config.isDownloadAndQuit()) {
+        if (CommandLineOptions.isDownloadAndQuit()) {
             logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }

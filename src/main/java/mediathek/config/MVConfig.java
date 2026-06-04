@@ -18,7 +18,7 @@ public class MVConfig {
     private static final Logger logger = LogManager.getLogger(MVConfig.class);
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
 
-    public static void loadSystemParameter() {
+    public static synchronized void loadSystemParameter() {
         //einmal die leeren mit den inits füllen
         for (Configs key : Configs.values()) {
             String s = HASHMAP.get(key.cValue);
@@ -27,7 +27,7 @@ public class MVConfig {
             }
         }
 
-        if (Config.isDebugModeEnabled()) {
+        if (CommandLineOptions.isDebugModeEnabled()) {
             logger.debug("Debug mode enabled - Setting FilmList import mode to MANUAL");
             GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL);
         }
@@ -78,22 +78,6 @@ public class MVConfig {
         return Boolean.parseBoolean(get(key));
     }
 
-    public static synchronized String get(Configs key, int i) {
-        String[] sa;
-        String s = HASHMAP.get(key.cValue);
-        if (s == null) {
-            return key.initValue;
-        } else {
-            sa = split(s);
-        }
-        if (sa.length <= i) {
-            HASHMAP.remove(key.cValue);
-            return key.initValue;
-        } else {
-            return sa[i];
-        }
-    }
-
     public static synchronized List<String[]> getSortedKVList() {
         final List<String[]> liste = new ArrayList<>();
 
@@ -105,19 +89,6 @@ public class MVConfig {
         liste.sort((o1, o2) -> sorter.compare(o1[0],o2[0]));
 
         return liste;
-    }
-
-    private static String[] split(String sIn) {
-        ArrayList<String> l = new ArrayList<>();
-        String s = sIn;
-        while (s.contains(TRENNER)) {
-            l.add(s.substring(0, s.indexOf(TRENNER)));
-            s = s.substring(s.indexOf(TRENNER) + TRENNER.length());
-        }
-        l.add(s);
-
-        return l.toArray(new String[0]);
-
     }
 
     public enum Configs {
