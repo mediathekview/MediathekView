@@ -20,10 +20,6 @@ class DnsSelector : Dns {
             IPvPreferenceMode.IPV6_ONLY -> addresses.filter { Inet6Address::class.java.isInstance(it) }
             IPvPreferenceMode.IPV4_ONLY -> addresses.filter { Inet4Address::class.java.isInstance(it) }
             IPvPreferenceMode.SYSTEM -> addresses
-            else -> {
-                logger.error("IP Preference Mode was null, returning SYSTEM adresses")
-                addresses
-            }
         }
 
         logger.trace("Dns ($hostname): " + addresses.joinToString(", ") { it.toString() })
