@@ -55,6 +55,7 @@
 - **FEATURE:** Für Abo-Einträge im Tab *Downloads* wird nun nach der entsprechenden Größe gesucht.
 - **FEATURE:** Downloads werden nun in `downloads.json` anstatt der XML-Konfiguration gespeichert.
 - **FEATURE:** In der Infodatei wird nun auch die URL zum Untertitel gespeichert wenn verfügbar.
+- **FEATURE:** Das Download-Tab cached nun Dateigrößen-Downloads um den Startvorgang zu beschleunigen. Die Daten werden in `download-size-cache.json` gespeichert.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.
