@@ -223,6 +223,7 @@ class GuiDownloads(
 
     fun onComponentShown() {
         updateFilmData()
+        updateUnknownDownloadSizes()
     }
 
     private fun updateSelectedListItemsCount(table: JTable) {
@@ -433,11 +434,16 @@ class GuiDownloads(
         listeDownloads.abosAuffrischen()
         val addedDownloads = listeDownloads.abosSuchen(mediathekGui)
         reloadTable()
-        downloadSizeLookupService.updateFilmSizes(addedDownloads)
+        updateUnknownDownloadSizes()
+        downloadSizeLookupService.updateFilmSizes(addedDownloads, forceLookup = true)
 
         if (MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN).toBoolean()) {
             filmStartenWiederholenStoppen(true, starten = true, restartFinishedDownloads = false, skipManualDownloads = true)
         }
+    }
+
+    private fun updateUnknownDownloadSizes() {
+        downloadSizeLookupService.updateFilmSizes(daten.listeDownloads.toList())
     }
 
     @Synchronized

@@ -107,7 +107,7 @@ internal object DownloadCompletionHandler {
             addNotification(datenDownload, completionMessage.successful)
         }
 
-        if (state == HttpDownloadState.CANCEL) {
+        if (state == HttpDownloadState.CANCEL || start.stoppen) {
             DownloadLifecycleActions.reset(datenDownload)
         } else {
             start.markCompletedProgress()

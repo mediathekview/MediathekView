@@ -95,4 +95,10 @@ internal class FileSizeTest {
 
         assertEquals(FileSize.INVALID_SIZE.toLong(), size)
     }
+
+    @Test
+    fun parsesLessThanOneMegabyteTextAsOneMegabyte() {
+        assertEquals(1, FileSize.megabyteTextToInt("<1"))
+        assertEquals(FileSize.ONE_MiB.toLong(), FileSize.megabyteTextToBytes("<1"))
+    }
 }

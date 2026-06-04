@@ -37,7 +37,6 @@ enum class AboTags(val index: Int, val xmlName: String) {
     DO_NOT_START_AUTOMATICALLY(DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY, "nicht_automatisch_starten");
 
     companion object {
-        @JvmStatic
         fun fromXmlTag(tag: String): Optional<AboTags> {
             return Arrays.stream(entries.toTypedArray()).filter { e: AboTags -> e.xmlName == tag }.findAny()
         }

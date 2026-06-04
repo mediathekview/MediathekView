@@ -20,7 +20,6 @@ package mediathek.tool
 
 import java.util.UUID
 
-@JvmRecord
 data class FilterDTO(
     val id: UUID,
     val name: String

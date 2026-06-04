@@ -85,7 +85,8 @@ object DownloadAndQuitRunner {
         logger.info("Loading downloads from abos...")
         prepareAboSearch(daten)
         daten.listeDownloads.abosAuffrischen()
-        daten.listeDownloads.abosSuchen(null)
+        val addedDownloads = daten.listeDownloads.abosSuchen(null)
+        updateAboDownloadSizes(addedDownloads)
 
         val downloadsToStart = collectDownloadsToStart(daten)
         activeDownloads = downloadsToStart
@@ -179,6 +180,16 @@ object DownloadAndQuitRunner {
         daten.listeAbo.setAboFuerFilm(daten.listeFilme, false)
     }
 
+    private suspend fun updateAboDownloadSizes(downloads: List<DatenDownload>) = withContext(Dispatchers.IO) {
+        downloads.forEach { download ->
+            runCatching {
+                download.queryLiveSize(forceFetch = true)
+            }.onFailure { error ->
+                logger.debug("Could not update live size for abo download {}", download.title, error)
+            }
+        }
+    }
+
     private fun loadLocalFilmlist(daten: Daten) {
         if (daten.listeFilme.isNotEmpty()) {
             return
@@ -209,10 +220,12 @@ object DownloadAndQuitRunner {
         var lastSummary = ""
         while (true) {
             val trackedDownloads = downloads.filter { it.runtime.runState != null }
+            val interrupted = downloads.count { it.isInterrupted }
+            val interruptedWithoutRunState = downloads.count { it.runtime.runState == null && it.isInterrupted }
             val waiting = trackedDownloads.count { it.runtime.runState?.status == StartStatus.INITIALIZED }
             val runningDownloads = trackedDownloads.filter { it.runtime.runState?.status == StartStatus.RUNNING }
             val finished = trackedDownloads.count { it.runtime.runState?.status == StartStatus.FINISHED }
-            val errors = trackedDownloads.count { it.runtime.runState?.status == StartStatus.ERROR }
+            val errors = trackedDownloads.count { it.runtime.runState?.status == StartStatus.ERROR && !it.isInterrupted }
             val unfinished = waiting + runningDownloads.size
             val averageProgress = if (runningDownloads.isEmpty()) {
                 0
@@ -230,7 +243,7 @@ object DownloadAndQuitRunner {
                 append("Downloads: ")
                 append(finished)
                 append('/')
-                append(trackedDownloads.size)
+                append(trackedDownloads.size + interruptedWithoutRunState)
                 append(" finished, ")
                 append(waiting)
                 append(" waiting, ")
@@ -249,6 +262,11 @@ object DownloadAndQuitRunner {
                     if (errors > 1) {
                         append('s')
                     }
+                }
+                if (interrupted > 0) {
+                    append(", ")
+                    append(interrupted)
+                    append(" interrupted")
                 }
             }
 
@@ -282,7 +300,7 @@ object DownloadAndQuitRunner {
                 start.requestStop()
                 DownloadLifecycleActions.markInterrupted(download)
                 if (start.status == StartStatus.INITIALIZED) {
-                    start.status = StartStatus.ERROR
+                    DownloadLifecycleActions.reset(download)
                 }
             }
         }

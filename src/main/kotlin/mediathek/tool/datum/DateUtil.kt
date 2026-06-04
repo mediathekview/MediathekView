@@ -27,7 +27,6 @@ import java.util.*
 object DateUtil {
     val MV_DEFAULT_TIMEZONE: ZoneId = ZoneId.of("Europe/Berlin")
 
-    @JvmField
     val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         .withZone(MV_DEFAULT_TIMEZONE)
 

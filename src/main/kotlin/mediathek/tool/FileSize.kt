@@ -71,10 +71,10 @@ object FileSize {
     }
 
     fun megabyteTextToBytes(sizeText: String): Long =
-        sizeText.toLong() * ONE_MiB
+        megabyteTextToInt(sizeText).toLong() * ONE_MiB
 
     fun megabyteTextToInt(sizeText: String): Int =
-        sizeText.ifEmpty { "0" }.toInt()
+        if (sizeText.equals("<1", ignoreCase = true)) 1 else sizeText.ifEmpty { "0" }.toInt()
 
     fun getContentLength(response: Response): Long {
         val sizeStr = response.headers["Content-Length"] ?: return INVALID_SIZE.toLong()

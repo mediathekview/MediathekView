@@ -502,10 +502,12 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public FileSize.LookupResult lookupFileSizeForUrl(@NonNull String url, boolean forceFetch, @Nullable String resolution) {
-        var cachedLookupResult = getCachedFileSizeLookup(url);
-        if (cachedLookupResult != null) {
-            applyFileSizeLookupResult(url, cachedLookupResult);
-            return cachedLookupResult;
+        if (!forceFetch) {
+            var cachedLookupResult = getCachedFileSizeLookup(url);
+            if (cachedLookupResult != null) {
+                applyFileSizeLookupResult(url, cachedLookupResult);
+                return cachedLookupResult;
+            }
         }
 
         var lookupResult = FileSize.lookupFileSize(url, forceFetch, resolution);

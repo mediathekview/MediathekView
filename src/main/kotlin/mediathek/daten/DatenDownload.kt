@@ -232,9 +232,13 @@ class DatenDownload() : Comparable<DatenDownload> {
         }
     }
 
-    fun queryLiveSize() {
+    fun queryLiveSize(forceFetch: Boolean = false) {
         val currentFilm = film ?: return
-        runtime.filmSize.setSize(currentFilm.getFileSizeForUrl(downloadUrl))
+        val lookupResult = currentFilm.lookupFileSizeForUrl(downloadUrl, forceFetch)
+        val sizeText = lookupResult.sizeText
+        if (sizeText.isNotEmpty() || runtime.filmSize.size == 0L) {
+            runtime.filmSize.setSize(sizeText)
+        }
     }
 
     fun init() {

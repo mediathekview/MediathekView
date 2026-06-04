@@ -20,6 +20,7 @@ package mediathek.daten
 
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
@@ -51,6 +52,25 @@ class ListeAboTest {
     }
 
     @Test
+    fun inactiveOnlyAboListClearsExistingFilmAbo() {
+        val inactiveAbo = DatenAbo().apply {
+            sender = "ZDF"
+            isActive = false
+        }
+        val abos = ListeAbo().apply { addAbo(inactiveAbo) }
+        val film = DatenFilm().apply {
+            sender = "ZDF"
+            thema = "Nachrichten"
+            title = "Heute Journal"
+            abo = inactiveAbo
+        }
+
+        abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
+
+        assertNull(abos.getAboFuerFilm_schnell(film, false))
+    }
+
+    @Test
     fun lengthValidAboIsPreferredOverEarlierTextOnlyMatch() {
         val tooLongMinimumAbo = DatenAbo().apply {
             sender = "ZDF"
@@ -78,5 +98,42 @@ class ListeAboTest {
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
         assertSame(validMinimumAbo, abos.getAboFuerFilm_schnell(film, true))
+    }
+
+    @Test
+    fun regexTitleAboStillMatchesFilmTitle() {
+        val regexAbo = DatenAbo().apply {
+            sender = "ZDF"
+            title = "#:.*heute journal.*"
+        }
+        val abos = ListeAbo().apply { addAbo(regexAbo) }
+        val film = DatenFilm().apply {
+            sender = "ZDF"
+            thema = "Nachrichten"
+            title = "Heute Journal"
+        }
+
+        abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
+
+        assertSame(regexAbo, abos.getAboFuerFilm_schnell(film, false))
+    }
+
+    @Test
+    fun irgendwoAboStillMatchesFilmDescription() {
+        val descriptionAbo = DatenAbo().apply {
+            sender = "ZDF"
+            irgendwo = "wirtschaft"
+        }
+        val abos = ListeAbo().apply { addAbo(descriptionAbo) }
+        val film = DatenFilm().apply {
+            sender = "ZDF"
+            thema = "Nachrichten"
+            title = "Heute Journal"
+            description = "Aktuelle Nachrichten aus Politik und Wirtschaft"
+        }
+
+        abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
+
+        assertSame(descriptionAbo, abos.getAboFuerFilm_schnell(film, false))
     }
 }

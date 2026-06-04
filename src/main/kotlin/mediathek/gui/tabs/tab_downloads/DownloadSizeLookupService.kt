@@ -34,7 +34,7 @@ class DownloadSizeLookupService(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO.limitedParallelism(1))
     private val inFlight: MutableSet<DatenDownload> = Collections.newSetFromMap(ConcurrentHashMap())
 
-    fun updateFilmSizes(downloads: List<DatenDownload>) {
+    fun updateFilmSizes(downloads: List<DatenDownload>, forceLookup: Boolean = false) {
         if (downloads.isEmpty()) {
             return
         }
@@ -43,7 +43,7 @@ class DownloadSizeLookupService(
             var updateNeeded = false
 
             for (download in downloads) {
-                if (!download.needsLiveSizeLookup() || !inFlight.add(download)) {
+                if (!download.needsLiveSizeLookup(forceLookup) || !inFlight.add(download)) {
                     continue
                 }
 
@@ -51,7 +51,7 @@ class DownloadSizeLookupService(
                     val oldSize = download.runtime.filmSize.size
                     val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
                     val wasGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
-                    download.queryLiveSize()
+                    download.queryLiveSize(forceLookup)
                     val isGeoBlocked = download.film?.isGeoBlockedForLocation(currentLocation) ?: false
                     if (download.runtime.filmSize.size != oldSize || isGeoBlocked != wasGeoBlocked) {
                         updateNeeded = true
@@ -71,6 +71,6 @@ class DownloadSizeLookupService(
         }
     }
 
-    private fun DatenDownload.needsLiveSizeLookup(): Boolean =
-        film != null && runtime.filmSize.size == 0L
+    private fun DatenDownload.needsLiveSizeLookup(forceLookup: Boolean): Boolean =
+        film != null && (forceLookup || runtime.filmSize.size == 0L)
 }

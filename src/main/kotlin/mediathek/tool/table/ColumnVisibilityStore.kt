@@ -28,7 +28,6 @@ abstract class ColumnVisibilityStore {
     abstract fun fill(visible: Boolean)
 
     companion object {
-        @JvmStatic
         fun create(length: Int): ColumnVisibilityStore = of(BooleanArray(length))
 
         fun of(visibilityStore: BooleanArray): ColumnVisibilityStore = BooleanArrayColumnVisibilityStore(visibilityStore)
