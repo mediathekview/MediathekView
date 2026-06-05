@@ -136,7 +136,7 @@
         <mockito.version>5.23.0</mockito.version>
         <okhttp.version>5.3.2</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
-        <sqlite-jdbc.version>3.53.1.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.53.2.0</sqlite-jdbc.version>
         <swingx.version>1.6.5-1</swingx.version>
         <xz.version>1.12</xz.version>
 
