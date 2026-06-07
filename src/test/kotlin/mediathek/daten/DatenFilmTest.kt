@@ -197,6 +197,41 @@ internal class DatenFilmTest {
         assertEquals(TimeUnit.MILLISECONDS.convert(-122749200L, TimeUnit.SECONDS), copy.datumFilm.time)
     }
 
+    @Test
+    fun optionalUrlPresenceUsesNullableState() {
+        val film = DatenFilm()
+
+        film.lowQualityUrl = ""
+        film.highQualityUrl = ""
+        film.subtitleUrl = ""
+        film.websiteUrl = ""
+
+        assertEquals("", film.lowQualityUrl)
+        assertEquals("", film.highQualityUrl)
+        assertEquals("", film.subtitleUrl)
+        assertEquals("", film.websiteUrl)
+        assertFalse(film.hasLowQuality())
+        assertFalse(film.isHighQuality)
+        assertFalse(film.hasSubtitle())
+        assertNull(film.privateField("lowQualityUrl"))
+        assertNull(film.privateField("highQualityUrl"))
+        assertNull(film.privateField("subtitleUrl"))
+        assertNull(film.privateField("websiteUrl"))
+
+        film.lowQualityUrl = "https://example.org/low.mp4"
+        film.highQualityUrl = "https://example.org/high.mp4"
+        film.subtitleUrl = "https://example.org/subtitle.vtt"
+        film.websiteUrl = "https://example.org/page"
+
+        assertTrue(film.hasLowQuality())
+        assertTrue(film.isHighQuality)
+        assertTrue(film.hasSubtitle())
+        assertEquals("https://example.org/low.mp4", film.privateField("lowQualityUrl"))
+        assertEquals("https://example.org/high.mp4", film.privateField("highQualityUrl"))
+        assertEquals("https://example.org/subtitle.vtt", film.privateField("subtitleUrl"))
+        assertEquals("https://example.org/page", film.privateField("websiteUrl"))
+    }
+
     private companion object {
         @JvmStatic
         fun filmLengthEdgeCases(): Stream<Arguments> =

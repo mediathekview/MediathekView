@@ -120,11 +120,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private final int filmNr;
     private String sha256;
     private FilmIdentity filmIdentity;
-    private String subtitleUrl = "";
-    private String websiteUrl = "";
-    private String lowQualityUrl = "";
+    private String subtitleUrl;
+    private String websiteUrl;
+    private String lowQualityUrl;
     private String normalQualityUrl = "";
-    private String highQualityUrl = "";
+    private String highQualityUrl;
     private BookmarkData bookmark;
     private DatenAbo abo;
     private long datumLongSeconds;
@@ -225,20 +225,22 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getLowQualityUrl() {
-        return lowQualityUrl;
+        return Objects.requireNonNullElse(lowQualityUrl, "");
     }
 
     public void setLowQualityUrl(@NonNull String url_low_quality) {
-        lowQualityUrl = Objects.requireNonNull(url_low_quality);
+        Objects.requireNonNull(url_low_quality);
+        lowQualityUrl = url_low_quality.isEmpty() ? null : url_low_quality;
     }
 
     public String getHighQualityUrl() {
-        return highQualityUrl;
+        return Objects.requireNonNullElse(highQualityUrl, "");
     }
 
     public void setHighQualityUrl(@NonNull String urlHd) {
+        Objects.requireNonNull(urlHd);
         if (urlHd.isEmpty()) {
-            highQualityUrl = "";
+            highQualityUrl = null;
         }
         else {
             if (isCompressedUrl(urlHd)) {
@@ -358,12 +360,12 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getWebsiteUrl() {
-        return websiteUrl;
+        return Objects.requireNonNullElse(websiteUrl, "");
     }
 
     public void setWebsiteUrl(String link) {
         if (link == null || link.isEmpty()) {
-            websiteUrl = "";
+            websiteUrl = null;
         }
         else {
             websiteUrl = link;
@@ -411,7 +413,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if a downloadable subtitle is available.
      */
     public boolean hasSubtitle() {
-        return !subtitleUrl.isEmpty();
+        return subtitleUrl != null;
     }
 
     /**
@@ -626,11 +628,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if HQ url is not empty.
      */
     public boolean isHighQuality() {
-        return !highQualityUrl.isEmpty();
+        return highQualityUrl != null;
     }
 
     public boolean hasLowQuality() {
-        return !lowQualityUrl.isEmpty();
+        return lowQualityUrl != null;
     }
 
     @Override
@@ -791,11 +793,12 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getSubtitleUrl() {
-        return subtitleUrl;
+        return Objects.requireNonNullElse(subtitleUrl, "");
     }
 
     public void setSubtitleUrl(@NonNull String urlSubtitle) {
-        subtitleUrl = Objects.requireNonNull(urlSubtitle);
+        Objects.requireNonNull(urlSubtitle);
+        subtitleUrl = urlSubtitle.isEmpty() ? null : urlSubtitle;
     }
 
     /**
