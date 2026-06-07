@@ -116,6 +116,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private String sha256;
     private FilmIdentity filmIdentity;
     private final Map<String, FileSize.LookupResult> cachedFileSizeLookups = new HashMap<>();
+    private boolean canBootstrapFileSizeFromNormalQualityUrl = true;
 
     public DatenFilm() {
         dataMap.put(MapKeys.FILM_NR, FILMNR_GENERATOR.getAndIncrement());
@@ -143,6 +144,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.sha256 = other.sha256;
         this.filmIdentity = other.filmIdentity;
         this.cachedFileSizeLookups.putAll(other.cachedFileSizeLookups);
+        this.canBootstrapFileSizeFromNormalQualityUrl = other.canBootstrapFileSizeFromNormalQualityUrl;
     }
 
     /**
@@ -544,7 +546,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             return cachedLookupResult;
         }
 
-        if (url.equalsIgnoreCase(getUrlNormalQuality()) && !getFileSize().toString().isEmpty()) {
+        if (canBootstrapFileSizeFromNormalQualityUrl && url.equalsIgnoreCase(getUrlNormalQuality()) && !getFileSize().toString().isEmpty()) {
             var cachedSizeInBytes = (long) getFileSize().toInteger() * FileSize.ONE_MiB;
             var bootstrapLookupResult = new FileSize.LookupResult(cachedSizeInBytes, null, null, null);
             cachedFileSizeLookups.put(url, bootstrapLookupResult);
@@ -562,6 +564,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
         cachedFileSizeLookups.put(url, lookupResult);
         if (url.equalsIgnoreCase(getUrlNormalQuality())) {
             getFileSize().setSize(lookupResult.getSizeText());
+            canBootstrapFileSizeFromNormalQualityUrl = true;
         }
     }
 
@@ -766,11 +769,24 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public void setNormalQualityUrl(@NonNull String url_normal_quality) {
+        var previousUrl = getUrlNormalQuality();
         if (url_normal_quality.isEmpty())
             dataMap.remove(MapKeys.NORMAL_QUALITY_URL);
         else
             dataMap.put(MapKeys.NORMAL_QUALITY_URL, url_normal_quality);
+        handleNormalQualityUrlChange(previousUrl, url_normal_quality);
         invalidateSha256();
+    }
+
+    private void handleNormalQualityUrlChange(@NonNull String previousUrl, @NonNull String newUrl) {
+        if (previousUrl.equalsIgnoreCase(newUrl)) {
+            return;
+        }
+
+        cachedFileSizeLookups.clear();
+        if (!previousUrl.isEmpty() || !canBootstrapFileSizeFromNormalQualityUrl) {
+            canBootstrapFileSizeFromNormalQualityUrl = false;
+        }
     }
 
     public String getSubtitleUrl() {

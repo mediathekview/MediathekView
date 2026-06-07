@@ -1,5 +1,6 @@
 package mediathek.daten
 
+import mediathek.tool.FileSize
 import mediathek.tool.datum.DatumFilm
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -72,6 +73,22 @@ internal class DatenFilmTest {
         assertEquals(TimeUnit.MILLISECONDS.convert(-122749200L, TimeUnit.SECONDS), film.datumFilm.time)
     }
 
+    @Test
+    fun changingNormalQualityUrlDoesNotBootstrapFileSizeFromPreviousUrl() {
+        val oldUrl = "https://example.org/old.mp4"
+        val newUrl = "https://example.org/new.mp4"
+        val film = DatenFilm()
+        film.fileSize.setSize("123")
+        film.setNormalQualityUrl(oldUrl)
+
+        assertEquals("123", film.cachedLookup(oldUrl)?.sizeText)
+
+        val clone = DatenFilm(film)
+        clone.setNormalQualityUrl(newUrl)
+
+        assertNull(clone.cachedLookup(newUrl))
+    }
+
     private companion object {
         @JvmStatic
         fun filmLengthEdgeCases(): Stream<Arguments> =
@@ -90,6 +107,13 @@ internal class DatenFilmTest {
                 digest.update(part.toByteArray(StandardCharsets.UTF_16LE))
             }
             return HexFormat.of().formatHex(digest.digest())
+        }
+
+        private fun DatenFilm.cachedLookup(url: String): FileSize.LookupResult? {
+            val method = DatenFilm::class.java.getDeclaredMethod("getCachedFileSizeLookup", String::class.java)
+            method.isAccessible = true
+            @Suppress("UNCHECKED_CAST")
+            return method.invoke(this, url) as FileSize.LookupResult?
         }
     }
 }
