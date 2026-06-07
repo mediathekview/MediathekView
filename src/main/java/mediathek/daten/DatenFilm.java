@@ -84,7 +84,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     /**
      * Runtime evidence from live URL checks that a film is blocked in specific configured countries.
      */
-    private final EnumSet<Country> knownBlockedCountries = EnumSet.noneOf(Country.class);
+    private EnumSet<Country> knownBlockedCountries;
     private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
     /**
      * File size in MByte
@@ -115,7 +115,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private int episode = 0;
     private String sha256;
     private FilmIdentity filmIdentity;
-    private final Map<String, FileSize.LookupResult> cachedFileSizeLookups = new HashMap<>();
+    private Map<String, FileSize.LookupResult> cachedFileSizeLookups;
     private boolean canBootstrapFileSizeFromNormalQualityUrl = true;
 
     public DatenFilm() {
@@ -132,7 +132,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (other.countrySet != null && !other.countrySet.isEmpty()) {
             this.countrySet = EnumSet.copyOf(other.countrySet);
         }
-        this.knownBlockedCountries.addAll(other.knownBlockedCountries);
+        if (other.knownBlockedCountries != null && !other.knownBlockedCountries.isEmpty()) {
+            this.knownBlockedCountries = EnumSet.copyOf(other.knownBlockedCountries);
+        }
         this.dataMap.putAll(other.dataMap);
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
@@ -143,7 +145,9 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.availableUntil = other.availableUntil;
         this.sha256 = other.sha256;
         this.filmIdentity = other.filmIdentity;
-        this.cachedFileSizeLookups.putAll(other.cachedFileSizeLookups);
+        if (other.cachedFileSizeLookups != null && !other.cachedFileSizeLookups.isEmpty()) {
+            this.cachedFileSizeLookups = new HashMap<>(other.cachedFileSizeLookups);
+        }
         this.canBootstrapFileSizeFromNormalQualityUrl = other.canBootstrapFileSizeFromNormalQualityUrl;
     }
 
@@ -449,11 +453,14 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public void markGeoBlockedForLocation(@NonNull Country location) {
+        if (knownBlockedCountries == null) {
+            knownBlockedCountries = EnumSet.noneOf(Country.class);
+        }
         knownBlockedCountries.add(location);
     }
 
     public boolean isGeoBlockedForLocation(@NonNull Country location) {
-        if (knownBlockedCountries.contains(location)) {
+        if (knownBlockedCountries != null && knownBlockedCountries.contains(location)) {
             return true;
         }
         if (!hasCountries()) {
@@ -541,15 +548,17 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     private FileSize.LookupResult getCachedFileSizeLookup(@NonNull String url) {
-        var cachedLookupResult = cachedFileSizeLookups.get(url);
-        if (cachedLookupResult != null && (!cachedLookupResult.getSizeText().isEmpty() || cachedLookupResult.getHttpStatusCode() != null)) {
-            return cachedLookupResult;
+        if (cachedFileSizeLookups != null) {
+            var cachedLookupResult = cachedFileSizeLookups.get(url);
+            if (cachedLookupResult != null && (!cachedLookupResult.getSizeText().isEmpty() || cachedLookupResult.getHttpStatusCode() != null)) {
+                return cachedLookupResult;
+            }
         }
 
         if (canBootstrapFileSizeFromNormalQualityUrl && url.equalsIgnoreCase(getUrlNormalQuality()) && !getFileSize().toString().isEmpty()) {
             var cachedSizeInBytes = (long) getFileSize().toInteger() * FileSize.ONE_MiB;
             var bootstrapLookupResult = new FileSize.LookupResult(cachedSizeInBytes, null, null, null);
-            cachedFileSizeLookups.put(url, bootstrapLookupResult);
+            fileSizeLookupCache().put(url, bootstrapLookupResult);
             return bootstrapLookupResult;
         }
 
@@ -561,11 +570,18 @@ public class DatenFilm implements Comparable<DatenFilm> {
             return;
         }
 
-        cachedFileSizeLookups.put(url, lookupResult);
+        fileSizeLookupCache().put(url, lookupResult);
         if (url.equalsIgnoreCase(getUrlNormalQuality())) {
             getFileSize().setSize(lookupResult.getSizeText());
             canBootstrapFileSizeFromNormalQualityUrl = true;
         }
+    }
+
+    private Map<String, FileSize.LookupResult> fileSizeLookupCache() {
+        if (cachedFileSizeLookups == null) {
+            cachedFileSizeLookups = new HashMap<>();
+        }
+        return cachedFileSizeLookups;
     }
 
     /**
@@ -783,7 +799,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             return;
         }
 
-        cachedFileSizeLookups.clear();
+        cachedFileSizeLookups = null;
         if (!previousUrl.isEmpty() || !canBootstrapFileSizeFromNormalQualityUrl) {
             canBootstrapFileSizeFromNormalQualityUrl = false;
         }

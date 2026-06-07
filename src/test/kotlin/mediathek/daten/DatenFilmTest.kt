@@ -89,6 +89,34 @@ internal class DatenFilmTest {
         assertNull(clone.cachedLookup(newUrl))
     }
 
+    @Test
+    fun newFilmKeepsRareStateContainersUnallocated() {
+        val film = DatenFilm()
+
+        assertNull(film.privateField("cachedFileSizeLookups"))
+        assertNull(film.privateField("knownBlockedCountries"))
+
+        assertNull(film.cachedLookup("https://example.org/video.mp4"))
+        assertFalse(film.isGeoBlockedForLocation(Country.DE))
+
+        assertNull(film.privateField("cachedFileSizeLookups"))
+        assertNull(film.privateField("knownBlockedCountries"))
+    }
+
+    @Test
+    fun rareStateContainersAreAllocatedOnFirstStoredValue() {
+        val film = DatenFilm()
+        val url = "https://example.org/video.mp4"
+
+        film.fileSize.setSize("123")
+        film.setNormalQualityUrl(url)
+        assertEquals("123", film.cachedLookup(url)?.sizeText)
+        film.markGeoBlockedForLocation(Country.DE)
+
+        assertNotNull(film.privateField("cachedFileSizeLookups"))
+        assertNotNull(film.privateField("knownBlockedCountries"))
+    }
+
     private companion object {
         @JvmStatic
         fun filmLengthEdgeCases(): Stream<Arguments> =
@@ -114,6 +142,12 @@ internal class DatenFilmTest {
             method.isAccessible = true
             @Suppress("UNCHECKED_CAST")
             return method.invoke(this, url) as FileSize.LookupResult?
+        }
+
+        private fun DatenFilm.privateField(name: String): Any? {
+            val field = DatenFilm::class.java.getDeclaredField(name)
+            field.isAccessible = true
+            return field.get(this)
         }
     }
 }
