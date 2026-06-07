@@ -117,6 +117,49 @@ internal class DatenFilmTest {
         assertNotNull(film.privateField("knownBlockedCountries"))
     }
 
+    @Test
+    fun publicFlagAccessorsToggleAndCopyBitState() {
+        val film = DatenFilm()
+
+        film.isAudioVersion = true
+        film.isTrailerTeaser = true
+        film.isSignLanguage = true
+        film.isLivestream = true
+        film.isNew = true
+        film.setBurnedInSubtitles(true)
+        film.isPlayList = true
+        film.isDuplicate = true
+
+        val copy = DatenFilm(film)
+
+        assertTrue(copy.isAudioVersion)
+        assertTrue(copy.isTrailerTeaser)
+        assertTrue(copy.isSignLanguage)
+        assertTrue(copy.isLivestream)
+        assertTrue(copy.isNew)
+        assertTrue(copy.hasBurnedInSubtitles())
+        assertTrue(copy.isPlayList)
+        assertTrue(copy.isDuplicate)
+
+        copy.isAudioVersion = false
+        copy.isTrailerTeaser = false
+        copy.isSignLanguage = false
+        copy.isLivestream = false
+        copy.isNew = false
+        copy.setBurnedInSubtitles(false)
+        copy.isPlayList = false
+        copy.isDuplicate = false
+
+        assertFalse(copy.isAudioVersion)
+        assertFalse(copy.isTrailerTeaser)
+        assertFalse(copy.isSignLanguage)
+        assertFalse(copy.isLivestream)
+        assertFalse(copy.isNew)
+        assertFalse(copy.hasBurnedInSubtitles())
+        assertFalse(copy.isPlayList)
+        assertFalse(copy.isDuplicate)
+    }
+
     private companion object {
         @JvmStatic
         fun filmLengthEdgeCases(): Stream<Arguments> =

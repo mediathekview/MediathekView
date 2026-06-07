@@ -73,6 +73,14 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Compressed URLs are missing the base normal quality URL and are indicated by the pipe-symbol.
      */
     public static final char COMPRESSION_MARKER = '|';
+    private static final int FLAG_AUDIO_VERSION = 1 << 0;
+    private static final int FLAG_TRAILER_TEASER = 1 << 1;
+    private static final int FLAG_SIGN_LANGUAGE = 1 << 2;
+    private static final int FLAG_LIVESTREAM = 1 << 3;
+    private static final int FLAG_NEW_ENTRY = 1 << 4;
+    private static final int FLAG_BURNED_IN_SUBTITLES = 1 << 5;
+    private static final int FLAG_PLAYLIST = 1 << 6;
+    private static final int FLAG_DUPLICATE = 1 << 7;
     private static final GermanStringSorter sorter = GermanStringSorter.INSTANCE;
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     private static final boolean USE_WINDOWS_SHA256_FAST_PATH = SystemUtils.IS_OS_WINDOWS;
@@ -85,7 +93,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * Runtime evidence from live URL checks that a film is blocked in specific configured countries.
      */
     private EnumSet<Country> knownBlockedCountries;
-    private final EnumSet<DatenFilmFlags> flags = EnumSet.noneOf(DatenFilmFlags.class);
+    private int flags;
     /**
      * File size in MByte
      */
@@ -136,6 +144,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
             this.knownBlockedCountries = EnumSet.copyOf(other.knownBlockedCountries);
         }
         this.dataMap.putAll(other.dataMap);
+        this.flags = other.flags;
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
         this.filmLength = other.filmLength;
@@ -235,17 +244,25 @@ public class DatenFilm implements Comparable<DatenFilm> {
         dataMap.put(MapKeys.TEMP_DATUM_LONG, datumLongSeconds);
     }
 
+    private boolean hasFlag(int flag) {
+        return (flags & flag) != 0;
+    }
+
+    private void setFlag(int flag, boolean enabled) {
+        if (enabled) {
+            flags |= flag;
+        }
+        else {
+            flags &= ~flag;
+        }
+    }
+
     public boolean isTrailerTeaser() {
-        return flags.contains(DatenFilmFlags.TRAILER_TEASER);
+        return hasFlag(FLAG_TRAILER_TEASER);
     }
 
     public void setTrailerTeaser(boolean val) {
-        if (val) {
-            flags.add(DatenFilmFlags.TRAILER_TEASER);
-        }
-        else {
-            flags.remove(DatenFilmFlags.TRAILER_TEASER);
-        }
+        setFlag(FLAG_TRAILER_TEASER, val);
     }
 
     /**
@@ -254,7 +271,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if it was seen before, false otherwise.
      */
     public boolean isDuplicate() {
-        return flags.contains(DatenFilmFlags.DUPLICATE);
+        return hasFlag(FLAG_DUPLICATE);
     }
 
     /**
@@ -263,51 +280,31 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @param duplicate are we a duplicate?
      */
     public void setDuplicate(boolean duplicate) {
-        if (duplicate) {
-            flags.add(DatenFilmFlags.DUPLICATE);
-        }
-        else {
-            flags.remove(DatenFilmFlags.DUPLICATE);
-        }
+        setFlag(FLAG_DUPLICATE, duplicate);
     }
 
     public boolean isAudioVersion() {
-        return flags.contains(DatenFilmFlags.AUDIO_VERSION);
+        return hasFlag(FLAG_AUDIO_VERSION);
     }
 
     public void setAudioVersion(boolean val) {
-        if (val) {
-            flags.add(DatenFilmFlags.AUDIO_VERSION);
-        }
-        else {
-            flags.remove(DatenFilmFlags.AUDIO_VERSION);
-        }
+        setFlag(FLAG_AUDIO_VERSION, val);
     }
 
     public boolean isPlayList() {
-        return flags.contains(DatenFilmFlags.PLAYLIST);
+        return hasFlag(FLAG_PLAYLIST);
     }
 
     public void setPlayList(boolean val) {
-        if (val) {
-            flags.add(DatenFilmFlags.PLAYLIST);
-        }
-        else {
-            flags.remove(DatenFilmFlags.PLAYLIST);
-        }
+        setFlag(FLAG_PLAYLIST, val);
     }
 
     public boolean isSignLanguage() {
-        return flags.contains(DatenFilmFlags.SIGN_LANGUAGE);
+        return hasFlag(FLAG_SIGN_LANGUAGE);
     }
 
     public void setSignLanguage(boolean val) {
-        if (val) {
-            flags.add(DatenFilmFlags.SIGN_LANGUAGE);
-        }
-        else {
-            flags.remove(DatenFilmFlags.SIGN_LANGUAGE);
-        }
+        setFlag(FLAG_SIGN_LANGUAGE, val);
     }
 
     /**
@@ -372,38 +369,23 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if it is a new entry, false otherwise.
      */
     public boolean isNew() {
-        return flags.contains(DatenFilmFlags.NEW_ENTRY);
+        return hasFlag(FLAG_NEW_ENTRY);
     }
 
     public void setNew(final boolean newFilm) {
-        if (newFilm) {
-            flags.add(DatenFilmFlags.NEW_ENTRY);
-        }
-        else {
-            flags.remove(DatenFilmFlags.NEW_ENTRY);
-        }
+        setFlag(FLAG_NEW_ENTRY, newFilm);
     }
 
     public boolean isLivestream() {
-        return flags.contains(DatenFilmFlags.LIVESTREAM);
+        return hasFlag(FLAG_LIVESTREAM);
     }
 
     public void setLivestream(boolean val) {
-        if (val) {
-            flags.add(DatenFilmFlags.LIVESTREAM);
-        }
-        else {
-            flags.remove(DatenFilmFlags.LIVESTREAM);
-        }
+        setFlag(FLAG_LIVESTREAM, val);
     }
 
     public void setBurnedInSubtitles(boolean val) {
-        if (val) {
-            flags.add(DatenFilmFlags.BURNED_IN_SUBTITLES);
-        }
-        else {
-            flags.remove(DatenFilmFlags.BURNED_IN_SUBTITLES);
-        }
+        setFlag(FLAG_BURNED_IN_SUBTITLES, val);
     }
 
     /**
@@ -412,7 +394,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if they are burned in, false othewise.
      */
     public boolean hasBurnedInSubtitles() {
-        return flags.contains(DatenFilmFlags.BURNED_IN_SUBTITLES);
+        return hasFlag(FLAG_BURNED_IN_SUBTITLES);
     }
 
     /**
