@@ -1,5 +1,7 @@
 package mediathek.daten
 
+import mediathek.daten.abo.DatenAbo
+import mediathek.gui.bookmark.BookmarkData
 import mediathek.tool.FileSize
 import mediathek.tool.datum.DatumFilm
 import org.junit.jupiter.api.Assertions.*
@@ -158,6 +160,41 @@ internal class DatenFilmTest {
         assertFalse(copy.hasBurnedInSubtitles())
         assertFalse(copy.isPlayList)
         assertFalse(copy.isDuplicate)
+    }
+
+    @Test
+    fun copyPreservesTypedOptionalState() {
+        val abo = DatenAbo()
+        val bookmark = BookmarkData()
+        val film = DatenFilm().apply {
+            setNormalQualityUrl("https://example.org/normal.mp4")
+            lowQualityUrl = "https://example.org/low.mp4"
+            highQualityUrl = "https://example.org/high.mp4"
+            subtitleUrl = "https://example.org/subtitle.vtt"
+            websiteUrl = "https://example.org/page"
+            this.abo = abo
+            this.bookmark = bookmark
+            sendeDatum = "01.01.1966"
+            setDatumLongSeconds(-122749200L)
+        }
+
+        val copy = DatenFilm(film)
+        copy.init()
+
+        assertEquals(film.filmNr, copy.filmNr)
+        assertEquals("https://example.org/normal.mp4", copy.urlNormalQuality)
+        assertEquals("https://example.org/low.mp4", copy.lowQualityUrl)
+        assertEquals("https://example.org/high.mp4", copy.highQualityUrl)
+        assertEquals("https://example.org/subtitle.vtt", copy.subtitleUrl)
+        assertEquals("https://example.org/page", copy.websiteUrl)
+        assertSame(abo, copy.abo)
+        assertSame(bookmark, copy.bookmark)
+        assertTrue(copy.hasSubtitle())
+        assertTrue(copy.hasLowQuality())
+        assertTrue(copy.isHighQuality)
+        assertTrue(copy.isBookmarked)
+        assertNotEquals(DatumFilm.UNDEFINED_FILM_DATE, copy.datumFilm)
+        assertEquals(TimeUnit.MILLISECONDS.convert(-122749200L, TimeUnit.SECONDS), copy.datumFilm.time)
     }
 
     private companion object {

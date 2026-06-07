@@ -98,10 +98,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * File size in MByte
      */
     private final FilmSize filmSize = new FilmSize();
-    /**
-     * Stores all URLs, some keys may not exist.
-     */
-    private final EnumMap<MapKeys, Object> dataMap = new EnumMap<>(MapKeys.class);
     /// The date until this film will be available. is set by the film info search worker.
     LocalDate availableUntil;
     /**
@@ -121,13 +117,22 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private String filmLengthAsString = "";
     private int season = 0;
     private int episode = 0;
+    private final int filmNr;
     private String sha256;
     private FilmIdentity filmIdentity;
+    private String subtitleUrl = "";
+    private String websiteUrl = "";
+    private String lowQualityUrl = "";
+    private String normalQualityUrl = "";
+    private String highQualityUrl = "";
+    private BookmarkData bookmark;
+    private DatenAbo abo;
+    private long datumLongSeconds;
     private Map<String, FileSize.LookupResult> cachedFileSizeLookups;
     private boolean canBootstrapFileSizeFromNormalQualityUrl = true;
 
     public DatenFilm() {
-        dataMap.put(MapKeys.FILM_NR, FILMNR_GENERATOR.getAndIncrement());
+        filmNr = FILMNR_GENERATOR.getAndIncrement();
     }
 
     public DatenFilm(@NonNull DatenFilm other) {
@@ -143,7 +148,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
         if (other.knownBlockedCountries != null && !other.knownBlockedCountries.isEmpty()) {
             this.knownBlockedCountries = EnumSet.copyOf(other.knownBlockedCountries);
         }
-        this.dataMap.putAll(other.dataMap);
         this.flags = other.flags;
         this.datum = other.datum;
         this.sendeZeit = other.sendeZeit;
@@ -151,9 +155,18 @@ public class DatenFilm implements Comparable<DatenFilm> {
         this.filmLengthAsString = other.filmLengthAsString;
         this.season = other.season;
         this.episode = other.episode;
+        this.filmNr = other.filmNr;
         this.availableUntil = other.availableUntil;
         this.sha256 = other.sha256;
         this.filmIdentity = other.filmIdentity;
+        this.subtitleUrl = other.subtitleUrl;
+        this.websiteUrl = other.websiteUrl;
+        this.lowQualityUrl = other.lowQualityUrl;
+        this.normalQualityUrl = other.normalQualityUrl;
+        this.highQualityUrl = other.highQualityUrl;
+        this.bookmark = other.bookmark;
+        this.abo = other.abo;
+        this.datumLongSeconds = other.datumLongSeconds;
         if (other.cachedFileSizeLookups != null && !other.cachedFileSizeLookups.isEmpty()) {
             this.cachedFileSizeLookups = new HashMap<>(other.cachedFileSizeLookups);
         }
@@ -200,14 +213,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public @Nullable DatenAbo getAbo() {
-        return (DatenAbo) dataMap.getOrDefault(MapKeys.ABO_DATA, null);
+        return abo;
     }
 
     public void setAbo(@Nullable DatenAbo abo) {
-        if (abo == null)
-            dataMap.remove(MapKeys.ABO_DATA);
-        else
-            dataMap.put(MapKeys.ABO_DATA, abo);
+        this.abo = abo;
     }
 
     public DatumFilm getDatumFilm() {
@@ -215,33 +225,31 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getLowQualityUrl() {
-        return (String) dataMap.getOrDefault(MapKeys.LOW_QUALITY_URL, "");
+        return lowQualityUrl;
     }
 
     public void setLowQualityUrl(@NonNull String url_low_quality) {
-        if (url_low_quality.isEmpty())
-            dataMap.remove(MapKeys.LOW_QUALITY_URL);
-        else
-            dataMap.put(MapKeys.LOW_QUALITY_URL, url_low_quality);
+        lowQualityUrl = Objects.requireNonNull(url_low_quality);
     }
 
     public String getHighQualityUrl() {
-        return (String) dataMap.getOrDefault(MapKeys.HIGH_QUALITY_URL, "");
+        return highQualityUrl;
     }
 
     public void setHighQualityUrl(@NonNull String urlHd) {
-        if (urlHd.isEmpty())
-            dataMap.remove(MapKeys.HIGH_QUALITY_URL);
+        if (urlHd.isEmpty()) {
+            highQualityUrl = "";
+        }
         else {
             if (isCompressedUrl(urlHd)) {
                 urlHd = decompressUrl(urlHd);
             }
-            dataMap.put(MapKeys.HIGH_QUALITY_URL, urlHd);
+            highQualityUrl = urlHd;
         }
     }
 
     public void setDatumLongSeconds(long datumLongSeconds) {
-        dataMap.put(MapKeys.TEMP_DATUM_LONG, datumLongSeconds);
+        this.datumLongSeconds = datumLongSeconds;
     }
 
     private boolean hasFlag(int flag) {
@@ -317,7 +325,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return the original internal film number
      */
     public int getFilmNr() {
-        return (int) dataMap.get(MapKeys.FILM_NR);
+        return filmNr;
     }
 
     /**
@@ -350,15 +358,15 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getWebsiteUrl() {
-        return (String) dataMap.getOrDefault(MapKeys.WEBSITE_URL, "");
+        return websiteUrl;
     }
 
     public void setWebsiteUrl(String link) {
         if (link == null || link.isEmpty()) {
-            dataMap.remove(MapKeys.WEBSITE_URL);
+            websiteUrl = "";
         }
         else {
-            dataMap.put(MapKeys.WEBSITE_URL, link);
+            websiteUrl = link;
         }
         invalidateSha256();
     }
@@ -403,7 +411,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if a downloadable subtitle is available.
      */
     public boolean hasSubtitle() {
-        return dataMap.containsKey(MapKeys.SUBTITLE_URL);
+        return !subtitleUrl.isEmpty();
     }
 
     /**
@@ -618,11 +626,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return true if HQ url is not empty.
      */
     public boolean isHighQuality() {
-        return dataMap.containsKey(MapKeys.HIGH_QUALITY_URL);
+        return !highQualityUrl.isEmpty();
     }
 
     public boolean hasLowQuality() {
-        return dataMap.containsKey(MapKeys.LOW_QUALITY_URL);
+        return !lowQualityUrl.isEmpty();
     }
 
     @Override
@@ -637,16 +645,13 @@ public class DatenFilm implements Comparable<DatenFilm> {
     private void setupDatumFilm() {
         if (!getSendeDatum().isEmpty()) {
             // nur dann gibts ein Datum
-            long datum_long = (long) dataMap.getOrDefault(MapKeys.TEMP_DATUM_LONG, 0L);
-            if (datum_long == 0) {
+            if (datumLongSeconds == 0) {
                 setSendeDatum("");
                 setSendeZeit("");
                 datumFilm = new DatumFilm(0);
-                dataMap.remove(MapKeys.TEMP_DATUM_LONG);
             }
             else {
-                datumFilm = new DatumFilm(TimeUnit.MILLISECONDS.convert(datum_long, TimeUnit.SECONDS));
-                dataMap.put(MapKeys.TEMP_DATUM_LONG, datum_long);
+                datumFilm = new DatumFilm(TimeUnit.MILLISECONDS.convert(datumLongSeconds, TimeUnit.SECONDS));
             }
         }
     }
@@ -763,15 +768,13 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getUrlNormalQuality() {
-        return (String) dataMap.getOrDefault(MapKeys.NORMAL_QUALITY_URL, "");
+        return normalQualityUrl;
     }
 
     public void setNormalQualityUrl(@NonNull String url_normal_quality) {
+        Objects.requireNonNull(url_normal_quality);
         var previousUrl = getUrlNormalQuality();
-        if (url_normal_quality.isEmpty())
-            dataMap.remove(MapKeys.NORMAL_QUALITY_URL);
-        else
-            dataMap.put(MapKeys.NORMAL_QUALITY_URL, url_normal_quality);
+        normalQualityUrl = url_normal_quality;
         handleNormalQualityUrlChange(previousUrl, url_normal_quality);
         invalidateSha256();
     }
@@ -788,15 +791,11 @@ public class DatenFilm implements Comparable<DatenFilm> {
     }
 
     public String getSubtitleUrl() {
-        return (String) dataMap.getOrDefault(MapKeys.SUBTITLE_URL, "");
+        return subtitleUrl;
     }
 
     public void setSubtitleUrl(@NonNull String urlSubtitle) {
-        if (urlSubtitle.isEmpty())
-            dataMap.remove(MapKeys.SUBTITLE_URL);
-        else {
-            dataMap.put(MapKeys.SUBTITLE_URL, urlSubtitle);
-        }
+        subtitleUrl = Objects.requireNonNull(urlSubtitle);
     }
 
     /**
@@ -805,7 +804,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return BookmarkData entry
      */
     public @Nullable BookmarkData getBookmark() {
-        return (BookmarkData) dataMap.getOrDefault(MapKeys.BOOKMARK_DATA, null);
+        return bookmark;
     }
 
     /**
@@ -814,10 +813,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @param bookmark Bookmark entry
      */
     public void setBookmark(@Nullable BookmarkData bookmark) {
-        if (bookmark == null)
-            dataMap.remove(MapKeys.BOOKMARK_DATA);
-        else
-            dataMap.put(MapKeys.BOOKMARK_DATA, bookmark);
+        this.bookmark = bookmark;
     }
 
     /**
@@ -826,7 +822,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
      * @return boolean true
      */
     public boolean isBookmarked() {
-        return dataMap.containsKey(MapKeys.BOOKMARK_DATA);
+        return bookmark != null;
     }
 
     /// store the associated seaon episode data
@@ -841,18 +837,6 @@ public class DatenFilm implements Comparable<DatenFilm> {
 
     public int getEpisode() {
         return episode;
-    }
-
-    enum MapKeys {
-        FILM_NR,
-        SUBTITLE_URL,
-        WEBSITE_URL,
-        LOW_QUALITY_URL,
-        NORMAL_QUALITY_URL,
-        HIGH_QUALITY_URL,
-        BOOKMARK_DATA,
-        ABO_DATA,
-        TEMP_DATUM_LONG
     }
 
     private static final class WindowsSha256FastPath {
