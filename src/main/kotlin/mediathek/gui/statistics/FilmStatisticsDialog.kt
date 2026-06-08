@@ -25,7 +25,6 @@ import mediathek.daten.DatenFilm
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GermanStringSorter
-import mediathek.tool.datum.DatumFilm
 import org.apache.logging.log4j.LogManager
 import org.jfree.chart.ChartFactory
 import org.jfree.chart.ChartPanel
@@ -39,6 +38,7 @@ import org.jfree.chart.ui.RectangleInsets
 import org.jfree.data.category.DefaultCategoryDataset
 import java.awt.*
 import java.awt.geom.Rectangle2D
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
@@ -158,7 +158,7 @@ class FilmStatisticsDialog(
         }
         val themaCountDeferred = async {
             filmsWithoutLivestreams.asSequence()
-                .map(DatenFilm::getThema)
+                .map(DatenFilm::thema)
                 .map(String::trim)
                 .filter(String::isNotEmpty)
                 .toCollection(TreeSet(sorter))
@@ -203,12 +203,11 @@ class FilmStatisticsDialog(
     }
 
     private fun getFilmAgeInDays(film: DatenFilm, today: LocalDate, zoneId: ZoneId): Long {
-        val filmDate = film.datumFilm
-        if (filmDate == DatumFilm.UNDEFINED_FILM_DATE) {
+        if (film.isDatumFilmUndefined) {
             return -1
         }
 
-        val localFilmDate = filmDate.toInstant().atZone(zoneId).toLocalDate()
+        val localFilmDate = Instant.ofEpochMilli(film.datumFilmTimeMillis).atZone(zoneId).toLocalDate()
         return maxOf(0, ChronoUnit.DAYS.between(localFilmDate, today))
     }
 

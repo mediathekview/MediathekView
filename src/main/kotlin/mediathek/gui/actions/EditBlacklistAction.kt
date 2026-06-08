@@ -2,7 +2,7 @@ package mediathek.gui.actions
 
 import mediathek.config.Daten
 import mediathek.gui.dialog.DialogLeer
-import mediathek.gui.dialogEinstellungen.PanelBlacklist
+import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen
 import org.apache.commons.lang3.SystemUtils

@@ -41,7 +41,7 @@ class MeldungDownloadfehler(
     }
 
     override fun setVisible(visible: Boolean) {
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG).toBoolean()) {
+        if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)) {
             super.setVisible(visible)
         } else {
             dispose()

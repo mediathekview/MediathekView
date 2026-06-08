@@ -17,7 +17,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class PanelDateinamen extends JPanel {
-    public boolean ok;
     private boolean stopBeob;
 
     @Handler
@@ -104,11 +103,11 @@ public class PanelDateinamen extends JPanel {
         handler = new TextCopyPasteHandler<>(jTextFieldVon);
         jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
-        jCheckBoxTable.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected())));
-        jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)));
+        jCheckBoxTable.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, jCheckBoxTable.isSelected()));
+        jCheckBoxTable.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE));
 
-        jCheckBoxAscii.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected())));
-        jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
+        jCheckBoxAscii.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII, jCheckBoxAscii.isSelected()));
+        jCheckBoxAscii.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII));
     }
 
     private void setVon() {

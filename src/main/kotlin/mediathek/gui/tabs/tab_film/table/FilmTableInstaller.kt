@@ -91,7 +91,7 @@ class FilmTableInstaller(private val host: Host) {
 
         setupCellRenderer()
 
-        host.table().setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK))
+        host.table().setLineBreak(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK))
 
         setupHeaderPopupMenu()
 

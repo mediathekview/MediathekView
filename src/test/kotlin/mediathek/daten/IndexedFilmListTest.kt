@@ -71,6 +71,6 @@ internal class IndexedFilmListTest {
             sender = "ARD"
             thema = "Test"
             this.title = title
-            setNormalQualityUrl("https://example.invalid/$title")
+            urlNormalQuality = "https://example.invalid/$title"
         }
 }

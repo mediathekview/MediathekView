@@ -64,6 +64,40 @@ internal class DatenDownloadTest {
     }
 
     @Test
+    fun fileNameWithoutSuffixStripsLikelyWebExtension() {
+        val download = DatenDownload().apply {
+            targetPathFileName = "https://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
+        }
+
+        assertEquals(
+            "https://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av",
+            download.fileNameWithoutSuffix,
+        )
+    }
+
+    @Test
+    fun fileNameWithoutSuffixStripsFileExtension() {
+        val download = DatenDownload().apply {
+            targetPathFileName = "/Users/derreisende/file1.mp4"
+        }
+
+        assertEquals("/Users/derreisende/file1", download.fileNameWithoutSuffix)
+    }
+
+    @Test
+    fun fileNameWithoutSuffixKeepsQuestionMarksInPath() {
+        val download = DatenDownload().apply {
+            targetPathFileName =
+                "/Users/derreisende/Downloads/mediathek/Die Nordreportage/Die Nordreportage-Wie geht das? Fertigung eines Windrades-0143177029.mp4"
+        }
+
+        assertEquals(
+            "/Users/derreisende/Downloads/mediathek/Die Nordreportage/Die Nordreportage-Wie geht das? Fertigung eines Windrades-0143177029",
+            download.fileNameWithoutSuffix,
+        )
+    }
+
+    @Test
     fun buildsProgramInvocationFromDownloadContext() {
         val program = DatenProg(
             "Program",
@@ -102,7 +136,7 @@ internal class DatenDownloadTest {
             title = "Title One"
             sendeDatum = "01.06.2026"
             sendeZeit = "20:15:00"
-            setNormalQualityUrl("https://example.invalid/video.mp4")
+            urlNormalQuality = "https://example.invalid/video.mp4"
         }
         val programSet = DatenPset("Set").apply {
             zielDateiname = "%s-%t-%T.%S"
@@ -129,6 +163,37 @@ internal class DatenDownloadTest {
     }
 
     @Test
+    fun buildsTargetSuffixFromDownloadUrlWithoutQueryParameters() {
+        val film = DatenFilm().apply {
+            sender = "Sender One"
+            thema = "Topic One"
+            title = "Title One"
+            urlNormalQuality =
+                "https://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
+        }
+        val programSet = DatenPset("Set").apply {
+            zielDateiname = "%S"
+            zielPfad = "/downloads"
+            addProg(DatenProg("Program", "program", "--target **", false.toString(), false.toString()))
+        }
+
+        val target = DownloadTargetBuilder.build(
+            DownloadTargetRequest(
+                pSet = programSet,
+                film = film,
+                abo = null,
+                requestedFileName = "",
+                requestedPath = "",
+                downloadUrl = film.urlNormalQuality,
+                topic = "Topic One",
+                title = "Title One",
+            ),
+        )
+
+        assertEquals("m3u8", target.fileName)
+    }
+
+    @Test
     fun constructorSeedsNormalQualitySizeFromFilmList() {
         val film = DatenFilm().apply {
             sender = "Sender One"
@@ -136,8 +201,8 @@ internal class DatenDownloadTest {
             title = "Title One"
             sendeDatum = "01.06.2026"
             sendeZeit = "20:15:00"
-            setNormalQualityUrl("https://example.invalid/video.mp4")
-            fileSize.setSize("123")
+            urlNormalQuality = "https://example.invalid/video.mp4"
+            setFileSize("123")
         }
         val programSet = createProgramSet()
 
@@ -154,8 +219,8 @@ internal class DatenDownloadTest {
             title = "Title One"
             sendeDatum = "01.06.2026"
             sendeZeit = "20:15:00"
-            setNormalQualityUrl("https://example.invalid/video.mp4?token=temporary")
-            fileSize.setSize("456")
+            urlNormalQuality = "https://example.invalid/video.mp4?token=temporary"
+            setFileSize("456")
         }
         val programSet = createProgramSet()
 
@@ -168,8 +233,8 @@ internal class DatenDownloadTest {
     @Test
     fun setGroesseFromFilmSeedsNormalQualitySizeWhenDownloadUrlHasParameters() {
         val film = DatenFilm().apply {
-            setNormalQualityUrl("https://example.invalid/video.mp4")
-            fileSize.setSize("789")
+            urlNormalQuality = "https://example.invalid/video.mp4"
+            setFileSize("789")
         }
         val download = DatenDownload().apply {
             this.film = film
@@ -189,7 +254,7 @@ internal class DatenDownloadTest {
             title = "Title One"
             sendeDatum = "01.06.2026"
             sendeZeit = "20:15:00"
-            setNormalQualityUrl("https://example.invalid/video.mp4")
+            urlNormalQuality = "https://example.invalid/video.mp4"
             websiteUrl = "https://example.invalid/film-page"
         }
         val programSet = DatenPset("Set").apply {

@@ -52,7 +52,6 @@ class BuildInfo internal constructor(branch: String?, commitId: String?) {
 
         private val currentBuildInfo: BuildInfo by lazy(::load)
 
-        @JvmStatic
         fun current(): BuildInfo = currentBuildInfo
 
         internal fun fromProperties(properties: Properties): BuildInfo = BuildInfo(

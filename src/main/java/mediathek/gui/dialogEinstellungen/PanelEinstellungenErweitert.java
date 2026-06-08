@@ -42,10 +42,10 @@ public class PanelEinstellungenErweitert extends JPanel {
         init();
         setFolderIcons();
 
-        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)));
-        jCheckBoxAboSuchen.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
-        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
-        jCheckBoxDownloadSofortStarten.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
+        jCheckBoxAboSuchen.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN));
+        jCheckBoxAboSuchen.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, jCheckBoxAboSuchen.isSelected()));
+        jCheckBoxDownloadSofortStarten.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN));
+        jCheckBoxDownloadSofortStarten.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN, jCheckBoxDownloadSofortStarten.isSelected()));
 
         jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
         jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));

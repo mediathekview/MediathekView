@@ -12,8 +12,8 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util.HexFormat
-import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
+import kotlin.time.Duration.Companion.seconds
 
 internal class DatenFilmTest {
 
@@ -33,7 +33,7 @@ internal class DatenFilmTest {
         val film = DatenFilm()
         film.sender = "sender"
         film.thema = "thema"
-        film.setNormalQualityUrl("https://example.org/video.mp4")
+        film.urlNormalQuality = "https://example.org/video.mp4"
         film.websiteUrl = "https://example.org/page"
 
         val initialHash = film.sha256
@@ -54,7 +54,7 @@ internal class DatenFilmTest {
         val film = DatenFilm()
         film.sender = "ARTE"
         film.thema = "München"
-        film.setNormalQualityUrl("https://example.org/äöü-\uD83D\uDE80.mp4")
+        film.urlNormalQuality = "https://example.org/äöü-\uD83D\uDE80.mp4"
         film.websiteUrl = "https://example.org/seite"
 
         assertEquals(
@@ -71,8 +71,9 @@ internal class DatenFilmTest {
         film.setDatumLongSeconds(-122749200L)
         film.init()
 
+        assertEquals((-122749200L).seconds.inWholeMilliseconds, film.datumFilmTimeMillis)
         assertNotEquals(DatumFilm.UNDEFINED_FILM_DATE, film.datumFilm)
-        assertEquals(TimeUnit.MILLISECONDS.convert(-122749200L, TimeUnit.SECONDS), film.datumFilm.time)
+        assertEquals((-122749200L).seconds.inWholeMilliseconds, film.datumFilm.time)
     }
 
     @Test
@@ -80,13 +81,13 @@ internal class DatenFilmTest {
         val oldUrl = "https://example.org/old.mp4"
         val newUrl = "https://example.org/new.mp4"
         val film = DatenFilm()
-        film.fileSize.setSize("123")
-        film.setNormalQualityUrl(oldUrl)
+        film.setFileSize("123")
+        film.urlNormalQuality = oldUrl
 
         assertEquals("123", film.cachedLookup(oldUrl)?.sizeText)
 
         val clone = DatenFilm(film)
-        clone.setNormalQualityUrl(newUrl)
+        clone.urlNormalQuality = newUrl
 
         assertNull(clone.cachedLookup(newUrl))
     }
@@ -110,8 +111,8 @@ internal class DatenFilmTest {
         val film = DatenFilm()
         val url = "https://example.org/video.mp4"
 
-        film.fileSize.setSize("123")
-        film.setNormalQualityUrl(url)
+        film.setFileSize("123")
+        film.urlNormalQuality = url
         assertEquals("123", film.cachedLookup(url)?.sizeText)
         film.markGeoBlockedForLocation(Country.DE)
 
@@ -167,7 +168,7 @@ internal class DatenFilmTest {
         val abo = DatenAbo()
         val bookmark = BookmarkData()
         val film = DatenFilm().apply {
-            setNormalQualityUrl("https://example.org/normal.mp4")
+            urlNormalQuality = "https://example.org/normal.mp4"
             lowQualityUrl = "https://example.org/low.mp4"
             highQualityUrl = "https://example.org/high.mp4"
             subtitleUrl = "https://example.org/subtitle.vtt"
@@ -194,7 +195,7 @@ internal class DatenFilmTest {
         assertTrue(copy.isHighQuality)
         assertTrue(copy.isBookmarked)
         assertNotEquals(DatumFilm.UNDEFINED_FILM_DATE, copy.datumFilm)
-        assertEquals(TimeUnit.MILLISECONDS.convert(-122749200L, TimeUnit.SECONDS), copy.datumFilm.time)
+        assertEquals((-122749200L).seconds.inWholeMilliseconds, copy.datumFilm.time)
     }
 
     @Test
@@ -213,10 +214,10 @@ internal class DatenFilmTest {
         assertFalse(film.hasLowQuality())
         assertFalse(film.isHighQuality)
         assertFalse(film.hasSubtitle())
-        assertNull(film.privateField("lowQualityUrl"))
-        assertNull(film.privateField("highQualityUrl"))
-        assertNull(film.privateField("subtitleUrl"))
-        assertNull(film.privateField("websiteUrl"))
+        assertNull(film.privateField("lowQualityUrlStorage"))
+        assertNull(film.privateField("highQualityUrlStorage"))
+        assertNull(film.privateField("subtitleUrlStorage"))
+        assertNull(film.privateField("websiteUrlStorage"))
 
         film.lowQualityUrl = "https://example.org/low.mp4"
         film.highQualityUrl = "https://example.org/high.mp4"
@@ -226,10 +227,77 @@ internal class DatenFilmTest {
         assertTrue(film.hasLowQuality())
         assertTrue(film.isHighQuality)
         assertTrue(film.hasSubtitle())
-        assertEquals("https://example.org/low.mp4", film.privateField("lowQualityUrl"))
-        assertEquals("https://example.org/high.mp4", film.privateField("highQualityUrl"))
-        assertEquals("https://example.org/subtitle.vtt", film.privateField("subtitleUrl"))
-        assertEquals("https://example.org/page", film.privateField("websiteUrl"))
+        assertEquals("https://example.org/low.mp4", film.privateField("lowQualityUrlStorage"))
+        assertEquals("https://example.org/high.mp4", film.privateField("highQualityUrlStorage"))
+        assertEquals("https://example.org/subtitle.vtt", film.privateField("subtitleUrlStorage"))
+        assertEquals("https://example.org/page", film.privateField("websiteUrlStorage"))
+    }
+
+    @Test
+    fun datumFilmIsCreatedLazilyFromStoredTime() {
+        val film = DatenFilm().apply {
+            sendeDatum = "01.01.1966"
+            setDatumLongSeconds(-122749200L)
+            init()
+        }
+        val expectedTime = (-122749200L).seconds.inWholeMilliseconds
+
+        assertEquals(expectedTime, film.datumFilmTimeMillis)
+        assertNull(film.privateField("datumFilmCache"))
+
+        val filmDate = film.datumFilm
+
+        assertEquals(expectedTime, filmDate.time)
+        assertSame(filmDate, film.datumFilm)
+
+        val copy = DatenFilm(film)
+
+        assertEquals(expectedTime, copy.datumFilmTimeMillis)
+        assertNull(copy.privateField("datumFilmCache"))
+        assertEquals(expectedTime, copy.datumFilm.time)
+    }
+
+    @Test
+    fun decompressUrlCombinesNormalQualityPrefixWithCompressedSuffix() {
+        val film = DatenFilm().apply {
+            urlNormalQuality = "https://example.org/video-normal.mp4"
+        }
+
+        assertEquals("https://example.org/video-high.mp4", film.decompressUrl("26|high.mp4"))
+    }
+
+    @Test
+    fun countriesAsStringCachesAndInvalidatesWhenCountriesChange() {
+        val film = DatenFilm()
+
+        assertEquals("", film.countriesAsString)
+        assertNull(film.privateField("countriesAsStringCache"))
+
+        film.addCountry(Country.DE)
+
+        assertEquals("DE", film.countriesAsString)
+        val cachedSingleCountry = film.privateField("countriesAsStringCache")
+        assertEquals("DE", cachedSingleCountry)
+        assertSame(cachedSingleCountry, film.countriesAsString)
+
+        film.addCountry(Country.DE)
+
+        assertSame(cachedSingleCountry, film.privateField("countriesAsStringCache"))
+
+        film.addCountry(Country.AT)
+
+        assertNull(film.privateField("countriesAsStringCache"))
+        assertEquals("DE-AT", film.countriesAsString)
+
+        val copy = DatenFilm(film)
+
+        assertEquals("DE-AT", copy.countriesAsString)
+        assertEquals("DE-AT", copy.privateField("countriesAsStringCache"))
+
+        film.clearCountries()
+
+        assertEquals("", film.countriesAsString)
+        assertNull(film.privateField("countriesAsStringCache"))
     }
 
     private companion object {

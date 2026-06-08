@@ -16,8 +16,8 @@ public class PanelDownload extends JPanel {
     public PanelDownload() {
         initComponents();
 
-        cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
-        cbkDownloadError.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
+        cbkDownloadError.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG));
+        cbkDownloadError.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, cbkDownloadError.isSelected()));
 
         var config = ApplicationConfiguration.getConfiguration();
         jCheckBoxBeep.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,false));

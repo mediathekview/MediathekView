@@ -34,7 +34,6 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import javax.swing.JTable
-import javax.swing.SwingConstants
 
 class CellRendererFilme : CellRendererBaseWithStart() {
     private val stopIcons = rendererIconPair(
@@ -73,8 +72,8 @@ class CellRendererFilme : CellRendererBaseWithStart() {
             val mvTable = table as MVTable
 
             if (mvTable.isLineBreak()) {
-                horizontalAlignment = SwingConstants.LEFT
-                verticalAlignment = SwingConstants.TOP
+                horizontalAlignment = LEFT
+                verticalAlignment = TOP
 
                 when (columnModelIndex) {
                     DatenFilm.FILM_THEMA,
@@ -114,6 +113,7 @@ class CellRendererFilme : CellRendererBaseWithStart() {
                     setIndicatorIcons(table, datenFilm, isSelected)
                 }
 
+                DatenFilm.FILM_GROESSE -> text = datenFilm.fileSizeAsString
                 DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected)
                 DatenFilm.FILM_ZEIT -> drawTime(datenFilm)
             }
@@ -126,7 +126,7 @@ class CellRendererFilme : CellRendererBaseWithStart() {
 
     private fun drawTime(film: DatenFilm) {
         var zeit = film.sendeZeit
-        if (zeit == null || zeit.isBlank()) {
+        if (zeit.isBlank()) {
             text = ""
             return
         }
@@ -151,9 +151,9 @@ class CellRendererFilme : CellRendererBaseWithStart() {
             DatenFilm.FILM_ABSPIELEN,
             DatenFilm.FILM_AUFZEICHNEN,
             DatenFilm.FILM_MERKEN,
-                -> horizontalAlignment = SwingConstants.CENTER
+                -> horizontalAlignment = CENTER
 
-            DatenFilm.FILM_GROESSE -> horizontalAlignment = SwingConstants.RIGHT
+            DatenFilm.FILM_GROESSE -> horizontalAlignment = RIGHT
         }
     }
 

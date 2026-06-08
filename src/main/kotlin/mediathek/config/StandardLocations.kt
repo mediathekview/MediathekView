@@ -143,7 +143,6 @@ object StandardLocations {
      *
      * @return the path as String.
      */
-    @JvmStatic
     fun getFilmlistFilePathString(): String {
         val filePart = File.separator + Konstanten.JSON_DATEI_FILME
         return if (CommandLineOptions.isPortableMode())

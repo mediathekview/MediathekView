@@ -23,7 +23,6 @@ import mediathek.config.MVConfig
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.table.FilmColumnVisibility
-import mediathek.tool.FilmSize
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.Component
@@ -284,7 +283,7 @@ class MVFilmTable : PersistentColumnConfigurationTable(
         }
 
         private fun configureComparators() {
-            setComparator(DatenFilm.FILM_GROESSE, Comparator<FilmSize> { left, right -> left.compareTo(right) })
+            setComparator(DatenFilm.FILM_GROESSE, Comparator<Int> { left, right -> left.compareTo(right) })
             setComparator(DatenFilm.FILM_SENDER, Comparator<String> { left, right -> left.compareTo(right) })
             setComparator(DatenFilm.FILM_ZEIT, Comparator<String> { left, right -> left.compareTo(right) })
             setComparator(DatenFilm.FILM_URL, Comparator<String> { left, right -> left.compareTo(right) })

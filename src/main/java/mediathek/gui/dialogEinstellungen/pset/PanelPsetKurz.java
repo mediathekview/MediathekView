@@ -18,7 +18,6 @@
 
 package mediathek.gui.dialogEinstellungen.pset;
 
-import mediathek.config.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -46,14 +45,14 @@ public class PanelPsetKurz extends JPanel {
     private static final Logger logger = LogManager.getLogger();
     private boolean stopBeob;
 
-    public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
+    public PanelPsetKurz(ListePset llistePset) {
         initComponents();
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
         if (!listePset.isEmpty()) {
             jListPset.setSelectedIndex(0);
             init();
-            jListPset.addListSelectionListener(le -> {
+            jListPset.addListSelectionListener(_ -> {
                 if (!stopBeob) {
                     stopBeob = true;
                     init();

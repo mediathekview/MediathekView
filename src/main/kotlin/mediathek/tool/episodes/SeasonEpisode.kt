@@ -18,7 +18,6 @@
 
 package mediathek.tool.episodes
 
-@JvmRecord
 data class SeasonEpisode(
     val season: Int,
     val episode: Int,

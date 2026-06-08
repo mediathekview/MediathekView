@@ -219,7 +219,7 @@ class DatenDownload() : Comparable<DatenDownload> {
             normalizedNormalQualityUrl.equals(downloadUrl, ignoreCase = true) ||
             normalizedNormalQualityUrl.equals(normalizedDownloadUrl, ignoreCase = true)
         ) {
-            runtime.filmSize.setSize(currentFilm.fileSize.toString())
+            runtime.filmSize.setSize(currentFilm.fileSizeAsString)
         } else {
             runtime.filmSize.size = 0
         }
@@ -521,7 +521,16 @@ class DatenDownload() : Comparable<DatenDownload> {
     }
 
     val fileNameWithoutSuffix: String
-        get() = GuiFunktionen.getFileNameWithoutExtension(targetPathFileName)
+        get() = targetPathFileName.withoutLikelyExtension()
+
+    private fun String.withoutLikelyExtension(): String {
+        val dotIndex = getLikelyExtensionDotIndex(this)
+        return if (dotIndex >= 0) {
+            substring(0, dotIndex)
+        } else {
+            this
+        }
+    }
 
     override fun compareTo(other: DatenDownload): Int {
         val ret = sorter.compare(sender, other.sender)

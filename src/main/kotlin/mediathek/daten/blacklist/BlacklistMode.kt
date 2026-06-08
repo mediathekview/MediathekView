@@ -32,7 +32,7 @@ enum class BlacklistMode {
 
     companion object {
         fun fromConfig(): BlacklistMode =
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST).toBoolean()) {
+            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)) {
                 WHITELIST
             } else {
                 BLACKLIST

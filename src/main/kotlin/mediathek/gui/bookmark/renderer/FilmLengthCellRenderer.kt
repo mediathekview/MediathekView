@@ -21,8 +21,8 @@ package mediathek.gui.bookmark.renderer
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer
 import org.apache.commons.lang3.time.DurationFormatUtils
 import java.awt.Component
-import java.util.concurrent.TimeUnit
 import javax.swing.JTable
+import kotlin.time.Duration.Companion.seconds
 
 class FilmLengthCellRenderer : CenteredTextCellRenderer() {
     override fun getTableCellRendererComponent(
@@ -37,7 +37,7 @@ class FilmLengthCellRenderer : CenteredTextCellRenderer() {
 
         val length = value as Int
         text = if (length >= 0) {
-            val duration = TimeUnit.MILLISECONDS.convert(length.toLong(), TimeUnit.SECONDS)
+            val duration = length.seconds.inWholeMilliseconds
             DurationFormatUtils.formatDuration(duration, "HH:mm:ss", true)
         } else {
             null

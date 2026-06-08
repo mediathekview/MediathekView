@@ -92,7 +92,7 @@ internal class FilmActionsTest {
                 sender = "sender"
                 thema = "thema"
                 title = "title"
-                setNormalQualityUrl("https://example.org/${hashCode()}.mp4")
+                urlNormalQuality = "https://example.org/${hashCode()}.mp4"
                 isLivestream = livestream
                 if (bookmarked) {
                     bookmark = BookmarkData(this)

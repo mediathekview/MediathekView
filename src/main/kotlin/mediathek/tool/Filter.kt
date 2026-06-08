@@ -24,8 +24,9 @@ import mediathek.daten.DatenFilm
 import org.apache.logging.log4j.LogManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 object Filter {
     private val logger = LogManager.getLogger()
@@ -40,7 +41,7 @@ object Filter {
      * Entries will be removed if the haven´t been accessed for more than 5 minutes.
      */
     private val cache: LoadingCache<String, Pattern> = Caffeine.newBuilder()
-        .expireAfterAccess(5, TimeUnit.MINUTES)
+        .expireAfterAccess(5.minutes.toJavaDuration())
         .build { pattern -> compilePattern(pattern) }
 
     fun filterAufFilmPruefen(

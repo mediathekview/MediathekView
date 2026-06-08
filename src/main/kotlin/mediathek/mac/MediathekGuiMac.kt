@@ -28,8 +28,8 @@ import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MediathekGui
 import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
+import mediathek.tool.RuntimeArchitecture
 import mediathek.tool.notification.MacNotificationCenter
-import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
@@ -38,7 +38,6 @@ import java.awt.FlowLayout
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.lang.foreign.*
-import java.util.*
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JToolBar
@@ -116,13 +115,10 @@ class MediathekGuiMac : MediathekGui(
     private suspend fun checkForCorrectArchitecture() {
         logger.trace("Checking for correct JVM architecture on macOS...")
         try {
-            val jvmBinaryArch = SystemUtils.OS_ARCH.lowercase(Locale.getDefault())
             val isAppleSilicon = processorBrand().lowercase().contains("apple")
             //println("isAppleSilicon: $isAppleSilicon")
-            val isJVMIntel = jvmBinaryArch == "x86_64" || jvmBinaryArch == "amd64"
-            //println("isJVMIntel: $isJVMIntel")
 
-            if (isAppleSilicon && isJVMIntel) {
+            if (isAppleSilicon && RuntimeArchitecture.isIntelOrAmd64Bit) {
                 logger.warn("⚠️ Running an Intel JVM on Apple Silicon. Consider using a native ARM64 JVM for better performance.")
                 withContext(Dispatchers.Swing) {
                     val msg = "<html>Ihr Mac hat eine moderne Apple Silicon CPU.<br/>" +

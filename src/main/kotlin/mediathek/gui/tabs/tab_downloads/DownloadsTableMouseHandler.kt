@@ -264,7 +264,7 @@ class DownloadsTableMouseHandler(
         val download = downloadAtViewRow(row)
         val film = download.film ?: return
         val filmClone = DatenFilm(film).apply {
-            setNormalQualityUrl(download.downloadUrl)
+            urlNormalQuality = download.downloadUrl
             lowQualityUrl = ""
         }
         daten.downloadStartCoordinator.urlMitProgrammStarten(gruppe, filmClone, "")

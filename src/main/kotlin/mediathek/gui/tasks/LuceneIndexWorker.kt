@@ -35,7 +35,6 @@ import mediathek.tool.FileUtils.deletePathRecursively
 import mediathek.tool.LuceneDefaultAnalyzer
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.datum.DateUtil
-import mediathek.tool.datum.DatumFilm
 import mediathek.tool.time.Stopwatch
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -46,6 +45,7 @@ import org.apache.lucene.index.IndexWriterConfig
 import org.apache.lucene.index.IndexWriterConfig.OpenMode
 import java.io.IOException
 import java.nio.file.Files
+import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.Executors
@@ -68,7 +68,7 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
         doc.add(TextField(LuceneIndexKeys.TITEL, film.title, Field.Store.NO))
         doc.add(TextField(LuceneIndexKeys.THEMA, film.thema, Field.Store.NO))
         doc.add(IntPoint(LuceneIndexKeys.FILM_LENGTH, film.filmLength))
-        doc.add(IntPoint(LuceneIndexKeys.FILM_SIZE, film.fileSize.toInteger()))
+        doc.add(IntPoint(LuceneIndexKeys.FILM_SIZE, film.fileSizeInMegabytes))
 
         doc.add(TextField(LuceneIndexKeys.BESCHREIBUNG, film.description, Field.Store.NO))
         doc.add(StringField(LuceneIndexKeys.LIVESTREAM, film.isLivestream.toString(), Field.Store.NO))
@@ -102,9 +102,10 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
     }
 
     private fun addWochentag(doc: Document, film: DatenFilm) {
-        val date = film.datumFilm
-        if (date !== DatumFilm.UNDEFINED_FILM_DATE) {
-            val strDate = FORMATTER.format(date.zonedDateTime)
+        if (!film.isDatumFilmUndefined) {
+            val strDate = FORMATTER.format(
+                Instant.ofEpochMilli(film.datumFilmTimeMillis).atZone(DateUtil.MV_DEFAULT_TIMEZONE)
+            )
             doc.add(TextField(LuceneIndexKeys.SENDE_WOCHENTAG, strDate, Field.Store.NO))
         }
     }

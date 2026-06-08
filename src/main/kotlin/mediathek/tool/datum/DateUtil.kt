@@ -19,6 +19,7 @@
 package mediathek.tool.datum
 
 import mediathek.daten.DatenFilm
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -33,11 +34,16 @@ object DateUtil {
     private val UTC_ZONE_ID: ZoneId = ZoneId.of("UTC")
 
     fun convertFilmDateToLuceneDate(film: DatenFilm): Long =
-        convertToLocalDate(film.datumFilm)
+        convertToLocalDate(film.datumFilmTimeMillis)
             .atStartOfDay()
             .atZone(UTC_ZONE_ID)
             .toInstant()
             .toEpochMilli()
+
+    fun convertToLocalDate(timeMillis: Long): LocalDate =
+        Instant.ofEpochMilli(timeMillis)
+            .atZone(MV_DEFAULT_TIMEZONE)
+            .toLocalDate()
 
     fun convertToLocalDate(dateToConvert: Date): LocalDate =
         dateToConvert

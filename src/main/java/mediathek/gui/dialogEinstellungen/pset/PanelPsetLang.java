@@ -74,7 +74,7 @@ public class PanelPsetLang extends JPanel {
     private ListeProg currentProgramList;
     private boolean stopBeob;
 
-    public PanelPsetLang(Daten d, JFrame parentComponent, ListePset llistePset) {
+    public PanelPsetLang(JFrame parentComponent, ListePset llistePset) {
         this.parentComponent = parentComponent;
         initComponents();
         tabellePset = new MVPsetTable();
@@ -577,7 +577,7 @@ public class PanelPsetLang extends JPanel {
         var pSet = getPset();
         stopBeob = true;
 
-        GuiFunktionen.enableComponents(jTabbedPane, pSet != null);
+        enableComponents(jTabbedPane, pSet != null);
         jButtonAbspielen.setBackground(null);
         if (pSet != null) {
             jTabbedPane.setTitleAt(0, "Set Name: " + pSet.getName());
@@ -641,6 +641,16 @@ public class PanelPsetLang extends JPanel {
         }
         stopBeob = false;
         fillTextProgramme();
+    }
+
+    private void enableComponents(Container container, boolean enable) {
+        Component[] components = container.getComponents();
+        for (Component component : components) {
+            component.setEnabled(enable);
+            if (component instanceof Container childContainer) {
+                enableComponents(childContainer, enable);
+            }
+        }
     }
 
     private void bindProgramTableModel(ListeProg listeProg) {
@@ -817,8 +827,8 @@ public class PanelPsetLang extends JPanel {
             var entryName = liste.getFirst().getName();
             var name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
+                    MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
+                    MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII));
             var resultFile = FileDialogs.chooseSaveFileLocation(parentComponent,"PSet exportieren", fileName);
             if (resultFile != null) {
                 var ziel = resultFile.getAbsolutePath();

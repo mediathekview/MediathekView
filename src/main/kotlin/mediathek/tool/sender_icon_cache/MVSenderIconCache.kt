@@ -9,9 +9,11 @@ import mediathek.tool.timer.TimerPool
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import java.util.*
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.ImageIcon
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 /**
  * This class will load only one instance for all used sender icons.
@@ -35,7 +37,7 @@ object MVSenderIconCache {
         TimerPool.scheduleAtFixedRate({
             logger.trace("Cleaning sender icon caches")
             senderCache.cleanUp()
-        }, 5, 5, TimeUnit.MINUTES)
+        }, 5.minutes, 5.minutes)
     }
 
     /**
@@ -69,7 +71,7 @@ object MVSenderIconCache {
         val senderIconLoader = SenderIconCacheLoader(useLocalIcons)
 
         senderCache = Caffeine.newBuilder()
-            .expireAfterAccess(2, TimeUnit.HOURS)
+            .expireAfterAccess(2.hours.toJavaDuration())
             .build { sender -> senderIconLoader.load(sender) }
 
         MessageBus.messageBus.subscribe(this)

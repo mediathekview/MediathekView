@@ -1,16 +1,6 @@
 package mediathek.gui.dialog.reset;
 
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.daten.ListePsetVorlagen;
-import mediathek.gui.dialog.DialogHilfe;
-import mediathek.gui.messages.ProgramSetChangedEvent;
-import mediathek.mainwindow.MediathekGui;
 import mediathek.swing.MultilineLabel;
-import mediathek.tool.GetFile;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.MessageBus;
-import mediathek.tool.SVGIconUtilities;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -18,30 +8,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-public class ResetSettingsPanel extends JPanel {
-    private static final String RESET_MESSAGE = "<html>Es werden <b>ALLE</b> von Ihnen erzeugten Änderungen gelöscht.<br>" +
-            "Möchten Sie wirklich alle Einstellungen zurücksetzen?<br></html>";
-
-    public ResetSettingsPanel(JFrame parent) {
+/**
+ * Base class for UI Designer.
+ * Subclasses contain the hand-written panel behavior.
+ */
+public class ResetSettingsPanelBase extends JPanel {
+    public ResetSettingsPanelBase() {
         initComponents();
-
-        jButtonHilfeReset.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonHilfeReset.addActionListener(_ -> new DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET)).setVisible(true));
-        jButtonResetSets.addActionListener(_ -> {
-            Daten.getInstance().getListePset().clear();
-            GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(), ListePsetVorlagen.getStandarset(parent, true), true);
-            MessageBus.getMessageBus().publishAsync(new ProgramSetChangedEvent());
-        });
-        jButtonResetAll.addActionListener(_ -> {
-            int ret = JOptionPane.showConfirmDialog(parent, RESET_MESSAGE, "Einstellungen zurücksetzen", JOptionPane.YES_NO_OPTION);
-            if (ret == JOptionPane.OK_OPTION) {
-                // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
-                // Programm wie beim ersten Start
-                MediathekGui.ui().requestSettingsResetOnQuit();
-                MediathekGui.ui().quitApplication();
-            }
-        });
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -131,8 +104,8 @@ public class ResetSettingsPanel extends JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JButton jButtonResetSets;
-    private JButton jButtonHilfeReset;
-    private JButton jButtonResetAll;
+    protected JButton jButtonResetSets;
+    protected JButton jButtonHilfeReset;
+    protected JButton jButtonResetAll;
     // End of variables declaration//GEN-END:variables
 }

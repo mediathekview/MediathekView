@@ -60,7 +60,6 @@ object FileSize {
         return lookupFileSize(url, forceFetch, quality, probeHlsSegments = true)
     }
 
-    @JvmStatic
     fun lookupFileSize(url: String, forceFetch: Boolean, quality: String?, probeHlsSegments: Boolean): LookupResult {
         val okUrl = url.toHttpUrlOrNull() ?: return LookupResult(INVALID_SIZE.toLong())
         return lookupFileSize(okUrl, forceFetch, quality, probeHlsSegments)

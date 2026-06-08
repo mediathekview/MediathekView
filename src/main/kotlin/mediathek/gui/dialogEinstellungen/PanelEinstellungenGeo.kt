@@ -56,8 +56,25 @@ class PanelEinstellungenGeo @JvmOverloads constructor(
     private fun getScaledIconResource(url: String): ScaledImageIcon {
         val icon = ImageIcon(requireNotNull(javaClass.getResource(url)))
         val imageDim = Dimension(icon.iconWidth, icon.iconHeight)
-        val destDim = GuiFunktionen.calculateFittedDimension(imageDim, FLAG_DIMENSIONS)
+        val destDim = calculateFittedDimension(imageDim, FLAG_DIMENSIONS)
         return ScaledImageIcon(icon, destDim.width, destDim.height)
+    }
+
+    private fun calculateFittedDimension(imageSize: Dimension, boundary: Dimension): Dimension {
+        var newWidth = imageSize.width
+        var newHeight = imageSize.height
+
+        if (imageSize.width > boundary.width) {
+            newWidth = boundary.width
+            newHeight = newWidth * imageSize.height / imageSize.width
+        }
+
+        if (newHeight > boundary.height) {
+            newHeight = boundary.height
+            newWidth = newHeight * imageSize.width / imageSize.height
+        }
+
+        return Dimension(newWidth, newHeight)
     }
 
     private fun installCountryActions() {

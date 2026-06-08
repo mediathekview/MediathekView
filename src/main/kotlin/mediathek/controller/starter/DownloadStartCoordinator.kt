@@ -30,6 +30,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.time.Duration.Companion.seconds
 
 private val logger = LogManager.getLogger(DownloadStartCoordinator::class.java)
 private const val DOWNLOAD_DELAY_SECONDS = 2L
@@ -110,10 +111,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
 
     private fun isPauseActive(): Boolean {
         if (pause.getAndSet(false)) {
-            pauseUntilEpochMillis = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(
-                NEW_START_PAUSE_SECONDS,
-                TimeUnit.SECONDS,
-            )
+            pauseUntilEpochMillis = System.currentTimeMillis() + NEW_START_PAUSE_SECONDS.seconds.inWholeMilliseconds
         }
         return System.currentTimeMillis() < pauseUntilEpochMillis
     }

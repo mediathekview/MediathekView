@@ -55,7 +55,7 @@ class FilmListWriterTest {
         sendeDatum = "15.05.2026"
         sendeZeit = "12:00:00"
         description = "Beschreibung"
-        setNormalQualityUrl("https://example.test/$sender/$thema.mp4")
+        urlNormalQuality = "https://example.test/$sender/$thema.mp4"
         websiteUrl = "https://example.test/$sender/$thema"
         subtitleUrl = ""
         lowQualityUrl = ""

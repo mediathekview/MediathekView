@@ -145,7 +145,7 @@ class FilmeLaden(private val daten: Daten) {
     private fun hasNewRemoteFilmlist(sourceUrl: String): Boolean {
         var result = false
         logger.trace("hasNewRemoteFilmList()")
-        val showDialogs = GuiFunktionen.getFilmListUpdateType() != FilmListUpdateType.AUTOMATIC
+        val showDialogs = FilmListUpdateType.fromConfig() != FilmListUpdateType.AUTOMATIC
 
         val filmListUrl = sourceUrl.toHttpUrl()
         val storedEtag = FilmListMetadataStore.readEtag(sourceUrl)
@@ -252,7 +252,7 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private fun shouldStartAutomaticStartupUpdate(): Boolean =
-        GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC &&
+        FilmListUpdateType.fromConfig() == FilmListUpdateType.AUTOMATIC &&
             daten.listeFilme.needsUpdate()
 
     fun loadFilmlist(dateiUrl: String, immerNeuLaden: Boolean, loadOptions: FilmListLoadOptions): Boolean {

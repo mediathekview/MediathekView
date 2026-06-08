@@ -25,7 +25,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 
 object SenderExpirationService {
     private val LOG = LogManager.getLogger()
@@ -47,9 +47,8 @@ object SenderExpirationService {
     @Suppress("unused")
     private val cleanupFuture: ScheduledFuture<*> = TimerPool.scheduleWithFixedDelay(
         { evictExpiredEntries(Instant.now()) },
-        CLEANUP_INTERVAL_SECONDS,
-        CLEANUP_INTERVAL_SECONDS,
-        TimeUnit.SECONDS
+        CLEANUP_INTERVAL_SECONDS.seconds,
+        CLEANUP_INTERVAL_SECONDS.seconds,
     )
 
     fun fetchExpiryDate(sender: String, websiteUrl: String): LocalDate? {

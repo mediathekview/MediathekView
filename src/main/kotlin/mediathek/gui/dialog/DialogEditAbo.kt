@@ -6,6 +6,7 @@ import mediathek.config.MVColor
 import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
+import mediathek.swing.centerOnScreen
 import mediathek.tool.*
 import mediathek.tool.datum.DateUtil
 import java.awt.Color
@@ -43,7 +44,7 @@ class DialogEditAbo(
         initializeExtraPanel()
         pack()
 
-        GuiFunktionen.centerOnScreen(this, false)
+        centerOnScreen()
     }
 
     fun successful(): Boolean = ok

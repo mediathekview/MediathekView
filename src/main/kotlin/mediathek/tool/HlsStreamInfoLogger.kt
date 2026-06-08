@@ -17,7 +17,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import java.time.Instant
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 
 object HlsStreamInfoLogger {
     private val logger = LogManager.getLogger()
@@ -30,9 +30,8 @@ object HlsStreamInfoLogger {
     init {
         TimerPool.scheduleWithFixedDelay(
             ::uploadPendingEntriesSafely,
-            UPLOAD_INTERVAL_SECONDS,
-            UPLOAD_INTERVAL_SECONDS,
-            TimeUnit.SECONDS,
+            UPLOAD_INTERVAL_SECONDS.seconds,
+            UPLOAD_INTERVAL_SECONDS.seconds,
         )
     }
 

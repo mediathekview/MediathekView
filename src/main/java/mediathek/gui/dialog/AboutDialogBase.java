@@ -18,14 +18,10 @@
 
 package mediathek.gui.dialog;
 
-import mediathek.config.BuildInfo;
-import mediathek.config.Konstanten;
-import mediathek.gui.actions.UrlHyperlinkAction;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
@@ -34,31 +30,11 @@ import java.awt.*;
 /**
  * @author Christian Franzke
  */
-public class AboutDialog extends JDialog {
+public class AboutDialogBase extends JDialog {
 
-    public AboutDialog(Window owner) {
+    public AboutDialogBase(Window owner) {
         super(owner);
         initComponents();
-
-        var buildInfo = BuildInfo.current();
-        var versionText = String.format("Version %s (%s)", Konstanten.MVVERSION, SystemUtils.OS_ARCH);
-        if (buildInfo.hasGitMetadata()) {
-            versionText = String.format("<html>%s<br/>Build: %s</html>", versionText, buildInfo.formatForDisplay());
-        }
-        lblVersion.setText(versionText);
-
-        hyperlinkHomepage.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_WEBSITE));
-        hyperlinkGuiDonation.addActionListener(_ -> UrlHyperlinkAction.openURL("https://paypal.me/ChristianFranzke"));
-        hyperlinkServerDonation.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_DONATION));
-        hyperlinkForum.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_FORUM));
-        hyperlinkOnlineHelp.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_ONLINE_HELP));
-        hyperlinkFaq.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_ONLINE_FAQ));
-
-        hyperlinkJetBrains.addActionListener(_ -> UrlHyperlinkAction.openURL("https://www.jetbrains.com"));
-        hyperlinkEjTechnologies.addActionListener(_ -> UrlHyperlinkAction.openURL("https://www.ej-technologies.com"));
-
-
-        SwingUtilities.invokeLater(() -> scrollPane1.getVerticalScrollBar().setValue(0));
     }
 
     private void initComponents() {
@@ -265,15 +241,15 @@ public class AboutDialog extends JDialog {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JLabel lblVersion;
-    private JScrollPane scrollPane1;
-    private JXHyperlink hyperlinkHomepage;
-    private JXHyperlink hyperlinkGuiDonation;
-    private JXHyperlink hyperlinkServerDonation;
-    private JXHyperlink hyperlinkForum;
-    private JXHyperlink hyperlinkOnlineHelp;
-    private JXHyperlink hyperlinkFaq;
-    private JXHyperlink hyperlinkJetBrains;
-    private JXHyperlink hyperlinkEjTechnologies;
+    protected JLabel lblVersion;
+    protected JScrollPane scrollPane1;
+    protected JXHyperlink hyperlinkHomepage;
+    protected JXHyperlink hyperlinkGuiDonation;
+    protected JXHyperlink hyperlinkServerDonation;
+    protected JXHyperlink hyperlinkForum;
+    protected JXHyperlink hyperlinkOnlineHelp;
+    protected JXHyperlink hyperlinkFaq;
+    protected JXHyperlink hyperlinkJetBrains;
+    protected JXHyperlink hyperlinkEjTechnologies;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

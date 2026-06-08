@@ -56,8 +56,6 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_UI_EXIT_DIALOG_ACTION =
             "application.ui.exit_dialog.action";
     public static final String APPLICATION_UI_USE_TRAY = "application.ui.tray.use";
-    public static final String APPLICATION_UI_DOWNLOAD_TAB_DIVIDER_LOCATION =
-            "application.ui.download_tab.divider.location";
     public static final String APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS = "application.ui.zapp.show";
     public static final String APPLICATION_UI_SHOW_AUDIOTHEK = "application.ui.audiothek.show";
     public static final String APPLICATION_UI_AUDIOTHEK_TABLE_STATE = "application.ui.audiothek.table.state";

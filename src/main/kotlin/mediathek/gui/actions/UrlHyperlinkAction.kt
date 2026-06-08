@@ -29,7 +29,6 @@ class UrlHyperlinkAction(url: String) : AbstractAction(url) {
         private const val BROWSER_NOT_FOUND_TEXT =
             "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen."
 
-        @JvmStatic
         fun openURI(uri: URI) {
             openURL(uri.toString())
         }

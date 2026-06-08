@@ -249,7 +249,7 @@ class ListeDownloads : LinkedList<DatenDownload>() {
         forEach { download -> downloadUrls.add(download.downloadUrl) }
 
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
-        val checkWithBlackList = MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO).toBoolean()
+        val checkWithBlackList = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)
         val defaultPset = Daten.getInstance().listePset.getPsetAbo("")
         val today = LocalDate.now(DateUtil.MV_DEFAULT_TIMEZONE)
 

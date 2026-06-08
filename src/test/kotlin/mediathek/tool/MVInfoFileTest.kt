@@ -94,7 +94,7 @@ internal class MVInfoFileTest {
     fun writeManualInfoFileRejectsInvalidFilmUrl() {
         val target = tempDir.resolve("manual-info.txt")
         val infoFile = MVInfoFile { 2_500_000 }
-        val film = film().apply { setNormalQualityUrl("not a url") }
+        val film = film().apply { urlNormalQuality = "not a url" }
 
         assertThrows(IOException::class.java) {
             infoFile.writeManualInfoFile(film, target)
@@ -119,7 +119,7 @@ internal class MVInfoFileTest {
                 setFilmLengthSeconds(3600)
                 description = "Beschreibung"
                 websiteUrl = "https://example.org/film"
-                setNormalQualityUrl(TEST_URL.toString())
+                urlNormalQuality = TEST_URL.toString()
                 init()
             }
     }

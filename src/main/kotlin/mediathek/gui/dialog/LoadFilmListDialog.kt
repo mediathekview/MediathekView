@@ -4,6 +4,7 @@ import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden
+import mediathek.swing.centerOnScreen
 import mediathek.tool.*
 import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
@@ -38,7 +39,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
                 logger.trace("Sender list was changed loading full list...")
             }
 
-            if (GuiFunktionen.getFilmListUpdateType() == FilmListUpdateType.AUTOMATIC) {
+            if (FilmListUpdateType.fromConfig() == FilmListUpdateType.AUTOMATIC) {
                 //easy, just load
                 filmeLaden.loadFilmlist("", immerNeuLaden)
             } else {
@@ -83,7 +84,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
             if (width < 100 || height < 100) {
                 setSize(640, 480)
             }
-            GuiFunktionen.centerOnScreen(this, false)
+            centerOnScreen()
         }
     }
 

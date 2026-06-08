@@ -18,23 +18,22 @@
 
 package mediathek.tool.time
 
-import java.time.Duration
-import java.time.Instant
 import java.util.*
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.TimeSource
 
 /**
- * Lightweight stopwatch replacement for Guava Stopwatch.
+ * Lightweight stopwatch.
  */
 class Stopwatch private constructor() {
     private var elapsed = Duration.ZERO
-    private var startedAt: Instant? = null
+    private var startedAt: TimeSource.Monotonic.ValueTimeMark? = null
     private var running = false
 
     @Synchronized
     fun start(): Stopwatch {
         check(!running) { "This stopwatch is already running." }
-        startedAt = Instant.now()
+        startedAt = TimeSource.Monotonic.markNow()
         running = true
         return this
     }
@@ -42,7 +41,7 @@ class Stopwatch private constructor() {
     @Synchronized
     fun stop(): Stopwatch {
         check(running) { "This stopwatch is already stopped." }
-        elapsed = elapsed.plus(Duration.between(startedAt, Instant.now()))
+        elapsed += checkNotNull(startedAt).elapsedNow()
         startedAt = null
         running = false
         return this
@@ -66,20 +65,32 @@ class Stopwatch private constructor() {
         if (!running) {
             return elapsed
         }
-        return elapsed.plus(Duration.between(startedAt, Instant.now()))
-    }
-
-    @Synchronized
-    fun elapsed(desiredUnit: TimeUnit): Long {
-        return desiredUnit.convert(elapsed().toNanos(), TimeUnit.NANOSECONDS)
+        return elapsed + checkNotNull(startedAt).elapsedNow()
     }
 
     @Synchronized
     override fun toString(): String {
-        val nanos = elapsed().toNanos()
-        val unit = chooseUnit(nanos)
-        val value = nanos / TimeUnit.NANOSECONDS.convert(1, unit).toDouble()
-        return String.format(Locale.ROOT, "%.4g %s", value, abbreviate(unit))
+        val duration = elapsed()
+        val unit = DisplayUnit.choose(duration)
+        val value = duration.inWholeNanoseconds / unit.nanoseconds.toDouble()
+        return String.format(Locale.ROOT, "%.4g %s", value, unit.abbreviation)
+    }
+
+    private enum class DisplayUnit(val nanoseconds: Long, val abbreviation: String) {
+        DAYS(86_400_000_000_000L, "d"),
+        HOURS(3_600_000_000_000L, "h"),
+        MINUTES(60_000_000_000L, "min"),
+        SECONDS(1_000_000_000L, "s"),
+        MILLISECONDS(1_000_000L, "ms"),
+        MICROSECONDS(1_000L, "us"),
+        NANOSECONDS(1L, "ns");
+
+        companion object {
+            fun choose(duration: Duration): DisplayUnit {
+                val nanoseconds = duration.inWholeNanoseconds
+                return entries.firstOrNull { nanoseconds >= it.nanoseconds } ?: NANOSECONDS
+            }
+        }
     }
 
     companion object {
@@ -89,40 +100,6 @@ class Stopwatch private constructor() {
 
         fun createUnstarted(): Stopwatch {
             return Stopwatch()
-        }
-
-        private fun chooseUnit(nanos: Long): TimeUnit {
-            if (TimeUnit.NANOSECONDS.toDays(nanos) > 0) {
-                return TimeUnit.DAYS
-            }
-            if (TimeUnit.NANOSECONDS.toHours(nanos) > 0) {
-                return TimeUnit.HOURS
-            }
-            if (TimeUnit.NANOSECONDS.toMinutes(nanos) > 0) {
-                return TimeUnit.MINUTES
-            }
-            if (TimeUnit.NANOSECONDS.toSeconds(nanos) > 0) {
-                return TimeUnit.SECONDS
-            }
-            if (TimeUnit.NANOSECONDS.toMillis(nanos) > 0) {
-                return TimeUnit.MILLISECONDS
-            }
-            if (TimeUnit.NANOSECONDS.toMicros(nanos) > 0) {
-                return TimeUnit.MICROSECONDS
-            }
-            return TimeUnit.NANOSECONDS
-        }
-
-        private fun abbreviate(unit: TimeUnit): String {
-            return when (unit) {
-                TimeUnit.NANOSECONDS -> "ns"
-                TimeUnit.MICROSECONDS -> "us"
-                TimeUnit.MILLISECONDS -> "ms"
-                TimeUnit.SECONDS -> "s"
-                TimeUnit.MINUTES -> "min"
-                TimeUnit.HOURS -> "h"
-                TimeUnit.DAYS -> "d"
-            }
         }
     }
 }

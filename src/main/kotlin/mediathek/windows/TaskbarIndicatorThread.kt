@@ -23,8 +23,9 @@ import org.apache.logging.log4j.LogManager
 import java.awt.Taskbar
 import java.lang.foreign.*
 import java.lang.invoke.MethodHandle
-import java.util.concurrent.TimeUnit
 import javax.swing.JFrame
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toJavaDuration
 
 internal class TaskbarIndicatorThread(parent: JFrame) : IndicatorThread() {
     private val parent: JFrame
@@ -52,7 +53,7 @@ internal class TaskbarIndicatorThread(parent: JFrame) : IndicatorThread() {
                 taskbar.setWindowProgressValue(parent, percentage)
                 taskbar.setWindowProgressState(parent, Taskbar.State.NORMAL)
                 disableStandby()
-                TimeUnit.MILLISECONDS.sleep(500)
+                Thread.sleep(500.milliseconds.toJavaDuration())
             }
         } catch (_: InterruptedException) {
         } finally {

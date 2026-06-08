@@ -189,9 +189,9 @@ class PanelFilmlisteLaden(
 
         val listener = {
             if (jRadioButtonManuell.isSelected) {
-                GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.MANUAL)
+                FilmListUpdateType.MANUAL.writeToConfig()
             } else {
-                GuiFunktionen.setFilmListUpdateType(FilmListUpdateType.AUTOMATIC)
+                FilmListUpdateType.AUTOMATIC.writeToConfig()
             }
 
             MessageBus.messageBus.publishAsync(FilmListImportTypeChangedEvent())
@@ -213,7 +213,7 @@ class PanelFilmlisteLaden(
     }
 
     private fun initRadio() {
-        when (GuiFunktionen.getFilmListUpdateType()) {
+        when (FilmListUpdateType.fromConfig()) {
             FilmListUpdateType.MANUAL -> jRadioButtonManuell.isSelected = true
             FilmListUpdateType.AUTOMATIC -> jRadioButtonAuto.isSelected = true
         }

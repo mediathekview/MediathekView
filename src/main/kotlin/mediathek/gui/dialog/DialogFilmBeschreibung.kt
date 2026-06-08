@@ -127,8 +127,8 @@ class DialogFilmBeschreibung(
         val title = FilenameUtils.replaceLeerDateiname(
             datenFilm.title,
             false,
-            MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE).toBoolean(),
-            MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII).toBoolean(),
+            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
+            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII),
         )
         val programSets = Daten.getInstance().listePset.listeSpeichern
         val targetPath = if (programSets.isEmpty()) {

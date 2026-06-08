@@ -6,14 +6,22 @@ import java.util.*
 import java.util.regex.Pattern
 
 class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
+    private val ruleCount = rules.size
     private val ruleIndex = RuleIndex().apply {
-        rules.forEach { add(CompiledRule.from(it)) }
+        rules.forEachIndexed { index, rule -> add(CompiledRule.from(index, rule)) }
     }
 
     fun matches(film: DatenFilm): Boolean =
         ruleIndex.matches(FilmFields(film))
 
+    fun countMatchesByRule(films: Iterable<DatenFilm>): IntArray {
+        val counts = IntArray(ruleCount)
+        films.forEach { film -> ruleIndex.countMatches(FilmFields(film), counts) }
+        return counts
+    }
+
     private data class CompiledRule(
+        val index: Int,
         val sender: String,
         val thema: String,
         val titleMatcher: FieldMatcher,
@@ -24,8 +32,9 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
                 (themaTitleMatcher.matchesThema(film) || themaTitleMatcher.matchesTitle(film))
 
         companion object {
-            fun from(rule: BlacklistRule): CompiledRule =
+            fun from(index: Int, rule: BlacklistRule): CompiledRule =
                 CompiledRule(
+                    index,
                     rule.sender,
                     rule.thema,
                     FieldMatcher.from(rule.titel),
@@ -62,6 +71,13 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
                 matchesAny(themaRules[film.thema], film) ||
                 matchesSenderThemaRules(film)
 
+        fun countMatches(film: FilmFields, counts: IntArray) {
+            countMatches(globalRules, film, counts)
+            countMatches(senderRules[film.sender], film, counts)
+            countMatches(themaRules[film.thema], film, counts)
+            countMatches(senderThemaRules[film.sender]?.get(film.thema), film, counts)
+        }
+
         private fun matchesSenderThemaRules(film: FilmFields): Boolean {
             val rulesByThema = senderThemaRules[film.sender] ?: return false
             return matchesAny(rulesByThema[film.thema], film)
@@ -69,6 +85,14 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
 
         private fun matchesAny(rules: List<CompiledRule>?, film: FilmFields): Boolean =
             rules?.any { it.matches(film) } == true
+
+        private fun countMatches(rules: List<CompiledRule>?, film: FilmFields, counts: IntArray) {
+            rules?.forEach { rule ->
+                if (rule.matches(film)) {
+                    counts[rule.index]++
+                }
+            }
+        }
     }
 
     private class FieldMatcher private constructor(

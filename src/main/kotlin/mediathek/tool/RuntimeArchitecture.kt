@@ -16,11 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.messages
+package mediathek.tool
 
-/**
- * Synchronizes the blacklist startup checkbox between concurrently open blacklist panels.
- */
-class BlacklistStartSettingChangedEvent(
-    val sourceName: String,
-) : BaseEvent()
+import org.apache.commons.lang3.SystemUtils
+import java.util.Locale
+
+object RuntimeArchitecture {
+    val isIntelOrAmd64Bit: Boolean
+        get() = isIntelOrAmd64Bit(SystemUtils.OS_ARCH)
+
+    fun isIntelOrAmd64Bit(architecture: String): Boolean =
+        when (architecture.lowercase(Locale.ROOT)) {
+            "amd64", "x86_64" -> true
+            else -> false
+        }
+}

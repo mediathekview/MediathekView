@@ -16,32 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool
+package mediathek.tool.datum
 
-import org.apache.logging.log4j.LogManager
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
-/**
- * Store film size in megabytes.
- */
-class FilmSize : Comparable<FilmSize> {
-    private var size = 0
+class DatumFilmTest {
 
-    fun setSize(strSize: String) {
-        try {
-            size = FileSize.megabyteTextToInt(strSize)
-        } catch (ex: NumberFormatException) {
-            logger.error("String: {}", strSize, ex)
-            size = 0
-        }
+    @Test
+    fun undefinedFilmDateRendersAsEmptyText() {
+        assertEquals("", DatumFilm.UNDEFINED_FILM_DATE.toString())
     }
 
-    fun toInteger(): Int = size
+    @Test
+    fun legacyDateConstructorKeepsDateSemantics() {
+        val filmDate = DatumFilm(124, 5, 7)
 
-    override fun toString(): String = if (size == 0) "" else size.toString()
+        assertEquals("07.06.2024", filmDate.toString())
+        assertEquals(LocalDate.of(2024, 6, 7), DateUtil.convertToLocalDate(filmDate))
+    }
 
-    override fun compareTo(other: FilmSize): Int = size.compareTo(other.size)
+    @Test
+    fun epochMillisConstructorKeepsOriginalTime() {
+        val time = -122749200000L
 
-    private companion object {
-        private val logger = LogManager.getLogger()
+        assertEquals(time, DatumFilm(time).time)
     }
 }

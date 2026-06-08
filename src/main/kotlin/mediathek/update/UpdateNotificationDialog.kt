@@ -5,8 +5,8 @@ import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.dialog.ButtonFlowPanel
 import mediathek.gui.dialog.ButtonPanel
+import mediathek.swing.centerOnScreen
 import mediathek.tool.EscapeKeyHandler
-import mediathek.tool.GuiFunktionen
 import mediathek.tool.Version
 import org.apache.logging.log4j.LogManager
 import java.awt.BorderLayout
@@ -60,6 +60,6 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
         buttonPanel.add(createButtonPanel(), BorderLayout.EAST)
         contentPane.add(buttonPanel, BorderLayout.SOUTH)
         pack()
-        GuiFunktionen.centerOnScreen(this, false)
+        centerOnScreen()
     }
 }

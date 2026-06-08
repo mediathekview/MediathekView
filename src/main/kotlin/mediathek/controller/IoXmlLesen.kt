@@ -60,9 +60,9 @@ class IoXmlLesen(
                         inFactory.createXMLStreamReader(reader).use { parser ->
                             while (parser.hasNext()) {
                                 if (parser.next() == XMLStreamConstants.START_ELEMENT) {
-                                    when (parser.localName) {
-                                        MVConfig.SYSTEM -> readSystemConfiguration(parser)
-                                        DatenPset.TAG -> {
+                                    when {
+                                        MVConfig.isSystemElement(parser.localName) -> MVConfig.readSystemConfiguration(parser)
+                                        parser.localName == DatenPset.TAG -> {
                                             datenPset = readProgramSet(parser)
                                             val currentPset = datenPset
                                             if (currentPset != null) {
@@ -70,19 +70,19 @@ class IoXmlLesen(
                                             }
                                         }
 
-                                        DatenProg.TAG -> {
+                                        parser.localName == DatenProg.TAG -> {
                                             readProgramEntry(parser, datenPset)
                                         }
 
-                                        ReplaceList.REPLACELIST -> readReplacementList(parser)
-                                        DatenAbo.TAG -> readAboEntry(parser)
-                                        DatenDownload.TAG -> {
+                                        parser.localName == ReplaceList.REPLACELIST -> readReplacementList(parser)
+                                        parser.localName == DatenAbo.TAG -> readAboEntry(parser)
+                                        parser.localName == DatenDownload.TAG -> {
                                             legacyDownloadsRead =
                                                 readDownloadEntry(parser, readLegacyDownload = !readDownloadsFromJson) ||
                                                     legacyDownloadsRead
                                         }
 
-                                        BlacklistRule.TAG -> readBlacklistRuleEntry(parser)
+                                        parser.localName == BlacklistRule.TAG -> readBlacklistRuleEntry(parser)
                                     }
                                 }
                             }
@@ -134,24 +134,6 @@ class IoXmlLesen(
         } catch (ex: Exception) {
             logger.error("get", ex)
             false
-        }
-    }
-
-    private fun readSystemConfiguration(parser: XMLStreamReader) {
-        try {
-            while (parser.hasNext()) {
-                val event = parser.next()
-                if (event == XMLStreamConstants.END_ELEMENT && parser.localName == MVConfig.SYSTEM) {
-                    break
-                }
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    val key = parser.localName
-                    val value = parser.elementText
-                    MVConfig.add(key, value)
-                }
-            }
-        } catch (ex: Exception) {
-            logger.error("readSystemConfiguration", ex)
         }
     }
 

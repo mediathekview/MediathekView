@@ -10,11 +10,12 @@ import org.apache.commons.configuration2.Configuration
 import org.apache.logging.log4j.LogManager
 import java.net.InetSocketAddress
 import java.net.Proxy
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 object MVHttpClient {
-    private const val NETWORK_TIMEOUT = 10L
+    private val NETWORK_TIMEOUT = 10.seconds
 
     private val logger = LogManager.getLogger(MVHttpClient::class.java)
     val byteCounter = ByteCounter()
@@ -77,9 +78,9 @@ object MVHttpClient {
                 connectionSpecs(listOf(ConnectionSpec.MODERN_TLS, ConnectionSpec.COMPATIBLE_TLS))
             }
 
-            connectTimeout(NETWORK_TIMEOUT, TimeUnit.SECONDS)
-            writeTimeout(NETWORK_TIMEOUT, TimeUnit.SECONDS)
-            readTimeout(NETWORK_TIMEOUT, TimeUnit.SECONDS)
+            connectTimeout(NETWORK_TIMEOUT.toJavaDuration())
+            writeTimeout(NETWORK_TIMEOUT.toJavaDuration())
+            readTimeout(NETWORK_TIMEOUT.toJavaDuration())
             socketFactory(byteCounter.socketFactory())
             followRedirects(true)
             followSslRedirects(true)

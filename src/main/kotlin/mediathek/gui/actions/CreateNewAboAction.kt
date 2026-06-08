@@ -70,7 +70,7 @@ class CreateNewAboAction @JvmOverloads constructor(
             return
         }
 
-        MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.mindestDauerMinuten.toString())
+        MVConfig.setInt(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.mindestDauerMinuten)
         listeAbo.addAbo(datenAbo)
         Collections.sort(listeAbo)
         listeAbo.aenderungMelden()
@@ -85,8 +85,8 @@ class CreateNewAboAction @JvmOverloads constructor(
         val sanitizedAboName = FilenameUtils.replaceLeerDateiname(
             aboname,
             false,
-            MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE).toBoolean(),
-            MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII).toBoolean(),
+            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
+            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII),
         )
 
         return DatenAbo().apply {
@@ -105,9 +105,9 @@ class CreateNewAboAction @JvmOverloads constructor(
 
     private fun parseMinSize(): Int {
         return runCatching {
-            MVConfig.get(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE).toInt()
+            MVConfig.getInt(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, 0)
         }.getOrElse {
-            MVConfig.add(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, "0")
+            MVConfig.setInt(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, 0)
             0
         }
     }

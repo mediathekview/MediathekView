@@ -24,7 +24,6 @@ import mediathek.gui.messages.FilmListWriteStartEvent
 import mediathek.gui.messages.FilmListWriteStopEvent
 import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
-import mediathek.tool.datum.DatumFilm
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import tools.jackson.core.JsonEncoding
@@ -37,7 +36,8 @@ import java.io.IOException
 import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.nanoseconds
 
 class FilmListWriter(private val readable: Boolean) {
     private var sender = ""
@@ -171,7 +171,7 @@ class FilmListWriter(private val readable: Boolean) {
                     val end = System.nanoTime()
 
                     logger.info("   --> geschrieben!")
-                    logger.trace("Write duration: {} ms", TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS))
+                    logger.trace("Write duration: {} ms", (end - start).nanoseconds.inWholeMilliseconds)
                 }
             }
         }
@@ -182,15 +182,14 @@ class FilmListWriter(private val readable: Boolean) {
         if (!compressSenderTag) {
             return filmEntries
         }
-        return filmEntries.sortedWith(compareBy(DatenFilm::getSender).thenBy(DatenFilm::getThema))
+        return filmEntries.sortedWith(compareBy(DatenFilm::sender).thenBy(DatenFilm::thema))
     }
 
     private fun writeDatumLong(datenFilm: DatenFilm, jg: JsonGenerator) {
-        val filmDate = datenFilm.datumFilm
-        if (filmDate == DatumFilm.UNDEFINED_FILM_DATE) {
+        if (datenFilm.isDatumFilmUndefined) {
             jg.writeString("")
         } else {
-            val timeSeconds = TimeUnit.SECONDS.convert(filmDate.time, TimeUnit.MILLISECONDS)
+            val timeSeconds = datenFilm.datumFilmTimeMillis.milliseconds.inWholeSeconds
             jg.writeString(timeSeconds.toString())
         }
     }
@@ -208,7 +207,7 @@ class FilmListWriter(private val readable: Boolean) {
         jg.writeString(film.sendeDatum)
         writeZeit(jg, film)
         writeFilmLength(film, jg)
-        jg.writeString(film.fileSize.toString())
+        jg.writeString(film.fileSizeAsString)
         jg.writeString(film.description)
         jg.writeString(film.urlNormalQuality)
         jg.writeString(film.websiteUrl)

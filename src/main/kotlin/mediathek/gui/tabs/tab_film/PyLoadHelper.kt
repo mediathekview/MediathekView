@@ -15,11 +15,12 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.logging.log4j.LogManager
-import java.util.concurrent.TimeUnit
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JOptionPane
 import javax.swing.JPopupMenu
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toJavaDuration
 
 class PyLoadHelper {
     private val historyController = SeenHistoryController()
@@ -65,7 +66,7 @@ class PyLoadHelper {
             val client = MVHttpClient
                 .httpClient
                 .newBuilder()
-                .connectTimeout(500, TimeUnit.MILLISECONDS)
+                .connectTimeout(500.milliseconds.toJavaDuration())
                 .build()
 
             client.newCall(request).execute().use {

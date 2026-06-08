@@ -2,6 +2,8 @@ package mediathek.tool
 
 import org.apache.commons.lang3.SystemUtils
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assumptions.assumeFalse
+import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
 
 internal class FilenameUtilsTest {
@@ -54,5 +56,25 @@ internal class FilenameUtilsTest {
     fun convertToASCIIEncoding() {
         val result = FilenameUtils.convertToASCIIEncoding("hellöworld.txt", false)
         assertEquals("helloeworld.txt", result)
+    }
+
+    @Test
+    fun pathCleanupMatchesPathValidationForHiddenSegmentsOnUnix() {
+        assumeFalse(SystemUtils.IS_OS_WINDOWS)
+
+        val input = "folder/.hidden/file"
+        val expected = "folder/hidden/file"
+
+        assertEquals(expected, FilenameUtils.checkFilenameForIllegalCharacters(input, true))
+        assertEquals(expected, FilenameUtils.replaceLeerDateiname(input, true, false, false))
+    }
+
+    @Test
+    fun pathValidationPreservesUncPrefixOnWindows() {
+        assumeTrue(SystemUtils.IS_OS_WINDOWS)
+
+        val input = "\\\\server\\share\\folder"
+
+        assertEquals(input, FilenameUtils.checkFilenameForIllegalCharacters(input, true))
     }
 }

@@ -27,6 +27,7 @@ import mediathek.tool.FileUtils
 import mediathek.tool.FilenameUtils
 import mediathek.tool.GuiFunktionen
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
@@ -58,6 +59,7 @@ internal object DownloadTargetBuilder {
     private val DATUM_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private const val TWO_LETTER_YEAR_PARAMETER = "%3_2"
     private const val FOUR_LETTER_YEAR_PARAMETER = "%3"
+    private val logger = LogManager.getLogger(DownloadTargetBuilder::class.java)
 
     fun build(request: DownloadTargetRequest): DownloadTarget {
         val pSet = request.pSet
@@ -236,9 +238,9 @@ internal object DownloadTargetBuilder {
 
         result = replaceResolutionParameter(result, film, request.downloadUrl)
 
-        result = result.replace("%S", GuiFunktionen.getSuffixFromUrl(request.downloadUrl))
+        result = result.replace("%S", getSuffixFromUrl(request.downloadUrl))
             .replace("%Z", getHash(request.downloadUrl))
-            .replace("%z", getHash(request.downloadUrl) + '.' + GuiFunktionen.getSuffixFromUrl(request.downloadUrl))
+            .replace("%z", getHash(request.downloadUrl) + '.' + getSuffixFromUrl(request.downloadUrl))
 
         return result
     }
@@ -282,6 +284,25 @@ internal object DownloadTargetBuilder {
             paddedHash.insert(0, '0')
         }
         return paddedHash.toString()
+    }
+
+    private fun getSuffixFromUrl(path: String): String {
+        var result = if (path.isNotEmpty() && path.contains('.')) {
+            path.substring(path.lastIndexOf('.') + 1)
+        } else {
+            ""
+        }
+        if (result.isEmpty()) {
+            logger.error("getSuffixFromUrl({})", path)
+        }
+        if (result.contains("?")) {
+            result = result.substring(0, result.indexOf('?'))
+        }
+        if (result.length > 5) {
+            result = "---"
+            logger.error("getSuffixFromUrl({})", path)
+        }
+        return result
     }
 
     private fun getField(name: String, length: Int, cleanupOptions: FilenameCleanupOptions): String {
@@ -330,8 +351,8 @@ internal object DownloadTargetBuilder {
         companion object {
             fun current(): FilenameCleanupOptions =
                 FilenameCleanupOptions(
-                    useReplaceTable = MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE).toBoolean(),
-                    onlyAscii = MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII).toBoolean(),
+                    useReplaceTable = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
+                    onlyAscii = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII),
                 )
         }
     }

@@ -33,7 +33,6 @@ import mediathek.tool.NetUtils
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 import javax.swing.JFrame
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
@@ -65,7 +64,7 @@ class ProgramUpdateCheck : AutoCloseable {
         logger.debug("performUpdateCheck started.")
         var updateMenuItemDisabled = false
         try {
-            if (NetUtils.isReachable(UPDATE_CHECK_HOST, 1, TimeUnit.SECONDS)) {
+            if (NetUtils.isReachable(UPDATE_CHECK_HOST, 1.seconds)) {
                 withContext(Dispatchers.Swing) {
                     MediathekGui.ui().enableUpdateMenuItem(false)
                 }

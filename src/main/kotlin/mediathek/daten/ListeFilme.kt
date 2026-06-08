@@ -59,7 +59,7 @@ open class ListeFilme : ArrayList<DatenFilm>() {
 
         val seenThemen = ConcurrentHashMap.newKeySet<String>()
         return stream
-            .map(DatenFilm::getThema)
+            .map { film -> film.thema }
             .filter { thema -> seenThemen.add(normalizeKey(thema)) }
             .sorted(GermanStringSorter)
             .toList()

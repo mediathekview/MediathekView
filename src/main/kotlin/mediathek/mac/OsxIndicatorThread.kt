@@ -20,7 +20,8 @@ package mediathek.mac
 
 import mediathek.tool.threads.IndicatorThread
 import java.awt.Taskbar
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toJavaDuration
 
 /**
  * This thread will update the percentage drawn on the dock icon on OS X.
@@ -40,7 +41,7 @@ internal class OsxIndicatorThread : IndicatorThread() {
                     taskbar.setProgressValue(percentage)
                 }
                 oldPercentage = percentage
-                TimeUnit.MILLISECONDS.sleep(500)
+                Thread.sleep(500.milliseconds.toJavaDuration())
             }
         } catch (_: Exception) {
         } finally {

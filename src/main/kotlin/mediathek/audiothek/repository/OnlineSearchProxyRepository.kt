@@ -35,7 +35,8 @@ import tools.jackson.core.json.JsonFactory
 import java.io.InputStream
 import java.net.URI
 import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 class OnlineSearchProxyRepository(
     private val clientProvider: () -> OkHttpClient = { searchClient() },
@@ -197,10 +198,12 @@ class OnlineSearchProxyRepository(
 
     private companion object {
         private fun searchClient(): OkHttpClient =
-            MVHttpClient.httpClient.newBuilder()
-                .connectTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .readTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .writeTimeout(Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .build()
+            Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS.seconds.toJavaDuration().let { timeout ->
+                MVHttpClient.httpClient.newBuilder()
+                    .connectTimeout(timeout)
+                    .readTimeout(timeout)
+                    .writeTimeout(timeout)
+                    .build()
+            }
     }
 }

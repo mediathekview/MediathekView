@@ -4,6 +4,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.gui.dialogEinstellungen.allgemein.LuceneDirectoryModePanel;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
+import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist;
 import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
@@ -21,8 +22,6 @@ import java.awt.*;
 
 public class DialogEinstellungen extends JFrame {
     private final Daten daten;
-    public boolean ok;
-
     private static final String NAME_einstellungen = "Einstellungen";
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
     private static final String NAME_notifications = "Benachrichtigungen";

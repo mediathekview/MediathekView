@@ -19,7 +19,6 @@
 package mediathek.tool.models
 
 import mediathek.daten.DatenFilm
-import mediathek.tool.FilmSize
 import mediathek.tool.datum.DatumFilm
 import javax.swing.table.AbstractTableModel
 
@@ -34,10 +33,10 @@ class TModelFilm(capacity: Int = 0) : AbstractTableModel() {
         when (columnIndex) {
             DatenFilm.FILM_NR,
             DatenFilm.FILM_DAUER,
+            DatenFilm.FILM_GROESSE,
             -> Int::class.javaObjectType
 
             DatenFilm.FILM_DATUM -> DatumFilm::class.java
-            DatenFilm.FILM_GROESSE -> FilmSize::class.java
 
             DatenFilm.FILM_HD,
             DatenFilm.FILM_UT,
@@ -85,7 +84,7 @@ class TModelFilm(capacity: Int = 0) : AbstractTableModel() {
             DatenFilm.FILM_DATUM -> film.datumFilm
             DatenFilm.FILM_ZEIT -> film.sendeZeit
             DatenFilm.FILM_DAUER -> film.filmLength
-            DatenFilm.FILM_GROESSE -> film.fileSize
+            DatenFilm.FILM_GROESSE -> film.fileSizeInMegabytes
             DatenFilm.FILM_HD -> film.isHighQuality
             DatenFilm.FILM_UT -> film.hasSubtitle()
             DatenFilm.FILM_GEO -> film.countriesAsString

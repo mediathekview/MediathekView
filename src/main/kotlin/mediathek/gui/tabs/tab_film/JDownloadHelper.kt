@@ -16,11 +16,12 @@ import okhttp3.RequestBody
 import org.apache.logging.log4j.LogManager
 import java.net.ConnectException
 import java.net.SocketTimeoutException
-import java.util.concurrent.TimeUnit
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JOptionPane
 import javax.swing.JPopupMenu
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toJavaDuration
 
 class JDownloadHelper {
     private fun downloadUrl(url: HttpUrl, film: DatenFilm) {
@@ -37,7 +38,7 @@ class JDownloadHelper {
                 .post(formBody)
                 .build()
             val builder = MVHttpClient.httpClient.newBuilder()
-            builder.connectTimeout(125, TimeUnit.MILLISECONDS)
+            builder.connectTimeout(125.milliseconds.toJavaDuration())
             val client = builder.build()
             client.newCall(request).execute().use {
                 if (it.isSuccessful)

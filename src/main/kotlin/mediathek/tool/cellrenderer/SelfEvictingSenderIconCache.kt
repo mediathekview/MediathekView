@@ -21,8 +21,8 @@ package mediathek.tool.cellrenderer
 import mediathek.tool.timer.TimerPool
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
 import javax.swing.Icon
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * A cache for sender icons at a specific cell dimension.
@@ -44,7 +44,7 @@ class SelfEvictingSenderIconCache : ConcurrentHashMap<SenderCacheKey, Icon>(), A
         private val caches = Collections.newSetFromMap(WeakHashMap<SelfEvictingSenderIconCache, Boolean>())
 
         init {
-            TimerPool.scheduleAtFixedRate(::clearRegisteredCaches, 5, 5, TimeUnit.MINUTES)
+            TimerPool.scheduleAtFixedRate(::clearRegisteredCaches, 5.minutes, 5.minutes)
         }
 
         private fun register(cache: SelfEvictingSenderIconCache) {

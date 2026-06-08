@@ -342,7 +342,7 @@ open class FilmListReader : AutoCloseable {
 
     private fun parseGroesse(jp: JsonParser, datenFilm: DatenFilm) {
         val value = checkedString(jp)
-        datenFilm.fileSize.setSize(value)
+        datenFilm.setFileSize(value)
     }
 
     /**
@@ -416,7 +416,7 @@ open class FilmListReader : AutoCloseable {
     }
 
     private fun parseUrl(jp: JsonParser, datenFilm: DatenFilm) {
-        datenFilm.setNormalQualityUrl(checkedString(jp))
+        datenFilm.urlNormalQuality = checkedString(jp)
     }
 
     private fun parseLivestream(datenFilm: DatenFilm) {
@@ -530,7 +530,7 @@ open class FilmListReader : AutoCloseable {
                     if (film.isLivestream) {
                         listeFilme.add(film)
                     } else {
-                        val filmDate = DateUtil.convertToLocalDate(film.datumFilm)
+                        val filmDate = DateUtil.convertToLocalDate(film.datumFilmTimeMillis)
                         if (!cutoffDate.isAfter(filmDate)) {
                             listeFilme.add(film)
                         }

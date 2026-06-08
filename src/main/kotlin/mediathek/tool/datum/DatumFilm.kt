@@ -19,15 +19,10 @@
 package mediathek.tool.datum
 
 import java.time.LocalDate
-import java.time.ZonedDateTime
 import java.util.Date
 
 class DatumFilm : Date {
-    val zonedDateTime: ZonedDateTime
-
-    constructor(date: Long) : super(date) {
-        zonedDateTime = convertToZonedDateTime()
-    }
+    constructor(date: Long) : super(date)
 
     constructor(year: Int, month: Int, date: Int) : this(legacyDateToEpochMillis(year, month, date))
 
@@ -38,11 +33,7 @@ class DatumFilm : Date {
             DateUtil.FORMATTER.format(DateUtil.convertToLocalDate(this))
         }
 
-    private fun convertToZonedDateTime(): ZonedDateTime =
-        toInstant().atZone(DateUtil.MV_DEFAULT_TIMEZONE)
-
     companion object {
-        @JvmField
         val UNDEFINED_FILM_DATE = DatumFilm(0, 0, 1)
 
         private fun legacyDateToEpochMillis(year: Int, month: Int, date: Int): Long =

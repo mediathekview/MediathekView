@@ -21,7 +21,7 @@ public class PanelNotifications extends JPanel {
         final var config = ApplicationConfiguration.getConfiguration();
         final boolean showNotification = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
         cbShowNotifications.setSelected(showNotification);
-        cbShowNotifications.addActionListener(e -> {
+        cbShowNotifications.addActionListener(_ -> {
             config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,cbShowNotifications.isSelected());
             MessageBus.getMessageBus().publishAsync(new NotificationCenterChangeEvent());
         });

@@ -166,7 +166,7 @@ object GuiFunktionenProgramme {
         runCatching { findExecutableOnPath(name).toString() }.getOrDefault(fallbackPath)
 
     @JvmStatic
-    fun addSetVorlagen(parent: JFrame?, daten: Daten, pSet: ListePset?, setVersion: Boolean) {
+    fun addSetVorlagen(parent: JFrame?, daten: Daten, pSet: ListePset?, setVersion: Boolean): Boolean {
         if (pSet == null) {
             JOptionPane.showMessageDialog(
                 null,
@@ -174,7 +174,7 @@ object GuiFunktionenProgramme {
                 "Fehler",
                 JOptionPane.ERROR_MESSAGE
             )
-            return
+            return false
         }
         parent?.cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
         for (ps: DatenPset in pSet) {
@@ -186,7 +186,8 @@ object GuiFunktionenProgramme {
                     "Fehler",
                     JOptionPane.ERROR_MESSAGE
                 )
-                return
+                parent?.cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
+                return false
             }
         }
         parent?.cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
@@ -204,6 +205,7 @@ object GuiFunktionenProgramme {
                     "Ok",
                     JOptionPane.INFORMATION_MESSAGE
                 )
+                return true
             } else {
                 JOptionPane.showMessageDialog(
                     null,
@@ -213,6 +215,7 @@ object GuiFunktionenProgramme {
                 )
             }
         }
+        return false
     }
 
     /**
@@ -235,7 +238,6 @@ object GuiFunktionenProgramme {
      * @param name the executable name
      * @return the path INCLUDING the binary name.
      */
-    @JvmStatic
     fun findExecutableOnPath(name: String): Path {
         var exeString = name
         var path = System.getenv("PATH") + File.pathSeparator + getBinaryPath().toAbsolutePath()

@@ -19,11 +19,11 @@ public class PanelPset extends JPanel {
         this.parentComponent = parentComponent;
 
         initComponents();
-        jCheckBoxAlleEinstellungen.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
+        jCheckBoxAlleEinstellungen.addActionListener(_ -> {
+            MVConfig.setBoolean(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, jCheckBoxAlleEinstellungen.isSelected());
             setupPSetVisiblePanels();
         });
-        jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG)));
+        jCheckBoxAlleEinstellungen.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG));
         setupPSetVisiblePanels();
     }
 
@@ -34,9 +34,9 @@ public class PanelPset extends JPanel {
         jPanelPset.removeAll();
         var daten = Daten.getInstance();
         if (jCheckBoxAlleEinstellungen.isSelected()) {
-            jPanelPset.add(new PanelPsetLang(daten, parentComponent, daten.getListePset()), BorderLayout.CENTER);
+            jPanelPset.add(new PanelPsetLang(parentComponent, daten.getListePset()), BorderLayout.CENTER);
         } else {
-            jPanelPset.add(new PanelPsetKurz(daten, parentComponent, daten.getListePset()), BorderLayout.CENTER);
+            jPanelPset.add(new PanelPsetKurz(daten.getListePset()), BorderLayout.CENTER);
         }
         jPanelPset.updateUI();
     }

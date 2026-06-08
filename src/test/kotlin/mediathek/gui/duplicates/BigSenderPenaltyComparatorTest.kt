@@ -15,7 +15,7 @@ internal class BigSenderPenaltyComparatorTest {
             .map(::createFilmWithSender)
             .sortedWith(BigSenderPenaltyComparator())
 
-        val sortedSenders = inputFilms.map(DatenFilm::getSender)
+        val sortedSenders = inputFilms.map(DatenFilm::sender)
         val senderCount = sortedSenders.size
 
         val senderSet = setOf("ARD", "ZDF")

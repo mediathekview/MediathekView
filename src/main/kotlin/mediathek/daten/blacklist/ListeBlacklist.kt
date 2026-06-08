@@ -14,8 +14,8 @@ import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
-import java.util.concurrent.TimeUnit
 import java.util.function.Predicate
+import kotlin.time.Duration.Companion.days
 
 class ListeBlacklist : ArrayList<BlacklistRule>() {
     private val geoblockingPredicate = GeoblockingPredicate()
@@ -216,7 +216,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
                 if (strZeitraum.equals(ZeitraumSpinner.INFINITE_TEXT, ignoreCase = true)) {
                     0
                 } else {
-                    val daysMs = TimeUnit.MILLISECONDS.convert(strZeitraum.toLong(), TimeUnit.DAYS)
+                    val daysMs = strZeitraum.toLong().days.inWholeMilliseconds
                     System.currentTimeMillis() - daysMs
                 }
         } catch (_: Exception) {
@@ -225,12 +225,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
     }
 
     private fun calculateMinimumFilmLength() {
-        minimumFilmLength = try {
-            val filmLengthMinutes = MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE).toLong()
-            filmLengthMinutes * 60
-        } catch (_: Exception) {
-            0
-        }
+        minimumFilmLength = MVConfig.getLong(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, 0) * 60
     }
 
     /**
@@ -242,7 +237,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
 
         val config = ApplicationConfiguration.getConfiguration()
         blacklistIsActive = config.getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false)
-        doNotShowFutureFilms = MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN).toBoolean()
+        doNotShowFutureFilms = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)
         doNotShowGeoBlockedFilms = ApplicationConfiguration.getInstance().blacklistDoNotShowGeoblockedFilms
 
         geoblockingPredicate.updateLocation()
@@ -258,7 +253,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
         }
 
         if (daysLowerBoundary != 0L) {
-            val filmTime = film.datumFilm.time
+            val filmTime = film.datumFilmTimeMillis
             return filmTime == 0L || filmTime >= daysLowerBoundary
         }
 
@@ -269,7 +264,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
      * Check if a future film should be displayed.
      */
     private fun checkIfFilmIsInFuture(film: DatenFilm): Boolean =
-        film.datumFilm.time <= System.currentTimeMillis()
+        film.datumFilmTimeMillis <= System.currentTimeMillis()
 
     /**
      * Filter based on film length.

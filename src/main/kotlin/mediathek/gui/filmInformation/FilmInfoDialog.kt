@@ -262,12 +262,12 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
             form.lblDate.text = currentFilm.sendeDatum
             form.lblUhrzeit.text = currentFilm.sendeZeit
             updateDurationLabel(currentFilm)
-            form.lblSize.text = currentFilm.fileSize.toString()
+            form.lblSize.text = currentFilm.fileSizeAsString
             updateGeoLabel(currentFilm)
             form.cbHq.isSelected = currentFilm.isHighQuality
             form.cbSubtitle.isSelected = currentFilm.hasSubtitle()
 
-            currentFilm.aboOptional.ifPresentOrElse({ abo -> form.lblAbo.text = abo.name }, { form.lblAbo.text = "" })
+            form.lblAbo.text = currentFilm.abo?.name.orEmpty()
 
             prepareHyperlink(currentFilm.websiteUrl)
 

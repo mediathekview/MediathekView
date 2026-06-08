@@ -51,6 +51,7 @@ import net.engio.mbassy.listener.Handler
 import org.apache.commons.configuration2.Configuration
 import org.apache.logging.log4j.LogManager
 import java.awt.BorderLayout
+import java.awt.Component
 import java.awt.MenuItem
 import java.awt.PopupMenu
 import java.awt.Taskbar
@@ -60,9 +61,10 @@ import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
 import java.io.File
 import java.util.Optional
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import javax.swing.*
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 class GuiDownloads(
@@ -315,7 +317,7 @@ class GuiDownloads(
             }
         }
 
-        tabelle.setLineBreak(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK))
+        tabelle.setLineBreak(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK))
         tabelle.tableHeader.addMouseListener(
             BeobTableHeader(
                 tabelle,
@@ -351,7 +353,7 @@ class GuiDownloads(
     @Handler
     private fun handleAboListChanged(event: AboListChangedEvent) {
         SwingUtilities.invokeLater {
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN).toBoolean()) {
+            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)) {
                 updateDownloads()
             }
         }
@@ -370,8 +372,8 @@ class GuiDownloads(
     @Handler
     private fun handleBlacklistChangedEvent(event: BlacklistChangedEvent) {
         SwingUtilities.invokeLater {
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN).toBoolean() &&
-                MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO).toBoolean()
+            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN) &&
+                MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)
             ) {
                 updateDownloads()
             }
@@ -386,7 +388,7 @@ class GuiDownloads(
     @Handler
     private fun handleBlacklistAboSettingChangedEvent(event: BlacklistAboSettingChangedEvent) {
         SwingUtilities.invokeLater {
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN).toBoolean()) {
+            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)) {
                 updateDownloads()
             }
         }
@@ -471,7 +473,7 @@ class GuiDownloads(
         reloadTable()
         updateUnknownDownloadSizes()
 
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN).toBoolean()) {
+        if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN)) {
             filmStartenWiederholenStoppen(true, starten = true, restartFinishedDownloads = false, skipManualDownloads = true)
         }
     }
@@ -723,14 +725,13 @@ class GuiDownloads(
                     continue
                 }
                 if (start.status > StartStatus.RUNNING) {
-                    val reply = GuiFunktionen.createDismissableMessageDialog(
+                    val reply = createDismissableMessageDialog(
                         mediathekGui,
                         "Fertiger Download",
                         "Film nochmal starten?  ==> " + download.title,
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.NO_OPTION,
-                        10,
-                        TimeUnit.SECONDS,
+                        10.seconds,
                         JOptionPane.QUESTION_MESSAGE,
                     )
                     if (reply != JOptionPane.YES_OPTION) {
@@ -797,14 +798,13 @@ class GuiDownloads(
                             } else {
                                 "Film nochmal starten?  ==> " + download.title
                             }
-                            answer = GuiFunktionen.createDismissableMessageDialog(
+                            answer = createDismissableMessageDialog(
                                 mediathekGui,
                                 "Fertiger Download",
                                 text,
                                 JOptionPane.YES_NO_CANCEL_OPTION,
                                 JOptionPane.NO_OPTION,
-                                10,
-                                TimeUnit.SECONDS,
+                                10.seconds,
                                 JOptionPane.QUESTION_MESSAGE,
                             )
                         }
@@ -862,6 +862,24 @@ class GuiDownloads(
         mediathekGui.filmInfoDialog?.updateCurrentFilm(getCurrentlySelectedFilm().orElse(null))
     }
 
+    private fun createDismissableMessageDialog(
+        parentComponent: Component?,
+        title: String,
+        message: String,
+        optionType: Int,
+        defaultValue: Int,
+        defaultDelay: Duration,
+        style: Int,
+    ): Int {
+        val optionPane = JOptionPane(message, style, optionType, null, null)
+        val dialog = optionPane.createDialog(parentComponent, title)
+        Timer(defaultDelay.inWholeMilliseconds.toInt()) {
+            optionPane.value = defaultValue
+        }.start()
+        dialog.isVisible = true
+        return optionPane.value as Int
+    }
+
     fun getSelFilme(): List<DatenFilm> = tableSelection.selectedFilmsOrShowError()
 
     private fun initComponents() {
@@ -894,7 +912,7 @@ class GuiDownloads(
                     refreshDownloadListAction.isEnabled = true
                 }
                 daten.listeDownloads.filmEintragen()
-                if (MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN).toBoolean()) {
+                if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)) {
                     updateDownloads()
                 } else {
                     reloadTable()

@@ -3,7 +3,7 @@ package mediathek.tool
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 
 class NetUtils {
     companion object {
@@ -11,16 +11,15 @@ class NetUtils {
          * Check if an address is reachable via network.
          * Replaces InetAddress.isReachable which is unreliable.
          * @param addr url
-         * @param value timeout value
-         * @param unit TimeUnit
+         * @param timeout connect timeout
          * @return true if reachable, otherwise false
          */
-        fun isReachable(addr: String, value: Long, unit: TimeUnit): Boolean {
+        fun isReachable(addr: String, timeout: Duration): Boolean {
             return try {
                 Socket().use { soc ->
                     // use HTTPS port
-                    val timeout = TimeUnit.MILLISECONDS.convert(value, unit).toInt()
-                    soc.connect(InetSocketAddress(addr, 443), timeout)
+                    val timeoutMillis = timeout.inWholeMilliseconds.coerceIn(0, Int.MAX_VALUE.toLong()).toInt()
+                    soc.connect(InetSocketAddress(addr, 443), timeoutMillis)
                 }
                 true
             } catch (_: IOException) {

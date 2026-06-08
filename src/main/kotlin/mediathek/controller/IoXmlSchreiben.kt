@@ -106,7 +106,7 @@ class IoXmlSchreiben(
         writer.writeCharacters("\n\n")
         writer.writeCharacters("\n\n")
         writeNewLine(writer)
-        xmlSchreibenConfig(writer, MVConfig.getSortedKVList())
+        MVConfig.writeSystemConfiguration(writer)
         writeNewLine(writer)
     }
 
@@ -228,28 +228,6 @@ class IoXmlSchreiben(
 
     private fun writeNewLine(writer: XMLStreamWriter) {
         writer.writeCharacters("\n") // neue Zeile
-    }
-
-    private fun xmlSchreibenConfig(writer: XMLStreamWriter, configValues: List<Array<String>>) {
-        try {
-            writer.writeStartElement(MVConfig.SYSTEM)
-            writeNewLine(writer)
-            for (xmlColumn in configValues) {
-                val key = xmlColumn[0]
-                if (MVConfig.Configs.find(key)) {
-                    // nur Configs schreiben die es noch gibt
-                    writer.writeCharacters("\t") // Tab
-                    writer.writeStartElement(key)
-                    writer.writeCharacters(xmlColumn[1])
-                    writer.writeEndElement()
-                    writeNewLine(writer)
-                }
-            }
-            writer.writeEndElement()
-            writeNewLine(writer)
-        } catch (ex: Exception) {
-            logger.error(ex)
-        }
     }
 
     private fun xmlDatenSchreiben(xmlFilePath: Path) {

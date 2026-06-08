@@ -26,8 +26,8 @@ import java.awt.Component
 import java.awt.Dimension
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 import javax.swing.*
+import kotlin.time.Duration.Companion.minutes
 
 class LivestreamRenderer : JPanel(), ListCellRenderer<LivestreamEntry> {
 
@@ -113,7 +113,7 @@ class LivestreamRenderer : JPanel(), ListCellRenderer<LivestreamEntry> {
     }
 
     companion object {
-        private val REMAINING_TIME_THRESHOLD = TimeUnit.SECONDS.convert(5, TimeUnit.MINUTES)
+        private val REMAINING_TIME_THRESHOLD = 5.minutes.inWholeSeconds
         private val COLOR_ORANGE = Color(255, 140, 0)
         const val ICON_SIZE = 64
     }

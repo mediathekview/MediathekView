@@ -22,13 +22,8 @@ import mediathek.config.StandardLocations
 import mediathek.tool.ApplicationConfiguration
 import org.apache.logging.log4j.LogManager
 import org.apache.lucene.index.DirectoryReader
-import org.apache.lucene.store.ByteBuffersDirectory
 import org.apache.lucene.store.Directory
-import org.apache.lucene.store.FSDirectory
-import org.apache.lucene.store.MMapDirectory
-import org.apache.lucene.store.NIOFSDirectory
 import java.nio.file.Path
-import java.util.Locale
 import kotlin.math.max
 
 class IndexedFilmList : ListeFilme() {
@@ -49,22 +44,16 @@ class IndexedFilmList : ListeFilme() {
 
     @Throws(Exception::class)
     private fun createLuceneDirectory(indexPath: Path): Directory {
-        val mode = ApplicationConfiguration.getConfiguration()
+        val configuredMode = ApplicationConfiguration.getConfiguration()
             .getString(ApplicationConfiguration.LUCENE_DIRECTORY_MODE, "auto")
-            .trim()
-            .lowercase(Locale.ROOT)
-
-        logger.info("Using Lucene directory mode '{}' for index path {}", mode, indexPath)
-        return when (mode) {
-            "mmap" -> MMapDirectory(indexPath)
-            "niofs" -> NIOFSDirectory(indexPath)
-            "auto" -> FSDirectory.open(indexPath)
-            "in-memory" -> ByteBuffersDirectory()
-            else -> {
-                logger.warn("Unknown Lucene directory mode '{}', falling back to 'auto'", mode)
-                FSDirectory.open(indexPath)
+        val mode = LuceneDirectoryMode.fromConfigValueOrNull(configuredMode)
+            ?: run {
+                logger.warn("Unknown Lucene directory mode '{}', falling back to 'auto'", configuredMode)
+                LuceneDirectoryMode.AUTO
             }
-        }
+
+        logger.info("Using Lucene directory mode '{}' for index path {}", mode.configValue, indexPath)
+        return mode.createDirectory(indexPath)
     }
 
     @Synchronized

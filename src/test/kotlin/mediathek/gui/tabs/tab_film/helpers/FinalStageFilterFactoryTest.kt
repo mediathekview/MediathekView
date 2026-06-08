@@ -280,7 +280,7 @@ internal class FinalStageFilterFactoryTest {
             DatenFilm().apply {
                 this.thema = thema
                 this.title = title
-                setDescription(description)
+                this.description = description
             }
 
         private fun legacyNoPatternBehavior(searchTerms: Array<String>, film: DatenFilm): Boolean {

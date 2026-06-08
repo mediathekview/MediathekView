@@ -40,8 +40,8 @@ import java.awt.Rectangle
 import java.awt.event.*
 import java.net.URI
 import java.time.Instant
-import java.util.concurrent.TimeUnit
 import javax.swing.*
+import kotlin.time.Duration.Companion.seconds
 
 class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
 
@@ -50,7 +50,7 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
     private val streamService: StreamService
     private val showService: ShowService
     private val refreshTimer =
-        Timer(TimeUnit.MILLISECONDS.convert(4, TimeUnit.SECONDS).toInt()) { checkForExpiredShows() } // alle 10s prüfen
+        Timer(4.seconds.inWholeMilliseconds.toInt()) { checkForExpiredShows() } // alle 4s prüfen
     private val overlay = OverlayPanel("Livestreams konnten nicht geladen werden")
 
 

@@ -61,8 +61,8 @@ abstract class MVTable protected constructor(
         autoCreateRowSorter = true
         autoResizeMode = AUTO_RESIZE_OFF
 
-        showIconsConfigKey.ifPresent { showSenderIcon = MVConfig.get(it).toBoolean() }
-        smallSenderIconConfigKey.ifPresent { useSmallSenderIconsState = MVConfig.get(it).toBoolean() }
+        showIconsConfigKey.ifPresent { showSenderIcon = MVConfig.getBoolean(it) }
+        smallSenderIconConfigKey.ifPresent { useSmallSenderIconsState = MVConfig.getBoolean(it) }
 
         calculateRowHeight()
         MessageBus.messageBus.subscribe(this)
@@ -310,8 +310,8 @@ abstract class MVTable protected constructor(
      * Write table display preferences to config.
      */
     open fun writeTableConfigurationData() {
-        showIconsConfigKey.ifPresent { MVConfig.add(it, showSenderIcon.toString()) }
-        smallSenderIconConfigKey.ifPresent { MVConfig.add(it, useSmallSenderIconsState.toString()) }
+        showIconsConfigKey.ifPresent { MVConfig.setBoolean(it, showSenderIcon) }
+        smallSenderIconConfigKey.ifPresent { MVConfig.setBoolean(it, useSmallSenderIconsState) }
     }
 
     companion object {

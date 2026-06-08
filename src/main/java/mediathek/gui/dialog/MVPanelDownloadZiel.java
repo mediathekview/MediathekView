@@ -27,7 +27,6 @@ import java.util.Objects;
 
 
 public class MVPanelDownloadZiel extends JPanel {
-    public boolean nameGeaendert;
     private final DatenDownload datenDownload;
     private final JFrame parent;
     private final boolean letztenPfadAnzeigen;
@@ -42,7 +41,7 @@ public class MVPanelDownloadZiel extends JPanel {
         jButtonDelPath.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"));
          jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
-        jButtonDelPath.addActionListener(e -> {
+        jButtonDelPath.addActionListener(_ -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.getTargetPath()}));
         });
@@ -65,7 +64,6 @@ public class MVPanelDownloadZiel extends JPanel {
             }
 
             private void tus() {
-                nameGeaendert = true;
                 checkPfadName();
                 final String n1 = jTextFieldName.getText();
                 final String n2 = FilenameUtils.checkFilenameForIllegalCharacters(n1, false /*pfad*/);
@@ -96,7 +94,6 @@ public class MVPanelDownloadZiel extends JPanel {
             }
 
             private void tus() {
-                nameGeaendert = true;
                 checkPfadName();
                 String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
                 var editor = jComboBoxPath.getEditor().getEditorComponent();

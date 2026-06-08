@@ -18,7 +18,31 @@
 
 package mediathek.tool
 
-enum class FilmListUpdateType {
-    MANUAL,
-    AUTOMATIC,
+import mediathek.config.MVConfig
+
+enum class FilmListUpdateType(
+    val configValue: Int,
+) {
+    MANUAL(0),
+    AUTOMATIC(2),
+    ;
+
+    companion object {
+        fun fromConfigValue(configValue: Int): FilmListUpdateType =
+            entries.firstOrNull { it.configValue == configValue } ?: AUTOMATIC
+
+        fun fromConfig(): FilmListUpdateType {
+            val updateType = fromConfigValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, AUTOMATIC.configValue))
+            if (updateType == AUTOMATIC) {
+                AUTOMATIC.writeToConfig()
+            }
+            return updateType
+        }
+    }
+
+    fun isConfigured(): Boolean = fromConfig() == this
+
+    fun writeToConfig() {
+        MVConfig.setInt(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, configValue)
+    }
 }

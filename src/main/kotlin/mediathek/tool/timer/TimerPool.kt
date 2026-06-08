@@ -27,6 +27,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 object TimerPool {
     private val logger: Logger = LogManager.getLogger()
@@ -41,9 +43,8 @@ object TimerPool {
         logger.trace("Initializing timer pool...")
         timerEventFuture = scheduleWithFixedDelay(
             { MessageBus.messageBus.publishAsync(TimerEvent()) },
-            4,
-            1,
-            TimeUnit.SECONDS
+            4.seconds,
+            1.seconds,
         )
     }
 
@@ -55,6 +56,9 @@ object TimerPool {
     fun schedule(command: Runnable, delay: Long, unit: TimeUnit): ScheduledFuture<*> =
         executor.schedule(command, delay, unit)
 
+    fun schedule(command: Runnable, delay: Duration): ScheduledFuture<*> =
+        executor.schedule(command, delay.inWholeNanoseconds, TimeUnit.NANOSECONDS)
+
     fun scheduleAtFixedRate(
         command: Runnable,
         initialDelay: Long,
@@ -62,12 +66,36 @@ object TimerPool {
         unit: TimeUnit
     ): ScheduledFuture<*> = executor.scheduleAtFixedRate(command, initialDelay, period, unit)
 
+    fun scheduleAtFixedRate(
+        command: Runnable,
+        initialDelay: Duration,
+        period: Duration,
+    ): ScheduledFuture<*> =
+        executor.scheduleAtFixedRate(
+            command,
+            initialDelay.inWholeNanoseconds,
+            period.inWholeNanoseconds,
+            TimeUnit.NANOSECONDS,
+        )
+
     fun scheduleWithFixedDelay(
         command: Runnable,
         initialDelay: Long,
         delay: Long,
         unit: TimeUnit
     ): ScheduledFuture<*> = executor.scheduleWithFixedDelay(command, initialDelay, delay, unit)
+
+    fun scheduleWithFixedDelay(
+        command: Runnable,
+        initialDelay: Duration,
+        delay: Duration,
+    ): ScheduledFuture<*> =
+        executor.scheduleWithFixedDelay(
+            command,
+            initialDelay.inWholeNanoseconds,
+            delay.inWholeNanoseconds,
+            TimeUnit.NANOSECONDS,
+        )
 
     @JvmStatic
     @Throws(InterruptedException::class)
@@ -80,6 +108,9 @@ object TimerPool {
 
         return executor.shutdownNow()
     }
+
+    fun shutdown(timeout: Duration): List<Runnable> =
+        shutdown(timeout.inWholeNanoseconds, TimeUnit.NANOSECONDS)
 
     private class TimerPoolThreadFactory : ThreadFactory {
         private val threadNumber = AtomicLong(1)
