@@ -5,7 +5,7 @@ on:
 
 env:
   # bump this when you upgrade install4j
-  INSTALL4J_VERSION: '12_0_3'
+  INSTALL4J_VERSION: '12_0_5'
   INSTALL4J_CACHE_VERSION: 'v12'
   INSTALL4J_LICENSE_KEY: ${{ secrets.INSTALL4J_12_LICENSE_KEY }}
   AWS_DEFAULT_REGION: us-east-1
