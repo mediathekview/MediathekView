@@ -38,7 +38,7 @@ class ApplicationDownloadConfiguration(
         }
 
     var downloadContinuationTime: Int
-        get() = config.getInt(DOWNLOAD_CONTINUATION_TIME, Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME.toInt())
+        get() = config.getInt(DOWNLOAD_CONTINUATION_TIME, Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME)
         set(newValue) {
             config.setProperty(DOWNLOAD_CONTINUATION_TIME, newValue)
         }
