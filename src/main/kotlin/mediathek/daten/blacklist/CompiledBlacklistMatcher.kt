@@ -12,11 +12,11 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
     }
 
     fun matches(film: DatenFilm): Boolean =
-        ruleIndex.matches(FilmFields(film))
+        ruleIndex.matches(film)
 
     fun countMatchesByRule(films: Iterable<DatenFilm>): IntArray {
         val counts = IntArray(ruleCount)
-        films.forEach { film -> ruleIndex.countMatches(FilmFields(film), counts) }
+        films.forEach { film -> ruleIndex.countMatches(film, counts) }
         return counts
     }
 
@@ -27,7 +27,7 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
         val titleMatcher: FieldMatcher,
         val themaTitleMatcher: FieldMatcher
     ) {
-        fun matches(film: FilmFields): Boolean =
+        fun matches(film: DatenFilm): Boolean =
             titleMatcher.matchesTitle(film) &&
                 (themaTitleMatcher.matchesThema(film) || themaTitleMatcher.matchesTitle(film))
 
@@ -65,32 +65,51 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
             }
         }
 
-        fun matches(film: FilmFields): Boolean =
+        fun matches(film: DatenFilm): Boolean =
             matchesAny(globalRules, film) ||
                 matchesAny(senderRules[film.sender], film) ||
                 matchesAny(themaRules[film.thema], film) ||
                 matchesSenderThemaRules(film)
 
-        fun countMatches(film: FilmFields, counts: IntArray) {
+        fun countMatches(film: DatenFilm, counts: IntArray) {
             countMatches(globalRules, film, counts)
             countMatches(senderRules[film.sender], film, counts)
             countMatches(themaRules[film.thema], film, counts)
             countMatches(senderThemaRules[film.sender]?.get(film.thema), film, counts)
         }
 
-        private fun matchesSenderThemaRules(film: FilmFields): Boolean {
+        private fun matchesSenderThemaRules(film: DatenFilm): Boolean {
             val rulesByThema = senderThemaRules[film.sender] ?: return false
             return matchesAny(rulesByThema[film.thema], film)
         }
 
-        private fun matchesAny(rules: List<CompiledRule>?, film: FilmFields): Boolean =
-            rules?.any { it.matches(film) } == true
+        private fun matchesAny(rules: List<CompiledRule>?, film: DatenFilm): Boolean {
+            if (rules == null) {
+                return false
+            }
 
-        private fun countMatches(rules: List<CompiledRule>?, film: FilmFields, counts: IntArray) {
-            rules?.forEach { rule ->
+            var index = 0
+            while (index < rules.size) {
+                if (rules[index].matches(film)) {
+                    return true
+                }
+                index++
+            }
+            return false
+        }
+
+        private fun countMatches(rules: List<CompiledRule>?, film: DatenFilm, counts: IntArray) {
+            if (rules == null) {
+                return
+            }
+
+            var index = 0
+            while (index < rules.size) {
+                val rule = rules[index]
                 if (rule.matches(film)) {
                     counts[rule.index]++
                 }
+                index++
             }
         }
     }
@@ -100,17 +119,17 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
         private val literalTokens: Array<String>,
         private val matchAll: Boolean
     ) {
-        fun matchesTitle(film: FilmFields): Boolean =
-            matches(film.title, film::lowercaseTitle)
+        fun matchesTitle(film: DatenFilm): Boolean =
+            matches(film.title)
 
-        fun matchesThema(film: FilmFields): Boolean =
-            matches(film.thema, film::lowercaseThema)
+        fun matchesThema(film: DatenFilm): Boolean =
+            matches(film.thema)
 
-        private fun matches(input: String, lowercaseInput: () -> String): Boolean =
+        private fun matches(input: String): Boolean =
             when {
                 matchAll -> true
                 pattern != null -> pattern.matcher(input).matches()
-                else -> Filter.checkLowercase(literalTokens, lowercaseInput())
+                else -> Filter.checkContainsIgnoreCase(literalTokens, input)
             }
 
         companion object {
@@ -136,25 +155,5 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
                 return FieldMatcher(null, tokens, false)
             }
         }
-    }
-
-    private class FilmFields(private val film: DatenFilm) {
-        val sender: String
-            get() = film.sender
-
-        val thema: String
-            get() = film.thema
-
-        val title: String
-            get() = film.title
-
-        private var lowercaseThema: String? = null
-        private var lowercaseTitle: String? = null
-
-        fun lowercaseThema(): String =
-            lowercaseThema ?: thema.lowercase(Locale.getDefault()).also { lowercaseThema = it }
-
-        fun lowercaseTitle(): String =
-            lowercaseTitle ?: title.lowercase(Locale.getDefault()).also { lowercaseTitle = it }
     }
 }

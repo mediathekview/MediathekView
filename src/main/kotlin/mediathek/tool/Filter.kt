@@ -20,7 +20,6 @@ package mediathek.tool
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
-import mediathek.daten.DatenFilm
 import org.apache.logging.log4j.LogManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -43,57 +42,6 @@ object Filter {
     private val cache: LoadingCache<String, Pattern> = Caffeine.newBuilder()
         .expireAfterAccess(5.minutes.toJavaDuration())
         .build { pattern -> compilePattern(pattern) }
-
-    fun filterAufFilmPruefen(
-        senderSuchen: String,
-        themaSuchen: String,
-        titelSuchen: Array<String>,
-        themaTitelSuchen: Array<String>,
-        irgendwoSuchen: Array<String>,
-        film: DatenFilm,
-    ): Boolean {
-        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
-        // senderSuchen exakt mit sender
-        // themaSuchen exakt mit thema
-        // titelSuchen muss im Titel nur enthalten sein
-        val thema = film.thema
-        val title = film.title
-
-        return senderConditionExists(senderSuchen, film) &&
-            conditionExists(themaSuchen, thema) &&
-            titleConditionExists(titelSuchen, title) &&
-            themaTitelConditionExists(themaTitelSuchen, thema, title) &&
-            irgendwoConditionExists(film, irgendwoSuchen, thema, title)
-    }
-
-    private fun irgendwoConditionExists(
-        film: DatenFilm,
-        irgendwoSuchen: Array<String>,
-        thema: String,
-        title: String,
-    ): Boolean =
-        irgendwoSuchen.isEmpty() ||
-            pruefen(irgendwoSuchen, film.description) ||
-            pruefen(irgendwoSuchen, thema) ||
-            pruefen(irgendwoSuchen, title)
-
-    private fun themaTitelConditionExists(themaTitelSuchen: Array<String>, thema: String, title: String): Boolean =
-        themaTitelSuchen.isEmpty() ||
-            pruefen(themaTitelSuchen, thema) ||
-            pruefen(themaTitelSuchen, title)
-
-    private fun titleConditionExists(titelSuchen: Array<String>, title: String): Boolean {
-        // performance bottleneck
-        return titelSuchen.isEmpty() || pruefen(titelSuchen, title)
-    }
-
-    private fun conditionExists(obj1: String, obj2: String): Boolean =
-        obj1.isEmpty() || obj2.equals(obj1, ignoreCase = true)
-
-    private fun senderConditionExists(senderSuchen: String, film: DatenFilm): Boolean {
-        // performance bottleneck
-        return senderSuchen.isEmpty() || film.sender.compareTo(senderSuchen) == 0
-    }
 
     fun lengthCheck(filterLaengeInMinuten: Int, filmLaenge: Long): Boolean =
         filterLaengeInMinuten == 0 || filmLaenge == 0L
@@ -139,8 +87,27 @@ object Filter {
      * @param im checked String IN LOWERCASE!!!!!
      * @return true or false
      */
-    fun checkLowercase(filter: Array<String>, im: String): Boolean =
-        filter.any { token -> im.contains(token) }
+    fun checkLowercase(filter: Array<String>, im: String): Boolean {
+        var index = 0
+        while (index < filter.size) {
+            if (im.contains(filter[index])) {
+                return true
+            }
+            index++
+        }
+        return false
+    }
+
+    fun checkContainsIgnoreCase(filter: Array<String>, im: String): Boolean {
+        var index = 0
+        while (index < filter.size) {
+            if (im.contains(filter[index], ignoreCase = true)) {
+                return true
+            }
+            index++
+        }
+        return false
+    }
 
     fun isPattern(textSuchen: String): Boolean =
         textSuchen.startsWith("#:")

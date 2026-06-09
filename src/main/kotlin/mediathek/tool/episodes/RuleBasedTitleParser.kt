@@ -28,10 +28,12 @@ class RuleBasedTitleParser(
      * Try to match each pattern against the title.
      * @return Optional.of(SeasonEpisode) if a pattern matches; otherwise Optional.empty().
      */
-    fun parse(title: String): Optional<SeasonEpisode> {
-        val titleLowercase = title.lowercase(Locale.ROOT)
+    fun parse(title: String): Optional<SeasonEpisode> =
+        Optional.ofNullable(parseOrNull(title))
+
+    fun parseOrNull(title: String): SeasonEpisode? {
         for (rulePattern in patterns) {
-            if (!rulePattern.matchesGuards(title, titleLowercase)) {
+            if (!rulePattern.matchesGuards(title)) {
                 continue
             }
 
@@ -39,24 +41,38 @@ class RuleBasedTitleParser(
             if (matcher.find()) {
                 val season = matcher.group("season").toInt()
                 val episode = matcher.group("episode").toInt()
-                return Optional.of(SeasonEpisode(season, episode))
+                return SeasonEpisode(season, episode)
             }
         }
-        return Optional.empty()
+        return null
     }
 
     class RulePattern(
         val pattern: Pattern,
-        private val requiredMarkers: Array<out String>,
+        requiredMarkers: Array<out String>,
     ) {
-        fun matchesGuards(title: String, titleLowercase: String): Boolean =
-            requiredMarkers.all { marker -> containsMarker(title, titleLowercase, marker) }
+        private val requiredMarkers = Array(requiredMarkers.size) { index -> RequiredMarker(requiredMarkers[index]) }
 
-        private fun containsMarker(title: String, titleLowercase: String, marker: String): Boolean =
-            if (marker == marker.lowercase(Locale.ROOT)) {
-                titleLowercase.contains(marker)
-            } else {
-                title.contains(marker)
+        fun matchesGuards(title: String): Boolean {
+            var index = 0
+            while (index < requiredMarkers.size) {
+                if (!requiredMarkers[index].isContainedIn(title)) {
+                    return false
+                }
+                index++
             }
+            return true
+        }
+
+        private class RequiredMarker(private val value: String) {
+            private val ignoreCase = value.any(Char::isLetter) && value == value.lowercase(Locale.ROOT)
+
+            fun isContainedIn(title: String): Boolean =
+                if (ignoreCase) {
+                    title.contains(value, ignoreCase = true)
+                } else {
+                    title.contains(value)
+                }
+        }
     }
 }

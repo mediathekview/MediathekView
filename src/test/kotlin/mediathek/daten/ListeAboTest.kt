@@ -136,4 +136,52 @@ class ListeAboTest {
 
         assertSame(descriptionAbo, abos.getAboFuerFilm_schnell(film, false))
     }
+
+    @Test
+    fun earlierGlobalAboStillWinsBeforeLaterSenderSpecificAbo() {
+        val globalAbo = DatenAbo().apply {
+            title = "Heute Journal"
+        }
+        val zdfAbo = DatenAbo().apply {
+            sender = "ZDF"
+            title = "Heute Journal"
+        }
+        val abos = ListeAbo().apply {
+            addAbo(globalAbo)
+            addAbo(zdfAbo)
+        }
+        val film = DatenFilm().apply {
+            sender = "ZDF"
+            thema = "Nachrichten"
+            title = "Heute Journal"
+        }
+
+        abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
+
+        assertSame(globalAbo, abos.getAboFuerFilm_schnell(film, false))
+    }
+
+    @Test
+    fun earlierSenderSpecificAboStillWinsBeforeLaterGlobalAbo() {
+        val zdfAbo = DatenAbo().apply {
+            sender = "ZDF"
+            title = "Heute Journal"
+        }
+        val globalAbo = DatenAbo().apply {
+            title = "Heute Journal"
+        }
+        val abos = ListeAbo().apply {
+            addAbo(zdfAbo)
+            addAbo(globalAbo)
+        }
+        val film = DatenFilm().apply {
+            sender = "ZDF"
+            thema = "Nachrichten"
+            title = "Heute Journal"
+        }
+
+        abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
+
+        assertSame(zdfAbo, abos.getAboFuerFilm_schnell(film, false))
+    }
 }

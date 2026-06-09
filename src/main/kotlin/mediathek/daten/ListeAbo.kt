@@ -19,6 +19,11 @@
  */
 package mediathek.daten
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
@@ -108,8 +113,9 @@ class ListeAbo : ArrayList<DatenAbo>() {
         film.abo = null
     }
 
-    private fun createAboMatcher(abo: DatenAbo): CompiledAboMatcher =
+    private fun createAboMatcher(index: Int, abo: DatenAbo): CompiledAboMatcher =
         CompiledAboMatcher(
+            index = index,
             abo = abo,
             titelFilterPattern = createFilterPattern(abo.title),
             themaFilterPattern = createFilterPattern(abo.themaTitel),
@@ -129,13 +135,16 @@ class ListeAbo : ArrayList<DatenAbo>() {
      *
      * @param film assignee
      */
-    private fun assignAboToFilm(film: DatenFilm, aboMatchers: List<CompiledAboMatcher>) {
+    private fun assignAboToFilm(film: DatenFilm, aboMatchers: IndexedAboMatchers) {
         var textMatch: DatenAbo? = null
-        val filmText = FilmAboMatchText(film)
 
-        for (matcher in aboMatchers) {
+        val candidates = aboMatchers.candidatesFor(film.sender)
+        var candidateIndex = 0
+        while (candidateIndex < candidates.size) {
+            val matcher = candidates[candidateIndex]
+            candidateIndex++
             val abo = matcher.abo
-            if (!matcher.matches(filmText)) {
+            if (!matcher.matches(film)) {
                 continue
             }
 
@@ -173,7 +182,7 @@ class ListeAbo : ArrayList<DatenAbo>() {
 
         val aboMatchers = asSequence()
             .filter { datenAbo -> datenAbo.isActive }
-            .map { datenAbo -> createAboMatcher(datenAbo) }
+            .mapIndexed { index, datenAbo -> createAboMatcher(index, datenAbo) }
             .toList()
 
         if (aboMatchers.isEmpty()) {
@@ -181,37 +190,129 @@ class ListeAbo : ArrayList<DatenAbo>() {
             return
         }
 
-        // das kostet die Zeit!!
-        listeFilme.parallelStream().forEach { film -> assignAboToFilm(film, aboMatchers) }
+        val indexedAboMatchers = IndexedAboMatchers(aboMatchers)
+        assignAbosToFilms(listeFilme.snapshot(), indexedAboMatchers)
+    }
+
+    private fun assignAbosToFilms(films: List<DatenFilm>, aboMatchers: IndexedAboMatchers) {
+        if (films.isEmpty()) {
+            return
+        }
+
+        runBlocking {
+            withContext(Dispatchers.Default) {
+                val workerCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
+                val chunkSize = ((films.size + workerCount - 1) / workerCount).coerceAtLeast(1)
+                val deferredAssignments = ArrayList<Deferred<Unit>>()
+                var startIndex = 0
+                while (startIndex < films.size) {
+                    val endIndex = (startIndex + chunkSize).coerceAtMost(films.size)
+                    val chunkStartIndex = startIndex
+                    val chunkEndIndex = endIndex
+                    deferredAssignments.add(
+                        async {
+                            assignAboToFilmRange(films, chunkStartIndex, chunkEndIndex, aboMatchers)
+                        }
+                    )
+                    startIndex = endIndex
+                }
+
+                var deferredIndex = 0
+                while (deferredIndex < deferredAssignments.size) {
+                    deferredAssignments[deferredIndex].await()
+                    deferredIndex++
+                }
+            }
+        }
+    }
+
+    private fun assignAboToFilmRange(
+        films: List<DatenFilm>,
+        startIndex: Int,
+        endIndex: Int,
+        aboMatchers: IndexedAboMatchers
+    ) {
+        var index = startIndex
+        while (index < endIndex) {
+            assignAboToFilm(films[index], aboMatchers)
+            index++
+        }
     }
 
     private companion object {
         private val LEER = arrayOf("")
     }
 
+    private class IndexedAboMatchers(matchers: List<CompiledAboMatcher>) {
+        private val globalMatchers = matchers.filter { matcher -> matcher.matchesAnySender }
+        private val senderMatchers = matchers
+            .filterNot { matcher -> matcher.matchesAnySender }
+            .groupBy { matcher -> matcher.sender }
+        private val candidatesBySender = senderMatchers.mapValues { (_, matchers) ->
+            mergeByOriginalOrder(globalMatchers, matchers)
+        }
+
+        fun candidatesFor(sender: String): List<CompiledAboMatcher> =
+            candidatesBySender[sender] ?: globalMatchers
+
+        private fun mergeByOriginalOrder(
+            globalMatchers: List<CompiledAboMatcher>,
+            senderMatchers: List<CompiledAboMatcher>
+        ): List<CompiledAboMatcher> {
+            if (globalMatchers.isEmpty()) {
+                return senderMatchers
+            }
+            if (senderMatchers.isEmpty()) {
+                return globalMatchers
+            }
+
+            val merged = ArrayList<CompiledAboMatcher>(globalMatchers.size + senderMatchers.size)
+            var globalIndex = 0
+            var senderIndex = 0
+            while (globalIndex < globalMatchers.size && senderIndex < senderMatchers.size) {
+                val globalMatcher = globalMatchers[globalIndex]
+                val senderMatcher = senderMatchers[senderIndex]
+                if (globalMatcher.index < senderMatcher.index) {
+                    merged.add(globalMatcher)
+                    globalIndex++
+                } else {
+                    merged.add(senderMatcher)
+                    senderIndex++
+                }
+            }
+            while (globalIndex < globalMatchers.size) {
+                merged.add(globalMatchers[globalIndex++])
+            }
+            while (senderIndex < senderMatchers.size) {
+                merged.add(senderMatchers[senderIndex++])
+            }
+            return merged
+        }
+    }
+
     private class CompiledAboMatcher(
+        val index: Int,
         val abo: DatenAbo,
         val titelFilterPattern: Array<String>,
         val themaFilterPattern: Array<String>,
         val irgendwoFilterPattern: Array<String>,
     ) {
-        fun matches(filmText: FilmAboMatchText): Boolean =
-            senderConditionExists(filmText) &&
-                themaConditionExists(filmText) &&
-                filterMatches(titelFilterPattern, filmText.title) { filmText.titleLowercase } &&
-                (filterMatches(themaFilterPattern, filmText.thema) { filmText.themaLowercase } ||
-                    filterMatches(themaFilterPattern, filmText.title) { filmText.titleLowercase }) &&
-                (filterMatches(irgendwoFilterPattern, filmText.description) { filmText.descriptionLowercase } ||
-                    filterMatches(irgendwoFilterPattern, filmText.thema) { filmText.themaLowercase } ||
-                    filterMatches(irgendwoFilterPattern, filmText.title) { filmText.titleLowercase })
+        val sender: String = abo.sender
+        val matchesAnySender: Boolean = sender.isEmpty()
 
-        private fun senderConditionExists(filmText: FilmAboMatchText): Boolean =
-            abo.sender.isEmpty() || filmText.sender.compareTo(abo.sender) == 0
+        fun matches(film: DatenFilm): Boolean =
+            themaConditionExists(film) &&
+                filterMatches(titelFilterPattern, film.title) &&
+                (filterMatches(themaFilterPattern, film.thema) ||
+                    filterMatches(themaFilterPattern, film.title)) &&
+                (filterMatches(irgendwoFilterPattern, film.description) ||
+                    filterMatches(irgendwoFilterPattern, film.thema) ||
+                    filterMatches(irgendwoFilterPattern, film.title))
 
-        private fun themaConditionExists(filmText: FilmAboMatchText): Boolean =
-            abo.thema.isEmpty() || filmText.thema.equals(abo.thema, ignoreCase = true)
+        private fun themaConditionExists(film: DatenFilm): Boolean =
+            abo.thema.isEmpty() || film.thema.equals(abo.thema, ignoreCase = true)
 
-        private fun filterMatches(filter: Array<String>, text: String, lowercaseText: () -> String): Boolean {
+        private fun filterMatches(filter: Array<String>, text: String): Boolean {
             val firstFilter = filter[0]
             if (filter.size == 1) {
                 if (firstFilter.isEmpty()) {
@@ -223,26 +324,7 @@ class ListeAbo : ArrayList<DatenAbo>() {
                 }
             }
 
-            return Filter.checkLowercase(filter, lowercaseText())
+            return Filter.checkContainsIgnoreCase(filter, text)
         }
-    }
-
-    private class FilmAboMatchText(film: DatenFilm) {
-        val sender: String = film.sender
-        val thema: String = film.thema
-        val title: String = film.title
-        val description: String = film.description
-        private var themaLowercaseValue: String? = null
-        private var titleLowercaseValue: String? = null
-        private var descriptionLowercaseValue: String? = null
-
-        val themaLowercase: String
-            get() = themaLowercaseValue ?: thema.lowercase(Locale.getDefault()).also { themaLowercaseValue = it }
-
-        val titleLowercase: String
-            get() = titleLowercaseValue ?: title.lowercase(Locale.getDefault()).also { titleLowercaseValue = it }
-
-        val descriptionLowercase: String
-            get() = descriptionLowercaseValue ?: description.lowercase(Locale.getDefault()).also { descriptionLowercaseValue = it }
     }
 }

@@ -1,6 +1,7 @@
 package mediathek.daten.blacklist
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -111,7 +112,12 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
         }
         val predicate = createPredicate(blacklistSnapshot)
 
-        filterFilmSnapshot(filmSnapshot, filterDuplicates, predicate).forEach(filteredList::add)
+        val filteredSnapshot = filterFilmSnapshot(filmSnapshot, filterDuplicates, predicate)
+        var index = 0
+        while (index < filteredSnapshot.size) {
+            filteredList.add(filteredSnapshot[index])
+            index++
+        }
     }
 
     /**
@@ -140,7 +146,16 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
             }
         }
 
-        return Predicate { film -> filters.all { filter -> filter(film) } }
+        return Predicate { film ->
+            var index = 0
+            while (index < filters.size) {
+                if (!filters[index](film)) {
+                    return@Predicate false
+                }
+                index++
+            }
+            true
+        }
     }
 
     /**
@@ -188,23 +203,54 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
         predicate: Predicate<DatenFilm>
     ): List<DatenFilm> {
         if (filmSnapshot.size < COROUTINE_FILTER_THRESHOLD) {
-            return filmSnapshot.filter { film -> shouldKeepFilm(film, filterDuplicates, predicate) }
+            return filterFilmRange(filmSnapshot, 0, filmSnapshot.size, filterDuplicates, predicate)
         }
 
         return runBlocking {
             val workerCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
             val chunkSize = (filmSnapshot.size / (workerCount * CHUNKS_PER_WORKER)).coerceAtLeast(MIN_FILTER_CHUNK_SIZE)
-
-            filmSnapshot
-                .chunked(chunkSize)
-                .map { chunk ->
+            val deferredChunks = ArrayList<Deferred<List<DatenFilm>>>()
+            var startIndex = 0
+            while (startIndex < filmSnapshot.size) {
+                val endIndex = (startIndex + chunkSize).coerceAtMost(filmSnapshot.size)
+                val chunkStartIndex = startIndex
+                val chunkEndIndex = endIndex
+                deferredChunks.add(
                     async(Dispatchers.Default) {
-                        chunk.filter { film -> shouldKeepFilm(film, filterDuplicates, predicate) }
+                        filterFilmRange(filmSnapshot, chunkStartIndex, chunkEndIndex, filterDuplicates, predicate)
                     }
-                }
-                .awaitAll()
-                .flatten()
+                )
+                startIndex = endIndex
+            }
+
+            val filteredChunks = deferredChunks.awaitAll()
+            val filteredFilms = ArrayList<DatenFilm>()
+            var chunkIndex = 0
+            while (chunkIndex < filteredChunks.size) {
+                filteredFilms.addAll(filteredChunks[chunkIndex])
+                chunkIndex++
+            }
+            filteredFilms
         }
+    }
+
+    private fun filterFilmRange(
+        filmSnapshot: List<DatenFilm>,
+        startIndex: Int,
+        endIndex: Int,
+        filterDuplicates: Boolean,
+        predicate: Predicate<DatenFilm>
+    ): List<DatenFilm> {
+        val filteredFilms = ArrayList<DatenFilm>(endIndex - startIndex)
+        var index = startIndex
+        while (index < endIndex) {
+            val film = filmSnapshot[index]
+            if (shouldKeepFilm(film, filterDuplicates, predicate)) {
+                filteredFilms.add(film)
+            }
+            index++
+        }
+        return filteredFilms
     }
 
     private fun calculateZeitraumBoundaries() {

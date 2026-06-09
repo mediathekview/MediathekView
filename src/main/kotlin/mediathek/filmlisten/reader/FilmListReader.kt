@@ -32,6 +32,7 @@ import mediathek.filmlisten.FilmListMetadataStore
 import mediathek.tool.ProgressMonitorInputStream
 import mediathek.tool.TrailerTeaserChecker
 import mediathek.tool.datum.DateUtil
+import mediathek.tool.episodes.RuleBasedTitleParser
 import mediathek.tool.episodes.TitleParserManager
 import mediathek.tool.http.MVHttpClient
 import mediathek.tool.time.Stopwatch
@@ -579,22 +580,44 @@ open class FilmListReader : AutoCloseable {
     private suspend fun parseSeasonAndEpisode(films: List<DatenFilm>): Int = coroutineScope {
         val workerCount = Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
         val chunkSize = ((films.size + workerCount - 1) / workerCount).coerceAtLeast(1)
-        films.chunked(chunkSize)
-            .map { chunk ->
+        val deferredCounts = ArrayList<Deferred<Int>>()
+        var startIndex = 0
+        while (startIndex < films.size) {
+            val endIndex = (startIndex + chunkSize).coerceAtMost(films.size)
+            val chunkStartIndex = startIndex
+            val chunkEndIndex = endIndex
+            deferredCounts.add(
                 async {
-                    var detectedCount = 0
-                    for (film in chunk) {
-                        val result = manager.parse(film.sender, film.title)
-                        result.ifPresent { seasonEpisode ->
-                            film.setSeasonEpisode(seasonEpisode)
-                            detectedCount++
-                        }
-                    }
-                    detectedCount
+                    parseSeasonAndEpisodeRange(films, chunkStartIndex, chunkEndIndex)
                 }
+            )
+            startIndex = endIndex
+        }
+
+        deferredCounts.awaitAll().sum()
+    }
+
+    private fun parseSeasonAndEpisodeRange(films: List<DatenFilm>, startIndex: Int, endIndex: Int): Int {
+        var detectedCount = 0
+        var lastSender: String? = null
+        var parser: RuleBasedTitleParser? = null
+        var index = startIndex
+        while (index < endIndex) {
+            val film = films[index]
+            val sender = film.sender
+            if (sender != lastSender) {
+                lastSender = sender
+                parser = manager.parserFor(sender)
             }
-            .awaitAll()
-            .sum()
+
+            val seasonEpisode = parser?.parseOrNull(film.title)
+            if (seasonEpisode != null) {
+                film.setSeasonEpisode(seasonEpisode)
+                detectedCount++
+            }
+            index++
+        }
+        return detectedCount
     }
 
     /**

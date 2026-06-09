@@ -195,5 +195,11 @@ class TitleParserManager {
      * Parse a title for a given sender.
      */
     fun parse(sender: String, title: String): Optional<SeasonEpisode> =
-        parsers[sender]?.parse(title) ?: Optional.empty()
+        Optional.ofNullable(parseOrNull(sender, title))
+
+    fun parseOrNull(sender: String, title: String): SeasonEpisode? =
+        parserFor(sender)?.parseOrNull(title)
+
+    fun parserFor(sender: String): RuleBasedTitleParser? =
+        parsers[sender]
 }
