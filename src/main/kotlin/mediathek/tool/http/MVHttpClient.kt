@@ -43,7 +43,7 @@ object MVHttpClient {
                     val config = ApplicationConfiguration.getInstance()
                     proxyHost = config.httpProxyHost
                     proxyPort = config.httpProxyPort
-                    if (!proxyHost.isNullOrEmpty() && !proxyPort.isNullOrEmpty()) {
+                    if (proxyHost.isNotEmpty() && proxyPort.isNotEmpty()) {
                         val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(proxyHost, proxyPort.toInt()))
                         logger.info("MVHttpClient: Proxy configured from application config: ({})", proxyHost)
                         createProxyClient(proxy)

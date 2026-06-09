@@ -183,7 +183,7 @@ abstract class PersistentColumnConfigurationTable protected constructor(
             tableRowSorter.sortKeys = sortKeys
             listeSortKeys = sortKeys
         } catch (_: IllegalArgumentException) {
-            listeSortKeys = emptyList<SortKey>()
+            listeSortKeys = emptyList()
         }
     }
 

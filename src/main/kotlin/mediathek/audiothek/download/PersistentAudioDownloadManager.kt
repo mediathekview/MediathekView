@@ -463,7 +463,7 @@ class PersistentAudioDownloadManager(
     }
 
     private fun isRetryableFileException(ex: Exception): Boolean {
-        return ex is FileSystemException || ex is AccessDeniedException || ex is IOException
+        return ex is FileSystemException || ex is IOException
     }
 
     private data class ManagedTask(

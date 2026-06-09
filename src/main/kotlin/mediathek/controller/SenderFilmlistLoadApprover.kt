@@ -14,7 +14,7 @@ object SenderFilmlistLoadApprover {
     init {
         //load settings from config
         val storedSenderList = applicationConfiguration.approvedFilmlistLoadSenders
-        if (storedSenderList == null || storedSenderList.isEmpty()) {
+        if (storedSenderList.isEmpty()) {
             //manually approve all of them and store in config :(
             senderSet.addAll(SenderListBoxModel.providedSenderList)
             applicationConfiguration.setApprovedFilmlistLoadSenders(senderSet)

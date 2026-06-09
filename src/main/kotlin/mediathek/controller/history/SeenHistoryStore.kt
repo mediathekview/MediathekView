@@ -26,8 +26,8 @@ import java.nio.file.Path
 import java.sql.*
 
 internal class SeenHistoryStore(
-    private val dataSource: SQLiteDataSource,
-    private val dbPath: Path
+    dataSource: SQLiteDataSource,
+    dbPath: Path
 ) : AutoCloseable {
     private val connection: Connection
     private val insertStatement: PreparedStatement

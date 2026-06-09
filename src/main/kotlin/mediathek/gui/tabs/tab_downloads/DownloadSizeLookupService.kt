@@ -62,12 +62,11 @@ internal class DownloadSizeLookupService(
 
                 val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
                 val fetchSizeEnabled = ApplicationConfiguration.getInstance().fetchMissingDownloadFileSize
-                val probeHlsSegments = forceLookup
                 val lookupKey = LookupKey(
                     url = download.downloadUrl,
                     location = currentLocation,
                     fetchSizeEnabled = fetchSizeEnabled,
-                    probeHlsSegments = probeHlsSegments,
+                    probeHlsSegments = forceLookup,
                 )
 
                 if (!forceLookup) {
@@ -83,7 +82,7 @@ internal class DownloadSizeLookupService(
                     val wasGeoBlocked = download.isGeoBlockedFor(currentLocation)
                     val lookupResult = download.queryLiveSize(
                         forceFetch = forceLookup,
-                        probeHlsSegments = probeHlsSegments,
+                        probeHlsSegments = forceLookup,
                     )
                     if (lookupResult != null && lookupResult.byteLength > 0 && !forceLookup) {
                         cachedLookupResults.put(

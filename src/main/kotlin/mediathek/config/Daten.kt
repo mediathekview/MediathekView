@@ -76,7 +76,7 @@ class Daten private constructor() {
     private var backupAlreadyHandled = false
     private var aboHistoryJob: Deferred<Unit>? = null
 
-    val allSendersList: EventList<String> = SortedList<String>(SenderListBoxModel.providedSenderList).apply {
+    val allSendersList: EventList<String> = SortedList(SenderListBoxModel.providedSenderList).apply {
         setComparator(GermanStringSorter)
     }
 

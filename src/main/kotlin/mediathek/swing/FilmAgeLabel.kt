@@ -23,6 +23,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.tool.DurationFormatter
 import javax.swing.JLabel
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 class FilmAgeLabel(
     private val ageProvider: () -> Duration?,
@@ -57,7 +58,7 @@ class FilmAgeLabel(
         updateJob = scope.launch {
             while (isActive) {
                 updateLabel()
-                delay(1_000)
+                delay(1.seconds)
             }
         }
     }

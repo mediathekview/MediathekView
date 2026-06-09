@@ -19,6 +19,7 @@
 package mediathek.gui.dialogEinstellungen.shutdown
 
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import javax.swing.DefaultComboBoxModel
@@ -73,6 +74,6 @@ class ShutdownActionComboBox : JComboBox<String>() {
         const val KEY = "shutdownAction"
         const val COMMAND = "/usr/bin/defaults"
         val ACTIONS = listOf("shutdown", "sleep", "restart")
-        val logger = LogManager.getLogger(ShutdownActionComboBox::class.java)
+        val logger: Logger = LogManager.getLogger()
     }
 }

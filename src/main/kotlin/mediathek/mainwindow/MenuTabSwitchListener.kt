@@ -24,7 +24,7 @@ import javax.swing.event.MenuEvent
 import javax.swing.event.MenuListener
 
 internal class MenuTabSwitchListener(
-    private val mediathekGui: MediathekGui,
+    mediathekGui: MediathekGui,
     private val targetTab: Component,
 ) : MenuListener {
     private val tabbedPane: JTabbedPane = mediathekGui.tabbedPane

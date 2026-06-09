@@ -588,6 +588,7 @@ object Main {
             val filterConfig = applicationConfiguration.createFilterConfiguration()
             val activeFilter = filterConfig.currentFilter
 
+            var splashHidden = false
             try {
                 val filtersNeedingMigration = filterConfig.availableFilters.stream()
                     .filter { filter -> filterConfig.setCurrentFilter(filter).filmLengthMax == 120.0 }
@@ -599,22 +600,14 @@ object Main {
                 }
 
                 SplashScreenLifecycle.hide()
-                val optionPane = JOptionPane(
+                splashHidden = true
+                val shouldActivate = showStartupQuestionDialog(
                     "<html>Die maximale Filterlänge wurde <b>von 120 auf 240 Minuten</b> erhöht.<br/>" +
                         "Die Filter wurden damals nicht automatisch angepasst.<br/><br/>" +
-                        "Soll MediathekView einmalig alle Filter anpassen?</html>",
-                    JOptionPane.QUESTION_MESSAGE,
-                    JOptionPane.YES_NO_OPTION
+                        "Soll MediathekView einmalig alle Filter anpassen?</html>"
                 )
-                val dialog = optionPane.createDialog(Konstanten.PROGRAMMNAME)
-                dialog.isAlwaysOnTop = true
-                dialog.isModal = true
-                dialog.isResizable = true
-                dialog.defaultCloseOperation = JDialog.DISPOSE_ON_CLOSE
-                dialog.isVisible = true
-                val result = optionPane.value
-                if (result != null) {
-                    if (result as Int == JOptionPane.YES_OPTION) {
+                if (shouldActivate != null) {
+                    if (shouldActivate) {
                         logger.info("Evaluating max film length for new maximum...")
                         for (filter in filtersNeedingMigration) {
                             val currentFilter = filterConfig.setCurrentFilter(filter)
@@ -629,8 +622,10 @@ object Main {
                 }
             } finally {
                 filterConfig.setCurrentFilter(activeFilter)
+                if (splashHidden) {
+                    SplashScreenLifecycle.show()
+                }
             }
-            SplashScreenLifecycle.show()
         }
     }
 
@@ -649,29 +644,37 @@ object Main {
             }
 
             SplashScreenLifecycle.hide()
-            val optionPane = JOptionPane(
-                "<html>Diese Version unterstützt neue Sender, die in den Einstellungen aktiviert werden müssen.<br/>" +
-                    "Soll MediathekView einmalig alle Sender aktivieren?</html>",
-                JOptionPane.QUESTION_MESSAGE,
-                JOptionPane.YES_NO_OPTION
-            )
-            val dialog = optionPane.createDialog(Konstanten.PROGRAMMNAME)
-            dialog.isAlwaysOnTop = true
-            dialog.isModal = true
-            dialog.isResizable = true
-            dialog.defaultCloseOperation = JDialog.DISPOSE_ON_CLOSE
-            dialog.isVisible = true
-            val result = optionPane.value
-            if (result != null) {
-                if (result as Int == JOptionPane.YES_OPTION) {
-                    logger.info("Activating new senders...")
-                    SenderFilmlistLoadApprover.approveAll()
+            try {
+                val shouldActivate = showStartupQuestionDialog(
+                    "<html>Diese Version unterstützt neue Sender, die in den Einstellungen aktiviert werden müssen.<br/>" +
+                        "Soll MediathekView einmalig alle Sender aktivieren?</html>"
+                )
+                if (shouldActivate != null) {
+                    if (shouldActivate) {
+                        logger.info("Activating new senders...")
+                        SenderFilmlistLoadApprover.approveAll()
+                    }
+                    applicationConfiguration.isNewSenderActivationQuestionCompleted = true
                 }
-                applicationConfiguration.isNewSenderActivationQuestionCompleted = true
+            } finally {
+                SplashScreenLifecycle.show()
             }
-
-            SplashScreenLifecycle.show()
         }
+    }
+
+    private fun showStartupQuestionDialog(message: String): Boolean? {
+        val optionPane = JOptionPane(
+            message,
+            JOptionPane.QUESTION_MESSAGE,
+            JOptionPane.YES_NO_OPTION
+        )
+        val dialog = optionPane.createDialog(Konstanten.PROGRAMMNAME)
+        dialog.isAlwaysOnTop = true
+        dialog.isModal = true
+        dialog.isResizable = true
+        dialog.defaultCloseOperation = JDialog.DISPOSE_ON_CLOSE
+        dialog.isVisible = true
+        return (optionPane.value as? Int)?.let { it == JOptionPane.YES_OPTION }
     }
 
     /**

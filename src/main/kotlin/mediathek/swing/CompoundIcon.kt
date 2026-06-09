@@ -28,8 +28,8 @@ import javax.swing.Icon
 class CompoundIcon(
     val axis: Axis = Axis.X_AXIS,
     val gap: Int = 0,
-    private val alignmentX: Float = CENTER,
-    private val alignmentY: Float = CENTER,
+    alignmentX: Float = CENTER,
+    alignmentY: Float = CENTER,
     vararg icons: Icon,
 ) : Icon {
     enum class Axis {
@@ -38,11 +38,7 @@ class CompoundIcon(
         Z_AXIS,
     }
 
-    private val icons: Array<out Icon> = icons.also { iconArray ->
-        iconArray.forEachIndexed { index, icon ->
-            requireNotNull(icon) { "Icon ($index) cannot be null" }
-        }
-    }
+    private val icons: Array<out Icon> = icons
     private val normalizedAlignmentX = alignmentX.coerceIn(0.0f, 1.0f)
     private val normalizedAlignmentY = alignmentY.coerceIn(0.0f, 1.0f)
 

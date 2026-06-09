@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 class AboHistoryController(
     private val legacyFilePath: Path = StandardLocations.getSettingsDirectory().resolve(LEGACY_FILENAME),
-    private val databasePath: Path = StandardLocations.getSettingsDirectory().resolve(DATABASE_FILENAME),
+    databasePath: Path = StandardLocations.getSettingsDirectory().resolve(DATABASE_FILENAME),
     private val databaseDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
 ) {
     private val dataSource = createDataSource(databasePath)
@@ -104,7 +104,7 @@ class AboHistoryController(
         }
     }
 
-    private suspend fun migrateLegacyFileIfPresent() {
+    private fun migrateLegacyFileIfPresent() {
         if (Files.notExists(legacyFilePath)) {
             return
         }

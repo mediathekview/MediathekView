@@ -78,15 +78,10 @@ internal object DownloadTableModelUpdater {
         return true
     }
 
-    private fun createModelRow(download: DatenDownload): Array<Any?> {
-        val row = arrayOfNulls<Any>(DownloadColumns.COUNT)
-        for (index in 0 until DownloadColumns.COUNT) {
-            row[index] = modelValue(download, index)
-        }
-        return row
-    }
+    private fun createModelRow(download: DatenDownload): Array<Any> =
+        Array(DownloadColumns.COUNT) { index -> modelValue(download, index) }
 
-    private fun modelValue(download: DatenDownload, index: Int): Any? =
+    private fun modelValue(download: DatenDownload, index: Int): Any =
         when {
             index == DownloadColumns.NR -> download.nr
             index == DownloadColumns.FILM_NR -> download.film?.filmNr ?: 0
@@ -102,7 +97,7 @@ internal object DownloadTableModelUpdater {
             else -> visibleModelValue(download, index)
         }
 
-    private fun visibleModelValue(download: DatenDownload, index: Int): Any? =
+    private fun visibleModelValue(download: DatenDownload, index: Int): Any =
         when (index) {
             DownloadColumns.ABO -> download.aboName
             DownloadColumns.SENDER -> download.sender
