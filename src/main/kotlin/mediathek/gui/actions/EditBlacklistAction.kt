@@ -1,15 +1,17 @@
 package mediathek.gui.actions
 
 import mediathek.config.Daten
-import mediathek.gui.dialog.DialogLeer
+import mediathek.gui.dialog.StandardCloseDialog
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
 import mediathek.swing.IconUtils
+import mediathek.swing.centerOnScreen
 import mediathek.tool.GuiFunktionen
 import org.apache.commons.lang3.SystemUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignL
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import javax.swing.AbstractAction
+import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.KeyStroke
 
@@ -29,8 +31,11 @@ class EditBlacklistAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        DialogLeer(parent, true).apply {
-            init("Blacklist", PanelBlacklist(Daten.getInstance(), null, PanelBlacklist::class.java.name + "_3"))
+        object : StandardCloseDialog(parent, "Blacklist", true) {
+            override fun createContentPanel(): JComponent =
+                PanelBlacklist(Daten.getInstance(), null, PanelBlacklist::class.java.name + "_3")
+        }.apply {
+            centerOnScreen()
             isVisible = true
         }
     }

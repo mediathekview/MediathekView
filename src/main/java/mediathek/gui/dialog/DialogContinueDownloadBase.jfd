@@ -1,0 +1,88 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "fillx,insets 5,hidemode 3,gap rel rel"
+			"$columnConstraints": "[grow,fill]"
+			"$rowConstraints": "[][][]"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 0
+			"title": "Download weiterführen"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": "<html>Die Filmdatei existiert bereits.<br>Wie möchten Sie forfahren?</html>"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3,fillx,gap rel rel"
+				"$columnConstraints": "[grow]"
+				"$rowConstraints": "[][]"
+			} ) {
+				name: "jPanelNewName"
+				"border": new javax.swing.border.EmptyBorder( 0, 0, 20, 0 )
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "jPanelPath"
+					"preferredSize": new java.awt.Dimension( 527, 96 )
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0,growx,width 527,height 96"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonNeuerName"
+					"text": "Mit diesem Namen neu Starten"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1,alignx right"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1,growx"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3,alignx right,gap rel rel"
+				"$columnConstraints": "[][]"
+				"$rowConstraints": "[]"
+			} ) {
+				name: "buttonPanel"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonAbbrechen"
+					"text": "Abbrechen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonWeiter"
+					"text": "Weiterführen in XXX"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 2,alignx right"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}
