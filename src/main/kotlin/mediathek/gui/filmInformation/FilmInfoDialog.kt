@@ -23,15 +23,18 @@ import com.formdev.flatlaf.util.ScaledImageIcon
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.expiration.SenderExpirationService
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.*
+import mediathek.tool.CopyToClipboardAction
+import mediathek.tool.DurationFormatter
+import mediathek.tool.GuiFunktionen
+import mediathek.tool.SwingErrorDialog
 import mediathek.tool.datum.DateUtil
 import mediathek.tool.sender_icon_cache.MVSenderIconCache
 import mediathek.tool.sender_icon_cache.SenderIconRenderUtil
-import org.apache.commons.configuration2.sync.LockMode
 import java.awt.*
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
@@ -67,8 +70,7 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
         updateTextFields()
         restoreLocation()
 
-        isVisible = ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.FilmInfoDialog.VISIBLE, false)
+        isVisible = ApplicationConfiguration.getInstance().filmInfoDialogVisible
         setupListeners()
     }
 
@@ -94,13 +96,11 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
     private fun setupListeners() {
         addWindowListener(object : WindowAdapter() {
             override fun windowOpened(e: WindowEvent) {
-                ApplicationConfiguration.getConfiguration()
-                    .setProperty(ApplicationConfiguration.FilmInfoDialog.VISIBLE, true)
+                ApplicationConfiguration.getInstance().filmInfoDialogVisible = true
             }
 
             override fun windowClosed(e: WindowEvent) {
-                ApplicationConfiguration.getConfiguration()
-                    .setProperty(ApplicationConfiguration.FilmInfoDialog.VISIBLE, false)
+                ApplicationConfiguration.getInstance().filmInfoDialogVisible = false
             }
         })
         addComponentListener(object : ComponentAdapter() {
@@ -117,22 +117,10 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
     }
 
     private fun restoreLocation() {
-        val config = ApplicationConfiguration.getConfiguration()
-        try {
-            config.withLock(LockMode.READ) {
-                val newLocation = Point(
-                    getInt(ApplicationConfiguration.FilmInfoDialog.X),
-                    getInt(ApplicationConfiguration.FilmInfoDialog.Y),
-                )
-                location = newLocation
-
-                val w = getInt(ApplicationConfiguration.FilmInfoDialog.WIDTH)
-                val h = getInt(ApplicationConfiguration.FilmInfoDialog.HEIGHT)
-                if (w > 50 && h > 50) {
-                    size = Dimension(w, h)
-                }
-            }
-        } catch (_: NoSuchElementException) {
+        val state = ApplicationConfiguration.getInstance().filmInfoDialogState
+        if (state.hasStoredBounds()) {
+            location = Point(state.x, state.y)
+            size = Dimension(state.width, state.height)
         }
     }
 
@@ -140,14 +128,8 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
         if (!isVisible) {
             return
         }
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.WRITE) {
-            val location = locationOnScreen
-            setProperty(ApplicationConfiguration.FilmInfoDialog.X, location.x)
-            setProperty(ApplicationConfiguration.FilmInfoDialog.Y, location.y)
-            setProperty(ApplicationConfiguration.FilmInfoDialog.WIDTH, width)
-            setProperty(ApplicationConfiguration.FilmInfoDialog.HEIGHT, height)
-        }
+        val location = locationOnScreen
+        ApplicationConfiguration.getInstance().setFilmInfoDialogBounds(location.x, location.y, width, height)
     }
 
     private fun setupHyperlink() {

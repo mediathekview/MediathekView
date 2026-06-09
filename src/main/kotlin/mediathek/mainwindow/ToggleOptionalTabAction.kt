@@ -18,7 +18,6 @@
 
 package mediathek.mainwindow
 
-import mediathek.tool.ApplicationConfiguration
 import java.awt.event.ActionEvent
 import java.util.function.IntConsumer
 import javax.swing.AbstractAction
@@ -30,7 +29,7 @@ abstract class ToggleOptionalTabAction(
     private val tabComponent: JComponent,
     actionTitle: String,
     private val tabTitle: String,
-    private val visibilityConfigKey: String,
+    private val visibilityWriter: (Boolean) -> Unit,
     private val preferredInsertIndex: Int,
 ) : AbstractAction() {
 
@@ -42,13 +41,12 @@ abstract class ToggleOptionalTabAction(
 
     private fun toggleTab() {
         val tabIndex = tabbedPane.indexOfComponent(tabComponent)
-        val config = ApplicationConfiguration.getConfiguration()
         if (tabIndex == -1) {
             tabbedPane.insertTab(tabTitle, null, tabComponent, null, clampedInsertIndex())
-            config.setProperty(visibilityConfigKey, true)
+            visibilityWriter(true)
         } else {
             tabbedPane.remove(tabIndex)
-            config.setProperty(visibilityConfigKey, false)
+            visibilityWriter(false)
         }
     }
 

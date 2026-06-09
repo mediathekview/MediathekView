@@ -18,18 +18,19 @@
 
 package mediathek.tool.table
 
-import mediathek.config.MVConfig
-import java.util.*
 import javax.swing.RowSorter.SortKey
 import javax.swing.SortOrder
 
 abstract class PersistentColumnConfigurationTable protected constructor(
     maxColumns: Int,
     visibleColumnStore: ColumnVisibilityStore,
-    showIconsConfigKey: Optional<MVConfig.Configs>,
-    smallSenderIconConfigKey: Optional<MVConfig.Configs>,
-    private val columnConfigurationDataConfigKey: MVConfig.Configs,
-) : MVTable(maxColumns, visibleColumnStore, showIconsConfigKey, smallSenderIconConfigKey) {
+    private val tableConfigurationStore: TableConfigurationStore,
+) : MVTable(
+    maxColumns,
+    visibleColumnStore,
+    tableConfigurationStore.showSenderIcons,
+    tableConfigurationStore.smallSenderIcons,
+) {
 
     /**
      * Tabelle das erste Mal initialisieren mit den gespeicherten Daten oder den Standardwerten.
@@ -37,7 +38,7 @@ abstract class PersistentColumnConfigurationTable protected constructor(
      */
     fun readColumnConfigurationData() {
         try {
-            val keyDataStr = MVConfig.get(columnConfigurationDataConfigKey)
+            val keyDataStr = tableConfigurationStore.columnConfiguration.read()
             val configurationData = parseColumnConfigurationData(keyDataStr)
             if (configurationData == null) {
                 resetTabelle()
@@ -52,7 +53,7 @@ abstract class PersistentColumnConfigurationTable protected constructor(
 
     override fun writeTableConfigurationData() {
         super.writeTableConfigurationData()
-        MVConfig.add(columnConfigurationDataConfigKey, prepareTableConfigurationData())
+        tableConfigurationStore.columnConfiguration.write(prepareTableConfigurationData())
     }
 
     /**

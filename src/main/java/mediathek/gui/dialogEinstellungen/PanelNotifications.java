@@ -4,8 +4,8 @@
 
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.messages.NotificationCenterChangeEvent;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -18,11 +18,11 @@ public class PanelNotifications extends JPanel {
     public PanelNotifications() {
         initComponents();
 
-        final var config = ApplicationConfiguration.getConfiguration();
-        final boolean showNotification = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
+        final var config = ApplicationConfiguration.getInstance();
+        final boolean showNotification = config.getShowNotifications();
         cbShowNotifications.setSelected(showNotification);
         cbShowNotifications.addActionListener(_ -> {
-            config.setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,cbShowNotifications.isSelected());
+            config.setShowNotifications(cbShowNotifications.isSelected());
             MessageBus.getMessageBus().publishAsync(new NotificationCenterChangeEvent());
         });
     }

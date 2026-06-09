@@ -19,14 +19,7 @@
 package mediathek.daten
 
 import org.apache.logging.log4j.LogManager
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 
 class FilmListMetaData {

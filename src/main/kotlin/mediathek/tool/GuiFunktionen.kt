@@ -40,7 +40,6 @@ object GuiFunktionen {
         return !usesExternalUpdater
     }
 
-    @JvmStatic
     fun showErrorIndication(component: JComponent, hasError: Boolean) {
         component.putClientProperty("JComponent.outline", if (hasError) "error" else "")
     }

@@ -1,11 +1,11 @@
 package mediathek.gui.tabs.tab_film
 
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
 import okhttp3.FormBody
@@ -30,9 +30,7 @@ class JDownloadHelper {
                 .add("urls", url.toString())
                 .build()
             val request = Request.Builder()
-                .url(ApplicationConfiguration.getConfiguration().getString(
-                        ApplicationConfiguration.APPLICATION_JDOWNLOADER_URL,
-                        Konstanten.JDOWNLOADER_URL))
+                .url(ApplicationConfiguration.getInstance().jDownloaderUrl)
                 .header("Referer", "https://mediathekview")
                 .header("Origin", "https://mediathekview")
                 .post(formBody)

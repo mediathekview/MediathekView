@@ -18,7 +18,7 @@
 
 package mediathek.gui.dialogEinstellungen
 
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import javax.swing.JSpinner
 import javax.swing.SpinnerListModel
 
@@ -41,21 +41,18 @@ class DaysSpinner : JSpinner() {
 
     private fun installConfigSync() {
         addChangeListener {
-            configuration.setProperty(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, selectedEntry.toConfigValue())
+            ApplicationConfiguration.getInstance().filmListLoadNumDays = selectedEntry.toConfigValue()
         }
     }
 
     private fun restoreSelection() {
         value = DayEntry.fromConfigValue(
-            configuration.getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0),
+            ApplicationConfiguration.getInstance().filmListLoadNumDays,
         ).displayText
     }
 
     private val selectedEntry: DayEntry
         get() = DayEntry.fromDisplayText(value.toString())
-
-    private val configuration
-        get() = ApplicationConfiguration.getConfiguration()
 }
 
 private data class DayEntry(val displayText: String, val configValue: Int) {

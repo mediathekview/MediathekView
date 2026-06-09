@@ -22,9 +22,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.AppTerminationIndefiniteProgress
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
 import mediathek.tool.SVGIconUtilities
@@ -139,10 +139,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
     }
 
     private fun restoreSelectedAction() {
-        val savedAction = ApplicationConfiguration.getConfiguration().getString(
-            ApplicationConfiguration.APPLICATION_UI_EXIT_DIALOG_ACTION,
-            null
-        ) ?: return
+        val savedAction = ApplicationConfiguration.getInstance().exitDialogAction ?: return
 
         for (index in 0 until comboActions.itemCount) {
             if (comboActions.getItemAt(index) == savedAction) {
@@ -208,10 +205,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         cbShutdownComputer.isEnabled = false
 
         comboActions.addActionListener {
-            ApplicationConfiguration.getConfiguration().setProperty(
-                ApplicationConfiguration.APPLICATION_UI_EXIT_DIALOG_ACTION,
-                selectedAction()
-            )
+            ApplicationConfiguration.getInstance().exitDialogAction = selectedAction()
             updateActionControls()
         }
 

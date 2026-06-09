@@ -1,4 +1,4 @@
-# **14.6.0**
+# **15.0.0**
 - **Diese Version ist NICHT abwärtskompatibel mit älteren MediathekView-Versionen.**
 - JetBrains Runtime JBR 25.0.2 wird verwendet
 - **BUGFIX:** Dialog "Film speichern" neu geschrieben um vorhandene Layout-Probleme zu beheben.

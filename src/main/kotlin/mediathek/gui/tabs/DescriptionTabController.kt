@@ -20,8 +20,8 @@ package mediathek.gui.tabs
 
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
-import mediathek.tool.ApplicationConfiguration
 import java.util.*
+import java.util.function.BooleanSupplier
 import java.util.function.IntConsumer
 import java.util.function.Supplier
 import javax.swing.JCheckBoxMenuItem
@@ -35,13 +35,13 @@ class DescriptionTabController {
     fun install(
         table: JTable,
         closeMenuItem: JCheckBoxMenuItem,
-        configKey: String,
+        initialVisibility: BooleanSupplier,
         filmSupplier: Supplier<Optional<DatenFilm>>,
     ) {
         descriptionPanel.install(tabbedPane, table, filmSupplier)
         tabbedPane.putClientProperty("JTabbedPane.tabClosable", true)
         tabbedPane.putClientProperty("JTabbedPane.tabCloseCallback", IntConsumer { closeMenuItem.doClick() })
-        setVisible(ApplicationConfiguration.getConfiguration().getBoolean(configKey, true))
+        setVisible(initialVisibility.asBoolean)
     }
 
     fun setVisible(visible: Boolean) {

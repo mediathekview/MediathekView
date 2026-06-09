@@ -1,10 +1,10 @@
 package mediathek.tool.table
 
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
-import mediathek.daten.DownloadColumns
 import mediathek.daten.DatenFilm
+import mediathek.daten.DownloadColumns
 import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import mediathek.tool.models.TModelAbo
@@ -27,12 +27,10 @@ class MVTableTest {
 
     @Test
     fun filmColumnConfigurationAcceptsPersistedTrailingPlaceholderColumns() {
-        val key = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME
-        val originalConfig = MVConfig.get(key)
-        MVConfig.add(
-            key,
-            "0,85,352,521,23,23,20,84,53,66,77,0,0,0,1389,0,0|0,1,2,3,4,5,6,13,7,8,9,10,11,12,14,0,0|7|DESCENDING",
-        )
+        val config = ApplicationConfiguration.getInstance()
+        val originalConfig = config.filmTableColumnConfiguration
+        config.filmTableColumnConfiguration =
+            "0,85,352,521,23,23,20,84,53,66,77,0,0,0,1389,0,0|0,1,2,3,4,5,6,13,7,8,9,10,11,12,14,0,0|7|DESCENDING"
 
         try {
             val table = MVFilmTable()
@@ -42,7 +40,7 @@ class MVTableTest {
 
             assertEquals(DatenFilm.FILM_GEO, table.convertColumnIndexToModel(7))
         } finally {
-            MVConfig.add(key, originalConfig)
+            config.filmTableColumnConfiguration = originalConfig
         }
     }
 

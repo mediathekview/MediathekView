@@ -19,10 +19,8 @@
 package mediathek.config
 
 import org.apache.logging.log4j.LogManager
-import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.time.Instant
 import java.time.LocalDateTime
@@ -35,16 +33,11 @@ object SettingsResetService {
 
     @JvmStatic
     fun moveSettingsDirectoryAside() {
-        var sourceDirectory = StandardLocations.getSettingsDirectory().toString()
-        if (sourceDirectory.endsWith(File.separator)) {
-            sourceDirectory = sourceDirectory.dropLast(1)
-        }
-
+        val source = StandardLocations.getSettingsDirectory()
         try {
-            val source = Paths.get(sourceDirectory)
             val timestamp = DateTimeFormatter.ofPattern("yyyy.MM.dd__HH.mm.ss")
                 .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
-            val target = Paths.get("$sourceDirectory--$timestamp")
+            val target = source.resolveSibling("${source.fileName}--$timestamp")
 
             Files.move(source, target, StandardCopyOption.REPLACE_EXISTING)
             Files.deleteIfExists(source)

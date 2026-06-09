@@ -1,6 +1,6 @@
 package mediathek.gui.actions
 
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen
 import mediathek.gui.messages.ProgramLocationChangedEvent
 import mediathek.mac.escapeAppleScriptString
@@ -73,16 +73,16 @@ class UrlHyperlinkAction(url: String) : AbstractAction(url) {
                 val program = resolveBrowserProgram()
                 launchApplication(program, url)
 
-                MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, program)
+                ApplicationConfiguration.getInstance().webBrowserProgram = program
                 MessageBus.messageBus.publishAsync(ProgramLocationChangedEvent())
             } catch (_: Exception) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, "")
+                ApplicationConfiguration.getInstance().webBrowserProgram = ""
                 logger.error("Failed to launch URL {} with custom browser", url)
             }
         }
 
         private fun resolveBrowserProgram(): String {
-            val configuredProgram = MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN)
+            val configuredProgram = ApplicationConfiguration.getInstance().webBrowserProgram
             if (configuredProgram.isNotEmpty()) {
                 return configuredProgram
             }

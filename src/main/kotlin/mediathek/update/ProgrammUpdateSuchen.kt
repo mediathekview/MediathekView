@@ -21,7 +21,7 @@ package mediathek.update
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.Version
@@ -154,10 +154,8 @@ class ProgrammUpdateSuchen(
                 }
                 val dlg: JDialog = DialogHinweisUpdate(null, text)
                 dlg.isVisible = true
-                MVConfig.add(
-                    MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT,
-                    infosToDisplay.maxOf { it.number }.toString(),
-                )
+                ApplicationConfiguration.getInstance().programInformationDisplayedNumber =
+                    infosToDisplay.maxOf { it.number }
             } else if (!silent) {
                 displayNoNewInfoMessage()
             }
@@ -167,13 +165,7 @@ class ProgrammUpdateSuchen(
     }
 
     private fun readDisplayedInfoNumber(): Int {
-        val displayedInfoNumber = MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT)
-        return if (displayedInfoNumber.isEmpty()) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, "-1")
-            -1
-        } else {
-            displayedInfoNumber.toInt()
-        }
+        return ApplicationConfiguration.getInstance().programInformationDisplayedNumber
     }
 
     private fun displayNoNewInfoMessage() {

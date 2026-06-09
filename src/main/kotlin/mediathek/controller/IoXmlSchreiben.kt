@@ -18,11 +18,9 @@
 package mediathek.controller
 
 import mediathek.config.Daten
-import mediathek.config.MVConfig
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenProg
 import mediathek.daten.DatenPset
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.ReplaceList
 import org.apache.logging.log4j.LogManager
 import java.io.OutputStreamWriter
@@ -30,7 +28,6 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.concurrent.RejectedExecutionException
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
 
@@ -102,14 +99,6 @@ class IoXmlSchreiben(
         }
     }
 
-    private fun writeProgramSettings(writer: XMLStreamWriter) {
-        writer.writeCharacters("\n\n")
-        writer.writeCharacters("\n\n")
-        writeNewLine(writer)
-        MVConfig.writeSystemConfiguration(writer)
-        writeNewLine(writer)
-    }
-
     private fun writeProgramSets(writer: XMLStreamWriter) {
         writer.writeCharacters("\n\n")
         writeNewLine(writer)
@@ -133,20 +122,6 @@ class IoXmlSchreiben(
     }
 
     private fun writeDownloads() {
-        /*
-            CLI client must rely on specific format as this is some strange dialect.
-            Here we set what version we save.
-         */
-        val downloadListVersion = 2
-        try {
-            ApplicationConfiguration.getConfiguration()
-                .setProperty(ApplicationConfiguration.CLI_CLIENT_DOWNLOAD_LIST_FORMAT, downloadListVersion)
-        } catch (_: RejectedExecutionException) {
-            // this may occur during shutdown
-        } catch (ex: Exception) {
-            logger.error("writeDownloads error!", ex)
-        }
-
         try {
             DownloadStorage.write(downloadStoragePath, Daten.getInstance().listeDownloads)
         } catch (ex: Exception) {
@@ -243,8 +218,6 @@ class IoXmlSchreiben(
                     writeAbos(xmlWriter)
 
                     writeBlacklistRules(xmlWriter)
-
-                    writeProgramSettings(xmlWriter)
 
                     writeProgramSets(xmlWriter)
 

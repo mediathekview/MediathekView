@@ -22,7 +22,7 @@ import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.MVColor
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.blacklist.BlacklistRule
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
@@ -198,17 +198,18 @@ class PanelBlacklist(
     }
 
     private fun initPanelState() {
-        jCheckBoxAbo.isSelected = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
+        jCheckBoxAbo.isSelected = applicationConfiguration.blacklistApplyToAbo
 
         jCheckBoxBlacklistEingeschaltet.isSelected =
-            ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false)
+            applicationConfiguration.isBlacklistEnabled
 
         jCheckBoxZukunftNichtAnzeigen.isSelected =
-            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)
+            applicationConfiguration.blacklistDoNotShowFutureFilms
 
-        jCheckBoxGeo.isSelected = ApplicationConfiguration.getInstance().blacklistDoNotShowGeoblockedFilms
+        jCheckBoxGeo.isSelected = applicationConfiguration.blacklistDoNotShowGeoblockedFilms
 
-        jSliderMinuten.value = MVConfig.getInt(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, 0)
+        jSliderMinuten.value = applicationConfiguration.blacklistMinimumFilmLengthMinutes
 
         tableModel.refreshFilteredCounts()
     }
@@ -221,29 +222,25 @@ class PanelBlacklist(
             }
         }
 
-        jRadioButtonWhitelist.isSelected = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)
+        jRadioButtonWhitelist.isSelected = ApplicationConfiguration.getInstance().blacklistWhitelistMode
         jRadioButtonWhitelist.addActionListener {
-            MVConfig.setBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, jRadioButtonWhitelist.isSelected)
+            ApplicationConfiguration.getInstance().blacklistWhitelistMode = jRadioButtonWhitelist.isSelected
             notifyBlacklistChanged()
         }
         jRadioButtonBlacklist.addActionListener {
-            MVConfig.setBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, jRadioButtonWhitelist.isSelected)
+            ApplicationConfiguration.getInstance().blacklistWhitelistMode = jRadioButtonWhitelist.isSelected
             notifyBlacklistChanged()
         }
         jCheckBoxZukunftNichtAnzeigen.addActionListener {
-            MVConfig.setBoolean(
-                MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN,
-                jCheckBoxZukunftNichtAnzeigen.isSelected,
-            )
+            ApplicationConfiguration.getInstance().blacklistDoNotShowFutureFilms = jCheckBoxZukunftNichtAnzeigen.isSelected
             notifyBlacklistChanged()
         }
         jCheckBoxAbo.addActionListener {
-            MVConfig.setBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO, jCheckBoxAbo.isSelected)
+            ApplicationConfiguration.getInstance().blacklistApplyToAbo = jCheckBoxAbo.isSelected
             MessageBus.messageBus.publishAsync(BlacklistAboSettingChangedEvent(name))
         }
         jCheckBoxBlacklistEingeschaltet.addActionListener {
-            ApplicationConfiguration.getConfiguration()
-                .setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, jCheckBoxBlacklistEingeschaltet.isSelected)
+            ApplicationConfiguration.getInstance().isBlacklistEnabled = jCheckBoxBlacklistEingeschaltet.isSelected
             notifyBlacklistChanged()
         }
         jButtonHinzufuegen.addActionListener { onAddBlacklistRule() }
@@ -288,12 +285,12 @@ class PanelBlacklist(
         jTextFieldTitel.document.addDocumentListener(documentListener)
         jTextFieldThemaTitel.document.addDocumentListener(documentListener)
 
-        jSliderMinuten.value = MVConfig.getInt(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, 0)
+        jSliderMinuten.value = ApplicationConfiguration.getInstance().blacklistMinimumFilmLengthMinutes
         updateMinimumLengthText()
         jSliderMinuten.addChangeListener {
             updateMinimumLengthText()
             if (!jSliderMinuten.valueIsAdjusting) {
-                MVConfig.setInt(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, jSliderMinuten.value)
+                ApplicationConfiguration.getInstance().blacklistMinimumFilmLengthMinutes = jSliderMinuten.value
                 notifyBlacklistChanged()
             }
         }

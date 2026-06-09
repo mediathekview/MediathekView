@@ -128,7 +128,6 @@ object CommandLineOptions {
 
     fun isSplashScreenDisabled(): Boolean = disableSplashScreen
 
-    @JvmStatic
     fun isDownloadAndQuit(): Boolean = downloadAndQuit
 
     fun isDisableJvmParameterChecks(): Boolean = disableJvmParameterChecks

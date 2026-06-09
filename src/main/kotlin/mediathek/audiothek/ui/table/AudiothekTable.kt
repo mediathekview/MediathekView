@@ -23,8 +23,8 @@ import kotlinx.serialization.json.Json
 import mediathek.audiothek.model.AudioEntry
 import mediathek.config.Konstanten
 import mediathek.config.MVColor
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
-import mediathek.tool.ApplicationConfiguration
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.swing.FontIcon
@@ -444,8 +444,7 @@ class AudiothekTable(
     }
 
     private fun restoreState() {
-        val rawState = ApplicationConfiguration.getConfiguration()
-            .getString(ApplicationConfiguration.APPLICATION_UI_AUDIOTHEK_TABLE_STATE, "")
+        val rawState = ApplicationConfiguration.getInstance().audiothekTableState
             .takeIf(String::isNotBlank)
             ?: return
 
@@ -544,10 +543,8 @@ class AudiothekTable(
         )
 
         runCatching {
-            ApplicationConfiguration.getConfiguration().setProperty(
-                ApplicationConfiguration.APPLICATION_UI_AUDIOTHEK_TABLE_STATE,
+            ApplicationConfiguration.getInstance().audiothekTableState =
                 TABLE_STATE_JSON.encodeToString(AudiothekTableState.serializer(), state)
-            )
         }.onFailure {
             logger.warn("Failed to save Audiothek table state", it)
         }

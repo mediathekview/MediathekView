@@ -25,13 +25,15 @@ import com.jidesoft.swing.CheckBoxList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
-import mediathek.tool.*
-import org.apache.commons.configuration2.Configuration
-import org.apache.commons.configuration2.sync.LockMode
+import mediathek.tool.EventListWithEmptyFirstEntry
+import mediathek.tool.FilterDTO
+import mediathek.tool.SVGIconUtilities
+import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import java.awt.Component
@@ -54,7 +56,6 @@ class SwingFilterDialog internal constructor(
     companion object {
         private const val CHECKBOX_RELOAD_DEBOUNCE_MS = 450L
         private const val ZEITRAUM_RELOAD_DEBOUNCE_MS = 450L
-        private const val CONFIG_SENDERLIST_VERTICAL_WRAP = "senderlist.vertical_wrap"
         private const val STR_NEW_FILTER = "Neuen Filter anlegen"
         private const val STR_CLONE_CURRENT_FILTER = "Aktuellen Filter kopieren"
         private const val STR_DELETE_CURRENT_FILTER = "Aktuellen Filter löschen"
@@ -112,7 +113,6 @@ class SwingFilterDialog internal constructor(
         }
     }
 
-    private val config: Configuration = ApplicationConfiguration.getConfiguration()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val sourceThemaList: EventList<String> = BasicEventList()
     private val renameFilterAction = RenameFilterAction()
@@ -531,21 +531,13 @@ class SwingFilterDialog internal constructor(
     }
 
     private fun restoreDialogVisibility() {
-        isVisible = config.getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false)
+        isVisible = ApplicationConfiguration.getInstance().filterDialogVisible
     }
 
     private fun restoreWindowSizeFromConfig() {
-        try {
-            config.withLock(LockMode.READ) {
-                setBounds(
-                    getInt(ApplicationConfiguration.FilterDialog.X),
-                    getInt(ApplicationConfiguration.FilterDialog.Y),
-                    getInt(ApplicationConfiguration.FilterDialog.WIDTH),
-                    getInt(ApplicationConfiguration.FilterDialog.HEIGHT)
-                )
-            }
-        } catch (_: NoSuchElementException) {
-            // do not restore anything
+        val state = ApplicationConfiguration.getInstance().filterDialogState
+        if (state.hasStoredBounds()) {
+            setBounds(state.x, state.y, state.width, state.height)
         }
     }
 
@@ -590,7 +582,7 @@ class SwingFilterDialog internal constructor(
         }
 
         private fun restoreVerticalWrapState() {
-            if (config.getBoolean(CONFIG_SENDERLIST_VERTICAL_WRAP, true)) {
+            if (ApplicationConfiguration.getInstance().senderListVerticalWrap) {
                 miVerticalWrap.doClick()
             }
         }
@@ -619,9 +611,7 @@ class SwingFilterDialog internal constructor(
                 add(miVerticalWrap.apply {
                     addActionListener {
                         val selected = isSelected
-                        config.withLock(LockMode.WRITE) {
-                            setProperty(CONFIG_SENDERLIST_VERTICAL_WRAP, selected)
-                        }
+                        ApplicationConfiguration.getInstance().senderListVerticalWrap = selected
                         layoutOrientation = if (selected) VERTICAL_WRAP else VERTICAL
                         repaint()
                     }
@@ -819,19 +809,15 @@ class SwingFilterDialog internal constructor(
         }
 
         private fun storeDialogVisibility() {
-            config.setProperty(ApplicationConfiguration.FilterDialog.VISIBLE, isVisible)
+            ApplicationConfiguration.getInstance().filterDialogVisible = isVisible
         }
 
         private fun storeWindowPosition(event: ComponentEvent) {
             val component: Component = event.component
             val dims = component.size
             val loc = component.location
-            config.withLock(LockMode.WRITE) {
-                setProperty(ApplicationConfiguration.FilterDialog.WIDTH, dims.width)
-                setProperty(ApplicationConfiguration.FilterDialog.HEIGHT, dims.height)
-                setProperty(ApplicationConfiguration.FilterDialog.X, loc.x)
-                setProperty(ApplicationConfiguration.FilterDialog.Y, loc.y)
-            }
+            ApplicationConfiguration.getInstance()
+                .setFilterDialogBounds(loc.x, loc.y, dims.width, dims.height)
         }
     }
 

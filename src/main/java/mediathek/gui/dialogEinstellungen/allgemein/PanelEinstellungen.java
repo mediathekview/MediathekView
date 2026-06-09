@@ -1,20 +1,17 @@
 package mediathek.gui.dialogEinstellungen.allgemein;
 
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.messages.*;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
-import mediathek.tool.cellrenderer.CellRendererBaseWithStart;
 import mediathek.tool.http.MVHttpClient;
-import mediathek.tool.sender_icon_cache.MVSenderIconCache;
 import mediathek.x11.DesktopEnvDetector;
 import net.engio.mbassy.listener.Handler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 import org.jdesktop.swingx.JXTitledPanel;
 
@@ -22,62 +19,63 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.NoSuchElementException;
 
 public class PanelEinstellungen extends JPanel {
-    private final Configuration config = ApplicationConfiguration.getConfiguration();
-
     private void setupProxySettings() {
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
 
-        jtfProxyHost.setText(config.getString(ApplicationConfiguration.HttpProxy.HOST, ""));
-        var listener = new TextFieldConfigWriter(jtfProxyHost,ApplicationConfiguration.HttpProxy.HOST);
+        jtfProxyHost.setText(applicationConfiguration.getHttpProxyHost());
+        var listener = new TextFieldConfigWriter(jtfProxyHost, applicationConfiguration::setHttpProxyHost);
         jtfProxyHost.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
-        jtfProxyPort.setText(config.getString(ApplicationConfiguration.HttpProxy.PORT, ""));
-        listener = new TextFieldConfigWriter(jtfProxyPort,ApplicationConfiguration.HttpProxy.PORT);
+        jtfProxyPort.setText(applicationConfiguration.getHttpProxyPort());
+        listener = new TextFieldConfigWriter(jtfProxyPort, applicationConfiguration::setHttpProxyPort);
         jtfProxyPort.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
-        jtfProxyUser.setText(config.getString(ApplicationConfiguration.HttpProxy.USER, ""));
-        listener = new TextFieldConfigWriter(jtfProxyUser,ApplicationConfiguration.HttpProxy.USER);
+        jtfProxyUser.setText(applicationConfiguration.getHttpProxyUser());
+        listener = new TextFieldConfigWriter(jtfProxyUser, applicationConfiguration::setHttpProxyUser);
         jtfProxyUser.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
-        jpfProxyPassword.setText(config.getString(ApplicationConfiguration.HttpProxy.PASSWORD, ""));
-        listener = new TextFieldConfigWriter(jpfProxyPassword,ApplicationConfiguration.HttpProxy.PASSWORD);
+        jpfProxyPassword.setText(applicationConfiguration.getHttpProxyPassword());
+        listener = new TextFieldConfigWriter(jpfProxyPassword, applicationConfiguration::setHttpProxyPassword);
         jpfProxyPassword.getDocument().addDocumentListener(new TimedDocumentListener(listener));
 
         jButtonApplyProxySettings.addActionListener(_ -> applyProxySettings());
     }
 
     private void applyProxySettings() {
-        config.setProperty(ApplicationConfiguration.HttpProxy.HOST, jtfProxyHost.getText());
-        config.setProperty(ApplicationConfiguration.HttpProxy.PORT, jtfProxyPort.getText());
-        config.setProperty(ApplicationConfiguration.HttpProxy.USER, jtfProxyUser.getText());
-        config.setProperty(ApplicationConfiguration.HttpProxy.PASSWORD, new String(jpfProxyPassword.getPassword()));
+        ApplicationConfiguration.getInstance().setHttpProxy(
+                jtfProxyHost.getText(),
+                jtfProxyPort.getText(),
+                jtfProxyUser.getText(),
+                new String(jpfProxyPassword.getPassword()));
         MVHttpClient.INSTANCE.reloadProxySettings();
     }
 
     private void setupUserAgentSettings() {
-        jtfUserAgent.setText(ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
-        var listener = new TextFieldConfigWriter(jtfUserAgent,ApplicationConfiguration.APPLICATION_USER_AGENT);
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jtfUserAgent.setText(applicationConfiguration.getUserAgent());
+        var listener = new TextFieldConfigWriter(jtfUserAgent, applicationConfiguration::setUserAgent);
         jtfUserAgent.getDocument().addDocumentListener(new TimedDocumentListener(listener));
     }
 
     private void cbUseWikipediaSenderLogosActionPerformed(ActionEvent evt) {
-        ApplicationConfiguration.getConfiguration().setProperty(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,!cbUseWikipediaSenderLogos.isSelected());
+        ApplicationConfiguration.getInstance().setLocalSenderIcons(!cbUseWikipediaSenderLogos.isSelected());
         MessageBus.getMessageBus().publish(new SenderIconStyleChangedEvent());
         MediathekGui.ui().repaint();
     }
     
     private void cbAutomaticUpdateChecksActionPerformed(ActionEvent evt) {
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK, cbAutomaticUpdateChecks.isSelected());
+        ApplicationConfiguration.getInstance().setAutomaticUpdateCheck(cbAutomaticUpdateChecks.isSelected());
         MessageBus.getMessageBus().publishAsync(new UpdateStateChangedEvent(cbAutomaticUpdateChecks.isSelected()));
     }
 
     private void setupTabUI() {
-        final boolean tabPositionTop = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true);
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        final boolean tabPositionTop = applicationConfiguration.getTabPositionTop();
         jCheckBoxTabsTop.setSelected(tabPositionTop);
         jCheckBoxTabsTop.addActionListener(_ -> {
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, jCheckBoxTabsTop.isSelected());
+            applicationConfiguration.setTabPositionTop(jCheckBoxTabsTop.isSelected());
             MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
         if (SystemUtils.IS_OS_MAC_OSX) {
@@ -85,17 +83,16 @@ public class PanelEinstellungen extends JPanel {
             jCheckBoxTabsTop.setToolTipText(NO_INFLUENCE_TEXT);
         }
 
-        var config = ApplicationConfiguration.getConfiguration();
-        jCheckBoxTabIcon.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS,false));
+        jCheckBoxTabIcon.setSelected(applicationConfiguration.getMainWindowTabIcons());
         jCheckBoxTabIcon.addActionListener(_ -> {
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS, jCheckBoxTabIcon.isSelected());
+            applicationConfiguration.setMainWindowTabIcons(jCheckBoxTabIcon.isSelected());
             MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
     }
 
     @Handler
     private void handleTrayIconEvent(TrayIconEvent e) {
-        SwingUtilities.invokeLater(() -> jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false)));
+        SwingUtilities.invokeLater(() -> jCheckBoxTray.setSelected(ApplicationConfiguration.getInstance().getUseTray()));
     }
 
     private void setupTray() {
@@ -105,23 +102,23 @@ public class PanelEinstellungen extends JPanel {
         } else {
             MessageBus.getMessageBus().subscribe(this);
 
-            jCheckBoxTray.setSelected(config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false));
+            jCheckBoxTray.setSelected(ApplicationConfiguration.getInstance().getUseTray());
             jCheckBoxTray.addActionListener(_ -> {
-                config.setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,jCheckBoxTray.isSelected());
+                ApplicationConfiguration.getInstance().setUseTray(jCheckBoxTray.isSelected());
                 MediathekGui.ui().initializeSystemTray();
             });
         }
     }
 
     private void setupModernSearch() {
-        var config = ApplicationConfiguration.getConfiguration();
-        var useModernSearch = config.getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false);
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        var useModernSearch = applicationConfiguration.getUseModernSearch();
 
         var searchPanel = new ModernSearchConfigPanel();
         searchPanel.getCbActivateModernSearch().setSelected(useModernSearch);
         searchPanel.getCbActivateModernSearch().addActionListener(_ -> {
             var selected = searchPanel.getCbActivateModernSearch().isSelected();
-            config.setProperty(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, selected);
+            applicationConfiguration.setUseModernSearch(selected);
         });
         modernSearchTitlePanel.setContentContainer(searchPanel);
     }
@@ -142,49 +139,44 @@ public class PanelEinstellungen extends JPanel {
         setupTabSwitchListener();
 
         cbUseWikipediaSenderLogos.addActionListener(this::cbUseWikipediaSenderLogosActionPerformed);
-        final boolean useLocalSenderLogos = ApplicationConfiguration.getConfiguration().getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS,false);
+        final boolean useLocalSenderLogos = ApplicationConfiguration.getInstance().getLocalSenderIcons();
         cbUseWikipediaSenderLogos.setSelected(!useLocalSenderLogos);
         
         cbAutomaticUpdateChecks.addActionListener(this::cbAutomaticUpdateChecksActionPerformed);
-        cbAutomaticUpdateChecks.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK,true));
+        cbAutomaticUpdateChecks.setSelected(ApplicationConfiguration.getInstance().getAutomaticUpdateCheck());
         if (GuiFunktionen.isUsingExternalUpdater()) {
             cbAutomaticUpdateChecks.setEnabled(false);
             cbAutomaticUpdateChecks.setToolTipText("Diese Option ist deaktiviert, da ein externer Updater verwendet wird.");
         }
 
-        var restore = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB, false);
+        var restore = ApplicationConfiguration.getInstance().getRestoreSelectedTab();
         cbRestoreSelectedTab.setSelected(restore);
-        cbRestoreSelectedTab.addActionListener(_ -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB,
-                cbRestoreSelectedTab.isSelected()));
+        cbRestoreSelectedTab.addActionListener(_ -> ApplicationConfiguration.getInstance()
+                .setRestoreSelectedTab(cbRestoreSelectedTab.isSelected()));
 
-        var drawIconsRight = ApplicationConfiguration.getConfiguration()
-                        .getBoolean(CellRendererBaseWithStart.ICON_POSITION_RIGHT, false);
+        var drawIconsRight = ApplicationConfiguration.getInstance().getListIconPositionRight();
         cbDrawListIconsRight.setSelected(drawIconsRight);
         cbDrawListIconsRight.addActionListener(_ -> {
-            ApplicationConfiguration.getConfiguration().setProperty(CellRendererBaseWithStart.ICON_POSITION_RIGHT, cbDrawListIconsRight.isSelected());
+            ApplicationConfiguration.getInstance().setListIconPositionRight(cbDrawListIconsRight.isSelected());
             MediathekGui.ui().repaint();
         });
 
-        boolean useIconWithText = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, false);
+        boolean useIconWithText = ApplicationConfiguration.getInstance().getToolbarBlacklistIconWithText();
         cbShowBlacklistIconWithText.setSelected(useIconWithText);
         cbShowBlacklistIconWithText.addActionListener(_ -> {
             var useText = cbShowBlacklistIconWithText.isSelected();
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, useText);
+            ApplicationConfiguration.getInstance().setToolbarBlacklistIconWithText(useText);
         });
 
-        boolean useSystemDarkMode = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, false);
+        boolean useSystemDarkMode = ApplicationConfiguration.getInstance().getUseSystemDarkMode();
         cbUseSystemDarkMode.setSelected(useSystemDarkMode);
-        cbUseSystemDarkMode.addActionListener(_ -> ApplicationConfiguration.getConfiguration()
-                .setProperty(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, cbUseSystemDarkMode.isSelected()));
+        cbUseSystemDarkMode.addActionListener(_ -> ApplicationConfiguration.getInstance()
+                .setUseSystemDarkMode(cbUseSystemDarkMode.isSelected()));
 
-        var useLongTimeFormat = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.UI_TAB_FILME_TIME_USE_LONG_FORMAT, false);
+        var useLongTimeFormat = ApplicationConfiguration.getInstance().getFilmTimeUseLongFormat();
         cbTabFilmeTimeUseLongFormat.setSelected(useLongTimeFormat);
         cbTabFilmeTimeUseLongFormat.addActionListener(_ -> {
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.UI_TAB_FILME_TIME_USE_LONG_FORMAT, cbTabFilmeTimeUseLongFormat.isSelected());
+            ApplicationConfiguration.getInstance().setFilmTimeUseLongFormat(cbTabFilmeTimeUseLongFormat.isSelected());
             MediathekGui.ui().repaint();
         });
     }
@@ -195,20 +187,14 @@ public class PanelEinstellungen extends JPanel {
         if (!MediathekGui.ui().supportsAutomaticMenuTabSwitching()) {
             cbAutomaticMenuTabSwitching.setEnabled(false);
             cbAutomaticMenuTabSwitching.setToolTipText(NO_INFLUENCE_TEXT);
-            config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
+            ApplicationConfiguration.getInstance().setInstallTabSwitchListener(false);
         } else {
-            boolean installed;
-            try {
-                installed = config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER);
-            } catch (NoSuchElementException ex) {
-                installed = true;
-                config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true);
-            }
+            boolean installed = ApplicationConfiguration.getInstance().getInstallTabSwitchListener();
             cbAutomaticMenuTabSwitching.setSelected(installed);
 
             cbAutomaticMenuTabSwitching.addActionListener(_ -> {
                 final boolean isOn = cbAutomaticMenuTabSwitching.isSelected();
-                config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, isOn);
+                ApplicationConfiguration.getInstance().setInstallTabSwitchListener(isOn);
                 final var eventType = isOn
                         ? InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL
                         : InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE;

@@ -22,10 +22,7 @@ import mediathek.config.Konstanten
 import mediathek.tool.GermanStringSorter
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
-import java.util.ArrayList
-import java.util.Collections
-import java.util.HashSet
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 open class ListeFilme : ArrayList<DatenFilm>() {

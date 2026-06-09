@@ -27,7 +27,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.MVColor
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.DownloadStartActions
 import mediathek.daten.*
 import mediathek.gui.dialog.download.DownloadQualityLiveInfoText
@@ -38,8 +38,6 @@ import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.*
 import mediathek.tool.MessageBus.messageBus
-import org.apache.commons.configuration2.Configuration
-import org.apache.commons.configuration2.sync.LockMode
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.awt.*
@@ -77,11 +75,6 @@ class DialogAddDownload(
         val low: String
     )
 
-    private data class StoredDialogPosition(
-        val x: Int,
-        val y: Int
-    )
-
     private val uiScopeDelegate = lazy(LazyThreadSafetyMode.NONE) {
         CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     }
@@ -99,7 +92,6 @@ class DialogAddDownload(
     private var initialSizeLookupStatusIsError: Boolean = false
     private var ffprobePath: Path? = null
     private var orgPfad = ""
-    private val appConfig get() = ApplicationConfiguration.getConfiguration()
     private val listeSpeichern: ListePset = Daten.getInstance().listePset.listeSpeichern
     private lateinit var resolutionButtonLabels: ResolutionButtonLabels
     private lateinit var cbPathTextComponent: JTextComponent
@@ -122,9 +114,7 @@ class DialogAddDownload(
             val pfade = mutableListOf<String>()
             val s = jcb.selectedItem?.toString().orEmpty()
 
-            if (s != orgPath || ApplicationConfiguration.getConfiguration()
-                    .getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)
-            ) {
+            if (s != orgPath || ApplicationConfiguration.getInstance().showLastUsedDownloadPath) {
                 pfade.add(s)
             }
 
@@ -140,21 +130,20 @@ class DialogAddDownload(
                     .filter { it.isNotEmpty() }
                     .take(Konstanten.MAX_PFADE_DIALOG_DOWNLOAD)
                     .joinToString("<>")
-                MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, joined)
+                ApplicationConfiguration.getInstance().savedDownloadTargetPaths = joined
             }
         }
 
         fun setModelPfad(pfad: String, jcb: JComboBox<String>) {
             val pfade = mutableListOf<String>()
-            val showLastUsedPath = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)
+            val showLastUsedPath = ApplicationConfiguration.getInstance().showLastUsedDownloadPath
 
             // Wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
             if (!showLastUsedPath && pfad.isNotEmpty()) {
                 pfade.add(pfad)
             }
 
-            val gespeichertePfade = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN)
+            val gespeichertePfade = ApplicationConfiguration.getInstance().savedDownloadTargetPaths
             if (gespeichertePfade.isNotEmpty()) {
                 val p = gespeichertePfade.split("<>")
                 for (s in p) {
@@ -236,7 +225,7 @@ class DialogAddDownload(
     }
 
     private fun registerWindowPositionTracking() {
-        addComponentListener(DialogPositionComponentListener(appConfig))
+        addComponentListener(DialogPositionComponentListener())
     }
 
     private fun startCoroutineBindings() {
@@ -330,7 +319,7 @@ class DialogAddDownload(
 
     private fun restoreWindowPositionFromConfig(parent: Frame) {
         val storedPosition = readStoredDialogPosition()
-        if (storedPosition == null) {
+        if (!storedPosition.hasStoredPosition()) {
             setLocationRelativeTo(parent)
         } else {
             applyStoredPosition(storedPosition)
@@ -338,26 +327,14 @@ class DialogAddDownload(
     }
 
     private fun removeStoredWindowSizeFromConfig() {
-        appConfig.withLock(LockMode.WRITE) {
-            clearProperty(ApplicationConfiguration.AddDownloadDialog.WIDTH)
-            clearProperty(ApplicationConfiguration.AddDownloadDialog.HEIGHT)
-        }
+        ApplicationConfiguration.getInstance().clearAddDownloadDialogSize()
     }
 
-    private fun readStoredDialogPosition(): StoredDialogPosition? {
-        return try {
-            appConfig.withLock(LockMode.READ) {
-                StoredDialogPosition(
-                    x = getInt(ApplicationConfiguration.AddDownloadDialog.X),
-                    y = getInt(ApplicationConfiguration.AddDownloadDialog.Y)
-                )
-            }
-        } catch (_: NoSuchElementException) {
-            null
-        }
+    private fun readStoredDialogPosition(): ApplicationConfiguration.AddDownloadDialogPosition {
+        return ApplicationConfiguration.getInstance().addDownloadDialogPosition
     }
 
-    private fun applyStoredPosition(position: StoredDialogPosition) {
+    private fun applyStoredPosition(position: ApplicationConfiguration.AddDownloadDialogPosition) {
         val usableBounds = getUsableScreenBounds()
         val boundedWidth = width.coerceAtMost(usableBounds.width)
         val boundedHeight = height.coerceAtMost(usableBounds.height)
@@ -625,7 +602,7 @@ class DialogAddDownload(
             setText("")
             setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"))
             addActionListener {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "")
+                ApplicationConfiguration.getInstance().savedDownloadTargetPaths = ""
                 jComboBoxPfad.setModel(DefaultComboBoxModel(arrayOf<String?>(orgPfad)))
             }
         }
@@ -633,12 +610,9 @@ class DialogAddDownload(
 
     private fun setupPfadSpeichernCheckBox() {
         jCheckBoxPfadSpeichern.apply {
-            setSelected(appConfig.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true))
+            setSelected(ApplicationConfiguration.getInstance().showLastUsedDownloadPath)
             addActionListener {
-                appConfig.setProperty(
-                    ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH,
-                    jCheckBoxPfadSpeichern.isSelected
-                )
+                ApplicationConfiguration.getInstance().showLastUsedDownloadPath = jCheckBoxPfadSpeichern.isSelected
             }
         }
     }
@@ -1023,12 +997,10 @@ class DialogAddDownload(
     }
 }
 
-private class DialogPositionComponentListener(private val config: Configuration) : ComponentAdapter() {
+private class DialogPositionComponentListener : ComponentAdapter() {
     override fun componentMoved(e: ComponentEvent) {
-        config.withLock(LockMode.WRITE) {
-            val location = e.component.location
-            setProperty(ApplicationConfiguration.AddDownloadDialog.X, location.x)
-            setProperty(ApplicationConfiguration.AddDownloadDialog.Y, location.y)
-        }
+        val location = e.component.location
+        ApplicationConfiguration.getInstance()
+            .setAddDownloadDialogPosition(location.x, location.y)
     }
 }

@@ -1,11 +1,11 @@
 package mediathek.gui.tabs.tab_film
 
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
 import okhttp3.Credentials
@@ -26,10 +26,10 @@ class PyLoadHelper {
     private val historyController = SeenHistoryController()
 
     private fun downloadUrl(url: HttpUrl, film: DatenFilm) {
-        val config = ApplicationConfiguration.getConfiguration()
-        val baseUrl = config.getString(ApplicationConfiguration.APPLICATION_PYLOAD_URL, "").trimEnd('/')
-        val user = config.getString(ApplicationConfiguration.APPLICATION_PYLOAD_USER, "")
-        val pass = config.getString(ApplicationConfiguration.APPLICATION_PYLOAD_PASSWORD, "")
+        val config = ApplicationConfiguration.getInstance()
+        val baseUrl = config.pyLoadUrl.trimEnd('/')
+        val user = config.pyLoadUser
+        val pass = config.pyLoadPassword
 
         val apiUrl = try {
             "$baseUrl/api/add_package".toHttpUrl()
@@ -93,8 +93,7 @@ class PyLoadHelper {
     }
 
     fun installContextMenu(film: DatenFilm, jPopupMenu: JPopupMenu) {
-        val pyLoadUrl = ApplicationConfiguration.getConfiguration()
-            .getString(ApplicationConfiguration.APPLICATION_PYLOAD_URL, "")
+        val pyLoadUrl = ApplicationConfiguration.getInstance().pyLoadUrl
         val pyLoadConfigured = pyLoadUrl.isNotBlank()
 
         val mJD = JMenu("Mit pyLoad herunterladen")

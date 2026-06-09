@@ -1,9 +1,9 @@
 package mediathek.gui.actions
 
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.BlacklistChangedEvent
 import mediathek.swing.IconUtils
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
 import org.kordamp.ikonli.materialdesign2.MaterialDesignL
@@ -16,8 +16,7 @@ import javax.swing.SwingUtilities
 class ToggleBlacklistAction : AbstractAction() {
     private val enabledIcon: FontIcon = IconUtils.windowBarSpecificToolbarIcon(MaterialDesignL.LIST_STATUS)
     private val disabledIcon: FontIcon = IconUtils.windowBarSpecificToolbarIcon(MaterialDesignL.LIST_STATUS, Color.RED)
-    private var blacklistIsOn: Boolean = ApplicationConfiguration.getConfiguration()
-        .getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false)
+    private var blacklistIsOn: Boolean = ApplicationConfiguration.getInstance().isBlacklistEnabled
 
     init {
         setupState()
@@ -28,8 +27,7 @@ class ToggleBlacklistAction : AbstractAction() {
     @Handler
     private fun handleBlacklistChangedEvent(event: BlacklistChangedEvent) {
         SwingUtilities.invokeLater {
-            blacklistIsOn = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false)
+            blacklistIsOn = ApplicationConfiguration.getInstance().isBlacklistEnabled
             setupState()
         }
     }
@@ -49,7 +47,7 @@ class ToggleBlacklistAction : AbstractAction() {
     override fun actionPerformed(event: ActionEvent?) {
         blacklistIsOn = !blacklistIsOn
 
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, blacklistIsOn)
+        ApplicationConfiguration.getInstance().isBlacklistEnabled = blacklistIsOn
         Daten.getInstance().listeBlacklist.filterListe()
         MessageBus.messageBus.publishAsync(BlacklistChangedEvent())
     }

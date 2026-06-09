@@ -17,14 +17,8 @@
  */
 package mediathek.gui.tasks
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.StandardLocations.getFilmIndexPath
@@ -44,6 +38,7 @@ import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
 import org.apache.lucene.index.IndexWriterConfig.OpenMode
 import java.io.IOException
+import java.lang.Runnable
 import java.nio.file.Files
 import java.time.Instant
 import java.time.format.DateTimeFormatter

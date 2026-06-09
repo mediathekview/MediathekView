@@ -22,12 +22,7 @@ import org.apache.commons.lang3.SystemUtils
 import java.awt.Toolkit
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
-import javax.swing.AbstractAction
-import javax.swing.JComponent
-import javax.swing.JDialog
-import javax.swing.JFrame
-import javax.swing.JRootPane
-import javax.swing.KeyStroke
+import javax.swing.*
 
 object EscapeKeyHandler {
     private const val CANCEL_KEY_HANDLER = "key_cancel"

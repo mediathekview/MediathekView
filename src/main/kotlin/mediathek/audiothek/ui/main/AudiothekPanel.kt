@@ -33,6 +33,7 @@ import mediathek.audiothek.ui.download.AudioDownloadManagerPanel
 import mediathek.audiothek.ui.download.DownloadSummary
 import mediathek.audiothek.ui.table.AudiothekTable
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.gui.actions.ShowAudiothekSearchHelpAction
 import mediathek.gui.actions.UrlHyperlinkAction
@@ -41,7 +42,6 @@ import mediathek.mac.MacMultimediaPlayerLocator
 import mediathek.mac.SingleIinaPlayer
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.OverlayPanel
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.FileDialogs
 import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.notification.MessageType
@@ -209,13 +209,11 @@ class AudiothekPanel(
     }
 
     private fun isPersistedOnlineSearchEnabled(): Boolean {
-        return ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.APPLICATION_UI_AUDIOTHEK_ONLINE_SEARCH, true)
+        return ApplicationConfiguration.getInstance().audiothekOnlineSearch
     }
 
     private fun persistOnlineSearchEnabled(enabled: Boolean) {
-        ApplicationConfiguration.getConfiguration()
-            .setProperty(ApplicationConfiguration.APPLICATION_UI_AUDIOTHEK_ONLINE_SEARCH, enabled)
+        ApplicationConfiguration.getInstance().audiothekOnlineSearch = enabled
     }
 
     private fun triggerLoad(isManualReload: Boolean) {

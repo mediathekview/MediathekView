@@ -21,7 +21,7 @@ package mediathek.gui.tabs.tab_downloads
 import com.github.benmanes.caffeine.cache.Caffeine
 import mediathek.config.Daten
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.AboHistoryEntry
 import mediathek.controller.starter.DirectDownloadPartFiles
 import mediathek.controller.starter.DownloadLifecycleActions
@@ -41,28 +41,26 @@ import mediathek.gui.tabs.DescriptionTabController
 import mediathek.gui.tabs.actions.MarkFilmAsSeenAction
 import mediathek.gui.tabs.actions.MarkFilmAsUnseenAction
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.*
+import mediathek.tool.DirOpenAction
+import mediathek.tool.DownloadSizeState
+import mediathek.tool.MessageBus
 import mediathek.tool.cellrenderer.CellRendererDownloads
 import mediathek.tool.datum.Datum
 import mediathek.tool.listener.BeobTableHeader
 import mediathek.tool.models.TModelDownload
 import mediathek.tool.table.MVDownloadsTable
 import net.engio.mbassy.listener.Handler
-import org.apache.commons.configuration2.Configuration
 import org.apache.logging.log4j.LogManager
-import java.awt.BorderLayout
-import java.awt.Component
-import java.awt.MenuItem
-import java.awt.PopupMenu
-import java.awt.Taskbar
+import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
 import java.io.File
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import javax.swing.*
+import javax.swing.Timer
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
@@ -101,11 +99,10 @@ class GuiDownloads(
     private val toolBarRow = DownloadsToolBarRow(swingToolBar, displayFilterToolBar, configToolBar)
     private val lastUpdate = AtomicLong(0)
     private val cbShowDownloadDescription = JCheckBoxMenuItem("Filmbeschreibung anzeigen")
-    private val config: Configuration = ApplicationConfiguration.getConfiguration()
     private val descriptionTabController = DescriptionTabController()
     private val markFilmAsSeenAction = MarkFilmAsSeenAction(::getSelFilme)
     private val markFilmAsUnseenAction = MarkFilmAsUnseenAction(::getSelFilme)
-    private val filterController = DownloadsFilterController(displayFilterToolBar, config, ::reloadTable)
+    private val filterController = DownloadsFilterController(displayFilterToolBar, ::reloadTable)
     private val startInfoProperty = DownloadStartInfoProperty()
     private val statusBar = DownloadsStatusBar(startInfoProperty)
     private val downloadSizeCacheSnapshot = DownloadSizeCacheStorage.load()
@@ -142,7 +139,7 @@ class GuiDownloads(
         descriptionTabController.install(
             tabelle,
             cbShowDownloadDescription,
-            ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION,
+            { ApplicationConfiguration.getInstance().showDownloadDescription },
             ::getCurrentlySelectedFilm,
         )
 
@@ -317,7 +314,7 @@ class GuiDownloads(
             }
         }
 
-        tabelle.setLineBreak(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK))
+        tabelle.setLineBreak(ApplicationConfiguration.getInstance().downloadTableLineBreak)
         tabelle.tableHeader.addMouseListener(
             BeobTableHeader(
                 tabelle,
@@ -325,7 +322,7 @@ class GuiDownloads(
                 COLUMNS_DISABLED,
                 intArrayOf(DownloadColumns.BUTTON_START, DownloadColumns.BUTTON_DELETE),
                 true,
-                MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK,
+                { ApplicationConfiguration.getInstance().downloadTableLineBreak = it },
             )
         )
     }
@@ -353,7 +350,7 @@ class GuiDownloads(
     @Handler
     private fun handleAboListChanged(event: AboListChangedEvent) {
         SwingUtilities.invokeLater {
-            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)) {
+            if (ApplicationConfiguration.getInstance().searchAbosImmediately) {
                 updateDownloads()
             }
         }
@@ -372,8 +369,8 @@ class GuiDownloads(
     @Handler
     private fun handleBlacklistChangedEvent(event: BlacklistChangedEvent) {
         SwingUtilities.invokeLater {
-            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN) &&
-                MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)
+            if (ApplicationConfiguration.getInstance().searchAbosImmediately &&
+                ApplicationConfiguration.getInstance().blacklistApplyToAbo
             ) {
                 updateDownloads()
             }
@@ -388,7 +385,7 @@ class GuiDownloads(
     @Handler
     private fun handleBlacklistAboSettingChangedEvent(event: BlacklistAboSettingChangedEvent) {
         SwingUtilities.invokeLater {
-            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)) {
+            if (ApplicationConfiguration.getInstance().searchAbosImmediately) {
                 updateDownloads()
             }
         }
@@ -421,11 +418,11 @@ class GuiDownloads(
     }
 
     private fun setupShowFilmDescriptionMenuItem() {
-        cbShowDownloadDescription.isSelected = config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true)
+        cbShowDownloadDescription.isSelected = ApplicationConfiguration.getInstance().showDownloadDescription
         cbShowDownloadDescription.addActionListener {
             val visible = cbShowDownloadDescription.isSelected
             descriptionTabController.setVisible(visible)
-            config.setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, visible)
+            ApplicationConfiguration.getInstance().showDownloadDescription = visible
         }
     }
 
@@ -473,7 +470,7 @@ class GuiDownloads(
         reloadTable()
         updateUnknownDownloadSizes()
 
-        if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN)) {
+        if (ApplicationConfiguration.getInstance().startDownloadsImmediately) {
             filmStartenWiederholenStoppen(true, starten = true, restartFinishedDownloads = false, skipManualDownloads = true)
         }
     }
@@ -912,7 +909,7 @@ class GuiDownloads(
                     refreshDownloadListAction.isEnabled = true
                 }
                 daten.listeDownloads.filmEintragen()
-                if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)) {
+                if (ApplicationConfiguration.getInstance().searchAbosImmediately) {
                     updateDownloads()
                 } else {
                     reloadTable()

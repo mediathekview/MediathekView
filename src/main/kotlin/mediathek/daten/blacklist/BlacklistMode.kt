@@ -18,7 +18,7 @@
 
 package mediathek.daten.blacklist
 
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 
 enum class BlacklistMode {
     BLACKLIST,
@@ -32,7 +32,7 @@ enum class BlacklistMode {
 
     companion object {
         fun fromConfig(): BlacklistMode =
-            if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)) {
+            if (ApplicationConfiguration.getInstance().blacklistWhitelistMode) {
                 WHITELIST
             } else {
                 BLACKLIST

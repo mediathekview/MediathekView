@@ -26,14 +26,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.gui.messages.FilmListImportTypeChangedEvent
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
 import mediathek.tool.*
 import net.engio.mbassy.listener.Handler
-import org.apache.commons.configuration2.Configuration
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import javax.swing.JCheckBox
 import javax.swing.JOptionPane
@@ -45,7 +44,7 @@ import javax.swing.event.DocumentListener
 class PanelFilmlisteLaden(
     inSettingsDialog: Boolean,
 ) : PanelFilmlisteLadenBase() {
-    private val config: Configuration = ApplicationConfiguration.getConfiguration()
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private var warningDialogShown = false
     private var senderSelectionChanged = false
@@ -75,13 +74,9 @@ class PanelFilmlisteLaden(
             jCheckBoxUpdate.isEnabled = selected
         }
 
-        cbEvaluateDuplicates.isSelected =
-            config.getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true)
+        cbEvaluateDuplicates.isSelected = applicationConfiguration.evaluateFilmDuplicates
         cbEvaluateDuplicates.addActionListener {
-            config.setProperty(
-                ApplicationConfiguration.FILM_EVALUATE_DUPLICATES,
-                cbEvaluateDuplicates.isSelected,
-            )
+            applicationConfiguration.evaluateFilmDuplicates = cbEvaluateDuplicates.isSelected
         }
     }
 
@@ -148,29 +143,29 @@ class PanelFilmlisteLaden(
     }
 
     private fun setupCheckBoxes() {
-        cbSign.isSelected = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true)
+        cbSign.isSelected = applicationConfiguration.filmListLoadSignLanguage
         cbSign.addActionListener {
-            config.setProperty(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, cbSign.isSelected)
+            applicationConfiguration.filmListLoadSignLanguage = cbSign.isSelected
         }
 
-        cbAudio.isSelected = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true)
+        cbAudio.isSelected = applicationConfiguration.filmListLoadAudioDescription
         cbAudio.addActionListener {
-            config.setProperty(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, cbAudio.isSelected)
+            applicationConfiguration.filmListLoadAudioDescription = cbAudio.isSelected
         }
 
-        cbTrailer.isSelected = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER, true)
+        cbTrailer.isSelected = applicationConfiguration.filmListLoadTrailer
         cbTrailer.addActionListener {
-            config.setProperty(ApplicationConfiguration.FilmList.LOAD_TRAILER, cbTrailer.isSelected)
+            applicationConfiguration.filmListLoadTrailer = cbTrailer.isSelected
         }
 
-        cbLivestreams.isSelected = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true)
+        cbLivestreams.isSelected = applicationConfiguration.filmListLoadLivestreams
         cbLivestreams.addActionListener {
-            config.setProperty(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, cbLivestreams.isSelected)
+            applicationConfiguration.filmListLoadLivestreams = cbLivestreams.isSelected
         }
 
-        jCheckBoxUpdate.isSelected = config.getBoolean(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, false)
+        jCheckBoxUpdate.isSelected = applicationConfiguration.extendOldFilmList
         jCheckBoxUpdate.addActionListener {
-            config.setProperty(ApplicationConfiguration.FilmList.EXTEND_OLD_FILMLIST, jCheckBoxUpdate.isSelected)
+            applicationConfiguration.extendOldFilmList = jCheckBoxUpdate.isSelected
         }
     }
 
@@ -218,7 +213,7 @@ class PanelFilmlisteLaden(
             FilmListUpdateType.AUTOMATIC -> jRadioButtonAuto.isSelected = true
         }
 
-        jTextFieldUrl.text = MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL)
+        jTextFieldUrl.text = ApplicationConfiguration.getInstance().filmListManualImportUrl
     }
 
     val updateCheckBox: JCheckBox
@@ -241,7 +236,7 @@ class PanelFilmlisteLaden(
         }
 
         private fun updateManualImportUrl() {
-            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.text)
+            ApplicationConfiguration.getInstance().filmListManualImportUrl = jTextFieldUrl.text
         }
     }
 }

@@ -1,15 +1,8 @@
 package mediathek.controller
 
 import mediathek.config.Daten
-import mediathek.daten.DatenDownload
-import mediathek.daten.DatenProg
-import mediathek.daten.DatenPset
-import mediathek.daten.DownloadSource
-import mediathek.daten.DownloadType
-import mediathek.daten.ListePset
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import mediathek.daten.*
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files

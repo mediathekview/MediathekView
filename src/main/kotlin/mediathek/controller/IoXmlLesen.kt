@@ -18,7 +18,6 @@
 package mediathek.controller
 
 import mediathek.config.Daten
-import mediathek.config.MVConfig
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
@@ -31,7 +30,7 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.Collections
+import java.util.*
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamException
@@ -61,7 +60,7 @@ class IoXmlLesen(
                             while (parser.hasNext()) {
                                 if (parser.next() == XMLStreamConstants.START_ELEMENT) {
                                     when {
-                                        MVConfig.isSystemElement(parser.localName) -> MVConfig.readSystemConfiguration(parser)
+                                        parser.localName == SYSTEM_ELEMENT -> skipElement(parser)
                                         parser.localName == DatenPset.TAG -> {
                                             datenPset = readProgramSet(parser)
                                             val currentPset = datenPset
@@ -104,11 +103,19 @@ class IoXmlLesen(
             if (!readDownloadsFromJson && legacyDownloadsRead) {
                 writeMigratedDownloads()
             }
-
-            MVConfig.loadSystemParameter()
         }
 
         return ret
+    }
+
+    private fun skipElement(parser: XMLStreamReader) {
+        var depth = 1
+        while (depth > 0 && parser.hasNext()) {
+            when (parser.next()) {
+                XMLStreamConstants.START_ELEMENT -> depth++
+                XMLStreamConstants.END_ELEMENT -> depth--
+            }
+        }
     }
 
     private fun get(
@@ -231,6 +238,7 @@ class IoXmlLesen(
     }
 
     companion object {
+        private const val SYSTEM_ELEMENT = "system"
         private val logger = LogManager.getLogger(IoXmlLesen::class.java)
     }
 }

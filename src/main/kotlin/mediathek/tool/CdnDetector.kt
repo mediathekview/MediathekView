@@ -19,6 +19,7 @@
 package mediathek.tool
 
 import kotlinx.coroutines.*
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.http.MVHttpClient
 import okhttp3.Request
 import java.net.URI
@@ -207,7 +208,7 @@ object CdnDetector {
     private fun normalizeUrl(input: String): String = if ("://" in input) input else "https://$input"
 
     private fun userAgent(): String =
-        ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT)
+        ApplicationConfiguration.getInstance().userAgent
 
     enum class Classification {
         LIKELY_CLOUDFRONT,

@@ -19,12 +19,10 @@
 package mediathek.gui.bookmark
 
 import ca.odell.glazedlists.swing.TableComparatorChooser
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.swing.IconUtils
 import mediathek.swing.IconizedCheckBoxMenuItem
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.JsonStringUtils
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.kordamp.ikonli.materialdesign2.MaterialDesignE
@@ -42,6 +40,7 @@ open class BookmarkTableColumnSettingsManager<E>(
     private val configPrefix: String,
     protected val comparatorChooser: TableComparatorChooser<E>?,
 ) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     protected val allColumns = mutableListOf<TableColumn>()
     protected val lastSettings = mutableListOf<ColumnSetting>()
 
@@ -72,10 +71,9 @@ open class BookmarkTableColumnSettingsManager<E>(
 
     fun load() {
         try {
-            val config = ApplicationConfiguration.getConfiguration()
-            val fileSettings = config.withLock(LockMode.READ) {
-                parseColumnSettingsJson(getString(configPrefix + COLUMN_SETTINGS))
-            }
+            val fileSettings = parseColumnSettingsJson(
+                applicationConfiguration.getTableColumnSettings(configPrefix),
+            )
 
             for (fileSetting in fileSettings) {
                 val existing = lastSettings.firstOrNull { it.id == fileSetting.id }
@@ -126,12 +124,9 @@ open class BookmarkTableColumnSettingsManager<E>(
             }
         }
 
-        val config = ApplicationConfiguration.getConfiguration()
         try {
-            config.withLock(LockMode.WRITE) {
-                val output = toColumnSettingsJson(lastSettings)
-                setProperty(configPrefix + COLUMN_SETTINGS, output)
-            }
+            val output = toColumnSettingsJson(lastSettings)
+            applicationConfiguration.setTableColumnSettings(configPrefix, output)
         } catch (ex: Exception) {
             log.error("Failed to save column settings.", ex)
         }
@@ -339,7 +334,6 @@ open class BookmarkTableColumnSettingsManager<E>(
 
     private companion object {
         val log: Logger = LogManager.getLogger()
-        const val COLUMN_SETTINGS = ".colummn-settings"
         val POSITION_PATTERN: Pattern = Pattern.compile("\"position\"\\s*:\\s*(-?\\d+)")
         val WIDTH_PATTERN: Pattern = Pattern.compile("\"width\"\\s*:\\s*(-?\\d+)")
         val VISIBLE_PATTERN: Pattern = Pattern.compile("\"visible\"\\s*:\\s*(true|false)")

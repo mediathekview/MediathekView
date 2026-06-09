@@ -21,6 +21,7 @@ package mediathek.filmlisten.reader
 import kotlinx.coroutines.*
 import mediathek.config.CommandLineOptions
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.daten.Country
 import mediathek.daten.DatenFilm
@@ -28,7 +29,6 @@ import mediathek.daten.ListeFilme
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmListMetadataStore
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.ProgressMonitorInputStream
 import mediathek.tool.TrailerTeaserChecker
 import mediathek.tool.datum.DateUtil
@@ -432,11 +432,11 @@ open class FilmListReader : AutoCloseable {
 
         skipFieldDescriptions(jp)
 
-        val config = ApplicationConfiguration.getConfiguration()
-        val loadTrailer = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_TRAILER, true)
-        val loadAudiodescription = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_AUDIO_DESCRIPTION, true)
-        val loadSignLanguage = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_SIGN_LANGUAGE, true)
-        val loadLivestreams = config.getBoolean(ApplicationConfiguration.FilmList.LOAD_LIVESTREAMS, true)
+        val config = ApplicationConfiguration.getInstance()
+        val loadTrailer = config.filmListLoadTrailer
+        val loadAudiodescription = config.filmListLoadAudioDescription
+        val loadSignLanguage = config.filmListLoadSignLanguage
+        val loadLivestreams = config.filmListLoadLivestreams
 
         while (true) {
             val jsonToken = jp.nextToken() ?: return

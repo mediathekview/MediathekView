@@ -7,14 +7,8 @@ package mediathek.gui.duplicates.overview
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.swing.GlazedListsSwing
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import mediathek.daten.DatenFilm
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsTableFormat

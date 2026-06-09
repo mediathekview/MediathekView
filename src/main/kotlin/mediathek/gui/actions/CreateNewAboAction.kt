@@ -18,12 +18,12 @@
 
 package mediathek.gui.actions
 
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
-import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.dialog.DialogEditAbo
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FilenameUtils
 import mediathek.tool.SVGIconUtilities
@@ -70,7 +70,7 @@ class CreateNewAboAction @JvmOverloads constructor(
             return
         }
 
-        MVConfig.setInt(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, datenAbo.mindestDauerMinuten)
+        ApplicationConfiguration.getInstance().defaultAboMinimumDurationMinutes = datenAbo.mindestDauerMinuten
         listeAbo.addAbo(datenAbo)
         Collections.sort(listeAbo)
         listeAbo.aenderungMelden()
@@ -82,11 +82,12 @@ class CreateNewAboAction @JvmOverloads constructor(
         filmThema: String,
         filmTitel: String,
     ): DatenAbo {
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
         val sanitizedAboName = FilenameUtils.replaceLeerDateiname(
             aboname,
             false,
-            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
-            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII),
+            applicationConfiguration.useFilenameReplaceTable,
+            applicationConfiguration.onlyAsciiFilenames,
         )
 
         return DatenAbo().apply {
@@ -96,19 +97,10 @@ class CreateNewAboAction @JvmOverloads constructor(
             title = filmTitel
             themaTitel = ""
             irgendwo = ""
-            mindestDauerMinuten = parseMinSize()
+            mindestDauerMinuten = ApplicationConfiguration.getInstance().defaultAboMinimumDurationMinutes
             filmLengthState = FilmLengthState.MINIMUM
             zielpfad = sanitizedAboName
             psetName = ""
-        }
-    }
-
-    private fun parseMinSize(): Int {
-        return runCatching {
-            MVConfig.getInt(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, 0)
-        }.getOrElse {
-            MVConfig.setInt(MVConfig.Configs.SYSTEM_ABO_MIN_SIZE, 0)
-            0
         }
     }
 

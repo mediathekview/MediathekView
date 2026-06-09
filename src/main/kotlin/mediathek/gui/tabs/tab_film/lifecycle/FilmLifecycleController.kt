@@ -18,26 +18,18 @@
 
 package mediathek.gui.tabs.tab_film.lifecycle
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
+import mediathek.config.application.FilterConfiguration
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
-import mediathek.gui.messages.BookmarkRefreshCompletedEvent
-import mediathek.gui.messages.ButtonStartEvent
-import mediathek.gui.messages.ReloadTableDataEvent
-import mediathek.gui.messages.StartEvent
-import mediathek.gui.messages.TableModelChangeEvent
+import mediathek.gui.messages.*
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
 import mediathek.gui.tabs.tab_film.FilmToolBar
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.filter.SwingFilterDialog
 import mediathek.gui.tabs.tab_film.search.SearchField
-import mediathek.tool.FilterConfiguration
 import mediathek.tool.MessageBus
 import mediathek.tool.table.MVFilmTable
 

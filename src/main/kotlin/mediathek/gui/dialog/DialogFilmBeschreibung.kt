@@ -18,27 +18,15 @@
 
 package mediathek.gui.dialog
 
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
 import mediathek.config.StandardLocations
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.EscapeKeyHandler
-import mediathek.tool.FileDialogs
-import mediathek.tool.FilenameUtils
-import mediathek.tool.GuiFunktionen
-import mediathek.tool.MVInfoFile
-import mediathek.tool.SVGIconUtilities
-import mediathek.tool.SwingErrorDialog
+import mediathek.tool.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
@@ -124,11 +112,12 @@ class DialogFilmBeschreibung(
     }
 
     private fun buildDestinationPath(): String {
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
         val title = FilenameUtils.replaceLeerDateiname(
             datenFilm.title,
             false,
-            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
-            MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII),
+            applicationConfiguration.useFilenameReplaceTable,
+            applicationConfiguration.onlyAsciiFilenames,
         )
         val programSets = Daten.getInstance().listePset.listeSpeichern
         val targetPath = if (programSets.isEmpty()) {

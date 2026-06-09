@@ -2,14 +2,13 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.dialogEinstellungen.allgemein.LuceneDirectoryModePanel;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GetIcon;
-import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -70,32 +69,14 @@ public class DialogEinstellungen extends JFrame {
     }
 
     private void restoreSizeFromConfig() {
-        int width, height, x, y;
-        final var config = ApplicationConfiguration.getConfiguration();
+        final var state = ApplicationConfiguration.getInstance().getSettingsDialogState();
 
-        config.lock(LockMode.READ);
-        try {
-            width = config.getInt(ApplicationConfiguration.SettingsDialog.WIDTH);
-            height = config.getInt(ApplicationConfiguration.SettingsDialog.HEIGHT);
-            x = config.getInt(ApplicationConfiguration.SettingsDialog.X);
-            y = config.getInt(ApplicationConfiguration.SettingsDialog.Y);
-        }
-        catch (Exception e) {
-            width = 0;
-            height = 0;
-            x = 0;
-            y = 0;
-        }
-        finally {
-            config.unlock(LockMode.READ);
+        if (state.hasStoredSize()) {
+            setSize(state.width(), state.height());
         }
 
-        if (width > 0 && height > 0) {
-            setSize(width, height);
-        }
-
-        if (x > 0 && y > 0) {
-            setLocation(x, y);
+        if (state.x() > 0 && state.y() > 0) {
+            setLocation(state.x(), state.y());
         } else {
             final var parentFrame = MediathekGui.ui();
             if (parentFrame != null)
@@ -215,18 +196,8 @@ public class DialogEinstellungen extends JFrame {
     private void storeSizeInConfig() {
         final var size = getSize();
         final var location = getLocation();
-        final var config = ApplicationConfiguration.getConfiguration();
-
-        config.lock(LockMode.WRITE);
-        try {
-            config.setProperty(ApplicationConfiguration.SettingsDialog.WIDTH, size.width);
-            config.setProperty(ApplicationConfiguration.SettingsDialog.HEIGHT, size.height);
-            config.setProperty(ApplicationConfiguration.SettingsDialog.X, location.x);
-            config.setProperty(ApplicationConfiguration.SettingsDialog.Y, location.y);
-        }
-        finally {
-            config.unlock(LockMode.WRITE);
-        }
+        ApplicationConfiguration.getInstance()
+                .setSettingsDialogBounds(location.x, location.y, size.width, size.height);
     }
 
     private void beenden() {

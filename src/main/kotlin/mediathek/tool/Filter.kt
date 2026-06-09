@@ -142,7 +142,6 @@ object Filter {
     fun checkLowercase(filter: Array<String>, im: String): Boolean =
         filter.any { token -> im.contains(token) }
 
-    @JvmStatic
     fun isPattern(textSuchen: String): Boolean =
         textSuchen.startsWith("#:")
 
@@ -176,7 +175,6 @@ object Filter {
      * @param regExpStr the regexp pattern
      * @return Pattern if successful, otherwise null.
      */
-    @JvmStatic
     fun makePatternNoCache(regExpStr: String): Pattern? {
         if (!isPattern(regExpStr)) {
             return null

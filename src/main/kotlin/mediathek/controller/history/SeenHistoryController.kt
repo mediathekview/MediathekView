@@ -24,10 +24,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import mediathek.audiothek.model.AudioEntry
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
 import mediathek.sqlite.SeenHistoryCorruptionHandler
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import mediathek.tool.sql.SqlDatabaseConfig
 import org.apache.logging.log4j.LogManager
@@ -186,9 +186,8 @@ class SeenHistoryController : AutoCloseable {
     fun performMaintenance() {
         logger.trace("Start maintenance")
 
-        val config = ApplicationConfiguration.getConfiguration()
-        val lastRunStr = config.getString(LASTRUN, null)
-        val lastRunDate = if (lastRunStr != null) LocalDate.parse(lastRunStr) else null
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
+        val lastRunDate = applicationConfiguration.seenHistoryMaintenanceLastRun
         val now = LocalDate.now()
         val shouldRunHeavyMaintenance = lastRunDate == null ||
             ChronoUnit.DAYS.between(lastRunDate, now) >= MAX_DAYS
@@ -200,7 +199,7 @@ class SeenHistoryController : AutoCloseable {
         if (success) {
             SeenHistoryCache.clear()
             if (shouldRunHeavyMaintenance) {
-                config.setProperty(LASTRUN, now.toString())
+                applicationConfiguration.seenHistoryMaintenanceLastRun = now
             }
         }
 
@@ -268,7 +267,6 @@ class SeenHistoryController : AutoCloseable {
 
     companion object {
         private val logger = LogManager.getLogger()
-        private const val LASTRUN = "database.seen_history.maintenance.lastRun"
         private const val MAX_DAYS: Long = 30
         private val databaseDispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(1)
         private val sharedStoreLock = Any()

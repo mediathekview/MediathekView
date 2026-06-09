@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -121,8 +122,7 @@ object FileSize {
             return LookupResult(INVALID_SIZE.toLong())
         }
 
-        val fetchSize = forceFetch || ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true)
+        val fetchSize = forceFetch || ApplicationConfiguration.getInstance().fetchMissingDownloadFileSize
         if (fetchSize) {
             logger.trace("Requesting file size for: {}", url)
         } else {
@@ -202,10 +202,7 @@ object FileSize {
             )
             .header(
                 "User-Agent",
-                ApplicationConfiguration.getConfiguration().getString(
-                    ApplicationConfiguration.APPLICATION_USER_AGENT,
-                    Konstanten.PROGRAMMNAME,
-                ),
+                ApplicationConfiguration.getInstance().userAgent,
             )
             .header(Konstanten.HLS_STREAM_INFO_TOKEN_HEADER, Konstanten.HLS_STREAM_INFO_TOKEN)
             .get()

@@ -1,6 +1,6 @@
 package mediathek.tool.http
 
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import okhttp3.Authenticator
 import okhttp3.Credentials.basic
 import okhttp3.Response
@@ -26,9 +26,9 @@ internal class OkHttpProxyAuthenticator {
             logger.info("Proxy Authentication from environment vars: ({})", prxUser)
         } else {
             //try to create proxy auth from settings
-            val config = ApplicationConfiguration.getConfiguration()
-            prxUser = config.getString(ApplicationConfiguration.HttpProxy.USER, "")
-            prxPassword = config.getString(ApplicationConfiguration.HttpProxy.PASSWORD, "")
+            val config = ApplicationConfiguration.getInstance()
+            prxUser = config.httpProxyUser
+            prxPassword = config.httpProxyPassword
             if (prxUser.isNotEmpty() && prxPassword.isNotEmpty()) {
                 proxyAuthenticator = createAuthenticator(prxUser, prxPassword)
                 logger.info("Proxy Authentication from application settings: ({})", prxUser)

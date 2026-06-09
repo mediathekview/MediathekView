@@ -1,7 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang;
 import net.miginfocom.layout.AC;
@@ -19,11 +19,12 @@ public class PanelPset extends JPanel {
         this.parentComponent = parentComponent;
 
         initComponents();
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
         jCheckBoxAlleEinstellungen.addActionListener(_ -> {
-            MVConfig.setBoolean(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, jCheckBoxAlleEinstellungen.isSelected());
+            applicationConfiguration.setProgramSetShowAllSettings(jCheckBoxAlleEinstellungen.isSelected());
             setupPSetVisiblePanels();
         });
-        jCheckBoxAlleEinstellungen.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG));
+        jCheckBoxAlleEinstellungen.setSelected(applicationConfiguration.getProgramSetShowAllSettings());
         setupPSetVisiblePanels();
     }
 

@@ -1,5 +1,6 @@
 package mediathek.config
 
+import mediathek.tool.migrator.SettingsMigrator
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -8,6 +9,7 @@ import java.awt.Color
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 internal class MVColorTest {
     @TempDir
@@ -17,7 +19,6 @@ internal class MVColorTest {
     fun tearDown() {
         MVColor.reset()
         StandardLocations.portableBaseDirectory = null
-        legacyKeys().forEach(MVConfig::remove)
     }
 
     @Test
@@ -51,16 +52,26 @@ internal class MVColorTest {
     }
 
     @Test
-    fun migratesLegacyMvConfigEntriesOnce() {
+    fun migratesLegacyColorEntriesOnce() {
         StandardLocations.portableBaseDirectory = tempDir.toString()
 
         val legacyLight = Color(101, 102, 103)
         val legacyDark = Color(131, 132, 133)
         val sharedColor = Color(55, 66, 77)
+        val settingsFile = tempDir.resolve(Konstanten.CONFIG_FILE)
 
-        MVConfig.add("FARBE_FILM_NEU", "${legacyLight.rgb}${MVConfig.TRENNER}${legacyDark.rgb}")
-        MVConfig.add("FARBE_SELECTED_ICON", sharedColor.rgb.toString())
+        settingsFile.writeText(
+            """
+            <Mediathek>
+                <system>
+                    <FARBE_FILM_NEU>${legacyLight.rgb}#=#${legacyDark.rgb}</FARBE_FILM_NEU>
+                    <FARBE_SELECTED_ICON>${sharedColor.rgb}</FARBE_SELECTED_ICON>
+                </system>
+            </Mediathek>
+            """.trimIndent()
+        )
 
+        SettingsMigrator(settingsFile).migrate()
         MVColor.reset()
         MVColor.load()
 
@@ -70,8 +81,6 @@ internal class MVColorTest {
         assertEquals(legacyDark, MVColor.NEW_COLOR.getOverrideColor(true))
         assertEquals(sharedColor, MVColor.SELECTED_COLOR.getOverrideColor(false))
         assertEquals(sharedColor, MVColor.SELECTED_COLOR.getOverrideColor(true))
-        assertEquals("", MVConfig.get("FARBE_FILM_NEU"))
-        assertEquals("", MVConfig.get("FARBE_SELECTED_ICON"))
 
         MVColor.reset()
         MVColor.load()
@@ -80,26 +89,4 @@ internal class MVColorTest {
         assertEquals(legacyDark, MVColor.NEW_COLOR.getOverrideColor(true))
         assertEquals(sharedColor, MVColor.SELECTED_COLOR.getOverrideColor(false))
     }
-
-    private fun legacyKeys() = listOf(
-        "FARBE_FILM_HISTORY",
-        "FARBE_FILM_BOOKMARKED",
-        "FARBE_FILM_DUPLICATE",
-        "FARBE_FILM_NEU",
-        "FARBE_FILTER_REGEX",
-        "FARBE_SELECTED_ICON",
-        "FARBE_TABLE_ALTERNATE_ROW",
-        "FARBE_DOWNLOAD_IST_ABO",
-        "FARBE_DOWNLOAD_IST_DIREKTER_DOWNLOAD",
-        "FARBE_DOWNLOAD_WAIT",
-        "FARBE_DOWNLOAD_WAIT_SEL",
-        "FARBE_DOWNLOAD_RUN",
-        "FARBE_DOWNLOAD_RUN_SEL",
-        "FARBE_DOWNLOAD_FERTIG",
-        "FARBE_DOWNLOAD_FERTIG_SEL",
-        "FARBE_DOWNLOAD_FEHLER",
-        "FARBE_DOWNLOAD_FEHLER_SEL",
-        "FARBE_DOWNLOAD_DATEINAME_NEU",
-        "FARBE_DOWNLOAD_DATEINAME_ALT"
-    )
 }

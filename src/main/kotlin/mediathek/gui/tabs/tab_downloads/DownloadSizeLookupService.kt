@@ -21,9 +21,9 @@ package mediathek.gui.tabs.tab_downloads
 import com.github.benmanes.caffeine.cache.Caffeine
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.daten.DatenDownload
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.FileSize
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
@@ -61,8 +61,7 @@ internal class DownloadSizeLookupService(
                 }
 
                 val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
-                val fetchSizeEnabled = ApplicationConfiguration.getConfiguration()
-                    .getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true)
+                val fetchSizeEnabled = ApplicationConfiguration.getInstance().fetchMissingDownloadFileSize
                 val probeHlsSegments = forceLookup
                 val lookupKey = LookupKey(
                     url = download.downloadUrl,

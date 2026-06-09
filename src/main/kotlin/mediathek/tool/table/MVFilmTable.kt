@@ -19,7 +19,6 @@
 package mediathek.tool.table
 
 import mediathek.config.MVColor
-import mediathek.config.MVConfig
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.table.FilmColumnVisibility
@@ -27,7 +26,6 @@ import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.Component
 import java.awt.event.MouseEvent
-import java.util.*
 import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableColumnModel
 import javax.swing.table.TableModel
@@ -36,9 +34,7 @@ import javax.swing.table.TableRowSorter
 class MVFilmTable : PersistentColumnConfigurationTable(
     DatenFilm.MAX_ELEM,
     FilmColumnVisibility.store(),
-    Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN),
-    Optional.of(MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN),
-    MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME,
+    TableConfigurationStores.FILM,
 ) {
     private var sorter: FilmRowSorter? = null
     private var selectedFilmIdentities: List<DatenFilm.FilmIdentity> = emptyList()

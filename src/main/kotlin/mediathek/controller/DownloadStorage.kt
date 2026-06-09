@@ -19,17 +19,12 @@
 package mediathek.controller
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadConfig
 import mediathek.tool.FileUtils
 import java.nio.file.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.exists
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
+import kotlin.io.path.*
 
 object DownloadStorage {
     private const val FILE_VERSION = 1

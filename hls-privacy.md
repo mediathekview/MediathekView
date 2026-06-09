@@ -6,7 +6,7 @@ MediathekView nutzt diese Daten, um bereits bekannte Informationen zu HLS-Stream
 
 ## Nicht gesendete Daten
 
-Der Client sendet keine:
+Der Client sendet **keine**:
 
 - öffentliche IP-Adresse des Clients als Anwendungsfeld
 - Benutzernamen

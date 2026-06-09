@@ -1,6 +1,6 @@
 package mediathek.tool
 
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen
 import mediathek.gui.messages.ProgramLocationChangedEvent
 import org.apache.logging.log4j.LogManager
@@ -49,7 +49,7 @@ object DirOpenAction {
                     programCall[1] = directory.absolutePath
                     Runtime.getRuntime().exec(programCall)
 
-                    MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, program)
+                    ApplicationConfiguration.getInstance().directoryOpenProgram = program
                     MessageBus.messageBus.publishAsync(ProgramLocationChangedEvent())
                     success = true
                 }
@@ -59,7 +59,7 @@ object DirOpenAction {
             }
         } finally {
             if (!success) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "")
+                ApplicationConfiguration.getInstance().directoryOpenProgram = ""
                 MessageBus.messageBus.publishAsync(ProgramLocationChangedEvent())
                 JOptionPane.showMessageDialog(
                     parent,
@@ -84,5 +84,5 @@ object DirOpenAction {
     }
 
     private fun configuredDirectoryOpener(): String =
-        MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN)
+        ApplicationConfiguration.getInstance().directoryOpenProgram
 }

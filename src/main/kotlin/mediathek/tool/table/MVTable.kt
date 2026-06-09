@@ -19,7 +19,6 @@
 package mediathek.tool.table
 
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
 import mediathek.gui.messages.FontSizeChangedEvent
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
@@ -36,8 +35,8 @@ import javax.swing.table.TableColumnModel
 abstract class MVTable protected constructor(
     protected val maxSpalten: Int,
     protected val spaltenAnzeigen: ColumnVisibilityStore,
-    protected val showIconsConfigKey: java.util.Optional<MVConfig.Configs>,
-    protected val smallSenderIconConfigKey: java.util.Optional<MVConfig.Configs>,
+    private val showSenderIconsConfiguration: BooleanConfigurationProperty?,
+    private val smallSenderIconsConfiguration: BooleanConfigurationProperty?,
 ) : JTable() {
 
     protected val breite = IntArray(maxSpalten) { -1 }
@@ -61,8 +60,8 @@ abstract class MVTable protected constructor(
         autoCreateRowSorter = true
         autoResizeMode = AUTO_RESIZE_OFF
 
-        showIconsConfigKey.ifPresent { showSenderIcon = MVConfig.getBoolean(it) }
-        smallSenderIconConfigKey.ifPresent { useSmallSenderIconsState = MVConfig.getBoolean(it) }
+        showSenderIconsConfiguration?.let { showSenderIcon = it.read() }
+        smallSenderIconsConfiguration?.let { useSmallSenderIconsState = it.read() }
 
         calculateRowHeight()
         MessageBus.messageBus.subscribe(this)
@@ -310,8 +309,8 @@ abstract class MVTable protected constructor(
      * Write table display preferences to config.
      */
     open fun writeTableConfigurationData() {
-        showIconsConfigKey.ifPresent { MVConfig.setBoolean(it, showSenderIcon) }
-        smallSenderIconConfigKey.ifPresent { MVConfig.setBoolean(it, useSmallSenderIconsState) }
+        showSenderIconsConfiguration?.write?.invoke(showSenderIcon)
+        smallSenderIconsConfiguration?.write?.invoke(useSmallSenderIconsState)
     }
 
     companion object {

@@ -20,13 +20,12 @@ package mediathek.tool.table
 
 import mediathek.daten.DatenPset
 import mediathek.tool.models.NonEditableTableModel
-import java.util.Optional
 
 class MVPsetTable : MVTable(
     DatenPset.MAX_ELEM,
     ColumnVisibilityStore.create(DatenPset.MAX_ELEM),
-    Optional.empty(),
-    Optional.empty(),
+    null,
+    null,
 ) {
     init {
         model = NonEditableTableModel(emptyArray(), arrayOf(*DatenPset.COLUMN_NAMES))

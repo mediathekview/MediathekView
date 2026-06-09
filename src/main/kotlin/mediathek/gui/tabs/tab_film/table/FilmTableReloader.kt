@@ -18,15 +18,8 @@
 
 package mediathek.gui.tabs.tab_film.table
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.helpers.GuiModelHelperFactory
@@ -34,9 +27,9 @@ import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.tool.MessageBus
 import mediathek.tool.table.MVFilmTable
 import org.apache.logging.log4j.LogManager
-import java.util.concurrent.Executor
 import javax.swing.table.TableModel
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FilmTableReloader(private val host: Host) {
     interface Host {
         fun table(): MVFilmTable
@@ -44,8 +37,6 @@ class FilmTableReloader(private val host: Host) {
         fun searchFieldData(): SearchFieldData
 
         fun filterController(): FilmFilterController
-
-        fun tableModelExecutor(): Executor
 
         fun setSelectionUpdatesSuspended(suspended: Boolean)
 
@@ -55,6 +46,7 @@ class FilmTableReloader(private val host: Host) {
     }
 
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    private val modelDispatcher = Dispatchers.Default.limitedParallelism(1)
     private var modelJob: Job? = null
     private var pendingTableReload = false
     private var pendingTableReloadFromSearchField = false
@@ -84,10 +76,9 @@ class FilmTableReloader(private val host: Host) {
         host.table().getSpalten()
         host.table().isEnabled = false
 
-        val decoratedPool = host.tableModelExecutor()
         modelJob = uiScope.launch {
             val result = runCatching {
-                withContext(decoratedPool.asCoroutineDispatcher()) {
+                withContext(modelDispatcher) {
                     val helper = GuiModelHelperFactory.createGuiModelHelper(host.searchFieldData(), host.filterController())
                     helper.filteredTableModel
                 }

@@ -19,7 +19,7 @@
 package mediathek.tool.datum
 
 import java.time.LocalDate
-import java.util.Date
+import java.util.*
 
 class DatumFilm : Date {
     constructor(date: Long) : super(date)

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.print.PrinterException
-import java.util.Optional
+import java.util.*
 import java.util.function.Supplier
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu

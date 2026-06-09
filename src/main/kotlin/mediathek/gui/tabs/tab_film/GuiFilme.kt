@@ -18,15 +18,11 @@
 
 package mediathek.gui.tabs.tab_film
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
+import mediathek.config.application.FilterConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
@@ -35,24 +31,12 @@ import mediathek.gui.actions.DeleteBookmarksAction
 import mediathek.gui.actions.ManageBookmarkAction
 import mediathek.gui.actions.PlayFilmAction
 import mediathek.gui.bookmark.BookmarkDialog
-import mediathek.gui.messages.BookmarkRefreshCompletedEvent
-import mediathek.gui.messages.ButtonStartEvent
-import mediathek.gui.messages.ReloadTableDataEvent
-import mediathek.gui.messages.StartEvent
-import mediathek.gui.messages.TableModelChangeEvent
-import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent
+import mediathek.gui.messages.*
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
 import mediathek.gui.tabs.DescriptionTabController
 import mediathek.gui.tabs.actions.MarkFilmAsSeenAction
 import mediathek.gui.tabs.actions.MarkFilmAsUnseenAction
-import mediathek.gui.tabs.tab_film.actions.BookmarkAddFilmAction
-import mediathek.gui.tabs.tab_film.actions.BookmarkRemoveFilmAction
-import mediathek.gui.tabs.tab_film.actions.CopyUrlToClipboardAction
-import mediathek.gui.tabs.tab_film.actions.DownloadSubtitleAction
-import mediathek.gui.tabs.tab_film.actions.FilmActionHost
-import mediathek.gui.tabs.tab_film.actions.FilmUiActions
-import mediathek.gui.tabs.tab_film.actions.SaveFilmAction
-import mediathek.gui.tabs.tab_film.actions.ToggleFilterDialogVisibilityAction
+import mediathek.gui.tabs.tab_film.actions.*
 import mediathek.gui.tabs.tab_film.bookmark.FilmBookmarkController
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.filter.SwingFilterDialog
@@ -60,35 +44,22 @@ import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.lifecycle.BookmarkStartupReloadCoordinator
 import mediathek.gui.tabs.tab_film.lifecycle.FilmLifecycleController
 import mediathek.gui.tabs.tab_film.lifecycle.FilmLifecycleHostAdapter
-import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.gui.tabs.tab_film.search.LuceneSearchField
 import mediathek.gui.tabs.tab_film.search.RegularSearchField
 import mediathek.gui.tabs.tab_film.search.SearchField
+import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.gui.tabs.tab_film.selection.FilmSelectionController
 import mediathek.gui.tabs.tab_film.selection.FilmSelectionHostAdapter
-import mediathek.gui.tabs.tab_film.table.FilmTableInstaller
-import mediathek.gui.tabs.tab_film.table.FilmTableInstallerHostAdapter
-import mediathek.gui.tabs.tab_film.table.FilmTableReloadHostAdapter
-import mediathek.gui.tabs.tab_film.table.FilmTableReloader
+import mediathek.gui.tabs.tab_film.table.*
 import mediathek.gui.tabs.tab_film.view.FilmViewController
-import mediathek.gui.tabs.tab_film.table.TableContextMenuHostAdapter
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.FilterConfiguration
 import mediathek.tool.MessageBus
 import mediathek.tool.table.MVFilmTable
 import net.engio.mbassy.listener.Handler
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.BorderLayout
-import java.util.function.Consumer
+import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
-import javax.swing.Action
-import javax.swing.JCheckBoxMenuItem
-import javax.swing.JMenu
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTabbedPane
-import javax.swing.JTable
 
 class GuiFilme(
     aDaten: Daten,
@@ -151,7 +122,7 @@ class GuiFilme(
         val psetButtonsTab = JTabbedPane()
         val descriptionTabController = DescriptionTabController()
         val deleteBookmarksAction = DeleteBookmarksAction(MediathekGui.ui())
-        val filterConfiguration = FilterConfiguration()
+        val filterConfiguration = ApplicationConfiguration.getInstance().createFilterConfiguration()
         val selectionComponents = createSelectionComponents(filterConfiguration)
         selectionController = selectionComponents.selectionController
         bookmarkController = selectionComponents.bookmarkController
@@ -429,7 +400,7 @@ class GuiFilme(
         descriptionTabController.install(
             tabelle,
             cbkShowDescription,
-            ApplicationConfiguration.FILM_SHOW_DESCRIPTION,
+            { ApplicationConfiguration.getInstance().filmDescriptionVisible },
         ) { selectionComponents.selectionController.getCurrentlySelectedFilm() }
         viewComponents.viewController.setupPsetButtonsTab()
 
@@ -466,7 +437,6 @@ class GuiFilme(
                 SearchFieldData(searchField.text, searchField.getSearchMode())
             },
             filterController,
-            daten::getDecoratedPool,
             { suspended -> stopBeob = suspended },
             ::updateStartInfoProperty,
             selectionController::updateFilmData,

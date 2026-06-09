@@ -3,9 +3,9 @@ package mediathek.mainwindow
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.gui.actions.UrlHyperlinkAction
-import mediathek.tool.ApplicationConfiguration
 import org.apache.logging.log4j.LogManager
 import java.awt.Font
 import java.awt.event.WindowAdapter
@@ -47,7 +47,7 @@ class AustrianVlcCheck(val owner: JFrame) {
         ep.addHyperlinkListener { e: HyperlinkEvent ->
             if (e.eventType == HyperlinkEvent.EventType.ACTIVATED) {
                 try {
-                    ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, false)
+                    ApplicationConfiguration.getInstance().showOrfConfigHelp = false
                     UrlHyperlinkAction.openURL(Konstanten.ORF_TUTORIAL_LINK)
                 } catch (ex: Exception) {
                     logger.error("Failed to display ORF tutorial", ex)
@@ -74,8 +74,7 @@ class AustrianVlcCheck(val owner: JFrame) {
     }
 
     private fun shouldShowOrfHint(): Boolean {
-        return ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.APPLICATION_SHOW_ORF_CONFIG_HELP, true) &&
+        return ApplicationConfiguration.getInstance().showOrfConfigHelp &&
             ApplicationConfiguration.getInstance().geographicLocation == Country.AT
     }
 

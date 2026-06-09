@@ -24,6 +24,7 @@ import kotlinx.coroutines.runBlocking
 import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.ByteRateLimiter
 import mediathek.controller.MVBandwidthCountingInputStream
 import mediathek.controller.ThrottlingInputStream
@@ -34,7 +35,6 @@ import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.*
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
@@ -143,14 +143,12 @@ class CdnAwareDirectDownloadThread(
             ?: throw IOException("Invalid download URL: ${datenDownload.downloadUrl}")
 
     private fun downloadLimit(): Long {
-        val configuredLimit = ApplicationConfiguration.getConfiguration()
-            .getLong(ApplicationConfiguration.DownloadRateLimiter.LIMIT, 0)
+        val configuredLimit = ApplicationConfiguration.getInstance().downloadRateLimit
         return calculateDownloadLimit(configuredLimit)
     }
 
     private fun calculateDownloadLimit(limit: Long): Long {
-        val active = ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.DownloadRateLimiter.ACTIVE, false)
+        val active = ApplicationConfiguration.getInstance().downloadRateLimitActive
         return calcLimit(limit, active)
     }
 
@@ -180,8 +178,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private fun userAgent(): String {
-        return ApplicationConfiguration.getConfiguration()
-            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT)
+        return ApplicationConfiguration.getInstance().userAgent
     }
 
     private suspend fun prepareAncillaryDownloads() = coroutineScope {

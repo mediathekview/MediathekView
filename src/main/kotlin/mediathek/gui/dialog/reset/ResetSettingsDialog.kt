@@ -1,8 +1,8 @@
 package mediathek.gui.dialog.reset
 
 import mediathek.gui.dialog.StandardCloseDialog
-import javax.swing.JFrame
 import javax.swing.JComponent
+import javax.swing.JFrame
 
 class ResetSettingsDialog(
     private val owner: JFrame?,

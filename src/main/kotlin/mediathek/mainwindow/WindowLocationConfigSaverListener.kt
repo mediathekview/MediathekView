@@ -22,17 +22,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.Configuration
-import org.apache.commons.configuration2.sync.LockMode
+import mediathek.config.application.ApplicationConfiguration
 import java.awt.Point
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import javax.swing.JFrame
 
 internal class WindowLocationConfigSaverListener : ComponentAdapter() {
-    private val config: Configuration = ApplicationConfiguration.getConfiguration()
     private val configScope = CoroutineScope(SupervisorJob() + Dispatchers.IO.limitedParallelism(1))
 
     override fun componentResized(event: ComponentEvent) {
@@ -61,23 +57,12 @@ internal class WindowLocationConfigSaverListener : ComponentAdapter() {
     }
 
     private fun saveResizedState(state: ResizedState) {
-        withWriteLock {
-            setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, state.isMaximized)
-            setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH, state.width)
-            setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_HEIGHT, state.height)
-        }
+        ApplicationConfiguration.getInstance().setMainWindowResizedState(state.isMaximized, state.width, state.height)
     }
 
     private fun saveMovedState(state: MovedState) {
-        withWriteLock {
-            setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, state.isMaximized)
-            setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_X, state.location.x)
-            setProperty(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_Y, state.location.y)
-        }
-    }
-
-    private fun withWriteLock(block: Configuration.() -> Unit) {
-        config.withLock(LockMode.WRITE, block)
+        ApplicationConfiguration.getInstance()
+            .setMainWindowMovedState(state.isMaximized, state.location.x, state.location.y)
     }
 
     private val JFrame.isMaximized: Boolean

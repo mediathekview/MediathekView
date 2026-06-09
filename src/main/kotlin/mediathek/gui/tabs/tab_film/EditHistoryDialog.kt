@@ -6,17 +6,14 @@ package mediathek.gui.tabs.tab_film
 
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.swing.GlazedListsSwing
-import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.withLock
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.withWriteLock
-import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
 import java.awt.Window
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.util.NoSuchElementException
 import javax.swing.JMenuItem
 
 class EditHistoryDialog(
@@ -24,6 +21,7 @@ class EditHistoryDialog(
     menuItem: JMenuItem,
     private val eventList: EventList<String>,
 ) : EditHistoryDialogBase(owner) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val keyAdapter = DeleteKeyAdapter()
     private var keyAdapterInstalled = false
 
@@ -78,30 +76,25 @@ class EditHistoryDialog(
 
     private fun restorePosition() {
         try {
-            ApplicationConfiguration.getConfiguration().withLock(LockMode.READ) {
-                val x = getInt(CONFIG_X)
-                val y = getInt(CONFIG_Y)
-                val width = getInt(CONFIG_WIDTH)
-                val height = getInt(CONFIG_HEIGHT)
-
-                setSize(width, height)
-                setLocation(x, y)
+            val state = applicationConfiguration.editHistoryDialogState
+            if (state.hasStoredBounds()) {
+                setSize(state.width, state.height)
+                setLocation(state.x, state.y)
             }
-        } catch (_: NoSuchElementException) {
         } catch (ex: Exception) {
             logger.error("Unhandled exception", ex)
         }
     }
 
     private fun savePosition() {
-        ApplicationConfiguration.getConfiguration().withLock(LockMode.WRITE) {
-            val size = size
-            val location = location
-            setProperty(CONFIG_WIDTH, size.width)
-            setProperty(CONFIG_HEIGHT, size.height)
-            setProperty(CONFIG_X, location.x)
-            setProperty(CONFIG_Y, location.y)
-        }
+        val size = size
+        val location = location
+        applicationConfiguration.setEditHistoryDialogBounds(
+            location.x,
+            location.y,
+            size.width,
+            size.height,
+        )
     }
 
     private fun adjustButtons() {
@@ -142,10 +135,6 @@ class EditHistoryDialog(
     }
 
     private companion object {
-        private const val CONFIG_X = "edit_history.x"
-        private const val CONFIG_Y = "edit_history.y"
-        private const val CONFIG_HEIGHT = "edit_history.height"
-        private const val CONFIG_WIDTH = "edit_history.width"
         private val logger = LogManager.getLogger()
     }
 }

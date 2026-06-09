@@ -18,6 +18,7 @@
 
 package mediathek.gui.tabs.tab_film
 
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.actions.DeleteBookmarksAction
 import mediathek.gui.actions.ManageBookmarkAction
 import mediathek.gui.actions.PlayFilmAction
@@ -30,7 +31,6 @@ import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.search.SearchField
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconOnlyToggleButton
-import mediathek.tool.ApplicationConfiguration
 import javax.swing.Action
 import javax.swing.JLabel
 import javax.swing.JToolBar
@@ -83,8 +83,7 @@ class FilmToolBar(
 
     class FilterVisibilityToggleButton(action: Action) : IconOnlyToggleButton(action) {
         init {
-            isSelected = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.FilterDialog.VISIBLE, false)
+            isSelected = ApplicationConfiguration.getInstance().filterDialogVisible
         }
     }
 }

@@ -3,7 +3,7 @@ package mediathek.gui.dialog
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.ListePset
 import mediathek.daten.ListePsetVorlagen
 import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo
@@ -76,8 +76,8 @@ class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(p
     }
 
     private fun installDefaultProgramPaths() {
-        MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc())
-        MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg())
+        ApplicationConfiguration.getInstance().standardVlcPath = GuiFunktionenProgramme.getMusterPfadVlc()
+        ApplicationConfiguration.getInstance().standardFFmpegPath = GuiFunktionenProgramme.getMusterPfadFFmpeg()
     }
 
     private fun createLayout() {
@@ -173,7 +173,7 @@ class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(p
 
         ListePset.progMusterErsetzen(parent, pSet)
         Daten.getInstance().listePset.addPset(pSet)
-        MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version)
+        ApplicationConfiguration.getInstance().standardProgramSetVersion = pSet.version
         return true
     }
 
@@ -191,8 +191,8 @@ class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(p
     }
 
     private fun hasMissingProgramPath(): Boolean =
-        MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty() ||
-            MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()
+        ApplicationConfiguration.getInstance().standardVlcPath.isEmpty() ||
+            ApplicationConfiguration.getInstance().standardFFmpegPath.isEmpty()
 
     private fun setContinueButtonText() {
         jButtonStandard.text = CONTINUE_TEXT

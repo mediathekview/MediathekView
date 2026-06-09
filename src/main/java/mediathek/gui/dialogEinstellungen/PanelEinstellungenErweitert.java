@@ -1,11 +1,9 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.dialogEinstellungen.shutdown.ShutdownActionComboBox;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.TextCopyPasteHandler;
@@ -27,6 +25,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.function.Consumer;
 
 public class PanelEinstellungenErweitert extends JPanel {
     private static final Logger logger = LogManager.getLogger();
@@ -42,37 +41,42 @@ public class PanelEinstellungenErweitert extends JPanel {
         init();
         setFolderIcons();
 
-        jCheckBoxAboSuchen.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN));
-        jCheckBoxAboSuchen.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, jCheckBoxAboSuchen.isSelected()));
-        jCheckBoxDownloadSofortStarten.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN));
-        jCheckBoxDownloadSofortStarten.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN, jCheckBoxDownloadSofortStarten.isSelected()));
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jCheckBoxAboSuchen.setSelected(applicationConfiguration.getSearchAbosImmediately());
+        jCheckBoxAboSuchen.addActionListener(_ -> applicationConfiguration.setSearchAbosImmediately(jCheckBoxAboSuchen.isSelected()));
+        jCheckBoxDownloadSofortStarten.setSelected(applicationConfiguration.getStartDownloadsImmediately());
+        jCheckBoxDownloadSofortStarten.addActionListener(_ -> applicationConfiguration.setStartDownloadsImmediately(jCheckBoxDownloadSofortStarten.isSelected()));
 
-        jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
-        jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));
-        jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
-        jButtonProgrammShutdown.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, "Shutdown Befehl", jTextFieldProgrammShutdown));
+        jButtonProgrammDateimanager.addActionListener(new BeobPfad(
+                applicationConfiguration::setDirectoryOpenProgram, "Dateimanager suchen", jTextFieldProgrammDateimanager));
+        jButtonProgrammVideoplayer.addActionListener(new BeobPfad(
+                applicationConfiguration::setVideoPlayerProgram, "Videoplayer suchen", jTextFieldVideoplayer));
+        jButtonProgrammUrl.addActionListener(new BeobPfad(
+                applicationConfiguration::setWebBrowserProgram, "Browser suchen", jTextFieldProgrammUrl));
+        jButtonProgrammShutdown.addActionListener(new BeobPfad(
+                applicationConfiguration::setLinuxShutdownCommand, "Shutdown Befehl", jTextFieldProgrammShutdown));
 
-        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
+        jTextFieldProgrammDateimanager.setText(applicationConfiguration.getDirectoryOpenProgram());
+        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setDirectoryOpenProgram, jTextFieldProgrammDateimanager));
         var handler = new TextCopyPasteHandler<>(jTextFieldProgrammDateimanager);
         jTextFieldProgrammDateimanager.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN));
-        jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
+        jTextFieldVideoplayer.setText(applicationConfiguration.getVideoPlayerProgram());
+        jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setVideoPlayerProgram, jTextFieldVideoplayer));
         handler = new TextCopyPasteHandler<>(jTextFieldVideoplayer);
         jTextFieldVideoplayer.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
-        jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
+        jTextFieldProgrammUrl.setText(applicationConfiguration.getWebBrowserProgram());
+        jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setWebBrowserProgram, jTextFieldProgrammUrl));
         handler = new TextCopyPasteHandler<>(jTextFieldProgrammUrl);
         jTextFieldProgrammUrl.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN));
-        if (jTextFieldProgrammShutdown.getText().isEmpty()) {
-            jTextFieldProgrammShutdown.setText(Konstanten.SHUTDOWN_LINUX);
-            MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
-        }
-        jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
+        jTextFieldProgrammShutdown.setText(applicationConfiguration.getLinuxShutdownCommand());
+        jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setLinuxShutdownCommand, jTextFieldProgrammShutdown));
         handler = new TextCopyPasteHandler<>(jTextFieldProgrammShutdown);
         jTextFieldProgrammShutdown.setComponentPopupMenu(handler.getPopupMenu());
 
@@ -84,30 +88,29 @@ public class PanelEinstellungenErweitert extends JPanel {
     }
 
     private void setupJDownloaderFields() {
-        jTextFieldJDownloaderUrl.setText(ApplicationConfiguration.getConfiguration().getString(
-                ApplicationConfiguration.APPLICATION_JDOWNLOADER_URL,
-                Konstanten.JDOWNLOADER_URL));
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jTextFieldJDownloaderUrl.setText(applicationConfiguration.getJDownloaderUrl());
         jTextFieldJDownloaderUrl.getDocument().addDocumentListener(new BeobAppConfigDoc(
-                ApplicationConfiguration.APPLICATION_JDOWNLOADER_URL, jTextFieldJDownloaderUrl));
+                applicationConfiguration::setJDownloaderUrl, jTextFieldJDownloaderUrl));
         var handler = new TextCopyPasteHandler<>(jTextFieldJDownloaderUrl);
         jTextFieldJDownloaderUrl.setComponentPopupMenu(handler.getPopupMenu());
     }
 
     private void setupPyLoadFields() {
-        var config = ApplicationConfiguration.getConfiguration();
-        jTextFieldPyLoadUrl.setText(config.getString(ApplicationConfiguration.APPLICATION_PYLOAD_URL, ""));
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jTextFieldPyLoadUrl.setText(applicationConfiguration.getPyLoadUrl());
         jTextFieldPyLoadUrl.getDocument().addDocumentListener(new BeobAppConfigDoc(
-                ApplicationConfiguration.APPLICATION_PYLOAD_URL, jTextFieldPyLoadUrl));
+                applicationConfiguration::setPyLoadUrl, jTextFieldPyLoadUrl));
         var handler = new TextCopyPasteHandler<>(jTextFieldPyLoadUrl);
         jTextFieldPyLoadUrl.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldPyLoadUser.setText(config.getString(ApplicationConfiguration.APPLICATION_PYLOAD_USER, ""));
+        jTextFieldPyLoadUser.setText(applicationConfiguration.getPyLoadUser());
         jTextFieldPyLoadUser.getDocument().addDocumentListener(new BeobAppConfigDoc(
-                ApplicationConfiguration.APPLICATION_PYLOAD_USER, jTextFieldPyLoadUser));
+                applicationConfiguration::setPyLoadUser, jTextFieldPyLoadUser));
         handler = new TextCopyPasteHandler<>(jTextFieldPyLoadUser);
         jTextFieldPyLoadUser.setComponentPopupMenu(handler.getPopupMenu());
 
-        jPasswordFieldPyLoadPassword.setText(config.getString(ApplicationConfiguration.APPLICATION_PYLOAD_PASSWORD, ""));
+        jPasswordFieldPyLoadPassword.setText(applicationConfiguration.getPyLoadPassword());
         jPasswordFieldPyLoadPassword.getDocument().addDocumentListener(new PyLoadPasswordDocumentListener());
     }
 
@@ -124,13 +127,11 @@ public class PanelEinstellungenErweitert extends JPanel {
         }
     }
 
-    private String getWebBrowserLocation() {
-        return MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
-    }
-
     private void init() {
-        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jTextFieldProgrammDateimanager.setText(applicationConfiguration.getDirectoryOpenProgram());
+        jTextFieldVideoplayer.setText(applicationConfiguration.getVideoPlayerProgram());
+        jTextFieldProgrammUrl.setText(applicationConfiguration.getWebBrowserProgram());
     }
 
     private void setFolderIcons() {
@@ -141,44 +142,13 @@ public class PanelEinstellungenErweitert extends JPanel {
         jButtonProgrammShutdown.setIcon(icon);
     }
 
-    static private class BeobDoc implements DocumentListener {
-
-        final MVConfig.Configs config;
-        final JTextField txt;
-
-        public BeobDoc(MVConfig.Configs config, JTextField txt) {
-            this.config = config;
-            this.txt = txt;
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            MVConfig.add(config, txt.getText());
-        }
-
-    }
-
     static private class BeobAppConfigDoc implements DocumentListener {
 
-        final String configKey;
+        final Consumer<String> valueWriter;
         final JTextField txt;
 
-        public BeobAppConfigDoc(String configKey, JTextField txt) {
-            this.configKey = configKey;
+        public BeobAppConfigDoc(Consumer<String> valueWriter, JTextField txt) {
+            this.valueWriter = valueWriter;
             this.txt = txt;
         }
 
@@ -198,15 +168,13 @@ public class PanelEinstellungenErweitert extends JPanel {
         }
 
         private void tus() {
-            ApplicationConfiguration.getConfiguration().setProperty(configKey, txt.getText());
+            valueWriter.accept(txt.getText());
         }
     }
 
     private class PyLoadPasswordDocumentListener implements DocumentListener {
         private void update() {
-            ApplicationConfiguration.getConfiguration().setProperty(
-                    ApplicationConfiguration.APPLICATION_PYLOAD_PASSWORD,
-                    new String(jPasswordFieldPyLoadPassword.getPassword()));
+            ApplicationConfiguration.getInstance().setPyLoadPassword(new String(jPasswordFieldPyLoadPassword.getPassword()));
         }
 
         @Override
@@ -227,12 +195,12 @@ public class PanelEinstellungenErweitert extends JPanel {
 
     static private class BeobPfad implements ActionListener {
 
-        final MVConfig.Configs config;
+        final Consumer<String> valueWriter;
         final String title;
         final JTextField textField;
 
-        public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
-            this.config = config;
+        public BeobPfad(Consumer<String> valueWriter, String title, JTextField textField) {
+            this.valueWriter = valueWriter;
             this.title = title;
             this.textField = textField;
         }
@@ -271,7 +239,7 @@ public class PanelEinstellungenErweitert extends JPanel {
                 }
             }
             // merken und prüfen
-            MVConfig.add(config, textField.getText());
+            valueWriter.accept(textField.getText());
             String programm = textField.getText();
             if (!programm.isEmpty()) {
                 try {

@@ -1,6 +1,6 @@
 package mediathek.daten
 
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.FileSize
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.jupiter.api.Assertions.*

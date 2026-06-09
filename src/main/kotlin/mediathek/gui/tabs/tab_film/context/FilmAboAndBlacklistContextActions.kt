@@ -19,13 +19,13 @@
 package mediathek.gui.tabs.tab_film.context
 
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.daten.blacklist.BlacklistRule
 import mediathek.gui.actions.CreateNewAboAction
-import mediathek.tool.ApplicationConfiguration
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
-import java.util.Optional
+import java.util.*
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
@@ -129,7 +129,7 @@ class FilmAboAndBlacklistContextActions(
     }
 
     private fun turnOnBlacklist() {
-        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.BLACKLIST_IS_ON, true)
+        ApplicationConfiguration.getInstance().isBlacklistEnabled = true
     }
 
     private fun addBlacklistRuleForSelectedFilm(blacklistRuleAppender: (DatenFilm) -> Unit) {

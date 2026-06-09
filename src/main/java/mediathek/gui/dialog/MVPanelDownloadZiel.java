@@ -1,8 +1,8 @@
 package mediathek.gui.dialog;
 
 import mediathek.config.MVColor;
-import mediathek.config.MVConfig;
 import mediathek.config.StandardLocations;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.FileSpecifier;
 import mediathek.tool.FilenameUtils;
@@ -42,7 +42,7 @@ public class MVPanelDownloadZiel extends JPanel {
          jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(_ -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
+            ApplicationConfiguration.getInstance().setSavedDownloadTargetPaths("");
             jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.getTargetPath()}));
         });
         jTextFieldName.setText(datenDownload.getTargetFileName());
@@ -114,8 +114,9 @@ public class MVPanelDownloadZiel extends JPanel {
             // dann kommt der Pfad des Sets an den Anfang
             pfade.add(pfad);
         }
-        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
-            String[] p = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
+        String savedPaths = ApplicationConfiguration.getInstance().getSavedDownloadTargetPaths();
+        if (!savedPaths.isEmpty()) {
+            String[] p = savedPaths.split("<>");
             for (String s : p) {
                 if (!pfade.contains(s)) {
                     pfade.add(s);

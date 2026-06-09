@@ -28,15 +28,13 @@ import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
-import java.util.Optional
-import java.util.concurrent.Executor
+import java.util.*
 import javax.swing.JScrollPane
 
 class FilmTableReloadHostAdapter(
     private val tableProvider: () -> MVFilmTable,
     private val searchFieldDataProvider: () -> SearchFieldData,
     private val filterController: FilmFilterController,
-    private val tableModelExecutorProvider: () -> Executor,
     private val setSelectionUpdatesSuspendedAction: (Boolean) -> Unit,
     private val updateStartInfoPropertyAction: () -> Unit,
     private val updateFilmDataAction: () -> Unit,
@@ -46,8 +44,6 @@ class FilmTableReloadHostAdapter(
     override fun searchFieldData(): SearchFieldData = searchFieldDataProvider()
 
     override fun filterController(): FilmFilterController = filterController
-
-    override fun tableModelExecutor(): Executor = tableModelExecutorProvider()
 
     override fun setSelectionUpdatesSuspended(suspended: Boolean) {
         setSelectionUpdatesSuspendedAction(suspended)

@@ -24,16 +24,10 @@ import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon
 import mediathek.config.MVColor
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.tabs.tab_film.EditHistoryDialog
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.Filter
-import mediathek.tool.GuiFunktionen
-import mediathek.tool.JsonStringUtils
-import mediathek.tool.SVGIconUtilities
-import mediathek.tool.TextCopyPasteHandler
-import mediathek.tool.withReadLock
-import mediathek.tool.withWriteLock
+import mediathek.tool.*
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.Dimension
@@ -42,13 +36,7 @@ import java.awt.event.KeyEvent
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
 import java.util.function.Consumer
-import javax.swing.JButton
-import javax.swing.JMenuItem
-import javax.swing.JPopupMenu
-import javax.swing.JTextField
-import javax.swing.JToggleButton
-import javax.swing.JToolBar
-import javax.swing.UIManager
+import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.text.JTextComponent
@@ -56,7 +44,6 @@ import javax.swing.text.JTextComponent
 private val DEFAULT_DIMENSION = Dimension(500, 100)
 private val LUCENE_DEFAULT_DIMENSION = Dimension(700, 100)
 private const val SEARCHMODE_PROPERTY_STRING = "searchMode"
-private const val SEARCH_HISTORY_CONFIG = "search.history.items"
 
 abstract class SearchField(protected val host: Host) : JTextField("", 40) {
     interface Host {
@@ -115,13 +102,11 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
     }
 
     inner class SearchHistoryButton(mode: SearchControlFieldMode?) : JButton(FlatSearchWithHistoryIcon(true)) {
+        private val applicationConfiguration = ApplicationConfiguration.getInstance()
         private val historyList: EventList<String> = BasicEventList()
         private val miClearHistory = JMenuItem("Alles löschen")
         private val miEditHistory = JMenuItem("Einträge bearbeiten")
-        private val historyConfig = when (mode) {
-            SearchControlFieldMode.LUCENE -> "${SEARCH_HISTORY_CONFIG}_lucene"
-            else -> SEARCH_HISTORY_CONFIG
-        }
+        private val luceneSearch = mode == SearchControlFieldMode.LUCENE
 
         init {
             toolTipText = "Vorherige Suchen"
@@ -186,7 +171,7 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
             try {
                 historyList.withReadLock {
                     val json = JsonStringUtils.toJsonStringArray(ArrayList(historyList))
-                    ApplicationConfiguration.getConfiguration().setProperty(historyConfig, json)
+                    applicationConfiguration.setSearchHistoryItems(luceneSearch, json)
                 }
             } catch (ex: Exception) {
                 logger.error("Failed to write search history", ex)
@@ -194,12 +179,14 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
         }
 
         private fun readHistoryEntries(): List<String> {
-            val config = ApplicationConfiguration.getConfiguration()
-            return when (val rawValue = config.getProperty(historyConfig)) {
+            return when (val rawValue = applicationConfiguration.getSearchHistoryItems(luceneSearch)) {
                 null -> emptyList()
                 is Collection<*> -> {
                     val entries = rawValue.mapNotNull { it?.toString() }
-                    config.setProperty(historyConfig, JsonStringUtils.toJsonStringArray(entries))
+                    applicationConfiguration.setSearchHistoryItems(
+                        luceneSearch,
+                        JsonStringUtils.toJsonStringArray(entries),
+                    )
                     entries
                 }
                 is String -> {
@@ -287,8 +274,7 @@ class RegularSearchField(host: SearchField.Host) : SearchField(host) {
     }
 
     private fun setupPlaceholderText() {
-        val searchThroughDescription = ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false)
+        val searchThroughDescription = ApplicationConfiguration.getInstance().searchUseFilmDescriptions
         if (searchThroughDescription) {
             setSearchMode(SearchControlFieldMode.IRGENDWO)
         } else {
@@ -372,8 +358,7 @@ class RegularSearchField(host: SearchField.Host) : SearchField(host) {
             icon = normalIcon
             this.selectedIcon = selectedIcon
 
-            val searchThroughDescription = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false)
+            val searchThroughDescription = ApplicationConfiguration.getInstance().searchUseFilmDescriptions
             isSelected = searchThroughDescription
             setupToolTip(searchThroughDescription)
 
@@ -390,10 +375,8 @@ class RegularSearchField(host: SearchField.Host) : SearchField(host) {
                     SearchControlFieldMode.LUCENE -> Unit
                 }
 
-                ApplicationConfiguration.getConfiguration().setProperty(
-                    ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS,
+                ApplicationConfiguration.getInstance().searchUseFilmDescriptions =
                     getSearchMode() == SearchControlFieldMode.IRGENDWO
-                )
 
                 host.loadTable()
             }

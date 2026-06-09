@@ -2,11 +2,11 @@ package mediathek.gui;
 
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.daten.DownloadStartInfo;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.TrayIconEvent;
 import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.GetIcon;
 import mediathek.tool.MessageBus;
 import mediathek.tool.notification.MessageType;
@@ -90,7 +90,7 @@ public final class MVTray {
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
             itemRemoveTray.addActionListener(_ -> {
                 MediathekGui.ui().setVisible(true);
-                ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY,false);
+                ApplicationConfiguration.getInstance().setUseTray(false);
                 MediathekGui.ui().initializeSystemTray();
                 MessageBus.getMessageBus().publishAsync(new TrayIconEvent());
             });

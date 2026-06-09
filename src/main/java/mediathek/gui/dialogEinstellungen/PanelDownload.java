@@ -1,8 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
-import mediathek.tool.ApplicationConfiguration;
+import mediathek.config.application.ApplicationConfiguration;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -16,26 +15,26 @@ public class PanelDownload extends JPanel {
     public PanelDownload() {
         initComponents();
 
-        cbkDownloadError.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG));
-        cbkDownloadError.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, cbkDownloadError.isSelected()));
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        cbkDownloadError.setSelected(applicationConfiguration.getShowDownloadErrorMessage());
+        cbkDownloadError.addActionListener(_ -> applicationConfiguration.setShowDownloadErrorMessage(cbkDownloadError.isSelected()));
 
-        var config = ApplicationConfiguration.getConfiguration();
-        jCheckBoxBeep.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,false));
-        jCheckBoxBeep.addActionListener(_ -> config.setProperty(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP,jCheckBoxBeep.isSelected()));
+        jCheckBoxBeep.setSelected(applicationConfiguration.getPlaySoundAfterDownload());
+        jCheckBoxBeep.addActionListener(_ -> applicationConfiguration.setPlaySoundAfterDownload(jCheckBoxBeep.isSelected()));
 
-        cbFetchMissingFileSize.setSelected(config.getBoolean(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, true));
-        cbFetchMissingFileSize.addActionListener(_ -> config.setProperty(ApplicationConfiguration.DOWNLOAD_FETCH_FILE_SIZE, cbFetchMissingFileSize.isSelected()));
+        cbFetchMissingFileSize.setSelected(applicationConfiguration.getFetchMissingDownloadFileSize());
+        cbFetchMissingFileSize.addActionListener(_ -> applicationConfiguration.setFetchMissingDownloadFileSize(cbFetchMissingFileSize.isSelected()));
 
         jButtonBeep.addActionListener(_ -> Toolkit.getDefaultToolkit().beep());
 
-        var countdown = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME);
+        var countdown = applicationConfiguration.getDownloadContinuationTime();
         if (countdown < 1 || countdown > Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME) {
             countdown = Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME;
         }
         spDefaultDownloadContinuation.setValue(countdown);
         spDefaultDownloadContinuation.addChangeListener(_ -> {
             int val = (int)spDefaultDownloadContinuation.getValue();
-            config.setProperty(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, val);
+            applicationConfiguration.setDownloadContinuationTime(val);
         });
     }
 

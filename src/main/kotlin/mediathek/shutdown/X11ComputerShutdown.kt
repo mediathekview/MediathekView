@@ -18,8 +18,7 @@
 
 package mediathek.shutdown
 
-import mediathek.config.Konstanten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.ProcessCommandUtils
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
@@ -46,12 +45,6 @@ class X11ComputerShutdown : ComputerShutdown {
     }
 
     private fun configuredShutdownCommand(): String {
-        val configuredCommand = MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN)
-        if (configuredCommand.isNotEmpty()) {
-            return configuredCommand
-        }
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX)
-        return Konstanten.SHUTDOWN_LINUX
+        return ApplicationConfiguration.getInstance().linuxShutdownCommand
     }
 }

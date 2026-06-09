@@ -18,8 +18,8 @@
 
 package mediathek.daten
 
-import mediathek.config.MVConfig
 import mediathek.config.StandardLocations
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogOk
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade
 import mediathek.gui.messages.ProgramSetChangedEvent
@@ -213,18 +213,18 @@ class ListePset : ArrayList<DatenPset>() {
 
         private fun getPfadVlc(parent: JFrame?): String {
             // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()) {
+            if (ApplicationConfiguration.getInstance().standardVlcPath.isEmpty()) {
                 DialogOk(null, true, PanelProgrammPfade(parent, true, false), "Pfade Standardprogramme").isVisible = true
             }
-            return MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC)
+            return ApplicationConfiguration.getInstance().standardVlcPath
         }
 
         private fun getPfadFFmpeg(parent: JFrame?): String {
             // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
+            if (ApplicationConfiguration.getInstance().standardFFmpegPath.isEmpty()) {
                 DialogOk(null, true, PanelProgrammPfade(parent, false, true), "Pfade Standardprogramme").isVisible = true
             }
-            return MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG)
+            return ApplicationConfiguration.getInstance().standardFFmpegPath
         }
 
         private fun createModelRow(datenPset: DatenPset): Array<Any?> {

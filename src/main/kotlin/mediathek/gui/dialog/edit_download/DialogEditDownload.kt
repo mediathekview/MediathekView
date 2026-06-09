@@ -22,12 +22,9 @@ import com.github.kokorin.jaffree.process.JaffreeAbnormalExitException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.DownloadProgressText
-import mediathek.daten.DatenDownload
-import mediathek.daten.DatenProg
-import mediathek.daten.DownloadColumns
-import mediathek.daten.DownloadType
-import mediathek.daten.FilmResolution
+import mediathek.daten.*
 import mediathek.gui.dialog.DialogHilfe
 import mediathek.gui.dialog.MVPanelDownloadZiel
 import mediathek.gui.dialog.download.DownloadQualityLiveInfoText
@@ -40,7 +37,6 @@ import net.miginfocom.layout.AC
 import net.miginfocom.layout.CC
 import net.miginfocom.layout.LC
 import net.miginfocom.swing.MigLayout
-import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM
@@ -951,21 +947,15 @@ class DialogEditDownload(
     }
 
     private fun restoreLocation() {
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.READ) {
-            try {
-                location = Point(
-                    config.getInt(ApplicationConfiguration.EditDownloadDialog.X),
-                    config.getInt(ApplicationConfiguration.EditDownloadDialog.Y)
-                )
+        val state = ApplicationConfiguration.getInstance().editDownloadDialogState
+        if (!state.hasStoredLocation()) {
+            return
+        }
 
-                val width = config.getInt(ApplicationConfiguration.EditDownloadDialog.WIDTH, -1)
-                val height = config.getInt(ApplicationConfiguration.EditDownloadDialog.HEIGHT, -1)
-                if (width != -1 && height != -1) {
-                    size = Dimension(width, height)
-                }
-            } catch (_: NoSuchElementException) {
-            }
+        location = Point(state.x, state.y)
+
+        if (state.hasStoredSize()) {
+            size = Dimension(state.width, state.height)
         }
     }
 
@@ -974,14 +964,9 @@ class DialogEditDownload(
             return
         }
 
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.WRITE) {
-            val location = locationOnScreen
-            config.setProperty(ApplicationConfiguration.EditDownloadDialog.X, location.x)
-            config.setProperty(ApplicationConfiguration.EditDownloadDialog.Y, location.y)
-            config.setProperty(ApplicationConfiguration.EditDownloadDialog.WIDTH, width)
-            config.setProperty(ApplicationConfiguration.EditDownloadDialog.HEIGHT, height)
-        }
+        val location = locationOnScreen
+        ApplicationConfiguration.getInstance()
+            .setEditDownloadDialogBounds(location.x, location.y, width, height)
     }
 
     private fun downloadDateiLoeschen(download: DatenDownload): Boolean {

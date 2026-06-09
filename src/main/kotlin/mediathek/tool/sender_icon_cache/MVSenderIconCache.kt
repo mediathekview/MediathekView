@@ -2,8 +2,8 @@ package mediathek.tool.sender_icon_cache
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.SenderIconStyleChangedEvent
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import mediathek.tool.timer.TimerPool
 import net.engio.mbassy.listener.Handler
@@ -22,14 +22,12 @@ object MVSenderIconCache {
     private val useLocalIcons = AtomicBoolean(false)
     private val senderCache: LoadingCache<String, Optional<ImageIcon>>
     private val logger = LogManager.getLogger()
-    const val CONFIG_USE_LOCAL_SENDER_ICONS = "application.sender_icons.use_local"
-
 
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleSenderIconStyleChangedEvent(e: SenderIconStyleChangedEvent) {
         logger.trace("invalidating caches due to sender icon style change")
-        useLocalIcons.set(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false))
+        useLocalIcons.set(ApplicationConfiguration.getInstance().localSenderIcons)
         senderCache.invalidateAll()
     }
 
@@ -75,6 +73,6 @@ object MVSenderIconCache {
             .build { sender -> senderIconLoader.load(sender) }
 
         MessageBus.messageBus.subscribe(this)
-        useLocalIcons.set(ApplicationConfiguration.getConfiguration().getBoolean(CONFIG_USE_LOCAL_SENDER_ICONS, false))
+        useLocalIcons.set(ApplicationConfiguration.getInstance().localSenderIcons)
     }
 }

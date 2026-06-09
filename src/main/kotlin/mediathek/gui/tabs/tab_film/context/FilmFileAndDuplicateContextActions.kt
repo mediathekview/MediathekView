@@ -18,11 +18,7 @@
 
 package mediathek.gui.tabs.tab_film.context
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
@@ -33,7 +29,6 @@ import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FileDialogs
 import mediathek.tool.MVInfoFile
 import org.apache.logging.log4j.LogManager
-import java.util.ArrayList
 import javax.swing.JMenuItem
 import javax.swing.JOptionPane
 import javax.swing.JPopupMenu
@@ -98,20 +93,32 @@ class FilmFileAndDuplicateContextActions(
 
     private fun createRemoveDuplicatesMenuItem(film: DatenFilm): JMenuItem =
         JMenuItem("Duplikate entfernen...").apply {
-            addActionListener { performDuplicateRemoval(film) }
+            addActionListener {
+                isEnabled = false
+                uiScope.launch {
+                    try {
+                        performDuplicateRemoval(film)
+                    } catch (ex: CancellationException) {
+                        throw ex
+                    } catch (ex: Exception) {
+                        logger.error("Could not remove duplicates.", ex)
+                        JOptionPane.showMessageDialog(
+                            host.gui(),
+                            "Duplikate konnten nicht entfernt werden.",
+                            Konstanten.PROGRAMMNAME,
+                            JOptionPane.ERROR_MESSAGE,
+                        )
+                    } finally {
+                        isEnabled = true
+                    }
+                }
+            }
         }
 
-    private fun performDuplicateRemoval(film: DatenFilm) {
+    private suspend fun performDuplicateRemoval(film: DatenFilm) {
         val completeFilmList = daten.listeFilme
         val filteredFilmList = daten.listeBlacklist
-        val duplicateList = ArrayList(
-            completeFilmList.parallelStream()
-                .filter { it.sender.equals(film.sender, ignoreCase = true) }
-                .filter { it.thema.equals(film.thema, ignoreCase = true) }
-                .filter { it.title.equals(film.title, ignoreCase = true) }
-                .filter { it.urlNormalQuality.equals(film.urlNormalQuality, ignoreCase = true) }
-                .toList(),
-        )
+        val duplicateList = findDuplicates(completeFilmList.snapshot(), film)
         val filmCount = duplicateList.size
 
         if (filmCount <= 1) {
@@ -140,37 +147,50 @@ class FilmFileAndDuplicateContextActions(
         duplicateList.remove(film)
         completeFilmList.removeAll(duplicateList.toSet())
 
-        uiScope.launch {
-            val writeResult = withContext(Dispatchers.IO) {
-                runCatching {
-                    FilmListWriter(false).writeFilmList(
-                        StandardLocations.getFilmlistFilePathString(),
-                        completeFilmList,
-                    )
-                }
+        val writeResult = withContext(Dispatchers.IO) {
+            runCatching {
+                FilmListWriter(false).writeFilmList(
+                    StandardLocations.getFilmlistFilePathString(),
+                    completeFilmList,
+                )
             }
-
-            writeResult
-                .onSuccess {
-                    filteredFilmList.filterListAndNotifyListeners()
-                    JOptionPane.showMessageDialog(
-                        host.gui(),
-                        "Duplikate wurden entfernt.",
-                        Konstanten.PROGRAMMNAME,
-                        JOptionPane.INFORMATION_MESSAGE,
-                    )
-                }
-                .onFailure { error ->
-                    logger.error("Could not persist duplicate-removal changes.", error)
-                    JOptionPane.showMessageDialog(
-                        host.gui(),
-                        "Duplikate konnten nicht gespeichert werden.",
-                        Konstanten.PROGRAMMNAME,
-                        JOptionPane.ERROR_MESSAGE,
-                    )
-                }
         }
+
+        writeResult
+            .onSuccess {
+                filteredFilmList.filterListAndNotifyListeners()
+                JOptionPane.showMessageDialog(
+                    host.gui(),
+                    "Duplikate wurden entfernt.",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.INFORMATION_MESSAGE,
+                )
+            }
+            .onFailure { error ->
+                logger.error("Could not persist duplicate-removal changes.", error)
+                JOptionPane.showMessageDialog(
+                    host.gui(),
+                    "Duplikate konnten nicht gespeichert werden.",
+                    Konstanten.PROGRAMMNAME,
+                    JOptionPane.ERROR_MESSAGE,
+                )
+            }
     }
+
+    private suspend fun findDuplicates(
+        films: List<DatenFilm>,
+        referenceFilm: DatenFilm,
+    ): ArrayList<DatenFilm> =
+        withContext(Dispatchers.Default) {
+            ArrayList(
+                films.parallelStream()
+                    .filter { it.sender.equals(referenceFilm.sender, ignoreCase = true) }
+                    .filter { it.thema.equals(referenceFilm.thema, ignoreCase = true) }
+                    .filter { it.title.equals(referenceFilm.title, ignoreCase = true) }
+                    .filter { it.urlNormalQuality.equals(referenceFilm.urlNormalQuality, ignoreCase = true) }
+                    .toList(),
+            )
+        }
 
     private companion object {
         private val logger = LogManager.getLogger()

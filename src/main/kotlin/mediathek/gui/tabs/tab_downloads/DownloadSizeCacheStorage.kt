@@ -19,18 +19,13 @@
 package mediathek.gui.tabs.tab_downloads
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mediathek.config.StandardLocations
 import mediathek.daten.Country
 import mediathek.tool.FileUtils
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
-import kotlin.io.path.createDirectories
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.exists
-import kotlin.io.path.readText
-import kotlin.io.path.writeText
+import kotlin.io.path.*
 
 internal object DownloadSizeCacheStorage {
     private const val FILE_VERSION = 1

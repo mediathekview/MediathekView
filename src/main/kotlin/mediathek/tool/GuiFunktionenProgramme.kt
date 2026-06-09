@@ -19,7 +19,7 @@
 package mediathek.tool
 
 import mediathek.config.Daten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
 import mediathek.gui.dialogEinstellungen.DialogImportPset
@@ -197,7 +197,7 @@ object GuiFunktionenProgramme {
         if (dialog.ok) {
             if (Daten.getInstance().listePset.addPset(pSet)) {
                 if (setVersion) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, pSet.version)
+                    ApplicationConfiguration.getInstance().standardProgramSetVersion = pSet.version
                 }
                 JOptionPane.showMessageDialog(
                     null,
@@ -296,8 +296,7 @@ object GuiFunktionenProgramme {
                     .get()
                     .header(
                         "User-Agent",
-                        ApplicationConfiguration.getConfiguration()
-                            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT)
+                        ApplicationConfiguration.getInstance().userAgent
                     )
                     .get()
                     .build()

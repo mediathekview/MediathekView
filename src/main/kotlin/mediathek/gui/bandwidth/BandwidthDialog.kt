@@ -21,19 +21,16 @@ package mediathek.gui.bandwidth
 import com.formdev.flatlaf.FlatLaf
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.actions.ShowBandwidthUsageAction
 import mediathek.gui.messages.DarkModeChangeEvent
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import mediathek.tool.http.MVHttpClient
-import mediathek.tool.withLock
 import net.engio.mbassy.listener.Handler
 import net.miginfocom.layout.AC
 import net.miginfocom.layout.CC
 import net.miginfocom.layout.LC
 import net.miginfocom.swing.MigLayout
-import org.apache.commons.configuration2.Configuration
-import org.apache.commons.configuration2.sync.LockMode
 import org.jfree.chart.ChartPanel
 import org.jfree.chart.JFreeChart
 import org.jfree.chart.axis.DateAxis
@@ -48,6 +45,8 @@ import org.jfree.data.time.TimeSeries
 import org.jfree.data.time.TimeSeriesCollection
 import org.jfree.data.time.TimeSeriesDataItem
 import java.awt.*
+import java.awt.event.ComponentAdapter
+import java.awt.event.ComponentEvent
 import java.text.*
 import java.util.*
 import javax.swing.*
@@ -57,7 +56,7 @@ class BandwidthDialog(
     owner: Window,
     private val menuAction: ShowBandwidthUsageAction,
 ) : JDialog(owner) {
-    private val config: Configuration = ApplicationConfiguration.getConfiguration()
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val bandwidthSeries = TimeSeries("Bandwidth")
     private val timeAxis = DateAxis()
     private val bandwidthAxis = NumberAxis()
@@ -73,7 +72,7 @@ class BandwidthDialog(
         buildUi()
         configureChart()
         restoreSizeFromConfig()
-        addComponentListener(WriteConfigComponentListener(config, this))
+        addComponentListener(createBoundsListener())
         addWindowListener(createWindowListener())
 
         applyTheme()
@@ -96,7 +95,7 @@ class BandwidthDialog(
     }
 
     fun storeVisibilityState(visible: Boolean) {
-        config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, visible)
+        applicationConfiguration.bandwidthMonitorVisible = visible
     }
 
     private fun initDialog() {
@@ -263,14 +262,34 @@ class BandwidthDialog(
 
     private fun restoreSizeFromConfig() {
         try {
-            config.withLock(LockMode.READ) {
-                setSize(getInt(CONFIG_WIDTH), getInt(CONFIG_HEIGHT))
-                setLocation(getInt(CONFIG_X), getInt(CONFIG_Y))
+            val state = applicationConfiguration.bandwidthMonitorDialogState
+            if (state.hasStoredBounds()) {
+                setSize(state.width, state.height)
+                setLocation(state.x, state.y)
+            } else {
+                setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+                moveToDefaultHudPosition()
             }
         } catch (_: Exception) {
             setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
             moveToDefaultHudPosition()
         }
+    }
+
+    private fun createBoundsListener() =
+        object : ComponentAdapter() {
+            override fun componentResized(event: ComponentEvent) {
+                storeBounds()
+            }
+
+            override fun componentMoved(event: ComponentEvent) {
+                storeBounds()
+            }
+        }
+
+    private fun storeBounds() {
+        val bounds = bounds
+        applicationConfiguration.setBandwidthMonitorDialogBounds(bounds.x, bounds.y, bounds.width, bounds.height)
     }
 
     private fun moveToDefaultHudPosition() {
@@ -342,11 +361,6 @@ class BandwidthDialog(
     }
 
     companion object {
-        const val CONFIG_X = "bandwidth_monitor.x"
-        const val CONFIG_Y = "bandwidth_monitor.y"
-        const val CONFIG_HEIGHT = "bandwidth_monitor.height"
-        const val CONFIG_WIDTH = "bandwidth_monitor.width"
-
         private const val DEFAULT_WIDTH = 300
         private const val DEFAULT_HEIGHT = 150
         private val CHART_HISTORY_SECONDS = 30.seconds

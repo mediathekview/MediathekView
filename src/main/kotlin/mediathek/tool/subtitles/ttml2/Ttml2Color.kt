@@ -19,7 +19,7 @@
 package mediathek.tool.subtitles.ttml2
 
 import mediathek.tool.subtitles.Rgba
-import java.util.Locale
+import java.util.*
 import java.util.regex.Pattern
 
 /**

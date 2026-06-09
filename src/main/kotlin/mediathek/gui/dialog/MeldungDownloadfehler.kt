@@ -2,7 +2,7 @@ package mediathek.gui.dialog
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
 import mediathek.tool.EscapeKeyHandler
 import java.awt.Frame
@@ -41,7 +41,7 @@ class MeldungDownloadfehler(
     }
 
     override fun setVisible(visible: Boolean) {
-        if (MVConfig.getBoolean(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)) {
+        if (ApplicationConfiguration.getInstance().showDownloadErrorMessage) {
             super.setVisible(visible)
         } else {
             dispose()

@@ -20,7 +20,6 @@ package mediathek.tool.table
 
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
-import mediathek.config.MVConfig
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadColumns
 import mediathek.gui.messages.DownloadQueueRankChangedEvent
@@ -32,7 +31,6 @@ import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.Transferable
 import java.awt.dnd.DragSource
 import java.awt.event.MouseEvent
-import java.util.*
 import javax.activation.DataHandler
 import javax.swing.DropMode
 import javax.swing.JComponent
@@ -45,9 +43,7 @@ private val logger = LogManager.getLogger()
 class MVDownloadsTable : PersistentColumnConfigurationTable(
     DownloadColumns.COUNT,
     DownloadColumns.visibilityStore(),
-    Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN),
-    Optional.of(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN),
-    MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS,
+    TableConfigurationStores.DOWNLOAD,
 ) {
     private var sorter: DownloadsRowSorter? = null
 

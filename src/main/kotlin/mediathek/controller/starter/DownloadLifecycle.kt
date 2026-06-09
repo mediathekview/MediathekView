@@ -2,12 +2,17 @@ package mediathek.controller.starter
 
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.AboHistoryEntry
-import mediathek.daten.*
+import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadSource
+import mediathek.daten.DownloadType
 import mediathek.gui.messages.ButtonStartEvent
 import mediathek.gui.messages.StartEvent
 import mediathek.mac.FinderCommentService
-import mediathek.tool.*
+import mediathek.tool.BandwidthFormatter
+import mediathek.tool.FileUtils
+import mediathek.tool.MessageBus
 import mediathek.tool.notification.MessageType
 import mediathek.tool.notification.NotificationMessage
 import mediathek.tool.notification.NotificationService
@@ -123,8 +128,7 @@ internal object DownloadCompletionHandler {
     private fun makeBeep() {
         if (
             !GraphicsEnvironment.isHeadless() &&
-            ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.DOWNLOAD_SOUND_BEEP, false)
+            ApplicationConfiguration.getInstance().playSoundAfterDownload
         ) {
             Toolkit.getDefaultToolkit().beep()
         }

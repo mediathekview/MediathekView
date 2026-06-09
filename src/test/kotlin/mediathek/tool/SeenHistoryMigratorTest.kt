@@ -1,8 +1,8 @@
 package mediathek.tool
 
+import kotlinx.coroutines.runBlocking
 import mediathek.controller.history.SeenHistoryMigrator
 import mediathek.tool.sql.SqlDatabaseConfig
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach

@@ -23,7 +23,7 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.audiothek.ui.table.TriStateTableRowSorter;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.*;
@@ -826,9 +826,10 @@ public class PanelPsetLang extends JPanel {
 
             var entryName = liste.getFirst().getName();
             var name = entryName.isEmpty() ? "Name.xml" : entryName + ".xml";
+            var applicationConfiguration = ApplicationConfiguration.getInstance();
             var fileName = FilenameUtils.replaceLeerDateiname(name, false,
-                    MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
-                    MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII));
+                    applicationConfiguration.getUseFilenameReplaceTable(),
+                    applicationConfiguration.getOnlyAsciiFilenames());
             var resultFile = FileDialogs.chooseSaveFileLocation(parentComponent,"PSet exportieren", fileName);
             if (resultFile != null) {
                 var ziel = resultFile.getAbsolutePath();

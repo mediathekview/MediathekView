@@ -18,11 +18,7 @@
 
 package mediathek.tool.subtitles.ttml2
 
-import mediathek.tool.subtitles.SubtitleDocument.Length
-import mediathek.tool.subtitles.SubtitleDocument.Length2
-import mediathek.tool.subtitles.SubtitleDocument.Percent
-import mediathek.tool.subtitles.SubtitleDocument.Px
-import mediathek.tool.subtitles.SubtitleDocument.Region
+import mediathek.tool.subtitles.SubtitleDocument.*
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import javax.xml.XMLConstants

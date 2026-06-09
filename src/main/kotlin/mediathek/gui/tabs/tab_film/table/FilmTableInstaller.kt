@@ -18,7 +18,7 @@
 
 package mediathek.gui.tabs.tab_film.table
 
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
 import mediathek.gui.tabs.tab_film.actions.CopyUrlToClipboardAction
@@ -91,7 +91,7 @@ class FilmTableInstaller(private val host: Host) {
 
         setupCellRenderer()
 
-        host.table().setLineBreak(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK))
+        host.table().setLineBreak(ApplicationConfiguration.getInstance().filmTableLineBreak)
 
         setupHeaderPopupMenu()
 
@@ -143,7 +143,7 @@ class FilmTableInstaller(private val host: Host) {
             HIDDEN_COLUMNS,
             BUTTON_COLUMNS,
             true,
-            MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK
+            { ApplicationConfiguration.getInstance().filmTableLineBreak = it },
         )
 
         host.table().tableHeader.addMouseListener(headerListener)

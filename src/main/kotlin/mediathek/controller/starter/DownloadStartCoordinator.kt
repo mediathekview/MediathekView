@@ -19,9 +19,9 @@
 package mediathek.controller.starter
 
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.*
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.CdnDetector
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDateTime

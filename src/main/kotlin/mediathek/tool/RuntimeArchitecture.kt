@@ -19,7 +19,7 @@
 package mediathek.tool
 
 import org.apache.commons.lang3.SystemUtils
-import java.util.Locale
+import java.util.*
 
 object RuntimeArchitecture {
     val isIntelOrAmd64Bit: Boolean

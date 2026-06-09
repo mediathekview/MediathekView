@@ -27,6 +27,7 @@ import kotlinx.coroutines.withContext
 import mediathek.cli.CliShutdownSignal
 import mediathek.cli.DownloadAndQuitRunner
 import mediathek.config.*
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.controller.history.SeenHistoryController
 import mediathek.controller.history.SeenHistoryMigrator
@@ -65,7 +66,6 @@ import java.lang.management.ManagementFactory
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.security.Security
 import java.time.format.DateTimeFormatter
 import javax.imageio.ImageIO
@@ -134,8 +134,7 @@ object Main {
         }
 
         // enable modern search on demand
-        val useModernSearch = ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.APPLICATION_USE_MODERN_SEARCH, false)
+        val useModernSearch = ApplicationConfiguration.getInstance().useModernSearch
         if (useModernSearch) {
             Daten.getInstance().listeFilmeNachBlackList = IndexedFilmList()
         }
@@ -265,6 +264,7 @@ object Main {
             logger.error("CLI download mode requires an existing valid configuration and does not support interactive setup or repair.")
             exitProcess(1)
         }
+        applyRuntimeConfigOverrides()
     }
 
     /**
@@ -438,23 +438,14 @@ object Main {
      * Migrate old settings stored in mediathek.xml to new app config
      */
     private fun migrateOldConfigSettings() {
-        val settingsDir = StandardLocations.getSettingsDirectory().toString()
-        if (settingsDir.isNotEmpty()) {
-            val settingsDirectoryPath = Paths.get(settingsDir)
-            if (Files.exists(settingsDirectoryPath)) {
-                //convert existing settings
-                val settingsFile = settingsDirectoryPath.resolve(Konstanten.CONFIG_FILE)
-                if (Files.exists(settingsFile)) {
-                    logger.trace("migrating old config settings {}", settingsFile.toAbsolutePath().toString())
-                    try {
-                        val migrator = SettingsMigrator(settingsFile)
-                        migrator.migrate()
-                    } catch (e: Exception) {
-                        logger.error("settings migration error", e)
-                    }
-                }
-            } else {
-                logger.trace("nothing to migrate")
+        val settingsFile = StandardLocations.getMediathekXmlFile()
+        if (Files.exists(settingsFile)) {
+            logger.trace("migrating old config settings {}", settingsFile.toAbsolutePath().toString())
+            try {
+                val migrator = SettingsMigrator(settingsFile)
+                migrator.migrate()
+            } catch (e: Exception) {
+                logger.error("settings migration error", e)
             }
         }
     }
@@ -552,20 +543,14 @@ object Main {
     }
 
     private fun configureDnsPreferenceMode(parseResult: CommandLine.ParseResult) {
-        val config = ApplicationConfiguration.getConfiguration()
+        val config = ApplicationConfiguration.getInstance()
         if (parseResult.hasMatchedOption("dpm")) {
             logger.trace("Dns preference mode set via CLI, storing config value")
-            config.setProperty(
-                ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE,
-                CommandLineOptions.getDnsIpPreferenceMode().toString()
-            )
+            config.setNetworkingDnsMode(CommandLineOptions.getDnsIpPreferenceMode().toString())
         } else {
             logger.trace("Dns preference mode NOT set, using config setting")
             val mode = IPvPreferenceMode.fromString(
-                config.getString(
-                    ApplicationConfiguration.APPLICATION_NETWORKING_DNS_MODE,
-                    CommandLineOptions.getDnsIpPreferenceMode().toString()
-                )
+                config.getNetworkingDnsMode(CommandLineOptions.getDnsIpPreferenceMode().toString())
             )
             CommandLineOptions.setDnsIpPreferenceMode(mode)
         }
@@ -598,10 +583,9 @@ object Main {
     }
 
     private suspend fun activateNewMaxFilmLength() = withContext(Dispatchers.Swing) {
-        val alreadyActivated = ApplicationConfiguration.getConfiguration()
-            .getBoolean(Konstanten.NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY, false)
-        if (!alreadyActivated) {
-            val filterConfig = FilterConfiguration()
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
+        if (!applicationConfiguration.isNewFilmLengthActivationQuestionCompleted) {
+            val filterConfig = applicationConfiguration.createFilterConfiguration()
             val activeFilter = filterConfig.currentFilter
 
             try {
@@ -610,8 +594,7 @@ object Main {
                     .toList()
 
                 if (filtersNeedingMigration.isEmpty()) {
-                    ApplicationConfiguration.getConfiguration()
-                        .setProperty(Konstanten.NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY, true)
+                    applicationConfiguration.isNewFilmLengthActivationQuestionCompleted = true
                     return@withContext
                 }
 
@@ -642,8 +625,7 @@ object Main {
                             currentFilter.setFilmLengthMax(FilmLengthSlider.UNLIMITED_VALUE.toDouble())
                         }
                     }
-                    ApplicationConfiguration.getConfiguration()
-                        .setProperty(Konstanten.NEW_FILMLENGTH_ACTIVATED_QUESTION_CONFIG_KEY, true)
+                    applicationConfiguration.isNewFilmLengthActivationQuestionCompleted = true
                 }
             } finally {
                 filterConfig.setCurrentFilter(activeFilter)
@@ -657,14 +639,12 @@ object Main {
      * For newer versions configKey must be adapted.
      */
     private suspend fun activateNewSenders() = withContext(Dispatchers.Swing) {
-        val alreadyActivated = ApplicationConfiguration.getConfiguration()
-            .getBoolean(Konstanten.NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY, false)
-        if (!alreadyActivated) {
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
+        if (!applicationConfiguration.isNewSenderActivationQuestionCompleted) {
             val hasNewSendersToActivate =
                 !SenderFilmlistLoadApprover.senderSet.containsAll(SenderListBoxModel.providedSenderList)
             if (!hasNewSendersToActivate) {
-                ApplicationConfiguration.getConfiguration()
-                    .setProperty(Konstanten.NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY, true)
+                applicationConfiguration.isNewSenderActivationQuestionCompleted = true
                 return@withContext
             }
 
@@ -687,8 +667,7 @@ object Main {
                     logger.info("Activating new senders...")
                     SenderFilmlistLoadApprover.approveAll()
                 }
-                ApplicationConfiguration.getConfiguration()
-                    .setProperty(Konstanten.NEW_SENDER_ACTIVATED_QUESTION_CONFIG_KEY, true)
+                applicationConfiguration.isNewSenderActivationQuestionCompleted = true
             }
 
             SplashScreenLifecycle.show()
@@ -770,8 +749,20 @@ object Main {
                 deleteSettingsDirectory()
                 exitProcess(1)
             }
-            MVConfig.loadSystemParameter()
         }
+        applyRuntimeConfigOverrides()
+    }
+
+    private fun applyRuntimeConfigOverrides() {
+        if (CommandLineOptions.isDebugModeEnabled()) {
+            logger.debug("Debug mode enabled - Setting FilmList import mode to MANUAL")
+            FilmListUpdateType.MANUAL.writeToConfig()
+        }
+
+        logger.debug(
+            "User-Agent: {}",
+            ApplicationConfiguration.getInstance().userAgent
+        )
     }
 
     private fun deleteOldUserAgentsDatabase() {
@@ -915,17 +906,14 @@ object Main {
         }
 
         private fun setupFlatLaf() {
-            val darkMode = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.APPLICATION_DARK_MODE, false)
+            val darkMode = ApplicationConfiguration.getInstance().darkMode
             FlatLaf.setup(getCurrentLookAndFeel(darkMode))
         }
 
         fun setup() {
             if (DarkModeDetector.hasDarkModeDetectionSupport()) {
                 logger.trace("setting up dark mode system laf")
-                val useSystemMode = ApplicationConfiguration
-                    .getConfiguration()
-                    .getBoolean(ApplicationConfiguration.APPLICATION_USE_SYSTEM_DARK_MODE, false)
+                val useSystemMode = ApplicationConfiguration.getInstance().useSystemDarkMode
                 if (useSystemMode) {
                     FlatLaf.setup(getCurrentLookAndFeel(DarkModeDetector.isDarkMode()))
                 } else {

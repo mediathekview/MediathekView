@@ -19,10 +19,9 @@
 package mediathek.gui.dialog.add_download
 
 import mediathek.config.MVColor
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenPset
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FileDialogs
 import mediathek.tool.FilenameUtils
@@ -38,7 +37,6 @@ class DialogAddMoreDownload(
     parent: JFrame,
     private val pSet: DatenPset,
 ) : DialogAddMoreDownloadBase(parent) {
-    private val config = ApplicationConfiguration.getConfiguration()
     private val orgPfad: String
     private var addAll = false
     private var cancel = false
@@ -56,13 +54,9 @@ class DialogAddMoreDownload(
         info = chkInfo.isSelected
         chkInfo.addActionListener { info = chkInfo.isSelected }
 
-        jCheckBoxPfadSpeichern.isSelected =
-            config.getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH, true)
+        jCheckBoxPfadSpeichern.isSelected = ApplicationConfiguration.getInstance().showLastUsedDownloadPath
         jCheckBoxPfadSpeichern.addActionListener {
-            config.setProperty(
-                ApplicationConfiguration.DOWNLOAD_SHOW_LAST_USED_PATH,
-                jCheckBoxPfadSpeichern.isSelected,
-            )
+            ApplicationConfiguration.getInstance().showLastUsedDownloadPath = jCheckBoxPfadSpeichern.isSelected
         }
 
         btnChange.addActionListener { dispose() }
@@ -98,7 +92,7 @@ class DialogAddMoreDownload(
 
         jButtonDelPath.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg")
         jButtonDelPath.addActionListener {
-            MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "")
+            ApplicationConfiguration.getInstance().savedDownloadTargetPaths = ""
             jComboBoxPath.model = DefaultComboBoxModel(arrayOf(pSet.zielPfad))
         }
 

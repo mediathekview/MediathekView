@@ -1,9 +1,7 @@
 package mediathek.tool.subtitles.vtt
 
 import mediathek.tool.subtitles.ttml2.Ttml2Parser
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files

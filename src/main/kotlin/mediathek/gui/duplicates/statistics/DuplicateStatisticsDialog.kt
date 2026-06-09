@@ -8,16 +8,13 @@ import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.SortedList
 import ca.odell.glazedlists.swing.GlazedListsSwing
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.duplicates.FilmStatistics
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.withReadLock
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
 import java.awt.Window
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.util.NoSuchElementException
 import javax.swing.AbstractAction
 import javax.swing.JTable
 
@@ -25,6 +22,7 @@ class DuplicateStatisticsDialog(
     owner: Window,
     private val action: AbstractAction,
 ) : DuplicateStatisticsDialogBase(owner) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val tableFormat = DuplicateStatisticsTableFormat()
 
     init {
@@ -97,17 +95,13 @@ class DuplicateStatisticsDialog(
 
     private fun restorePosition() {
         try {
-            ApplicationConfiguration.getConfiguration().withLock(LockMode.READ) {
-                val x = getInt(CONFIG_X)
-                val y = getInt(CONFIG_Y)
-                val width = getInt(CONFIG_WIDTH)
-                val height = getInt(CONFIG_HEIGHT)
-
-                setSize(width, height)
-                setLocation(x, y)
+            val state = applicationConfiguration.duplicateStatisticsDialogState
+            if (state.hasStoredBounds()) {
+                setSize(state.width, state.height)
+                setLocation(state.x, state.y)
+            } else {
+                pack()
             }
-        } catch (_: NoSuchElementException) {
-            pack()
         } catch (ex: Exception) {
             logger.error("Unhandled Exception", ex)
             pack()
@@ -115,14 +109,14 @@ class DuplicateStatisticsDialog(
     }
 
     private fun savePosition() {
-        ApplicationConfiguration.getConfiguration().withLock(LockMode.WRITE) {
-            val currentSize = size
-            val currentLocation = location
-            setProperty(CONFIG_WIDTH, currentSize.width)
-            setProperty(CONFIG_HEIGHT, currentSize.height)
-            setProperty(CONFIG_X, currentLocation.x)
-            setProperty(CONFIG_Y, currentLocation.y)
-        }
+        val currentSize = size
+        val currentLocation = location
+        applicationConfiguration.setDuplicateStatisticsDialogBounds(
+            currentLocation.x,
+            currentLocation.y,
+            currentSize.width,
+            currentSize.height,
+        )
     }
 
     private fun EventList<FilmStatistics>.sumCounts(): Long =
@@ -131,10 +125,6 @@ class DuplicateStatisticsDialog(
         }
 
     private companion object {
-        private const val CONFIG_X = "duplicate_statistics_dialog.x"
-        private const val CONFIG_Y = "duplicate_statistics_dialog.y"
-        private const val CONFIG_HEIGHT = "duplicate_statistics_dialog.height"
-        private const val CONFIG_WIDTH = "duplicate_statistics_dialog.width"
         private const val COL_NUM_WIDTH = 90
         private const val IDX_NUM = 1
         private const val MIN_SENDER_COLUMN_WIDTH = 120

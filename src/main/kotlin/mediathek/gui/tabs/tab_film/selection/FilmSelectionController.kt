@@ -27,7 +27,7 @@ import mediathek.mainwindow.MediathekGui
 import mediathek.tool.NoSelectionErrorDialog
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
-import java.util.Optional
+import java.util.*
 
 class FilmSelectionController(private val host: Host) {
     interface Host {

@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.http.MVHttpClient
 import mediathek.tool.timer.TimerPool
 import okhttp3.HttpUrl
@@ -112,7 +113,7 @@ object HlsStreamInfoLogger {
 
         val request = Request.Builder()
             .url(endpoint)
-            .header("User-Agent", ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME))
+            .header("User-Agent", ApplicationConfiguration.getInstance().userAgent)
             .header(Konstanten.HLS_STREAM_INFO_TOKEN_HEADER, Konstanten.HLS_STREAM_INFO_TOKEN)
             .post(json.encodeToString(HlsStreamInfoEventBatch(events = pendingBatch.events)).toRequestBody(JSON_MEDIA_TYPE))
             .build()

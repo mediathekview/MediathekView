@@ -40,6 +40,7 @@ object MVColor {
     private val darkBlue = rgb(137, 192, 255)
     private const val STORAGE_FILENAME = "app-colors.json"
     private const val FILE_VERSION = 1
+    private const val LEGACY_SEPARATOR = "#=#"
     private val json = Json {
         prettyPrint = true
         prettyPrintIndent = "  "
@@ -133,6 +134,10 @@ object MVColor {
             DOWNLOAD_DATEINAME_ALT.key to "FARBE_DOWNLOAD_DATEINAME_ALT"
         )
 
+        private val colorKeysByLegacyKey = legacyKeysByColorKey.entries.associate { (colorKey, legacyKey) ->
+            legacyKey to colorKey
+        }
+
         private fun color(key: String, lightDefault: Color, darkDefault: Color, label: String): MVC =
             MVC(key, lightDefault, darkDefault, label)
 
@@ -168,12 +173,9 @@ object MVColor {
         reset()
 
         val storagePath = storagePath()
-        val loadedFromJson = storagePath.exists() && loadFromJson(storagePath)
-        if (!loadedFromJson && migrateLegacyColors()) {
-            save()
+        if (storagePath.exists()) {
+            loadFromJson(storagePath)
         }
-
-        clearLegacyConfigEntries()
     }
 
     @JvmStatic
@@ -223,13 +225,35 @@ object MVColor {
             false
         }
 
-    private fun migrateLegacyColors(): Boolean {
+    internal fun isLegacyColorKey(legacyKey: String): Boolean =
+        legacyKey in colorKeysByLegacyKey
+
+    internal fun migrateLegacyColors(legacyValues: Map<String, String>): Boolean {
+        if (legacyValues.isEmpty()) {
+            return false
+        }
+
+        val storagePath = storagePath()
+        if (storagePath.exists() && loadFromJson(storagePath)) {
+            reset()
+            return false
+        }
+
+        reset()
         var migrated = false
-        colors.forEach { mvc ->
+        legacyValues.forEach { (legacyKey, legacyValue) ->
+            val colorKey = colorKeysByLegacyKey[legacyKey] ?: return@forEach
+            val mvc = colorsByKey[colorKey] ?: return@forEach
             val hadOverride = mvc.hasOverride()
-            applyLegacyValue(mvc, MVConfig.get(legacyKeysByColorKey.getValue(mvc.key)))
+            applyLegacyValue(mvc, legacyValue)
             migrated = migrated || (!hadOverride && mvc.hasOverride())
         }
+
+        if (migrated) {
+            save()
+        }
+        reset()
+
         return migrated
     }
 
@@ -238,7 +262,7 @@ object MVColor {
             return
         }
 
-        val parts = Pattern.compile(Pattern.quote(MVConfig.TRENNER)).split(legacyValue, -1).toList()
+        val parts = Pattern.compile(Pattern.quote(LEGACY_SEPARATOR)).split(legacyValue, -1).toList()
         try {
             if (parts.size == 1) {
                 mvc.set(Color(parts[0].toInt()))
@@ -257,10 +281,6 @@ object MVColor {
             return
         }
         apply(Color(parts[index].toInt()))
-    }
-
-    private fun clearLegacyConfigEntries() {
-        legacyKeysByColorKey.values.forEach(MVConfig::remove)
     }
 
     private fun Color.toColorComponents() = ColorComponents(

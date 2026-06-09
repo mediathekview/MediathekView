@@ -18,17 +18,13 @@
 
 package mediathek.filmlisten
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
 import mediathek.filmeSuchen.ListenerFilmeLaden
@@ -37,7 +33,9 @@ import mediathek.filmlisten.reader.FilmListReader
 import mediathek.gui.messages.FilmListReadStopEvent
 import mediathek.mainwindow.MediathekGui
 import mediathek.mainwindow.StatusBarProgressHandle
-import mediathek.tool.*
+import mediathek.tool.FilmListUpdateType
+import mediathek.tool.MessageBus
+import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
@@ -324,7 +322,7 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private val loadNumDays: Int
-        get() = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0)
+        get() = ApplicationConfiguration.getInstance().filmListLoadNumDays
 
     private fun importFromUrl(
         dateiUrl: String,

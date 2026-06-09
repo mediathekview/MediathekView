@@ -22,8 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import mediathek.config.StandardLocations.getFilmlistFilePathString
 import mediathek.filmlisten.writer.FilmListWriter

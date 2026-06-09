@@ -19,16 +19,18 @@
 package mediathek.tool.cellrenderer
 
 import com.formdev.flatlaf.extras.FlatSVGIcon
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.swing.CompoundIcon
 import mediathek.swing.IconUtils
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import mediathek.tool.SVGIconUtilities
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.swing.FontIcon
 import java.awt.Color
-import javax.swing.*
+import javax.swing.Icon
+import javax.swing.JTable
+import javax.swing.SwingConstants
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ListSelectionEvent
 import javax.swing.event.TableColumnModelEvent
@@ -146,7 +148,7 @@ open class CellRendererBaseWithStart : CellRendererBase() {
             CompoundIcon(CompoundIcon.Axis.X_AXIS, 3, *iconList.toTypedArray())
         }
 
-        horizontalTextPosition = if (ApplicationConfiguration.getConfiguration().getBoolean(ICON_POSITION_RIGHT, false)) {
+        horizontalTextPosition = if (ApplicationConfiguration.getInstance().listIconPositionRight) {
             SwingConstants.LEADING
         } else {
             SwingConstants.TRAILING
@@ -215,7 +217,6 @@ open class CellRendererBaseWithStart : CellRendererBase() {
     }
 
     companion object {
-        const val ICON_POSITION_RIGHT: String = "ui.list.iconposition_right"
         private const val INDICATOR_VISIBILITY_CACHE_KEY = "mv.renderer.indicatorVisibilityCache"
 
         private fun isColumnHidden(table: JTable, identifier: String): Boolean =

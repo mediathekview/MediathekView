@@ -19,8 +19,8 @@
 package mediathek.daten
 
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
 import mediathek.config.StandardLocations
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.abo.DatenAbo
 import mediathek.tool.FileSpecifier
 import mediathek.tool.FileUtils
@@ -350,10 +350,12 @@ internal object DownloadTargetBuilder {
     ) {
         companion object {
             fun current(): FilenameCleanupOptions =
-                FilenameCleanupOptions(
-                    useReplaceTable = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE),
-                    onlyAscii = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII),
-                )
+                ApplicationConfiguration.getInstance().let { applicationConfiguration ->
+                    FilenameCleanupOptions(
+                        useReplaceTable = applicationConfiguration.useFilenameReplaceTable,
+                        onlyAscii = applicationConfiguration.onlyAsciiFilenames,
+                    )
+                }
         }
     }
 }

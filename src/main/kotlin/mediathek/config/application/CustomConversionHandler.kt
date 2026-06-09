@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool
+package mediathek.config.application
 
 import org.apache.commons.configuration2.convert.DefaultConversionHandler
 import org.apache.commons.configuration2.interpol.ConfigurationInterpolator
-import java.util.UUID
+import java.util.*
 
 class CustomConversionHandler : DefaultConversionHandler() {
     protected override fun <T> convertValue(src: Any?, targetCls: Class<T>, ci: ConfigurationInterpolator): T? {

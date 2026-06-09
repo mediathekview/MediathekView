@@ -25,7 +25,6 @@ import ca.odell.glazedlists.EventList
  * The base model object for all available senders that the client can process.
  */
 object SenderListBoxModel {
-    @JvmStatic
     val providedSenderList: EventList<String> = BasicEventList()
 
     init {

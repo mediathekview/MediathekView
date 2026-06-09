@@ -1,7 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GetFile;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -40,14 +40,15 @@ public class PanelProgrammPfade extends JPanel {
         jPanelVlc.setVisible(vlc);
 
         jPanelFFmpeg.setVisible(ffmpeg);
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        if (applicationConfiguration.getStandardVlcPath().isEmpty()) {
+            applicationConfiguration.setStandardVlcPath(GuiFunktionenProgramme.getMusterPfadVlc());
         }
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
+        if (applicationConfiguration.getStandardFFmpegPath().isEmpty()) {
+            applicationConfiguration.setStandardFFmpegPath(GuiFunktionenProgramme.getMusterPfadFFmpeg());
         }
-        jTextFieldVlc.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC));
-        jTextFieldFFmpeg.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG));
+        jTextFieldVlc.setText(applicationConfiguration.getStandardVlcPath());
+        jTextFieldFFmpeg.setText(applicationConfiguration.getStandardFFmpegPath());
     }
 
     private void initBeob() {
@@ -57,26 +58,27 @@ public class PanelProgrammPfade extends JPanel {
         jButtonVlcPfad.addActionListener(new BeobPfad(jTextFieldVlc));
         jButtonFFmpegPfad.addActionListener(new BeobPfad(jTextFieldFFmpeg));
         jButtonVlcSuchen.addActionListener(_ -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, "");
+            ApplicationConfiguration.getInstance().setStandardVlcPath("");
             jTextFieldVlc.setText(GuiFunktionenProgramme.getMusterPfadVlc());
         });
 
         jButtonFFmpegSuchen.addActionListener(_ -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, "");
+            ApplicationConfiguration.getInstance().setStandardFFmpegPath("");
             jTextFieldFFmpeg.setText(GuiFunktionenProgramme.getMusterPfadFFmpeg());
         });
         jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true));
     }
 
     private void check() {
-        MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, jTextFieldVlc.getText());
-        MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, jTextFieldFFmpeg.getText());
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        applicationConfiguration.setStandardVlcPath(jTextFieldVlc.getText());
+        applicationConfiguration.setStandardFFmpegPath(jTextFieldFFmpeg.getText());
 
         try {
             if (jTextFieldVlc.getText().isEmpty()) {
                 jTextFieldVlc.setBackground(COLOR_PINK);
             }
-            else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC)).exists()) {
+            else if (!new File(applicationConfiguration.getStandardVlcPath()).exists()) {
                 jTextFieldVlc.setBackground(COLOR_PINK);
             }
             else {
@@ -91,7 +93,7 @@ public class PanelProgrammPfade extends JPanel {
             if (jTextFieldFFmpeg.getText().isEmpty()) {
                 jTextFieldFFmpeg.setBackground(COLOR_PINK);
             }
-            else if (!new File(MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG)).exists()) {
+            else if (!new File(applicationConfiguration.getStandardFFmpegPath()).exists()) {
                 jTextFieldFFmpeg.setBackground(COLOR_PINK);
             }
             else {

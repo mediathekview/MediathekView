@@ -19,6 +19,7 @@
 package mediathek.gui.tabs.tab_film.helpers
 
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
@@ -28,7 +29,6 @@ import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.gui.tasks.LuceneIndexKeys
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.LuceneDefaultAnalyzer
 import mediathek.tool.SwingErrorDialog
 import org.apache.logging.log4j.LogManager
@@ -39,19 +39,11 @@ import org.apache.lucene.index.Term
 import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser
 import org.apache.lucene.queryparser.flexible.standard.config.PointsConfig
-import org.apache.lucene.search.BooleanClause
-import org.apache.lucene.search.BooleanQuery
-import org.apache.lucene.search.CollectorManager
-import org.apache.lucene.search.IndexSearcher
-import org.apache.lucene.search.MatchAllDocsQuery
-import org.apache.lucene.search.Query
-import org.apache.lucene.search.ScoreMode
-import org.apache.lucene.search.SimpleCollector
-import org.apache.lucene.search.TermQuery
+import org.apache.lucene.search.*
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Locale
+import java.util.*
 import javax.swing.SwingUtilities
 import javax.swing.table.TableModel
 

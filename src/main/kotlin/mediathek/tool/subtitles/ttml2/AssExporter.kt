@@ -20,11 +20,9 @@ package mediathek.tool.subtitles.ttml2
 
 import mediathek.config.Konstanten
 import mediathek.tool.subtitles.SubtitleDocument
-import mediathek.tool.subtitles.SubtitleDocument.Cue
-import mediathek.tool.subtitles.SubtitleDocument.Region
-import mediathek.tool.subtitles.SubtitleDocument.TextStyle
+import mediathek.tool.subtitles.SubtitleDocument.*
 import java.time.Duration
-import java.util.Locale
+import java.util.*
 import kotlin.math.roundToInt
 
 /**

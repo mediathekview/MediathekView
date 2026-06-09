@@ -18,7 +18,7 @@
 
 package mediathek.tool.datum
 
-import java.util.Date
+import java.util.*
 
 class Datum : Date {
     constructor() : super()

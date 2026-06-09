@@ -5,7 +5,6 @@ import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
-import javax.swing.Action
 
 class ManageBookmarkAction(
     private val mediathekGui: MediathekGui,

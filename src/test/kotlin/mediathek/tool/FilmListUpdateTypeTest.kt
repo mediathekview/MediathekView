@@ -1,15 +1,23 @@
 package mediathek.tool
 
+import mediathek.config.application.ApplicationConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
 internal class FilmListUpdateTypeTest {
     @Test
-    fun fromConfigReturnsAutomaticByDefault() {
-        val result = FilmListUpdateType.fromConfig()
+    fun fromConfigReturnsConfiguredAutomaticValue() {
+        val config = ApplicationConfiguration.getInstance()
+        val previousValue = config.filmListUpdateType
+        config.filmListUpdateType = FilmListUpdateType.AUTOMATIC.configValue
+        try {
+            val result = FilmListUpdateType.fromConfig()
 
-        assertSame(FilmListUpdateType.AUTOMATIC, result)
+            assertSame(FilmListUpdateType.AUTOMATIC, result)
+        } finally {
+            config.filmListUpdateType = previousValue
+        }
     }
 
     @Test

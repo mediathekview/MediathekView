@@ -18,6 +18,7 @@
 
 package mediathek.tool
 
+import mediathek.config.application.FilterConfiguration
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider
 import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
 import org.apache.commons.configuration2.Configuration

@@ -1,6 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.MVConfig;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.*;
 import mediathek.tool.models.NonEditableTableModel;
@@ -103,11 +103,12 @@ public class PanelDateinamen extends JPanel {
         handler = new TextCopyPasteHandler<>(jTextFieldVon);
         jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
-        jCheckBoxTable.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, jCheckBoxTable.isSelected()));
-        jCheckBoxTable.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_USE_REPLACETABLE));
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jCheckBoxTable.addActionListener(_ -> applicationConfiguration.setUseFilenameReplaceTable(jCheckBoxTable.isSelected()));
+        jCheckBoxTable.setSelected(applicationConfiguration.getUseFilenameReplaceTable());
 
-        jCheckBoxAscii.addActionListener(_ -> MVConfig.setBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII, jCheckBoxAscii.isSelected()));
-        jCheckBoxAscii.setSelected(MVConfig.getBoolean(MVConfig.Configs.SYSTEM_ONLY_ASCII));
+        jCheckBoxAscii.addActionListener(_ -> applicationConfiguration.setOnlyAsciiFilenames(jCheckBoxAscii.isSelected()));
+        jCheckBoxAscii.setSelected(applicationConfiguration.getOnlyAsciiFilenames());
     }
 
     private void setVon() {

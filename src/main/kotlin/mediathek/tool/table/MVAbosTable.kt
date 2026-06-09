@@ -20,18 +20,14 @@ package mediathek.tool.table
 
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
-import mediathek.config.MVConfig
 import mediathek.daten.abo.DatenAbo
 import mediathek.tool.models.TModelAbo
-import java.util.*
 import javax.swing.table.TableModel
 
 class MVAbosTable : PersistentColumnConfigurationTable(
     DatenAbo.MAX_ELEM,
     DatenAbo.getColumnVisibilityStore(),
-    Optional.of(MVConfig.Configs.SYSTEM_TAB_ABO_ICON_ANZEIGEN),
-    Optional.of(MVConfig.Configs.SYSTEM_TAB_ABO_ICON_KLEIN),
-    MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS,
+    TableConfigurationStores.ABO,
 ) {
     init {
         model = TModelAbo(Daten.getInstance().listeAbo)

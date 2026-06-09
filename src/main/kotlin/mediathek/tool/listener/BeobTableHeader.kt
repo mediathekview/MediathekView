@@ -1,6 +1,5 @@
 package mediathek.tool.listener
 
-import mediathek.config.MVConfig
 import mediathek.tool.table.ColumnVisibilityStore
 import mediathek.tool.table.MVTable
 import java.awt.event.MouseAdapter
@@ -24,7 +23,7 @@ open class BeobTableHeader(
      */
     private val button: IntArray,
     private val displaySenderIconMenus: Boolean,
-    private val configKey: MVConfig.Configs?,
+    private val saveLineBreak: ((Boolean) -> Unit)?,
 ) : MouseAdapter() {
     private val columns: Array<String>
     private lateinit var box: Array<JCheckBoxMenuItem?>
@@ -108,13 +107,13 @@ open class BeobTableHeader(
         }
 
         popupMenu.addSeparator()
-        if (configKey != null) {
+        if (saveLineBreak != null) {
             // Tabellenspalten umbrechen
             val lineBreakItem = JCheckBoxMenuItem("Zeilen umbrechen")
             lineBreakItem.isSelected = tabelle.isLineBreak()
             lineBreakItem.addActionListener {
                 tabelle.setLineBreak(lineBreakItem.isSelected)
-                MVConfig.setBoolean(configKey, lineBreakItem.isSelected)
+                saveLineBreak.invoke(lineBreakItem.isSelected)
                 setSpalten()
             }
             popupMenu.add(lineBreakItem)

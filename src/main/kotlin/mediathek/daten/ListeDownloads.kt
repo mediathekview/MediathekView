@@ -22,7 +22,7 @@ package mediathek.daten
 import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.DownloadLifecycleActions
 import mediathek.controller.starter.DownloadStartActions
 import mediathek.controller.starter.StartStatus
@@ -31,13 +31,12 @@ import mediathek.gui.messages.ButtonStartEvent
 import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.gui.messages.DownloadQueueRankChangedEvent
 import mediathek.gui.messages.StartEvent
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import mediathek.tool.datum.DateUtil
 import mediathek.tool.models.TModelDownload
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDate
-import java.util.LinkedList
+import java.util.*
 import java.util.function.Predicate
 import javax.swing.JFrame
 
@@ -249,7 +248,7 @@ class ListeDownloads : LinkedList<DatenDownload>() {
         forEach { download -> downloadUrls.add(download.downloadUrl) }
 
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
-        val checkWithBlackList = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)
+        val checkWithBlackList = ApplicationConfiguration.getInstance().blacklistApplyToAbo
         val defaultPset = Daten.getInstance().listePset.getPsetAbo("")
         val today = LocalDate.now(DateUtil.MV_DEFAULT_TIMEZONE)
 
@@ -388,8 +387,7 @@ class ListeDownloads : LinkedList<DatenDownload>() {
         get() {
             // get: erstes passendes Element der Liste zurückgeben oder null
             // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-            val maxNumDownloads = ApplicationConfiguration.getConfiguration()
-                .getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1)
+            val maxNumDownloads = ApplicationConfiguration.getInstance().maxSimultaneousDownloads
             if (isNotEmpty() && canStartMore(maxNumDownloads)) {
                 return nextPossibleDownload()
             }

@@ -18,9 +18,9 @@
 
 package mediathek.gui.tabs.tab_film.view
 
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.tabs.tab_film.PsetButtonsPanel
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
-import mediathek.tool.ApplicationConfiguration
 import org.apache.commons.lang3.SystemUtils
 import java.awt.event.KeyEvent
 import java.util.function.IntConsumer
@@ -73,8 +73,7 @@ class FilmViewController(private val host: Host) {
     }
 
     fun setupPsetButtonsTab() {
-        val initialVisibility = ApplicationConfiguration.getConfiguration()
-            .getBoolean(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, false)
+        val initialVisibility = ApplicationConfiguration.getInstance().buttonsPanelVisible
         setupButtonsMenuItem(initialVisibility)
 
         val panel = host.psetButtonsPanel()
@@ -86,8 +85,6 @@ class FilmViewController(private val host: Host) {
     }
 
     private fun setupButtonsMenuItem(initialVisibility: Boolean) {
-        val config = ApplicationConfiguration.getConfiguration()
-
         if (!SystemUtils.IS_OS_MAC_OSX) {
             host.showButtonsMenuItem().accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0)
         }
@@ -95,20 +92,17 @@ class FilmViewController(private val host: Host) {
         host.showButtonsMenuItem().addActionListener {
             val visible = host.showButtonsMenuItem().isSelected
             makeButtonsTabVisible(visible)
-            config.setProperty(ApplicationConfiguration.APPLICATION_BUTTONS_PANEL_VISIBLE, visible)
+            ApplicationConfiguration.getInstance().buttonsPanelVisible = visible
         }
     }
 
     fun setupShowFilmDescriptionMenuItem() {
-        val config = ApplicationConfiguration.getConfiguration()
-
         host.showDescriptionMenuItem().accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0)
-        host.showDescriptionMenuItem().isSelected =
-            config.getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true)
+        host.showDescriptionMenuItem().isSelected = ApplicationConfiguration.getInstance().filmDescriptionVisible
         host.showDescriptionMenuItem().addActionListener {
             val visible = host.showDescriptionMenuItem().isSelected
             host.setDescriptionTabVisible(visible)
-            config.setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, visible)
+            ApplicationConfiguration.getInstance().filmDescriptionVisible = visible
         }
     }
 }

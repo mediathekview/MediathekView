@@ -26,11 +26,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.FontSizeChangedEvent
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.sync.LockMode
 import java.awt.Component
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
@@ -44,6 +42,7 @@ import kotlin.math.max
  * Helper class to globally change to L&F font sizes.
  */
 class FontManager(private val fontMenu: JMenu) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val availableFontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment()
         .availableFontFamilyNames
@@ -132,36 +131,22 @@ class FontManager(private val fontMenu: JMenu) {
         val currentFamily = currentFont.family
         val currentSize = currentFont.size
 
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.WRITE) {
-            setProperty(CONFIG_DEFAULT_FONT_FAMILY, currentFamily)
-            setProperty(CONFIG_DEFAULT_FONT_SIZE, currentSize)
-        }
+        applicationConfiguration.setDefaultFontState(currentFamily, currentSize)
     }
 
     private fun clearConfigData() {
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.WRITE) {
-            clearProperty(CONFIG_DEFAULT_FONT_SIZE)
-            clearProperty(CONFIG_DEFAULT_FONT_FAMILY)
-        }
+        applicationConfiguration.clearDefaultFontState()
     }
 
     fun restoreConfigData() {
         FlatAnimatedLafChange.showSnapshot()
 
-        val config = ApplicationConfiguration.getConfiguration()
-        try {
-            config.withLock(LockMode.READ) {
-                val currentFamily = getString(CONFIG_DEFAULT_FONT_FAMILY)
-                val currentSize = getInt(CONFIG_DEFAULT_FONT_SIZE)
-
-                val font = UIManager.getFont(KEY_DEFAULT_FONT)
-                var newFont = StyleContext.getDefaultStyleContext().getFont(currentFamily, font.style, currentSize)
-                newFont = FlatUIUtils.nonUIResource(newFont)
-                UIManager.put(KEY_DEFAULT_FONT, newFont)
-            }
-        } catch (_: Exception) {
+        val fontState = applicationConfiguration.defaultFontState
+        if (fontState.hasStoredFont()) {
+            val font = UIManager.getFont(KEY_DEFAULT_FONT)
+            var newFont = StyleContext.getDefaultStyleContext().getFont(fontState.family, font.style, fontState.size)
+            newFont = FlatUIUtils.nonUIResource(newFont)
+            UIManager.put(KEY_DEFAULT_FONT, newFont)
         }
 
         FlatLaf.updateUI()
@@ -280,7 +265,5 @@ class FontManager(private val fontMenu: JMenu) {
     private companion object {
         const val KEY_DEFAULT_FONT = "defaultFont"
         const val KEY_LABEL_FONT = "Label.font"
-        const val CONFIG_DEFAULT_FONT_SIZE = "ui.default_font.size"
-        const val CONFIG_DEFAULT_FONT_FAMILY = "ui.default_font.family"
     }
 }

@@ -21,25 +21,19 @@ package mediathek.audiothek.ui.main
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import mediathek.tool.ApplicationConfiguration
-import org.apache.commons.configuration2.Configuration
+import mediathek.config.application.ApplicationConfiguration
 
 private const val MAX_HISTORY_ENTRIES = 50
 
-internal class AudiothekSearchHistory(
-    private val configuration: Configuration = ApplicationConfiguration.getConfiguration(),
-) {
+internal class AudiothekSearchHistory {
     fun load(): List<String> {
-        val rawValue = configuration.getString(ApplicationConfiguration.APPLICATION_UI_AUDIOTHEK_SEARCH_HISTORY, "[]")
+        val rawValue = ApplicationConfiguration.getInstance().audiothekSearchHistory
         return AudiothekSearchHistoryCodec.decode(rawValue)
     }
 
     fun save(entries: Collection<String>) {
         val normalized = AudiothekSearchHistoryCodec.normalize(entries)
-        configuration.setProperty(
-            ApplicationConfiguration.APPLICATION_UI_AUDIOTHEK_SEARCH_HISTORY,
-            AudiothekSearchHistoryCodec.encode(normalized)
-        )
+        ApplicationConfiguration.getInstance().audiothekSearchHistory = AudiothekSearchHistoryCodec.encode(normalized)
     }
 }
 

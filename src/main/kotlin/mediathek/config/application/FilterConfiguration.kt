@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.tool
+package mediathek.config.application
 
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider
 import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
+import mediathek.tool.FilterDTO
+import mediathek.tool.JsonStringUtils
 import org.apache.commons.configuration2.Configuration
 import org.apache.logging.log4j.LogManager
 import java.util.*
@@ -37,8 +39,6 @@ open class FilterConfiguration protected constructor(
     private var availableFiltersCacheInitialized = false
     private var currentFilterIdCache: UUID? = null
     private var currentFilterCacheInitialized = false
-
-    constructor() : this(ApplicationConfiguration.getConfiguration())
 
     init {
         migrateOldFilterConfigurations()

@@ -18,13 +18,9 @@
 
 package mediathek.daten
 
-import org.apache.lucene.store.ByteBuffersDirectory
-import org.apache.lucene.store.Directory
-import org.apache.lucene.store.FSDirectory
-import org.apache.lucene.store.MMapDirectory
-import org.apache.lucene.store.NIOFSDirectory
+import org.apache.lucene.store.*
 import java.nio.file.Path
-import java.util.Locale
+import java.util.*
 
 enum class LuceneDirectoryMode(
     val configValue: String,

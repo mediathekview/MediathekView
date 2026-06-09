@@ -20,18 +20,13 @@ package mediathek.tool.cellrenderer
 
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import com.formdev.flatlaf.util.ScaledImageIcon
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.sender_icon_cache.MVSenderIconCache
 import mediathek.tool.sender_icon_cache.SenderIconRenderUtil
 import org.apache.commons.lang3.SystemUtils
 import java.awt.Dimension
 import java.util.*
-import javax.swing.Icon
-import javax.swing.ImageIcon
-import javax.swing.JTable
-import javax.swing.JTextArea
-import javax.swing.SwingConstants
-import javax.swing.UIManager
+import javax.swing.*
 import javax.swing.table.DefaultTableCellRenderer
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -86,8 +81,7 @@ open class CellRendererBase : DefaultTableCellRenderer() {
             targetDim.height -= 4
         }
 
-        val useLocalSenderIcons = ApplicationConfiguration.getConfiguration()
-            .getBoolean(MVSenderIconCache.CONFIG_USE_LOCAL_SENDER_ICONS, false)
+        val useLocalSenderIcons = ApplicationConfiguration.getInstance().localSenderIcons
         val key = SenderCacheKey(sender, targetDim, useLocalSenderIcons, isSelected)
         var cachedIcon = senderCellIconCache[key]
         if (cachedIcon == null) {

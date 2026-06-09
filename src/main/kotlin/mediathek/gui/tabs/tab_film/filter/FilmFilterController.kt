@@ -20,7 +20,7 @@ package mediathek.gui.tabs.tab_film.filter
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
-import mediathek.tool.FilterConfiguration
+import mediathek.config.application.FilterConfiguration
 import mediathek.tool.FilterDTO
 import org.apache.logging.log4j.LogManager
 import java.util.*

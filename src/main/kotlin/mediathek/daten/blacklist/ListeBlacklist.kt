@@ -5,14 +5,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import mediathek.config.Daten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
 import mediathek.gui.messages.BlacklistChangedEvent
 import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
 import mediathek.mainwindow.MediathekGui
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import java.util.function.Predicate
 import kotlin.time.Duration.Companion.days
@@ -101,9 +100,9 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
 
         filteredList.metaData = completeFilmList.metaData
 
-        val config = ApplicationConfiguration.getConfiguration()
-        val evaluateDuplicates = config.getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true)
-        val filterBlacklistDuplicates = config.getBoolean(ApplicationConfiguration.BLACKLIST_FILTER_DUPLICATES, false)
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
+        val evaluateDuplicates = applicationConfiguration.evaluateFilmDuplicates
+        val filterBlacklistDuplicates = applicationConfiguration.isBlacklistDuplicateFilteringEnabled
         val filterDuplicates = evaluateDuplicates && filterBlacklistDuplicates
 
         val blacklistSnapshot = toList()
@@ -225,7 +224,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
     }
 
     private fun calculateMinimumFilmLength() {
-        minimumFilmLength = MVConfig.getLong(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, 0) * 60
+        minimumFilmLength = ApplicationConfiguration.getInstance().blacklistMinimumFilmLengthMinutes.toLong() * 60
     }
 
     /**
@@ -235,10 +234,10 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
         calculateZeitraumBoundaries()
         calculateMinimumFilmLength()
 
-        val config = ApplicationConfiguration.getConfiguration()
-        blacklistIsActive = config.getBoolean(ApplicationConfiguration.BLACKLIST_IS_ON, false)
-        doNotShowFutureFilms = MVConfig.getBoolean(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)
-        doNotShowGeoBlockedFilms = ApplicationConfiguration.getInstance().blacklistDoNotShowGeoblockedFilms
+        val applicationConfiguration = ApplicationConfiguration.getInstance()
+        blacklistIsActive = applicationConfiguration.isBlacklistEnabled
+        doNotShowFutureFilms = applicationConfiguration.blacklistDoNotShowFutureFilms
+        doNotShowGeoBlockedFilms = applicationConfiguration.blacklistDoNotShowGeoblockedFilms
 
         geoblockingPredicate.updateLocation()
     }

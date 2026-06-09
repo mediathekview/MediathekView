@@ -19,7 +19,7 @@
 package mediathek.mainwindow
 
 import mediathek.audiothek.ui.main.AudiothekPanel
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import javax.swing.JTabbedPane
 
 private const val ACTION_TITLE = "Audiothek Tab ein-/ausblenden"
@@ -34,6 +34,6 @@ class ToggleAudiothekTabAction(
     audiothekPanel,
     ACTION_TITLE,
     TAB_TITLE,
-    ApplicationConfiguration.APPLICATION_UI_SHOW_AUDIOTHEK,
+    { ApplicationConfiguration.getInstance().audiothekTabVisible = it },
     PREFERRED_INSERT_INDEX,
 )

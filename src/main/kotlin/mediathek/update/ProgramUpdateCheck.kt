@@ -21,7 +21,7 @@ package mediathek.update
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
 import mediathek.daten.ListePsetVorlagen
@@ -128,7 +128,7 @@ class ProgramUpdateCheck : AutoCloseable {
             return false
         }
 
-        val installedVersion = MVConfig.get(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET)
+        val installedVersion = ApplicationConfiguration.getInstance().standardProgramSetVersion
         if (installedVersion == standardPset.version) {
             return false
         }
@@ -164,7 +164,7 @@ class ProgramUpdateCheck : AutoCloseable {
     }
 
     private fun updateInstalledStandardPsetVersion(standardPset: ListePset) {
-        MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, standardPset.version)
+        ApplicationConfiguration.getInstance().standardProgramSetVersion = standardPset.version
     }
 
     private fun copySaveSettingsFromExistingSet(standardPset: ListePset) {

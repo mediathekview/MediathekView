@@ -19,11 +19,11 @@
 package mediathek.gui.tabs.tab_film.helpers
 
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
-import mediathek.tool.ApplicationConfiguration
 import java.util.stream.Stream
 import javax.swing.table.TableModel
 

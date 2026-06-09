@@ -18,25 +18,23 @@
 
 package mediathek.mainwindow
 
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import javax.swing.JTabbedPane
 import kotlin.math.max
 
 class PositionSavingTabbedPane : JTabbedPane() {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
+
     fun installChangeListener() {
         addChangeListener { saveTabPosition() }
     }
 
     fun restoreSavedTabPosition() {
-        val idx = ApplicationConfiguration.getConfiguration().getInt(Config.TAB_POSITION, -1)
+        val idx = applicationConfiguration.selectedMainWindowTabIndex
         selectedIndex = max(idx, 0)
     }
 
     private fun saveTabPosition() {
-        ApplicationConfiguration.getConfiguration().setProperty(Config.TAB_POSITION, selectedIndex)
-    }
-
-    private object Config {
-        const val TAB_POSITION = "app.ui.tab_position"
+        applicationConfiguration.selectedMainWindowTabIndex = selectedIndex
     }
 }

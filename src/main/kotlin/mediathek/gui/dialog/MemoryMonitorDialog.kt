@@ -18,11 +18,8 @@
 
 package mediathek.gui.dialog
 
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.mainwindow.MemoryUsagePanel
-import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.Configuration
-import org.apache.commons.configuration2.sync.LockMode
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.ComponentAdapter
@@ -38,7 +35,6 @@ class MemoryMonitorDialog(
     private val onClose: Runnable,
 ) : JDialog(parent, "Speicherverbrauch", false) {
 
-    private val configuration: Configuration = ApplicationConfiguration.getConfiguration()
     private val memoryUsagePanel = MemoryUsagePanel(HISTORY_WINDOW, SAMPLE_INTERVAL)
 
     init {
@@ -81,17 +77,11 @@ class MemoryMonitorDialog(
     }
 
     private fun readStoredBounds(): DialogBounds? {
-        return configuration.withLock(LockMode.READ) {
-            val width = getInt(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, -1)
-            val height = getInt(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, -1)
-            val x = getInt(ApplicationConfiguration.MemoryMonitorDialog.X, Int.MIN_VALUE)
-            val y = getInt(ApplicationConfiguration.MemoryMonitorDialog.Y, Int.MIN_VALUE)
-
-            if (width <= 0 || height <= 0 || x == Int.MIN_VALUE || y == Int.MIN_VALUE) {
-                return@withLock null
-            }
-
-            DialogBounds(x, y, width, height)
+        val state = ApplicationConfiguration.getInstance().memoryMonitorDialogState
+        return if (state.hasStoredBounds()) {
+            DialogBounds(state.x, state.y, state.width, state.height)
+        } else {
+            null
         }
     }
 
@@ -110,16 +100,11 @@ class MemoryMonitorDialog(
         }
 
         val bounds = bounds
-        configuration.withLock(LockMode.WRITE) {
-            setProperty(ApplicationConfiguration.MemoryMonitorDialog.X, bounds.x)
-            setProperty(ApplicationConfiguration.MemoryMonitorDialog.Y, bounds.y)
-            setProperty(ApplicationConfiguration.MemoryMonitorDialog.WIDTH, bounds.width)
-            setProperty(ApplicationConfiguration.MemoryMonitorDialog.HEIGHT, bounds.height)
-        }
+        ApplicationConfiguration.getInstance().setMemoryMonitorDialogBounds(bounds.x, bounds.y, bounds.width, bounds.height)
     }
 
     private fun storeVisibility(visible: Boolean) {
-        configuration.setProperty(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, visible)
+        ApplicationConfiguration.getInstance().memoryMonitorDialogVisible = visible
     }
 
     private fun notifyClosed() {

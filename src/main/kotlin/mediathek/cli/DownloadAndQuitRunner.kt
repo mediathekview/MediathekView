@@ -23,6 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import mediathek.config.StandardLocations
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.controller.starter.DownloadLifecycleActions
 import mediathek.controller.starter.DownloadStartActions
@@ -31,7 +32,6 @@ import mediathek.daten.DatenDownload
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.reader.FilmListReader
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.BandwidthFormatter
 import mediathek.tool.FileSize
 import org.apache.logging.log4j.LogManager
@@ -206,8 +206,7 @@ object DownloadAndQuitRunner {
 
         logger.info("Reading local filmlist cache...")
         FilmListReader().use { reader ->
-            val numDays = ApplicationConfiguration.getConfiguration()
-                .getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0)
+            val numDays = ApplicationConfiguration.getInstance().filmListLoadNumDays
             reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), daten.listeFilme, numDays)
         }
     }

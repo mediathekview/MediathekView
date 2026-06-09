@@ -19,7 +19,7 @@
 package mediathek.audiothek.ui.main
 
 import mediathek.audiothek.model.AudioEntry
-import java.util.Locale
+import java.util.*
 
 internal object AudiothekOnlineSearchQuery {
     class Request private constructor(

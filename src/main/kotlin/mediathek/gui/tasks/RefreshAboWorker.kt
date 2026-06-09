@@ -20,8 +20,8 @@ package mediathek.gui.tasks
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import mediathek.config.Daten
 import javax.swing.JLabel
 import javax.swing.JProgressBar

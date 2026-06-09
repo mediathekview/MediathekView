@@ -1,8 +1,7 @@
 package mediathek.gui.dialog;
 
-import mediathek.config.Konstanten;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.ApplicationConfiguration;
 import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
@@ -137,7 +136,7 @@ public class DialogContinueDownload extends JDialog {
         private int countdown;
 
         public CountdownAction() {
-            countdown = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_CONTINUATION_TIME, Konstanten.DOWNLOAD_CONTINUATION_DEFAULT_TIME);
+            countdown = ApplicationConfiguration.getInstance().getDownloadContinuationTime();
         }
 
         @Override

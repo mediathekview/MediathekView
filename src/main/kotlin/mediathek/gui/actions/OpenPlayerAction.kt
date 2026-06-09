@@ -18,7 +18,7 @@
 
 package mediathek.gui.actions
 
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen
 import mediathek.gui.messages.ProgramLocationChangedEvent
 import mediathek.tool.MessageBus
@@ -61,7 +61,7 @@ object OpenPlayerAction {
                 success = false
                 val program = resolvePlayerProgram(parent)
                 openWithProgram(program, file)
-                MVConfig.add(PLAYER_CONFIG, program)
+                ApplicationConfiguration.getInstance().videoPlayerProgram = program
                 publishProgramLocationChanged()
                 success = true
             } catch (_: Exception) {
@@ -69,14 +69,14 @@ object OpenPlayerAction {
             }
         } finally {
             if (!success) {
-                MVConfig.add(PLAYER_CONFIG, "")
+                ApplicationConfiguration.getInstance().videoPlayerProgram = ""
                 publishProgramLocationChanged()
                 showPlayerOpenError(parent)
             }
         }
     }
 
-    private fun configuredPlayer(): String = MVConfig.get(PLAYER_CONFIG)
+    private fun configuredPlayer(): String = ApplicationConfiguration.getInstance().videoPlayerProgram
 
     private fun openWithProgram(program: String, file: File) {
         Runtime.getRuntime().exec(arrayOf(program, file.absolutePath))
@@ -115,6 +115,4 @@ object OpenPlayerAction {
             JOptionPane.ERROR_MESSAGE,
         )
     }
-
-    private val PLAYER_CONFIG = MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN
 }

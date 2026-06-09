@@ -20,7 +20,6 @@ package mediathek.gui.dialogEinstellungen.pset
 
 import ca.odell.glazedlists.gui.AdvancedTableFormat
 import mediathek.daten.DatenProg
-import java.util.Comparator
 
 class ProgramTableFormat : AdvancedTableFormat<DatenProg> {
     private val booleanComparator = Comparator<Boolean?> { first, second -> compareValues(first, second) }

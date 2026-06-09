@@ -18,7 +18,7 @@
 
 package mediathek.tool
 
-import java.util.UUID
+import java.util.*
 
 data class FilterDTO(
     val id: UUID,

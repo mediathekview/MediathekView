@@ -18,7 +18,10 @@
 
 package mediathek.gui.tabs.tab_film.actions
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.daten.DatenFilm
@@ -28,7 +31,7 @@ import mediathek.tool.SwingErrorDialog
 import mediathek.tool.subtitles.SubtitleExportResult
 import mediathek.tool.subtitles.SubtitleExportService
 import java.awt.event.ActionEvent
-import java.util.Optional
+import java.util.*
 import java.util.function.Supplier
 import javax.swing.AbstractAction
 import javax.swing.Action

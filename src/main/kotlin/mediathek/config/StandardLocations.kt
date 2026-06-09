@@ -79,6 +79,10 @@ object StandardLocations {
         return getSettingsDirectory().resolve("downloads.json")
     }
 
+    fun getApplicationSettingsFile(): Path {
+        return getSettingsDirectory().resolve("settings.xml")
+    }
+
     /**
      * Return the path to "mediathek.xml"
      *
@@ -143,22 +147,25 @@ object StandardLocations {
      *
      * @return the path as String.
      */
-    fun getFilmlistFilePathString(): String {
-        val filePart = File.separator + Konstanten.JSON_DATEI_FILME
-        return if (CommandLineOptions.isPortableMode())
-            getSettingsDirectory().toString() + filePart
-        else {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                SystemUtils.USER_HOME + File.separator + OSX_CACHE_DIRECTORY_NAME + filePart
-            } else {
-                getSettingsDirectory().toString() + filePart
-            }
+    fun getFilmlistFilePathString(): String =
+        getFilmlistFilePath().toString()
+
+    private fun getFilmlistFilePath(): Path =
+        filmlistBaseDirectory().resolve(Konstanten.JSON_DATEI_FILME)
+
+    private fun filmlistBaseDirectory(): Path =
+        if (!CommandLineOptions.isPortableMode() && SystemUtils.IS_OS_MAC_OSX) {
+            // place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
+            getOsxCacheDirectory()
+        } else {
+            getSettingsDirectory()
         }
-    }
+
+    private fun getOsxCacheDirectory(): Path =
+        Paths.get(SystemUtils.USER_HOME).resolve(OSX_CACHE_DIRECTORY_NAME)
 
     fun getFilmlistMetadataFilePath(): Path {
-        return Paths.get(getFilmlistFilePathString()).resolveSibling(Konstanten.JSON_DATEI_FILME + ".properties")
+        return getFilmlistFilePath().resolveSibling(Konstanten.JSON_DATEI_FILME + ".properties")
     }
 
     /**
@@ -171,8 +178,7 @@ object StandardLocations {
             getSettingsDirectory().resolve(indexDirectory)
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {
-                val base = Paths.get(SystemUtils.USER_HOME + File.separator + OSX_CACHE_DIRECTORY_NAME)
-                base.resolve(indexDirectory)
+                getOsxCacheDirectory().resolve(indexDirectory)
             } else {
                 getSettingsDirectory().resolve(indexDirectory)
             }

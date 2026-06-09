@@ -2,11 +2,12 @@ package mediathek.gui.dialog
 
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden
 import mediathek.swing.centerOnScreen
-import mediathek.tool.*
-import org.apache.commons.configuration2.sync.LockMode
+import mediathek.tool.EscapeKeyHandler
+import mediathek.tool.FilmListUpdateType
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
@@ -70,16 +71,10 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
     }
 
     private fun restoreWindowSizeFromConfig() {
-        val config = ApplicationConfiguration.getConfiguration()
-        try {
-            config.withLock(LockMode.READ) {
-                val width = getInt(ApplicationConfiguration.LoadFilmListDialog.WIDTH)
-                val height = getInt(ApplicationConfiguration.LoadFilmListDialog.HEIGHT)
-                val x = getInt(ApplicationConfiguration.LoadFilmListDialog.X)
-                val y = getInt(ApplicationConfiguration.LoadFilmListDialog.Y)
-                setBounds(x, y, width, height)
-            }
-        } catch (_: NoSuchElementException) {
+        val state = ApplicationConfiguration.getInstance().loadFilmListDialogState
+        if (state.hasStoredBounds()) {
+            setBounds(state.x, state.y, state.width, state.height)
+        } else {
             pack()
             if (width < 100 || height < 100) {
                 setSize(640, 480)
@@ -99,16 +94,11 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
             }
 
             private fun storeWindowPosition(e: ComponentEvent) {
-                val config = ApplicationConfiguration.getConfiguration()
                 val component = e.component
                 val dims = component.size
                 val loc = component.location
-                config.withLock(LockMode.WRITE) {
-                    setProperty(ApplicationConfiguration.LoadFilmListDialog.WIDTH, dims.width)
-                    setProperty(ApplicationConfiguration.LoadFilmListDialog.HEIGHT, dims.height)
-                    setProperty(ApplicationConfiguration.LoadFilmListDialog.X, loc.x)
-                    setProperty(ApplicationConfiguration.LoadFilmListDialog.Y, loc.y)
-                }
+                ApplicationConfiguration.getInstance()
+                    .setLoadFilmListDialogBounds(loc.x, loc.y, dims.width, dims.height)
             }
         })
     }

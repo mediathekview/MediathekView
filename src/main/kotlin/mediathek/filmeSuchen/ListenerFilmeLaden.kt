@@ -1,6 +1,6 @@
 package mediathek.filmeSuchen
 
-import java.util.EventListener
+import java.util.*
 
 open class ListenerFilmeLaden : EventListener {
     open fun start(event: ListenerFilmeLadenEvent) = Unit

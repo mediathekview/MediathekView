@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mediathek.audiothek.model.AudioEntry
 import mediathek.config.Konstanten
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
@@ -175,8 +175,8 @@ class OnlineSearchProxyRepository(
     }
 
     private fun readUserAgent(): String {
-        return ApplicationConfiguration.getConfiguration()
-            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT, "MediathekView")
+        return ApplicationConfiguration.getInstance()
+            .userAgent
             .ifBlank { "MediathekView" }
     }
 

@@ -23,6 +23,7 @@ import mediathek.SplashScreenLifecycle;
 import mediathek.audiothek.repository.AudioRepository;
 import mediathek.audiothek.ui.main.AudiothekPanel;
 import mediathek.config.*;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.controller.history.SeenHistoryController;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
@@ -58,8 +59,6 @@ import mediathek.tool.timer.TimerPool;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.sync.LockMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,8 +80,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static mediathek.tool.ApplicationConfiguration.CONFIG_AUTOMATIC_UPDATE_CHECK;
 
 public class MediathekGui extends JFrame {
 
@@ -124,10 +121,6 @@ public class MediathekGui extends JFrame {
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
     protected final SettingsAction settingsAction = new SettingsAction();
-    /**
-     * the global configuration for this app.
-     */
-    protected final Configuration config = ApplicationConfiguration.getConfiguration();
     protected final JToolBar commonToolBar = new JToolBar();
     protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
@@ -252,7 +245,7 @@ public class MediathekGui extends JFrame {
 
         loadFilmlist();
 
-        setupUpdateCheck(config.getBoolean(CONFIG_AUTOMATIC_UPDATE_CHECK, true));
+        setupUpdateCheck(ApplicationConfiguration.getInstance().getAutomaticUpdateCheck());
 
         setupShutdownHook();
 
@@ -326,7 +319,7 @@ public class MediathekGui extends JFrame {
 
     private void loadBandwidthMonitor() {
         logger.trace("Loading bandwidth monitor");
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, false)) {
+        if (ApplicationConfiguration.getInstance().getBandwidthMonitorVisible()) {
             showBandwidthUsageAction.actionPerformed(null);
         }
         logger.trace("Finished loading bandwidth monitor");
@@ -397,8 +390,7 @@ public class MediathekGui extends JFrame {
     }
 
     protected void createToggleBlacklistButton() {
-        boolean useIconWithText = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.TOOLBAR_BLACKLIST_ICON_WITH_TEXT, false);
+        boolean useIconWithText = ApplicationConfiguration.getInstance().getToolbarBlacklistIconWithText();
         if (useIconWithText) {
             commonToolBar.add(new JButton(toggleBlacklistAction));
         }
@@ -454,7 +446,7 @@ public class MediathekGui extends JFrame {
      * Create either a native or a java notification center depending on platform
      */
     private void setupNotificationCenter() {
-        final boolean showNotifications = config.getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS, true);
+        final boolean showNotifications = ApplicationConfiguration.getInstance().getShowNotifications();
         NotificationService.configure(notificationCenterFactory, showNotifications);
     }
 
@@ -481,7 +473,7 @@ public class MediathekGui extends JFrame {
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent evt) {
-                    if (tray != null && config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)) {
+                    if (tray != null && ApplicationConfiguration.getInstance().getUseTray()) {
                         setVisible(false);
                     }
                     else {
@@ -555,8 +547,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void createMemoryMonitor() {
-        boolean visible = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.MemoryMonitorDialog.VISIBLE, false);
-        if (visible) {
+        if (ApplicationConfiguration.getInstance().getMemoryMonitorDialogVisible()) {
             showMemoryMonitorAction.showMemoryMonitor();
         }
     }
@@ -717,31 +708,18 @@ public class MediathekGui extends JFrame {
         We are not in maximized mode, so just read all the settings and restore...
          */
         try {
-            config.lock(LockMode.READ);
-            int width = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_WIDTH, MIN_WINDOW_WIDTH);
-            int height = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_HEIGHT, MIN_WINDOW_HEIGHT);
-            int x = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_X);
-            int y = config.getInt(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_LOCATION_Y);
-
-            if (width < MIN_WINDOW_WIDTH)
-                width = MIN_WINDOW_WIDTH;
-            if (height < MIN_WINDOW_HEIGHT)
-                height = MIN_WINDOW_HEIGHT;
-
-            setBounds(x, y, width, height);
+            var bounds = ApplicationConfiguration.getInstance().getMainWindowBounds(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT);
+            setBounds(bounds.x(), bounds.y(), bounds.width(), bounds.height());
         }
         catch (NoSuchElementException _) {
             //in case of any error, just make the window maximized
             setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
-        finally {
-            config.unlock(LockMode.READ);
-        }
     }
 
     private void setApplicationWindowSize() {
         if (CommandLineOptions.isStartMaximized() ||
-                ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_MAXIMIZED, true)) {
+                ApplicationConfiguration.getInstance().getMainWindowMaximized()) {
             setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
         else
@@ -815,7 +793,7 @@ public class MediathekGui extends JFrame {
     }
 
     public void initializeSystemTray() {
-        final var useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false);
+        final var useTray = ApplicationConfiguration.getInstance().getUseTray();
         if (tray == null && useTray) {
             tray = new MVTray().systemTray();
         }
@@ -853,7 +831,7 @@ public class MediathekGui extends JFrame {
         installLivestreamsTab();
         installAudiothekTab();
 
-        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_RESTORE_SELECTED_TAB, false))
+        if (ApplicationConfiguration.getInstance().getRestoreSelectedTab())
             tabbedPane.restoreSavedTabPosition();
         tabbedPane.installChangeListener();
 
@@ -863,14 +841,14 @@ public class MediathekGui extends JFrame {
     }
 
     protected void installLivestreamsTab() {
-        var show = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS, true);
+        var show = ApplicationConfiguration.getInstance().getZappLivestreamsTabVisible();
         if (show) {
             tabbedPane.addTab("zapp Livestreams", tabLivestreams);
         }
     }
 
     protected void installAudiothekTab() {
-        var show = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_UI_SHOW_AUDIOTHEK, true);
+        var show = ApplicationConfiguration.getInstance().getAudiothekTabVisible();
         if (show) {
             tabbedPane.addTab("Audiothek", tabAudiothek);
         }
@@ -889,7 +867,7 @@ public class MediathekGui extends JFrame {
      * Change placement of tabs based on settings
      */
     protected void configureTabPlacement() {
-        final boolean topPosition = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_TAB_POSITION_TOP, true);
+        final boolean topPosition = ApplicationConfiguration.getInstance().getTabPositionTop();
         if (topPosition) {
             tabbedPane.setTabPlacement(JTabbedPane.TOP);
             getContentPane().remove(commonToolBar);
@@ -903,7 +881,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void configureTabIcons() {
-        final boolean icon = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_MAINWINDOW_TAB_ICONS, false);
+        final boolean icon = ApplicationConfiguration.getInstance().getMainWindowTabIcons();
 
         //no icons...
         if (!icon) {
@@ -964,7 +942,7 @@ public class MediathekGui extends JFrame {
         menuListeners.put(jMenuDownload, new MenuTabSwitchListener(this, tabDownloads));
 
         //now assign if really necessary
-        if (config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true)) {
+        if (ApplicationConfiguration.getInstance().getInstallTabSwitchListener()) {
             jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
             jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
         }
@@ -1231,7 +1209,7 @@ public class MediathekGui extends JFrame {
             runShutdownStep("Close bandwidth monitor", () -> showBandwidthUsageAction.getDialogOptional().ifPresent(dlg -> {
                 dlg.dispose();
                 //little hack, we must preserve the visible state since it was open when app quits...
-                config.setProperty(ApplicationConfiguration.APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE, true);
+                ApplicationConfiguration.getInstance().setBandwidthMonitorVisible(true);
             }));
 
             runShutdownStep("Close abo dialog", manageAboAction::closeDialog);

@@ -1,6 +1,6 @@
 package mediathek.controller
 
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.SenderListBoxModel
 import java.util.concurrent.ConcurrentHashMap
 
@@ -9,16 +9,15 @@ import java.util.concurrent.ConcurrentHashMap
  */
 object SenderFilmlistLoadApprover {
     val senderSet: ConcurrentHashMap.KeySetView<String, Boolean> = ConcurrentHashMap.newKeySet()
-    private const val SENDER_KEY = "filmlist.approved_for_load"
-    private val config = ApplicationConfiguration.getConfiguration()
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
 
     init {
         //load settings from config
-        val storedSenderList = config.getList(String::class.java, SENDER_KEY)
+        val storedSenderList = applicationConfiguration.approvedFilmlistLoadSenders
         if (storedSenderList == null || storedSenderList.isEmpty()) {
             //manually approve all of them and store in config :(
             senderSet.addAll(SenderListBoxModel.providedSenderList)
-            config.setProperty(SENDER_KEY, senderSet)
+            applicationConfiguration.setApprovedFilmlistLoadSenders(senderSet)
         } else {
             senderSet.addAll(storedSenderList)
         }
@@ -37,7 +36,7 @@ object SenderFilmlistLoadApprover {
     fun approve(sender: String) {
         if (!senderSet.contains(sender)) {
             senderSet.add(sender)
-            config.setProperty(SENDER_KEY, senderSet)
+            applicationConfiguration.setApprovedFilmlistLoadSenders(senderSet)
         }
     }
 
@@ -48,7 +47,7 @@ object SenderFilmlistLoadApprover {
     fun approveAll() {
         senderSet.clear()
         senderSet.addAll(SenderListBoxModel.providedSenderList)
-        config.setProperty(SENDER_KEY, senderSet)
+        applicationConfiguration.setApprovedFilmlistLoadSenders(senderSet)
     }
 
     /**
@@ -57,7 +56,7 @@ object SenderFilmlistLoadApprover {
     fun deny(sender: String) {
         if (senderSet.contains(sender)) {
             senderSet.remove(sender)
-            config.setProperty(SENDER_KEY, senderSet)
+            applicationConfiguration.setApprovedFilmlistLoadSenders(senderSet)
         }
     }
 }

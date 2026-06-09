@@ -19,9 +19,9 @@
 package mediathek.gui.tabs.tab_film.filter
 
 import ca.odell.glazedlists.BasicEventList
+import mediathek.config.application.FilterConfiguration
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
-import mediathek.tool.FilterConfiguration
 import mediathek.tool.FilterDTO
 import org.apache.commons.configuration2.XMLConfiguration
 import java.awt.GraphicsEnvironment

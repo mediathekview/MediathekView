@@ -22,7 +22,6 @@ import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.nio.CharBuffer
-import java.nio.charset.CharacterCodingException
 import java.nio.charset.Charset
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
@@ -244,7 +243,6 @@ class FilenameUtils private constructor() {
          * @param isPath true if this is a path.
          * @return Cleaned-up string.
          */
-        @JvmStatic
         fun removeIllegalCharacters(input: String, isPath: Boolean): String {
             var ret = input
 

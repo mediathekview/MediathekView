@@ -2,12 +2,12 @@ package mediathek.gui.tabs.tab_film.helpers
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
+import mediathek.config.application.FilterConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider
 import mediathek.gui.tabs.tab_film.search.SearchControlFieldMode
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
-import mediathek.tool.FilterConfiguration
 import mediathek.tool.FilterDTO
 import org.apache.commons.configuration2.XMLConfiguration
 import org.junit.jupiter.api.Assertions.assertEquals

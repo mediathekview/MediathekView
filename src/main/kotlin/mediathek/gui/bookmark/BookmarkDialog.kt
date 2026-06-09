@@ -31,6 +31,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.gui.bookmark.renderer.*
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
@@ -42,11 +43,8 @@ import mediathek.swing.NoIconMenuItem
 import mediathek.swing.table.GlazedSortKeysPersister
 import mediathek.swing.table.IconHeaderCellRenderer
 import mediathek.swing.table.TableUtils
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.withReadLock
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.sync.LockMode
 import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignE
@@ -60,6 +58,7 @@ import java.awt.event.WindowEvent
 import javax.swing.*
 
 class BookmarkDialog(owner: Frame) : JDialog(owner) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val filmDescriptionPanel = FilmDescriptionPanel()
     private val noteArea = JTextArea()
     private val table = JTable()
@@ -167,25 +166,18 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
     }
 
     private fun saveBounds() {
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.WRITE) {
-            val bounds = bounds
-            setProperty(BOOKMARK_POS_X, bounds.x)
-            setProperty(BOOKMARK_POS_Y, bounds.y)
-            setProperty(BOOKMARK_WIDTH, bounds.width)
-            setProperty(BOOKMARK_HEIGHT, bounds.height)
-        }
+        val bounds = bounds
+        applicationConfiguration.setBookmarkDialogBounds(
+            bounds.x,
+            bounds.y,
+            bounds.width,
+            bounds.height,
+        )
     }
 
     private fun restoreBounds() {
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.READ) {
-            val x = getInt(BOOKMARK_POS_X, 100)
-            val y = getInt(BOOKMARK_POS_Y, 100)
-            val width = getInt(BOOKMARK_WIDTH, 800)
-            val height = getInt(BOOKMARK_HEIGHT, 600)
-            setBounds(x, y, width, height)
-        }
+        val bounds = applicationConfiguration.bookmarkDialogBounds
+        setBounds(bounds.x, bounds.y, bounds.width, bounds.height)
     }
 
     private fun setupNoteArea() {
@@ -519,9 +511,5 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
         const val COLUM_BOOKMARK_ADDED_AT = 10
 
         const val CONFIG_PREFIX = "ui.bookmark-dialog"
-        const val BOOKMARK_POS_X = "$CONFIG_PREFIX.x"
-        const val BOOKMARK_POS_Y = "$CONFIG_PREFIX.y"
-        const val BOOKMARK_WIDTH = "$CONFIG_PREFIX.width"
-        const val BOOKMARK_HEIGHT = "$CONFIG_PREFIX.height"
     }
 }

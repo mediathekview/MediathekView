@@ -25,8 +25,8 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.DownloadColumns
 import mediathek.daten.abo.DatenAbo
-import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.dialog.DialogEditAbo
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen

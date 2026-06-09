@@ -22,10 +22,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.gui.messages.BlacklistChangedEvent
 import mediathek.gui.messages.GeoStateChangedEvent
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.GeoLocationDetector
 import mediathek.tool.MessageBus
 import mediathek.tool.http.MVHttpClient
@@ -109,8 +109,8 @@ class GeoCountryStartupCheck @JvmOverloads constructor(
     }
 
     private fun readUserAgent(): String =
-        ApplicationConfiguration.getConfiguration()
-            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME)
+        ApplicationConfiguration.getInstance()
+            .userAgent
             .ifBlank { Konstanten.PROGRAMMNAME }
 
     internal data class CountryMismatch(

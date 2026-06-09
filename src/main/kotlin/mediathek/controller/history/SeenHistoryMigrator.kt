@@ -15,7 +15,6 @@ import java.sql.Connection
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import java.util.LinkedHashMap
 
 /**
  * Migrates the old history.txt into a sqlite database.

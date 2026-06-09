@@ -19,6 +19,7 @@
 package mediathek.filmlisten
 
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.IndexedFilmList
 import mediathek.gui.duplicates.CommonStatsEvaluationTask
 import mediathek.gui.duplicates.FilmDuplicateEvaluationTask
@@ -26,7 +27,6 @@ import mediathek.gui.tasks.BlacklistFilterWorker
 import mediathek.gui.tasks.FilmlistWriterWorker
 import mediathek.gui.tasks.LuceneIndexWorker
 import mediathek.gui.tasks.RefreshAboWorker
-import mediathek.tool.ApplicationConfiguration
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 
@@ -39,7 +39,7 @@ class FilmlistPostLoadTasks(
         RefreshAboWorker(label, progressBar).execute()
         BlacklistFilterWorker(label, progressBar).execute()
 
-        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_EVALUATE_DUPLICATES, true)) {
+        if (ApplicationConfiguration.getInstance().evaluateFilmDuplicates) {
             FilmDuplicateEvaluationTask().run()
         }
 

@@ -19,9 +19,9 @@
 package mediathek.x11
 
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.mainwindow.MediathekGui
 import mediathek.shutdown.X11ComputerShutdown
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.notification.GenericNotificationCenter
 import mediathek.tool.notification.INotificationCenter
 import mediathek.tool.notification.LinuxNotificationCenter
@@ -59,10 +59,10 @@ class MediathekGuiX11 : MediathekGui(::createNotificationCenter, X11ComputerShut
     }
 
     override fun setupSystemTray() {
-        val useTray = config.getBoolean(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)
+        val useTray = ApplicationConfiguration.getInstance().useTray
         if (!DesktopEnvDetector.trayIconSupported() && useTray) {
             logger.warn("Application tray icon is not supported on this platform, deactivating.")
-            config.setProperty(ApplicationConfiguration.APPLICATION_UI_USE_TRAY, false)
+            ApplicationConfiguration.getInstance().useTray = false
         }
         super.setupSystemTray()
     }

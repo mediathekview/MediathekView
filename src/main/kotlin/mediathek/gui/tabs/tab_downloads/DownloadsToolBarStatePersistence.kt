@@ -18,7 +18,7 @@
 
 package mediathek.gui.tabs.tab_downloads
 
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import java.awt.Point
 import java.awt.event.HierarchyEvent
 import javax.swing.*
@@ -34,7 +34,7 @@ internal class DownloadsToolBarStatePersistence(
     private val toolBarRow: JPanel,
     toolBars: List<JToolBar>
 ) {
-    private val config = ApplicationConfiguration.getConfiguration()
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val persistedToolBars = toolBars.mapIndexed { index, toolBar ->
         PersistedToolBar(toolBar, (toolBar.getClientProperty(DOWNLOADS_TOOLBAR_ID_PROPERTY) as? String) ?: "toolbar-$index")
     }
@@ -134,25 +134,29 @@ internal class DownloadsToolBarStatePersistence(
         )
     }
 
-    private fun readSnapshot(id: String): Snapshot =
-        Snapshot(
-            floating = config.getBoolean(key(id, "floating"), false),
-            x = config.getInt(key(id, "x"), 0),
-            y = config.getInt(key(id, "y"), 0),
-            orientation = config.getInt(key(id, "orientation"), JToolBar.HORIZONTAL)
+    private fun readSnapshot(id: String): Snapshot {
+        val state = applicationConfiguration.getDownloadToolbarState(id, JToolBar.HORIZONTAL)
+        return Snapshot(
+            floating = state.floating,
+            x = state.x,
+            y = state.y,
+            orientation = state.orientation
                 .takeIf { it == JToolBar.HORIZONTAL || it == JToolBar.VERTICAL }
                 ?: JToolBar.HORIZONTAL
         )
-
-    private fun writeSnapshot(id: String, snapshot: Snapshot) {
-        config.setProperty(key(id, "floating"), snapshot.floating)
-        config.setProperty(key(id, "x"), snapshot.x)
-        config.setProperty(key(id, "y"), snapshot.y)
-        config.setProperty(key(id, "orientation"), snapshot.orientation)
     }
 
-    private fun key(id: String, property: String): String =
-        "${ApplicationConfiguration.DOWNLOAD_TOOLBAR_STATE_PREFIX}$id.$property"
+    private fun writeSnapshot(id: String, snapshot: Snapshot) {
+        applicationConfiguration.setDownloadToolbarState(
+            id,
+            ApplicationConfiguration.DownloadToolbarState(
+                snapshot.floating,
+                snapshot.x,
+                snapshot.y,
+                snapshot.orientation
+            )
+        )
+    }
 
     private data class PersistedToolBar(val toolBar: JToolBar, val id: String)
 

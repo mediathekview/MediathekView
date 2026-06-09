@@ -1,7 +1,7 @@
 package mediathek.tool.subtitles
 
-import kotlinx.coroutines.runBlocking
 import com.sun.net.httpserver.HttpServer
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

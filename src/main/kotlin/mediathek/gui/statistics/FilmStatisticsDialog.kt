@@ -21,8 +21,8 @@ package mediathek.gui.statistics
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GermanStringSorter
 import org.apache.logging.log4j.LogManager

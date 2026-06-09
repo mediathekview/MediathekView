@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.Duration
-import java.util.ArrayDeque
+import java.util.*
 
 /**
  * WebVTT -> TTML2 converter:

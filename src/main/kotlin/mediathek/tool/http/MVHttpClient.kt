@@ -1,12 +1,11 @@
 package mediathek.tool.http
 
 import mediathek.config.CommandLineOptions
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.dns.DnsSelector
 import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.apache.commons.configuration2.Configuration
 import org.apache.logging.log4j.LogManager
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -41,9 +40,9 @@ object MVHttpClient {
                 createProxyClient(proxy)
             } else {
                 try {
-                    val config: Configuration = ApplicationConfiguration.getConfiguration()
-                    proxyHost = config.getString(ApplicationConfiguration.HttpProxy.HOST)
-                    proxyPort = config.getString(ApplicationConfiguration.HttpProxy.PORT)
+                    val config = ApplicationConfiguration.getInstance()
+                    proxyHost = config.httpProxyHost
+                    proxyPort = config.httpProxyPort
                     if (!proxyHost.isNullOrEmpty() && !proxyPort.isNullOrEmpty()) {
                         val proxy = Proxy(Proxy.Type.HTTP, InetSocketAddress(proxyHost, proxyPort.toInt()))
                         logger.info("MVHttpClient: Proxy configured from application config: ({})", proxyHost)
@@ -66,8 +65,7 @@ object MVHttpClient {
             if (CommandLineOptions.isHttpTrafficDebuggingEnabled()) {
                 val interceptor = HttpLoggingInterceptor(logger::trace)
                 val level = try {
-                    val levelName = ApplicationConfiguration.getConfiguration()
-                        .getString(ApplicationConfiguration.APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL)
+                    val levelName = ApplicationConfiguration.getInstance().httpTrafficTraceLevel
                     HttpLoggingInterceptor.Level.valueOf(levelName)
                 } catch (_: Exception) {
                     logger.error("Error reading http traffic debug trace level, using BASIC")

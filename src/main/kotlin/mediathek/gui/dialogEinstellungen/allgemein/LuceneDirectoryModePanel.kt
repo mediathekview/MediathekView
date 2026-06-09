@@ -19,22 +19,17 @@
 package mediathek.gui.dialogEinstellungen.allgemein
 
 import com.jidesoft.swing.MultilineLabel
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.LuceneDirectoryMode
-import mediathek.tool.ApplicationConfiguration
 import net.miginfocom.layout.AC
 import net.miginfocom.layout.CC
 import net.miginfocom.layout.LC
 import net.miginfocom.swing.MigLayout
-import org.apache.commons.configuration2.Configuration
 import java.awt.FlowLayout
-import javax.swing.JComboBox
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.SwingConstants
-import javax.swing.UIManager
+import javax.swing.*
 
 class LuceneDirectoryModePanel : JPanel() {
-    private val config: Configuration = ApplicationConfiguration.getConfiguration()
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val modeComboBox = JComboBox(LuceneDirectoryMode.entries.toTypedArray())
     private val descriptionLabel = JLabel()
     private val restartWarningIconLabel = JLabel(UIManager.getIcon("OptionPane.warningIcon"))
@@ -48,7 +43,7 @@ class LuceneDirectoryModePanel : JPanel() {
     init {
         initComponents()
         initializing = true
-        setSelectedMode(config.getString(ApplicationConfiguration.LUCENE_DIRECTORY_MODE, "auto"))
+        setSelectedMode(applicationConfiguration.luceneDirectoryMode)
         initializing = false
         updateDescription()
     }
@@ -91,7 +86,7 @@ class LuceneDirectoryModePanel : JPanel() {
                 return@addActionListener
             }
 
-            config.setProperty(ApplicationConfiguration.LUCENE_DIRECTORY_MODE, selectedMode.configValue)
+            applicationConfiguration.luceneDirectoryMode = selectedMode.configValue
             restartWarningIconLabel.isVisible = true
             restartWarningTextLabel.isVisible = true
         }

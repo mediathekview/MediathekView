@@ -9,28 +9,21 @@ import ca.odell.glazedlists.SortedList
 import ca.odell.glazedlists.gui.AbstractTableComparatorChooser
 import ca.odell.glazedlists.swing.GlazedListsSwing
 import ca.odell.glazedlists.swing.TableComparatorChooser
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
-import mediathek.tool.ApplicationConfiguration
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.sync.LockMode
 import org.apache.logging.log4j.LogManager
 import java.awt.Window
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.util.NoSuchElementException
 
 class DuplicateFilmDetailsDialog(
     owner: Window,
     private val film: DatenFilm,
 ) : DuplicateFilmDetailsDialogBase(owner) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val dialogScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val duplicateList = BasicEventList<DatenFilm>()
     private val sortedList = SortedList(duplicateList)
@@ -86,17 +79,13 @@ class DuplicateFilmDetailsDialog(
 
     private fun restorePosition() {
         try {
-            ApplicationConfiguration.getConfiguration().withLock(LockMode.READ) {
-                val x = getInt(CONFIG_X)
-                val y = getInt(CONFIG_Y)
-                val width = getInt(CONFIG_WIDTH)
-                val height = getInt(CONFIG_HEIGHT)
-
-                setSize(width, height)
-                setLocation(x, y)
+            val state = applicationConfiguration.duplicateFilmDetailsDialogState
+            if (state.hasStoredBounds()) {
+                setSize(state.width, state.height)
+                setLocation(state.x, state.y)
+            } else {
+                pack()
             }
-        } catch (_: NoSuchElementException) {
-            pack()
         } catch (ex: Exception) {
             logger.error("Unhandled Exception", ex)
             pack()
@@ -104,21 +93,17 @@ class DuplicateFilmDetailsDialog(
     }
 
     private fun savePosition() {
-        ApplicationConfiguration.getConfiguration().withLock(LockMode.WRITE) {
-            val currentSize = size
-            val currentLocation = location
-            setProperty(CONFIG_WIDTH, currentSize.width)
-            setProperty(CONFIG_HEIGHT, currentSize.height)
-            setProperty(CONFIG_X, currentLocation.x)
-            setProperty(CONFIG_Y, currentLocation.y)
-        }
+        val currentSize = size
+        val currentLocation = location
+        applicationConfiguration.setDuplicateFilmDetailsDialogBounds(
+            currentLocation.x,
+            currentLocation.y,
+            currentSize.width,
+            currentSize.height,
+        )
     }
 
     private companion object {
-        private const val CONFIG_X = "duplicate_film_details_dialog.x"
-        private const val CONFIG_Y = "duplicate_film_details_dialog.y"
-        private const val CONFIG_HEIGHT = "duplicate_film_details_dialog.height"
-        private const val CONFIG_WIDTH = "duplicate_film_details_dialog.width"
         private val logger = LogManager.getLogger()
     }
 }

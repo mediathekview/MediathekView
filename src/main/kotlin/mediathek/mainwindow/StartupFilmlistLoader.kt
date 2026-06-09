@@ -18,20 +18,15 @@
 
 package mediathek.mainwindow
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.StandardLocations
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.filmlisten.FilmlistPostLoadTasks
 import mediathek.filmlisten.reader.FilmListReader
 import mediathek.gui.messages.FilmListReadStartEvent
 import mediathek.gui.messages.FilmListReadStopEvent
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
 import javax.swing.JLabel
@@ -80,8 +75,7 @@ class StartupFilmlistLoader(
 
         try {
             FilmListReader().use { reader ->
-                val loadNumDays = ApplicationConfiguration.getConfiguration()
-                    .getInt(ApplicationConfiguration.FilmList.LOAD_NUM_DAYS, 0)
+                val loadNumDays = ApplicationConfiguration.getInstance().filmListLoadNumDays
                 reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), daten.listeFilme, loadNumDays)
             }
         } finally {

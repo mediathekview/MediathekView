@@ -19,7 +19,7 @@
 package mediathek.daten
 
 import mediathek.config.StandardLocations
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import org.apache.logging.log4j.LogManager
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.store.Directory
@@ -44,8 +44,7 @@ class IndexedFilmList : ListeFilme() {
 
     @Throws(Exception::class)
     private fun createLuceneDirectory(indexPath: Path): Directory {
-        val configuredMode = ApplicationConfiguration.getConfiguration()
-            .getString(ApplicationConfiguration.LUCENE_DIRECTORY_MODE, "auto")
+        val configuredMode = ApplicationConfiguration.getInstance().luceneDirectoryMode
         val mode = LuceneDirectoryMode.fromConfigValueOrNull(configuredMode)
             ?: run {
                 logger.warn("Unknown Lucene directory mode '{}', falling back to 'auto'", configuredMode)

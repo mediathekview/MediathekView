@@ -18,7 +18,7 @@
 
 package mediathek.gui.tabs.tab_film.filter
 
-import mediathek.tool.FilterConfiguration
+import mediathek.config.application.FilterConfiguration
 import mediathek.tool.FilterDTO
 import org.apache.commons.configuration2.XMLConfiguration
 import org.junit.jupiter.api.Assertions.*

@@ -28,7 +28,7 @@ import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
-import java.util.Optional
+import java.util.*
 import javax.swing.AbstractAction
 import javax.swing.Action
 import javax.swing.KeyStroke

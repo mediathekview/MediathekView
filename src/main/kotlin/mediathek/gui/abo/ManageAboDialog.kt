@@ -1,15 +1,14 @@
 package mediathek.gui.abo
 
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
-import mediathek.tool.withLock
-import org.apache.commons.configuration2.sync.LockMode
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Frame
 import javax.swing.JDialog
 
 class ManageAboDialog(owner: Frame?) : JDialog(owner) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val aboPanel: ManageAboPanel
     private var disposed = false
 
@@ -26,38 +25,21 @@ class ManageAboDialog(owner: Frame?) : JDialog(owner) {
         super.dispose()
     }
 
-    companion object {
-        private const val HEIGHT = "manage_abo_dialog.height"
-        private const val WIDTH = "manage_abo_dialog.width"
-        private const val X = "manage_abo_dialog.x"
-        private const val Y = "manage_abo_dialog.y"
-    }
-
     private fun restoreFromConfig() {
-        val config = ApplicationConfiguration.getConfiguration()
-        try {
-            config.withLock(LockMode.READ) {
-                val height = getInt(HEIGHT)
-                val width = getInt(WIDTH)
-                val x = getInt(X)
-                val y = getInt(Y)
-
-                setSize(width, height)
-                setLocation(x, y)
-            }
-        }
-        catch(_: NoSuchElementException) {
+        val state = applicationConfiguration.manageAboDialogState
+        if (state.hasStoredBounds()) {
+            setSize(state.width, state.height)
+            setLocation(state.x, state.y)
         }
     }
 
     private fun saveToConfig() {
-        val config = ApplicationConfiguration.getConfiguration()
-        config.withLock(LockMode.WRITE) {
-            setProperty(HEIGHT, size.height)
-            setProperty(WIDTH, size.width)
-            setProperty(X, location.x)
-            setProperty(Y, location.y)
-        }
+        applicationConfiguration.setManageAboDialogBounds(
+            location.x,
+            location.y,
+            size.width,
+            size.height,
+        )
     }
 
     init {
@@ -69,7 +51,7 @@ class ManageAboDialog(owner: Frame?) : JDialog(owner) {
         val contentPane = contentPane
         contentPane.layout = BorderLayout()
         contentPane.add(aboPanel, BorderLayout.CENTER)
-        minimumSize = Dimension(640,480)
+        minimumSize = Dimension(640, 480)
         pack()
 
         restoreFromConfig()

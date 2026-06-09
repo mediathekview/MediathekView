@@ -45,7 +45,6 @@ object SplashScreenLifecycle {
         splashScreen?.update(state)
     }
 
-    @JvmStatic
     fun close() {
         splashScreen?.close()
     }

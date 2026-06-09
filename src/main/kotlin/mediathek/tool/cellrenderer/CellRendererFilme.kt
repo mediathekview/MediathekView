@@ -19,11 +19,11 @@
 package mediathek.tool.cellrenderer
 
 import mediathek.config.Daten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.swing.IconUtils
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.table.MVTable
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
@@ -134,8 +134,7 @@ class CellRendererFilme : CellRendererBaseWithStart() {
         zeit = zeit.trim()
         try {
             val time = LocalTime.parse(zeit, PARSER)
-            val longFormat = ApplicationConfiguration.getConfiguration()
-                .getBoolean(ApplicationConfiguration.UI_TAB_FILME_TIME_USE_LONG_FORMAT, false)
+            val longFormat = ApplicationConfiguration.getInstance().filmTimeUseLongFormat
             text = (if (longFormat) LONG else SHORT).format(time)
         } catch (_: DateTimeParseException) {
             text = zeit

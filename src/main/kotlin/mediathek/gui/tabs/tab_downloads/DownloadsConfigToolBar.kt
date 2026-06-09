@@ -18,9 +18,9 @@
 
 package mediathek.gui.tabs.tab_downloads
 
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.DownloadRateLimitChangedEvent
 import mediathek.gui.messages.ParallelDownloadNumberChangedEvent
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.MessageBus.messageBus
 import net.engio.mbassy.listener.Handler
 import java.awt.Dimension
@@ -36,12 +36,11 @@ class DownloadsConfigToolBar : JToolBar() {
     }
 
     private fun setupDownloadRateLimitCheckBox() {
-        val config = ApplicationConfiguration.getConfiguration()
-        val active = config.getBoolean(
-            ApplicationConfiguration.DownloadRateLimiter.ACTIVE, false)
+        val config = ApplicationConfiguration.getInstance()
+        val active = config.downloadRateLimitActive
         cbMaxBandwidth.isSelected = active
         cbMaxBandwidth.addActionListener {
-            config.setProperty(ApplicationConfiguration.DownloadRateLimiter.ACTIVE, cbMaxBandwidth.isSelected)
+            config.downloadRateLimitActive = cbMaxBandwidth.isSelected
             downloadRateLimitChangeTimer.stop()
             fireDownloadRateLimitChangedEvent()
         }
@@ -49,8 +48,7 @@ class DownloadsConfigToolBar : JToolBar() {
 
     private fun fireDownloadRateLimitChangedEvent() {
         val downloadLimit = (spinnerMaxBandwidth.value as Number).toInt()
-        ApplicationConfiguration.getConfiguration()
-            .setProperty(ApplicationConfiguration.DownloadRateLimiter.LIMIT, downloadLimit)
+        ApplicationConfiguration.getInstance().downloadRateLimit = downloadLimit.toLong()
         val evt = DownloadRateLimitChangedEvent()
         evt.newLimit = downloadLimit
         evt.active = cbMaxBandwidth.isSelected
@@ -65,22 +63,21 @@ class DownloadsConfigToolBar : JToolBar() {
             "<html>Bandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>" //NON-NLS
 
         //restore spinner setting from config
-        val oldDownloadLimit =
-            ApplicationConfiguration.getConfiguration().getLong(ApplicationConfiguration.DownloadRateLimiter.LIMIT, 0)
+        val oldDownloadLimit = ApplicationConfiguration.getInstance().downloadRateLimit
         spinnerMaxBandwidth.value = oldDownloadLimit.toInt()
         spinnerMaxBandwidth.addChangeListener { scheduleDownloadRateLimitChangedEvent() }
     }
 
     private fun setupNumDownloadsSpinner() {
-        val config = ApplicationConfiguration.getConfiguration()
+        val config = ApplicationConfiguration.getInstance()
         spinnerNumDownloads.putClientProperty("JComponent.roundRect", true)
         spinnerNumDownloads.model = SpinnerNumberModel(1, 1, 9, 1)
         spinnerNumDownloads.limitToolbarWidth(80)
         spinnerNumDownloads.toolTipText = "Anzahl der gleichzeitig möglichen Downloads"
-        spinnerNumDownloads.value = config.getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1)
+        spinnerNumDownloads.value = config.maxSimultaneousDownloads
         spinnerNumDownloads.addChangeListener {
             val maxNumDownloads = (spinnerNumDownloads.model.value as Number).toInt()
-            config.setProperty(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, maxNumDownloads)
+            config.maxSimultaneousDownloads = maxNumDownloads
             messageBus.publishAsync(ParallelDownloadNumberChangedEvent())
         }
     }
@@ -97,8 +94,7 @@ class DownloadsConfigToolBar : JToolBar() {
     @Handler
     private fun handleParallelDownloadNumberChange(e: ParallelDownloadNumberChangedEvent) {
         SwingUtilities.invokeLater {
-            val maxNumDownloads = ApplicationConfiguration.getConfiguration()
-                .getInt(ApplicationConfiguration.DOWNLOAD_MAX_SIMULTANEOUS_NUM, 1)
+            val maxNumDownloads = ApplicationConfiguration.getInstance().maxSimultaneousDownloads
             spinnerNumDownloads.value = maxNumDownloads
         }
     }

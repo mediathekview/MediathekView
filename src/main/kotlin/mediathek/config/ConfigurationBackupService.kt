@@ -29,7 +29,6 @@ import java.time.ZoneId
 object ConfigurationBackupService {
     private val logger = LogManager.getLogger()
 
-    @JvmStatic
     fun createConfigurationBackupCopies(): Boolean {
         return try {
             if (backupCreatedToday(configurationBackupPath(1))) {

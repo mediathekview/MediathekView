@@ -3,6 +3,7 @@ package mediathek.tool
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.config.Konstanten
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -73,8 +74,8 @@ object GeoLocationDetector {
     }
 
     private fun readUserAgent(): String {
-        return ApplicationConfiguration.getConfiguration()
-            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT, Konstanten.PROGRAMMNAME)
+        return ApplicationConfiguration.getInstance()
+            .userAgent
             .ifBlank { Konstanten.PROGRAMMNAME }
     }
 

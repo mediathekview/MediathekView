@@ -1,6 +1,6 @@
 package mediathek.daten.blacklist
 
-import mediathek.config.MVConfig
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -9,17 +9,17 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class ApplyBlacklistFilterPredicateTest {
-    private var previousWhitelistMode = ""
+    private var previousWhitelistMode = false
 
     @BeforeEach
     fun setUp() {
-        previousWhitelistMode = MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)
-        MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, "false")
+        previousWhitelistMode = ApplicationConfiguration.getInstance().blacklistWhitelistMode
+        ApplicationConfiguration.getInstance().blacklistWhitelistMode = false
     }
 
     @AfterEach
     fun tearDown() {
-        MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, previousWhitelistMode)
+        ApplicationConfiguration.getInstance().blacklistWhitelistMode = previousWhitelistMode
     }
 
     @Test
@@ -39,7 +39,7 @@ internal class ApplyBlacklistFilterPredicateTest {
 
     @Test
     fun whitelistModeUsesSameMatcherWithInvertedPolicy() {
-        MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, "true")
+        ApplicationConfiguration.getInstance().blacklistWhitelistMode = true
         val predicate = ApplyBlacklistFilterPredicate(
             listOf(BlacklistRule("ARD", "News", "tagesschau", ""))
         )

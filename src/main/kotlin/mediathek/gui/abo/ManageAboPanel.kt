@@ -27,8 +27,8 @@ import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
 import mediathek.gui.actions.CreateNewAboAction
-import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.dialog.DialogEditAbo
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.messages.AboListChangedEvent
 import mediathek.mainwindow.MediathekGui
 import mediathek.swing.InfiniteProgressPanel

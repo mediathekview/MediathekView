@@ -21,11 +21,7 @@ package mediathek.gui.tabs.tab_film
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.controller.starter.DownloadStartActions
-import mediathek.daten.DatenDownload
-import mediathek.daten.DatenFilm
-import mediathek.daten.DatenPset
-import mediathek.daten.DownloadSource
-import mediathek.daten.FilmResolution
+import mediathek.daten.*
 import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.dialog.add_download.DialogAddMoreDownload

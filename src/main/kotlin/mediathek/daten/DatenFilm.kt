@@ -18,9 +18,9 @@
 
 package mediathek.daten
 
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.abo.DatenAbo
 import mediathek.gui.bookmark.BookmarkData
-import mediathek.tool.ApplicationConfiguration
 import mediathek.tool.FileSize
 import mediathek.tool.GermanStringSorter
 import mediathek.tool.RuntimeArchitecture
