@@ -20,29 +20,38 @@ package mediathek.mac;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.foreign.*;
+import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.Linker;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SymbolLookup;
+import java.lang.foreign.ValueLayout;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MacFileUtils {
 
     private static final int FSREF_SIZE = 80;
-    private static final int kFSPathMakeRefDoNotFollowLeafSymlink = 0x01;
+    private static final int NO_FOLLOW_LEAF_SYMLINK = 0x01;
 
+	
+    private MacFileUtils() {
+        /* This utility class should not be instantiated */
+    }
 
     /// Moves a file to the Finder trash.
     /// **Uses the macOS Carbon framework.**
     /// @param files List of files to be deleted.
     public static void moveToTrash(File... files) throws IOException {
-        List<String> failed = new ArrayList<>();
+        final List<String> failed = new ArrayList<>();
 
         try (var arena = Arena.ofConfined()) {
-            Linker linker = Linker.nativeLinker();
+            final Linker linker = Linker.nativeLinker();
             //Carbon framework needs to be explicitely loaded...
-            SymbolLookup cfLookup = SymbolLookup.libraryLookup("/System/Library/Frameworks/Carbon.framework/Carbon", Arena.global());
+            final SymbolLookup cfLookup = SymbolLookup.libraryLookup("/System/Library/Frameworks/Carbon.framework/Carbon", Arena.global());
 
-            var msfsp1 = cfLookup.find("FSPathMakeRefWithOptions").orElseThrow(() -> new RuntimeException("FSPathMakeRefWithOptions not found"));
-            var FSPathMakeRefWithOptions = linker.downcallHandle(msfsp1,
+            final var msfsp1 = cfLookup.find("FSPathMakeRefWithOptions").orElseThrow(() -> new RuntimeException("FSPathMakeRefWithOptions not found"));
+            final var fsPathMakeRefWithOptions = linker.downcallHandle(msfsp1,
                     FunctionDescriptor.of(ValueLayout.JAVA_INT, // return int
                             ValueLayout.ADDRESS, // const char* source
                             ValueLayout.JAVA_INT, // int options
@@ -50,7 +59,7 @@ public class MacFileUtils {
                             ValueLayout.ADDRESS) // Byte* isDirectory (nullable)
             );
 
-            var FSMoveObjectToTrashSync = linker.downcallHandle(
+            final var fsMoveObjectToTrashSync = linker.downcallHandle(
                     cfLookup.find("FSMoveObjectToTrashSync").orElseThrow(() -> new RuntimeException("FSMoveObjectToTrashSync not found")),
                     FunctionDescriptor.of(ValueLayout.JAVA_INT, // return int
                             ValueLayout.ADDRESS, // FSRef* source
@@ -61,17 +70,17 @@ public class MacFileUtils {
             for (File src : files) {
                 /*if (!src.exists())
                     continue;*/
-                var fsref = arena.allocate(FSREF_SIZE);
-                var path = arena.allocateFrom(src.getAbsolutePath());
+                final var fsref = arena.allocate(FSREF_SIZE);
+                final var path = arena.allocateFrom(src.getAbsolutePath());
 
-                int status = (int) FSPathMakeRefWithOptions.invoke(path, kFSPathMakeRefDoNotFollowLeafSymlink,
+                int status = (int) fsPathMakeRefWithOptions.invoke(path, NO_FOLLOW_LEAF_SYMLINK,
                         fsref, MemorySegment.NULL);
                 if (status != 0) {
                     failed.add(src + " (FSRefMakeRefWithOptions: " + status + ")");
                     continue;
                 }
 
-                status = (int) FSMoveObjectToTrashSync.invoke(fsref, MemorySegment.NULL, 0);
+                status = (int) fsMoveObjectToTrashSync.invoke(fsref, MemorySegment.NULL, 0);
                 if (status != 0) {
                     failed.add(src + " (FSMoveObjectToTrashSync: " + status + ")");
                 }

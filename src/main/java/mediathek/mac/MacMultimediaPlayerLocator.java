@@ -18,21 +18,26 @@
 
 package mediathek.mac;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.lang.foreign.*;
+import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.Linker;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SymbolLookup;
+import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public final class MacMultimediaPlayerLocator {
 
     private static final Linker LINKER = Linker.nativeLinker();
-    private static final int kCFStringEncodingUTF8 = 0x08000100;
-    private static final int kCFURLPOSIXPathStyle = 0;
+    private static final int ENCODING_UTF8 = 0x08000100;
+    private static final int POSIX_PATH_STYLE = 0;
     private static final MethodHandle CFStringCreateWithCString;
     private static final MethodHandle CFStringGetCString;
     private static final MethodHandle CFRelease;
@@ -43,12 +48,12 @@ public final class MacMultimediaPlayerLocator {
     private static final Logger LOG = LogManager.getLogger();
 
     static {
-        Arena global = Arena.global();
+        final Arena global = Arena.global();
 
-        var coreFoundation =
+        final var coreFoundation =
                 SymbolLookup.libraryLookup("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation", global);
 
-        var coreServices =
+        final var coreServices =
                 SymbolLookup.libraryLookup("/System/Library/Frameworks/CoreServices.framework/CoreServices", global);
 
         try {
@@ -129,17 +134,17 @@ public final class MacMultimediaPlayerLocator {
         }
 
         try (Arena arena = Arena.ofConfined()) {
-            var cBundleId = arena.allocateFrom(bundleId);
-            var cfBundleId = (MemorySegment) CFStringCreateWithCString.invoke(
-                    MemorySegment.NULL, cBundleId, kCFStringEncodingUTF8);
+            final var cBundleId = arena.allocateFrom(bundleId);
+            final var cfBundleId = (MemorySegment) CFStringCreateWithCString.invoke(
+                    MemorySegment.NULL, cBundleId, ENCODING_UTF8);
             if (cfBundleId.equals(MemorySegment.NULL)) {
                 return Optional.empty();
             }
 
             try {
-                var outErrorPtr = arena.allocate(ValueLayout.ADDRESS);
+                final var outErrorPtr = arena.allocate(ValueLayout.ADDRESS);
 
-                var cfArray = (MemorySegment) LSCopyApplicationURLsForBundleIdentifier.invoke(
+                final var cfArray = (MemorySegment) LSCopyApplicationURLsForBundleIdentifier.invoke(
                         cfBundleId,
                         outErrorPtr
                 );
@@ -148,40 +153,40 @@ public final class MacMultimediaPlayerLocator {
                 }
 
                 try {
-                    long count = (long) CFArrayGetCount.invoke(cfArray);
+                    final long count = (long) CFArrayGetCount.invoke(cfArray);
                     if (count == 0) {
                         return Optional.empty();
                     }
 
-                    var cfUrl = (MemorySegment) CFArrayGetValueAtIndex.invoke(cfArray, 0L);
+                    final var cfUrl = (MemorySegment) CFArrayGetValueAtIndex.invoke(cfArray, 0L);
                     if (cfUrl.equals(MemorySegment.NULL)) {
                         return Optional.empty();
                     }
 
-                    var cfPathStr = (MemorySegment) CFURLCopyFileSystemPath.invoke(
+                    final var cfPathStr = (MemorySegment) CFURLCopyFileSystemPath.invoke(
                             cfUrl,
-                            kCFURLPOSIXPathStyle
+                            POSIX_PATH_STYLE
                     );
                     if (cfPathStr.equals(MemorySegment.NULL)) {
                         return Optional.empty();
                     }
 
                     try {
-                        long bufferSize = 4096;
-                        var buffer = arena.allocate(bufferSize);
+                        final long bufferSize = 4096;
+                        final var buffer = arena.allocate(bufferSize);
 
-                        int ok = (int) CFStringGetCString.invoke(
+                        final int ok = (int) CFStringGetCString.invoke(
                                 cfPathStr,
                                 buffer,
                                 bufferSize,
-                                kCFStringEncodingUTF8
+                                ENCODING_UTF8
                         );
 
                         if (ok == 0) {
                             return Optional.empty();
                         }
 
-                        var pathStr = buffer.getString(0);
+                        final var pathStr = buffer.getString(0);
                         return Optional.of(Paths.get(pathStr));
 
                     }
