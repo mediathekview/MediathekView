@@ -144,13 +144,6 @@ class DialogEditAbo(
     }
 
     private fun bindAboToFields() {
-        val nr = aktAbo.nr
-        labelNrValue.text = if (nr > 0) {
-            aktAbo.nr.toString()
-        } else {
-            "noch nicht vergeben"
-        }
-
         checkBoxEingeschaltet.isSelected = aktAbo.isActive
         textFieldName.text = aktAbo.name
         textFieldName.document.addDocumentListener(EmptyTextDocListener(textFieldName))
@@ -215,7 +208,6 @@ class DialogEditAbo(
         )
 
     private fun writeFieldsToAbo(abo: DatenAbo) {
-        // no ABO_NR
         abo.isActive = checkBoxEingeschaltet.isSelected
         abo.isDoNotStartAutomatically = checkBoxDoNotStartAutomatically.isSelected
         abo.name = textFieldName.text.trim()

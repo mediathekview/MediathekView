@@ -18,13 +18,110 @@
 
 package mediathek.daten
 
+import ca.odell.glazedlists.event.ListEvent
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class ListeAboTest {
+    @Test
+    fun addAboAssignsFallbackName() {
+        val abos = ListeAbo()
+        val unnamedAbo = DatenAbo()
+
+        abos.addAboWithoutNotification(unnamedAbo)
+
+        assertEquals("Abo_1", unnamedAbo.name)
+        assertSame(unnamedAbo, abos[0])
+    }
+
+    @Test
+    fun fallbackNameUsesNextFreeAboName() {
+        val abos = ListeAbo().apply {
+            addAboWithoutNotification(DatenAbo().apply { name = "Abo_1" })
+        }
+        val unnamedAbo = DatenAbo()
+
+        abos.addAboWithoutNotification(unnamedAbo)
+
+        assertEquals("Abo_2", unnamedAbo.name)
+    }
+
+    @Test
+    fun removeAbosWithoutNotificationRemovesEntriesThroughEventList() {
+        val first = DatenAbo().apply { name = "first" }
+        val second = DatenAbo().apply { name = "second" }
+        val abos = ListeAbo().apply {
+            addAboWithoutNotification(first)
+            addAboWithoutNotification(second)
+        }
+
+        val removed = abos.removeAbosWithoutNotification(listOf(first))
+
+        assertTrue(removed)
+        assertEquals(1, abos.size)
+        assertSame(second, abos[0])
+    }
+
+    @Test
+    fun addAboKeepsListSortedByName() {
+        val abos = ListeAbo().apply {
+            addAboWithoutNotification(DatenAbo().apply { name = "Zebra" })
+            addAboWithoutNotification(DatenAbo().apply { name = "Alpha" })
+        }
+
+        assertEquals("Alpha", abos[0].name)
+        assertEquals("Zebra", abos[1].name)
+    }
+
+    @Test
+    fun configLoadingPreservesReadOrderUntilFinished() {
+        val abos = ListeAbo().apply {
+            addAboFromConfig(DatenAbo().apply { name = "Zebra" })
+            addAboFromConfig(DatenAbo().apply { name = "Alpha" })
+        }
+
+        assertEquals("Zebra", abos[0].name)
+        assertEquals("Alpha", abos[1].name)
+
+        abos.finishLoading()
+
+        assertEquals("Alpha", abos[0].name)
+        assertEquals("Zebra", abos[1].name)
+    }
+
+    @Test
+    fun fireAboChangedPublishesUpdateEvent() {
+        val abo = DatenAbo().apply { name = "Alpha" }
+        val abos = ListeAbo().apply { addAboWithoutNotification(abo) }
+        var updateEvents = 0
+        abos.addListEventListener { event ->
+            while (event.next()) {
+                if (event.type == ListEvent.UPDATE) {
+                    updateEvents++
+                }
+            }
+        }
+
+        abo.name = "Beta"
+        abos.fireAboChanged(abo)
+
+        assertEquals(1, updateEvents)
+    }
+
+    @Test
+    fun fireAboChangedIgnoresUnknownAbo() {
+        val abos = ListeAbo()
+
+        abos.fireAboChanged(DatenAbo())
+
+        assertEquals(0, abos.size)
+    }
+
     @Test
     fun inactiveAboDoesNotShadowLaterActiveMatch() {
         val inactiveBroadAbo = DatenAbo().apply {
@@ -37,8 +134,8 @@ class ListeAboTest {
             isActive = true
         }
         val abos = ListeAbo().apply {
-            addAbo(inactiveBroadAbo)
-            addAbo(activeSpecificAbo)
+            addAboWithoutNotification(inactiveBroadAbo)
+            addAboWithoutNotification(activeSpecificAbo)
         }
         val film = DatenFilm().apply {
             sender = "ZDF"
@@ -48,7 +145,7 @@ class ListeAboTest {
 
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
-        assertSame(activeSpecificAbo, abos.getAboFuerFilm_schnell(film, false))
+        assertSame(activeSpecificAbo, abos.getAboForFilmFast(film, false))
     }
 
     @Test
@@ -57,7 +154,7 @@ class ListeAboTest {
             sender = "ZDF"
             isActive = false
         }
-        val abos = ListeAbo().apply { addAbo(inactiveAbo) }
+        val abos = ListeAbo().apply { addAboWithoutNotification(inactiveAbo) }
         val film = DatenFilm().apply {
             sender = "ZDF"
             thema = "Nachrichten"
@@ -67,7 +164,7 @@ class ListeAboTest {
 
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
-        assertNull(abos.getAboFuerFilm_schnell(film, false))
+        assertNull(abos.getAboForFilmFast(film, false))
     }
 
     @Test
@@ -85,8 +182,8 @@ class ListeAboTest {
             filmLengthState = FilmLengthState.MINIMUM
         }
         val abos = ListeAbo().apply {
-            addAbo(tooLongMinimumAbo)
-            addAbo(validMinimumAbo)
+            addAboWithoutNotification(tooLongMinimumAbo)
+            addAboWithoutNotification(validMinimumAbo)
         }
         val film = DatenFilm().apply {
             sender = "ZDF"
@@ -97,7 +194,7 @@ class ListeAboTest {
 
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
-        assertSame(validMinimumAbo, abos.getAboFuerFilm_schnell(film, true))
+        assertSame(validMinimumAbo, abos.getAboForFilmFast(film, true))
     }
 
     @Test
@@ -106,7 +203,7 @@ class ListeAboTest {
             sender = "ZDF"
             title = "#:.*heute journal.*"
         }
-        val abos = ListeAbo().apply { addAbo(regexAbo) }
+        val abos = ListeAbo().apply { addAboWithoutNotification(regexAbo) }
         val film = DatenFilm().apply {
             sender = "ZDF"
             thema = "Nachrichten"
@@ -115,7 +212,7 @@ class ListeAboTest {
 
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
-        assertSame(regexAbo, abos.getAboFuerFilm_schnell(film, false))
+        assertSame(regexAbo, abos.getAboForFilmFast(film, false))
     }
 
     @Test
@@ -124,7 +221,7 @@ class ListeAboTest {
             sender = "ZDF"
             irgendwo = "wirtschaft"
         }
-        val abos = ListeAbo().apply { addAbo(descriptionAbo) }
+        val abos = ListeAbo().apply { addAboWithoutNotification(descriptionAbo) }
         val film = DatenFilm().apply {
             sender = "ZDF"
             thema = "Nachrichten"
@@ -134,7 +231,7 @@ class ListeAboTest {
 
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
-        assertSame(descriptionAbo, abos.getAboFuerFilm_schnell(film, false))
+        assertSame(descriptionAbo, abos.getAboForFilmFast(film, false))
     }
 
     @Test
@@ -147,8 +244,8 @@ class ListeAboTest {
             title = "Heute Journal"
         }
         val abos = ListeAbo().apply {
-            addAbo(globalAbo)
-            addAbo(zdfAbo)
+            addAboWithoutNotification(globalAbo)
+            addAboWithoutNotification(zdfAbo)
         }
         val film = DatenFilm().apply {
             sender = "ZDF"
@@ -158,7 +255,7 @@ class ListeAboTest {
 
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
-        assertSame(globalAbo, abos.getAboFuerFilm_schnell(film, false))
+        assertSame(globalAbo, abos.getAboForFilmFast(film, false))
     }
 
     @Test
@@ -171,8 +268,8 @@ class ListeAboTest {
             title = "Heute Journal"
         }
         val abos = ListeAbo().apply {
-            addAbo(zdfAbo)
-            addAbo(globalAbo)
+            addAboWithoutNotification(zdfAbo)
+            addAboWithoutNotification(globalAbo)
         }
         val film = DatenFilm().apply {
             sender = "ZDF"
@@ -182,6 +279,6 @@ class ListeAboTest {
 
         abos.setAboFuerFilm(ListeFilme().apply { add(film) }, true)
 
-        assertSame(zdfAbo, abos.getAboFuerFilm_schnell(film, false))
+        assertSame(zdfAbo, abos.getAboForFilmFast(film, false))
     }
 }

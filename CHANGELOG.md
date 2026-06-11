@@ -29,6 +29,7 @@
 - **BUGFIX:** Blacklist-Filter wird nun auch bei der Lucene-Suche richtig angewendet.
 - **BUGFIX:** `history.db` wird nun in allen Anwendungsfällen ordnungsgemäß geschlossen.
 - **BUGFIX:** CheckBox *Beim Programmstart einschalten* in der Blacklist wurde entfernt da sie keine Auswirkung mehr hatte.
+- **BUGFIX:** *Abos verwalten*-Dialog zeigt keine Spalte `Nr` mehr an.
 - **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
 - **FEATURE:** MediathekView enthält nun das Tab *Audiothek* zum Abspielen und Download von Podcasts aus der ARD Sounds Bibliothek. Die Daten sind vollindiziert für die lokale Suche. Zusätzlich können über die Schlagwortsuche auch Einträge von podcastindex.org gesucht und verwendet werden. Die Dokumentation hierfür ist über den Hilfe-Button im Suchfeld erreichbar. 
 - **FEATURE:** Filter können nun kopiert werden.
@@ -59,6 +60,7 @@
 - **FEATURE:** Das Download-Tab cached nun Dateigrößen-Downloads um den Startvorgang zu beschleunigen. Die Daten werden in `download-size-cache.json` gespeichert.
 - **FEATURE:** In den Blacklist-Einstellungen wird nun für jede Blacklist-Regel angezeigt, wieviele Filmeinträge sie filtert.
 - **FEATURE:** `Blacklist bearbeiten` und der enstprechende Dialog in den Einstellungen hebt nun Blacklist-Einträge in rot hervor, die keine Auswirkung auf die aktuelle Filmliste haben.
+- **FEATURE:** *Abos verwalten*-Dialog besitzt nun eine Spalte `Filme`, die berechnet wieviele Filme durch das Abo erkannt werden *könnten*. Es werden keine History, etc. in der Berechnung berücksichtigt. Werden keine Filme erkannt wird der Wert in Rot dargestellt.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.

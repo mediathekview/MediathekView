@@ -1,13 +1,9 @@
 package mediathek.tool.table
 
-import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.DownloadColumns
-import mediathek.daten.ListeAbo
-import mediathek.daten.abo.DatenAbo
-import mediathek.tool.models.TModelAbo
 import mediathek.tool.models.TModelDownload
 import mediathek.tool.models.TModelFilm
 import org.junit.jupiter.api.Assertions.*
@@ -42,23 +38,6 @@ class MVTableTest {
         } finally {
             config.filmTableColumnConfiguration = originalConfig
         }
-    }
-
-    @Test
-    fun abosTableUsesTriStateRowSorterWhenModelChanges() {
-        val table = MVAbosTable()
-        table.model = TModelAbo(ListeAbo())
-
-        val sorter = assertInstanceOf(TriStateTableRowSorter::class.java, table.rowSorter)
-
-        sorter.toggleSortOrder(DatenAbo.ABO_NAME)
-        assertEquals(SortOrder.ASCENDING, sorter.sortKeys.first().sortOrder)
-
-        sorter.toggleSortOrder(DatenAbo.ABO_NAME)
-        assertEquals(SortOrder.DESCENDING, sorter.sortKeys.first().sortOrder)
-
-        sorter.toggleSortOrder(DatenAbo.ABO_NAME)
-        assertEquals(0, sorter.sortKeys.size)
     }
 
     @Test

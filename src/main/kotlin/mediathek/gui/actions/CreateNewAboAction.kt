@@ -28,7 +28,6 @@ import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FilenameUtils
 import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
-import java.util.*
 import javax.swing.AbstractAction
 import javax.swing.JFrame
 import javax.swing.JOptionPane
@@ -72,8 +71,6 @@ class CreateNewAboAction @JvmOverloads constructor(
 
         ApplicationConfiguration.getInstance().defaultAboMinimumDurationMinutes = datenAbo.mindestDauerMinuten
         listeAbo.addAbo(datenAbo)
-        Collections.sort(listeAbo)
-        listeAbo.aenderungMelden()
     }
 
     private fun createAboDraft(

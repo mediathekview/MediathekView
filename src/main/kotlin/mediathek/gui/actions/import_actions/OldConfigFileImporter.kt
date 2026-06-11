@@ -68,8 +68,10 @@ class OldConfigFileImporter {
             }
         }
 
-        if (foundAbos > 0)
+        if (foundAbos > 0) {
+            daten.listeAbo.finishLoading()
             daten.listeAbo.aenderungMelden()
+        }
         if (foundBlacklistEntries > 0)
             daten.listeBlacklist.filterListAndNotifyListeners()
         if (foundReplaceListEntries > 0)
@@ -84,7 +86,7 @@ class OldConfigFileImporter {
         return try {
             val datenAbo = DatenAbo()
             datenAbo.readFromConfig(parser)
-            daten.listeAbo.addAbo(datenAbo)
+            daten.listeAbo.addAboFromConfig(datenAbo)
             true
         }
         catch (_: Exception) {

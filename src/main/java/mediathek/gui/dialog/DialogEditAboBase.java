@@ -22,11 +22,6 @@ public class DialogEditAboBase extends JDialog {
     protected JLabel getLabelMultiEditHeader() {
         return labelMultiEditHeader;
     }
-
-    protected JLabel getLabelNrValue() {
-        return labelNrValue;
-    }
-
     protected JCheckBox getCheckBoxEingeschaltet() {
         return checkBoxEingeschaltet;
     }
@@ -152,8 +147,6 @@ public class DialogEditAboBase extends JDialog {
         jScrollPane1 = new JScrollPane();
         jPanelExtra = new JPanel();
         labelMultiEditHeader = new JLabel();
-        var labelNr = new JLabel();
-        labelNrValue = new JLabel();
         var labelEingeschaltet = new JLabel();
         checkBoxEingeschaltet = new JCheckBox();
         checkBoxMultiEditEingeschaltet = new JCheckBox();
@@ -228,60 +221,54 @@ public class DialogEditAboBase extends JDialog {
                 //---- labelMultiEditHeader ----
                 labelMultiEditHeader.setText("<html><style type=\"text/css\"> p { text-align: center; }</style><p>bei allen<br />\u00e4ndern</p></html>");
                 jPanelExtra.add(labelMultiEditHeader, new CC().cell(2, 0));
-
-                //---- labelNr ----
-                labelNr.setText("Nr:");
-                jPanelExtra.add(labelNr, new CC().cell(0, 1));
-                jPanelExtra.add(labelNrValue, new CC().cell(1, 1));
-
                 //---- labelEingeschaltet ----
                 labelEingeschaltet.setText("Aktiv:");
-                jPanelExtra.add(labelEingeschaltet, new CC().cell(0, 2));
-                jPanelExtra.add(checkBoxEingeschaltet, new CC().cell(1, 2));
-                jPanelExtra.add(checkBoxMultiEditEingeschaltet, new CC().cell(2, 2).alignX("center").growX(0));
+                jPanelExtra.add(labelEingeschaltet, new CC().cell(0, 1));
+                jPanelExtra.add(checkBoxEingeschaltet, new CC().cell(1, 1));
+                jPanelExtra.add(checkBoxMultiEditEingeschaltet, new CC().cell(2, 1).alignX("center").growX(0));
 
                 //---- labelDoNotStartAutomatically ----
                 labelDoNotStartAutomatically.setText("Nicht automatisch starten:");
-                jPanelExtra.add(labelDoNotStartAutomatically, new CC().cell(0, 3));
+                jPanelExtra.add(labelDoNotStartAutomatically, new CC().cell(0, 2));
 
                 //---- checkBoxDoNotStartAutomatically ----
                 checkBoxDoNotStartAutomatically.setToolTipText("<html>Wenn aktiviert werden die aus diesem Abo generierten Downloads <b>nicht automatisch</b><br/> gestartet, auch wenn <i>Downloads aus Abos sofort starten</i> in den Einstellungen aktiviert ist.");
-                jPanelExtra.add(checkBoxDoNotStartAutomatically, new CC().cell(1, 3));
-                jPanelExtra.add(checkBoxMultiEditDoNotStartAutomatically, new CC().cell(2, 3).alignX("center").growX(0));
+                jPanelExtra.add(checkBoxDoNotStartAutomatically, new CC().cell(1, 2));
+                jPanelExtra.add(checkBoxMultiEditDoNotStartAutomatically, new CC().cell(2, 2).alignX("center").growX(0));
 
                 //---- labelName ----
                 labelName.setText("Name:");
-                jPanelExtra.add(labelName, new CC().cell(0, 4));
-                jPanelExtra.add(textFieldName, new CC().cell(1, 4).growX());
+                jPanelExtra.add(labelName, new CC().cell(0, 3));
+                jPanelExtra.add(textFieldName, new CC().cell(1, 3).growX());
 
                 //---- labelSender ----
                 labelSender.setText("Sender:");
-                jPanelExtra.add(labelSender, new CC().cell(0, 5));
-                jPanelExtra.add(comboboxSender, new CC().cell(1, 5).growX());
+                jPanelExtra.add(labelSender, new CC().cell(0, 4));
+                jPanelExtra.add(comboboxSender, new CC().cell(1, 4).growX());
 
                 //---- labelThema ----
                 labelThema.setText("Thema:");
-                jPanelExtra.add(labelThema, new CC().cell(0, 6));
-                jPanelExtra.add(textFieldThema, new CC().cell(1, 6).growX());
+                jPanelExtra.add(labelThema, new CC().cell(0, 5));
+                jPanelExtra.add(textFieldThema, new CC().cell(1, 5).growX());
 
                 //---- labelTitel ----
                 labelTitel.setText("Titel:");
-                jPanelExtra.add(labelTitel, new CC().cell(0, 7));
-                jPanelExtra.add(textFieldTitel, new CC().cell(1, 7).growX());
+                jPanelExtra.add(labelTitel, new CC().cell(0, 6));
+                jPanelExtra.add(textFieldTitel, new CC().cell(1, 6).growX());
 
                 //---- labelThemaTitel ----
                 labelThemaTitel.setText("Thema-Titel:");
-                jPanelExtra.add(labelThemaTitel, new CC().cell(0, 8));
-                jPanelExtra.add(textFieldThemaTitel, new CC().cell(1, 8).growX());
+                jPanelExtra.add(labelThemaTitel, new CC().cell(0, 7));
+                jPanelExtra.add(textFieldThemaTitel, new CC().cell(1, 7).growX());
 
                 //---- labelIrgendwo ----
                 labelIrgendwo.setText("Irgendwo:");
-                jPanelExtra.add(labelIrgendwo, new CC().cell(0, 9));
-                jPanelExtra.add(textFieldIrgendwo, new CC().cell(1, 9).growX());
+                jPanelExtra.add(labelIrgendwo, new CC().cell(0, 8));
+                jPanelExtra.add(textFieldIrgendwo, new CC().cell(1, 8).growX());
 
                 //---- labelMindestdauer ----
                 labelMindestdauer.setText("Dauer [Min]: ");
-                jPanelExtra.add(labelMindestdauer, new CC().cell(0, 10));
+                jPanelExtra.add(labelMindestdauer, new CC().cell(0, 9));
 
                 //======== panelDauer ========
                 {
@@ -295,12 +282,12 @@ public class DialogEditAboBase extends JDialog {
                     labelDauer.setText("0");
                     panelDauer.add(labelDauer, BorderLayout.EAST);
                 }
-                jPanelExtra.add(panelDauer, new CC().cell(1, 10).growX());
-                jPanelExtra.add(checkBoxMultiEditMindestdauer, new CC().cell(2, 10).alignX("center").growX(0));
+                jPanelExtra.add(panelDauer, new CC().cell(1, 9).growX());
+                jPanelExtra.add(checkBoxMultiEditMindestdauer, new CC().cell(2, 9).alignX("center").growX(0));
 
                 //---- labelMin ----
                 labelMin.setText("Min/Max:");
-                jPanelExtra.add(labelMin, new CC().cell(0, 11));
+                jPanelExtra.add(labelMin, new CC().cell(0, 10));
 
                 //======== panelMinMax ========
                 {
@@ -314,25 +301,25 @@ public class DialogEditAboBase extends JDialog {
                     rbMax.setText("Maximaldauer");
                     panelMinMax.add(rbMax, BorderLayout.CENTER);
                 }
-                jPanelExtra.add(panelMinMax, new CC().cell(1, 11).growX());
-                jPanelExtra.add(checkBoxMultiEditMin, new CC().cell(2, 11).alignX("center").growX(0));
+                jPanelExtra.add(panelMinMax, new CC().cell(1, 10).growX());
+                jPanelExtra.add(checkBoxMultiEditMin, new CC().cell(2, 10).alignX("center").growX(0));
 
                 //---- labelZielpfad ----
                 labelZielpfad.setText("Zielpfad:");
-                jPanelExtra.add(labelZielpfad, new CC().cell(0, 12));
-                jPanelExtra.add(comboboxPfad, new CC().cell(1, 12).growX());
-                jPanelExtra.add(checkBoxMultiEditZielpfad, new CC().cell(2, 12).alignX("center").growX(0));
+                jPanelExtra.add(labelZielpfad, new CC().cell(0, 11));
+                jPanelExtra.add(comboboxPfad, new CC().cell(1, 11).growX());
+                jPanelExtra.add(checkBoxMultiEditZielpfad, new CC().cell(2, 11).alignX("center").growX(0));
 
                 //---- labelDownDatum ----
                 labelDownDatum.setText("Letztes Abo:");
-                jPanelExtra.add(labelDownDatum, new CC().cell(0, 13));
-                jPanelExtra.add(labelDownDatumValue, new CC().cell(1, 13));
+                jPanelExtra.add(labelDownDatum, new CC().cell(0, 12));
+                jPanelExtra.add(labelDownDatumValue, new CC().cell(1, 12));
 
                 //---- labelPSet ----
                 labelPSet.setText("Programmset:");
-                jPanelExtra.add(labelPSet, new CC().cell(0, 14));
-                jPanelExtra.add(comboboxPSet, new CC().cell(1, 14).growX());
-                jPanelExtra.add(checkBoxMultiEditPSet, new CC().cell(2, 14).alignX("center").growX(0));
+                jPanelExtra.add(labelPSet, new CC().cell(0, 13));
+                jPanelExtra.add(comboboxPSet, new CC().cell(1, 13).growX());
+                jPanelExtra.add(checkBoxMultiEditPSet, new CC().cell(2, 13).alignX("center").growX(0));
             }
             jScrollPane1.setViewportView(jPanelExtra);
         }
@@ -364,7 +351,6 @@ public class DialogEditAboBase extends JDialog {
     private JScrollPane jScrollPane1;
     private JPanel jPanelExtra;
     private JLabel labelMultiEditHeader;
-    private JLabel labelNrValue;
     private JCheckBox checkBoxEingeschaltet;
     private JCheckBox checkBoxMultiEditEingeschaltet;
     private JCheckBox checkBoxDoNotStartAutomatically;

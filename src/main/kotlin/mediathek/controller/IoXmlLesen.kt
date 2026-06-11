@@ -30,7 +30,6 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamException
@@ -164,7 +163,7 @@ class IoXmlLesen(
         try {
             val datenAbo = DatenAbo()
             datenAbo.readFromConfig(parser)
-            daten.listeAbo.addAbo(datenAbo)
+            daten.listeAbo.addAboFromConfig(datenAbo)
         } catch (ex: XMLStreamException) {
             logger.error("Failed to read abo entry", ex)
         }
@@ -223,7 +222,7 @@ class IoXmlLesen(
 
     private fun sortLists() {
         daten.listeDownloads.listeNummerieren()
-        Collections.sort(daten.listeAbo)
+        daten.listeAbo.finishLoading()
     }
 
     private inline fun XMLStreamReader.use(block: (XMLStreamReader) -> Unit) {

@@ -20,7 +20,6 @@ package mediathek.daten.abo
 
 import mediathek.tool.GermanStringSorter
 import mediathek.tool.datum.DateUtil
-import mediathek.tool.table.ColumnVisibilityStore
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
@@ -34,12 +33,6 @@ class DatenAbo : Comparable<DatenAbo> {
         set(value) {
             field = value.coerceAtLeast(0)
         }
-
-    /**
-     * Used internally for display in table.
-     * Should NOT be used in code logic!!
-     */
-    var nr: Int = 0
 
     /**
      * Stores the active state of the abo.
@@ -96,7 +89,6 @@ class DatenAbo : Comparable<DatenAbo> {
         writer.writeStartElement(TAG)
         writer.writeCharacters("\n")
 
-        // never write ABO_NR
         writeElement(writer, AboTags.EINGESCHALTET.xmlName, isActive.toString())
         writeElement(writer, AboTags.NAME.xmlName, name)
         writeElement(writer, AboTags.SENDER.xmlName, sender)
@@ -159,7 +151,6 @@ class DatenAbo : Comparable<DatenAbo> {
                 AboTags.DOWN_DATUM -> setDownDatum(text)
                 AboTags.PSET -> psetName = text
                 AboTags.DO_NOT_START_AUTOMATICALLY -> isDoNotStartAutomatically = text.toBoolean()
-                AboTags.NR -> Unit
             }
         } catch (ex: XMLStreamException) {
             logger.error("Error reading abo entry", ex)
@@ -169,30 +160,24 @@ class DatenAbo : Comparable<DatenAbo> {
     }
 
     companion object {
-        const val ABO_NR: Int = 0
-        const val ABO_EINGESCHALTET: Int = 1
-        const val ABO_NAME: Int = 2
-        const val ABO_SENDER: Int = 3
-        const val ABO_THEMA: Int = 4
-        const val ABO_TITEL: Int = 5
-        const val ABO_THEMA_TITEL: Int = 6
-        const val ABO_IRGENDWO: Int = 7
-        const val ABO_MINDESTDAUER: Int = 8
-        const val ABO_MIN: Int = 9
-        const val ABO_ZIELPFAD: Int = 10
-        const val ABO_DOWN_DATUM: Int = 11
-        const val ABO_PSET: Int = 12
-        const val ABO_DO_NOT_START_AUTOMATICALLY: Int = 13
-        const val ABO_REF: Int = 14
-        const val MAX_ELEM: Int = 15
+        const val ABO_EINGESCHALTET: Int = 0
+        const val ABO_NAME: Int = 1
+        const val ABO_SENDER: Int = 2
+        const val ABO_THEMA: Int = 3
+        const val ABO_TITEL: Int = 4
+        const val ABO_THEMA_TITEL: Int = 5
+        const val ABO_IRGENDWO: Int = 6
+        const val ABO_MINDESTDAUER: Int = 7
+        const val ABO_MIN: Int = 8
+        const val ABO_ZIELPFAD: Int = 9
+        const val ABO_DOWN_DATUM: Int = 10
+        const val ABO_PSET: Int = 11
+        const val ABO_DO_NOT_START_AUTOMATICALLY: Int = 12
+        const val ABO_FILM_COUNT: Int = 13
+        const val MAX_ELEM: Int = 14
         const val TAG: String = "Abonnement"
 
         private val logger = LogManager.getLogger(DatenAbo::class.java)
-        private val columnVisibilityStore = ColumnVisibilityStore.create(MAX_ELEM)
-
-        fun anzeigen(i: Int): Boolean = columnVisibilityStore.isVisible(i)
-
-        fun getColumnVisibilityStore(): ColumnVisibilityStore = columnVisibilityStore
 
         fun isInvalidFilter(sender: String, thema: String, title: String, themaTitel: String, irgendwo: String): Boolean =
             sender.isEmpty() && thema.isEmpty() && title.isEmpty() && themaTitel.isEmpty() && irgendwo.isEmpty()

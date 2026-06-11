@@ -264,7 +264,7 @@ class ListeDownloads : LinkedList<DatenDownload>() {
         }
 
         for (film in listeFilme) {
-            val abo = listeAbo.getAboFuerFilm_schnell(film, true) ?: continue
+            val abo = listeAbo.getAboForFilmFast(film, true) ?: continue
             if (!abo.isActive) {
                 continue
             }

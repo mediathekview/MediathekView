@@ -19,41 +19,106 @@
  */
 package mediathek.daten
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import ca.odell.glazedlists.BasicEventList
+import ca.odell.glazedlists.EventList
+import kotlinx.coroutines.*
 import mediathek.config.Daten
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
 import mediathek.gui.messages.AboListChangedEvent
 import mediathek.tool.Filter
 import mediathek.tool.MessageBus
+import mediathek.tool.withReadLock
+import mediathek.tool.withWriteLock
 import java.util.*
 
-class ListeAbo : ArrayList<DatenAbo>() {
-    private var nr = 0
-
+class ListeAbo(
+    private val entries: BasicEventList<DatenAbo> = BasicEventList(),
+) : EventList<DatenAbo> by entries {
     fun addAbo(datenAbo: DatenAbo) {
-        // die Änderung an der Liste wird nicht gemeldet!!
-        // für das Lesen der Konfig-Datei beim Programmstart
-        ++nr
-        datenAbo.nr = nr
-        if (datenAbo.name.isEmpty()) {
-            // Downloads ohne "Aboname" sind manuelle Downloads
-            datenAbo.name = "Abo_$nr"
+        if (addAboSortedWithoutNotification(datenAbo)) {
+            aenderungMelden()
+        }
+    }
+
+    internal fun addAboWithoutNotification(datenAbo: DatenAbo): Boolean =
+        addAboSortedWithoutNotification(datenAbo)
+
+    internal fun addAboFromConfig(datenAbo: DatenAbo) {
+        entries.withWriteLock {
+            prepareAboForAdd(datenAbo)
+            add(datenAbo)
+        }
+    }
+
+    private fun addAboSortedWithoutNotification(datenAbo: DatenAbo): Boolean =
+        entries.withWriteLock {
+            prepareAboForAdd(datenAbo)
+            add(datenAbo)
+            sort()
+            true
         }
 
-        add(datenAbo)
-    }
-
     fun aboLoeschen(abo: DatenAbo) {
-        remove(abo)
-        aenderungMelden()
+        if (removeAboWithoutNotification(abo)) {
+            aenderungMelden()
+        }
     }
 
-    fun aenderungMelden() {
+    internal fun removeAboWithoutNotification(abo: DatenAbo): Boolean =
+        entries.withWriteLock {
+            remove(abo)
+        }
+
+    internal fun removeAbosWithoutNotification(abos: Collection<DatenAbo>): Boolean =
+        entries.withWriteLock {
+            removeAll(abos.toSet())
+        }
+
+    internal fun finishLoading() {
+        entries.withWriteLock {
+            sort()
+        }
+    }
+
+    private fun prepareAboForAdd(datenAbo: DatenAbo) {
+        if (datenAbo.name.isEmpty()) {
+            // Downloads ohne "Aboname" sind manuelle Downloads
+            datenAbo.name = nextFallbackName()
+        }
+    }
+
+    private fun nextFallbackName(): String {
+        var index = size + 1
+        var name = "Abo_$index"
+        while (any { abo -> abo.name == name }) {
+            index++
+            name = "Abo_$index"
+        }
+        return name
+    }
+
+    fun fireAboChanged(abo: DatenAbo) {
+        entries.withWriteLock {
+            val index = indexOf(abo)
+            if (index != -1) {
+                this[index] = abo
+            }
+        }
+    }
+
+    internal fun fireAbosChanged(abos: Collection<DatenAbo>) {
+        entries.withWriteLock {
+            for (abo in abos) {
+                val index = indexOf(abo)
+                if (index != -1) {
+                    this[index] = abo
+                }
+            }
+        }
+    }
+
+    internal fun aenderungMelden() {
         // Filmliste anpassen
         setAboFuerFilm(Daten.getInstance().listeFilme, true)
         MessageBus.messageBus.publishAsync(AboListChangedEvent())
@@ -64,7 +129,10 @@ class ListeAbo : ArrayList<DatenAbo>() {
      * @param abo the new abo to be stored.
      * @return true if it already exists.
      */
-    fun existsAlready(abo: DatenAbo): Boolean = any { datenAbo -> existingAboCovers(datenAbo, abo) }
+    fun existsAlready(abo: DatenAbo): Boolean =
+        entries.withReadLock {
+            any { datenAbo -> existingAboCovers(datenAbo, abo) }
+        }
 
     private fun existingAboCovers(existingAbo: DatenAbo, aboToCheck: DatenAbo): Boolean {
         // prüfen ob "existingAbo" das "aboToCheck" mit abdeckt, also die gleichen (oder mehr)
@@ -89,9 +157,8 @@ class ListeAbo : ArrayList<DatenAbo>() {
         return valuesToCheck.any { value -> Filter.pruefen(filter, value) }
     }
 
-    fun getAboFuerFilm_schnell(film: DatenFilm, laengePruefen: Boolean): DatenAbo? {
+    fun getAboForFilmFast(film: DatenFilm, laengePruefen: Boolean): DatenAbo? {
         // da wird nur in der Filmliste geschaut, ob in "DatenFilm" ein Abo eingetragen ist
-        // geht schneller, "getAboFuerFilm" muss aber vorher schon gelaufen sein!!
         val abo = film.abo ?: return null
 
         if (laengePruefen && !matchesLength(abo, film)) {
@@ -178,12 +245,16 @@ class ListeAbo : ArrayList<DatenAbo>() {
         }
 
         // leere Abos löschen, die sind Fehler
-        removeIf { datenAbo -> datenAbo.isInvalid }
+        entries.withWriteLock {
+            removeIf { datenAbo -> datenAbo.isInvalid }
+        }
 
-        val aboMatchers = asSequence()
-            .filter { datenAbo -> datenAbo.isActive }
-            .mapIndexed { index, datenAbo -> createAboMatcher(index, datenAbo) }
-            .toList()
+        val aboMatchers = entries.withReadLock {
+            asSequence()
+                .filter { datenAbo -> datenAbo.isActive }
+                .mapIndexed { index, datenAbo -> createAboMatcher(index, datenAbo) }
+                .toList()
+        }
 
         if (aboMatchers.isEmpty()) {
             listeFilme.forEach { film -> deleteAboInFilm(film) }
@@ -208,10 +279,9 @@ class ListeAbo : ArrayList<DatenAbo>() {
                 while (startIndex < films.size) {
                     val endIndex = (startIndex + chunkSize).coerceAtMost(films.size)
                     val chunkStartIndex = startIndex
-                    val chunkEndIndex = endIndex
                     deferredAssignments.add(
                         async {
-                            assignAboToFilmRange(films, chunkStartIndex, chunkEndIndex, aboMatchers)
+                            assignAboToFilmRange(films, chunkStartIndex, endIndex, aboMatchers)
                         }
                     )
                     startIndex = endIndex

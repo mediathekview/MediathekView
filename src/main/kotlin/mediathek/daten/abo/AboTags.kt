@@ -21,7 +21,6 @@ package mediathek.daten.abo
 import java.util.*
 
 enum class AboTags(val index: Int, val xmlName: String) {
-    NR(DatenAbo.ABO_NR, "Nr"),
     EINGESCHALTET(DatenAbo.ABO_EINGESCHALTET, "aktiv"),
     NAME(DatenAbo.ABO_NAME, "Name"),
     SENDER(DatenAbo.ABO_SENDER, "Sender"),

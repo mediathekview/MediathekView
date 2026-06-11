@@ -18,6 +18,7 @@
 
 package mediathek.gui.abo
 
+import ca.odell.glazedlists.swing.AdvancedTableModel
 import ca.odell.glazedlists.swing.GlazedListsSwing
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
@@ -25,7 +26,8 @@ import mediathek.audiothek.ui.table.CenteredTextCellRenderer
 import mediathek.config.Daten
 import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
-import mediathek.daten.abo.FilmLengthState
+import mediathek.filmeSuchen.ListenerFilmeLaden
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
@@ -38,11 +40,7 @@ import mediathek.tool.NoSelectionErrorDialog
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.cellrenderer.CellRendererBase
 import mediathek.tool.datum.DateUtil
-import mediathek.tool.listener.BeobTableHeader
-import mediathek.tool.models.TModelAbo
-import mediathek.tool.table.MVAbosTable
-import mediathek.tool.table.MVTable
-import mediathek.tool.table.PersistentColumnConfigurationTable
+import mediathek.tool.withReadLock
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.JXStatusBar
@@ -59,10 +57,12 @@ import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
 class ManageAboPanel(dialog: JDialog) : JPanel() {
-    private val tabelle: PersistentColumnConfigurationTable = MVAbosTable()
+    private val tabelle = AboTable()
     private val daten = Daten.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val createAboAction = CreateNewAboAction(daten.listeAbo)
+    private lateinit var tableBinding: AboTableBinding
+    private lateinit var tableColumnSettings: AboTableColumnSettings
     private val infoPanel = JXStatusBar()
     private val totalAbos = JLabel("totalAbos")
     private val activeAbos = JLabel("activeAbos")
@@ -72,45 +72,64 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     private val infiniteProgressPanel = InfiniteProgressPanel()
     private val btnEditAbo = JButton()
     private val scrollPane = JScrollPane(tabelle)
+    private val filmLoadListener = object : ListenerFilmeLaden() {
+        @Suppress("UNUSED_PARAMETER")
+        override fun fertig(event: ListenerFilmeLadenEvent) {
+            scheduleAboFilmCountRefresh()
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        override fun fertigOnlyOne(event: ListenerFilmeLadenEvent) {
+            scheduleAboFilmCountRefresh()
+        }
+    }
+    private var aboFilmCounts: Map<DatenAbo, Int> = emptyMap()
+    private var aboFilmCountsLoading = false
+    private var countRefreshJob: Job? = null
+    private var countRefreshSequence = 0
+    private var disposed = false
 
     init {
         initComponents()
 
+        tableBinding = AboTableBinding(tabelle, daten.listeAbo, this::filmCountForAbo)
         setupToolBar()
         setupInfoPanel()
         updateInfoText()
 
         MessageBus.messageBus.subscribe(this)
+        daten.filmeLaden.addAdListener(filmLoadListener)
 
         initListeners()
         initializeTable()
+        scheduleAboFilmCountRefresh()
 
-        tabelle.selectionModel.addListSelectionListener {
-            btnEditAbo.isEnabled = tabelle.selectedRows.size <= 1
+        tableBinding.addSelectionListener {
+            btnEditAbo.isEnabled = tableBinding.selectedAboCount <= 1
         }
-
-        tabelle.addMouseListener(
-            object : MouseAdapter() {
-                override fun mousePressed(mouseEvent: MouseEvent) {
-                    if (mouseEvent.clickCount == 2 &&
-                        tabelle.selectedRow != -1 &&
-                        tabelle.rowAtPoint(mouseEvent.point) != -1
-                    ) {
-                        editAbo()
-                    }
-                }
-            },
-        )
 
         dialog.glassPane = infiniteProgressPanel
     }
 
     fun tabelleSpeichern() {
-        tabelle.writeTableConfigurationData()
+        if (::tableBinding.isInitialized) {
+            tableBinding.saveSortState()
+        }
+        if (::tableColumnSettings.isInitialized) {
+            tableColumnSettings.save()
+        }
     }
 
     override fun removeNotify() {
-        uiScope.cancel()
+        if (!disposed) {
+            disposed = true
+            daten.filmeLaden.removeAdListener(filmLoadListener)
+            countRefreshJob?.cancel()
+            uiScope.cancel()
+            if (::tableBinding.isInitialized) {
+                tableBinding.dispose()
+            }
+        }
         super.removeNotify()
     }
 
@@ -118,60 +137,87 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     @Handler
     private fun handleAboListChanged(event: AboListChangedEvent) {
         SwingUtilities.invokeLater {
-            tabelleLaden()
             updateInfoText()
+            tableBinding.selectFirstRowIfNecessary()
+            scheduleAboFilmCountRefresh()
         }
     }
 
     fun editAbo() {
-        if (tabelle.selectedRowCount == 0) {
+        val selectedAbos = tableBinding.selectedAbos
+        if (selectedAbos.isEmpty()) {
             NoSelectionErrorDialog.show(this)
             return
         }
 
-        val rows = tabelle.selectedRows
-        var modelRow = tabelle.convertRowIndexToModel(tabelle.selectedRow)
-        val editedAbo = tabelle.model.getValueAt(modelRow, DatenAbo.ABO_REF) as DatenAbo
+        val editedAbo = selectedAbos.first()
+        val multiEdit = selectedAbos.size > 1
+        val dialogAbo = if (multiEdit) editedAbo.copyForEditDialog() else editedAbo
 
         if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(MediathekGui.ui())) {
             return
         }
 
-        val dialog = DialogEditAbo(MediathekGui.ui(), editedAbo, tabelle.selectedRowCount > 1)
+        val dialog = DialogEditAbo(MediathekGui.ui(), dialogAbo, multiEdit)
         dialog.title = EDIT_ABO_TEXT
         dialog.isVisible = true
         if (!dialog.successful()) {
             return
         }
 
-        if (tabelle.selectedRowCount > 1) {
-            for (row in rows) {
-                for (b in dialog.multiEditCbIndices.indices) {
-                    if (!dialog.multiEditCbIndices[b]) {
-                        continue
-                    }
+        if (multiEdit) {
+            applyMultiEdit(dialogAbo, selectedAbos, dialog.multiEditCbIndices)
+        } else {
+            daten.listeAbo.fireAboChanged(editedAbo)
+        }
 
-                    modelRow = tabelle.convertRowIndexToModel(row)
-                    val curSelAbo = tabelle.model.getValueAt(modelRow, DatenAbo.ABO_REF) as DatenAbo
+        processAboChanges()
+    }
 
-                    AboTags.fromIndex(b).ifPresent { tag ->
-                        when (tag) {
-                            AboTags.EINGESCHALTET -> curSelAbo.isActive = editedAbo.isActive
-                            AboTags.MINDESTDAUER -> curSelAbo.mindestDauerMinuten = editedAbo.mindestDauerMinuten
-                            AboTags.MIN -> curSelAbo.filmLengthState = editedAbo.filmLengthState
-                            AboTags.ZIELPFAD -> curSelAbo.zielpfad = editedAbo.zielpfad
-                            AboTags.PSET -> curSelAbo.psetName = editedAbo.psetName
-                            AboTags.DO_NOT_START_AUTOMATICALLY ->
-                                curSelAbo.isDoNotStartAutomatically = editedAbo.isDoNotStartAutomatically
-                            else -> logger.error("Unhandled tag called {}", tag)
-                        }
+    private fun DatenAbo.copyForEditDialog(): DatenAbo =
+        DatenAbo().also { copy ->
+            copy.isActive = isActive
+            copy.name = name
+            copy.sender = sender
+            copy.thema = thema
+            copy.title = title
+            copy.themaTitel = themaTitel
+            copy.irgendwo = irgendwo
+            copy.mindestDauerMinuten = mindestDauerMinuten
+            copy.filmLengthState = filmLengthState
+            copy.zielpfad = zielpfad
+            copy.downDatum = downDatum
+            copy.psetName = psetName
+            copy.isDoNotStartAutomatically = isDoNotStartAutomatically
+        }
+
+    private fun applyMultiEdit(
+        sourceAbo: DatenAbo,
+        targetAbos: List<DatenAbo>,
+        selectedTagIndices: BooleanArray,
+    ) {
+        for (targetAbo in targetAbos) {
+            for (index in selectedTagIndices.indices) {
+                if (!selectedTagIndices[index]) {
+                    continue
+                }
+
+                AboTags.fromIndex(index).ifPresent { tag ->
+                    when (tag) {
+                        AboTags.EINGESCHALTET -> targetAbo.isActive = sourceAbo.isActive
+                        AboTags.MINDESTDAUER -> targetAbo.mindestDauerMinuten = sourceAbo.mindestDauerMinuten
+                        AboTags.MIN -> targetAbo.filmLengthState = sourceAbo.filmLengthState
+                        AboTags.ZIELPFAD -> targetAbo.zielpfad = sourceAbo.zielpfad
+                        AboTags.PSET -> targetAbo.psetName = sourceAbo.psetName
+                        AboTags.DO_NOT_START_AUTOMATICALLY ->
+                            targetAbo.isDoNotStartAutomatically = sourceAbo.isDoNotStartAutomatically
+
+                        else -> logger.error("Unhandled tag called {}", tag)
                     }
                 }
             }
+            daten.listeAbo.fireAboChanged(targetAbo)
         }
-
-        tabelleLaden()
-        processAboChanges()
     }
 
     private fun setupInfoPanel() {
@@ -181,8 +227,10 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     }
 
     private fun initializeTable() {
-        tabelleLaden()
-        tabelle.readColumnConfigurationData()
+        applySenderFilter()
+        tableColumnSettings = AboTableColumnSettings(tabelle, tableBinding::clearSorting)
+        tableColumnSettings.load()
+        tableColumnSettings.installContextMenu()
         if (tabelle.rowCount > 0) {
             tabelle.setRowSelectionInterval(0, 0)
         }
@@ -227,7 +275,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         val model = GlazedListsSwing.eventComboBoxModel(EventListWithEmptyFirstEntry(daten.allSendersList))
         senderCombo.model = model
         senderCombo.selectedIndex = 0
-        senderCombo.addActionListener { tabelleLaden() }
+        senderCombo.addActionListener { applySenderFilter() }
         swingToolBar.add(senderCombo)
     }
 
@@ -247,6 +295,54 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
 
         activeAbos.text = String.format("%d eingeschaltet", numActiveAbos())
         inactiveAbos.text = String.format("%d ausgeschaltet", numInactiveAbos())
+    }
+
+    private fun filmCountForAbo(abo: DatenAbo): Int? =
+        if (aboFilmCountsLoading) {
+            null
+        } else {
+            aboFilmCounts[abo] ?: 0
+        }
+
+    private fun scheduleAboFilmCountRefresh() {
+        uiScope.launch {
+            if (disposed) {
+                return@launch
+            }
+
+            val refreshSequence = ++countRefreshSequence
+            countRefreshJob?.cancel()
+            markAboFilmCountsLoading()
+            countRefreshJob = launch {
+                val counts = withContext(Dispatchers.Default) {
+                    AboFilmCounts.countMatchingFilms(
+                        daten.listeAbo.withReadLock { toList() },
+                        daten.listeFilme.snapshot(),
+                    )
+                }
+                if (!disposed && refreshSequence == countRefreshSequence) {
+                    applyAboFilmCounts(counts)
+                }
+            }
+        }
+    }
+
+    private fun applyAboFilmCounts(counts: Map<DatenAbo, Int>) {
+        val changedAbos = if (aboFilmCountsLoading) {
+            daten.listeAbo.withReadLock { toList() }
+        } else {
+            AboFilmCounts.changedAbos(aboFilmCounts, counts)
+        }
+        aboFilmCounts = counts
+        aboFilmCountsLoading = false
+        if (changedAbos.isNotEmpty()) {
+            daten.listeAbo.fireAbosChanged(changedAbos)
+        }
+    }
+
+    private fun markAboFilmCountsLoading() {
+        aboFilmCountsLoading = true
+        daten.listeAbo.fireAbosChanged(daten.listeAbo.withReadLock { toList() })
     }
 
     private fun setupKeyMap() {
@@ -303,6 +399,45 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         }
     }
 
+    private fun installTableMouseHandler() {
+        tabelle.addMouseListener(
+            object : MouseAdapter() {
+                override fun mousePressed(event: MouseEvent) {
+                    if (showContextMenu(event)) {
+                        return
+                    }
+
+                    if (event.clickCount == 2 &&
+                        tabelle.selectedRow != -1 &&
+                        tabelle.rowAtPoint(event.point) != -1
+                    ) {
+                        editAbo()
+                    }
+                }
+
+                override fun mouseReleased(event: MouseEvent) {
+                    showContextMenu(event)
+                }
+            },
+        )
+    }
+
+    private fun showContextMenu(event: MouseEvent): Boolean {
+        if (!event.isPopupTrigger) {
+            return false
+        }
+
+        val row = tabelle.rowAtPoint(event.point)
+        if (row != -1 && !tabelle.isRowSelected(row)) {
+            tabelle.selectionModel.setSelectionInterval(row, row)
+        } else if (row == -1) {
+            tabelle.clearSelection()
+        }
+
+        createContextMenu().show(event.component, event.x, event.y)
+        return true
+    }
+
     private fun JToolBar.addToolbarButton(
         tooltip: String,
         iconPath: String,
@@ -332,10 +467,28 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         ): Component {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
 
-            val abo = table.model.getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF) as DatenAbo
-            text = when (abo.filmLengthState) {
-                FilmLengthState.MINIMUM -> "min"
-                else -> "max"
+            text = value?.toString().orEmpty()
+
+            return this
+        }
+    }
+
+    private class FilmCountCellRenderer : CenteredTextCellRenderer() {
+        override fun getTableCellRendererComponent(
+            table: JTable,
+            value: Any?,
+            isSelected: Boolean,
+            hasFocus: Boolean,
+            row: Int,
+            column: Int
+        ): Component {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
+
+            text = value?.toString().orEmpty()
+            foreground = when {
+                isSelected -> table.selectionForeground
+                value == 0 -> Color.RED
+                else -> table.foreground
             }
 
             return this
@@ -362,14 +515,14 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
 
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
 
-            val abo = table.model.getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF) as DatenAbo
-            when ((table as MVTable).showSenderIcons()) {
+            val abo = aboAtViewRow(table, row)
+            when ((table as AboTable).showSenderIcons()) {
                 true -> {
                     val targetDim: Dimension = getSenderCellDimension(table, row, column)
-                    setSenderIcon(abo.sender, targetDim, isSelected)
+                    setSenderIcon(abo?.sender.orEmpty(), targetDim, isSelected)
                 }
                 false -> {
-                    text = abo.sender
+                    text = abo?.sender.orEmpty()
                     icon = null
                 }
             }
@@ -391,11 +544,11 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
 
             text = (value as? LocalDate)?.format(DateUtil.FORMATTER).orEmpty()
 
-            val abo = table.model.getValueAt(table.convertRowIndexToModel(row), DatenAbo.ABO_REF) as DatenAbo
+            val abo = aboAtViewRow(table, row)
             foreground = if (isSelected) {
                 table.selectionForeground
             } else {
-                colorForDate(abo.downDatum) ?: table.foreground
+                colorForDate(abo?.downDatum) ?: table.foreground
             }
 
             return this
@@ -414,65 +567,41 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     }
 
     private fun initListeners() {
-        tabelle.componentPopupMenu = createContextMenu()
+        installTableMouseHandler()
 
-        tabelle.model = TModelAbo(daten.listeAbo)
-        tabelle.columnModel.getColumn(DatenAbo.ABO_NR).cellRenderer = CenteredTextCellRenderer()
         tabelle.columnModel.getColumn(DatenAbo.ABO_MINDESTDAUER).cellRenderer = CenteredTextCellRenderer()
+        tabelle.columnModel.getColumn(DatenAbo.ABO_FILM_COUNT).cellRenderer = FilmCountCellRenderer()
         tabelle.columnModel.getColumn(DatenAbo.ABO_DOWN_DATUM).cellRenderer = LastUsedCellRenderer()
         tabelle.columnModel.getColumn(DatenAbo.ABO_MIN).cellRenderer = MinMaxCellRenderer()
         tabelle.columnModel.getColumn(DatenAbo.ABO_SENDER).cellRenderer = SenderCellRenderer()
 
-        tabelle.setLineBreak(false)
-        tabelle.tableHeader.addMouseListener(
-            BeobTableHeader(
-                tabelle,
-                DatenAbo.getColumnVisibilityStore(),
-                intArrayOf(DatenAbo.ABO_EINGESCHALTET, DatenAbo.ABO_REF),
-                intArrayOf(),
-                true,
-                null,
-            ),
-        )
-
         setupKeyMap()
     }
 
-    private fun tabelleLaden() {
-        tabelle.getSpalten()
-
+    private fun applySenderFilter() {
         val selectedItem = senderCombo.selectedItem?.toString()
-        if (selectedItem != null) {
-            (tabelle.model as TModelAbo).setSenderFilter(selectedItem)
-            tabelle.setSpalten()
-        }
+        tableBinding.setSenderFilter(selectedItem)
+        tableBinding.selectFirstRowIfNecessary()
     }
 
     private fun aboLoeschen() {
-        val rows = tabelle.selectedRows
-        if (rows.isNotEmpty()) {
-            val text = if (rows.size == 1) {
-                val delRow = tabelle.convertRowIndexToModel(rows[0])
-                val abo = tabelle.model.getValueAt(delRow, DatenAbo.ABO_REF) as DatenAbo
+        val selectedAbos = tableBinding.selectedAbos
+        if (selectedAbos.isNotEmpty()) {
+            val text = if (selectedAbos.size == 1) {
+                val abo = selectedAbos.first()
                 "\"${abo.name}\" löschen?"
             } else {
-                "Möchten Sie wirklich ${rows.size} Abos löschen?"
+                "Möchten Sie wirklich ${selectedAbos.size} Abos löschen?"
             }
 
             val ret = JOptionPane.showConfirmDialog(this, text, "Abo löschen", JOptionPane.YES_NO_OPTION)
             if (ret == JOptionPane.OK_OPTION) {
                 try {
-                    val listeAbo = daten.listeAbo
-                    for (row in rows) {
-                        val modelRow = tabelle.convertRowIndexToModel(row)
-                        val abo = tabelle.model.getValueAt(modelRow, DatenAbo.ABO_REF) as DatenAbo
-                        listeAbo.remove(abo)
-                    }
+                    daten.listeAbo.removeAbosWithoutNotification(selectedAbos)
                 } catch (e: Exception) {
                     logger.error("aboLoeschen", e)
                 }
             }
-            tabelleLaden()
 
             selectFirstRow()
 
@@ -483,26 +612,17 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     }
 
     private fun selectFirstRow() {
-        if (tabelle.rowCount > 0 && tabelle.selectedRow == -1) {
-            tabelle.requestFocus()
-            tabelle.setRowSelectionInterval(0, 0)
-        }
+        tableBinding.selectFirstRowIfNecessary()
     }
 
     private fun changeAboActiveState(ein: Boolean) {
-        val rows = tabelle.selectedRows
-        if (rows.isNotEmpty()) {
-            for (row in rows) {
-                val modelRow = tabelle.convertRowIndexToModel(row)
-                val abo = tabelle.model.getValueAt(modelRow, DatenAbo.ABO_REF) as DatenAbo
+        val selectedAbos = tableBinding.selectedAbos
+        if (selectedAbos.isNotEmpty()) {
+            for (abo in selectedAbos) {
                 abo.isActive = ein
+                daten.listeAbo.fireAboChanged(abo)
             }
-            tabelleLaden()
-            tabelle.clearSelection()
-            tabelle.requestFocus()
-            for (row in rows) {
-                tabelle.addRowSelectionInterval(row, row)
-            }
+            tabelle.requestFocusInWindow()
 
             processAboChanges()
         } else {
@@ -543,5 +663,19 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         private const val ACTION_MAP_KEY_DELETE_ABO = "delete_abo"
         private const val PROGRESS_PANEL_DELAY = 150L
         private val logger = LogManager.getLogger()
+
+        private fun aboAtViewRow(table: JTable, viewRow: Int): DatenAbo? {
+            val model = table.model as? AdvancedTableModel<*> ?: return null
+            if (viewRow !in 0 until table.rowCount) {
+                return null
+            }
+
+            val modelRow = table.convertRowIndexToModel(viewRow)
+            if (modelRow !in 0 until model.rowCount) {
+                return null
+            }
+
+            return model.getElementAt(modelRow) as? DatenAbo
+        }
     }
 }
