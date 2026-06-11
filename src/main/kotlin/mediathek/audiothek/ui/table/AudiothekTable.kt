@@ -108,6 +108,10 @@ class AudiothekTable(
         applyFilter(currentFilterQuery)
     }
 
+    fun clearExternalSearchEntries() {
+        externalSearchEntries = emptyList()
+    }
+
     fun hasCurrentFilterQuery(query: String): Boolean =
         currentFilterQuery == query.trim()
 
@@ -586,9 +590,12 @@ class AudiothekTable(
     }
 
     private fun parseDate(value: Any?): LocalDate? =
-        value?.toString()
-            ?.takeIf(String::isNotBlank)
-            ?.let { LocalDate.parse(it, DATE_FORMAT) }
+        when (value) {
+            is AudioDateCellValue -> value.date
+            else -> value?.toString()
+                ?.takeIf(String::isNotBlank)
+                ?.let { LocalDate.parse(it, DATE_FORMAT) }
+        }
 
     private fun parseTime(value: Any?): LocalTime? =
         value?.toString()

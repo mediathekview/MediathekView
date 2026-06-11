@@ -19,6 +19,7 @@
 package mediathek.audiothek.ui.table
 
 import mediathek.audiothek.model.AudioEntry
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 enum class AudioTableColumn(
@@ -71,7 +72,7 @@ enum class AudioTableColumn(
         preferredWidth = 110,
         centered = true,
         searchField = AudiothekLuceneIndex.FIELD_DATE,
-        valueProvider = { it.publishedAt?.format(DATE_FORMAT).orEmpty() }
+        valueProvider = { AudioDateCellValue(it.publishedAt?.toLocalDate()) }
     ),
     TIME(
         title = "Zeit",
@@ -105,7 +106,14 @@ enum class AudioTableColumn(
         val searchableColumns: List<AudioTableColumn>
             get() = entries.filter(AudioTableColumn::toggleable)
 
-        private val DATE_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     }
 }
+
+internal data class AudioDateCellValue(
+    val date: LocalDate?
+) {
+    override fun toString(): String = date?.format(AUDIO_DATE_CELL_FORMAT).orEmpty()
+}
+
+private val AUDIO_DATE_CELL_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")

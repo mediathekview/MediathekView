@@ -371,9 +371,11 @@ class AudiothekPanel(
     }
 
     private fun applyFilterNow(query: String) {
+        cancelPodcastSearch()
+        table.clearExternalSearchEntries()
         table.applyFilter(query)
         refreshVisibleResults()
-        triggerPodcastSearch(query)
+        triggerPodcastSearch(query, resetState = false)
     }
 
     private fun handleOnlineSearchToggled(enabled: Boolean) {
@@ -428,10 +430,14 @@ class AudiothekPanel(
     }
 
     private fun resetExternalSearchState() {
-        podcastSearchJob?.cancel()
-        table.setExternalSearchEntries(emptyList())
-        toolBar.setPodcastSearchBusy(false)
+        cancelPodcastSearch()
+        table.clearExternalSearchEntries()
         refreshResultCount()
+    }
+
+    private fun cancelPodcastSearch() {
+        podcastSearchJob?.cancel()
+        toolBar.setPodcastSearchBusy(false)
     }
 
     private fun refreshVisibleResults() {
