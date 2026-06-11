@@ -982,7 +982,6 @@ class ApplicationConfiguration private constructor() {
         fun hasStoredBounds(): Boolean = width > 0 && height > 0 && x != Int.MIN_VALUE && y != Int.MIN_VALUE
 
         companion object {
-            @JvmStatic
             fun empty(): BandwidthMonitorDialogState =
                 BandwidthMonitorDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
@@ -1026,7 +1025,6 @@ class ApplicationConfiguration private constructor() {
         fun hasStoredBounds(): Boolean = width >= 100 && height >= 100 && x != Int.MIN_VALUE && y != Int.MIN_VALUE
 
         companion object {
-            @JvmStatic
             fun empty(): LoadFilmListDialogState =
                 LoadFilmListDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
@@ -1040,7 +1038,6 @@ class ApplicationConfiguration private constructor() {
         fun hasStoredSize(): Boolean = width > 0 && height > 0
 
         companion object {
-            @JvmStatic
             fun empty(): SettingsDialogState = SettingsDialogState(0, 0, 0, 0)
         }
     }
@@ -1054,7 +1051,6 @@ class ApplicationConfiguration private constructor() {
             x != Int.MIN_VALUE && y != Int.MIN_VALUE && width != -1 && height != -1
 
         companion object {
-            @JvmStatic
             fun empty(): FilterDialogState = FilterDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
     }
@@ -1068,7 +1064,6 @@ class ApplicationConfiguration private constructor() {
         fun hasStoredSize(): Boolean = width != -1 && height != -1
 
         companion object {
-            @JvmStatic
             fun empty(): EditDownloadDialogState =
                 EditDownloadDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
@@ -1080,7 +1075,6 @@ class ApplicationConfiguration private constructor() {
         fun hasStoredPosition(): Boolean = x != Int.MIN_VALUE && y != Int.MIN_VALUE
 
         companion object {
-            @JvmStatic
             fun empty(): AddDownloadDialogPosition = AddDownloadDialogPosition(Int.MIN_VALUE, Int.MIN_VALUE)
         }
     }
@@ -1094,7 +1088,6 @@ class ApplicationConfiguration private constructor() {
             x != Int.MIN_VALUE && y != Int.MIN_VALUE && width != -1 && height != -1
 
         companion object {
-            @JvmStatic
             fun empty(): ManageAboDialogState = ManageAboDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
     }
@@ -1108,7 +1101,6 @@ class ApplicationConfiguration private constructor() {
             x != Int.MIN_VALUE && y != Int.MIN_VALUE && width != -1 && height != -1
 
         companion object {
-            @JvmStatic
             fun empty(): DuplicateFilmDetailsDialogState =
                 DuplicateFilmDetailsDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
@@ -1123,7 +1115,6 @@ class ApplicationConfiguration private constructor() {
             x != Int.MIN_VALUE && y != Int.MIN_VALUE && width != -1 && height != -1
 
         companion object {
-            @JvmStatic
             fun empty(): DuplicateStatisticsDialogState =
                 DuplicateStatisticsDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
@@ -1138,7 +1129,6 @@ class ApplicationConfiguration private constructor() {
             x != Int.MIN_VALUE && y != Int.MIN_VALUE && width != -1 && height != -1
 
         companion object {
-            @JvmStatic
             fun empty(): EditHistoryDialogState = EditHistoryDialogState(Int.MIN_VALUE, Int.MIN_VALUE, -1, -1)
         }
     }
@@ -1168,7 +1158,6 @@ class ApplicationConfiguration private constructor() {
         fun hasStoredFont(): Boolean = family != null && size > 0
 
         companion object {
-            @JvmStatic
             fun empty(): DefaultFontState = DefaultFontState(null, -1)
         }
     }

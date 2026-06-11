@@ -451,7 +451,7 @@ class DialogEditDownload(
         border.title = DownloadQualitySupport.qualityPanelTitle(QUALITY_PANEL_TITLE, usableSpace)
         jPanelRes.repaint()
 
-        val usableSpaceInMiB = usableSpace / FileSize.ONE_MiB
+        val usableSpaceInMiB = usableSpace / FileSize.ONE_MIB
         if (usableSpaceInMiB <= 0) {
             return
         }

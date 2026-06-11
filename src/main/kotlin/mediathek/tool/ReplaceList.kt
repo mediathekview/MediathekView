@@ -40,7 +40,6 @@ object ReplaceList {
         add(" ", "_")
     }
 
-    @JvmStatic
     fun clear() {
         entries.clear()
     }
@@ -79,7 +78,6 @@ object ReplaceList {
     fun valuesForXml(): List<Array<String>> =
         entries.map { it.toArray() }
 
-    @JvmStatic
     fun replace(strCheck: String, pfad: Boolean): String {
         var result = strCheck
         val iterator = entries.iterator()

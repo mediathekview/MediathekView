@@ -143,6 +143,6 @@ internal class FileSizeTest {
     @Test
     fun parsesLessThanOneMegabyteTextAsOneMegabyte() {
         assertEquals(1, FileSize.megabyteTextToInt("<1"))
-        assertEquals(FileSize.ONE_MiB.toLong(), FileSize.megabyteTextToBytes("<1"))
+        assertEquals(FileSize.ONE_MIB.toLong(), FileSize.megabyteTextToBytes("<1"))
     }
 }

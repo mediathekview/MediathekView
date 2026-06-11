@@ -362,7 +362,7 @@ class DatenFilm private constructor(
         }
 
         if (canBootstrapFileSizeFromNormalQualityUrl && url.equals(urlNormalQuality, ignoreCase = true) && fileSizeInMegabytes > 0) {
-            val cachedSizeInBytes = fileSizeInMegabytes.toLong() * FileSize.ONE_MiB
+            val cachedSizeInBytes = fileSizeInMegabytes.toLong() * FileSize.ONE_MIB
             val bootstrapLookupResult = FileSize.LookupResult(cachedSizeInBytes, null, null, null)
             fileSizeLookupCache()[url] = bootstrapLookupResult
             return bootstrapLookupResult

@@ -267,7 +267,7 @@ class DatenDownload() : Comparable<DatenDownload> {
 
     private fun applyStoredSizeInMiB() {
         storedSizeInMiB?.let { size ->
-            runtime.filmSize.size = size * FileSize.ONE_MiB
+            runtime.filmSize.size = size * FileSize.ONE_MIB
         }
     }
 
@@ -290,7 +290,7 @@ class DatenDownload() : Comparable<DatenDownload> {
             sender = sender,
             topic = topic,
             title = title,
-            sizeInMiB = runtime.filmSize.size / FileSize.ONE_MiB,
+            sizeInMiB = runtime.filmSize.size / FileSize.ONE_MIB,
             date = date,
             time = time,
             duration = duration,

@@ -44,7 +44,7 @@ object FileSize {
         val requestUrl: HttpUrl,
     ) : IOException("HTTP $statusCode for $requestUrl")
 
-    const val ONE_MiB = 1_000_000
+    const val ONE_MIB = 1_000_000
     const val INVALID_SIZE: Byte = -1
     private val logger = LogManager.getLogger()
     private val lookupJson = Json { ignoreUnknownKeys = true }
@@ -68,14 +68,14 @@ object FileSize {
 
     fun convertSize(byteLength: Long): String {
         return when {
-            byteLength > ONE_MiB -> (byteLength / ONE_MiB).toString()
+            byteLength > ONE_MIB -> (byteLength / ONE_MIB).toString()
             byteLength > 0 -> "1"
             else -> ""
         }
     }
 
     fun megabyteTextToBytes(sizeText: String): Long =
-        megabyteTextToInt(sizeText).toLong() * ONE_MiB
+        megabyteTextToInt(sizeText).toLong() * ONE_MIB
 
     fun megabyteTextToInt(sizeText: String): Int =
         if (sizeText.equals("<1", ignoreCase = true)) 1 else sizeText.ifEmpty { "0" }.toInt()
@@ -160,7 +160,7 @@ object FileSize {
             return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         }
 
-        val lookupResult = if (result.byteLength < ONE_MiB) {
+        val lookupResult = if (result.byteLength < ONE_MIB) {
             logger.debug("File size lookup for {} was below threshold: {}", url, result.byteLength)
             LookupResult(
                 byteLength = INVALID_SIZE.toLong(),
@@ -187,10 +187,9 @@ object FileSize {
     }
 
     private fun lookupCachedHlsResult(url: HttpUrl, quality: String?): LookupResult? {
-        val lookupUrl = lookupEndpoint ?: return null
         val request = Request.Builder()
             .url(
-                lookupUrl.newBuilder()
+                lookupEndpoint.newBuilder()
                     .addQueryParameter("m3u8Url", url.toString())
                     .addQueryParameter("country", ApplicationConfiguration.getInstance().geographicLocation.name)
                     .apply {
@@ -269,6 +268,6 @@ object FileSize {
         return lookupResult
     }
 
-    private val lookupEndpoint: HttpUrl?
-        get() = Konstanten.HLS_STREAM_INFO_UPLOAD_URL?.newBuilder()?.addPathSegment("lookup")?.build()
+    private val lookupEndpoint: HttpUrl =
+        Konstanten.HLS_STREAM_INFO_UPLOAD_URL.newBuilder().addPathSegment("lookup").build()
 }

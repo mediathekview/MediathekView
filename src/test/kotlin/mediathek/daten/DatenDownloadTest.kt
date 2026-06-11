@@ -60,7 +60,7 @@ internal class DatenDownloadTest {
         assertEquals(config, roundTripConfig)
         assertEquals(DownloadType.PROGRAM, download.art)
         assertEquals(DownloadSource.DOWNLOAD, download.quelle)
-        assertEquals(42L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+        assertEquals(42L * FileSize.ONE_MIB, download.runtime.filmSize.size)
     }
 
     @Test
@@ -208,7 +208,7 @@ internal class DatenDownloadTest {
 
         val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "")
 
-        assertEquals(123L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+        assertEquals(123L * FileSize.ONE_MIB, download.runtime.filmSize.size)
     }
 
     @Test
@@ -227,7 +227,7 @@ internal class DatenDownloadTest {
         val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "")
 
         assertEquals("https://example.invalid/video.mp4", download.downloadUrl)
-        assertEquals(456L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+        assertEquals(456L * FileSize.ONE_MIB, download.runtime.filmSize.size)
     }
 
     @Test
@@ -243,7 +243,7 @@ internal class DatenDownloadTest {
 
         download.setGroesseFromFilm()
 
-        assertEquals(789L * FileSize.ONE_MiB, download.runtime.filmSize.size)
+        assertEquals(789L * FileSize.ONE_MIB, download.runtime.filmSize.size)
     }
 
     @Test

@@ -37,7 +37,6 @@ object Konstanten {
     @JvmField
     val MVVERSION = Version(15, 0, 0)
 
-    @JvmField
     val APPLICATION_TYPE = ApplicationType.NIGHTLY
 
     const val AUDIOTHEK_SEARCH_TIMEOUT_SECONDS = 45L
@@ -61,13 +60,11 @@ object Konstanten {
     const val DOWNLOAD_CONTINUATION_DEFAULT_TIME = 60
 
     // MediathekView URLs
-    @JvmField
     val ROUTER_BASE_URL: HttpUrl = "https://liste.mediathekview.de".toHttpUrl()
 
     @JvmField
     val WEBSITE_BASE_URL: HttpUrl = "https://mediathekview.de".toHttpUrl()
 
-    @JvmField
     val URL_MEDIATHEKVIEW_RESOURCES: HttpUrl = "https://res.mediathekview.de".toHttpUrl()
 
     const val AUDIOTHEK_ONLINE_SEARCH_PROXY_URL = "https://audiothek.crystalpalace.info"
@@ -76,15 +73,12 @@ object Konstanten {
     const val HLS_STREAM_INFO_TOKEN_HEADER = "X-HLS-Stream-Info-Token"
     const val HLS_STREAM_INFO_TOKEN = "mv-hls-stream-info-test-2026-04-14"
 
-    @JvmField
     val HLS_STREAM_INFO_BASE_URL: HttpUrl = "https://hlssi.crystalpalace.info".toHttpUrl()
 
-    @JvmField
     val HLS_STREAM_INFO_UPLOAD_URL: HttpUrl = requireNotNull(
         HLS_STREAM_INFO_BASE_URL.resolve("/v1/hls-stream-info")
     )
 
-    @JvmField
     val AUDIOTHEK_DB_DOWNLOAD_URL: HttpUrl = requireNotNull(HLS_STREAM_INFO_BASE_URL.resolve("/audio-db"))
 
     const val PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml"

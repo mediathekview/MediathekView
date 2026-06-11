@@ -21,7 +21,7 @@ internal class DownloadStorageTest {
     fun writeAndReadPreservesExplicitDownloadFields() {
         val storagePath = tempDir.resolve("downloads.json")
         val download = download("Title").apply {
-            runtime.filmSize.size = 42L * FileSize.ONE_MiB
+            runtime.filmSize.size = 42L * FileSize.ONE_MIB
             art = DownloadType.PROGRAM
             quelle = DownloadSource.DOWNLOAD
         }
@@ -55,7 +55,7 @@ internal class DownloadStorageTest {
         assertEquals("Title", loadedDownload.title)
         assertEquals("Sender", loadedDownload.sender)
         assertEquals("/tmp/Title.mp4", loadedDownload.targetPathFileName)
-        assertEquals(42L * FileSize.ONE_MiB, loadedDownload.runtime.filmSize.size)
+        assertEquals(42L * FileSize.ONE_MIB, loadedDownload.runtime.filmSize.size)
         assertEquals(DownloadType.PROGRAM, loadedDownload.art)
         assertEquals(DownloadSource.DOWNLOAD, loadedDownload.quelle)
     }

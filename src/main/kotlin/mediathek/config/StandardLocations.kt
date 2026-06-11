@@ -43,7 +43,6 @@ object StandardLocations {
      * @return Path to the settings directory
      * @throws IllegalStateException Will be thrown if settings directory doesn't exist and if there is an error on creating it.
      */
-    @JvmStatic
     @Throws(IllegalStateException::class)
     fun getSettingsDirectory(): Path {
         val baseDirectoryPath: Path = if (portableBaseDirectory == null || portableBaseDirectory!!.isEmpty()) {
@@ -92,7 +91,6 @@ object StandardLocations {
      *
      * @return Path to the file
      */
-    @JvmStatic
     @Throws(InvalidPathException::class)
     fun getMediathekXmlFile(): Path {
         return getSettingsDirectory().resolve(Konstanten.CONFIG_FILE)

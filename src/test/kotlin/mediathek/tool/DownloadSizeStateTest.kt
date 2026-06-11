@@ -40,7 +40,7 @@ internal class DownloadSizeStateTest {
         val state = DownloadSizeState()
         state.setSize("3")
 
-        state.addAktSize(FileSize.ONE_MiB.toLong())
+        state.addAktSize(FileSize.ONE_MIB.toLong())
 
         assertEquals("1 von 3", state.toString())
     }
@@ -49,7 +49,7 @@ internal class DownloadSizeStateTest {
     fun resetClearsActiveSizeOnly() {
         val state = DownloadSizeState()
         state.setSize("3")
-        state.addAktSize(FileSize.ONE_MiB.toLong())
+        state.addAktSize(FileSize.ONE_MIB.toLong())
 
         state.reset()
 

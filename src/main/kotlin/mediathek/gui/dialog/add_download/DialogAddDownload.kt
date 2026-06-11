@@ -785,7 +785,7 @@ class DialogAddDownload(
             jPanelSize.repaint()
 
             // jetzt noch prüfen, obs auf die Platte passt
-            usableSpace /= FileSize.ONE_MiB
+            usableSpace /= FileSize.ONE_MIB
             if (usableSpace > 0) {
                 markResolutionsExceedingDiskSpace(usableSpace)
             }

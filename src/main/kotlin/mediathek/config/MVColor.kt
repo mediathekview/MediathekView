@@ -143,7 +143,6 @@ object MVColor {
 
         private fun rgb(red: Int, green: Int, blue: Int) = Color(red, green, blue)
 
-        @JvmStatic
         fun getRegExPatternColor(): Color = REGEX_PATTERN_COLOR.color
 
         fun getBlueColor(): Color = getRegExPatternColor()
@@ -168,7 +167,6 @@ object MVColor {
 
     private fun storagePath() = StandardLocations.getSettingsDirectory().resolve(STORAGE_FILENAME)
 
-    @JvmStatic
     fun load() {
         reset()
 
