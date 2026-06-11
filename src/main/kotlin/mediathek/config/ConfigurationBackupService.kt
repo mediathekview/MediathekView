@@ -31,6 +31,7 @@ object ConfigurationBackupService {
 
     fun createConfigurationBackupCopies(): Boolean {
         return try {
+            deleteSuperfluousConfigurationBackups()
             if (backupCreatedToday(configurationBackupPath(1))) {
                 logger.info("Einstellungen wurden heute schon gesichert")
             } else {
@@ -65,6 +66,24 @@ object ConfigurationBackupService {
                 Files.move(source, configurationBackupPath(index), StandardCopyOption.REPLACE_EXISTING)
             }
         }
+    }
+
+    private fun deleteSuperfluousConfigurationBackups() {
+        Files.newDirectoryStream(
+            StandardLocations.getSettingsDirectory(),
+            "${Konstanten.CONFIG_FILE_COPY}*",
+        ).use { backupPaths ->
+            backupPaths
+                .filter { path -> Files.isRegularFile(path) && path.isSuperfluousConfigurationBackup() }
+                .forEach { path -> Files.deleteIfExists(path) }
+        }
+    }
+
+    private fun Path.isSuperfluousConfigurationBackup(): Boolean {
+        val copyIndex = fileName.toString()
+            .removePrefix(Konstanten.CONFIG_FILE_COPY)
+            .toIntOrNull()
+        return copyIndex != null && copyIndex > Konstanten.MAX_NUM_BACKUP_FILE_COPIES
     }
 
     private fun moveCurrentConfigurationToBackup() {

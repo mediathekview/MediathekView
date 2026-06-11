@@ -50,7 +50,7 @@ object Konstanten {
     /**
      * Maximum number of backup files to be stored.
      */
-    const val MAX_NUM_BACKUP_FILE_COPIES: Short = 5
+    const val MAX_NUM_BACKUP_FILE_COPIES: Short = 3
 
     const val MAX_DOWNLOAD_RESTARTS = 2
     const val MAX_EXTERNAL_STARTS = 3
