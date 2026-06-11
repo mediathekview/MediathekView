@@ -19,14 +19,26 @@
 package mediathek.tool
 
 import org.apache.logging.log4j.LogManager
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * Store download progress sizes in bytes and render them as megabyte text.
  */
 class DownloadSizeState : Comparable<DownloadSizeState> {
-    var size: Long = 0L
+    private val sizeBytes = AtomicLong(0L)
+    private val activeSizeBytes = AtomicLong(-1L)
 
-    var aktSize: Long = -1L
+    var size: Long
+        get() = sizeBytes.get()
+        set(value) {
+            sizeBytes.set(value)
+        }
+
+    var aktSize: Long
+        get() = activeSizeBytes.get()
+        set(value) {
+            activeSizeBytes.set(value)
+        }
 
     override fun compareTo(other: DownloadSizeState): Int = size.compareTo(other.size)
 
@@ -55,16 +67,19 @@ class DownloadSizeState : Comparable<DownloadSizeState> {
     }
 
     fun addAktSize(size: Long) {
-        aktSize += size
+        activeSizeBytes.addAndGet(size)
     }
 
-    private fun prepareString(): String =
-        when {
-            aktSize <= 0 && size > 0 -> FileSize.convertSize(size)
-            aktSize <= 0 -> ""
-            size > 0 -> "${FileSize.convertSize(aktSize)} von ${FileSize.convertSize(size)}"
-            else -> FileSize.convertSize(aktSize)
+    private fun prepareString(): String {
+        val currentSize = size
+        val currentActiveSize = aktSize
+        return when {
+            currentActiveSize <= 0 && currentSize > 0 -> FileSize.convertSize(currentSize)
+            currentActiveSize <= 0 -> ""
+            currentSize > 0 -> "${FileSize.convertSize(currentActiveSize)} von ${FileSize.convertSize(currentSize)}"
+            else -> FileSize.convertSize(currentActiveSize)
         }
+    }
 
     private companion object {
         private val logger = LogManager.getLogger()
