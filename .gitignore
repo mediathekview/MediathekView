@@ -1,6 +1,3 @@
-build
-dist/javadoc
-/.gradle/
 /bin/
 /.checkstyle
 .classpath
@@ -10,16 +7,12 @@ dist/javadoc
 MediathekView.exe
 res/Icons/Sender
 /.idea/
-/.nb-gradle/
 /src/main/resources/version.properties
 deploy.key
-RepoZugang.properties
 /target/
 /dependency-reduced-pom.xml
 *.iml
 /install4j*/
 /res/macOS/bin
 `/.vs/
-/javafx_sdk/mac/aarch64/javafx-sdk/
 /AGENTS.md
-/ard-audiothek-crawler/

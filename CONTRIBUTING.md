@@ -109,9 +109,9 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/mediat
 #### Dev Environment
 **Compiler:**
 
-As MediathekView is written in java you need to have a JDK installed for the correct java version. You can find the currently used java version in the [pom.xml](https://github.com/mediathekview/MediathekView/blob/master/pom.xml) tag `jdk.language.version`.
+As MediathekView is written in Kotlin and Java you need to have a JDK installed for the correct java version. You can find the currently used java version in the [pom.xml](https://github.com/mediathekview/MediathekView/blob/master/pom.xml) tag `jdk.language.version`.
 
-> We recommend using [SDKMan](https://sdkman.io/) to install the right Eclipse [Temurin](https://adoptium.net/) version from Adoptium (formerly AdoptOpenJDK).
+> We recommend using [SDKMan](https://sdkman.io/) to install the right JDK.
 
 **Building:**
 
@@ -120,12 +120,7 @@ We use [maven](https://maven.apache.org/) to build the project. You don't need t
 **IDE:**
 
 We recommend to use [JetBrains IntelliJ IDEA](https://www.jetbrains.com/idea/).
-> We are part of the [JetBrains Open-Source program](https://www.jetbrains.com/community/opensource/#support). So if you are an active contributor it's possible for you to get a one-year license for all JetBrains products. To get your license, please contact [Nicklas](https://github.com/Nicklas2751) as he is responsible for this.
 
-We also reccomend these plugins:
-- [SonarLint](https://plugins.jetbrains.com/plugin/7973-sonarlint)
-- [Save Actions](https://plugins.jetbrains.com/plugin/7642-save-actions)
-- [google-java-format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
 
 #### First steps
 
