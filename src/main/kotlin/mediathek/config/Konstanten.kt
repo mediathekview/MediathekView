@@ -67,7 +67,7 @@ object Konstanten {
 
     val URL_MEDIATHEKVIEW_RESOURCES: HttpUrl = "https://res.mediathekview.de".toHttpUrl()
 
-    const val AUDIOTHEK_ONLINE_SEARCH_PROXY_URL = "https://audiothek.crystalpalace.info"
+    const val AUDIOTHEK_ONLINE_SEARCH_PROXY_URL = "https://audiothek.mediathekview.de"
     const val AUDIOTHEK_PROXY_CLIENT_TOKEN_HEADER = "X-MV-Client-Token"
     const val AUDIOTHEK_PROXY_CLIENT_TOKEN = "mv-audiothek-static-2026-03"
     const val HLS_STREAM_INFO_TOKEN_HEADER = "X-HLS-Stream-Info-Token"
