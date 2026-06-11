@@ -96,7 +96,7 @@ internal class IoXmlSchreibenTest {
             val configFile = tempDir.resolve("mediathek.xml")
             val storageFile = tempDir.resolve("downloads.json")
 
-            IoXmlSchreiben(storageFile).writeConfigurationFile(configFile)
+            IoXmlSchreiben(downloadStoragePath = storageFile).writeConfigurationFile(configFile)
 
             val xml = Files.readString(configFile)
             assertTrue(Files.exists(storageFile))

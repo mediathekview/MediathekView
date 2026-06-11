@@ -79,6 +79,10 @@ object StandardLocations {
         return getSettingsDirectory().resolve("downloads.json")
     }
 
+    fun getBlacklistRulesFilePath(): Path {
+        return getSettingsDirectory().resolve("blacklist-rules.json")
+    }
+
     fun getApplicationSettingsFile(): Path {
         return getSettingsDirectory().resolve("settings.xml")
     }

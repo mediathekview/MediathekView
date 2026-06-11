@@ -2,6 +2,7 @@ package mediathek.controller
 
 import mediathek.config.Daten
 import mediathek.daten.*
+import mediathek.daten.blacklist.BlacklistRule
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -52,7 +53,12 @@ internal class IoXmlLesenTest {
                 """.trimIndent(),
             )
 
-            assertTrue(IoXmlLesen().datenLesen(configFile))
+            assertTrue(
+                IoXmlLesen(
+                    downloadStoragePath = tempDir.resolve("downloads.json"),
+                    blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
+                ).datenLesen(configFile),
+            )
 
             assertEquals(2, listePset.size)
             val save = listePset[0]
@@ -114,7 +120,12 @@ internal class IoXmlLesenTest {
                 """.trimIndent(),
             )
 
-            assertTrue(IoXmlLesen(storageFile).datenLesen(configFile))
+            assertTrue(
+                IoXmlLesen(
+                    downloadStoragePath = storageFile,
+                    blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
+                ).datenLesen(configFile),
+            )
 
             assertTrue(Files.exists(storageFile))
             assertEquals(1, downloads.size)
@@ -159,13 +170,97 @@ internal class IoXmlLesenTest {
                 ),
             )
 
-            assertTrue(IoXmlLesen(storageFile).datenLesen(configFile))
+            assertTrue(
+                IoXmlLesen(
+                    downloadStoragePath = storageFile,
+                    blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
+                ).datenLesen(configFile),
+            )
 
             assertEquals(1, downloads.size)
             assertEquals("JSON Download", downloads.single().title)
         } finally {
             downloads.clear()
             downloads.addAll(originalDownloads)
+        }
+    }
+
+    @Test
+    fun datenLesenMigratesLegacyBlacklistRulesToJson() {
+        val blacklist = Daten.getInstance().listeBlacklist
+        val originalBlacklist = ArrayList(blacklist)
+        try {
+            blacklist.clear()
+            val configFile = tempDir.resolve("mediathek.xml")
+            val downloadStorageFile = tempDir.resolve("downloads.json")
+            val blacklistStorageFile = tempDir.resolve("blacklist-rules.json")
+            Files.writeString(
+                configFile,
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <Mediathek>
+                    <Blacklist>
+                        <black-sender>ARD</black-sender>
+                        <black-thema>News</black-thema>
+                        <black-titel>tagesschau</black-titel>
+                        <black-thema-titel>News tagesschau</black-thema-titel>
+                    </Blacklist>
+                </Mediathek>
+                """.trimIndent(),
+            )
+
+            assertTrue(
+                IoXmlLesen(
+                    downloadStoragePath = downloadStorageFile,
+                    blacklistRuleStoragePath = blacklistStorageFile,
+                ).datenLesen(configFile),
+            )
+
+            assertTrue(Files.exists(blacklistStorageFile))
+            assertEquals(listOf(BlacklistRule("ARD", "News", "tagesschau", "News tagesschau")), blacklist)
+            assertEquals(
+                listOf(BlacklistRule("ARD", "News", "tagesschau", "News tagesschau")),
+                BlacklistRuleStorage.read(blacklistStorageFile),
+            )
+        } finally {
+            blacklist.clear()
+            blacklist.addAll(originalBlacklist)
+        }
+    }
+
+    @Test
+    fun datenLesenUsesJsonBlacklistRulesWhenPresent() {
+        val blacklist = Daten.getInstance().listeBlacklist
+        val originalBlacklist = ArrayList(blacklist)
+        try {
+            blacklist.clear()
+            val configFile = tempDir.resolve("mediathek.xml")
+            val downloadStorageFile = tempDir.resolve("downloads.json")
+            val blacklistStorageFile = tempDir.resolve("blacklist-rules.json")
+            Files.writeString(
+                configFile,
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <Mediathek>
+                    <Blacklist>
+                        <black-sender>Legacy</black-sender>
+                    </Blacklist>
+                </Mediathek>
+                """.trimIndent(),
+            )
+            BlacklistRuleStorage.write(blacklistStorageFile, listOf(BlacklistRule(sender = "JSON")))
+
+            assertTrue(
+                IoXmlLesen(
+                    downloadStoragePath = downloadStorageFile,
+                    blacklistRuleStoragePath = blacklistStorageFile,
+                ).datenLesen(configFile),
+            )
+
+            assertEquals(listOf(BlacklistRule(sender = "JSON")), blacklist)
+        } finally {
+            blacklist.clear()
+            blacklist.addAll(originalBlacklist)
         }
     }
 

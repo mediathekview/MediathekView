@@ -88,17 +88,6 @@ class IoXmlSchreiben(
         }
     }
 
-    private fun writeBlacklistRules(writer: XMLStreamWriter) {
-        writer.writeCharacters("\n\n")
-        writeNewLine(writer)
-
-        // remove duplicates
-        val distinctBlacklistRules = Daten.getInstance().listeBlacklist.stream().distinct().toList()
-        for (rule in distinctBlacklistRules) {
-            rule.writeToConfig(writer)
-        }
-    }
-
     private fun writeProgramSets(writer: XMLStreamWriter) {
         writer.writeCharacters("\n\n")
         writeNewLine(writer)
@@ -216,8 +205,6 @@ class IoXmlSchreiben(
                     writeFileHeader(xmlWriter)
 
                     writeAbos(xmlWriter)
-
-                    writeBlacklistRules(xmlWriter)
 
                     writeProgramSets(xmlWriter)
 

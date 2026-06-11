@@ -23,7 +23,6 @@ import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
 import mediathek.daten.DatenPset
 import mediathek.daten.abo.DatenAbo
-import mediathek.daten.blacklist.BlacklistRule
 import mediathek.tool.ReplaceList
 import org.apache.logging.log4j.LogManager
 import java.io.InputStreamReader
@@ -37,6 +36,7 @@ import javax.xml.stream.XMLStreamReader
 
 class IoXmlLesen(
     private val downloadStoragePath: Path = StandardLocations.getDownloadsFilePath(),
+    private val blacklistRuleStoragePath: Path = StandardLocations.getBlacklistRulesFilePath(),
 ) {
     private val inFactory: XMLInputFactory = XMLInputFactory.newInstance().apply {
         setProperty(XMLInputFactory.IS_COALESCING, false)
@@ -50,7 +50,9 @@ class IoXmlLesen(
         if (Files.exists(xmlFilePath)) {
             var datenPset: DatenPset? = null
             var legacyDownloadsRead = false
+            var legacyBlacklistRulesRead = false
             val readDownloadsFromJson = Files.exists(downloadStoragePath)
+            val readBlacklistRulesFromJson = Files.exists(blacklistRuleStoragePath)
 
             try {
                 Files.newInputStream(xmlFilePath).use { input ->
@@ -58,9 +60,9 @@ class IoXmlLesen(
                         inFactory.createXMLStreamReader(reader).use { parser ->
                             while (parser.hasNext()) {
                                 if (parser.next() == XMLStreamConstants.START_ELEMENT) {
-                                    when {
-                                        parser.localName == SYSTEM_ELEMENT -> skipElement(parser)
-                                        parser.localName == DatenPset.TAG -> {
+                                    when (parser.localName) {
+                                        SYSTEM_ELEMENT -> skipElement(parser)
+                                        DatenPset.TAG -> {
                                             datenPset = readProgramSet(parser)
                                             val currentPset = datenPset
                                             if (currentPset != null) {
@@ -68,19 +70,25 @@ class IoXmlLesen(
                                             }
                                         }
 
-                                        parser.localName == DatenProg.TAG -> {
+                                        DatenProg.TAG -> {
                                             readProgramEntry(parser, datenPset)
                                         }
 
-                                        parser.localName == ReplaceList.REPLACELIST -> readReplacementList(parser)
-                                        parser.localName == DatenAbo.TAG -> readAboEntry(parser)
-                                        parser.localName == DatenDownload.TAG -> {
+                                        ReplaceList.REPLACELIST -> readReplacementList(parser)
+                                        DatenAbo.TAG -> readAboEntry(parser)
+                                        DatenDownload.TAG -> {
                                             legacyDownloadsRead =
                                                 readDownloadEntry(parser, readLegacyDownload = !readDownloadsFromJson) ||
                                                     legacyDownloadsRead
                                         }
 
-                                        parser.localName == BlacklistRule.TAG -> readBlacklistRuleEntry(parser)
+                                        LegacyBlacklistRuleXml.TAG -> {
+                                            legacyBlacklistRulesRead =
+                                                readBlacklistRuleEntry(
+                                                    parser,
+                                                    readLegacyBlacklistRule = !readBlacklistRulesFromJson,
+                                                ) || legacyBlacklistRulesRead
+                                        }
                                     }
                                 }
                             }
@@ -97,10 +105,18 @@ class IoXmlLesen(
                 readDownloadsFromJson()
             }
 
+            if (readBlacklistRulesFromJson) {
+                readBlacklistRulesFromJson()
+            }
+
             sortLists()
 
             if (!readDownloadsFromJson && legacyDownloadsRead) {
                 writeMigratedDownloads()
+            }
+
+            if (!readBlacklistRulesFromJson && legacyBlacklistRulesRead) {
+                writeMigratedBlacklistRules()
             }
         }
 
@@ -169,14 +185,17 @@ class IoXmlLesen(
         }
     }
 
-    private fun readBlacklistRuleEntry(parser: XMLStreamReader) {
+    private fun readBlacklistRuleEntry(parser: XMLStreamReader, readLegacyBlacklistRule: Boolean): Boolean {
         try {
-            val rule = BlacklistRule()
-            rule.readFromConfig(parser)
-            daten.listeBlacklist.addWithoutNotification(rule)
+            val rule = LegacyBlacklistRuleXml.readRule(parser)
+            if (readLegacyBlacklistRule) {
+                daten.listeBlacklist.addWithoutNotification(rule)
+                return true
+            }
         } catch (ex: XMLStreamException) {
             logger.error("Failed to read blacklist rule", ex)
         }
+        return false
     }
 
     private fun readDownloadEntry(parser: XMLStreamReader, readLegacyDownload: Boolean): Boolean {
@@ -201,11 +220,27 @@ class IoXmlLesen(
         }
     }
 
+    private fun readBlacklistRulesFromJson() {
+        try {
+            daten.listeBlacklist.addAll(BlacklistRuleStorage.read(blacklistRuleStoragePath))
+        } catch (ex: Exception) {
+            logger.error("Failed to read blacklist rules from {}", blacklistRuleStoragePath, ex)
+        }
+    }
+
     private fun writeMigratedDownloads() {
         try {
             DownloadStorage.write(downloadStoragePath, daten.listeDownloads)
         } catch (ex: Exception) {
             logger.error("Failed to migrate downloads to {}", downloadStoragePath, ex)
+        }
+    }
+
+    private fun writeMigratedBlacklistRules() {
+        try {
+            BlacklistRuleStorage.write(blacklistRuleStoragePath, daten.listeBlacklist)
+        } catch (ex: Exception) {
+            logger.error("Failed to migrate blacklist rules to {}", blacklistRuleStoragePath, ex)
         }
     }
 

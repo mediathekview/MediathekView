@@ -2,8 +2,6 @@ package mediathek.daten.blacklist
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
-import java.io.StringWriter
-import javax.xml.stream.XMLOutputFactory
 import kotlin.test.assertTrue
 
 internal class BlacklistRuleTest {
@@ -51,25 +49,5 @@ internal class BlacklistRuleTest {
         assertFalse { rule1 == rule2 }
         assertFalse { rule2 == rule3 }
         assertTrue { rule1 == rule3 }
-    }
-
-    @Test
-    fun test_non_empty_config_writer() {
-        val stringWriter = StringWriter()
-        var outStr: String
-        stringWriter.use {
-            val xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(it)
-            val rule1 = BlacklistRule("ARD", "", "titel1", "thema_titel1")
-            rule1.writeToConfig(xmlWriter)
-            outStr = stringWriter.toString()
-
-            xmlWriter.close()
-        }
-
-        //thema must not exist in xml
-        assertFalse { outStr.contains("<black-thema>") }
-        assertTrue { outStr.contains("<black-titel>") }
-        assertTrue { outStr.contains("<black-thema-titel>") }
-        assertTrue { outStr.contains("<black-sender>") }
     }
 }

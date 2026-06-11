@@ -1,8 +1,8 @@
 package mediathek.gui.actions.import_actions
 
 import mediathek.config.Daten
+import mediathek.controller.LegacyBlacklistRuleXml
 import mediathek.daten.abo.DatenAbo
-import mediathek.daten.blacklist.BlacklistRule
 import mediathek.gui.messages.ReplaceListChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.ReplaceList
@@ -39,10 +39,9 @@ class OldConfigFileImporter {
                             if (importAbo && parser.localName == DatenAbo.TAG) {
                                 if (importAboEntry(parser))
                                     foundAbos++
-                            } else if (importBlacklist && parser.localName == BlacklistRule.TAG) {
+                            } else if (importBlacklist && parser.localName == LegacyBlacklistRuleXml.TAG) {
                                 try {
-                                    val rule = BlacklistRule()
-                                    rule.readFromConfig(parser)
+                                    val rule = LegacyBlacklistRuleXml.readRule(parser)
                                     daten.listeBlacklist.addWithoutNotification(rule)
                                     foundBlacklistEntries++
                                 }
