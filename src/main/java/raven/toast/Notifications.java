@@ -431,14 +431,15 @@ public class Notifications {
         }
 
         public void close() {
-            if (show) {
-                if (animator.isRunning()) {
-                    animator.stop();
-                }
-                close = true;
-                show = false;
-                animator.start();
-            }
+            if (!show) {
+				return;
+			}
+			if (animator.isRunning()) {
+			    animator.stop();
+			}
+			close = true;
+			show = false;
+			animator.start();
         }
 
         private void sleep(long l) {
