@@ -74,6 +74,11 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
     private val scrollPane = JScrollPane(tabelle)
     private val filmLoadListener = object : ListenerFilmeLaden() {
         @Suppress("UNUSED_PARAMETER")
+        override fun start(event: ListenerFilmeLadenEvent) {
+            markAboFilmCountsLoadingFromLoad()
+        }
+
+        @Suppress("UNUSED_PARAMETER")
         override fun fertig(event: ListenerFilmeLadenEvent) {
             scheduleAboFilmCountRefresh()
         }
@@ -102,7 +107,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
 
         initListeners()
         initializeTable()
-        scheduleAboFilmCountRefresh()
+        initializeAboFilmCounts()
 
         tableBinding.addSelectionListener {
             btnEditAbo.isEnabled = tableBinding.selectedAboCount <= 1
@@ -304,6 +309,14 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
             aboFilmCounts[abo] ?: 0
         }
 
+    private fun initializeAboFilmCounts() {
+        if (daten.filmeLaden.isLoadRunning) {
+            markAboFilmCountsLoading()
+        } else {
+            scheduleAboFilmCountRefresh()
+        }
+    }
+
     private fun scheduleAboFilmCountRefresh() {
         uiScope.launch {
             if (disposed) {
@@ -324,6 +337,18 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
                     applyAboFilmCounts(counts)
                 }
             }
+        }
+    }
+
+    private fun markAboFilmCountsLoadingFromLoad() {
+        uiScope.launch {
+            if (disposed) {
+                return@launch
+            }
+
+            ++countRefreshSequence
+            countRefreshJob?.cancel()
+            markAboFilmCountsLoading()
         }
     }
 

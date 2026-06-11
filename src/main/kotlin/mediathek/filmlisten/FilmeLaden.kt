@@ -302,6 +302,9 @@ class FilmeLaden(private val daten: Daten) {
         listeners.remove(ListenerFilmeLaden::class.java, listener)
     }
 
+    val isLoadRunning: Boolean
+        get() = loadRunning.get()
+
     private fun tryMarkLoadRunning(): Boolean = loadRunning.compareAndSet(false, true)
 
     private fun finishLoadRunning() {
