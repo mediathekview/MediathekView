@@ -20,9 +20,12 @@ package mediathek.gui.tabs.tab_livestreams
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.serialization.json.Json
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import mediathek.config.Konstanten
 import mediathek.gui.actions.UrlHyperlinkAction
+import mediathek.gui.tabs.tab_livestreams.services.LivestreamJson
+import mediathek.gui.tabs.tab_livestreams.services.ShowInfo
 import mediathek.gui.tabs.tab_livestreams.services.ShowService
 import mediathek.gui.tabs.tab_livestreams.services.StreamService
 import mediathek.mac.MacMultimediaPlayerLocator
@@ -43,7 +46,7 @@ import java.time.Instant
 import javax.swing.*
 import kotlin.time.Duration.Companion.seconds
 
-class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
+class LivestreamPanel : JPanel(BorderLayout()) {
 
     private val listModel = LivestreamListModel()
     private val list = JList(listModel)
@@ -52,6 +55,11 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
     private val refreshTimer =
         Timer(4.seconds.inWholeMilliseconds.toInt()) { checkForExpiredShows() } // alle 4s prüfen
     private val overlay = OverlayPanel("Livestreams konnten nicht geladen werden")
+    private val showDetailSemaphore = Semaphore(MAX_SHOW_DETAIL_REQUESTS)
+    private val showDetailJobs = mutableMapOf<String, Job>()
+    private var panelJob = SupervisorJob()
+    private var panelScope = CoroutineScope(panelJob + Dispatchers.Swing)
+    private var loadLivestreamsJob: Job? = null
 
 
     init {
@@ -76,17 +84,40 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
             }
         })
 
-        val json = Json {
-            ignoreUnknownKeys = true
-        }
+        val json = LivestreamJson.json
 
         streamService = StreamService(json, Konstanten.ZAPP_API_URL)
         showService = ShowService(json, Konstanten.ZAPP_API_URL)
-
-        refreshTimer.start()
     }
 
     private var iinaPlayer = SingleIinaPlayer()
+
+    override fun addNotify() {
+        super.addNotify()
+        ensurePanelScope()
+        refreshTimer.start()
+    }
+
+    override fun removeNotify() {
+        refreshTimer.stop()
+        cancelPanelWork()
+        super.removeNotify()
+    }
+
+    private fun ensurePanelScope() {
+        if (panelJob.isActive) {
+            return
+        }
+
+        panelJob = SupervisorJob()
+        panelScope = CoroutineScope(panelJob + Dispatchers.Swing)
+    }
+
+    private fun cancelPanelWork() {
+        loadLivestreamsJob = null
+        showDetailJobs.clear()
+        panelJob.cancel()
+    }
 
     private fun setupList() {
         list.cellRenderer = LivestreamRenderer()
@@ -204,61 +235,96 @@ class LivestreamPanel : JPanel(BorderLayout()), CoroutineScope by MainScope() {
     }
 
     private fun loadLivestreams() {
-        launch(Dispatchers.IO) {
-            try {
-                val streams = streamService.getStreams()
-                val entries = streams.map { (key, info) ->
-                    LivestreamEntry(key, info.name, info.streamUrl)
-                }.sortedWith(compareBy(GermanStringSorter) { it.streamName })
+        if (loadLivestreamsJob?.isActive == true) {
+            return
+        }
 
-                withContext(Dispatchers.Swing) {
-                    if (entries.isEmpty()) {
-                        overlay.isVisible = true
-                    } else {
-                        overlay.isVisible = false
-                        listModel.setData(entries)
-                        loadAllShows()
-                    }
+        val job = panelScope.launch {
+            try {
+                val entries = withContext(Dispatchers.IO) {
+                    val streams = streamService.getStreams()
+                    streams.map { (key, info) ->
+                        LivestreamEntry(key, info.name, info.streamUrl)
+                    }.sortedWith(compareBy(GermanStringSorter) { it.streamName })
                 }
+
+                if (entries.isEmpty()) {
+                    overlay.isVisible = true
+                } else {
+                    overlay.isVisible = false
+                    listModel.setData(entries)
+                    loadAllShows()
+                }
+            } catch (ex: CancellationException) {
+                throw ex
             } catch (ex: Exception) {
                 LOG.error("Failed to load livestreams", ex)
-                withContext(Dispatchers.Swing) {
-                    overlay.isVisible = true
+                overlay.isVisible = true
+            } finally {
+                if (loadLivestreamsJob === coroutineContext.job) {
+                    loadLivestreamsJob = null
                 }
             }
         }
+        loadLivestreamsJob = job
     }
 
     private fun loadAllShows() {
         for (i in 0 until listModel.size) {
             val entry = listModel.getElementAt(i)
-            launch { loadShowDetailsForEntry(entry, i) }
+            loadShowDetailsForEntry(entry, i)
         }
     }
 
     private fun loadShowDetailsForEntry(entry: LivestreamEntry, index: Int) {
-        launch(Dispatchers.IO) {
+        if (showDetailJobs[entry.key]?.isActive == true) {
+            return
+        }
+
+        val job = panelScope.launch(start = CoroutineStart.LAZY) {
             try {
-                val response = showService.getShow(entry.key)
-                withContext(Dispatchers.Swing) {
-                    entry.show = response.shows.firstOrNull().takeIf { response.error == null }
-                    listModel.updateEntry(index, entry)
+                val show = showDetailSemaphore.withPermit {
+                    withContext(Dispatchers.IO) {
+                        val response = showService.getShow(entry.key)
+                        response.shows.firstOrNull().takeIf { response.error == null }
+                    }
                 }
+                updateShowDetails(entry, index, show)
+            } catch (ex: CancellationException) {
+                throw ex
             } catch (ex: Exception) {
                 LOG.error("Failed to load show details", ex)
-                withContext(Dispatchers.Swing) {
-                    entry.show = null
-                    listModel.updateEntry(index, entry)
-                }
+                updateShowDetails(entry, index, null)
+            } finally {
+                showDetailJobs.remove(entry.key)
             }
         }
+        showDetailJobs[entry.key] = job
+        job.start()
+    }
+
+    private fun updateShowDetails(entry: LivestreamEntry, index: Int, show: ShowInfo?) {
+        if (index !in 0 until listModel.size) {
+            return
+        }
+        if (listModel.getElementAt(index).key != entry.key) {
+            return
+        }
+
+        entry.show = show
+        listModel.updateEntry(index, entry)
     }
 
     companion object {
         private val LOG: Logger = LogManager.getLogger()
+        private const val MAX_SHOW_DETAIL_REQUESTS = 4
     }
 
     private fun checkForExpiredShows() {
+        if (!panelJob.isActive) {
+            return
+        }
+
         val now = Instant.now()
         for (i in 0 until listModel.size) {
             val entry = listModel.getElementAt(i)
