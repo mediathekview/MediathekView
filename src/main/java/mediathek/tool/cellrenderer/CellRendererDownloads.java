@@ -18,11 +18,11 @@ import javax.swing.border.Border;
 import java.awt.*;
 
 public class CellRendererDownloads extends CellRendererBaseWithStart {
-    private final static String DOWNLOAD_STARTEN = "Download starten";
-    private final static String DOWNLOAD_LOESCHEN = "Download aus Liste entfernen";
-    private final static String DOWNLOAD_STOPPEN = "Download stoppen";
-    private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
-    private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
+    private static final String DOWNLOAD_STARTEN = "Download starten";
+    private static final String DOWNLOAD_LOESCHEN = "Download aus Liste entfernen";
+    private static final String DOWNLOAD_STOPPEN = "Download stoppen";
+    private static final String DOWNLOAD_ENTFERNEN = "Download entfernen";
+    private static final String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
     private static final Logger logger = LogManager.getLogger(CellRendererDownloads.class);
     private final FontIcon film_start_tab;
     private final FontIcon film_start_sw_tab;

@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GetIcon {
 
-    private final static String PFAD_PROGRAMM = "/mediathek/res/programm/";
+    private static final String PFAD_PROGRAMM = "/mediathek/res/programm/";
 
     public static ImageIcon getProgramIcon(String strIcon, int w, int h) {
         return getIcon(strIcon, PFAD_PROGRAMM, w, h);

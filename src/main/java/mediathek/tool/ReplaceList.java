@@ -8,12 +8,12 @@ import java.util.List;
 
 public final class ReplaceList {
 
-    public final static String REPLACELIST = "Ersetzungstabelle";
-    public final static String VON = "von";
-    public final static int VON_NR = 0;
-    public final static String NACH = "nach";
-    public final static int NACH_NR = 1;
-    public final static String[] COLUMN_NAMES = {VON, NACH};
+    public static final String REPLACELIST = "Ersetzungstabelle";
+    public static final String VON = "von";
+    public static final int VON_NR = 0;
+    public static final String NACH = "nach";
+    public static final int NACH_NR = 1;
+    public static final String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
     public static final List<String[]> list = new ArrayList<>();

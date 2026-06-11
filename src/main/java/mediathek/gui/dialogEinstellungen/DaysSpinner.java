@@ -5,7 +5,7 @@ import mediathek.tool.ApplicationConfiguration;
 import javax.swing.*;
 
 public class DaysSpinner extends JSpinner {
-    private final static String ALLE = " Alle ";
+    private static final String ALLE = " Alle ";
 
     public DaysSpinner() {
         SpinnerListModel daySpinnerModel = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",

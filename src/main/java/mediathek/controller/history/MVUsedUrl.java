@@ -32,8 +32,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class MVUsedUrl {
     private static final Logger logger = LogManager.getLogger(MVUsedUrl.class);
-    private final static String TRENNER = "  |###|  ";
-    private final static String PAUSE = " |#| ";
+    private static final String TRENNER = "  |###|  ";
+    private static final String PAUSE = " |#| ";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final LocalDate datum;
     private final String thema;

@@ -68,7 +68,7 @@ public class DatenFilm implements Comparable<DatenFilm> {
     public static final char COMPRESSION_MARKER = '|';
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
-    private final static AtomicInteger FILMNR_GENERATOR = new AtomicInteger(0);
+    private static final AtomicInteger FILMNR_GENERATOR = new AtomicInteger(0);
     /**
      * List of countries which can view this film.
      */

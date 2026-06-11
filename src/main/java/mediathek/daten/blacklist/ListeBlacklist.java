@@ -289,7 +289,7 @@ public class ListeBlacklist extends ArrayList<BlacklistRule> {
         }
         return !bl_is_whitelist;
     }
-    final static private String[] EMPTY_STRING_ARRAY = {""};
+    private static final String[] EMPTY_STRING_ARRAY = {""};
 
     private String[] makePattern(String input) {
         return Filter.isPattern(input) ? new String[]{input} : input.toLowerCase().split(",");

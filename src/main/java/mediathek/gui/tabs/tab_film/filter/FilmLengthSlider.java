@@ -31,7 +31,7 @@ public class FilmLengthSlider extends RangeSlider {
     private static final Logger logger = LogManager.getLogger();
     private static final int MAX_FILM_LENGTH = 240;
     private static final int TICK_SPACING = 30;
-    public final static int UNLIMITED_VALUE = MAX_FILM_LENGTH;
+    public static final int UNLIMITED_VALUE = MAX_FILM_LENGTH;
 
     public FilmLengthSlider() {
         super(0, MAX_FILM_LENGTH);

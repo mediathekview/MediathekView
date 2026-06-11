@@ -105,7 +105,7 @@ public class PanelEinstellungenErweitert extends JPanel {
         jButtonProgrammShutdown.setIcon(icon);
     }
 
-    static private class BeobDoc implements DocumentListener {
+    private static class BeobDoc implements DocumentListener {
 
         final MVConfig.Configs config;
         final JTextField txt;
@@ -136,7 +136,7 @@ public class PanelEinstellungenErweitert extends JPanel {
 
     }
 
-    static private class BeobPfad implements ActionListener {
+    private static class BeobPfad implements ActionListener {
 
         final MVConfig.Configs config;
         final String title;

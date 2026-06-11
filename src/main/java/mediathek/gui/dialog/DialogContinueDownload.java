@@ -23,7 +23,7 @@ public class DialogContinueDownload extends JDialog {
     private final MVPanelDownloadZiel mVPanelDownloadZiel;
     private final Timer countdownTimer;
     private final boolean direkterDownload;
-    final private JFrame parent;
+    private final JFrame parent;
 
     public DialogContinueDownload(JFrame pparent, DatenDownload datenDownload, boolean ddirekterDownload) {
         // "weiterführen"

@@ -77,7 +77,7 @@ public class Konstanten {
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
     public static final String JSON_DATEI_FILME = "filme.json";
     public static final String BOOKMARK_FILE = "bookmarks.json";
-    public final static String SHUTDOWN_LINUX = "shutdown -h now";
+    public static final String SHUTDOWN_LINUX = "shutdown -h now";
 
     /**
      * Minimum file size which won´t be regarded as an error.
