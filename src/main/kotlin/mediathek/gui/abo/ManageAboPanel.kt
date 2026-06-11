@@ -191,7 +191,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
             copy.mindestDauerMinuten = mindestDauerMinuten
             copy.filmLengthState = filmLengthState
             copy.zielpfad = zielpfad
-            copy.downDatum = downDatum
+            copy.downloadDate = downloadDate
             copy.psetName = psetName
             copy.isDoNotStartAutomatically = isDoNotStartAutomatically
         }
@@ -573,7 +573,7 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
             foreground = if (isSelected) {
                 table.selectionForeground
             } else {
-                colorForDate(abo?.downDatum) ?: table.foreground
+                colorForDate(abo?.downloadDate) ?: table.foreground
             }
 
             return this

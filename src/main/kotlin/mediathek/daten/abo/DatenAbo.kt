@@ -50,7 +50,7 @@ class DatenAbo : Comparable<DatenAbo> {
     var themaTitel: String = ""
     var irgendwo: String = ""
     var zielpfad: String = ""
-    var downDatum: LocalDate? = null
+    var downloadDate: LocalDate? = null
     var psetName: String = ""
     var isDoNotStartAutomatically: Boolean = false
 
@@ -59,22 +59,22 @@ class DatenAbo : Comparable<DatenAbo> {
      */
     var filmLengthState: FilmLengthState = FilmLengthState.MINIMUM
 
-    val downDatumText: String
-        get() = downDatum?.format(DateUtil.FORMATTER).orEmpty()
+    val downloadDateText: String
+        get() = downloadDate?.format(DateUtil.FORMATTER).orEmpty()
 
     val isInvalid: Boolean
         get() = isInvalidFilter(sender, thema, title, themaTitel, irgendwo)
 
-    fun setDownDatum(datum: String?) {
+    private fun readDownloadDate(datum: String?) {
         if (datum.isNullOrBlank()) {
-            downDatum = null
+            downloadDate = null
             return
         }
 
-        downDatum = try {
+        downloadDate = try {
             LocalDate.parse(datum, DateUtil.FORMATTER)
         } catch (ex: DateTimeParseException) {
-            logger.error("Invalid down date: {}", datum, ex)
+            logger.error("Invalid download date: {}", datum, ex)
             null
         }
     }
@@ -99,7 +99,7 @@ class DatenAbo : Comparable<DatenAbo> {
         writeElement(writer, AboTags.MINDESTDAUER.xmlName, mindestDauerMinuten.toString())
         writeElement(writer, AboTags.MIN.xmlName, (filmLengthState == FilmLengthState.MINIMUM).toString())
         writeElement(writer, AboTags.ZIELPFAD.xmlName, zielpfad)
-        writeElement(writer, AboTags.DOWN_DATUM.xmlName, downDatumText)
+        writeElement(writer, AboTags.DOWN_DATUM.xmlName, downloadDateText)
         writeElement(writer, AboTags.PSET.xmlName, psetName)
         writeElement(writer, AboTags.DO_NOT_START_AUTOMATICALLY.xmlName, isDoNotStartAutomatically.toString())
 
@@ -148,7 +148,7 @@ class DatenAbo : Comparable<DatenAbo> {
                 AboTags.IRGENDWO -> irgendwo = text
                 AboTags.MINDESTDAUER -> readMindestdauer(text)
                 AboTags.ZIELPFAD -> zielpfad = text
-                AboTags.DOWN_DATUM -> setDownDatum(text)
+                AboTags.DOWN_DATUM -> readDownloadDate(text)
                 AboTags.PSET -> psetName = text
                 AboTags.DO_NOT_START_AUTOMATICALLY -> isDoNotStartAutomatically = text.toBoolean()
             }

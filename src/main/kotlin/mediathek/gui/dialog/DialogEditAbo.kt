@@ -175,7 +175,7 @@ class DialogEditAbo(
 
     private fun bindPathAndProgramSetFields() {
         comboboxPfad.selectedItem = aktAbo.zielpfad
-        labelDownDatumValue.text = aktAbo.downDatum?.format(DateUtil.FORMATTER).orEmpty()
+        labelDownDatumValue.text = aktAbo.downloadDate?.format(DateUtil.FORMATTER).orEmpty()
         comboboxPSet.selectedItem = aktAbo.psetName
         // falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
         aktAbo.psetName = selectedComboBoxValue(comboboxPSet)

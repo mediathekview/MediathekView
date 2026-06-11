@@ -286,7 +286,7 @@ class ListeDownloads : LinkedList<DatenDownload>() {
                 }
 
                 // diesen Film in die Downloadliste eintragen
-                abo.downDatum = today
+                abo.downloadDate = today
                 if (abo.psetName != pset.name) {
                     // nur den Namen anpassen, falls geändert
                     abo.psetName = pset.name

@@ -100,7 +100,7 @@ class AboTableFormat(
             DatenAbo.ABO_MINDESTDAUER -> baseObject.mindestDauerMinuten
             DatenAbo.ABO_MIN -> if (baseObject.filmLengthState == FilmLengthState.MINIMUM) "min" else "max"
             DatenAbo.ABO_ZIELPFAD -> baseObject.zielpfad
-            DatenAbo.ABO_DOWN_DATUM -> baseObject.downDatum
+            DatenAbo.ABO_DOWN_DATUM -> baseObject.downloadDate
             DatenAbo.ABO_PSET -> baseObject.psetName
             DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY -> baseObject.isDoNotStartAutomatically
             DatenAbo.ABO_FILM_COUNT -> filmCountProvider(baseObject)
