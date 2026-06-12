@@ -112,17 +112,29 @@ class ApplicationFilmListConfiguration(
 
     private companion object {
         private const val DEFAULT_LUCENE_DIRECTORY_MODE = "auto"
+        @field:ApplicationConfigKey
         private const val LUCENE_DIRECTORY_MODE = "lucene.directory.mode"
+        @field:ApplicationConfigKey
         private const val FILM_SHOW_DESCRIPTION = "film.show_description"
+        @field:ApplicationConfigKey
         private const val FILM_EVALUATE_DUPLICATES = "film.evaluate_duplicates"
+        @field:ApplicationConfigKey
         private const val FILMLIST_APPROVED_FOR_LOAD = "filmlist.approved_for_load"
+        @field:ApplicationConfigKey
         private const val FILMLIST_UPDATE_TYPE = "filmlist.update.type"
+        @field:ApplicationConfigKey
         private const val FILMLIST_MANUAL_IMPORT_URL = "filmlist.manual_import.url"
+        @field:ApplicationConfigKey
         private const val FILMLIST_LOAD_TRAILER = "filmlist.load.trailer"
+        @field:ApplicationConfigKey
         private const val FILMLIST_LOAD_AUDIO_DESCRIPTION = "filmlist.load.audio_description"
+        @field:ApplicationConfigKey
         private const val FILMLIST_LOAD_SIGN_LANGUAGE = "filmlist.load.sign_language"
+        @field:ApplicationConfigKey
         private const val FILMLIST_LOAD_NUM_DAYS = "filmlist.load.days"
+        @field:ApplicationConfigKey
         private const val FILMLIST_LOAD_LIVESTREAMS = "filmlist.load.livestreams"
+        @field:ApplicationConfigKey
         private const val FILMLIST_EXTEND_OLD_FILMLIST = "filmlist.extend_old_filmlist"
     }
 }

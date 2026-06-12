@@ -30,7 +30,12 @@ import org.apache.commons.configuration2.io.FileHandler
 import org.apache.commons.configuration2.sync.LockMode
 import org.apache.commons.configuration2.sync.ReadWriteSynchronizer
 import org.apache.logging.log4j.LogManager
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.atomic.AtomicReference
@@ -863,9 +868,9 @@ class ApplicationConfiguration private constructor() {
     private fun writeVersionMetadata() {
         config.withLock(LockMode.WRITE) {
             val version = Konstanten.MVVERSION
-            setProperty("config.major", version.major)
-            setProperty("config.minor", version.minor)
-            setProperty("config.patch", version.patch)
+            setProperty(CONFIG_MAJOR, version.major)
+            setProperty(CONFIG_MINOR, version.minor)
+            setProperty(CONFIG_PATCH, version.patch)
         }
     }
 
@@ -882,9 +887,40 @@ class ApplicationConfiguration private constructor() {
         }
     }
 
-    private fun withWriterLock(action: () -> Unit) {
-        writerLock.withLock(action)
+    fun cleanupConfiguration(dryRun: Boolean): ApplicationConfigurationCleanupStatistics {
+        config.removeEventListener(ConfigurationEvent.ANY, timerTaskListener)
+        return try {
+            withWriterLock {
+                timedEventWritingEnabled = false
+                cancelPendingWriterTask(mayInterruptIfRunning = true)
+
+                val settingsPath = StandardLocations.getApplicationSettingsFile()
+                val backupPath = if (dryRun) null else createSettingsBackup(settingsPath)
+                val statistics = ApplicationConfigurationCleanupService(config).cleanup(settingsPath, backupPath, dryRun)
+                if (!dryRun) {
+                    handler.save()
+                }
+                statistics
+            }
+        } finally {
+            writerLock.withLock {
+                timedEventWritingEnabled = true
+                config.addEventListener(ConfigurationEvent.ANY, timerTaskListener)
+            }
+        }
     }
+
+    private fun createSettingsBackup(settingsPath: Path): Path? {
+        if (Files.notExists(settingsPath)) {
+            return null
+        }
+        val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
+        val backupPath = settingsPath.resolveSibling("${settingsPath.fileName}.cleanup-backup-$timestamp")
+        Files.copy(settingsPath, backupPath, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING)
+        return backupPath
+    }
+
+    private fun <T> withWriterLock(action: () -> T): T = writerLock.withLock(action)
 
     private fun cancelPendingWriterTask(mayInterruptIfRunning: Boolean) {
         future?.cancel(mayInterruptIfRunning)
@@ -1164,6 +1200,15 @@ class ApplicationConfiguration private constructor() {
 
     companion object {
         private val logger = LogManager.getLogger()
+
+        @field:ApplicationConfigKey
+        private const val CONFIG_MAJOR = "config.major"
+
+        @field:ApplicationConfigKey
+        private const val CONFIG_MINOR = "config.minor"
+
+        @field:ApplicationConfigKey
+        private const val CONFIG_PATCH = "config.patch"
 
         @JvmStatic
         fun getInstance(): ApplicationConfiguration = ConfigHolder.INSTANCE

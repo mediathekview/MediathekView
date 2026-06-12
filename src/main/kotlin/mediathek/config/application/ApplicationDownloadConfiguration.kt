@@ -148,20 +148,38 @@ class ApplicationDownloadConfiguration(
 
     private companion object {
         private const val DEFAULT_DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD = false
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_SHOW_LAST_USED_PATH = "download.path.last_used.show"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_SAVED_TARGET_PATHS = "download.path.saved_targets"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_SOUND_BEEP = "download.sound.beep"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_SHOW_ERROR_MESSAGE = "download.error_message.show"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_START_IMMEDIATELY = "download.start_immediately"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_SHOW_DESCRIPTION = "download.show_description"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_DISPLAY_FILTER = "download.display_filter"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_VIEW_FILTER = "download.view_filter"
+        @field:ApplicationConfigKeyPattern(
+            pattern = """^download\.toolbar\.state\.[^.]+\.(floating|x|y|orientation)$""",
+            description = "Persisted floating toolbar state keyed by toolbar id.",
+        )
         private const val DOWNLOAD_TOOLBAR_STATE_PREFIX = "download.toolbar.state."
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_MAX_SIMULTANEOUS_NUM = "download.max_simultaneous.number"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_FETCH_FILE_SIZE = "download.fetch_file_size"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_CONTINUATION_TIME = "download.continuation.time"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_USE_CDN_AWARE_DIRECT_DOWNLOAD = "download.cdn_aware_direct_download.use"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_RATE_LIMIT = "download.rate.limit"
+        @field:ApplicationConfigKey
         private const val DOWNLOAD_RATE_LIMIT_ACTIVE = "download.rate.active"
     }
 }

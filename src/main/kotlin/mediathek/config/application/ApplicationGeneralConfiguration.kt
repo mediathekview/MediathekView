@@ -124,16 +124,27 @@ class ApplicationGeneralConfiguration(
     private companion object {
         private val logger = LogManager.getLogger()
 
+        @field:ApplicationConfigKey
         private const val APPLICATION_DARK_MODE = "application.dark_mode"
+        @field:ApplicationConfigKey
         private const val APPLICATION_USE_SYSTEM_DARK_MODE = "application.use_system_dark_mode"
+        @field:ApplicationConfigKey
         private const val APPLICATION_USER_AGENT = "application.user_agent"
+        @field:ApplicationConfigKey
         private const val NEW_SENDER_ACTIVATION_QUESTION_COMPLETED = "newSendersActivated.fourteen.three"
+        @field:ApplicationConfigKey
         private const val NEW_FILM_LENGTH_ACTIVATION_QUESTION_COMPLETED = "newFilmlengthActivated.fourteen.three"
+        @field:ApplicationConfigKey
         private const val PROGRAM_INFORMATION_DISPLAYED_NUMBER = "program_information.displayed_number"
+        @field:ApplicationConfigKey
         private const val SEEN_HISTORY_MAINTENANCE_LAST_RUN = "database.seen_history.maintenance.lastRun"
+        @field:ApplicationConfigKey
         private const val APPLICATION_SHOW_NOTIFICATIONS = "application.notifications.show"
+        @field:ApplicationConfigKey
         private const val APPLICATION_SHOW_ORF_CONFIG_HELP = "application.orf.show_config_help"
+        @field:ApplicationConfigKey
         private const val CONFIG_AUTOMATIC_UPDATE_CHECK = "application.automatic_update_check"
+        @field:ApplicationConfigKey
         private const val GEO_LOCATION = "geo.location"
     }
 }

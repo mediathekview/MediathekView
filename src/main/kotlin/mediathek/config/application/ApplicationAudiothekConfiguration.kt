@@ -48,9 +48,13 @@ class ApplicationAudiothekConfiguration(
         }
 
     private companion object {
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_SHOW_AUDIOTHEK = "application.ui.audiothek.show"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_AUDIOTHEK_TABLE_STATE = "application.ui.audiothek.table.state"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_AUDIOTHEK_ONLINE_SEARCH = "application.ui.audiothek.online_search"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_AUDIOTHEK_SEARCH_HISTORY = "application.ui.audiothek.search.history"
     }
 }

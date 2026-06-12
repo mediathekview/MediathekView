@@ -107,15 +107,25 @@ class ApplicationExternalProgramsConfiguration(
         }
 
     private companion object {
+        @field:ApplicationConfigKey
         private const val APPLICATION_JDOWNLOADER_URL = "application.jdownloader.url"
+        @field:ApplicationConfigKey
         private const val APPLICATION_DIRECTORY_OPEN_PROGRAM = "application.directory_open.program"
+        @field:ApplicationConfigKey
         private const val APPLICATION_VIDEO_PLAYER_PROGRAM = "application.video_player.program"
+        @field:ApplicationConfigKey
         private const val APPLICATION_WEB_BROWSER_PROGRAM = "application.web_browser.program"
+        @field:ApplicationConfigKey
         private const val APPLICATION_LINUX_SHUTDOWN_COMMAND = "application.linux.shutdown.command"
+        @field:ApplicationConfigKey
         private const val APPLICATION_STANDARD_VLC_PATH = "application.standard_programs.vlc.path"
+        @field:ApplicationConfigKey
         private const val APPLICATION_STANDARD_FFMPEG_PATH = "application.standard_programs.ffmpeg.path"
+        @field:ApplicationConfigKey
         private const val APPLICATION_PYLOAD_URL = "application.pyload.url"
+        @field:ApplicationConfigKey
         private const val APPLICATION_PYLOAD_USER = "application.pyload.user"
+        @field:ApplicationConfigKey
         private const val APPLICATION_PYLOAD_PASSWORD = "application.pyload.password"
     }
 }

@@ -63,12 +63,19 @@ class ApplicationBlacklistConfiguration(
         }
 
     private companion object {
+        @field:ApplicationConfigKey
         private const val BLACKLIST_FILTER_DUPLICATES = "blacklist.filter_duplicates"
+        @field:ApplicationConfigKey
         private const val BLACKLIST_IS_ON = "blacklist.is_on"
+        @field:ApplicationConfigKey
         private const val BLACKLIST_DO_NOT_SHOW_GEOBLOCKED_FILMS = "blacklist.show_geoblocked"
+        @field:ApplicationConfigKey
         private const val BLACKLIST_DO_NOT_SHOW_FUTURE_FILMS = "blacklist.show_future_films.disable"
+        @field:ApplicationConfigKey
         private const val BLACKLIST_APPLY_TO_ABO = "blacklist.apply_to_abo"
+        @field:ApplicationConfigKey
         private const val BLACKLIST_IS_WHITELIST = "blacklist.is_whitelist"
+        @field:ApplicationConfigKey
         private const val BLACKLIST_MINIMUM_FILM_LENGTH_MINUTES = "blacklist.minimum_film_length.minutes"
     }
 }

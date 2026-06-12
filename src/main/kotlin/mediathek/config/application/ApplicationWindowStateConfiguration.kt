@@ -450,80 +450,141 @@ class ApplicationWindowStateConfiguration(
     }
 
     private companion object {
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MAINWINDOW_MAXIMIZED = "application.ui.mainwindow.maximized"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MAINWINDOW_WIDTH = "application.ui.mainwindow.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MAINWINDOW_HEIGHT = "application.ui.mainwindow.height"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MAINWINDOW_LOCATION_X = "application.ui.mainwindow.location.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MAINWINDOW_LOCATION_Y = "application.ui.mainwindow.location.y"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BANDWIDTH_MONITOR_VISIBLE = "application.ui.bandwidth_monitor.visible"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BANDWIDTH_MONITOR_X = "bandwidth_monitor.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BANDWIDTH_MONITOR_Y = "bandwidth_monitor.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BANDWIDTH_MONITOR_WIDTH = "bandwidth_monitor.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BANDWIDTH_MONITOR_HEIGHT = "bandwidth_monitor.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MEMORY_MONITOR_VISIBLE = "memory_monitor.visible"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MEMORY_MONITOR_X = "memory_monitor.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MEMORY_MONITOR_Y = "memory_monitor.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MEMORY_MONITOR_WIDTH = "memory_monitor.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MEMORY_MONITOR_HEIGHT = "memory_monitor.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILM_INFO_VISIBLE = "film.information.visible"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILM_INFO_X = "film.information.location.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILM_INFO_Y = "film.information.location.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILM_INFO_WIDTH = "film.information.location.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILM_INFO_HEIGHT = "film.information.location.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_LOAD_FILM_LIST_DIALOG_X = "dialog.load_filmlist.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_LOAD_FILM_LIST_DIALOG_Y = "dialog.load_filmlist.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_LOAD_FILM_LIST_DIALOG_WIDTH = "dialog.load_filmlist.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_LOAD_FILM_LIST_DIALOG_HEIGHT = "dialog.load_filmlist.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_SETTINGS_DIALOG_X = "application.ui.settings_dialog.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_SETTINGS_DIALOG_Y = "application.ui.settings_dialog.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_SETTINGS_DIALOG_WIDTH = "application.ui.settings_dialog.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_SETTINGS_DIALOG_HEIGHT = "application.ui.settings_dialog.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILTER_DIALOG_VISIBLE = "application.ui.filter_dialog.visible"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILTER_DIALOG_X = "application.ui.filter_dialog.location.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILTER_DIALOG_Y = "application.ui.filter_dialog.location.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILTER_DIALOG_WIDTH = "application.ui.filter_dialog.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_FILTER_DIALOG_HEIGHT = "application.ui.filter_dialog.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_DOWNLOAD_DIALOG_X = "edit_download_dialog.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_DOWNLOAD_DIALOG_Y = "edit_download_dialog.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_DOWNLOAD_DIALOG_WIDTH = "edit_download_dialog.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_DOWNLOAD_DIALOG_HEIGHT = "edit_download_dialog.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_ADD_DOWNLOAD_DIALOG_X = "application.ui.adddownload_dialog.location.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_ADD_DOWNLOAD_DIALOG_Y = "application.ui.adddownload_dialog.location.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_ADD_DOWNLOAD_DIALOG_WIDTH = "application.ui.adddownload_dialog.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_ADD_DOWNLOAD_DIALOG_HEIGHT = "application.ui.adddownload_dialog.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MANAGE_ABO_DIALOG_X = "manage_abo_dialog.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MANAGE_ABO_DIALOG_Y = "manage_abo_dialog.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MANAGE_ABO_DIALOG_WIDTH = "manage_abo_dialog.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_MANAGE_ABO_DIALOG_HEIGHT = "manage_abo_dialog.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_FILM_DETAILS_DIALOG_X = "duplicate_film_details_dialog.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_FILM_DETAILS_DIALOG_Y = "duplicate_film_details_dialog.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_FILM_DETAILS_DIALOG_WIDTH = "duplicate_film_details_dialog.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_FILM_DETAILS_DIALOG_HEIGHT = "duplicate_film_details_dialog.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_STATISTICS_DIALOG_X = "duplicate_statistics_dialog.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_STATISTICS_DIALOG_Y = "duplicate_statistics_dialog.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_STATISTICS_DIALOG_WIDTH = "duplicate_statistics_dialog.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_DUPLICATE_STATISTICS_DIALOG_HEIGHT = "duplicate_statistics_dialog.height"
 
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_HISTORY_DIALOG_X = "edit_history.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_HISTORY_DIALOG_Y = "edit_history.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_HISTORY_DIALOG_WIDTH = "edit_history.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_EDIT_HISTORY_DIALOG_HEIGHT = "edit_history.height"
 
         const val APPLICATION_UI_BOOKMARK_DIALOG_PREFIX = "ui.bookmark-dialog"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BOOKMARK_DIALOG_X = "$APPLICATION_UI_BOOKMARK_DIALOG_PREFIX.x"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BOOKMARK_DIALOG_Y = "$APPLICATION_UI_BOOKMARK_DIALOG_PREFIX.y"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BOOKMARK_DIALOG_WIDTH = "$APPLICATION_UI_BOOKMARK_DIALOG_PREFIX.width"
+        @field:ApplicationConfigKey
         const val APPLICATION_UI_BOOKMARK_DIALOG_HEIGHT = "$APPLICATION_UI_BOOKMARK_DIALOG_PREFIX.height"
     }
 }

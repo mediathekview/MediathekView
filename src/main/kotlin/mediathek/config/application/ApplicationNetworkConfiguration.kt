@@ -72,10 +72,15 @@ class ApplicationNetworkConfiguration(
     private companion object {
         private const val APPLICATION_DEBUG_HTTP_TRAFFIC_TRACE_LEVEL =
             "application.debug.http_traffic_trace_level"
+        @field:ApplicationConfigKey
         private const val APPLICATION_NETWORKING_DNS_MODE = "application.networking.dns.ip_mode"
+        @field:ApplicationConfigKey
         private const val HTTP_PROXY_HOST = "http.proxy.hostname"
+        @field:ApplicationConfigKey
         private const val HTTP_PROXY_PORT = "http.proxy.port"
+        @field:ApplicationConfigKey
         private const val HTTP_PROXY_USER = "http.proxy.user"
+        @field:ApplicationConfigKey
         private const val HTTP_PROXY_PASSWORD = "http.proxy.password"
     }
 }

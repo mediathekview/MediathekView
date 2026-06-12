@@ -158,24 +158,39 @@ class ApplicationMainWindowConfiguration(
         }
 
     private companion object {
+        @field:ApplicationConfigKey
         private const val TOOLBAR_BLACKLIST_ICON_WITH_TEXT = "toolbar.blacklist_icon.text"
+        @field:ApplicationConfigKey
         private const val UI_TAB_FILME_TIME_USE_LONG_FORMAT = "ui.tab.filme.time_use_long_format"
+        @field:ApplicationConfigKey
         private const val APPLICATION_INSTALL_TAB_SWITCH_LISTENER = "application.ui.install_tab_listeners"
+        @field:ApplicationConfigKey
         private const val APPLICATION_RESTORE_SELECTED_TAB = "application.ui.restore_selected_tab"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_SELECTED_TAB = "app.ui.tab_position"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_TAB_POSITION_TOP = "application.ui.tab_position.top"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_MAINWINDOW_TAB_ICONS = "application.ui.mainwindow.tab_icons"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_EXIT_DIALOG_ACTION = "application.ui.exit_dialog.action"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_USE_TRAY = "application.ui.tray.use"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS = "application.ui.zapp.show"
         private const val APPLICATION_UI_DEFAULT_FONT_FAMILY = "ui.default_font.family"
         private const val APPLICATION_UI_DEFAULT_FONT_SIZE = "ui.default_font.size"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_LOCAL_SENDER_ICONS = "application.sender_icons.use_local"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_LIST_ICON_POSITION_RIGHT = "ui.list.iconposition_right"
         private const val APPLICATION_UI_PROGRAM_SET_SHOW_ALL_SETTINGS =
             "application.ui.program_set.show_all_settings"
+        @field:ApplicationConfigKey
         private const val PROGRAM_SET_STANDARD_VERSION = "program_set.standard.version"
+        @field:ApplicationConfigKey
         private const val APPLICATION_BUTTONS_PANEL_VISIBLE = "application.buttons_panel.visible"
+        @field:ApplicationConfigKey
         private const val SENDER_LIST_VERTICAL_WRAP = "senderlist.vertical_wrap"
     }
 }

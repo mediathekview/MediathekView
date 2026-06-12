@@ -52,9 +52,13 @@ class ApplicationAboAndFilenameConfiguration(
         }
 
     private companion object {
+        @field:ApplicationConfigKey
         private const val ABO_DEFAULT_MINIMUM_DURATION_MINUTES = "abo.default_minimum_duration.minutes"
+        @field:ApplicationConfigKey
         private const val ABO_SEARCH_IMMEDIATELY = "abo.search_immediately"
+        @field:ApplicationConfigKey
         private const val FILENAME_USE_REPLACE_TABLE = "filename.use_replace_table"
+        @field:ApplicationConfigKey
         private const val FILENAME_ONLY_ASCII = "filename.only_ascii"
     }
 }

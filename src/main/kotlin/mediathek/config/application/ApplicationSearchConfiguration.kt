@@ -46,8 +46,15 @@ class ApplicationSearchConfiguration(
         if (luceneSearch) "$SEARCH_HISTORY_ITEMS$SEARCH_HISTORY_LUCENE_SUFFIX" else SEARCH_HISTORY_ITEMS
 
     private companion object {
+        @field:ApplicationConfigKey
         private const val APPLICATION_USE_MODERN_SEARCH = "application.use.modern_search"
+        @field:ApplicationConfigKey
         private const val SEARCH_USE_FILM_DESCRIPTIONS = "searchfield.film.search_through_description"
+        @field:ApplicationConfigKey
+        @field:ApplicationConfigKeyPattern(
+            pattern = """^search\.history\.items(_lucene)?$""",
+            description = "Search history key with optional Lucene suffix.",
+        )
         private const val SEARCH_HISTORY_ITEMS = "search.history.items"
         private const val SEARCH_HISTORY_LUCENE_SUFFIX = "_lucene"
     }

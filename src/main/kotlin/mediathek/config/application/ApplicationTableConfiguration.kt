@@ -115,21 +115,36 @@ class ApplicationTableConfiguration(
         "$configPrefix$TABLE_COLUMN_SETTINGS_SUFFIX"
 
     private companion object {
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_FILM_TABLE_LINEBREAK = "application.ui.film_table.linebreak"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_DOWNLOAD_TABLE_LINEBREAK = "application.ui.download_table.linebreak"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_FILM_TABLE_SHOW_SENDER_ICONS = "application.ui.film_table.sender_icons.show"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_FILM_TABLE_USE_SMALL_SENDER_ICONS = "application.ui.film_table.sender_icons.small"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_DOWNLOAD_TABLE_SHOW_SENDER_ICONS =
             "application.ui.download_table.sender_icons.show"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_DOWNLOAD_TABLE_USE_SMALL_SENDER_ICONS =
             "application.ui.download_table.sender_icons.small"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_ABO_TABLE_SHOW_SENDER_ICONS = "application.ui.abo_table.sender_icons.show"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_ABO_TABLE_USE_SMALL_SENDER_ICONS = "application.ui.abo_table.sender_icons.small"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_FILM_TABLE_COLUMN_CONFIGURATION =
             "application.ui.film_table.column_configuration"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_DOWNLOAD_TABLE_COLUMN_CONFIGURATION =
             "application.ui.download_table.column_configuration"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_ABO_TABLE_COLUMN_CONFIGURATION = "application.ui.abo_table.column_configuration"
+        @field:ApplicationConfigKeyPattern(
+            pattern = """^(ui\.bookmark-dialog|abo|abo-v3)\.(sortKeys|colummn-settings)$""",
+            description = "Persisted table sorting and column settings keyed by known table prefixes.",
+        )
         private const val TABLE_SORT_KEYS_SUFFIX = ".sortKeys"
         private const val TABLE_COLUMN_SETTINGS_SUFFIX = ".colummn-settings"
     }

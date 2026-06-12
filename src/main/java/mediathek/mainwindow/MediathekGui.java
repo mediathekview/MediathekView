@@ -1048,6 +1048,8 @@ public class MediathekGui extends JFrame {
         var menu = new JMenu("Hilfsmittel");
         menu.add(new OptimizeHistoryDbAction(this));
         menu.add(new RecoverHistoryDbAction(this));
+        menu.addSeparator();
+        menu.add(new CleanupApplicationConfigurationAction(this));
         jMenuHilfe.add(menu);
     }
 

@@ -549,8 +549,17 @@ open class FilterConfiguration protected constructor(
     }
 
     companion object {
+        @field:ApplicationConfigKey
         const val FILTER_PANEL_CURRENT_FILTER = "filter.current.filter"
+        @field:ApplicationConfigKeyPattern(
+            pattern = """^filter\.available\.filters\.filter_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$""",
+            description = "Persisted filter names keyed by filter UUID.",
+        )
         const val FILTER_PANEL_AVAILABLE_FILTERS = "filter.available.filters.filter_"
+        @field:ApplicationConfigKeyPattern(
+            pattern = """^filter\.filter_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\.(locked|show\.hd_only|show\.subtitles_only|show\.book_marked_only|show\.new_only|show\.unseen_only|show\.livestreams_only|dont_show\.abos|dont_show\.geoblocked|dont_show\.trailers|dont_show\.sign_language|dont_show\.audio_versions|film_length\.min|film_length\.max|zeitraum|dont_show_duplicates|checked_channels|thema)$""",
+            description = "Persisted current filter settings keyed by filter UUID.",
+        )
         const val FILTER_PANEL_LOCKED = "filter.filter_%s.locked"
         private val JSON_STRING_PATTERN = Pattern.compile("\"((?:\\\\.|[^\"])*)\"")
         private val LOG = LogManager.getLogger(FilterConfiguration::class.java)
