@@ -29,6 +29,7 @@ import mediathek.gui.messages.FilmListReadStartEvent
 import mediathek.gui.messages.FilmListReadStopEvent
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 import kotlin.coroutines.cancellation.CancellationException
@@ -42,8 +43,9 @@ class StartupFilmlistLoader(
     private val progressLabel: JLabel,
     private val progressBar: JProgressBar,
     private val completion: StartupFilmlistLoadCompletion,
-) {
+) : AutoCloseable {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val closed = AtomicBoolean(false)
 
     fun start() {
         scope.launch {
@@ -62,8 +64,10 @@ class StartupFilmlistLoader(
                 logger.error("loadFilmlist()", ex)
                 failed = true
             } finally {
-                withContext(NonCancellable + Dispatchers.Swing) {
-                    completion.complete(remoteUpdateStarted, failed)
+                if (!closed.get()) {
+                    withContext(NonCancellable + Dispatchers.Swing) {
+                        completion.complete(remoteUpdateStarted, failed)
+                    }
                 }
             }
         }
@@ -90,6 +94,12 @@ class StartupFilmlistLoader(
 
     private suspend fun runPostLoadTasks() =
         FilmlistPostLoadTasks(daten, progressLabel, progressBar).run(writeFilmList = false)
+
+    override fun close() {
+        if (closed.compareAndSet(false, true)) {
+            scope.cancel()
+        }
+    }
 
     private companion object {
         private val logger = LogManager.getLogger()

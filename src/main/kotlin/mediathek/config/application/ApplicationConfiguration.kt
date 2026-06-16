@@ -60,6 +60,7 @@ class ApplicationConfiguration private constructor() {
     private val searchConfiguration = ApplicationSearchConfiguration(config)
     private val tableConfiguration = ApplicationTableConfiguration(config)
     private val audiothekConfiguration = ApplicationAudiothekConfiguration(config)
+    private val onlineSearchConfiguration = ApplicationOnlineSearchConfiguration(config)
     private val aboAndFilenameConfiguration = ApplicationAboAndFilenameConfiguration(config)
     private val mainWindowConfiguration = ApplicationMainWindowConfiguration(config)
     private val generalConfiguration = ApplicationGeneralConfiguration(config)
@@ -821,6 +822,36 @@ class ApplicationConfiguration private constructor() {
         get() = audiothekConfiguration.audiothekTableState
         set(value) {
             audiothekConfiguration.audiothekTableState = value
+        }
+
+    var onlineSearchTabVisible: Boolean
+        get() = onlineSearchConfiguration.onlineSearchTabVisible
+        set(value) {
+            onlineSearchConfiguration.onlineSearchTabVisible = value
+        }
+
+    var onlineSearchArdSearchHistory: String
+        get() = onlineSearchConfiguration.ardSearchHistory
+        set(value) {
+            onlineSearchConfiguration.ardSearchHistory = value
+        }
+
+    var onlineSearchArdUrlHistory: String
+        get() = onlineSearchConfiguration.ardUrlHistory
+        set(value) {
+            onlineSearchConfiguration.ardUrlHistory = value
+        }
+
+    var onlineSearchZdfSearchHistory: String
+        get() = onlineSearchConfiguration.zdfSearchHistory
+        set(value) {
+            onlineSearchConfiguration.zdfSearchHistory = value
+        }
+
+    var onlineSearchZdfUrlHistory: String
+        get() = onlineSearchConfiguration.zdfUrlHistory
+        set(value) {
+            onlineSearchConfiguration.zdfUrlHistory = value
         }
 
     val mainWindowMaximized: Boolean

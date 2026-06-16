@@ -64,6 +64,7 @@
 - **FEATURE:** *Abos verwalten*-Dialog besitzt nun eine Spalte `Filme`, die berechnet wieviele Filme durch das Abo erkannt werden *könnten*. Es werden keine History, etc. in der Berechnung berücksichtigt. Werden keine Filme erkannt wird der Wert in Rot dargestellt.
 - **FEATURE:** Blacklist-Regeln werden beim Programmstart aus der alten Konfiguration in die Datei `blacklist-rules.json` migriert wenn diese noch nicht existiert.
 - **FEATURE:** Unter *Hilfe/Hilfsmittel/Konfiguration bereinigen...* kann die Programmkonfiguration von veralteten Einstellungen durch den Nutzer bereinigt werden.
+- **FEATURE:** Online-Suche für ARD und ZDF wurde im Tab `Onlinesuche` integriert. 
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.

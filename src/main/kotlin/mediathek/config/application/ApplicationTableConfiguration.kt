@@ -33,7 +33,7 @@ class ApplicationTableConfiguration(
 
     fun getTableColumnSettings(configPrefix: String): String? =
         config.withLock(LockMode.READ) {
-            getString(tableColumnSettingsKey(configPrefix))
+            getString(tableColumnSettingsKey(configPrefix), "")
         }
 
     fun setTableColumnSettings(configPrefix: String, json: String) {
@@ -142,7 +142,7 @@ class ApplicationTableConfiguration(
         @field:ApplicationConfigKey
         private const val APPLICATION_UI_ABO_TABLE_COLUMN_CONFIGURATION = "application.ui.abo_table.column_configuration"
         @field:ApplicationConfigKeyPattern(
-            pattern = """^(ui\.bookmark-dialog|abo|abo-v3)\.(sortKeys|colummn-settings)$""",
+            pattern = """^(ui\.bookmark-dialog|abo|abo-v3|online-search)\.(sortKeys|colummn-settings)$""",
             description = "Persisted table sorting and column settings keyed by known table prefixes.",
         )
         private const val TABLE_SORT_KEYS_SUFFIX = ".sortKeys"

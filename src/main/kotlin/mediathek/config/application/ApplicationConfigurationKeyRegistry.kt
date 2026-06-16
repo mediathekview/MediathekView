@@ -31,6 +31,7 @@ object AnnotatedApplicationConfigurationKeyRegistry : ApplicationConfigurationKe
         ApplicationGeneralConfiguration::class.java,
         ApplicationFilmListConfiguration::class.java,
         ApplicationAudiothekConfiguration::class.java,
+        ApplicationOnlineSearchConfiguration::class.java,
         ApplicationDownloadConfiguration::class.java,
         ApplicationAboAndFilenameConfiguration::class.java,
         FilterConfiguration::class.java,

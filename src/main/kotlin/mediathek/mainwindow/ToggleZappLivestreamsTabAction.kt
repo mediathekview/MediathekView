@@ -24,7 +24,7 @@ import javax.swing.JTabbedPane
 
 private const val ACTION_TITLE = "Zapp Livestreams Tab ein-/ausblenden"
 private const val TAB_TITLE = "zapp Livestreams"
-private const val PREFERRED_INSERT_INDEX = 2
+private const val PREFERRED_INSERT_INDEX = 3
 
 class ToggleZappLivestreamsTabAction(
     tabbedPane: JTabbedPane,

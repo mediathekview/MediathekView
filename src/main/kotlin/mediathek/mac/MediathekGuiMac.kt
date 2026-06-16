@@ -203,12 +203,8 @@ class MediathekGuiMac : MediathekGui(
         desktop.disableSuddenTermination()
         if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
             desktop.setQuitHandler { _: QuitEvent?, response: QuitResponse ->
-                if (!quitApplication()) {
-                    response.cancelQuit()
-                } else {
-                    //should never be reached from quitApplication()
-                    response.performQuit()
-                }
+                quitApplication()
+                response.cancelQuit()
             }
         }
         if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {

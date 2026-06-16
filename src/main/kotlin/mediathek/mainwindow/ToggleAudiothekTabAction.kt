@@ -24,7 +24,7 @@ import javax.swing.JTabbedPane
 
 private const val ACTION_TITLE = "Audiothek Tab ein-/ausblenden"
 private const val TAB_TITLE = "Audiothek"
-private const val PREFERRED_INSERT_INDEX = 3
+private const val PREFERRED_INSERT_INDEX = 4
 
 class ToggleAudiothekTabAction(
     tabbedPane: JTabbedPane,
