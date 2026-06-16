@@ -499,6 +499,12 @@ class ApplicationConfiguration private constructor() {
             tableConfiguration.aboTableColumnConfiguration = value
         }
 
+    var blacklistTableColumnConfiguration: String
+        get() = tableConfiguration.blacklistTableColumnConfiguration
+        set(value) {
+            tableConfiguration.blacklistTableColumnConfiguration = value
+        }
+
     var filmListUpdateType: Int
         get() = filmListConfiguration.filmListUpdateType
         set(value) {

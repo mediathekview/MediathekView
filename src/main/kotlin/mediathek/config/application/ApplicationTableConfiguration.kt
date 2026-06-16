@@ -108,6 +108,12 @@ class ApplicationTableConfiguration(
             config.setProperty(APPLICATION_UI_ABO_TABLE_COLUMN_CONFIGURATION, newValue)
         }
 
+    var blacklistTableColumnConfiguration: String
+        get() = config.getString(APPLICATION_UI_BLACKLIST_TABLE_COLUMN_CONFIGURATION, "")
+        set(newValue) {
+            config.setProperty(APPLICATION_UI_BLACKLIST_TABLE_COLUMN_CONFIGURATION, newValue)
+        }
+
     private fun tableSortKeysKey(configPrefix: String): String =
         "$configPrefix$TABLE_SORT_KEYS_SUFFIX"
 
@@ -141,6 +147,9 @@ class ApplicationTableConfiguration(
             "application.ui.download_table.column_configuration"
         @field:ApplicationConfigKey
         private const val APPLICATION_UI_ABO_TABLE_COLUMN_CONFIGURATION = "application.ui.abo_table.column_configuration"
+        @field:ApplicationConfigKey
+        private const val APPLICATION_UI_BLACKLIST_TABLE_COLUMN_CONFIGURATION =
+            "application.ui.blacklist_table.column_configuration"
         @field:ApplicationConfigKeyPattern(
             pattern = """^(ui\.bookmark-dialog|abo|abo-v3|online-search)\.(sortKeys|colummn-settings)$""",
             description = "Persisted table sorting and column settings keyed by known table prefixes.",

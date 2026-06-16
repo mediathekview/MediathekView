@@ -189,8 +189,7 @@ class IoXmlLesen(
         try {
             val rule = LegacyBlacklistRuleXml.readRule(parser)
             if (readLegacyBlacklistRule) {
-                daten.listeBlacklist.addWithoutNotification(rule)
-                return true
+                return daten.listeBlacklist.addWithoutNotification(rule)
             }
         } catch (ex: XMLStreamException) {
             logger.error("Failed to read blacklist rule", ex)
@@ -222,7 +221,7 @@ class IoXmlLesen(
 
     private fun readBlacklistRulesFromJson() {
         try {
-            daten.listeBlacklist.addAll(BlacklistRuleStorage.read(blacklistRuleStoragePath))
+            daten.listeBlacklist.addAllWithoutNotification(BlacklistRuleStorage.read(blacklistRuleStoragePath))
         } catch (ex: Exception) {
             logger.error("Failed to read blacklist rules from {}", blacklistRuleStoragePath, ex)
         }

@@ -37,16 +37,24 @@ new FormModel {
 						"value": "cell 0 4,growy"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {space :p:68:p, par t {comp jLabel6:::p::p, comp jLabel5:::p::p}, space :p::p, par l {comp jComboBoxSender::l::714:x, comp jComboBoxThema:::::x}}, seq l {par t {comp jLabel2:::p::p, comp jLabel8::t:p::p}, space :p::p, par l {comp jTextFieldTitel::l:::x, comp jTextFieldThemaTitel:::::x}}, seq t {space :0:622:x, comp jButtonAendern:3::p::p, space :::p, comp jButtonHinzufuegen:3::p::p}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel5::b:p::p, comp jComboBoxSender:2:b:p::p}, space u:::p, par b {comp jLabel6::b:p::p, comp jComboBoxThema:2:b:p::p}, space u:::p, par b {comp jLabel8::b:p::p, comp jTextFieldTitel:2:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldThemaTitel:2:b:p::p}, space :::p, par b {comp jButtonHinzufuegen::b:p::p, comp jButtonAendern::b:p::p}, space :::x}}"
+							"$horizontalGroup": "par l {seq {space :::p, par l {seq l {space :p:68:p, comp jCheckBoxRuleActive:::p::p}, seq l {space :p:68:p, par t {comp jLabel6:::p::p, comp jLabel5:::p::p}, space :p::p, par l {comp jComboBoxSender::l::714:x, comp jComboBoxThema:::::x}}, seq l {par t {comp jLabel2:::p::p, comp jLabel8::t:p::p}, space :p::p, par l {comp jTextFieldTitel::l:::x, comp jTextFieldThemaTitel:::::x}}, seq t {space :0:622:x, comp jButtonAendern:3::p::p, space :::p, comp jButtonHinzufuegen:3::p::p}}, space :::p}}"
+							"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxRuleActive:::p::p, space u:::p, par b {comp jLabel5::b:p::p, comp jComboBoxSender:2:b:p::p}, space u:::p, par b {comp jLabel6::b:p::p, comp jComboBoxThema:2:b:p::p}, space u:::p, par b {comp jLabel8::b:p::p, comp jTextFieldTitel:2:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldThemaTitel:2:b:p::p}, space :::p, par b {comp jButtonHinzufuegen::b:p::p, comp jButtonAendern::b:p::p}, space :::x}}"
 					} ) {
 						name: "jPanel4"
 						"border": new javax.swing.border.TitledBorder( "Sender, Thema, Titel oder Thema/Titel:" )
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "jLabel5"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JCheckBox" ) {
+								name: "jCheckBoxRuleActive"
+								"selected": true
+								"text": "Aktiv"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
+							} )
+							add( new FormComponent( "javax.swing.JLabel" ) {
+								name: "jLabel5"
 							"text": "Sender:"
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
@@ -197,7 +205,7 @@ new FormModel {
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 						"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
-						"$columnConstraints": "[fill][grow,fill][fill]"
+						"$columnConstraints": "[fill][grow,fill][fill][fill]"
 						"$rowConstraints": "[grow,center]"
 					} ) {
 						name: "panel1"
@@ -235,6 +243,15 @@ new FormModel {
 							"value": "cell 0 0"
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonDeactivateZeroFilterRules"
+							"toolTipText": "Deaktiviert alle aktiven Regeln, die aktuell keine Treffer filtern."
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 0"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonTabelleLoeschen"
 							"toolTipText": "Alle Einträge löschen"
 							"text": "Alle Einträge löschen"
@@ -242,7 +259,7 @@ new FormModel {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-							"value": "cell 2 0"
+							"value": "cell 3 0"
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 5"

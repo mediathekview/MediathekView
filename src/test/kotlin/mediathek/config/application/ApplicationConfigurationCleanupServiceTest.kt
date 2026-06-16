@@ -48,6 +48,7 @@ class ApplicationConfigurationCleanupServiceTest {
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.ui.download_table.sender_icons.show"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.ui.download_table.sender_icons.small"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.ui.film_table.column_configuration"))
+        assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.ui.blacklist_table.column_configuration"))
 
         assertFalse(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("filter.filter_not-a-uuid.show.new_only"))
         assertFalse(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("obsolete.application.key"))

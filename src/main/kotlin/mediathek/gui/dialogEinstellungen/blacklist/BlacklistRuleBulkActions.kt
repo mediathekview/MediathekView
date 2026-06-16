@@ -16,8 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.gui.messages
+package mediathek.gui.dialogEinstellungen.blacklist
 
-class BlacklistAboSettingChangedEvent(
-    val source: Any,
-) : BaseEvent()
+import mediathek.daten.blacklist.ListeBlacklist
+
+internal object BlacklistRuleBulkActions {
+    fun deactivateActiveRulesWithZeroFilteredCount(
+        blacklist: ListeBlacklist,
+        tableModel: BlacklistRuleTableModel,
+    ): List<Int> {
+        val changedRows = mutableListOf<Int>()
+        for (modelIndex in 0 until tableModel.rowCount) {
+            val rule = tableModel.getRule(modelIndex)
+            if (rule.active && tableModel.hasZeroFilteredCount(modelIndex)) {
+                if (blacklist.replaceAtIfUniqueWithoutNotification(modelIndex, rule.copy(active = false))) {
+                    changedRows += modelIndex
+                }
+            }
+        }
+        return changedRows
+    }
+}

@@ -18,6 +18,15 @@
 
 package mediathek.gui.dialogEinstellungen.blacklist
 
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
 import mediathek.config.Konstanten
@@ -29,9 +38,11 @@ import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.dialog.DialogHilfe
 import mediathek.gui.messages.BlacklistAboSettingChangedEvent
 import mediathek.gui.messages.BlacklistChangedEvent
+import mediathek.swing.IconUtils
 import mediathek.tool.*
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
+import org.kordamp.ikonli.materialdesign2.MaterialDesignF
 import java.awt.Color
 import java.awt.Component
 import java.awt.event.MouseAdapter
@@ -47,29 +58,32 @@ import javax.swing.table.TableStringConverter
 class PanelBlacklist(
     private val daten: Daten,
     private val parentComponent: JFrame?,
-    private val name: String,
 ) : PanelBlacklistBase() {
-    var ok: Boolean = false
-
-    private val tableModel = BlacklistRuleTableModel(daten.listeBlacklist) {
-        synchronized(daten.listeFilme) {
-            daten.listeFilme.toList()
-        }
-    }
+    private val aboSettingEventSource = Any()
+    private val tableModel = BlacklistRuleTableModel(daten.listeBlacklist)
     private val filmLoadListener = object : ListenerFilmeLaden() {
         override fun fertig(event: ListenerFilmeLadenEvent) {
             comboThemaLaden()
-            tableModel.refreshFilteredCounts()
+            scheduleFilteredCountRefresh()
         }
     }
+    private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    private var filteredCountRefreshJob: Job? = null
+    private var filteredCountRefreshSequence = 0
+    private var blacklistRefreshJob: Job? = null
+    private var blacklistRefreshSequence = 0
     private var listenersRegistered = false
+    private lateinit var tableColumnSettings: BlacklistRuleTableColumnSettings
 
     init {
         jButtonHilfe.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
+        jButtonDeactivateZeroFilterRules.icon = IconUtils.of(MaterialDesignF.FILTER_OFF_OUTLINE)
 
         jButtonAendern.isEnabled = jTableBlacklist.selectionModel.selectedItemsCount == 1
 
         jTableBlacklist.model = tableModel
+        tableColumnSettings = BlacklistRuleTableColumnSettings(jTableBlacklist)
+        tableColumnSettings.restore()
         setupTableRenderer()
 
         tableModel.addTableModelListener { jButtonTabelleLoeschen.isEnabled = tableModel.rowCount != 0 }
@@ -85,7 +99,7 @@ class PanelBlacklist(
 
         jCheckBoxGeo.addActionListener {
             ApplicationConfiguration.getInstance().blacklistDoNotShowGeoblockedFilms = jCheckBoxGeo.isSelected
-            notifyBlacklistChanged()
+            scheduleBlacklistSettingsChanged()
         }
 
         initPanelState()
@@ -103,6 +117,8 @@ class PanelBlacklist(
     }
 
     override fun removeNotify() {
+        tableColumnSettings.save()
+        cancelScheduledRefreshes()
         unregisterListeners()
         super.removeNotify()
     }
@@ -123,6 +139,13 @@ class PanelBlacklist(
         MessageBus.messageBus.unsubscribe(this)
         daten.filmeLaden.removeAdListener(filmLoadListener)
         listenersRegistered = false
+    }
+
+    private fun cancelScheduledRefreshes() {
+        filteredCountRefreshJob?.cancel()
+        filteredCountRefreshJob = null
+        blacklistRefreshJob?.cancel()
+        blacklistRefreshJob = null
     }
 
     private fun setupTableRenderer() {
@@ -179,6 +202,7 @@ class PanelBlacklist(
     }
 
     private fun resetRuleEntryFields() {
+        jCheckBoxRuleActive.isSelected = true
         jTextFieldTitel.text = ""
         jTextFieldThemaTitel.text = ""
         jComboBoxThema.selectedItem = ""
@@ -192,7 +216,7 @@ class PanelBlacklist(
 
     @Handler
     private fun handleBlacklistAboSettingChangedEvent(event: BlacklistAboSettingChangedEvent) {
-        if (event.sourceName != name) {
+        if (event.source !== aboSettingEventSource) {
             SwingUtilities.invokeLater(::initPanelState)
         }
     }
@@ -211,7 +235,54 @@ class PanelBlacklist(
 
         jSliderMinuten.value = applicationConfiguration.blacklistMinimumFilmLengthMinutes
 
-        tableModel.refreshFilteredCounts()
+        scheduleFilteredCountRefresh()
+    }
+
+    private fun scheduleFilteredCountRefresh() {
+        uiScope.launch {
+            val refreshSequence = ++filteredCountRefreshSequence
+            filteredCountRefreshJob?.cancel()
+            filteredCountRefreshJob = launch {
+                try {
+                    val counts = withContext(Dispatchers.Default) {
+                        tableModel.calculateFilteredCounts(daten.listeFilme.snapshot())
+                    }
+                    if (refreshSequence == filteredCountRefreshSequence) {
+                        tableModel.applyFilteredCounts(counts)
+                    }
+                } catch (exception: CancellationException) {
+                    throw exception
+                } catch (exception: Exception) {
+                    logger.error("Failed to refresh blacklist filtered counts", exception)
+                }
+            }
+        }
+    }
+
+    private fun scheduleBlacklistFilterRefresh() {
+        uiScope.launch {
+            val refreshSequence = ++blacklistRefreshSequence
+            blacklistRefreshJob?.cancel()
+            blacklistRefreshJob = launch {
+                try {
+                    withContext(Dispatchers.Default) {
+                        daten.listeBlacklist.filterListe()
+                    }
+                    if (refreshSequence == blacklistRefreshSequence) {
+                        MessageBus.messageBus.publishAsync(BlacklistChangedEvent())
+                    }
+                } catch (exception: CancellationException) {
+                    throw exception
+                } catch (exception: Exception) {
+                    logger.error("Failed to refresh blacklist filter", exception)
+                }
+            }
+        }
+    }
+
+    private fun scheduleBlacklistRulesChanged() {
+        scheduleFilteredCountRefresh()
+        scheduleBlacklistFilterRefresh()
     }
 
     private fun initBehavior() {
@@ -225,26 +296,27 @@ class PanelBlacklist(
         jRadioButtonWhitelist.isSelected = ApplicationConfiguration.getInstance().blacklistWhitelistMode
         jRadioButtonWhitelist.addActionListener {
             ApplicationConfiguration.getInstance().blacklistWhitelistMode = jRadioButtonWhitelist.isSelected
-            notifyBlacklistChanged()
+            scheduleBlacklistSettingsChanged()
         }
         jRadioButtonBlacklist.addActionListener {
             ApplicationConfiguration.getInstance().blacklistWhitelistMode = jRadioButtonWhitelist.isSelected
-            notifyBlacklistChanged()
+            scheduleBlacklistSettingsChanged()
         }
         jCheckBoxZukunftNichtAnzeigen.addActionListener {
             ApplicationConfiguration.getInstance().blacklistDoNotShowFutureFilms = jCheckBoxZukunftNichtAnzeigen.isSelected
-            notifyBlacklistChanged()
+            scheduleBlacklistSettingsChanged()
         }
         jCheckBoxAbo.addActionListener {
             ApplicationConfiguration.getInstance().blacklistApplyToAbo = jCheckBoxAbo.isSelected
-            MessageBus.messageBus.publishAsync(BlacklistAboSettingChangedEvent(name))
+            MessageBus.messageBus.publishAsync(BlacklistAboSettingChangedEvent(aboSettingEventSource))
         }
         jCheckBoxBlacklistEingeschaltet.addActionListener {
             ApplicationConfiguration.getInstance().isBlacklistEnabled = jCheckBoxBlacklistEingeschaltet.isSelected
-            notifyBlacklistChanged()
+            scheduleBlacklistSettingsChanged()
         }
         jButtonHinzufuegen.addActionListener { onAddBlacklistRule() }
         jButtonAendern.addActionListener { onChangeBlacklistRule() }
+        jButtonDeactivateZeroFilterRules.addActionListener { onDeactivateZeroFilterRules() }
         jButtonHilfe.addActionListener {
             DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BLACKLIST)).isVisible = true
         }
@@ -256,10 +328,14 @@ class PanelBlacklist(
                 JOptionPane.YES_NO_OPTION,
             )
             if (result == JOptionPane.OK_OPTION) {
-                tableModel.removeAll()
+                if (daten.listeBlacklist.isNotEmpty()) {
+                    daten.listeBlacklist.clearWithoutNotification()
+                    tableModel.rulesChanged()
+                    scheduleBlacklistRulesChanged()
+                }
             }
         }
-        jComboBoxSender.addActionListener { comboThemaLaden() }
+        jComboBoxSender.addActionListener { comboThemaLaden("") }
 
         val documentListener = object : DocumentListener {
             override fun insertUpdate(event: DocumentEvent) = validatePatternInput()
@@ -291,7 +367,7 @@ class PanelBlacklist(
             updateMinimumLengthText()
             if (!jSliderMinuten.valueIsAdjusting) {
                 ApplicationConfiguration.getInstance().blacklistMinimumFilmLengthMinutes = jSliderMinuten.value
-                notifyBlacklistChanged()
+                scheduleBlacklistSettingsChanged()
             }
         }
 
@@ -318,21 +394,48 @@ class PanelBlacklist(
         val topic = requireNotNull(jComboBoxThema.selectedItem).toString()
         val title = jTextFieldTitel.text.trim()
         val topicTitle = jTextFieldThemaTitel.text.trim()
+        val active = jCheckBoxRuleActive.isSelected
         if (sender.isNotEmpty() || topic.isNotEmpty() || title.isNotEmpty() || topicTitle.isNotEmpty()) {
             val selectedTableRow = jTableBlacklist.selectedRow
             if (selectedTableRow != -1) {
                 val modelIndex = jTableBlacklist.convertRowIndexToModel(selectedTableRow)
-                tableModel.updateRule(modelIndex, BlacklistRule(sender, topic, title, topicTitle))
+                if (!daten.listeBlacklist.replaceAtIfUniqueWithoutNotification(
+                        modelIndex,
+                        BlacklistRule(sender, topic, title, topicTitle, active),
+                    )
+                ) {
+                    showDuplicateRuleMessage()
+                } else {
+                    tableModel.ruleUpdated(modelIndex)
+                    scheduleBlacklistRulesChanged()
+                }
             }
         }
     }
 
-    private fun notifyBlacklistChanged() {
-        daten.listeBlacklist.filterListe()
-        MessageBus.messageBus.publishAsync(BlacklistChangedEvent())
+    private fun onDeactivateZeroFilterRules() {
+        val changedRows = BlacklistRuleBulkActions.deactivateActiveRulesWithZeroFilteredCount(
+            daten.listeBlacklist,
+            tableModel,
+        )
+        for (modelIndex in changedRows) {
+            tableModel.ruleUpdated(modelIndex)
+        }
+        if (changedRows.isNotEmpty()) {
+            fillControlsWithRuleData()
+            scheduleBlacklistRulesChanged()
+        }
+    }
+
+    private fun scheduleBlacklistSettingsChanged() {
+        scheduleBlacklistFilterRefresh()
     }
 
     private fun comboThemaLaden() {
+        comboThemaLaden(jComboBoxThema.selectedItem?.toString().orEmpty())
+    }
+
+    private fun comboThemaLaden(selectedTopic: String) {
         val filterSender = requireNotNull(jComboBoxSender.selectedItem).toString()
 
         val topics = daten.listeFilme.getThemen(filterSender)
@@ -341,7 +444,11 @@ class PanelBlacklist(
         for (topic in topics) {
             model.addElement(topic)
         }
+        if (selectedTopic.isNotEmpty() && !topics.contains(selectedTopic)) {
+            model.addElement(selectedTopic)
+        }
         jComboBoxThema.model = model
+        jComboBoxThema.selectedItem = selectedTopic
     }
 
     private fun fillControlsWithRuleData() {
@@ -349,7 +456,9 @@ class PanelBlacklist(
         if (selectedTableRow != -1) {
             val modelIndex = jTableBlacklist.convertRowIndexToModel(selectedTableRow)
             val rule = tableModel.getRule(modelIndex)
+            jCheckBoxRuleActive.isSelected = rule.active
             jComboBoxSender.selectedItem = rule.sender
+            comboThemaLaden(rule.thema)
             jComboBoxThema.selectedItem = rule.thema
             jTextFieldTitel.text = rule.titel
             jTextFieldThemaTitel.text = rule.thema_titel
@@ -361,20 +470,27 @@ class PanelBlacklist(
         val topic = requireNotNull(jComboBoxThema.selectedItem).toString()
         val title = jTextFieldTitel.text.trim()
         val topicTitle = jTextFieldThemaTitel.text.trim()
+        val active = jCheckBoxRuleActive.isSelected
 
         if (sender.isNotEmpty() || topic.isNotEmpty() || title.isNotEmpty() || topicTitle.isNotEmpty()) {
-            val rule = BlacklistRule(sender, topic, title, topicTitle)
-            if (!tableModel.contains(rule)) {
-                tableModel.addRule(rule)
+            val rule = BlacklistRule(sender, topic, title, topicTitle, active)
+            val rowIndex = daten.listeBlacklist.size
+            if (daten.listeBlacklist.addWithoutNotification(rule)) {
+                tableModel.ruleInserted(rowIndex)
                 resetRuleEntryFields()
+                scheduleBlacklistRulesChanged()
             } else {
-                val message = """
-                    Es existiert bereits eine gleichlautende Regel.
-                    Es dürfen keine Duplikate in der Liste vorkommen.
-                """.trimIndent()
-                JOptionPane.showMessageDialog(this, message, Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE)
+                showDuplicateRuleMessage()
             }
         }
+    }
+
+    private fun showDuplicateRuleMessage() {
+        val message = """
+            Es existiert bereits eine gleichlautende Regel.
+            Es dürfen keine Duplikate in der Liste vorkommen.
+        """.trimIndent()
+        JOptionPane.showMessageDialog(this, message, Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE)
     }
 
     private inner class BlacklistTableMouseHandler : MouseAdapter() {
@@ -394,13 +510,38 @@ class PanelBlacklist(
             val selectedIndices = jTableBlacklist.selectionModel.selectedIndices
             if (selectedIndices.size == 1) {
                 val modelIndex = jTableBlacklist.convertRowIndexToModel(selectedIndices[0])
-                tableModel.removeRow(modelIndex)
+                daten.listeBlacklist.removeAtWithoutNotification(modelIndex)
+                tableModel.ruleRemoved(modelIndex)
+                scheduleBlacklistRulesChanged()
             } else {
                 val rules = selectedIndices.map { selectedRow ->
                     val modelIndex = jTableBlacklist.convertRowIndexToModel(selectedRow)
                     tableModel.getRule(modelIndex)
                 }
-                tableModel.removeRules(rules)
+                if (daten.listeBlacklist.removeAllWithoutNotification(rules)) {
+                    tableModel.rulesChanged()
+                    scheduleBlacklistRulesChanged()
+                }
+            }
+        }
+
+        private fun onToggleBlacklistRulesActive() {
+            val selectedIndices = jTableBlacklist.selectionModel.selectedIndices
+                .map(jTableBlacklist::convertRowIndexToModel)
+                .distinct()
+            selectedIndices.forEach { modelIndex ->
+                val rule = tableModel.getRule(modelIndex)
+                if (daten.listeBlacklist.replaceAtIfUniqueWithoutNotification(
+                        modelIndex,
+                        rule.copy(active = !rule.active),
+                    )
+                ) {
+                    tableModel.ruleUpdated(modelIndex)
+                }
+            }
+            if (selectedIndices.isNotEmpty()) {
+                fillControlsWithRuleData()
+                scheduleBlacklistRulesChanged()
             }
         }
 
@@ -414,6 +555,10 @@ class PanelBlacklist(
             }
 
             val menu = JPopupMenu()
+            val toggleActiveItem = JMenuItem("Aktiv umschalten")
+            toggleActiveItem.addActionListener { onToggleBlacklistRulesActive() }
+            menu.add(toggleActiveItem)
+
             val menuText = if (jTableBlacklist.selectedRowCount > 1) "Zeilen löschen" else "Zeile löschen"
             val item = JMenuItem(menuText)
             item.addActionListener { onRemoveBlacklistRules() }

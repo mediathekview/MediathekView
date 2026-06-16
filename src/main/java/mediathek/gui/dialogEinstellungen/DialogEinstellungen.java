@@ -160,7 +160,7 @@ public class DialogEinstellungen extends JFrame {
                     }
                     case NAME_blacklist -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelBlacklist(daten, this, PanelBlacklist.class.getName()));
+                        jPanelExtra.add(new PanelBlacklist(daten, this));
                     }
                     case NAME_aufzeichnen -> jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
                     case NAME_dateiname -> {

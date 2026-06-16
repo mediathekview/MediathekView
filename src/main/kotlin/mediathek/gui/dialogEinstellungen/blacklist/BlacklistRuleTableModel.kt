@@ -26,13 +26,8 @@ import javax.swing.table.AbstractTableModel
 
 class BlacklistRuleTableModel(
     private val blacklist: ListeBlacklist,
-    private val filmsSupplier: () -> List<DatenFilm>,
 ) : AbstractTableModel() {
     private var filteredCounts = IntArray(0)
-
-    init {
-        updateFilteredCounts()
-    }
 
     override fun getRowCount(): Int =
         blacklist.size
@@ -43,6 +38,7 @@ class BlacklistRuleTableModel(
     override fun getValueAt(rowIndex: Int, columnIndex: Int): Any {
         val rule = blacklist[rowIndex]
         return when (columnIndex) {
+            BLACKLIST_ACTIVE -> rule.active
             BLACKLIST_SENDER -> rule.sender
             BLACKLIST_THEMA -> rule.thema
             BLACKLIST_TITEL -> rule.titel
@@ -54,6 +50,7 @@ class BlacklistRuleTableModel(
 
     override fun getColumnName(column: Int): String =
         when (column) {
+            BLACKLIST_ACTIVE -> "aktiv"
             BLACKLIST_SENDER -> "Sender"
             BLACKLIST_THEMA -> "Thema"
             BLACKLIST_TITEL -> "Titel"
@@ -64,52 +61,38 @@ class BlacklistRuleTableModel(
 
     override fun getColumnClass(columnIndex: Int): Class<*> =
         when (columnIndex) {
+            BLACKLIST_ACTIVE -> Boolean::class.javaObjectType
             BLACKLIST_FILTERED -> Int::class.javaObjectType
             else -> String::class.java
         }
 
-    fun removeRow(modelIndex: Int) {
-        blacklist.removeAt(modelIndex)
-        updateFilteredCounts()
+    fun ruleRemoved(modelIndex: Int) {
         fireTableRowsDeleted(modelIndex, modelIndex)
     }
 
-    fun removeRules(rules: List<BlacklistRule>) {
-        blacklist.remove(rules)
-        updateFilteredCounts()
+    fun rulesChanged() {
         fireTableDataChanged()
     }
 
-    fun removeAll() {
-        blacklist.clear()
-        updateFilteredCounts()
-        fireTableDataChanged()
-    }
-
-    fun addRule(rule: BlacklistRule) {
-        val rowIndex = blacklist.size
-        blacklist.add(rule)
-        updateFilteredCounts()
+    fun ruleInserted(rowIndex: Int) {
         fireTableRowsInserted(rowIndex, rowIndex)
     }
 
-    fun contains(rule: BlacklistRule): Boolean =
-        blacklist.contains(rule)
-
-    fun updateRule(modelIndex: Int, updatedRule: BlacklistRule) {
-        val rule = blacklist[modelIndex]
-        rule.sender = updatedRule.sender
-        rule.thema = updatedRule.thema
-        rule.titel = updatedRule.titel
-        rule.thema_titel = updatedRule.thema_titel
-
-        blacklist.filterListAndNotifyListeners()
-        updateFilteredCounts()
+    fun ruleUpdated(modelIndex: Int) {
         fireTableRowsUpdated(modelIndex, modelIndex)
     }
 
-    fun refreshFilteredCounts() {
-        updateFilteredCounts()
+    fun calculateFilteredCounts(films: List<DatenFilm>): IntArray {
+        val rules = blacklistSnapshot()
+        return if (rules.isEmpty()) {
+            IntArray(0)
+        } else {
+            CompiledBlacklistMatcher(rules).countMatchesByRule(films)
+        }
+    }
+
+    fun applyFilteredCounts(counts: IntArray) {
+        filteredCounts = counts
         if (rowCount > 0) {
             fireTableRowsUpdated(0, rowCount - 1)
         }
@@ -122,35 +105,31 @@ class BlacklistRuleTableModel(
             rule.thema,
             rule.titel,
             rule.thema_titel,
+            rule.active,
         )
     }
 
-    fun hasNoFilteredFilms(modelIndex: Int): Boolean =
+    fun hasZeroFilteredCount(modelIndex: Int): Boolean =
         getFilteredCount(modelIndex) == 0
+
+    fun hasNoFilteredFilms(modelIndex: Int): Boolean =
+        hasZeroFilteredCount(modelIndex)
 
     private fun getFilteredCount(rowIndex: Int): Int =
         filteredCounts.getOrElse(rowIndex) { 0 }
-
-    private fun updateFilteredCounts() {
-        val rules = blacklistSnapshot()
-        filteredCounts = if (rules.isEmpty()) {
-            IntArray(0)
-        } else {
-            CompiledBlacklistMatcher(rules).countMatchesByRule(filmsSupplier())
-        }
-    }
 
     private fun blacklistSnapshot(): List<BlacklistRule> =
         synchronized(blacklist) {
             blacklist.toList()
         }
 
-    private companion object {
-        private const val BLACKLIST_SENDER = 0
-        private const val BLACKLIST_THEMA = 1
-        private const val BLACKLIST_TITEL = 2
-        private const val BLACKLIST_THEMA_TITEL = 3
-        private const val BLACKLIST_FILTERED = 4
-        private const val COLUMN_COUNT = 5
+    companion object {
+        internal const val BLACKLIST_ACTIVE = 0
+        internal const val BLACKLIST_SENDER = 1
+        internal const val BLACKLIST_THEMA = 2
+        internal const val BLACKLIST_TITEL = 3
+        internal const val BLACKLIST_THEMA_TITEL = 4
+        internal const val BLACKLIST_FILTERED = 5
+        internal const val COLUMN_COUNT = 6
     }
 }

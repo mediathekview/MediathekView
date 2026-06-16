@@ -33,7 +33,7 @@ class EditBlacklistAction(
     override fun actionPerformed(event: ActionEvent?) {
         object : StandardCloseDialog(parent, "Blacklist", true) {
             override fun createContentPanel(): JComponent =
-                PanelBlacklist(Daten.getInstance(), null, PanelBlacklist::class.java.name + "_3")
+                PanelBlacklist(Daten.getInstance(), null)
         }.apply {
             centerOnScreen()
             isVisible = true

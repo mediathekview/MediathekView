@@ -42,8 +42,9 @@ class OldConfigFileImporter {
                             } else if (importBlacklist && parser.localName == LegacyBlacklistRuleXml.TAG) {
                                 try {
                                     val rule = LegacyBlacklistRuleXml.readRule(parser)
-                                    daten.listeBlacklist.addWithoutNotification(rule)
-                                    foundBlacklistEntries++
+                                    if (daten.listeBlacklist.addWithoutNotification(rule)) {
+                                        foundBlacklistEntries++
+                                    }
                                 }
                                 catch (e: Exception) {
                                     logger.error("Failed to read blacklist rule", e)

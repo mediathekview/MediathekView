@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 internal class BlacklistRuleStorageTest {
     @TempDir
@@ -32,8 +33,44 @@ internal class BlacklistRuleStorageTest {
         assertTrue(json.contains("\"topic\": \"News\""))
         assertTrue(json.contains("\"title\": \"tagesschau\""))
         assertTrue(json.contains("\"topicTitle\": \"News tagesschau\""))
+        assertFalse(json.contains("\"active\""))
 
         assertEquals(listOf(rule), BlacklistRuleStorage.read(storagePath))
+    }
+
+    @Test
+    fun inactiveRuleRoundTripsWithActiveFalse() {
+        val storagePath = tempDir.resolve("blacklist-rules.json")
+        val rule = BlacklistRule(sender = "ARD", titel = "tagesschau", active = false)
+
+        BlacklistRuleStorage.write(storagePath, listOf(rule))
+        val json = storagePath.readText()
+
+        assertTrue(json.contains("\"active\": false"))
+        assertEquals(listOf(rule), BlacklistRuleStorage.read(storagePath))
+    }
+
+    @Test
+    fun missingActiveFieldReadsAsActiveRule() {
+        val storagePath = tempDir.resolve("blacklist-rules.json")
+        storagePath.writeText(
+            """
+            {
+                "version": 1,
+                "rules": [
+                    {
+                        "sender": "ARD",
+                        "title": "tagesschau"
+                    }
+                ]
+            }
+            """.trimIndent()
+        )
+
+        assertEquals(
+            listOf(BlacklistRule(sender = "ARD", titel = "tagesschau", active = true)),
+            BlacklistRuleStorage.read(storagePath),
+        )
     }
 
     @Test
@@ -44,7 +81,7 @@ internal class BlacklistRuleStorageTest {
             storagePath,
             listOf(
                 BlacklistRule(sender = "ARD", titel = "tagesschau"),
-                BlacklistRule(sender = "ARD", titel = "tagesschau"),
+                BlacklistRule(sender = "ARD", titel = "tagesschau", active = false),
             ),
         )
         val json = storagePath.readText()

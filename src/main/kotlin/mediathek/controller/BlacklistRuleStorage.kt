@@ -52,7 +52,7 @@ object BlacklistRuleStorage {
         try {
             val file = BlacklistRulesFileDto(
                 version = FILE_VERSION,
-                rules = rules.distinct().map(BlacklistRuleDto::fromRule),
+                rules = rules.distinctBy(BlacklistRule::criteria).map(BlacklistRuleDto::fromRule),
             )
             temporaryPath.writeText(json.encodeToString(file))
             FileUtils.moveAtomicallyWithFallback(temporaryPath, storagePath)
@@ -74,6 +74,7 @@ private data class BlacklistRuleDto(
     val topic: String = "",
     val title: String = "",
     val topicTitle: String = "",
+    val active: Boolean = true,
 ) {
     fun toRule(): BlacklistRule =
         BlacklistRule(
@@ -81,6 +82,7 @@ private data class BlacklistRuleDto(
             thema = topic,
             titel = title,
             thema_titel = topicTitle,
+            active = active,
         )
 
     companion object {
@@ -90,6 +92,7 @@ private data class BlacklistRuleDto(
                 topic = rule.thema,
                 title = rule.titel,
                 topicTitle = rule.thema_titel,
+                active = rule.active,
             )
     }
 }

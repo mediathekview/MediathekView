@@ -49,6 +49,25 @@ internal class ApplyBlacklistFilterPredicateTest {
     }
 
     @Test
+    fun inactiveBlacklistRuleDoesNotFilterFilm() {
+        val predicate = ApplyBlacklistFilterPredicate(
+            listOf(BlacklistRule("ARD", "News", "tagesschau", "", active = false))
+        )
+
+        assertTrue(predicate.test(film(sender = "ARD", thema = "news", title = "Tagesschau um acht")))
+    }
+
+    @Test
+    fun inactiveWhitelistRuleDoesNotKeepFilm() {
+        ApplicationConfiguration.getInstance().blacklistWhitelistMode = true
+        val predicate = ApplyBlacklistFilterPredicate(
+            listOf(BlacklistRule("ARD", "News", "tagesschau", "", active = false))
+        )
+
+        assertFalse(predicate.test(film(sender = "ARD", thema = "news", title = "Tagesschau um acht")))
+    }
+
+    @Test
     fun downloadsPredicateUsesCompiledSnapshot() {
         val blacklist = ListeBlacklist()
         blacklist.addWithoutNotification(BlacklistRule("ARD", "", "tagesschau", ""))
@@ -62,6 +81,16 @@ internal class ApplyBlacklistFilterPredicateTest {
 
         assertTrue(predicate.test(film(sender = "ZDF", thema = "News", title = "Heute Journal")))
         assertFalse(blacklist.createDownloadsPredicate().test(film(sender = "ZDF", thema = "News", title = "Heute Journal")))
+    }
+
+    @Test
+    fun downloadsPredicateIgnoresInactiveRules() {
+        val blacklist = ListeBlacklist()
+        blacklist.addWithoutNotification(BlacklistRule("ARD", "", "tagesschau", "", active = false))
+
+        val predicate = blacklist.createDownloadsPredicate()
+
+        assertTrue(predicate.test(film(sender = "ARD", thema = "News", title = "Tagesschau um acht")))
     }
 
     private fun film(sender: String, thema: String, title: String): DatenFilm =
