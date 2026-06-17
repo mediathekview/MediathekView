@@ -16,21 +16,22 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
 
-class ArdZdfOnlineSearchTest {
+class OnlineSearchPanelTest {
     @Test
     fun `panel contains sender selector and empty GlazedLists table`() {
-        val panel = ArdZdfOnlineSearch(TestOnlineSearchHost())
+        val panel = OnlineSearchPanel(TestOnlineSearchHost())
 
-        assertEquals(2, panel.senderComboBox.itemCount)
+        assertEquals(3, panel.senderComboBox.itemCount)
         assertEquals(OnlineSearchProvider.ARD, panel.senderComboBox.getItemAt(0))
         assertEquals(OnlineSearchProvider.ZDF, panel.senderComboBox.getItemAt(1))
+        assertEquals(OnlineSearchProvider.ARTE, panel.senderComboBox.getItemAt(2))
         assertEquals(150, panel.senderComboBox.maximumSize.width)
         assertEquals(0, panel.table.rowCount)
     }
 
     @Test
     fun `sender label aligns with search field labels`() {
-        val panel = ArdZdfOnlineSearch(TestOnlineSearchHost())
+        val panel = OnlineSearchPanel(TestOnlineSearchHost())
         SwingUtilities.invokeAndWait {
             panel.setSize(500, 300)
             panel.doLayoutRecursively()
@@ -45,7 +46,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `cancel button cancels running search`() = runBlocking {
         val service = BlockingOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -64,7 +65,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `cancelled stale search does not mark newer search idle`() = runBlocking {
         val service = DelayedCancellationOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -95,7 +96,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `clearing query field after text search clears table`() = runBlocking {
         val service = ResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -115,7 +116,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `clearing query field after multi-result text search clears all table rows and selection`() = runBlocking {
         val service = MultiResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -138,7 +139,7 @@ class ArdZdfOnlineSearchTest {
     fun `selected sender chooses search service`() = runBlocking {
         val ardService = ResultOnlineSearchService()
         val zdfService = ResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = ardService,
             zdfService = zdfService,
@@ -157,9 +158,58 @@ class ArdZdfOnlineSearchTest {
     }
 
     @Test
+    fun `selected ARTE sender chooses ARTE search service`() = runBlocking {
+        val ardService = ResultOnlineSearchService()
+        val zdfService = ResultOnlineSearchService()
+        val arteService = ResultOnlineSearchService()
+        val panel = OnlineSearchPanel(
+            host = TestOnlineSearchHost(),
+            ardService = ardService,
+            zdfService = zdfService,
+            arteService = arteService,
+        )
+
+        SwingUtilities.invokeAndWait {
+            panel.senderComboBox.selectedItem = OnlineSearchProvider.ARTE
+            panel.searchPanel.queryText = "tracks"
+            panel.searchPanel.searchButton.doClick()
+        }
+
+        waitForTableRows(panel, 1)
+        assertEquals(null, ardService.lastSearchQuery)
+        assertEquals(null, zdfService.lastSearchQuery)
+        assertEquals("tracks", arteService.lastSearchQuery)
+    }
+
+    @Test
+    fun `selected ARTE sender chooses ARTE url lookup service`() = runBlocking {
+        val ardService = ResultOnlineSearchService()
+        val zdfService = ResultOnlineSearchService()
+        val arteService = ResultOnlineSearchService()
+        val panel = OnlineSearchPanel(
+            host = TestOnlineSearchHost(),
+            ardService = ardService,
+            zdfService = zdfService,
+            arteService = arteService,
+        )
+        val url = "https://www.arte.tv/de/videos/118267-006-A/re-tatort-kirche-betroffene-klagen-an/"
+
+        SwingUtilities.invokeAndWait {
+            panel.senderComboBox.selectedItem = OnlineSearchProvider.ARTE
+            panel.searchPanel.urlText = url
+            panel.searchPanel.urlSearchButton.doClick()
+        }
+
+        waitForTableRows(panel, 1)
+        assertEquals(null, ardService.lastUrl)
+        assertEquals(null, zdfService.lastUrl)
+        assertEquals(url, arteService.lastUrl)
+    }
+
+    @Test
     fun `text search loads all pages automatically`() = runBlocking {
         val service = PaginatedOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -177,7 +227,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `text search publishes first page while later page is still loading`() = runBlocking {
         val service = BlockingSecondPageOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -198,7 +248,7 @@ class ArdZdfOnlineSearchTest {
 
     @Test
     fun `switching sender clears search fields`() {
-        val panel = ArdZdfOnlineSearch(TestOnlineSearchHost())
+        val panel = OnlineSearchPanel(TestOnlineSearchHost())
         val searchPanel = panel.searchPanel
 
         SwingUtilities.invokeAndWait {
@@ -215,7 +265,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `starting text search clears url field`() = runBlocking {
         val service = ResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -236,7 +286,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `starting url search clears query field`() = runBlocking {
         val service = ResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -258,7 +308,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `clearing url field after url search clears table`() = runBlocking {
         val service = ResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -278,7 +328,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `failed url search clears stale table results immediately`() = runBlocking {
         val service = FailingSecondUrlOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -300,7 +350,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `selecting query history starts text search`() = runBlocking {
         val service = ResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -318,7 +368,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `selecting url history starts url search`() = runBlocking {
         val service = ResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -337,7 +387,7 @@ class ArdZdfOnlineSearchTest {
     @Test
     fun `right-click inside existing table selection preserves multi-selection`() = runBlocking {
         val service = MultiResultOnlineSearchService()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = TestOnlineSearchHost(),
             ardService = service,
             zdfService = service,
@@ -360,7 +410,7 @@ class ArdZdfOnlineSearchTest {
     fun `double-click below table rows does not open stale selected result`() = runBlocking {
         val service = MultiResultOnlineSearchService()
         val host = TestOnlineSearchHost()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = host,
             ardService = service,
             zdfService = service,
@@ -384,7 +434,7 @@ class ArdZdfOnlineSearchTest {
     fun `double-click selected table row opens clicked row instead of first selected row`() = runBlocking {
         val service = MultiResultOnlineSearchService()
         val host = TestOnlineSearchHost()
-        val panel = ArdZdfOnlineSearch(
+        val panel = OnlineSearchPanel(
             host = host,
             ardService = service,
             zdfService = service,
@@ -432,7 +482,7 @@ private fun Container.findLabelOrNull(text: String): JLabel? = components.asSequ
 
 private fun JLabel.xIn(container: Container): Int = SwingUtilities.convertPoint(parent, x, y, container).x
 
-private fun triggerPopupOnRow(panel: ArdZdfOnlineSearch, row: Int) {
+private fun triggerPopupOnRow(panel: OnlineSearchPanel, row: Int) {
     val bounds = panel.table.getCellRect(row, 0, true)
     val event = MouseEvent(
         panel.table,
@@ -452,7 +502,7 @@ private fun triggerPopupOnRow(panel: ArdZdfOnlineSearch, row: Int) {
     }
 }
 
-private fun triggerDoubleClickBelowRows(panel: ArdZdfOnlineSearch) {
+private fun triggerDoubleClickBelowRows(panel: OnlineSearchPanel) {
     val lastRowBounds = panel.table.getCellRect(panel.table.rowCount - 1, 0, true)
     val event = MouseEvent(
         panel.table,
@@ -468,7 +518,7 @@ private fun triggerDoubleClickBelowRows(panel: ArdZdfOnlineSearch) {
     panel.table.mouseListeners.forEach { it.mouseClicked(event) }
 }
 
-private fun triggerDoubleClickOnRow(panel: ArdZdfOnlineSearch, row: Int) {
+private fun triggerDoubleClickOnRow(panel: OnlineSearchPanel, row: Int) {
     val bounds = panel.table.getCellRect(row, 0, true)
     val event = MouseEvent(
         panel.table,
@@ -484,7 +534,7 @@ private fun triggerDoubleClickOnRow(panel: ArdZdfOnlineSearch, row: Int) {
     panel.table.mouseListeners.forEach { it.mouseClicked(event) }
 }
 
-private suspend fun waitForTableRows(panel: ArdZdfOnlineSearch, rows: Int) {
+private suspend fun waitForTableRows(panel: OnlineSearchPanel, rows: Int) {
     withTimeout(2_000) {
         while (panel.table.rowCount != rows) {
             SwingUtilities.invokeAndWait { }

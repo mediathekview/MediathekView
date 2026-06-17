@@ -47,7 +47,7 @@ import mediathek.gui.progress.NoDownloadProgressIndicator;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
-import mediathek.gui.tabs.tab_online_search.ArdZdfOnlineSearch;
+import mediathek.gui.tabs.tab_online_search.OnlineSearchPanel;
 import mediathek.logging.LogDialog;
 import mediathek.shutdown.ComputerShutdown;
 import mediathek.sqlite.RecoverHistoryDbAction;
@@ -149,8 +149,8 @@ public class MediathekGui extends JFrame {
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel();
     private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams);
-    private final ArdZdfOnlineSearch tabOnlineSearch = new ArdZdfOnlineSearch(this);
-    private final ToggleArdZdfOnlineSearchTabAction toggleArdZdfOnlineSearchTabAction = new ToggleArdZdfOnlineSearchTabAction(tabbedPane, tabOnlineSearch);
+    private final OnlineSearchPanel tabOnlineSearch = new OnlineSearchPanel(this);
+    private final ToggleOnlineSearchTabAction toggleOnlineSearchTabAction = new ToggleOnlineSearchTabAction(tabbedPane, tabOnlineSearch);
     private final AudioRepository audiothekRepository = new AudioRepository();
     private final AudiothekPanel tabAudiothek = new AudiothekPanel(audiothekRepository);
     private final ToggleAudiothekTabAction toggleAudiothekTabAction = new ToggleAudiothekTabAction(tabbedPane, tabAudiothek);
@@ -1112,7 +1112,7 @@ public class MediathekGui extends JFrame {
 
     private void createViewMenu() {
         tabFilme.installViewMenuEntry(jMenuAnsicht);
-        jMenuAnsicht.add(toggleArdZdfOnlineSearchTabAction);
+        jMenuAnsicht.add(toggleOnlineSearchTabAction);
         jMenuAnsicht.add(toggleZappLivestreamsTabAction);
         jMenuAnsicht.add(toggleAudiothekTabAction);
         jMenuAnsicht.addSeparator();

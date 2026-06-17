@@ -189,7 +189,7 @@ class DialogEditDownload(
         }
 
         button.isEnabled = !gestartet
-        button.isSelected = datenDownload.downloadUrl == url
+        button.isSelected = datenDownload.selectedResolution == filmResolution
     }
 
     private fun setupResolutionButtonListeners() {
@@ -212,6 +212,7 @@ class DialogEditDownload(
     private fun changeRes() {
         val film = datenDownload.film ?: return
         val selectedResolution = selectedResolution()
+        datenDownload.selectedResolution = selectedResolution
         datenDownload.downloadUrl = film.getUrlFuerAufloesung(selectedResolution)
         urlField?.text = datenDownload.downloadUrl
 

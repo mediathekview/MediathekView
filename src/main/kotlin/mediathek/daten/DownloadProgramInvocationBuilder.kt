@@ -18,6 +18,9 @@
 
 package mediathek.daten
 
+import mediathek.controller.starter.RuntimeExec
+import mediathek.tool.ArteHlsQualitySelector
+
 internal data class DownloadInvocation(
     val command: String,
     val commandArray: String,
@@ -30,6 +33,7 @@ internal data class DownloadInvocationRequest(
     val targetFileName: String,
     val targetPathFileName: String,
     val websiteUrl: String,
+    val selectedResolution: FilmResolution.Enum? = null,
 )
 
 internal object DownloadProgramInvocationBuilder {
@@ -42,8 +46,11 @@ internal object DownloadProgramInvocationBuilder {
             DownloadInvocation(command = "", commandArray = "")
         } else {
             DownloadInvocation(
-                command = replaceExec(program.programmAufruf, request),
-                commandArray = replaceExec(program.programmAufrufArray, request),
+                command = replaceExec(program.programmAufruf.withArteHlsQualityMap(request, " "), request),
+                commandArray = replaceExec(
+                    program.programmAufrufArray.withArteHlsQualityMap(request, RuntimeExec.TRENNER_PROG_ARRAY),
+                    request,
+                ),
             )
         }
 
@@ -54,4 +61,19 @@ internal object DownloadProgramInvocationBuilder {
             .replace("%a", request.targetPath)
             .replace("%b", request.targetFileName)
             .replace("%w", request.websiteUrl)
+
+    private fun String.withArteHlsQualityMap(request: DownloadInvocationRequest, separator: String): String {
+        val programId = request.arteHlsProgramId() ?: return this
+        val inputMarker = "-i${separator}%f"
+        if (!contains(inputMarker) || contains("${separator}-map${separator}")) {
+            return this
+        }
+        return replace(
+            inputMarker,
+            "$inputMarker${separator}-map${separator}p:$programId${separator}-map${separator}-0:s",
+        )
+    }
+
+    private fun DownloadInvocationRequest.arteHlsProgramId(): Int? =
+        ArteHlsQualitySelector.programId(downloadUrl, selectedResolution)
 }

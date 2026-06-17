@@ -5,7 +5,6 @@ import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.TransactionList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.tabs.tab_film.startDownloads
 import mediathek.mainwindow.MediathekGui
@@ -19,10 +18,12 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.*
 
-class ArdZdfOnlineSearch(
+class OnlineSearchPanel(
     private val host: OnlineSearchHost,
     private val ardService: OnlineSearchService = ArdOnlineSearchService(),
     private val zdfService: OnlineSearchService = ZdfOnlineSearchService(),
+    private val arteService: OnlineSearchService = ArteOnlineSearchService(),
+    private val historyStore: OnlineSearchHistoryStore = ApplicationOnlineSearchHistoryStore,
 ) : JPanel(BorderLayout()) {
     constructor(mediathekGui: MediathekGui) : this(MediathekGuiOnlineSearchHost(mediathekGui))
 
@@ -103,8 +104,12 @@ class ArdZdfOnlineSearch(
         searchPanel.addUrlSearchListener { startUrlSearch(selectedProvider()) }
         searchPanel.addQueryHistorySelectionListener { startTextSearch(selectedProvider()) }
         searchPanel.addUrlHistorySelectionListener { startUrlSearch(selectedProvider()) }
-        searchPanel.addQueryHistoryChangeListener { saveSearchHistory(selectedProvider(), it) }
-        searchPanel.addUrlHistoryChangeListener { saveUrlHistory(selectedProvider(), it) }
+        searchPanel.addQueryHistoryChangeListener { entries ->
+            historyStore.writeQueryHistory(selectedProvider(), OnlineSearchHistory.of(entries))
+        }
+        searchPanel.addUrlHistoryChangeListener { entries ->
+            historyStore.writeUrlHistory(selectedProvider(), OnlineSearchHistory.of(entries))
+        }
     }
 
     private fun loadHistories() {
@@ -112,17 +117,8 @@ class ArdZdfOnlineSearch(
     }
 
     private fun updateVisibleHistory(provider: OnlineSearchProvider) {
-        val configuration = ApplicationConfiguration.getInstance()
-        val queryHistory = when (provider) {
-            OnlineSearchProvider.ARD -> configuration.onlineSearchArdSearchHistory
-            OnlineSearchProvider.ZDF -> configuration.onlineSearchZdfSearchHistory
-        }
-        val urlHistory = when (provider) {
-            OnlineSearchProvider.ARD -> configuration.onlineSearchArdUrlHistory
-            OnlineSearchProvider.ZDF -> configuration.onlineSearchZdfUrlHistory
-        }
-        searchPanel.setQueryHistory(OnlineSearchHistory.decode(queryHistory).entries)
-        searchPanel.setUrlHistory(OnlineSearchHistory.decode(urlHistory).entries)
+        searchPanel.setQueryHistory(historyStore.readQueryHistory(provider).entries)
+        searchPanel.setUrlHistory(historyStore.readUrlHistory(provider).entries)
     }
 
     private fun switchProvider(provider: OnlineSearchProvider) {
@@ -138,55 +134,15 @@ class ArdZdfOnlineSearch(
     }
 
     private fun rememberSearch(provider: OnlineSearchProvider, query: String) {
-        when (provider) {
-            OnlineSearchProvider.ARD -> {
-                val history = OnlineSearchHistory.decode(ApplicationConfiguration.getInstance().onlineSearchArdSearchHistory)
-                    .withEntry(query)
-                saveSearchHistory(provider, history.entries)
-                if (selectedProvider() == provider) searchPanel.setQueryHistory(history.entries)
-            }
-            OnlineSearchProvider.ZDF -> {
-                val history = OnlineSearchHistory.decode(ApplicationConfiguration.getInstance().onlineSearchZdfSearchHistory)
-                    .withEntry(query)
-                saveSearchHistory(provider, history.entries)
-                if (selectedProvider() == provider) searchPanel.setQueryHistory(history.entries)
-            }
-        }
+        val history = historyStore.readQueryHistory(provider).withEntry(query)
+        historyStore.writeQueryHistory(provider, history)
+        if (selectedProvider() == provider) searchPanel.setQueryHistory(history.entries)
     }
 
     private fun rememberUrl(provider: OnlineSearchProvider, url: String) {
-        when (provider) {
-            OnlineSearchProvider.ARD -> {
-                val history = OnlineSearchHistory.decode(ApplicationConfiguration.getInstance().onlineSearchArdUrlHistory)
-                    .withEntry(url)
-                saveUrlHistory(provider, history.entries)
-                if (selectedProvider() == provider) searchPanel.setUrlHistory(history.entries)
-            }
-            OnlineSearchProvider.ZDF -> {
-                val history = OnlineSearchHistory.decode(ApplicationConfiguration.getInstance().onlineSearchZdfUrlHistory)
-                    .withEntry(url)
-                saveUrlHistory(provider, history.entries)
-                if (selectedProvider() == provider) searchPanel.setUrlHistory(history.entries)
-            }
-        }
-    }
-
-    private fun saveSearchHistory(provider: OnlineSearchProvider, entries: List<String>) {
-        val encoded = OnlineSearchHistory.of(entries).encode()
-        val configuration = ApplicationConfiguration.getInstance()
-        when (provider) {
-            OnlineSearchProvider.ARD -> configuration.onlineSearchArdSearchHistory = encoded
-            OnlineSearchProvider.ZDF -> configuration.onlineSearchZdfSearchHistory = encoded
-        }
-    }
-
-    private fun saveUrlHistory(provider: OnlineSearchProvider, entries: List<String>) {
-        val encoded = OnlineSearchHistory.of(entries).encode()
-        val configuration = ApplicationConfiguration.getInstance()
-        when (provider) {
-            OnlineSearchProvider.ARD -> configuration.onlineSearchArdUrlHistory = encoded
-            OnlineSearchProvider.ZDF -> configuration.onlineSearchZdfUrlHistory = encoded
-        }
+        val history = historyStore.readUrlHistory(provider).withEntry(url)
+        historyStore.writeUrlHistory(provider, history)
+        if (selectedProvider() == provider) searchPanel.setUrlHistory(history.entries)
     }
 
     private fun selectedProvider(): OnlineSearchProvider = senderComboBox.selectedItem as OnlineSearchProvider
@@ -275,6 +231,7 @@ class ArdZdfOnlineSearch(
         when (provider) {
             OnlineSearchProvider.ARD -> ardService.search(request)
             OnlineSearchProvider.ZDF -> zdfService.search(request)
+            OnlineSearchProvider.ARTE -> arteService.search(request)
         }
 
     private fun formatSearchStatus(loadedResults: Int, totalResults: Long?, hasNextPage: Boolean): String =
@@ -295,6 +252,7 @@ class ArdZdfOnlineSearch(
             val result = when (provider) {
                 OnlineSearchProvider.ARD -> ardService.loadByUrl(OnlineUrlRequest(provider, url))
                 OnlineSearchProvider.ZDF -> zdfService.loadByUrl(OnlineUrlRequest(provider, url))
+                OnlineSearchProvider.ARTE -> arteService.loadByUrl(OnlineUrlRequest(provider, url))
             }
             OnlineSearchPage(listOfNotNull(result), nextToken = null)
         }
@@ -367,7 +325,7 @@ class ArdZdfOnlineSearch(
 
     companion object {
         private const val SENDER_COMBO_BOX_MAXIMUM_WIDTH = 150
-        private val logger = LogManager.getLogger(ArdZdfOnlineSearch::class.java)
+        private val logger = LogManager.getLogger(OnlineSearchPanel::class.java)
     }
 }
 

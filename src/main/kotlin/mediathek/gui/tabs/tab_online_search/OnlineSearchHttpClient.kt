@@ -8,6 +8,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.time.Duration
+import java.time.Instant
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -18,9 +22,13 @@ interface OnlineSearchHttpClient {
 class OnlineSearchHttpException(
     val statusCode: Int,
     message: String,
+    val retryAfter: Duration? = null,
 ) : IOException("Online search request failed: HTTP $statusCode $message") {
     val isAuthorizationFailure: Boolean
         get() = statusCode == 401 || statusCode == 403
+
+    val isRateLimit: Boolean
+        get() = statusCode == 429
 }
 
 class OkHttpOnlineSearchHttpClient(
@@ -46,7 +54,11 @@ class OkHttpOnlineSearchHttpClient(
                     if (!it.isSuccessful) {
                         if (continuation.isActive) {
                             continuation.resumeWithException(
-                                OnlineSearchHttpException(it.code, it.message),
+                                OnlineSearchHttpException(
+                                    statusCode = it.code,
+                                    message = it.message,
+                                    retryAfter = it.header("Retry-After")?.toRetryAfterDuration(),
+                                ),
                             )
                         }
                         return
@@ -62,3 +74,12 @@ class OkHttpOnlineSearchHttpClient(
 }
 
 object MvOnlineSearchHttpClient : OnlineSearchHttpClient by OkHttpOnlineSearchHttpClient(MVHttpClient.httpClient)
+
+private fun String.toRetryAfterDuration(): Duration? {
+    val trimmed = trim()
+    trimmed.toLongOrNull()?.let { seconds -> return Duration.ofSeconds(seconds) }
+    return runCatching {
+        val retryAt = ZonedDateTime.parse(trimmed, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant()
+        Duration.between(Instant.now(), retryAt).takeUnless { it.isNegative }
+    }.getOrNull()
+}

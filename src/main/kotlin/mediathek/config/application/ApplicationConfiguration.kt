@@ -860,6 +860,24 @@ class ApplicationConfiguration private constructor() {
             onlineSearchConfiguration.zdfUrlHistory = value
         }
 
+    var onlineSearchArteSearchHistory: String
+        get() = onlineSearchConfiguration.arteSearchHistory
+        set(value) {
+            onlineSearchConfiguration.arteSearchHistory = value
+        }
+
+    var onlineSearchArteUrlHistory: String
+        get() = onlineSearchConfiguration.arteUrlHistory
+        set(value) {
+            onlineSearchConfiguration.arteUrlHistory = value
+        }
+
+    var onlineSearchArteRequestDelayMillis: Long
+        get() = onlineSearchConfiguration.arteRequestDelayMillis
+        set(value) {
+            onlineSearchConfiguration.arteRequestDelayMillis = value
+        }
+
     val mainWindowMaximized: Boolean
         get() = windowStateConfiguration.mainWindowMaximized
 

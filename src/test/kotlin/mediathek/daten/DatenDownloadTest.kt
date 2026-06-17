@@ -35,6 +35,7 @@ internal class DatenDownloadTest {
             filmUrl = "https://example.invalid/film",
             historyUrl = "https://example.invalid/history",
             url = "https://example.invalid/download.mp4",
+            selectedResolution = FilmResolution.Enum.LOW,
             rtmpUrl = "rtmp://example.invalid/download",
             subtitleUrl = "https://example.invalid/subtitle.vtt",
             programSet = "Set",
@@ -60,6 +61,7 @@ internal class DatenDownloadTest {
         assertEquals(config, roundTripConfig)
         assertEquals(DownloadType.PROGRAM, download.art)
         assertEquals(DownloadSource.DOWNLOAD, download.quelle)
+        assertEquals(FilmResolution.Enum.LOW, download.selectedResolution)
         assertEquals(42L * FileSize.ONE_MIB, download.runtime.filmSize.size)
     }
 
@@ -125,6 +127,42 @@ internal class DatenDownloadTest {
                 "--rtmp rtmp://example.invalid/download --path /tmp --name download.mp4 " +
                 "--web https://example.invalid/film",
             invocation.command,
+        )
+    }
+
+    @Test
+    fun buildsArteHlsProgramMappingForSelectedQuality() {
+        val program = DatenProg(
+            "ffmpeg",
+            "ffmpeg",
+            "-i %f -c copy -bsf:a aac_adtstoasc **",
+            false.toString(),
+            false.toString(),
+        )
+
+        val invocation = DownloadProgramInvocationBuilder.build(
+            downloadType = DownloadType.PROGRAM,
+            program = program,
+            request = DownloadInvocationRequest(
+                downloadUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/video.m3u8",
+                rtmpUrl = "",
+                targetPath = "/tmp",
+                targetFileName = "video.mp4",
+                targetPathFileName = "/tmp/video.mp4",
+                websiteUrl = "https://www.arte.tv/de/videos/123456-000-A/video/",
+                selectedResolution = FilmResolution.Enum.HIGH_QUALITY,
+            ),
+        )
+
+        assertEquals(
+            "ffmpeg -i https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/video.m3u8 " +
+                "-map p:1 -map -0:s -c copy -bsf:a aac_adtstoasc /tmp/video.mp4",
+            invocation.command,
+        )
+        assertEquals(
+            "ffmpeg<>-i<>https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/video.m3u8" +
+                "<>-map<>p:1<>-map<>-0:s<>-c<>copy<>-bsf:a<>aac_adtstoasc<>/tmp/video.mp4",
+            invocation.commandArray,
         )
     }
 

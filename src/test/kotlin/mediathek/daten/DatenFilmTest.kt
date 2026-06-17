@@ -121,6 +121,38 @@ internal class DatenFilmTest {
     }
 
     @Test
+    fun fileSizeLookupCacheSeparatesSameUrlByResolution() {
+        val film = DatenFilm()
+        val url = "https://example.org/video/master.m3u8"
+
+        film.applyFileSizeLookupResult(
+            url,
+            FileSize.LookupResult(30L * FileSize.ONE_MIB, quality = FilmResolution.Enum.HIGH_QUALITY.name),
+            FilmResolution.Enum.HIGH_QUALITY.name,
+        )
+        film.applyFileSizeLookupResult(
+            url,
+            FileSize.LookupResult(10L * FileSize.ONE_MIB, quality = FilmResolution.Enum.LOW.name),
+            FilmResolution.Enum.LOW.name,
+        )
+
+        assertEquals("30", film.cachedLookup(url, FilmResolution.Enum.HIGH_QUALITY.name)?.sizeText)
+        assertEquals("10", film.cachedLookup(url, FilmResolution.Enum.LOW.name)?.sizeText)
+        assertNull(film.cachedLookup(url, FilmResolution.Enum.NORMAL.name))
+    }
+
+    @Test
+    fun normalQualityFileSizeBootstrapDoesNotApplyToOtherResolutionsForSameUrl() {
+        val film = DatenFilm()
+        val url = "https://example.org/video/master.m3u8"
+        film.setFileSize("123")
+        film.urlNormalQuality = url
+
+        assertEquals("123", film.cachedLookup(url, FilmResolution.Enum.NORMAL.name)?.sizeText)
+        assertNull(film.cachedLookup(url, FilmResolution.Enum.HIGH_QUALITY.name))
+    }
+
+    @Test
     fun publicFlagAccessorsToggleAndCopyBitState() {
         val film = DatenFilm()
 
@@ -320,11 +352,15 @@ internal class DatenFilmTest {
             return HexFormat.of().formatHex(digest.digest())
         }
 
-        private fun DatenFilm.cachedLookup(url: String): FileSize.LookupResult? {
-            val method = DatenFilm::class.java.getDeclaredMethod("getCachedFileSizeLookup", String::class.java)
+        private fun DatenFilm.cachedLookup(url: String, resolution: String? = null): FileSize.LookupResult? {
+            val method = DatenFilm::class.java.getDeclaredMethod(
+                "getCachedFileSizeLookup",
+                String::class.java,
+                String::class.java,
+            )
             method.isAccessible = true
             @Suppress("UNCHECKED_CAST")
-            return method.invoke(this, url) as FileSize.LookupResult?
+            return method.invoke(this, url, resolution) as FileSize.LookupResult?
         }
 
         private fun DatenFilm.privateField(name: String): Any? {

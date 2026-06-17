@@ -48,13 +48,36 @@ internal class DownloadSizeLookupServiceTest {
         assertTrue(service.snapshotLookupResults().any { entry -> entry.url == url })
     }
 
-    private fun lookupEntry(url: String): PersistentLookupCacheEntry =
+    @Test
+    fun cacheKeepsSeparateEntriesForDifferentQualitiesOfSameUrl() {
+        val url = "https://example.invalid/video.m3u8"
+        val service = DownloadSizeLookupService(
+            reloadTable = {},
+            persistedLookupResults = listOf(
+                lookupEntry(url, quality = "HIGH_QUALITY", byteLength = 30_000_000L),
+                lookupEntry(url, quality = "LOW", byteLength = 10_000_000L),
+            ),
+        )
+
+        val snapshot = service.snapshotLookupResults().sortedBy { it.quality }
+
+        assertEquals(2, snapshot.size)
+        assertEquals(listOf("HIGH_QUALITY", "LOW"), snapshot.map { it.quality })
+        assertEquals(listOf(30_000_000L, 10_000_000L), snapshot.map { it.byteLength })
+    }
+
+    private fun lookupEntry(
+        url: String,
+        quality: String? = null,
+        byteLength: Long = 123_000_000L,
+    ): PersistentLookupCacheEntry =
         PersistentLookupCacheEntry(
             url = url,
             location = Country.DE,
             fetchSizeEnabled = true,
             probeHlsSegments = false,
-            byteLength = 123_000_000L,
+            byteLength = byteLength,
             storedAtMillis = 1_800_000_000_000L,
+            quality = quality,
         )
 }

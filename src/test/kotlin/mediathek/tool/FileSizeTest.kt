@@ -37,7 +37,7 @@ internal class FileSizeTest {
             quality = "TEST_ONLY",
             cachedHlsLookup = { _, _ -> null },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = { _, _ ->
+            hlsSizeLoader = { _, _, _ ->
                 FileSize.HlsLookupResult(
                     byteLength = 12_500_000L,
                     resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
@@ -57,7 +57,7 @@ internal class FileSizeTest {
             quality = "TEST_ONLY",
             cachedHlsLookup = { _, _ -> null },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = { _, _ ->
+            hlsSizeLoader = { _, _, _ ->
                 FileSize.HlsLookupResult(
                     byteLength = 500_000L,
                     resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
@@ -78,7 +78,7 @@ internal class FileSizeTest {
             probeHlsSegments = false,
             cachedHlsLookup = { _, _ -> null },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = { _, probeSegments ->
+            hlsSizeLoader = { _, probeSegments, _ ->
                 assertFalse(probeSegments)
                 FileSize.HlsLookupResult(
                     byteLength = 23_000_000L,
@@ -106,11 +106,33 @@ internal class FileSizeTest {
                 )
             },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = { _, _ -> error("HLS segment probe should not be used") },
+            hlsSizeLoader = { _, _, _ -> error("HLS segment probe should not be used") },
             hlsLookupLogger = { _, result -> result },
         ).byteLength
 
         assertEquals(23_000_000L, size)
+    }
+
+    @Test
+    fun bypassesCachedHlsResultForArteManifestUrls() {
+        val size = FileSize.lookupFileSize(
+            url = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/129830-008-A.m3u8"
+                .toHttpUrl(),
+            forceFetch = true,
+            quality = "TEST_ONLY",
+            cachedHlsLookup = { _, _ -> error("ARTE manifest cache should not be used") },
+            directSizeLoader = { error("direct loader should not be used for m3u8") },
+            hlsSizeLoader = { _, _, _ ->
+                FileSize.HlsLookupResult(
+                    byteLength = 42_000_000L,
+                    resolutionUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/129830-008-A.m3u8"
+                        .toHttpUrl(),
+                )
+            },
+            hlsLookupLogger = { _, result -> result },
+        ).byteLength
+
+        assertEquals(42_000_000L, size)
     }
 
     @Test
@@ -121,7 +143,7 @@ internal class FileSizeTest {
             quality = "HIGH_QUALITY",
             cachedHlsLookup = { _, _ -> null },
             directSizeLoader = { error("direct loader should not be used for m3u8") },
-            hlsSizeLoader = { _, _ -> throw IOException("network failure") },
+            hlsSizeLoader = { _, _, _ -> throw IOException("network failure") },
             hlsLookupLogger = { _, result -> result },
         ).byteLength
 

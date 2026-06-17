@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 enum class OnlineSearchProvider(val displayName: String) {
     ARD("ARD"),
     ZDF("ZDF"),
+    ARTE("ARTE"),
 }
 
 data class OnlineSearchRequest(

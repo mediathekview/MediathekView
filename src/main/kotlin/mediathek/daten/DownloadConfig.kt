@@ -34,6 +34,7 @@ internal data class DownloadConfig(
     val filmUrl: String = "",
     val historyUrl: String = "",
     val url: String = "",
+    val selectedResolution: FilmResolution.Enum = FilmResolution.Enum.NORMAL,
     val rtmpUrl: String = "",
     val subtitleUrl: String = "",
     val programSet: String = "",

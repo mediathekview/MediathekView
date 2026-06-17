@@ -53,6 +53,47 @@ internal class HlsPlaylistSizeEstimatorTest {
     }
 
     @Test
+    fun selectsRequestedHlsQualityVariant() {
+        val masterUrl = "https://example.org/master.m3u8".toHttpUrl()
+        val playlists = mapOf(
+            masterUrl to """
+                #EXTM3U
+                #EXT-X-STREAM-INF:BANDWIDTH=2000000,RESOLUTION=768x432,CODECS="avc1.4d401e,mp4a.40.2"
+                v432.m3u8
+                #EXT-X-STREAM-INF:BANDWIDTH=4800000,RESOLUTION=1920x1080,CODECS="avc1.4d0028,mp4a.40.2"
+                v1080.m3u8
+                #EXT-X-STREAM-INF:BANDWIDTH=3600000,RESOLUTION=1280x720,CODECS="avc1.4d401f,mp4a.40.2"
+                v720.m3u8
+                #EXT-X-STREAM-INF:BANDWIDTH=1200000,RESOLUTION=640x360,CODECS="avc1.4d401e,mp4a.40.2"
+                v360.m3u8
+                #EXT-X-STREAM-INF:BANDWIDTH=5000000,RESOLUTION=1920x1080,CODECS="hev1.2.4.L123.B0,mp4a.40.2"
+                v1080_h265.m3u8
+            """.trimIndent(),
+            "https://example.org/v1080.m3u8".toHttpUrl() to mediaPlaylist("high.ts"),
+            "https://example.org/v720.m3u8".toHttpUrl() to mediaPlaylist("normal.ts"),
+            "https://example.org/v360.m3u8".toHttpUrl() to mediaPlaylist("low.ts"),
+        )
+        val segmentSizes = mapOf(
+            "https://example.org/high.ts".toHttpUrl() to 3_000L,
+            "https://example.org/normal.ts".toHttpUrl() to 2_000L,
+            "https://example.org/low.ts".toHttpUrl() to 1_000L,
+        )
+
+        fun estimate(quality: String) = runBlocking {
+            estimator.estimate(
+                playlistUrl = masterUrl,
+                quality = quality,
+                textLoader = { url -> playlists.getValue(url) },
+                contentLengthLoader = { url -> segmentSizes.getValue(url) },
+            )
+        }
+
+        assertEquals("1920x1080", estimate("HIGH_QUALITY").selectedVariant.resolution)
+        assertEquals("1280x720", estimate("NORMAL").selectedVariant.resolution)
+        assertEquals("640x360", estimate("LOW").selectedVariant.resolution)
+    }
+
+    @Test
     fun estimatesDirectMediaPlaylistWithoutVariantMetadata() {
         val mediaUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl()
         val playlists = mapOf(
@@ -113,6 +154,37 @@ internal class HlsPlaylistSizeEstimatorTest {
 
         assertEquals(2, result.segmentCount)
         assertEquals(1_000_000L, result.totalBytes)
+    }
+
+    @Test
+    fun sumsCmafInitializationAndByteRangeSegmentLengths() {
+        val mediaUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl()
+        val playlists = mapOf(
+            mediaUrl to """
+                #EXTM3U
+                #EXT-X-MAP:URI="init.mp4",BYTERANGE="1000@0"
+                #EXTINF:4.0,
+                #EXT-X-BYTERANGE:1200@1000
+                medias/video.mp4
+                #EXTINF:4.0,
+                #EXT-X-BYTERANGE:1800@2200
+                medias/video.mp4
+                #EXTINF:4.0,
+                #EXT-X-BYTERANGE:2400
+                medias/video.mp4
+            """.trimIndent(),
+        )
+
+        val result = runBlocking {
+            estimator.estimate(
+                playlistUrl = mediaUrl,
+                textLoader = { url -> playlists.getValue(url) },
+                contentLengthLoader = { url -> error("byte-range segment size should not be probed for $url") },
+            )
+        }
+
+        assertEquals(3, result.segmentCount)
+        assertEquals(6_400L, result.totalBytes)
     }
 
     @Test
@@ -228,4 +300,10 @@ internal class HlsPlaylistSizeEstimatorTest {
 
         assertTrue(exception.message!!.contains("local or private address"))
     }
+
+    private fun mediaPlaylist(segment: String): String = """
+        #EXTM3U
+        #EXTINF:4.0,
+        $segment
+    """.trimIndent()
 }

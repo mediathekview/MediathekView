@@ -35,6 +35,24 @@ class ApplicationOnlineSearchConfiguration(
             config.setProperty(APPLICATION_UI_ONLINE_SEARCH_ZDF_URL_HISTORY, newValue)
         }
 
+    var arteSearchHistory: String
+        get() = config.getString(APPLICATION_UI_ONLINE_SEARCH_ARTE_SEARCH_HISTORY, "[]")
+        set(newValue) {
+            config.setProperty(APPLICATION_UI_ONLINE_SEARCH_ARTE_SEARCH_HISTORY, newValue)
+        }
+
+    var arteUrlHistory: String
+        get() = config.getString(APPLICATION_UI_ONLINE_SEARCH_ARTE_URL_HISTORY, "[]")
+        set(newValue) {
+            config.setProperty(APPLICATION_UI_ONLINE_SEARCH_ARTE_URL_HISTORY, newValue)
+        }
+
+    var arteRequestDelayMillis: Long
+        get() = config.getLong(APPLICATION_UI_ONLINE_SEARCH_ARTE_REQUEST_DELAY_MILLIS, 0L)
+        set(newValue) {
+            config.setProperty(APPLICATION_UI_ONLINE_SEARCH_ARTE_REQUEST_DELAY_MILLIS, newValue)
+        }
+
     private companion object {
         @field:ApplicationConfigKey
         private const val APPLICATION_UI_ONLINE_SEARCH_SHOW = "application.ui.online_search.show"
@@ -46,5 +64,12 @@ class ApplicationOnlineSearchConfiguration(
         private const val APPLICATION_UI_ONLINE_SEARCH_ZDF_SEARCH_HISTORY = "application.ui.online_search.zdf.search.history"
         @field:ApplicationConfigKey
         private const val APPLICATION_UI_ONLINE_SEARCH_ZDF_URL_HISTORY = "application.ui.online_search.zdf.url.history"
+        @field:ApplicationConfigKey
+        private const val APPLICATION_UI_ONLINE_SEARCH_ARTE_SEARCH_HISTORY = "application.ui.online_search.arte.search.history"
+        @field:ApplicationConfigKey
+        private const val APPLICATION_UI_ONLINE_SEARCH_ARTE_URL_HISTORY = "application.ui.online_search.arte.url.history"
+        @field:ApplicationConfigKey
+        private const val APPLICATION_UI_ONLINE_SEARCH_ARTE_REQUEST_DELAY_MILLIS =
+            "application.ui.online_search.arte.request.delay.millis"
     }
 }

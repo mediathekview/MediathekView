@@ -64,7 +64,7 @@
 - **FEATURE:** *Abos verwalten*-Dialog besitzt nun eine Spalte `Filme`, die berechnet wieviele Filme durch das Abo erkannt werden *könnten*. Es werden keine History, etc. in der Berechnung berücksichtigt. Werden keine Filme erkannt wird der Wert in Rot dargestellt.
 - **FEATURE:** Blacklist-Regeln werden beim Programmstart aus der alten Konfiguration in die Datei `blacklist-rules.json` migriert wenn diese noch nicht existiert.
 - **FEATURE:** Unter *Hilfe/Hilfsmittel/Konfiguration bereinigen...* kann die Programmkonfiguration von veralteten Einstellungen durch den Nutzer bereinigt werden.
-- **FEATURE:** Online-Suche für ARD und ZDF wurde im Tab `Onlinesuche` integriert.
+- **FEATURE:** Online-Suche für `ARD`, `ZDF` und `ARTE` wurde im Tab `Onlinesuche` integriert. Bitte beachten dass die `ARTE`-Suche aufgrund von Beschränkungen des Senders deutlich langsamer als bei den anderen sein kann.
 - **FEATURE:** Blacklist-Regeln können in den Einstellungen deaktiviert werden damit sie während des Filterns nicht mehr berücksichtigt werden. Dadurch müssen Regeln nicht mehr gelöscht werden.
 - **FEATURE:** Blacklist-Regel-Tabelle speichert nun die Breite und Position der Spalten.
 - **FEATURE:** Im Blacklist-Regel-Dialog wurden die einzelnen Aktions-Buttons entfernt und durch ein *Drei-Punkte*-Button ersetzt, der alle erlaubten Aktionen zusammenfasst.

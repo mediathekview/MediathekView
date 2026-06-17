@@ -7,6 +7,7 @@ import com.github.kokorin.jaffree.ffprobe.Stream
 import com.github.kokorin.jaffree.process.JaffreeAbnormalExitException
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
+import mediathek.tool.ArteHlsQualitySelector
 import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.GuiFunktionenProgramme
@@ -48,9 +49,31 @@ object DownloadQualitySupport {
     }
 
     fun loadResolutionSizeResult(film: DatenFilm): DownloadQualityResolutionSizeLoadResult {
-        val high = fetchFileSizeForQuality(film, FilmResolution.Enum.HIGH_QUALITY)
-        val normal = fetchFileSizeForNormalQuality(film)
-        val low = fetchFileSizeForQuality(film, FilmResolution.Enum.LOW)
+        return loadResolutionSizeResult(film) { resolution ->
+            when (resolution) {
+                FilmResolution.Enum.HIGH_QUALITY,
+                FilmResolution.Enum.LOW,
+                -> fetchFileSizeForQuality(film, resolution)
+                else -> fetchFileSizeForNormalQuality(film)
+            }
+        }
+    }
+
+    internal fun loadResolutionSizeResult(
+        film: DatenFilm,
+        fileSizeLookup: (FilmResolution.Enum) -> FileSize.LookupResult,
+    ): DownloadQualityResolutionSizeLoadResult {
+        val high = if (film.isHighQuality) {
+            fileSizeLookup(FilmResolution.Enum.HIGH_QUALITY)
+        } else {
+            FileSize.LookupResult(FileSize.INVALID_SIZE.toLong())
+        }
+        val normal = fileSizeLookup(FilmResolution.Enum.NORMAL)
+        val low = if (film.hasLowQuality()) {
+            fileSizeLookup(FilmResolution.Enum.LOW)
+        } else {
+            FileSize.LookupResult(FileSize.INVALID_SIZE.toLong())
+        }
         return DownloadQualityResolutionSizeLoadResult(
             sizes = DownloadQualityResolutionSizes(
                 high = high.sizeText,
@@ -113,15 +136,26 @@ object DownloadQualitySupport {
         film: DatenFilm,
         resolution: FilmResolution.Enum
     ): DownloadQualityLiveInfoText {
-        return fetchLiveInfo(ffprobePath, film.getUrlFuerAufloesung(resolution))
+        return fetchLiveInfo(ffprobePath, film.getUrlFuerAufloesung(resolution), resolution)
     }
 
     @Throws(JaffreeAbnormalExitException::class)
     fun fetchLiveInfo(
         ffprobePath: Path,
         url: String
+    ): DownloadQualityLiveInfoText = fetchLiveInfo(ffprobePath, url, null)
+
+    @Throws(JaffreeAbnormalExitException::class)
+    private fun fetchLiveInfo(
+        ffprobePath: Path,
+        url: String,
+        resolution: FilmResolution.Enum?
     ): DownloadQualityLiveInfoText {
-        val result = FFprobe.atPath(ffprobePath)
+        val result = FFprobe.atPath(ffprobePath).apply {
+            ArteHlsQualitySelector.programId(url, resolution)?.let { programId ->
+                setSelectStreams("p:$programId")
+            }
+        }
             .setShowStreams(true)
             .setInput(url)
             .execute()

@@ -73,11 +73,12 @@ class DatenDownload() : Comparable<DatenDownload> {
         time = film.sendeZeit
         duration = film.filmLengthAsString
         historyUrl = film.urlNormalQuality
-        downloadUrl = if (aufloesung.isEmpty()) {
-            film.getUrlFuerAufloesung(pSet.aufloesung)
+        selectedResolution = if (aufloesung.isEmpty()) {
+            pSet.aufloesung ?: FilmResolution.Enum.NORMAL
         } else {
-            film.getUrlFuerAufloesung(FilmResolution.Enum.fromLegacyString(aufloesung))
+            FilmResolution.Enum.fromLegacyString(aufloesung)
         }
+        downloadUrl = film.getUrlFuerAufloesung(selectedResolution)
 
         if (downloadUrl.contains("?")) {
             downloadUrl = getUrlWithoutParameters(downloadUrl)
@@ -162,6 +163,8 @@ class DatenDownload() : Comparable<DatenDownload> {
 
     var downloadUrl: String = ""
 
+    var selectedResolution: FilmResolution.Enum = FilmResolution.Enum.NORMAL
+
     var subtitleUrl: String = ""
 
     var rtmpUrl: String = ""
@@ -236,13 +239,18 @@ class DatenDownload() : Comparable<DatenDownload> {
 
     fun queryLiveSize(forceFetch: Boolean = false, probeHlsSegments: Boolean = true): FileSize.LookupResult? {
         val currentFilm = film ?: return null
-        val lookupResult = currentFilm.lookupFileSizeForUrl(downloadUrl, forceFetch, null, probeHlsSegments)
+        val lookupResult = currentFilm.lookupFileSizeForUrl(
+            downloadUrl,
+            forceFetch,
+            selectedResolution.name,
+            probeHlsSegments,
+        )
         applyRuntimeSizeLookupResult(lookupResult)
         return lookupResult
     }
 
     fun applyLiveSizeLookupResult(lookupResult: FileSize.LookupResult) {
-        film?.applyFileSizeLookupResult(downloadUrl, lookupResult)
+        film?.applyFileSizeLookupResult(downloadUrl, lookupResult, selectedResolution.name)
         applyRuntimeSizeLookupResult(lookupResult)
     }
 
@@ -298,6 +306,7 @@ class DatenDownload() : Comparable<DatenDownload> {
             filmUrl = filmUrl,
             historyUrl = historyUrl,
             url = downloadUrl,
+            selectedResolution = selectedResolution,
             rtmpUrl = rtmpUrl,
             subtitleUrl = subtitleUrl,
             programSet = programSetName,
@@ -347,6 +356,7 @@ class DatenDownload() : Comparable<DatenDownload> {
         target.historyUrl = historyUrl
         target.filmUrl = filmUrl
         target.downloadUrl = downloadUrl
+        target.selectedResolution = selectedResolution
         target.subtitleUrl = subtitleUrl
         target.rtmpUrl = rtmpUrl
         target.date = date
@@ -498,6 +508,7 @@ class DatenDownload() : Comparable<DatenDownload> {
                 targetFileName = targetFileName,
                 targetPathFileName = targetPathFileName,
                 websiteUrl = websiteUrl,
+                selectedResolution = selectedResolution,
             ),
         )
         programInvocation = invocation.command
@@ -563,6 +574,7 @@ class DatenDownload() : Comparable<DatenDownload> {
                 download.filmUrl = config.filmUrl
                 download.historyUrl = config.historyUrl
                 download.downloadUrl = config.url
+                download.selectedResolution = config.selectedResolution
                 download.rtmpUrl = config.rtmpUrl
                 download.subtitleUrl = config.subtitleUrl
                 download.programSetName = config.programSet

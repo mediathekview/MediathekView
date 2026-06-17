@@ -22,7 +22,13 @@ class HlsPlaylistSizeEstimator(
         val codecs: String?,
         val playlistUrl: HttpUrl,
         val audioPlaylistUrl: HttpUrl? = null,
-    )
+    ) {
+        val height: Int?
+            get() = resolution?.substringAfter('x')?.toIntOrNull()
+
+        val isHevc: Boolean
+            get() = codecs?.contains("hev", ignoreCase = true) == true
+    }
 
     data class EstimateResult(
         val selectedVariant: VariantInfo,
@@ -31,13 +37,27 @@ class HlsPlaylistSizeEstimator(
         val totalBytes: Long,
     )
 
-    suspend fun estimate(url: String, probeSegments: Boolean = true): EstimateResult {
+    private data class SegmentReference(
+        val url: HttpUrl,
+        val byteRangeLength: Long? = null,
+    )
+
+    private data class MediaPlaylistReferences(
+        val initializationSegments: List<SegmentReference>,
+        val mediaSegments: List<SegmentReference>,
+    ) {
+        val allSegments: List<SegmentReference>
+            get() = initializationSegments + mediaSegments
+    }
+
+    suspend fun estimate(url: String, probeSegments: Boolean = true, quality: String? = null): EstimateResult {
         val playlistUrl = HlsEgressPolicy.requirePublicHttpUrl(
             requireNotNull(url.toHttpUrlOrNull()) { "Invalid HLS URL: $url" },
         )
         return estimate(
             playlistUrl = playlistUrl,
             probeSegments = probeSegments,
+            quality = quality,
             textLoader = ::loadText,
             contentLengthLoader = ::loadContentLength,
         )
@@ -46,6 +66,7 @@ class HlsPlaylistSizeEstimator(
     internal suspend fun estimate(
         playlistUrl: HttpUrl,
         probeSegments: Boolean = true,
+        quality: String? = null,
         textLoader: suspend (HttpUrl) -> String,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): EstimateResult {
@@ -53,7 +74,7 @@ class HlsPlaylistSizeEstimator(
         val playlist = textLoader(playlistUrl)
 
         return if (playlist.isMasterPlaylist()) {
-            estimateMasterPlaylist(playlistUrl, playlist, probeSegments, textLoader, contentLengthLoader)
+            estimateMasterPlaylist(playlistUrl, playlist, probeSegments, quality, textLoader, contentLengthLoader)
         } else {
             estimateMediaPlaylist(
                 selectedVariant = VariantInfo(
@@ -75,18 +96,33 @@ class HlsPlaylistSizeEstimator(
         masterUrl: HttpUrl,
         playlist: String,
         probeSegments: Boolean,
+        quality: String?,
         textLoader: suspend (HttpUrl) -> String,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): EstimateResult {
         val variants = parseVariants(masterUrl, playlist)
         require(variants.isNotEmpty()) { "No bitrate variants found in playlist: $masterUrl" }
 
-        val selectedVariant = variants.maxWith(
-            compareBy<VariantInfo> { it.bandwidth ?: Long.MIN_VALUE }
-                .thenBy { it.averageBandwidth ?: Long.MIN_VALUE },
-        )
+        val selectedVariant = selectVariant(variants, quality)
 
         return estimateMediaPlaylist(selectedVariant, variants, probeSegments, textLoader, contentLengthLoader)
+    }
+
+    private fun selectVariant(variants: List<VariantInfo>, quality: String?): VariantInfo {
+        val compatibleVariants = variants.filterNot { it.isHevc }.ifEmpty { variants }
+        return when (quality) {
+            "LOW" -> compatibleVariants
+                .filter { (it.height ?: Int.MAX_VALUE) <= LOW_MAX_HEIGHT }
+                .maxWithOrNull(VARIANT_QUALITY_COMPARATOR)
+                ?: compatibleVariants.minWith(VARIANT_QUALITY_COMPARATOR)
+
+            "NORMAL" -> compatibleVariants
+                .filter { (it.height ?: Int.MAX_VALUE) <= NORMAL_MAX_HEIGHT }
+                .maxWithOrNull(VARIANT_QUALITY_COMPARATOR)
+                ?: compatibleVariants.maxWith(VARIANT_QUALITY_COMPARATOR)
+
+            else -> compatibleVariants.maxWith(VARIANT_QUALITY_COMPARATOR)
+        }
     }
 
     private suspend fun estimateMediaPlaylist(
@@ -97,8 +133,8 @@ class HlsPlaylistSizeEstimator(
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): EstimateResult {
         val videoPlaylist = textLoader(selectedVariant.playlistUrl)
-        val videoSegmentUrls = parseSegmentUrls(selectedVariant.playlistUrl, videoPlaylist)
-        require(videoSegmentUrls.isNotEmpty()) { "No media segments found in playlist: ${selectedVariant.playlistUrl}" }
+        val videoReferences = parseMediaPlaylistReferences(selectedVariant.playlistUrl, videoPlaylist)
+        require(videoReferences.mediaSegments.isNotEmpty()) { "No media segments found in playlist: ${selectedVariant.playlistUrl}" }
         val videoDurationSeconds = parsePlaylistDurationSeconds(videoPlaylist)
 
         val bitrateFallbackBytes = selectedVariant.estimatedTotalBytes(videoDurationSeconds)
@@ -106,7 +142,7 @@ class HlsPlaylistSizeEstimator(
             return buildEstimateResult(
                 selectedVariant = selectedVariant,
                 availableVariants = availableVariants,
-                segmentCount = videoSegmentUrls.size,
+                segmentCount = videoReferences.mediaSegments.size,
                 totalBytes = requireNotNull(bitrateFallbackBytes) {
                     "Could not determine HLS size for ${selectedVariant.playlistUrl} without segment probing because bitrate metadata is unavailable"
                 },
@@ -114,7 +150,7 @@ class HlsPlaylistSizeEstimator(
         }
 
         val exactVideoBytes = runCatching {
-            sumSegmentUrls(videoSegmentUrls, contentLengthLoader)
+            sumSegments(videoReferences.allSegments, contentLengthLoader)
         }.getOrElse { exception ->
             if (bitrateFallbackBytes != null && exception.isMissingContentLengthFailure()) {
                 logger.debug("Falling back to bitrate-based HLS size estimate for {}", selectedVariant.playlistUrl, exception)
@@ -128,11 +164,11 @@ class HlsPlaylistSizeEstimator(
             val audioBytes = selectedVariant.audioPlaylistUrl?.let { audioPlaylistUrl ->
                 runCatching {
                     val audioPlaylist = textLoader(audioPlaylistUrl)
-                    val audioSegmentUrls = parseSegmentUrls(audioPlaylistUrl, audioPlaylist)
-                    if (audioSegmentUrls.isEmpty()) {
+                    val audioReferences = parseMediaPlaylistReferences(audioPlaylistUrl, audioPlaylist)
+                    if (audioReferences.mediaSegments.isEmpty()) {
                         0L
                     } else {
-                        sumSegmentUrls(audioSegmentUrls, contentLengthLoader)
+                        sumSegments(audioReferences.allSegments, contentLengthLoader)
                     }
                 }.onFailure { exception ->
                     logger.debug("HLS audio size lookup failed for {}", audioPlaylistUrl, exception)
@@ -149,7 +185,7 @@ class HlsPlaylistSizeEstimator(
         return buildEstimateResult(
             selectedVariant = selectedVariant,
             availableVariants = availableVariants,
-            segmentCount = videoSegmentUrls.size,
+            segmentCount = videoReferences.mediaSegments.size,
             totalBytes = totalBytes,
         )
     }
@@ -241,12 +277,43 @@ class HlsPlaylistSizeEstimator(
             }
         }
 
-    private fun parseSegmentUrls(baseUrl: HttpUrl, playlist: String): List<HttpUrl> =
+    private fun parseMediaPlaylistReferences(baseUrl: HttpUrl, playlist: String): MediaPlaylistReferences {
+        val initializationSegments = mutableListOf<SegmentReference>()
+        val mediaSegments = mutableListOf<SegmentReference>()
+        var pendingByteRangeLength: Long? = null
         playlist.lineSequence()
             .map(String::trim)
-            .filter { it.isNotBlank() && !it.startsWith("#") }
-            .map { resolveUrl(baseUrl, it) }
-            .toList()
+            .filter(String::isNotBlank)
+            .forEach { line ->
+                when {
+                    line.startsWith(MAP_TAG) -> {
+                        val attributes = parseAttributes(line.removePrefix(MAP_TAG))
+                        val uri = attributes["URI"] ?: return@forEach
+                        initializationSegments += SegmentReference(
+                            url = resolveUrl(baseUrl, uri),
+                            byteRangeLength = attributes["BYTERANGE"]?.parseByteRangeLength(),
+                        )
+                    }
+
+                    line.startsWith(BYTERANGE_TAG) -> {
+                        pendingByteRangeLength = line.removePrefix(BYTERANGE_TAG)
+                            .parseByteRangeLength()
+                    }
+
+                    !line.startsWith("#") -> {
+                        mediaSegments += SegmentReference(
+                            url = resolveUrl(baseUrl, line),
+                            byteRangeLength = pendingByteRangeLength,
+                        )
+                        pendingByteRangeLength = null
+                    }
+                }
+            }
+        return MediaPlaylistReferences(initializationSegments, mediaSegments)
+    }
+
+    private fun String.parseByteRangeLength(): Long? =
+        substringBefore('@').toLongOrNull()
 
     private fun parseAttributes(line: String): Map<String, String> {
         val attributes = linkedMapOf<String, String>()
@@ -296,17 +363,17 @@ class HlsPlaylistSizeEstimator(
             requireNotNull(baseUrl.resolve(reference)) { "Could not resolve '$reference' against '$baseUrl'" },
         )
 
-    private suspend fun sumSegmentUrls(
-        segmentUrls: List<HttpUrl>,
+    private suspend fun sumSegments(
+        segments: List<SegmentReference>,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): Long = coroutineScope {
-        segmentUrls
+        segments
             .chunked(segmentParallelism.coerceAtLeast(1))
             .map { batch ->
                 async {
                     var batchTotal = 0L
-                    for (segmentUrl in batch) {
-                        batchTotal += contentLengthLoader(segmentUrl)
+                    for (segment in batch) {
+                        batchTotal += segment.byteRangeLength ?: contentLengthLoader(segment.url)
                     }
                     batchTotal
                 }
@@ -381,8 +448,15 @@ class HlsPlaylistSizeEstimator(
         private const val BITS_PER_BYTE = 8.0
         private const val DEFAULT_SEGMENT_PARALLELISM = 12
         private const val EXTINF_TAG = "#EXTINF:"
+        private const val MAP_TAG = "#EXT-X-MAP:"
+        private const val BYTERANGE_TAG = "#EXT-X-BYTERANGE:"
         private const val MEDIA_TAG = "#EXT-X-MEDIA:"
         private const val STREAM_INF_TAG = "#EXT-X-STREAM-INF:"
+        private const val LOW_MAX_HEIGHT = 360
+        private const val NORMAL_MAX_HEIGHT = 720
+        private val VARIANT_QUALITY_COMPARATOR = compareBy<VariantInfo> { it.height ?: Int.MIN_VALUE }
+            .thenBy { it.bandwidth ?: Long.MIN_VALUE }
+            .thenBy { it.averageBandwidth ?: Long.MIN_VALUE }
         private val logger = LogManager.getLogger(HlsPlaylistSizeEstimator::class.java)
     }
 

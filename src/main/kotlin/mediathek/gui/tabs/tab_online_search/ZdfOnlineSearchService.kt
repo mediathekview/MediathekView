@@ -32,7 +32,7 @@ class ZdfOnlineSearchService(
         require(request.provider == OnlineSearchProvider.ZDF)
         return withFreshTokenRetry { bearer ->
             val searchResult = graphqlLoader.load(request.query, request.nextToken, bearer)
-            val results = searchResult.canonicalPaths.flatMap { loadDocument(it, bearer) }
+            val results = searchResult.canonicalPaths.mapConcurrently { loadDocument(it, bearer) }.flatten()
             OnlineSearchPage(results, searchResult.nextCursor, searchResult.totalResults)
         }
     }
@@ -71,16 +71,17 @@ class ZdfOnlineSearchService(
         expiresAt == null || expiresAt.isAfter(now.plus(TOKEN_EXPIRY_SAFETY_MARGIN))
 
     private suspend fun loadDocument(canonical: String, bearer: String): List<OnlineSearchResult> {
-        val root = httpClient.get("https://api.zdf.de/content/documents/$canonical.json", zdfHeaders(bearer)).parseJsonObject()
+        val root = httpClient.get("https://api.zdf.de/content/documents/$canonical.json", zdfHeaders(bearer))
+            .parseJsonObject(json)
         val mainVideo = root["mainVideoContent"]?.jsonObjectOrNull() ?: return emptyList()
         val targetVideo = mainVideo["http://zdf.de/rels/target"]?.jsonObjectOrNull() ?: mainVideo
         val ptmdTemplates = (targetVideo.findPtmdTemplates() + mainVideo.findPtmdTemplates())
             .distinctBy { it.template }
             .ifEmpty { return emptyList() }
-        val downloadVariants = ptmdTemplates.flatMap { stream ->
+        val downloadVariants = ptmdTemplates.mapConcurrently { stream ->
             val ptmdUrl = stream.template.replace("{playerId}", "android_native_5").withZdfApiBase()
             loadDownloadVariants(ptmdUrl, bearer, stream.isSignLanguage)
-        }
+        }.flatten()
         val title = listOfNotNull(root.string("title"), root.string("subtitle"))
             .joinToString(" - ")
             .ifBlank { return emptyList() }
@@ -111,7 +112,7 @@ class ZdfOnlineSearchService(
         bearer: String,
         isSignLanguage: Boolean,
     ): List<ZdfDownloadVariant> =
-        httpClient.get(ptmdUrl, zdfHeaders(bearer)).parseJsonObject().downloadVariants(isSignLanguage)
+        httpClient.get(ptmdUrl, zdfHeaders(bearer)).parseJsonObject(json).downloadVariants(isSignLanguage)
 
     private fun parseZdfDate(value: String?): LocalDateTime? = value?.let {
         ZonedDateTime.parse(it).withZoneSameInstant(BERLIN).toLocalDateTime()
@@ -132,9 +133,6 @@ class ZdfOnlineSearchService(
         "api-auth" to "Bearer $bearer",
         "Origin" to "https://www.zdf.de",
     )
-
-    private fun String.parseJsonObject(): JsonObject = json.parseToJsonElement(this).jsonObject
-    private fun JsonObject.string(name: String): String? = this[name]?.jsonPrimitive?.contentOrNull
 
     private fun JsonObject.zdfTopic(): String? =
         this["http://zdf.de/rels/brand"]?.jsonObjectOrNull()?.string("title")
@@ -309,7 +307,7 @@ private class ZdfDefaultGraphqlSearchLoader(
 
     override suspend fun load(query: String, cursor: String?, bearer: String): ZdfSearchGraphqlResult {
         val body = httpClient.get(ZdfGraphqlUrlFactory.build(query, cursor), zdfHeaders(bearer))
-        val root = json.parseToJsonElement(body).jsonObject
+        val root = body.parseJsonObject(json)
         val searchDocuments = root["data"]?.jsonObjectOrNull()?.get("searchDocuments")?.jsonObjectOrNull()
             ?: return ZdfSearchGraphqlResult(emptyList(), null, null)
         val pageInfo = searchDocuments["pageInfo"]?.jsonObjectOrNull()
@@ -333,10 +331,6 @@ private class ZdfDefaultGraphqlSearchLoader(
         "Origin" to "https://www.zdf.de",
     )
 }
-
-private fun JsonElement.jsonObjectOrNull(): JsonObject? = this as? JsonObject
-
-private fun JsonElement.jsonArrayOrNull(): JsonArray? = this as? JsonArray
 
 internal object ZdfGraphqlUrlFactory {
     fun build(query: String, cursor: String?): String {

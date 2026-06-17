@@ -6,12 +6,14 @@ import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadSource
 import mediathek.daten.DownloadType
+import mediathek.daten.FilmResolution
 import mediathek.tool.FileSize
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 internal class DownloadStorageTest {
     @TempDir
@@ -24,6 +26,7 @@ internal class DownloadStorageTest {
             runtime.filmSize.size = 42L * FileSize.ONE_MIB
             art = DownloadType.PROGRAM
             quelle = DownloadSource.DOWNLOAD
+            selectedResolution = FilmResolution.Enum.HIGH_QUALITY
         }
 
         DownloadStorage.write(storagePath, listOf(download))
@@ -35,6 +38,7 @@ internal class DownloadStorageTest {
         assertTrue(json.contains("\"restart\": true"))
         assertTrue(json.contains("\"type\": \"PROGRAM\""))
         assertTrue(json.contains("\"source\": \"DOWNLOAD\""))
+        assertTrue(json.contains("\"selectedResolution\": \"HIGH_QUALITY\""))
         assertFalse(json.contains("\"filmNumber\""))
         assertFalse(json.contains("\"number\""))
         assertFalse(json.contains("\"buttonStart\""))
@@ -58,6 +62,7 @@ internal class DownloadStorageTest {
         assertEquals(42L * FileSize.ONE_MIB, loadedDownload.runtime.filmSize.size)
         assertEquals(DownloadType.PROGRAM, loadedDownload.art)
         assertEquals(DownloadSource.DOWNLOAD, loadedDownload.quelle)
+        assertEquals(FilmResolution.Enum.HIGH_QUALITY, loadedDownload.selectedResolution)
     }
 
     @Test
@@ -79,6 +84,28 @@ internal class DownloadStorageTest {
 
         val loadedTitles = DownloadStorage.read(storagePath).map(DatenDownload::title)
         assertEquals(listOf("Queued", "Interrupted Abo"), loadedTitles)
+    }
+
+    @Test
+    fun readDefaultsMissingSelectedResolutionToNormal() {
+        val storagePath = tempDir.resolve("downloads.json")
+        storagePath.writeText(
+            """
+                {
+                  "version": 1,
+                  "downloads": [
+                    {
+                      "title": "Legacy JSON Download",
+                      "url": "https://example.invalid/video.m3u8"
+                    }
+                  ]
+                }
+            """.trimIndent(),
+        )
+
+        val loaded = DownloadStorage.read(storagePath)
+
+        assertEquals(FilmResolution.Enum.NORMAL, loaded.single().selectedResolution)
     }
 
     private fun download(title: String): DatenDownload =

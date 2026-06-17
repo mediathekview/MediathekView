@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
 
-class ToggleArdZdfOnlineSearchTabActionTest {
+class ToggleOnlineSearchTabActionTest {
     @Test
     fun `reenabling Zapp tab keeps online search before Zapp`() {
         val tabbedPane = JTabbedPane().apply {

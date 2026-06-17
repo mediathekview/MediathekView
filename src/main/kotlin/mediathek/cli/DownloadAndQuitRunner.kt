@@ -182,15 +182,16 @@ object DownloadAndQuitRunner {
     }
 
     private suspend fun updateAboDownloadSizes(downloads: List<DatenDownload>) = withContext(Dispatchers.IO) {
-        val lookupResults = mutableMapOf<String, FileSize.LookupResult>()
+        val lookupResults = mutableMapOf<DownloadSizeLookupKey, FileSize.LookupResult>()
         downloads.forEach { download ->
             runCatching {
-                val cachedResult = lookupResults[download.downloadUrl]
+                val lookupKey = DownloadSizeLookupKey(download.downloadUrl, download.selectedResolution.name)
+                val cachedResult = lookupResults[lookupKey]
                 if (cachedResult != null) {
                     download.applyLiveSizeLookupResult(cachedResult)
                 } else {
                     download.queryLiveSize(forceFetch = false, probeHlsSegments = false)?.let { lookupResult ->
-                        lookupResults[download.downloadUrl] = lookupResult
+                        lookupResults[lookupKey] = lookupResult
                     }
                 }
             }.onFailure { error ->
@@ -328,4 +329,9 @@ object DownloadAndQuitRunner {
         daten.allesSpeichern()
         ApplicationConfiguration.getInstance().writeConfiguration()
     }
+
+    private data class DownloadSizeLookupKey(
+        val url: String,
+        val quality: String,
+    )
 }

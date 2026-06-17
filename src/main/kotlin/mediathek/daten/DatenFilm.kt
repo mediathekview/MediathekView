@@ -88,7 +88,7 @@ class DatenFilm private constructor(
     var bookmark: BookmarkData? = null
     var abo: DatenAbo? = null
     private var datumLongSeconds = 0L
-    private var cachedFileSizeLookups: MutableMap<String, FileSize.LookupResult>? = null
+    private var cachedFileSizeLookups: MutableMap<FileSizeLookupKey, FileSize.LookupResult>? = null
     private var canBootstrapFileSizeFromNormalQualityUrl = true
 
     constructor() : this(FILMNR_GENERATOR.getAndIncrement())
@@ -323,23 +323,27 @@ class DatenFilm private constructor(
         probeHlsSegments: Boolean,
     ): FileSize.LookupResult {
         if (!forceFetch) {
-            val cachedLookupResult = getCachedFileSizeLookup(url)
+            val cachedLookupResult = getCachedFileSizeLookup(url, resolution)
             if (cachedLookupResult != null) {
-                applyFileSizeLookupResult(url, cachedLookupResult)
+                applyFileSizeLookupResult(url, cachedLookupResult, resolution)
                 return cachedLookupResult
             }
         }
 
         val lookupResult = FileSize.lookupFileSize(url, forceFetch, resolution, probeHlsSegments)
-        applyFileSizeLookupResult(url, lookupResult)
+        applyFileSizeLookupResult(url, lookupResult, resolution)
         return lookupResult
     }
 
-    internal fun applyFileSizeLookupResult(url: String, lookupResult: FileSize.LookupResult) {
+    internal fun applyFileSizeLookupResult(
+        url: String,
+        lookupResult: FileSize.LookupResult,
+        resolution: String? = lookupResult.quality,
+    ) {
         if (isForbiddenHlsLookup(url, lookupResult)) {
             markGeoBlockedForLocation(ApplicationConfiguration.getInstance().geographicLocation)
         }
-        cacheFileSizeLookup(url, lookupResult)
+        cacheFileSizeLookup(url, resolution, lookupResult)
     }
 
     private fun isForbiddenHlsLookup(url: String, lookupResult: FileSize.LookupResult): Boolean {
@@ -354,37 +358,45 @@ class DatenFilm private constructor(
         return lookupResult.resolutionUrl?.encodedPath?.endsWith(".m3u8") == true
     }
 
-    private fun getCachedFileSizeLookup(url: String): FileSize.LookupResult? {
-        cachedFileSizeLookups?.get(url)?.let { cachedLookupResult ->
+    private fun getCachedFileSizeLookup(url: String, resolution: String?): FileSize.LookupResult? {
+        cachedFileSizeLookups?.get(FileSizeLookupKey(url, resolution))?.let { cachedLookupResult ->
             if (cachedLookupResult.sizeText.isNotEmpty() || cachedLookupResult.httpStatusCode != null) {
                 return cachedLookupResult
             }
         }
 
-        if (canBootstrapFileSizeFromNormalQualityUrl && url.equals(urlNormalQuality, ignoreCase = true) && fileSizeInMegabytes > 0) {
+        if (
+            canBootstrapFileSizeFromNormalQualityUrl &&
+            (resolution == null || resolution == FilmResolution.Enum.NORMAL.name) &&
+            url.equals(urlNormalQuality, ignoreCase = true) &&
+            fileSizeInMegabytes > 0
+        ) {
             val cachedSizeInBytes = fileSizeInMegabytes.toLong() * FileSize.ONE_MIB
             val bootstrapLookupResult = FileSize.LookupResult(cachedSizeInBytes, null, null, null)
-            fileSizeLookupCache()[url] = bootstrapLookupResult
+            fileSizeLookupCache()[FileSizeLookupKey(url, resolution)] = bootstrapLookupResult
             return bootstrapLookupResult
         }
 
         return null
     }
 
-    private fun cacheFileSizeLookup(url: String, lookupResult: FileSize.LookupResult) {
+    private fun cacheFileSizeLookup(url: String, resolution: String?, lookupResult: FileSize.LookupResult) {
         if (lookupResult.sizeText.isEmpty() && lookupResult.httpStatusCode == null) {
             return
         }
 
-        fileSizeLookupCache()[url] = lookupResult
-        if (url.equals(urlNormalQuality, ignoreCase = true)) {
+        fileSizeLookupCache()[FileSizeLookupKey(url, resolution)] = lookupResult
+        if (
+            (resolution == null || resolution == FilmResolution.Enum.NORMAL.name) &&
+            url.equals(urlNormalQuality, ignoreCase = true)
+        ) {
             setFileSize(lookupResult.sizeText)
             canBootstrapFileSizeFromNormalQualityUrl = true
         }
     }
 
-    private fun fileSizeLookupCache(): MutableMap<String, FileSize.LookupResult> =
-        cachedFileSizeLookups ?: HashMap<String, FileSize.LookupResult>().also { cachedFileSizeLookups = it }
+    private fun fileSizeLookupCache(): MutableMap<FileSizeLookupKey, FileSize.LookupResult> =
+        cachedFileSizeLookups ?: HashMap<FileSizeLookupKey, FileSize.LookupResult>().also { cachedFileSizeLookups = it }
 
     val sha256: String
         get() {
@@ -638,4 +650,9 @@ class DatenFilm private constructor(
             }
         }
     }
+
+    private data class FileSizeLookupKey(
+        val url: String,
+        val resolution: String?,
+    )
 }

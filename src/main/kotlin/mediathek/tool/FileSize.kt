@@ -115,7 +115,7 @@ object FileSize {
         probeHlsSegments: Boolean = true,
         cachedHlsLookup: (HttpUrl, String?) -> LookupResult? = ::lookupCachedHlsResult,
         directSizeLoader: (HttpUrl) -> Long,
-        hlsSizeLoader: (HttpUrl, Boolean) -> HlsLookupResult,
+        hlsSizeLoader: (HttpUrl, Boolean, String?) -> HlsLookupResult,
         hlsLookupLogger: (HttpUrl, LookupResult) -> LookupResult = ::logHlsLookupIfNeeded,
     ): LookupResult {
         if (!url.scheme.startsWith("http")) {
@@ -133,8 +133,10 @@ object FileSize {
         val result = try {
             if (url.encodedPath.endsWith(".m3u8")) {
                 HlsEgressPolicy.requirePublicHttpUrl(url)
-                cachedHlsLookup(url, quality)?.let { return it }
-                hlsSizeLoader(url, probeHlsSegments)
+                if (!url.shouldBypassCachedHlsLookup()) {
+                    cachedHlsLookup(url, quality)?.let { return it }
+                }
+                hlsSizeLoader(url, probeHlsSegments, quality)
             } else {
                 HlsLookupResult(
                     byteLength = directSizeLoader(url),
@@ -185,6 +187,9 @@ object FileSize {
             logger.debug("File size lookup failed for {}", url, exception)
         }
     }
+
+    private fun HttpUrl.shouldBypassCachedHlsLookup(): Boolean =
+        host.equals("manifest-arte.akamaized.net", ignoreCase = true)
 
     private fun lookupCachedHlsResult(url: HttpUrl, quality: String?): LookupResult? {
         val request = Request.Builder()
@@ -244,8 +249,8 @@ object FileSize {
         }
     }
 
-    private fun loadHlsFileSize(url: HttpUrl, probeSegments: Boolean): HlsLookupResult = runBlocking {
-        val estimate = HlsPlaylistSizeEstimator().estimate(url.toString(), probeSegments)
+    private fun loadHlsFileSize(url: HttpUrl, probeSegments: Boolean, quality: String?): HlsLookupResult = runBlocking {
+        val estimate = HlsPlaylistSizeEstimator().estimate(url.toString(), probeSegments, quality)
         HlsLookupResult(
             byteLength = estimate.totalBytes,
             resolutionUrl = estimate.selectedVariant.playlistUrl,

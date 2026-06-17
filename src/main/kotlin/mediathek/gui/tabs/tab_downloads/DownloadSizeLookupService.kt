@@ -64,6 +64,7 @@ internal class DownloadSizeLookupService(
                 val fetchSizeEnabled = ApplicationConfiguration.getInstance().fetchMissingDownloadFileSize
                 val lookupKey = LookupKey(
                     url = download.downloadUrl,
+                    quality = download.selectedResolution.name,
                     location = currentLocation,
                     fetchSizeEnabled = fetchSizeEnabled,
                     probeHlsSegments = forceLookup,
@@ -151,6 +152,7 @@ internal class DownloadSizeLookupService(
 
     private data class LookupKey(
         val url: String,
+        val quality: String?,
         val location: Country,
         val fetchSizeEnabled: Boolean,
         val probeHlsSegments: Boolean,
@@ -164,6 +166,7 @@ internal class DownloadSizeLookupService(
     private fun PersistentLookupCacheEntry.toLookupKey(): LookupKey =
         LookupKey(
             url = url,
+            quality = quality,
             location = location,
             fetchSizeEnabled = fetchSizeEnabled,
             probeHlsSegments = probeHlsSegments,

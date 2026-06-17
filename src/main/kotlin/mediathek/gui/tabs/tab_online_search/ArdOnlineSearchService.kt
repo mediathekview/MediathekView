@@ -15,11 +15,11 @@ class ArdOnlineSearchService(
     override suspend fun search(request: OnlineSearchRequest): OnlineSearchPage {
         require(request.provider == OnlineSearchProvider.ARD)
         val pageNumber = request.nextToken?.toIntOrNull() ?: 0
-        val root = httpClient.get(searchUrl(request.query, pageNumber)).parseJsonObject()
+        val root = httpClient.get(searchUrl(request.query, pageNumber)).parseJsonObject(json)
         val total = root["pagination"]?.jsonObject?.get("totalElements")?.jsonPrimitive?.longOrNull
         val ids = root["teasers"]?.jsonArray.orEmpty()
             .mapNotNull { element -> element.jsonObject["id"]?.jsonPrimitive?.contentOrNull }
-        val results = ids.mapNotNull { loadById(it) }
+        val results = ids.mapConcurrently { loadById(it) }.filterNotNull()
         val nextToken = if (total != null && (pageNumber + 1L) * PAGE_SIZE < total) {
             (pageNumber + 1).toString()
         } else {
@@ -35,7 +35,7 @@ class ArdOnlineSearchService(
     }
 
     private suspend fun loadById(id: String): OnlineSearchResult? {
-        val root = httpClient.get("$ITEM_URL$id").parseJsonObject()
+        val root = httpClient.get("$ITEM_URL$id").parseJsonObject(json)
         val item = root["widgets"]?.jsonArray?.firstOrNull()?.jsonObject ?: return null
         val title = item.string("title") ?: return null
         val topic = item["show"]?.jsonObjectOrNull()?.string("title") ?: title
@@ -65,12 +65,6 @@ class ArdOnlineSearchService(
             "&audioDes=false&signLang=false&subtitle=false&childCont=false" +
             "&sortingCriteria=SCORE_DESC&platform=MEDIA_THEK"
     }
-
-    private fun String.parseJsonObject(): JsonObject = json.parseToJsonElement(this).jsonObject
-
-    private fun JsonObject.string(name: String): String? = this[name]?.jsonPrimitive?.contentOrNull
-
-    private fun JsonElement.jsonObjectOrNull(): JsonObject? = this as? JsonObject
 
     private fun JsonObject.streamUrl(): String? = this["streams"]?.jsonArray.orEmpty()
         .asSequence()
