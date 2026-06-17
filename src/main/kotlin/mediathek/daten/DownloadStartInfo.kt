@@ -6,7 +6,6 @@ class DownloadStartInfo {
      */
     var total_num_download_list_entries: Int = 0
 
-    @JvmField
     var total_starts: Int = 0
 
     var num_abos: Int = 0
@@ -16,22 +15,18 @@ class DownloadStartInfo {
     /**
      * not yet started but initialized.
      */
-    @JvmField
     var initialized: Int = 0
 
-    @JvmField
     var running: Int = 0
 
     /**
      * finished without error.
      */
-    @JvmField
     var finished: Int = 0
 
     /**
      * finished with error.
      */
-    @JvmField
     var error: Int = 0
 
     /**

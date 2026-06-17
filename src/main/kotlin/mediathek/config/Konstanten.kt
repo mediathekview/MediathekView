@@ -26,7 +26,6 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.awt.Image
 
 object Konstanten {
-    @JvmField
     val ICON_TRAY: Image = GetIcon.getProgramIcon("tray.png", 256, 256).image
 
     const val TABLE_DEFAULT_ROW_HEIGHT = 24

@@ -35,7 +35,6 @@ object NotificationService : Closeable {
         notificationCenter = if (enabled) notificationCenterFactory.get() else NullNotificationCenter()
     }
 
-    @JvmStatic
     fun displayNotification(msg: NotificationMessage) {
         notificationCenter.displayNotification(msg)
     }

@@ -54,14 +54,17 @@ internal class DatenFilmGeoBlockingTest {
                     byteLength = FileSize.INVALID_SIZE.toLong(),
                     httpStatusCode = 403,
                     resolutionUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl(),
-                    quality = "HIGH_QUALITY",
+                    quality = FilmResolution.Enum.HIGH_QUALITY.name,
                 ),
             )
 
             assertFalse(film.hasCountries())
             assertFalse(film.isGeoBlockedForLocation(Country.DE))
             assertTrue(film.isGeoBlockedForLocation(Country.AT))
-            assertEquals(403, film.lookupFileSizeForUrl(url).httpStatusCode)
+            assertEquals(
+                403,
+                film.lookupFileSizeForUrl(url, false, FilmResolution.Enum.HIGH_QUALITY.name).httpStatusCode,
+            )
         } finally {
             ApplicationConfiguration.getInstance().geographicLocation = previousLocation
         }
