@@ -65,6 +65,21 @@ class BlacklistRuleTableModelTest {
         assertFalse(blacklist[2].active)
     }
 
+    @Test
+    fun removesAllRulesWithZeroFilteredCount() {
+        val blacklist = ListeBlacklist()
+        blacklist.addWithoutNotification(BlacklistRule("ARD", active = true))
+        blacklist.addWithoutNotification(BlacklistRule("ZDF", active = true))
+        blacklist.addWithoutNotification(BlacklistRule("MDR", active = false))
+        val model = BlacklistRuleTableModel(blacklist)
+        model.applyFilteredCounts(intArrayOf(0, 2, 0))
+
+        val changed = BlacklistRuleBulkActions.removeRulesWithZeroFilteredCount(blacklist, model)
+
+        assertTrue(changed)
+        assertEquals(listOf(BlacklistRule("ZDF", active = true)), blacklist)
+    }
+
     private fun film(sender: String, title: String): DatenFilm =
         DatenFilm().apply {
             this.sender = sender

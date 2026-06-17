@@ -42,7 +42,7 @@ import mediathek.swing.IconUtils
 import mediathek.tool.*
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
-import org.kordamp.ikonli.materialdesign2.MaterialDesignF
+import org.kordamp.ikonli.materialdesign2.MaterialDesignD
 import java.awt.Color
 import java.awt.Component
 import java.awt.event.MouseAdapter
@@ -77,7 +77,7 @@ class PanelBlacklist(
 
     init {
         jButtonHilfe.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
-        jButtonDeactivateZeroFilterRules.icon = IconUtils.of(MaterialDesignF.FILTER_OFF_OUTLINE)
+        jButtonBlacklistActions.icon = IconUtils.of(MaterialDesignD.DOTS_VERTICAL)
 
         jButtonAendern.isEnabled = jTableBlacklist.selectionModel.selectedItemsCount == 1
 
@@ -86,7 +86,8 @@ class PanelBlacklist(
         tableColumnSettings.restore()
         setupTableRenderer()
 
-        tableModel.addTableModelListener { jButtonTabelleLoeschen.isEnabled = tableModel.rowCount != 0 }
+        jButtonBlacklistActions.isEnabled = tableModel.rowCount != 0
+        tableModel.addTableModelListener { jButtonBlacklistActions.isEnabled = tableModel.rowCount != 0 }
         jTableBlacklist.selectionModel.addListSelectionListener { event ->
             if (!event.valueIsAdjusting) {
                 jButtonAendern.isEnabled = jTableBlacklist.selectionModel.selectedItemsCount == 1
@@ -316,24 +317,9 @@ class PanelBlacklist(
         }
         jButtonHinzufuegen.addActionListener { onAddBlacklistRule() }
         jButtonAendern.addActionListener { onChangeBlacklistRule() }
-        jButtonDeactivateZeroFilterRules.addActionListener { onDeactivateZeroFilterRules() }
+        populateBlacklistActionsButton()
         jButtonHilfe.addActionListener {
             DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BLACKLIST)).isVisible = true
-        }
-        jButtonTabelleLoeschen.addActionListener {
-            val result = JOptionPane.showConfirmDialog(
-                parentComponent,
-                "<html>Möchten Sie wirklich <b>alle Regeln</b> dauerhaft löschen?</html>",
-                "Blacklist Regeln",
-                JOptionPane.YES_NO_OPTION,
-            )
-            if (result == JOptionPane.OK_OPTION) {
-                if (daten.listeBlacklist.isNotEmpty()) {
-                    daten.listeBlacklist.clearWithoutNotification()
-                    tableModel.rulesChanged()
-                    scheduleBlacklistRulesChanged()
-                }
-            }
         }
         jComboBoxSender.addActionListener { comboThemaLaden("") }
 
@@ -413,6 +399,18 @@ class PanelBlacklist(
         }
     }
 
+    private fun populateBlacklistActionsButton() {
+        jButtonBlacklistActions.add(JMenuItem("Regeln ohne Treffer deaktivieren").apply {
+            addActionListener { onDeactivateZeroFilterRules() }
+        })
+        jButtonBlacklistActions.add(JMenuItem("Regeln ohne Treffer löschen...").apply {
+            addActionListener { onRemoveZeroFilterRules() }
+        })
+        jButtonBlacklistActions.add(JMenuItem("Alle Regeln löschen...").apply {
+            addActionListener { onRemoveAllBlacklistRules() }
+        })
+    }
+
     private fun onDeactivateZeroFilterRules() {
         val changedRows = BlacklistRuleBulkActions.deactivateActiveRulesWithZeroFilteredCount(
             daten.listeBlacklist,
@@ -424,6 +422,37 @@ class PanelBlacklist(
         if (changedRows.isNotEmpty()) {
             fillControlsWithRuleData()
             scheduleBlacklistRulesChanged()
+        }
+    }
+
+    private fun onRemoveZeroFilterRules() {
+        val result = JOptionPane.showConfirmDialog(
+            parentComponent,
+            "<html>Möchten Sie wirklich <b>alle Regeln ohne Treffer</b> dauerhaft löschen?</html>",
+            "Blacklist Regeln",
+            JOptionPane.YES_NO_OPTION,
+        )
+        if (result == JOptionPane.OK_OPTION) {
+            if (BlacklistRuleBulkActions.removeRulesWithZeroFilteredCount(daten.listeBlacklist, tableModel)) {
+                tableModel.rulesChanged()
+                scheduleBlacklistRulesChanged()
+            }
+        }
+    }
+
+    private fun onRemoveAllBlacklistRules() {
+        val result = JOptionPane.showConfirmDialog(
+            parentComponent,
+            "<html>Möchten Sie wirklich <b>alle Regeln</b> dauerhaft löschen?</html>",
+            "Blacklist Regeln",
+            JOptionPane.YES_NO_OPTION,
+        )
+        if (result == JOptionPane.OK_OPTION) {
+            if (daten.listeBlacklist.isNotEmpty()) {
+                daten.listeBlacklist.clearWithoutNotification()
+                tableModel.rulesChanged()
+                scheduleBlacklistRulesChanged()
+            }
         }
     }
 

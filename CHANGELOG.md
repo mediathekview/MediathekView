@@ -67,7 +67,7 @@
 - **FEATURE:** Online-Suche für ARD und ZDF wurde im Tab `Onlinesuche` integriert.
 - **FEATURE:** Blacklist-Regeln können in den Einstellungen deaktiviert werden damit sie während des Filterns nicht mehr berücksichtigt werden. Dadurch müssen Regeln nicht mehr gelöscht werden.
 - **FEATURE:** Blacklist-Regel-Tabelle speichert nun die Breite und Position der Spalten.
-- **FEATURE:** Im Blacklist-Regel-Dialog können nun über den "Filter-Aus-Button" automatisch alle Regeln deaktiviert werden, die keine Treffer mehr erzeugen.
+- **FEATURE:** Im Blacklist-Regel-Dialog wurden die einzelnen Aktions-Buttons entfernt und durch ein *Drei-Punkte*-Button ersetzt, der alle erlaubten Aktionen zusammenfasst.
 - interne Optimierungen für mehr Geschwindigkeit.
 - interne Fehler wurden behoben.
 - MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.

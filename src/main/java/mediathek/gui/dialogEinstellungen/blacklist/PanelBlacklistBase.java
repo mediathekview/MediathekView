@@ -1,5 +1,6 @@
 package mediathek.gui.dialogEinstellungen.blacklist;
 
+import com.jidesoft.swing.JideSplitButton;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -57,8 +58,7 @@ public class PanelBlacklistBase extends JPanel {
         var panel3 = new JPanel();
         var label2 = new JLabel();
         lblNumEntries = new JLabel();
-        jButtonDeactivateZeroFilterRules = new JButton();
-        jButtonTabelleLoeschen = new JButton();
+        jButtonBlacklistActions = new JideSplitButton();
         var separator2 = new JSeparator();
         var jPanel3 = new JPanel();
         jCheckBoxZukunftNichtAnzeigen = new JCheckBox();
@@ -256,7 +256,6 @@ public class PanelBlacklistBase extends JPanel {
                         new AC()
                             .fill().gap()
                             .grow().fill().gap()
-                            .fill().gap()
                             .fill(),
                         // rows
                         new AC()
@@ -284,14 +283,12 @@ public class PanelBlacklistBase extends JPanel {
                     }
                     panel1.add(panel3, new CC().cell(0, 0));
 
-                    //---- jButtonDeactivateZeroFilterRules ----
-                    jButtonDeactivateZeroFilterRules.setToolTipText("Deaktiviert alle aktiven Regeln, die aktuell keine Treffer filtern.");
-                    panel1.add(jButtonDeactivateZeroFilterRules, new CC().cell(2, 0));
-
-                    //---- jButtonTabelleLoeschen ----
-                    jButtonTabelleLoeschen.setToolTipText("Alle Eintr\u00e4ge l\u00f6schen");
-                    jButtonTabelleLoeschen.setText("Alle Eintr\u00e4ge l\u00f6schen");
-                    panel1.add(jButtonTabelleLoeschen, new CC().cell(3, 0));
+                    //======== jButtonBlacklistActions ========
+                    {
+                        jButtonBlacklistActions.setAlwaysDropdown(true);
+                        jButtonBlacklistActions.setToolTipText("Blacklist-Regeln verwalten");
+                    }
+                    panel1.add(jButtonBlacklistActions, new CC().cell(2, 0));
                 }
                 jPanel1.add(panel1, new CC().cell(0, 5));
                 jPanel1.add(separator2, new CC().cell(0, 6));
@@ -411,8 +408,7 @@ public class PanelBlacklistBase extends JPanel {
     protected JTextField tfFilter;
     protected JButton btnFilterTable;
     protected JLabel lblNumEntries;
-    protected JButton jButtonDeactivateZeroFilterRules;
-    protected JButton jButtonTabelleLoeschen;
+    protected JideSplitButton jButtonBlacklistActions;
     protected JCheckBox jCheckBoxZukunftNichtAnzeigen;
     protected JCheckBox jCheckBoxGeo;
     protected JSlider jSliderMinuten;

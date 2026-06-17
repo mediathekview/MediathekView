@@ -36,4 +36,17 @@ internal object BlacklistRuleBulkActions {
         }
         return changedRows
     }
+
+    fun removeRulesWithZeroFilteredCount(
+        blacklist: ListeBlacklist,
+        tableModel: BlacklistRuleTableModel,
+    ): Boolean {
+        val rules = rulesWithZeroFilteredCount(tableModel)
+        return rules.isNotEmpty() && blacklist.removeAllWithoutNotification(rules)
+    }
+
+    private fun rulesWithZeroFilteredCount(tableModel: BlacklistRuleTableModel) =
+        (0 until tableModel.rowCount)
+            .filter(tableModel::hasZeroFilteredCount)
+            .map(tableModel::getRule)
 }
