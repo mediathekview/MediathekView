@@ -23,17 +23,17 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
 import mediathek.gui.tabs.tab_film.startDownloads
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.NoSelectionErrorDialog
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
 import java.util.*
+import javax.swing.JFrame
 
 class FilmSelectionController(private val host: Host) {
     interface Host {
         fun table(): MVFilmTable
         fun parentComponent(): Component
-        fun mediathekGui(): MediathekGui
+        fun downloadParent(): JFrame
         fun daten(): Daten
         fun showHighQualityOnly(): Boolean
         fun updateCurrentFilm(film: DatenFilm?)
@@ -48,7 +48,7 @@ class FilmSelectionController(private val host: Host) {
         } else {
             null
         }
-        startDownloads(host.mediathekGui(), getSelectedFilms(), pSet, requestedResolution)
+        startDownloads(host.downloadParent(), getSelectedFilms(), pSet, requestedResolution)
     }
 
     fun startFilm(pSet: DatenPset) {

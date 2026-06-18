@@ -20,15 +20,15 @@ package mediathek.gui.tabs.tab_film.selection
 
 import mediathek.config.Daten
 import mediathek.daten.DatenFilm
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
 import java.util.function.Consumer
+import javax.swing.JFrame
 
 class FilmSelectionHostAdapter(
     private val tableProvider: () -> MVFilmTable,
     private val parentComponent: Component,
-    private val mediathekGui: MediathekGui,
+    private val downloadParent: JFrame,
     private val datenProvider: () -> Daten,
     private val showHighQualityOnlyProvider: () -> Boolean,
     private val currentFilm: Consumer<DatenFilm?>,
@@ -37,7 +37,7 @@ class FilmSelectionHostAdapter(
 
     override fun parentComponent(): Component = parentComponent
 
-    override fun mediathekGui(): MediathekGui = mediathekGui
+    override fun downloadParent(): JFrame = downloadParent
 
     override fun daten(): Daten = datenProvider()
 
