@@ -43,7 +43,7 @@ object DefaultMainWindowMenuPolicy : MainWindowMenuPolicy {
 
     override fun addQuitItem(fileMenu: JMenu, owner: MediathekGui) {
         fileMenu.addSeparator()
-        fileMenu.add(QuitAction(owner))
+        fileMenu.add(QuitAction(owner::quitApplication))
     }
 
     override fun addHelpTail(helpMenu: JMenu, owner: MediathekGui) {
