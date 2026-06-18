@@ -192,7 +192,7 @@ class GuiFilme(
         )
         val selectionController = FilmSelectionController(selectionHost)
         val bookmarkHost = object : FilmBookmarkController.Host {
-            override fun mediathekGui() = mediathekGui
+            override fun ownerFrame() = mediathekGui
 
             override fun repaintOwner() {
                 repaint()

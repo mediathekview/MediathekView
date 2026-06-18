@@ -21,13 +21,13 @@ package mediathek.gui.tabs.tab_film.bookmark
 import mediathek.config.Daten
 import mediathek.daten.DatenFilm
 import mediathek.gui.bookmark.BookmarkDialog
-import mediathek.mainwindow.MediathekGui
+import javax.swing.JFrame
 
 class FilmBookmarkController(private val host: Host) {
     private var bookmarkDialog: BookmarkDialog? = null
 
     interface Host {
-        fun mediathekGui(): MediathekGui
+        fun ownerFrame(): JFrame
         fun repaintOwner()
     }
 
@@ -39,7 +39,7 @@ class FilmBookmarkController(private val host: Host) {
     }
 
     fun showManageBookmarkWindow() {
-        val dialog = bookmarkDialog ?: BookmarkDialog(host.mediathekGui(), host::repaintOwner).also { bookmarkDialog = it }
+        val dialog = bookmarkDialog ?: BookmarkDialog(host.ownerFrame(), host::repaintOwner).also { bookmarkDialog = it }
         dialog.isVisible = true
     }
 
