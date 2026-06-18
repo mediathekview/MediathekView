@@ -865,6 +865,7 @@ object Main {
 
         SplashScreenLifecycle.update(UIProgressState.START_UI)
         val window = getPlatformWindow()
+        window.start()
         SplashScreenLifecycle.close()
         window.isVisible = true
         /*

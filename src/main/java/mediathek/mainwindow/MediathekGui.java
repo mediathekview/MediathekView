@@ -150,6 +150,7 @@ public class MediathekGui extends JFrame {
     private final Supplier<INotificationCenter> notificationCenterFactory;
     private final ComputerShutdown computerShutdown;
     private final DownloadProgressIndicator downloadProgressIndicator;
+    private final MainWindowController mainWindowController;
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
             new FilmlistProgressPresenter(SwingDispatch.INSTANCE, this::showStatusBarProgress);
     private final ListenerFilmeLaden filmListListener;
@@ -188,6 +189,29 @@ public class MediathekGui extends JFrame {
         this.downloadProgressIndicator = Objects.requireNonNull(
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
+        loadFilmListAction = new LoadFilmListAction(this);
+        filmListListener = new MainWindowFilmListListener(
+                SwingDispatch.INSTANCE,
+                () -> loadFilmListAction,
+                () -> daten.allesSpeichern(),
+                this::setupAutomaticFilmlistReload
+        );
+        searchProgramUpdateAction = new SearchProgramUpdateAction();
+        mainWindowController = createMainWindowController();
+    }
+
+    private MainWindowController createMainWindowController() {
+        return new MainWindowController(
+                this::initializeMainWindow,
+                this::startMainWindowRuntime
+        );
+    }
+
+    public void start() {
+        mainWindowController.start();
+    }
+
+    private void initializeMainWindow() {
         ui = this;
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -197,15 +221,6 @@ public class MediathekGui extends JFrame {
         UIManager.addPropertyChangeListener(lookAndFeelListener);
 
         setupAlternatingRowColors();
-
-        loadFilmListAction = new LoadFilmListAction(this);
-        filmListListener = new MainWindowFilmListListener(
-                SwingDispatch.INSTANCE,
-                () -> loadFilmListAction,
-                () -> daten.allesSpeichern(),
-                this::setupAutomaticFilmlistReload
-        );
-        searchProgramUpdateAction = new SearchProgramUpdateAction();
 
         SplashScreenLifecycle.update(UIProgressState.LOAD_MAINWINDOW);
 
@@ -239,40 +254,44 @@ public class MediathekGui extends JFrame {
 
         createCommonToolBar();
         installToolBar();
+        mapFilmUrlCopyCommands();
 
         SplashScreenLifecycle.update(UIProgressState.FINISHED);
+    }
 
+    private void startMainWindowRuntime() {
         subscribeTableModelChangeEvent();
+        setupTaskbarMenuLater();
+        setupSystemTray();
+        setApplicationWindowSizeLater();
+        loadFilmlist();
+        setupAutomaticUpdateCheck();
+        setupShutdownHook();
+        checkInvalidRegularExpressions();
+        loadBandwidthMonitor();
+        setupFilmInfoDialog();
+        resetTabPlacement();
+        setupRavenNotifications();
+        performGeoCountryStartupCheck();
+    }
 
+    private void setupTaskbarMenuLater() {
         SwingUtilities.invokeLater(() -> {
             if (Taskbar.isTaskbarSupported())
                 setupTaskbarMenu();
         });
+    }
 
-        setupSystemTray();
-
+    private void setApplicationWindowSizeLater() {
         SwingUtilities.invokeLater(this::setApplicationWindowSize);
+    }
 
-        loadFilmlist();
-
+    private void setupAutomaticUpdateCheck() {
         setupUpdateCheck(ApplicationConfiguration.getInstance().getAutomaticUpdateCheck());
+    }
 
-        setupShutdownHook();
-
-        checkInvalidRegularExpressions();
-
-        loadBandwidthMonitor();
-
-        setupFilmInfoDialog();
-
-        mapFilmUrlCopyCommands();
-
-        resetTabPlacement();
-
-        //setup Raven Notification library
+    private void setupRavenNotifications() {
         Notifications.getInstance().setJFrame(this);
-
-        performGeoCountryStartupCheck();
     }
 
     @Override
