@@ -39,12 +39,18 @@ interface DownloadControlHost {
     fun stopAllWaitingDownloads()
 }
 
-interface TrayHost {
+interface MainWindowQuitHost : MainWindowHandle {
+    fun quitApplication(): Boolean
+}
+
+interface LookAndFeelHost {
+    fun setupAlternatingRowColors()
+}
+
+interface TrayHost : MainWindowQuitHost {
     fun showMainWindow()
 
     fun toggleMainWindowVisibility()
 
     fun refreshSystemTray()
-
-    fun quitApplication(): Boolean
 }

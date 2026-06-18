@@ -2,19 +2,16 @@ package mediathek.gui.actions
 
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.MainWindowQuitHost
 import mediathek.tool.FileUtils
 import java.awt.event.ActionEvent
 import java.nio.file.Paths
 import javax.swing.AbstractAction
-import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 class DeleteLocalFilmlistAction(
-    parent: MediathekGui,
+    private val host: MainWindowQuitHost,
 ) : AbstractAction() {
-    private val owner: JFrame = parent
-
     init {
         putValue(NAME, "Lokale Filmliste löschen")
     }
@@ -23,11 +20,11 @@ class DeleteLocalFilmlistAction(
         val filmlistPath = Paths.get(StandardLocations.getFilmlistFilePathString())
         FileUtils.moveToTrash(filmlistPath)
         JOptionPane.showMessageDialog(
-            owner,
+            host.ownerFrame(),
             "Filmliste wurde gelöscht.\nDas Programm wird nun beendet.",
             Konstanten.PROGRAMMNAME,
             JOptionPane.INFORMATION_MESSAGE,
         )
-        MediathekGui.ui().quitApplication()
+        host.quitApplication()
     }
 }

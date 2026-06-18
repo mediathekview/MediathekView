@@ -80,7 +80,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost {
+public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost, LookAndFeelHost {
 
     protected static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
@@ -126,7 +126,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     protected final SettingsAction settingsAction = new SettingsAction();
     protected final JToolBar commonToolBar = new JToolBar();
     protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
-    protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction();
+    protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction(this);
     private final JMenu fontMenu = new JMenu("Schrift");
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
@@ -138,7 +138,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowTabRegistry tabRegistry = new MainWindowTabRegistry(tabbedPane);
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
-    private final ManageAboAction manageAboAction = new ManageAboAction();
+    private final ManageAboAction manageAboAction = new ManageAboAction(this);
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel();
