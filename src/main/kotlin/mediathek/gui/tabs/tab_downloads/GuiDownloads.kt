@@ -84,7 +84,7 @@ class GuiDownloads(
     val editDownloadAction = EditDownloadAction(this)
     val deleteDownloadAction = DeleteDownloadAction(this)
     val openTargetFolderAction = OpenTargetFolderAction(this)
-    val mergeSubtitleWithVideoAction = MergeSubtitleWithVideoAction(MediathekGui.ui())
+    val mergeSubtitleWithVideoAction = MergeSubtitleWithVideoAction(mediathekGui)
     val swingToolBar: JToolBar = DownloadsToolBar(
         refreshDownloadListAction,
         startAllDownloadsAction,
