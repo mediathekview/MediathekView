@@ -27,7 +27,6 @@ import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MacMainWindowMenuPolicy
 import mediathek.mainwindow.MediathekGui
-import mediathek.mainwindow.MainWindowMenuPolicy
 import mediathek.mainwindow.MainWindowTabPlacementController
 import mediathek.mainwindow.MainWindowToolbarInstaller
 import mediathek.shutdown.MacComputerShutdown
@@ -55,6 +54,7 @@ class MediathekGuiMac : MediathekGui(
     { _ -> MacDownloadProgressIndicator() },
     MacMainWindowToolbarInstaller,
     MainWindowTabPlacementController(false),
+    MacMainWindowMenuPolicy,
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -141,8 +141,6 @@ class MediathekGuiMac : MediathekGui(
         }
 
     }
-
-    override fun createMenuPolicy(): MainWindowMenuPolicy = MacMainWindowMenuPolicy
 
     override fun setupScrollBarWidth() {
         // unused on macOS

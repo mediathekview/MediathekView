@@ -155,6 +155,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowDarkModeActionPlacement darkModeActionPlacement;
     private final MainWindowToolbarInstaller toolbarInstaller;
     private final MainWindowTabPlacementController tabPlacementController;
+    private final MainWindowMenuPolicy menuPolicy;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -200,7 +201,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 downloadProgressIndicatorFactory,
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
                 DEFAULT_TOOLBAR_INSTALLER,
-                new MainWindowTabPlacementController(true)
+                new MainWindowTabPlacementController(true),
+                DefaultMainWindowMenuPolicy.INSTANCE
         );
     }
 
@@ -216,7 +218,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 downloadProgressIndicatorFactory,
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
                 toolbarInstaller,
-                new MainWindowTabPlacementController(true)
+                new MainWindowTabPlacementController(true),
+                DefaultMainWindowMenuPolicy.INSTANCE
         );
     }
 
@@ -225,7 +228,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             ComputerShutdown computerShutdown,
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowToolbarInstaller toolbarInstaller,
-            MainWindowTabPlacementController tabPlacementController
+            MainWindowTabPlacementController tabPlacementController,
+            MainWindowMenuPolicy menuPolicy
     ) {
         this(
                 notificationCenterFactory,
@@ -233,7 +237,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 downloadProgressIndicatorFactory,
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
                 toolbarInstaller,
-                tabPlacementController
+                tabPlacementController,
+                menuPolicy
         );
     }
 
@@ -249,7 +254,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 downloadProgressIndicatorFactory,
                 darkModeActionPlacement,
                 DEFAULT_TOOLBAR_INSTALLER,
-                new MainWindowTabPlacementController(true)
+                new MainWindowTabPlacementController(true),
+                DefaultMainWindowMenuPolicy.INSTANCE
         );
     }
 
@@ -259,13 +265,15 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowDarkModeActionPlacement darkModeActionPlacement,
             MainWindowToolbarInstaller toolbarInstaller,
-            MainWindowTabPlacementController tabPlacementController
+            MainWindowTabPlacementController tabPlacementController,
+            MainWindowMenuPolicy menuPolicy
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
         this.darkModeActionPlacement = Objects.requireNonNull(darkModeActionPlacement);
         this.toolbarInstaller = Objects.requireNonNull(toolbarInstaller);
         this.tabPlacementController = Objects.requireNonNull(tabPlacementController);
+        this.menuPolicy = Objects.requireNonNull(menuPolicy);
         this.downloadProgressIndicator = Objects.requireNonNull(
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
@@ -671,7 +679,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 fontMenu,
                 jMenuAnsicht,
                 jMenuHilfe,
-                createMenuPolicy(),
+                menuPolicy,
                 tabRegistry,
                 () -> tabFilme,
                 () -> tabDownloads,
@@ -686,10 +694,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 manageBookmarkAction,
                 searchProgramUpdateAction
         );
-    }
-
-    protected MainWindowMenuPolicy createMenuPolicy() {
-        return DefaultMainWindowMenuPolicy.INSTANCE;
     }
 
     /**
