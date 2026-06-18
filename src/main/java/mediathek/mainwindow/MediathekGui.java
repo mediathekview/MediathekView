@@ -693,6 +693,9 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private MainWindowMenuBuilder createMenuBuilder() {
         return new MainWindowMenuBuilder(
                 this,
+                this,
+                this,
+                this,
                 daten,
                 jMenuBar,
                 jMenuDatei,
