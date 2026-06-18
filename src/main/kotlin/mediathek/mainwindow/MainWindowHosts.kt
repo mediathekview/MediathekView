@@ -61,6 +61,10 @@ interface SettingsDialogHost : MainWindowHandle, LookAndFeelHost {
     fun supportsAutomaticMenuTabSwitching(): Boolean
 }
 
+interface SettingsResetHost : MainWindowQuitHost {
+    fun requestSettingsResetOnQuit()
+}
+
 interface TrayHost : MainWindowQuitHost {
     fun showMainWindow()
 

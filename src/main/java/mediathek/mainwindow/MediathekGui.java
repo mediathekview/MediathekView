@@ -80,7 +80,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost, SettingsDialogHost, FilmListLoadHost {
+public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost, SettingsDialogHost, SettingsResetHost, FilmListLoadHost {
 
     protected static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
