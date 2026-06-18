@@ -9,6 +9,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.ceil
 
 class HlsPlaylistSizeEstimator(
@@ -367,19 +368,30 @@ class HlsPlaylistSizeEstimator(
         segments: List<SegmentReference>,
         contentLengthLoader: suspend (HttpUrl) -> Long,
     ): Long = coroutineScope {
-        segments
-            .chunked(segmentParallelism.coerceAtLeast(1))
-            .map { batch ->
-                async {
-                    var batchTotal = 0L
-                    for (segment in batch) {
-                        batchTotal += segment.byteRangeLength ?: contentLengthLoader(segment.url)
+        if (segments.isEmpty()) {
+            return@coroutineScope 0L
+        }
+
+        val workerCount = minOf(segmentParallelism.coerceAtLeast(1), segments.size)
+        val nextSegmentIndex = AtomicInteger(0)
+        val workerTotals = LongArray(workerCount)
+
+        List(workerCount) { workerIndex ->
+            launch {
+                var workerTotal = 0L
+                while (true) {
+                    val segmentIndex = nextSegmentIndex.getAndIncrement()
+                    if (segmentIndex >= segments.size) {
+                        break
                     }
-                    batchTotal
+                    val segment = segments[segmentIndex]
+                    workerTotal += segment.byteRangeLength ?: contentLengthLoader(segment.url)
                 }
+                workerTotals[workerIndex] = workerTotal
             }
-            .awaitAll()
-            .sum()
+        }.joinAll()
+
+        workerTotals.sum()
     }
 
     private suspend fun loadText(url: HttpUrl): String = withContext(Dispatchers.IO) {

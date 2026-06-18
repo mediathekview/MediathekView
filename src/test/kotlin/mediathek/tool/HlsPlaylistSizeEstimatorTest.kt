@@ -1,5 +1,6 @@
 package mediathek.tool
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.net.InetAddress
 import java.net.UnknownHostException
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class HlsPlaylistSizeEstimatorTest {
     private val estimator = HlsPlaylistSizeEstimator(segmentParallelism = 2)
@@ -122,6 +125,49 @@ internal class HlsPlaylistSizeEstimatorTest {
         assertEquals(null, result.selectedVariant.bandwidth)
         assertEquals(2, result.segmentCount)
         assertEquals(579L, result.totalBytes)
+    }
+
+    @Test
+    fun boundsConcurrentSegmentLengthLookups() {
+        val mediaUrl = "https://example.org/video/chunklist.m3u8".toHttpUrl()
+        val segmentCount = 10
+        val playlist = buildString {
+            appendLine("#EXTM3U")
+            repeat(segmentCount) { index ->
+                appendLine("#EXTINF:4.0,")
+                appendLine("media_$index.ts")
+            }
+        }
+        val activeLookups = AtomicInteger(0)
+        val maxActiveLookups = AtomicInteger(0)
+        val lookupCount = AtomicInteger(0)
+        val boundedEstimator = HlsPlaylistSizeEstimator(segmentParallelism = 3)
+
+        val result = runBlocking {
+            boundedEstimator.estimate(
+                playlistUrl = mediaUrl,
+                textLoader = { playlist },
+                contentLengthLoader = {
+                    val active = activeLookups.incrementAndGet()
+                    maxActiveLookups.updateAndGet { current -> maxOf(current, active) }
+                    lookupCount.incrementAndGet()
+                    try {
+                        delay(10.milliseconds)
+                        100L
+                    } finally {
+                        activeLookups.decrementAndGet()
+                    }
+                },
+            )
+        }
+
+        assertEquals(segmentCount, result.segmentCount)
+        assertEquals(segmentCount * 100L, result.totalBytes)
+        assertEquals(segmentCount, lookupCount.get())
+        assertTrue(
+            maxActiveLookups.get() <= 3,
+            "segment length lookups exceeded configured parallelism: ${maxActiveLookups.get()}",
+        )
     }
 
     @Test
