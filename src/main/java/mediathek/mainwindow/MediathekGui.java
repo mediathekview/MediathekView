@@ -66,6 +66,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -152,6 +153,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowScrollBarConfigurator scrollBarConfigurator;
     private final MainWindowSystemTrayController systemTrayController;
     private final boolean disableF10MenuShortcut;
+    private final Consumer<MediathekGui> afterMenusInitialized;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -202,7 +204,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 true,
                 DefaultMainWindowScrollBarConfigurator.INSTANCE,
                 DefaultMainWindowSystemTrayController.INSTANCE,
-                true
+                true,
+                _ -> {}
         );
     }
 
@@ -223,7 +226,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 true,
                 DefaultMainWindowScrollBarConfigurator.INSTANCE,
                 DefaultMainWindowSystemTrayController.INSTANCE,
-                true
+                true,
+                _ -> {}
         );
     }
 
@@ -237,7 +241,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             boolean automaticMenuTabSwitchingSupported,
             MainWindowScrollBarConfigurator scrollBarConfigurator,
             MainWindowSystemTrayController systemTrayController,
-            boolean disableF10MenuShortcut
+            boolean disableF10MenuShortcut,
+            Consumer<MediathekGui> afterMenusInitialized
     ) {
         this(
                 notificationCenterFactory,
@@ -250,7 +255,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 automaticMenuTabSwitchingSupported,
                 scrollBarConfigurator,
                 systemTrayController,
-                disableF10MenuShortcut
+                disableF10MenuShortcut,
+                afterMenusInitialized
         );
     }
 
@@ -271,7 +277,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 true,
                 DefaultMainWindowScrollBarConfigurator.INSTANCE,
                 DefaultMainWindowSystemTrayController.INSTANCE,
-                true
+                true,
+                _ -> {}
         );
     }
 
@@ -286,7 +293,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             boolean automaticMenuTabSwitchingSupported,
             MainWindowScrollBarConfigurator scrollBarConfigurator,
             MainWindowSystemTrayController systemTrayController,
-            boolean disableF10MenuShortcut
+            boolean disableF10MenuShortcut,
+            Consumer<MediathekGui> afterMenusInitialized
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
@@ -297,6 +305,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         this.scrollBarConfigurator = Objects.requireNonNull(scrollBarConfigurator);
         this.systemTrayController = Objects.requireNonNull(systemTrayController);
         this.disableF10MenuShortcut = disableF10MenuShortcut;
+        this.afterMenusInitialized = Objects.requireNonNull(afterMenusInitialized);
         menuTabSwitchController = new MainWindowMenuTabSwitchController(
                 tabbedPane,
                 jMenuFilme,
@@ -973,9 +982,10 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(true));
     }
 
-    protected void initMenus() {
+    private void initMenus() {
         installMenuTabSwitchListener();
         createMenuBuilder().initializeMenus();
+        afterMenusInitialized.accept(this);
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {

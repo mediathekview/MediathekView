@@ -61,6 +61,7 @@ class MediathekGuiMac : MediathekGui(
     NoOpMainWindowScrollBarConfigurator,
     NoOpMainWindowSystemTrayController,
     false,
+    ::setupUserInterfaceForOsx,
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -146,44 +147,39 @@ class MediathekGuiMac : MediathekGui(
 
     }
 
-    override fun initMenus() {
-        super.initMenus()
-        setupUserInterfaceForOsx()
-    }
-
-    /**
-     * Setup the UI for OS X
-     */
-    private fun setupUserInterfaceForOsx() {
-        val desktop = Desktop.getDesktop()
-
-        desktop.disableSuddenTermination()
-        if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
-            desktop.setQuitHandler { _: QuitEvent?, response: QuitResponse ->
-                quitApplication()
-                response.cancelQuit()
-            }
-        }
-        if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
-            desktop.setAboutHandler { ShowAboutAction(this).actionPerformed(null) }
-        }
-
-        if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
-            desktop.setPreferencesHandler {
-                MessageBus.messageBus.publishAsync(ShowSettingsDialogEvent())
-            }
-        }
-
-        val rootPane = getRootPane()
-        rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
-        if (SystemInfo.isMacFullWindowContentSupported) {
-            rootPane.putClientProperty("apple.awt.fullWindowContent", true)
-            rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
-        }
-    }
-
     companion object {
         val logger: Logger = LogManager.getLogger()
+    }
+}
+
+/**
+ * Setup the UI for OS X
+ */
+private fun setupUserInterfaceForOsx(mainWindow: MediathekGui) {
+    val desktop = Desktop.getDesktop()
+
+    desktop.disableSuddenTermination()
+    if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+        desktop.setQuitHandler { _: QuitEvent?, response: QuitResponse ->
+            mainWindow.quitApplication()
+            response.cancelQuit()
+        }
+    }
+    if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+        desktop.setAboutHandler { ShowAboutAction(mainWindow).actionPerformed(null) }
+    }
+
+    if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
+        desktop.setPreferencesHandler {
+            MessageBus.messageBus.publishAsync(ShowSettingsDialogEvent())
+        }
+    }
+
+    val rootPane = mainWindow.rootPane
+    rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
+    if (SystemInfo.isMacFullWindowContentSupported) {
+        rootPane.putClientProperty("apple.awt.fullWindowContent", true)
+        rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
     }
 }
 
