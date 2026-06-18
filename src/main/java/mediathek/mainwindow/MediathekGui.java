@@ -29,18 +29,10 @@ import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.MVTray;
 import mediathek.gui.actions.*;
-import mediathek.gui.actions.export.ExportDecompressedFilmlistAction;
-import mediathek.gui.actions.export.ExportReadableFilmlistAction;
-import mediathek.gui.actions.import_actions.ImportOldAbosAction;
-import mediathek.gui.actions.import_actions.ImportOldBlacklistAction;
-import mediathek.gui.actions.import_actions.ImportOldReplacementListAction;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.duplicates.overview.FilmDuplicateOverviewDialog;
 import mediathek.gui.filmInformation.FilmInfoDialog;
-import mediathek.gui.history.ResetAboHistoryAction;
-import mediathek.gui.history.ResetDownloadHistoryAction;
 import mediathek.gui.messages.*;
 import mediathek.gui.progress.DownloadProgressIndicator;
 import mediathek.gui.progress.NoDownloadProgressIndicator;
@@ -50,7 +42,6 @@ import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
 import mediathek.gui.tabs.tab_online_search.OnlineSearchPanel;
 import mediathek.logging.LogDialog;
 import mediathek.shutdown.ComputerShutdown;
-import mediathek.sqlite.RecoverHistoryDbAction;
 import mediathek.swing.IconOnlyButton;
 import mediathek.tool.*;
 import mediathek.tool.notification.GenericNotificationCenter;
@@ -603,35 +594,42 @@ public class MediathekGui extends JFrame {
     }
 
     protected void createMenuBar() {
-        jMenuDatei.setMnemonic('d');
-        jMenuDatei.setText("Datei");
-        jMenuBar.add(jMenuDatei);
+        setJMenuBar(createMenuBuilder().createMenuBar());
+    }
 
-        jMenuFilme.setMnemonic('F');
-        jMenuFilme.setText("Filme");
-        jMenuBar.add(jMenuFilme);
+    private MainWindowMenuBuilder createMenuBuilder() {
+        return new MainWindowMenuBuilder(
+                this,
+                daten,
+                jMenuBar,
+                jMenuDatei,
+                jMenuFilme,
+                jMenuDownload,
+                jMenuAbos,
+                fontMenu,
+                jMenuAnsicht,
+                jMenuHilfe,
+                createMenuPolicy(),
+                () -> tabFilme,
+                () -> tabDownloads,
+                logDialog,
+                loadFilmListAction,
+                settingsAction,
+                showMemoryMonitorAction,
+                manageAboAction,
+                showBandwidthUsageAction,
+                showLuceneTutorialAction,
+                toggleOnlineSearchTabAction,
+                toggleZappLivestreamsTabAction,
+                toggleAudiothekTabAction,
+                showFilmInformationAction,
+                manageBookmarkAction,
+                searchProgramUpdateAction
+        );
+    }
 
-        jMenuDownload.setMnemonic('O');
-        jMenuDownload.setText("Downloads");
-        jMenuBar.add(jMenuDownload);
-
-        jMenuAbos.setMnemonic('b');
-        jMenuAbos.setText("Abos");
-        jMenuBar.add(jMenuAbos);
-
-        if (supportsFontMenu()) {
-            jMenuBar.add(fontMenu);
-        }
-
-        jMenuAnsicht.setMnemonic('a');
-        jMenuAnsicht.setText("Ansicht");
-        jMenuBar.add(jMenuAnsicht);
-
-        jMenuHilfe.setMnemonic('h');
-        jMenuHilfe.setText("Hilfe");
-        jMenuBar.add(jMenuHilfe);
-
-        setJMenuBar(jMenuBar);
+    protected MainWindowMenuPolicy createMenuPolicy() {
+        return DefaultMainWindowMenuPolicy.INSTANCE;
     }
 
     private void createMemoryMonitor() {
@@ -1081,72 +1079,6 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private void createFileMenu() {
-        jMenuDatei.add(loadFilmListAction);
-        jMenuDatei.addSeparator();
-        var exportMenu = new JMenu("Export");
-        exportMenu.add(new ExportReadableFilmlistAction());
-        exportMenu.add(new ExportDecompressedFilmlistAction());
-
-        var importMenu = new JMenu("Import");
-        importMenu.add(new ImportOldAbosAction());
-        importMenu.add(new ImportOldBlacklistAction());
-        importMenu.add(new ImportOldReplacementListAction());
-
-        jMenuDatei.add(exportMenu);
-        jMenuDatei.add(importMenu);
-
-        addSettingsMenuItem();
-        addQuitMenuItem();
-    }
-
-    protected void addSettingsMenuItem() {
-        jMenuDatei.addSeparator();
-        jMenuDatei.add(settingsAction);
-    }
-
-    protected void addQuitMenuItem() {
-        jMenuDatei.addSeparator();
-        jMenuDatei.add(new QuitAction(this));
-    }
-
-    private void createViewMenu() {
-        tabFilme.installViewMenuEntry(jMenuAnsicht);
-        jMenuAnsicht.add(toggleOnlineSearchTabAction);
-        jMenuAnsicht.add(toggleZappLivestreamsTabAction);
-        jMenuAnsicht.add(toggleAudiothekTabAction);
-        jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(showMemoryMonitorAction);
-        jMenuAnsicht.add(showBandwidthUsageAction);
-        jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(new ShowFilmStatisticsAction(this));
-        jMenuAnsicht.add(new ShowDuplicateStatisticsAction(this));
-        var mi = new JMenuItem("Übersicht aller Duplikate anzeigen...");
-        mi.addActionListener(_ -> {
-            FilmDuplicateOverviewDialog dlg = new FilmDuplicateOverviewDialog(this);
-            dlg.setVisible(true);
-        });
-        jMenuAnsicht.add(mi);
-        jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(tabFilme.toggleFilterDialogVisibilityAction());
-        jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(showFilmInformationAction);
-        jMenuAnsicht.addSeparator();
-        jMenuAnsicht.add(manageBookmarkAction);
-    }
-
-    private void createFontMenu() {
-        if (!supportsFontMenu()) {
-            return;
-        }
-        var fontManager = new FontManager(fontMenu);
-        fontManager.restoreConfigData();
-    }
-
-    protected boolean supportsFontMenu() {
-        return true;
-    }
-
     @Handler
     private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
         SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(false));
@@ -1157,81 +1089,9 @@ public class MediathekGui extends JFrame {
         SwingUtilities.invokeLater(() -> loadFilmListAction.setEnabled(true));
     }
 
-    private void createHelperToolsEntries() {
-        var menu = new JMenu("Hilfsmittel");
-        menu.add(new OptimizeHistoryDbAction(this));
-        menu.add(new RecoverHistoryDbAction(this));
-        menu.addSeparator();
-        menu.add(new CleanupApplicationConfigurationAction(this));
-        jMenuHilfe.add(menu);
-    }
-
-    private void createHelpMenu() {
-        jMenuHilfe.add(new ShowOnlineHelpAction());
-        jMenuHilfe.add(showLuceneTutorialAction);
-        jMenuHilfe.add(new ShowOnlineFaqAction(this));
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new ShowLogWindowAction(logDialog));
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new ResetSettingsAction(this));
-        jMenuHilfe.add(new ResetDownloadHistoryAction(this));
-        jMenuHilfe.add(new ResetAboHistoryAction(this));
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new DeleteLocalFilmlistAction(this));
-        jMenuHilfe.add(new DeleteBookmarksAction(this));
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new ResetFilterDialogPosition(this));
-        jMenuHilfe.addSeparator();
-        createHelperToolsEntries();
-        jMenuHilfe.addSeparator();
-
-        //do not show menu entry if we have external update support
-        if (GuiFunktionen.isNotUsingExternalUpdater()) {
-            jMenuHilfe.add(searchProgramUpdateAction);
-        }
-        jMenuHilfe.add(new ShowProgramInfosAction());
-
-        installAdditionalHelpEntries();
-    }
-
-    protected void installAdditionalHelpEntries() {
-        jMenuHilfe.addSeparator();
-        jMenuHilfe.add(new ShowAboutAction());
-    }
-
     protected void initMenus() {
         installMenuTabSwitchListener();
-
-        createFileMenu();
-        tabFilme.installMenuEntries(jMenuFilme);
-        tabDownloads.installMenuEntries(jMenuDownload);
-
-        createFontMenu();
-        createViewMenu();
-
-        createAboMenu();
-        if (CommandLineOptions.isDebugModeEnabled())
-            createDeveloperMenu();
-        createHelpMenu();
-    }
-
-    private void createDeveloperMenu() {
-        JMenu devMenu = new JMenu("Entwickler");
-
-        JMenuItem miGc = new JMenuItem("GC ausführen");
-        miGc.addActionListener(_ -> System.gc());
-
-        devMenu.add(miGc);
-
-        var idx = jMenuBar.getComponentIndex(jMenuAnsicht);
-        jMenuBar.add(devMenu, ++idx);
-    }
-
-    private void createAboMenu() {
-        jMenuAbos.add(new CreateNewAboAction(daten.getListeAbo()));
-        jMenuAbos.add(new ShowAboHistoryAction(MediathekGui.ui()));
-        jMenuAbos.addSeparator();
-        jMenuAbos.add(manageAboAction);
+        createMenuBuilder().initializeMenus();
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {

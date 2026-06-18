@@ -25,7 +25,9 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.ShowSettingsDialogEvent
+import mediathek.mainwindow.MacMainWindowMenuPolicy
 import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.MainWindowMenuPolicy
 import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
 import mediathek.tool.RuntimeArchitecture
@@ -138,14 +140,6 @@ class MediathekGuiMac : MediathekGui(
         // do not reset tab placement as it is not necessary...
     }
 
-    override fun addQuitMenuItem() {
-        //using native handler instead
-    }
-
-    override fun addSettingsMenuItem() {
-        //using native handler instead
-    }
-
     override fun setToolBarProperties() {
         //not used on macOS
     }
@@ -173,11 +167,7 @@ class MediathekGuiMac : MediathekGui(
         contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
     }
 
-    override fun supportsFontMenu(): Boolean = false
-
-    override fun installAdditionalHelpEntries() {
-        //unused on macOS
-    }
+    override fun createMenuPolicy(): MainWindowMenuPolicy = MacMainWindowMenuPolicy
 
     override fun setupScrollBarWidth() {
         // unused on macOS
