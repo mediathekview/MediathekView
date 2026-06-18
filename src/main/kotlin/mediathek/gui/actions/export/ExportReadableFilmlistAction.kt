@@ -1,13 +1,13 @@
 package mediathek.gui.actions.export
 
-import mediathek.mainwindow.MainWindowHandle
+import javax.swing.JFrame
 
-class ExportReadableFilmlistAction(owner: MainWindowHandle) : AbstractExportFilmlistAction(
+class ExportReadableFilmlistAction(parent: JFrame) : AbstractExportFilmlistAction(
     actionName = "Lesbare Filmliste...",
     saveDialogTitle = "Lesbare Filmliste sichern",
     exportSettings = FilmlistExportSettings(
         compressSender = true,
         compressThema = true
     ),
-    owner = owner,
+    parent = parent,
 )

@@ -19,7 +19,6 @@
 package mediathek.gui.actions
 
 import mediathek.config.Konstanten
-import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.SwingErrorDialog
 import java.awt.Desktop
@@ -28,9 +27,10 @@ import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
 import javax.swing.AbstractAction
+import javax.swing.JFrame
 
 class ShowOnlineHelpAction(
-    private val owner: MainWindowHandle,
+    private val parent: JFrame,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Online-Hilfe anzeigen...")
@@ -64,7 +64,7 @@ class ShowOnlineHelpAction(
 
     private fun showError(ex: Exception) {
         SwingErrorDialog.showExceptionMessage(
-            owner.ownerFrame(),
+            parent,
             "Es trat ein Fehler beim Öffnen der Online-Hilfe auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
             ex,
         )

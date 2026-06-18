@@ -5,10 +5,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
-import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.FileDialogs.chooseSaveFileLocation
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import javax.swing.JFrame
 import javax.swing.JOptionPane
 import javax.swing.ProgressMonitor
 
@@ -16,14 +16,13 @@ abstract class AbstractExportFilmlistAction(
     actionName: String,
     private val saveDialogTitle: String,
     private val exportSettings: FilmlistExportSettings,
-    private val owner: MainWindowHandle,
+    private val parent: JFrame,
 ) : AbstractAction(actionName) {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
 
     override fun actionPerformed(e: ActionEvent) {
         isEnabled = false
         val monitor = createProgressMonitor()
-        val parent = owner.ownerFrame()
         val selectedFile = chooseSaveFileLocation(parent, saveDialogTitle, "")
 
         when {
@@ -49,7 +48,7 @@ abstract class AbstractExportFilmlistAction(
         }
     }
 
-    private fun createProgressMonitor() = ProgressMonitor(owner.ownerFrame(), "Exportiere Filmliste", "", 0, 100).apply {
+    private fun createProgressMonitor() = ProgressMonitor(parent, "Exportiere Filmliste", "", 0, 100).apply {
         millisToPopup = 100
         millisToDecideToPopup = 100
     }
@@ -57,14 +56,14 @@ abstract class AbstractExportFilmlistAction(
     private fun handleCompletion(success: Boolean) {
         if (success) {
             JOptionPane.showMessageDialog(
-                owner.ownerFrame(),
+                parent,
                 "Der Export wurde erfolgreich abgeschlossen.",
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.INFORMATION_MESSAGE
             )
         } else {
             JOptionPane.showMessageDialog(
-                owner.ownerFrame(),
+                parent,
                 "Es gab einen Fehler beim Export der Filmliste.",
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.ERROR_MESSAGE
@@ -75,7 +74,7 @@ abstract class AbstractExportFilmlistAction(
 
     private fun showCancelled() {
         JOptionPane.showMessageDialog(
-            owner.ownerFrame(),
+            parent,
             "Der Export wurde abgebrochen.",
             Konstanten.PROGRAMMNAME,
             JOptionPane.WARNING_MESSAGE
@@ -84,7 +83,7 @@ abstract class AbstractExportFilmlistAction(
 
     private fun showInsufficientDiskSpace() {
         JOptionPane.showMessageDialog(
-            owner.ownerFrame(),
+            parent,
             "Nicht genügend freier Speicher auf dem gewählten Laufwerk.\nVorgang wurde abgebrochen.",
             Konstanten.PROGRAMMNAME,
             JOptionPane.ERROR_MESSAGE

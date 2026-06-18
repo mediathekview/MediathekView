@@ -129,7 +129,7 @@ class MainWindowMenuBuilder(
         fileMenu.add(importMenu)
 
         menuPolicy.addSettingsItem(fileMenu, settingsAction)
-        menuPolicy.addQuitItem(fileMenu, owner)
+        menuPolicy.addQuitItem(fileMenu, owner::quitApplication)
     }
 
     private fun createViewMenu() {

@@ -1,14 +1,14 @@
 package mediathek.gui.actions
 
 import mediathek.gui.abo.ManageAboDialog
-import mediathek.mainwindow.MainWindowHandle
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import javax.swing.JFrame
 
 class ManageAboAction(
-    private val owner: MainWindowHandle,
+    private val parent: JFrame,
 ) : AbstractAction() {
     private var dialog: ManageAboDialog? = null
 
@@ -17,7 +17,7 @@ class ManageAboAction(
     }
 
     override fun actionPerformed(e: ActionEvent?) {
-        dialog = ManageAboDialog(owner.ownerFrame())
+        dialog = ManageAboDialog(parent)
         dialog!!.isVisible = true
         dialog = null
     }

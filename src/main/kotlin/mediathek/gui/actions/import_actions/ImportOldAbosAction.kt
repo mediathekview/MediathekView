@@ -1,15 +1,15 @@
 package mediathek.gui.actions.import_actions
 
 import mediathek.config.Konstanten
-import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.FileDialogs.chooseLoadFileLocation
 import mediathek.tool.SwingErrorDialog
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 class ImportOldAbosAction(
-    private val owner: MainWindowHandle,
+    private val parent: JFrame,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Alte Abos...")
@@ -17,7 +17,6 @@ class ImportOldAbosAction(
     }
 
     override fun actionPerformed(e: ActionEvent) {
-        val parent = owner.ownerFrame()
         val selectedFile = chooseLoadFileLocation(parent, " Konfigurationsdatei öffnen", "")
         if (selectedFile != null) {
             try {

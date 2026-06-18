@@ -21,6 +21,7 @@ package mediathek.mainwindow
 import mediathek.gui.actions.QuitAction
 import mediathek.gui.actions.ShowAboutAction
 import javax.swing.Action
+import javax.swing.JFrame
 import javax.swing.JMenu
 
 interface MainWindowMenuPolicy {
@@ -28,9 +29,9 @@ interface MainWindowMenuPolicy {
 
     fun addSettingsItem(fileMenu: JMenu, settingsAction: Action)
 
-    fun addQuitItem(fileMenu: JMenu, owner: MediathekGui)
+    fun addQuitItem(fileMenu: JMenu, quitApplication: () -> Boolean)
 
-    fun addHelpTail(helpMenu: JMenu, owner: MediathekGui)
+    fun addHelpTail(helpMenu: JMenu, parent: JFrame)
 }
 
 object DefaultMainWindowMenuPolicy : MainWindowMenuPolicy {
@@ -41,14 +42,14 @@ object DefaultMainWindowMenuPolicy : MainWindowMenuPolicy {
         fileMenu.add(settingsAction)
     }
 
-    override fun addQuitItem(fileMenu: JMenu, owner: MediathekGui) {
+    override fun addQuitItem(fileMenu: JMenu, quitApplication: () -> Boolean) {
         fileMenu.addSeparator()
-        fileMenu.add(QuitAction(owner::quitApplication))
+        fileMenu.add(QuitAction(quitApplication))
     }
 
-    override fun addHelpTail(helpMenu: JMenu, owner: MediathekGui) {
+    override fun addHelpTail(helpMenu: JMenu, parent: JFrame) {
         helpMenu.addSeparator()
-        helpMenu.add(ShowAboutAction(owner))
+        helpMenu.add(ShowAboutAction(parent))
     }
 }
 
@@ -57,7 +58,7 @@ object MacMainWindowMenuPolicy : MainWindowMenuPolicy {
 
     override fun addSettingsItem(fileMenu: JMenu, settingsAction: Action) = Unit
 
-    override fun addQuitItem(fileMenu: JMenu, owner: MediathekGui) = Unit
+    override fun addQuitItem(fileMenu: JMenu, quitApplication: () -> Boolean) = Unit
 
-    override fun addHelpTail(helpMenu: JMenu, owner: MediathekGui) = Unit
+    override fun addHelpTail(helpMenu: JMenu, parent: JFrame) = Unit
 }
