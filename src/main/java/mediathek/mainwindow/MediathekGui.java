@@ -764,7 +764,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         }
     }
 
-    public FilmInfoDialog getFilmInfoDialog() {
+    private FilmInfoDialog getFilmInfoDialog() {
         return dialogCoordinator.getFilmInfoDialog();
     }
 

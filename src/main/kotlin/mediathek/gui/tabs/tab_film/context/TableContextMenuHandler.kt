@@ -50,6 +50,7 @@ class TableContextMenuHandler(
         fun saveSelectedFilm()
         fun startFilmWithPset(pSet: DatenPset)
         fun setSelectionUpdatesSuspended(suspended: Boolean)
+        fun showFilmInfo()
         fun gui(): MediathekGui
         fun actions(): FilmUiActions
     }
@@ -78,11 +79,7 @@ class TableContextMenuHandler(
     override fun mouseClicked(event: MouseEvent) {
         if (event.button == MouseEvent.BUTTON1) {
             if (event.clickCount > 1) {
-                host.gui().filmInfoDialog?.let { infoDialog ->
-                    if (!infoDialog.isVisible) {
-                        infoDialog.showInfo()
-                    }
-                }
+                host.showFilmInfo()
             }
         }
     }

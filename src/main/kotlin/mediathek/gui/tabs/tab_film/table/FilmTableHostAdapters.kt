@@ -69,6 +69,7 @@ class TableContextMenuHostAdapter(
     private val saveSelectedFilmAction: () -> Unit,
     private val startFilmWithPsetAction: (DatenPset) -> Unit,
     private val setSelectionUpdatesSuspendedAction: (Boolean) -> Unit,
+    private val showFilmInfoAction: () -> Unit,
     private val gui: MediathekGui,
     private val actionsProvider: () -> FilmUiActions,
 ) : TableContextMenuHandler.Host {
@@ -92,6 +93,10 @@ class TableContextMenuHostAdapter(
 
     override fun setSelectionUpdatesSuspended(suspended: Boolean) {
         setSelectionUpdatesSuspendedAction(suspended)
+    }
+
+    override fun showFilmInfo() {
+        showFilmInfoAction()
     }
 
     override fun gui(): MediathekGui = gui

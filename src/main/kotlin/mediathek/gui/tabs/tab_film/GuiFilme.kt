@@ -358,6 +358,7 @@ class GuiFilme(
             { selectionComponents.saveSelectedFilm(null) },
             selectionController::startFilm,
             { suspended -> stopBeob = suspended },
+            { showFilmInformationAction.actionPerformed(null) },
             mediathekGui,
             { filmUiActions },
         )
