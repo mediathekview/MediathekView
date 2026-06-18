@@ -22,6 +22,7 @@ import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.*
+import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.CdnDetector
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDateTime
@@ -49,6 +50,12 @@ class DownloadStartCoordinator(private val daten: Daten) {
     private val pause = AtomicBoolean(false)
     @Volatile
     private var pauseUntilEpochMillis: Long = 0
+    @Volatile
+    private var dialogOwner: MainWindowHandle? = null
+
+    fun setDialogOwner(owner: MainWindowHandle?) {
+        dialogOwner = owner
+    }
 
     @Synchronized
     fun urlMitProgrammStarten(pSet: DatenPset, film: DatenFilm, aufloesung: String) {
@@ -137,16 +144,18 @@ class DownloadStartCoordinator(private val daten: Daten) {
         val result = CdnDetector.detect(datenDownload.downloadUrl)
         return if (useCdnAwareDirectDownload && CdnDetector.isCdn(result)) {
             logger.trace("CDN detected: {}", result)
-            CdnAwareDirectDownloadThread(datenDownload)
+            CdnAwareDirectDownloadThread(datenDownload, ::dialogOwnerFrame)
         } else {
             if (!useCdnAwareDirectDownload) {
                 logger.info("CDN detection is disabled")
             } else {
                 logger.trace("Not a CDN detected: {}", result)
             }
-            DirectHttpDownload(daten, datenDownload)
+            DirectHttpDownload(daten, datenDownload, ::dialogOwnerFrame)
         }
     }
+
+    private fun dialogOwnerFrame() = dialogOwner?.ownerFrame()
 
     /**
      * This will start the download process.
@@ -158,7 +167,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
         DownloadProgressEventPublisher.publishThrottled()
 
         val downloadThread = when (datenDownload.art) {
-            DownloadType.PROGRAM -> ExternalProgramDownload(datenDownload)
+            DownloadType.PROGRAM -> ExternalProgramDownload(datenDownload, ::dialogOwnerFrame)
             DownloadType.DIRECT -> selectDirectDownload(datenDownload)
         }
         downloadThread.start()

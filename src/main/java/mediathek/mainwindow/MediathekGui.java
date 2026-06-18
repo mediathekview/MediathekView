@@ -262,6 +262,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void startMainWindowRuntime() {
+        daten.getDownloadStartCoordinator().setDialogOwner(this);
         subscribeTableModelChangeEvent();
         setupTaskbarMenuLater();
         setupSystemTray();
@@ -300,6 +301,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     public void dispose() {
         if (disposed.compareAndSet(false, true)) {
             unsubscribeFromMessageBus();
+            daten.getDownloadStartCoordinator().setDialogOwner(null);
             removeFilmListListeners();
             closeStartupFilmlistLoader();
             closeFilmlistDownloadProgress();
