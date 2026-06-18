@@ -52,7 +52,7 @@ import mediathek.gui.tabs.tab_film.selection.FilmSelectionController
 import mediathek.gui.tabs.tab_film.selection.FilmSelectionHostAdapter
 import mediathek.gui.tabs.tab_film.table.*
 import mediathek.gui.tabs.tab_film.view.FilmViewController
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.FilmBookmarkHost
 import mediathek.tool.MessageBus
 import mediathek.tool.table.MVFilmTable
 import net.engio.mbassy.listener.Handler
@@ -65,7 +65,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class GuiFilme(
     aDaten: Daten,
-    private val mediathekGui: MediathekGui,
+    private val ownerFrame: JFrame,
     private val toggleBlacklistAction: Action,
     private val editBlacklistAction: Action,
     private val showFilmInformationAction: Action,
@@ -128,12 +128,13 @@ class GuiFilme(
 
     init {
         val psetButtonsTab = JTabbedPane()
-        val descriptionTabController = DescriptionTabController { mediathekGui }
-        val deleteBookmarksAction = DeleteBookmarksAction(mediathekGui)
+        val descriptionTabController = DescriptionTabController { ownerFrame }
         val filterConfiguration = ApplicationConfiguration.getInstance().createFilterConfiguration()
         val selectionComponents = createSelectionComponents(filterConfiguration)
         selectionController = selectionComponents.selectionController
         bookmarkController = selectionComponents.bookmarkController
+        val bookmarkActionHost = createBookmarkActionHost()
+        val deleteBookmarksAction = DeleteBookmarksAction(bookmarkActionHost)
         val filmActions = createFilmActions(deleteBookmarksAction, selectionComponents)
         copyHqUrlToClipboardActionValue = filmActions.copyHqUrlToClipboardAction
         copyNormalUrlToClipboardActionValue = filmActions.copyNormalUrlToClipboardAction
@@ -185,14 +186,14 @@ class GuiFilme(
         val selectionHost = FilmSelectionHostAdapter(
             { tabelle },
             this,
-            mediathekGui,
+            ownerFrame,
             { daten },
             { filterConfiguration.isShowHighQualityOnly },
             currentFilm,
         )
         val selectionController = FilmSelectionController(selectionHost)
         val bookmarkHost = object : FilmBookmarkController.Host {
-            override fun ownerFrame() = mediathekGui
+            override fun ownerFrame() = ownerFrame
 
             override fun repaintOwner() {
                 repaint()
@@ -230,11 +231,31 @@ class GuiFilme(
         )
     }
 
+    private fun createBookmarkActionHost(): FilmBookmarkHost =
+        object : FilmBookmarkHost {
+            override fun ownerFrame() = ownerFrame
+
+            override val bookmarkDialog: BookmarkDialog?
+                get() = bookmarkController.getBookmarkDialog()
+
+            override fun showManageBookmarkWindow() {
+                bookmarkController.showManageBookmarkWindow()
+            }
+
+            override fun resetFilterDialogPosition() {
+                this@GuiFilme.resetFilterDialogPosition()
+            }
+
+            override fun repaintFilmTab() {
+                repaint()
+            }
+        }
+
     private fun createSearchFieldHost(): SearchField.Host =
         object : SearchField.Host {
             override val showLuceneTutorialAction: Action = this@GuiFilme.showLuceneTutorialAction
 
-            override fun ownerWindow() = mediathekGui
+            override fun ownerWindow() = ownerFrame
 
             override fun loadTable() {
                 this@GuiFilme.loadTable()
@@ -251,7 +272,7 @@ class GuiFilme(
     ): FilmActions {
         val selectionController = selectionComponents.selectionController
         val filmActionHost = selectionComponents.filmActionHost
-        val playFilmAction = PlayFilmAction({ selectionController.startFilm(it) }) { mediathekGui }
+        val playFilmAction = PlayFilmAction({ selectionController.startFilm(it) }) { ownerFrame }
         val saveFilmAction = SaveFilmAction(filmActionHost)
         val copyHqUrlToClipboardAction =
             CopyUrlToClipboardAction(filmActionHost, FilmResolution.Enum.HIGH_QUALITY)
@@ -260,13 +281,13 @@ class GuiFilme(
         val toggleFilterDialogVisibilityAction = ToggleFilterDialogVisibilityAction(filmActionHost)
         val bookmarkAddFilmAction = BookmarkAddFilmAction(filmActionHost)
         val bookmarkRemoveFilmAction = BookmarkRemoveFilmAction(filmActionHost)
-        val manageBookmarkAction = ManageBookmarkAction(mediathekGui)
+        val manageBookmarkAction = ManageBookmarkAction(createBookmarkActionHost())
         val markFilmAsSeenAction =
             MarkFilmAsSeenAction { selectionController.getSelectedFilms() }
         val markFilmAsUnseenAction =
             MarkFilmAsUnseenAction { selectionController.getSelectedFilms() }
         val downloadSubtitleAction =
-            DownloadSubtitleAction(mediathekGui) { selectionController.getCurrentlySelectedFilm() }
+            DownloadSubtitleAction(ownerFrame) { selectionController.getCurrentlySelectedFilm() }
         val filmUiActions = FilmUiActions(
             playFilmAction,
             saveFilmAction,
@@ -359,7 +380,7 @@ class GuiFilme(
             selectionController::startFilm,
             { suspended -> stopBeob = suspended },
             { showFilmInformationAction.actionPerformed(null) },
-            mediathekGui,
+            ownerFrame,
             { filmUiActions },
         )
         val tableInstallerHost = FilmTableInstallerHostAdapter(
@@ -430,7 +451,7 @@ class GuiFilme(
         add(filmToolBar, BorderLayout.NORTH)
 
         val swingFilterDialog = SwingFilterDialog(
-            mediathekGui,
+            ownerFrame,
             filterComponents.filterSelectionComboBoxModel,
             filmToolBar.toggleFilterDialogVisibilityButton,
             filterComponents.filterController,
@@ -444,7 +465,7 @@ class GuiFilme(
         filterController: FilmFilterController,
     ): FilmTableReloader {
         val tableReloadHost = FilmTableReloadHostAdapter(
-            mediathekGui,
+            ownerFrame,
             { tabelle },
             {
                 SearchFieldData(searchField.text, searchField.getSearchMode())
