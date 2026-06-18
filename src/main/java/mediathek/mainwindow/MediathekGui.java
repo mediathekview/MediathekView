@@ -110,8 +110,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * this property keeps track how many items are currently selected in the active table view
      */
     private final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
-    protected final Daten daten = Daten.getInstance();
-    protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
+    private final Daten daten = Daten.getInstance();
+    private final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     private final JMenu jMenuHilfe = new JMenu();
     private final SettingsAction settingsAction = new SettingsAction();
     private final JToolBar commonToolBar = new JToolBar();
