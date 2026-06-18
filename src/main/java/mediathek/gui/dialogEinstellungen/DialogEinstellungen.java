@@ -141,7 +141,7 @@ public class DialogEinstellungen extends JFrame {
                     }
                     case NAME_allgemeineEinstellungenErweitert -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelEinstellungenErweitert());
+                        jPanelExtra.add(new PanelEinstellungenErweitert(host.ownerFrame()));
                     }
                     case NAME_allgemeineEinstellungenGeo -> {
                         jPanelExtra.removeAll();
@@ -158,7 +158,7 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_filmListe -> jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
                     case NAME_filmListeLaden -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelFilmlisteLaden(true));
+                        jPanelExtra.add(new PanelFilmlisteLaden(true, host.ownerFrame()));
                     }
                     case NAME_blacklist -> {
                         jPanelExtra.removeAll();

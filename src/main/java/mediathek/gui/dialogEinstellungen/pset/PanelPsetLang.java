@@ -28,7 +28,6 @@ import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.*;
 import mediathek.gui.messages.ProgramSetChangedEvent;
-import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.PsetNameCellRenderer;
 import mediathek.tool.models.NonEditableTableModel;
@@ -309,7 +308,7 @@ public class PanelPsetLang extends JPanel {
         if (!jTextFieldProgPfad.getText().isEmpty()) {
             initialFile = jTextFieldProgPfad.getText();
         }
-        var destFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(),"Programm auswählen", initialFile);
+        var destFile = FileDialogs.chooseLoadFileLocation(parentComponent, "Programm auswählen", initialFile);
         if (destFile != null) {
             jTextFieldProgPfad.setText(destFile.getAbsolutePath());
         }
@@ -420,7 +419,7 @@ public class PanelPsetLang extends JPanel {
         if (!tfGruppeZielPfad.getText().isEmpty()) {
             initialFile = tfGruppeZielPfad.getText();
         }
-        var destDirectory = FileDialogs.chooseDirectoryLocation(MediathekGui.ui(), "Filme speichern unter", initialFile);
+        var destDirectory = FileDialogs.chooseDirectoryLocation(parentComponent, "Filme speichern unter", initialFile);
         if (destDirectory != null) {
             tfGruppeZielPfad.setText(destDirectory.getAbsolutePath());
         }

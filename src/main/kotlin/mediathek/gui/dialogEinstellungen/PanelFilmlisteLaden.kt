@@ -29,11 +29,11 @@ import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.gui.messages.FilmListImportTypeChangedEvent
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
 import mediathek.tool.*
 import net.engio.mbassy.listener.Handler
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
+import java.awt.Frame
 import javax.swing.JCheckBox
 import javax.swing.JOptionPane
 import javax.swing.JTextField
@@ -43,6 +43,7 @@ import javax.swing.event.DocumentListener
 
 class PanelFilmlisteLaden(
     inSettingsDialog: Boolean,
+    private val owner: Frame,
 ) : PanelFilmlisteLadenBase() {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -176,7 +177,7 @@ class PanelFilmlisteLaden(
 
         jButtonDateiAuswaehlen.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg")
         jButtonDateiAuswaehlen.addActionListener {
-            val loadFile = FileDialogs.chooseLoadFileLocation(MediathekGui.ui(), "Filmliste laden", "")
+            val loadFile = FileDialogs.chooseLoadFileLocation(owner, "Filmliste laden", "")
             if (loadFile != null) {
                 jTextFieldUrl.text = loadFile.absolutePath
             }

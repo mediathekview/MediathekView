@@ -3,7 +3,6 @@ package mediathek.gui.dialogEinstellungen;
 import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.dialogEinstellungen.shutdown.ShutdownActionComboBox;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
-import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.TextCopyPasteHandler;
@@ -29,13 +28,15 @@ import java.util.function.Consumer;
 
 public class PanelEinstellungenErweitert extends JPanel {
     private static final Logger logger = LogManager.getLogger();
+    private final Frame owner;
 
     @Handler
     private void handleProgramLocationChangedEvent(ProgramLocationChangedEvent e) {
         SwingUtilities.invokeLater(this::init);
     }
 
-    public PanelEinstellungenErweitert() {
+    public PanelEinstellungenErweitert(Frame owner) {
+        this.owner = owner;
         initComponents();
 
         init();
@@ -48,13 +49,13 @@ public class PanelEinstellungenErweitert extends JPanel {
         jCheckBoxDownloadSofortStarten.addActionListener(_ -> applicationConfiguration.setStartDownloadsImmediately(jCheckBoxDownloadSofortStarten.isSelected()));
 
         jButtonProgrammDateimanager.addActionListener(new BeobPfad(
-                applicationConfiguration::setDirectoryOpenProgram, "Dateimanager suchen", jTextFieldProgrammDateimanager));
+                owner, applicationConfiguration::setDirectoryOpenProgram, "Dateimanager suchen", jTextFieldProgrammDateimanager));
         jButtonProgrammVideoplayer.addActionListener(new BeobPfad(
-                applicationConfiguration::setVideoPlayerProgram, "Videoplayer suchen", jTextFieldVideoplayer));
+                owner, applicationConfiguration::setVideoPlayerProgram, "Videoplayer suchen", jTextFieldVideoplayer));
         jButtonProgrammUrl.addActionListener(new BeobPfad(
-                applicationConfiguration::setWebBrowserProgram, "Browser suchen", jTextFieldProgrammUrl));
+                owner, applicationConfiguration::setWebBrowserProgram, "Browser suchen", jTextFieldProgrammUrl));
         jButtonProgrammShutdown.addActionListener(new BeobPfad(
-                applicationConfiguration::setLinuxShutdownCommand, "Shutdown Befehl", jTextFieldProgrammShutdown));
+                owner, applicationConfiguration::setLinuxShutdownCommand, "Shutdown Befehl", jTextFieldProgrammShutdown));
 
         jTextFieldProgrammDateimanager.setText(applicationConfiguration.getDirectoryOpenProgram());
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobAppConfigDoc(
@@ -195,11 +196,13 @@ public class PanelEinstellungenErweitert extends JPanel {
 
     static private class BeobPfad implements ActionListener {
 
+        final Frame owner;
         final Consumer<String> valueWriter;
         final String title;
         final JTextField textField;
 
-        public BeobPfad(Consumer<String> valueWriter, String title, JTextField textField) {
+        public BeobPfad(Frame owner, Consumer<String> valueWriter, String title, JTextField textField) {
+            this.owner = owner;
             this.valueWriter = valueWriter;
             this.title = title;
             this.textField = textField;
@@ -209,7 +212,7 @@ public class PanelEinstellungenErweitert extends JPanel {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), title);
+                FileDialog chooser = new FileDialog(owner, title);
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
@@ -229,7 +232,7 @@ public class PanelEinstellungenErweitert extends JPanel {
                     chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
+                returnVal = chooser.showOpenDialog(owner);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
@@ -244,9 +247,9 @@ public class PanelEinstellungenErweitert extends JPanel {
             if (!programm.isEmpty()) {
                 try {
                     if (!new File(programm).exists()) {
-                        JOptionPane.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(owner, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     } else if (!new File(programm).canExecute()) {
-                        JOptionPane.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(owner, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (Exception ignored) {
                 }

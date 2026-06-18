@@ -160,7 +160,7 @@ class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(p
         if (jCheckBoxAlleEinstellungen.isSelected) {
             setMainContent(PanelPsetLang(parentComponent, daten.listePset))
         } else {
-            setMainContent(PanelPsetKurz(daten.listePset))
+            setMainContent(PanelPsetKurz(parentComponent, daten.listePset))
         }
         status = State.FERTIG
         setContinueButtonText()

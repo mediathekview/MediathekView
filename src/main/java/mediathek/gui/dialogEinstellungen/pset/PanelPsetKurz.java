@@ -22,7 +22,6 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.messages.ProgramSetChangedEvent;
-import mediathek.mainwindow.MediathekGui;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.TextCopyPasteHandler;
@@ -42,10 +41,12 @@ import java.io.File;
 public class PanelPsetKurz extends JPanel {
     private DatenPset pSet;
     private final ListePset listePset;
+    private final JFrame parentComponent;
     private static final Logger logger = LogManager.getLogger();
     private boolean stopBeob;
 
-    public PanelPsetKurz(ListePset llistePset) {
+    public PanelPsetKurz(JFrame parentComponent, ListePset llistePset) {
+        this.parentComponent = parentComponent;
         initComponents();
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<>(listePset.getObjectDataCombo()));
@@ -231,7 +232,7 @@ public class PanelPsetKurz extends JPanel {
                 if (!file) {
                     System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 }
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
+                FileDialog chooser = new FileDialog(parentComponent, "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
