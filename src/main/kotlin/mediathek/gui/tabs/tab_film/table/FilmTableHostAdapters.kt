@@ -32,6 +32,7 @@ import java.util.*
 import javax.swing.JScrollPane
 
 class FilmTableReloadHostAdapter(
+    private val owner: Component,
     private val tableProvider: () -> MVFilmTable,
     private val searchFieldDataProvider: () -> SearchFieldData,
     private val filterController: FilmFilterController,
@@ -40,6 +41,8 @@ class FilmTableReloadHostAdapter(
     private val updateFilmDataAction: () -> Unit,
 ) : FilmTableReloader.Host {
     override fun table(): MVFilmTable = tableProvider()
+
+    override fun owner(): Component = owner
 
     override fun searchFieldData(): SearchFieldData = searchFieldDataProvider()
 

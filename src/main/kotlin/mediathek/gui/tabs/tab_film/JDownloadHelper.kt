@@ -5,7 +5,6 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
 import okhttp3.FormBody
@@ -14,6 +13,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import okhttp3.RequestBody
 import org.apache.logging.log4j.LogManager
+import java.awt.Component
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.swing.JMenu
@@ -23,7 +23,9 @@ import javax.swing.JPopupMenu
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.toJavaDuration
 
-class JDownloadHelper {
+class JDownloadHelper(
+    private val owner: Component,
+) {
     private fun downloadUrl(url: HttpUrl, film: DatenFilm) {
         try {
             val formBody: RequestBody = FormBody.Builder()
@@ -51,7 +53,7 @@ class JDownloadHelper {
         } catch (e: Exception) {
             logger.error("downloadUrl", e)
             SwingErrorDialog.showExceptionMessage(
-                MediathekGui.ui(),
+                owner,
                 "<html>Die URL konnte nicht mit JDownloader geladen werden.<br>" +
                         "Bitte wenden Sie sich bei Bedarf an das Forum.</html>", e
             )
@@ -60,7 +62,7 @@ class JDownloadHelper {
 
     private fun showErrorMessage() {
         JOptionPane.showMessageDialog(
-            MediathekGui.ui(),
+            owner,
             "Verbindung mit JDownloader nicht möglich.\n" +
                     "Bitte stellen Sie sicher, dass JDownloader gestartet wurde.",
             Konstanten.PROGRAMMNAME,

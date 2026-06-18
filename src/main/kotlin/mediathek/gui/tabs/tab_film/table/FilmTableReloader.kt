@@ -27,12 +27,15 @@ import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.tool.MessageBus
 import mediathek.tool.table.MVFilmTable
 import org.apache.logging.log4j.LogManager
+import java.awt.Component
 import javax.swing.table.TableModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FilmTableReloader(private val host: Host) {
     interface Host {
         fun table(): MVFilmTable
+
+        fun owner(): Component
 
         fun searchFieldData(): SearchFieldData
 
@@ -79,7 +82,11 @@ class FilmTableReloader(private val host: Host) {
         modelJob = uiScope.launch {
             val result = runCatching {
                 withContext(modelDispatcher) {
-                    val helper = GuiModelHelperFactory.createGuiModelHelper(host.searchFieldData(), host.filterController())
+                    val helper = GuiModelHelperFactory.createGuiModelHelper(
+                        host.owner(),
+                        host.searchFieldData(),
+                        host.filterController(),
+                    )
                     helper.filteredTableModel
                 }
             }

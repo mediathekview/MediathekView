@@ -432,6 +432,7 @@ class GuiFilme(
         filterController: FilmFilterController,
     ): FilmTableReloader {
         val tableReloadHost = FilmTableReloadHostAdapter(
+            mediathekGui,
             { tabelle },
             {
                 SearchFieldData(searchField.text, searchField.getSearchMode())
