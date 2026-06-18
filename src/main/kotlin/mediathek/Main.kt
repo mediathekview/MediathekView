@@ -876,6 +876,7 @@ object Main {
             window.toFront()
             window.requestFocusInWindow()
         }
+        window.restoreStartupDialogs()
     }
 
     private fun getPlatformWindow(): MediathekGui {

@@ -5,9 +5,6 @@ import mediathek.config.Daten
 import mediathek.config.SettingsResetService
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
-import mediathek.gui.actions.ManageAboAction
-import mediathek.gui.actions.MemoryMonitorAction
-import mediathek.gui.actions.ShowBandwidthUsageAction
 import mediathek.shutdown.ComputerShutdown
 import mediathek.tool.RuntimeStatistics
 import java.awt.Cursor
@@ -15,9 +12,7 @@ import java.awt.Cursor
 class MainWindowShutdownCoordinator(
     private val owner: MediathekGui,
     private val daten: Daten,
-    private val showMemoryMonitorAction: MemoryMonitorAction,
-    private val showBandwidthUsageAction: ShowBandwidthUsageAction,
-    private val manageAboAction: ManageAboAction,
+    private val dialogCoordinator: MainWindowDialogCoordinator,
     private val tabRegistry: MainWindowTabRegistry,
     private val computerShutdown: ComputerShutdown,
     private val resetSettingsOnQuit: Boolean,
@@ -51,9 +46,9 @@ class MainWindowShutdownCoordinator(
         ShutdownCoordinator(edtRunner)
             .background("Close automatic filmlist update", closeAutomaticFilmlistUpdate)
             .background("Close program update checker", closeProgramUpdateChecker)
-            .edt("Close memory monitor", showMemoryMonitorAction::closeMemoryMonitor)
-            .edt("Close bandwidth monitor", ::closeBandwidthMonitor)
-            .edt("Close abo dialog", manageAboAction::closeDialog)
+            .edt("Close memory monitor", dialogCoordinator::closeMemoryMonitor)
+            .edt("Close bandwidth monitor", dialogCoordinator::closeBandwidthMonitor)
+            .edt("Close abo dialog", dialogCoordinator::closeAboDialog)
             .background("Perform history maintenance", ::performHistoryMaintenance)
             .background("Save bookmark list") { daten.listeBookmarkList.saveToFile() }
             .background("Stop starter thread") { daten.downloadStartCoordinator.shutdown() }
@@ -73,14 +68,6 @@ class MainWindowShutdownCoordinator(
                 }
             }
             .background("Print runtime statistics", ::printRuntimeStatistics)
-
-    private fun closeBandwidthMonitor() {
-        showBandwidthUsageAction.dialogOptional.ifPresent { dialog ->
-            dialog.dispose()
-            // Preserve the visible state because it was open when the app quit.
-            ApplicationConfiguration.getInstance().bandwidthMonitorVisible = true
-        }
-    }
 
     private fun performHistoryMaintenance() {
         SeenHistoryController().use { history ->

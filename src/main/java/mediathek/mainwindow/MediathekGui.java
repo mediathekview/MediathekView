@@ -122,6 +122,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final ManageAboAction manageAboAction = new ManageAboAction(this);
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
+    private final MainWindowDialogCoordinator dialogCoordinator =
+            new MainWindowDialogCoordinator(this, showMemoryMonitorAction, showBandwidthUsageAction, manageAboAction);
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel(this);
     private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams);
@@ -145,8 +147,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ListenerFilmeLaden filmListListener;
     private GuiFilme tabFilme;
     private GuiDownloads tabDownloads;
-    private FilmInfoDialog filmInfo;
-    private DialogEinstellungen dialogEinstellungen;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
@@ -247,9 +247,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         SplashScreenLifecycle.update(UIProgressState.INIT_MENUS);
         initMenus();
 
-        SplashScreenLifecycle.update(UIProgressState.LOAD_MEMORY_MONITOR);
-        createMemoryMonitor();
-
         setupNotificationCenter();
 
         createCommonToolBar();
@@ -268,7 +265,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         setupAutomaticUpdateCheck();
         setupShutdownHook();
         checkInvalidRegularExpressions();
-        loadBandwidthMonitor();
         setupFilmInfoDialog();
         resetTabPlacement();
         platformIntegration.setupRavenNotifications();
@@ -367,9 +363,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void setupFilmInfoDialog() {
-        logger.trace("Loading info dialog");
-        filmInfo = new FilmInfoDialog(this);
-        logger.trace("Finished loading info dialog");
+        dialogCoordinator.setupFilmInfoDialog();
     }
 
     private void waitForHistoryDataLoadingToComplete() {
@@ -401,14 +395,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void performGeoCountryStartupCheck() {
         new GeoCountryStartupCheck(this, this::performAustrianVlcCheck).perform();
-    }
-
-    private void loadBandwidthMonitor() {
-        logger.trace("Loading bandwidth monitor");
-        if (ApplicationConfiguration.getInstance().getBandwidthMonitorVisible()) {
-            showBandwidthUsageAction.actionPerformed(null);
-        }
-        logger.trace("Finished loading bandwidth monitor");
     }
 
     private void mapFilmUrlCopyCommands() {
@@ -596,12 +582,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         return DefaultMainWindowMenuPolicy.INSTANCE;
     }
 
-    private void createMemoryMonitor() {
-        if (ApplicationConfiguration.getInstance().getMemoryMonitorDialogVisible()) {
-            showMemoryMonitorAction.showMemoryMonitor();
-        }
-    }
-
     /**
      * Read a local filmlist or load a new one in auto mode.
      */
@@ -673,7 +653,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     public FilmInfoDialog getFilmInfoDialog() {
-        return filmInfo;
+        return dialogCoordinator.getFilmInfoDialog();
     }
 
     @Handler
@@ -973,15 +953,15 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     public DialogEinstellungen getSettingsDialog() {
-        if (dialogEinstellungen == null) {
-            dialogEinstellungen = new DialogEinstellungen(this);
-        }
-
-        return dialogEinstellungen;
+        return dialogCoordinator.getSettingsDialog();
     }
 
     public void requestSettingsResetOnQuit() {
         resetSettingsOnQuit = true;
+    }
+
+    public void restoreStartupDialogs() {
+        dialogCoordinator.restoreStartupDialogs();
     }
 
     @Override
@@ -1070,9 +1050,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         return new MainWindowShutdownCoordinator(
                 this,
                 daten,
-                showMemoryMonitorAction,
-                showBandwidthUsageAction,
-                manageAboAction,
+                dialogCoordinator,
                 tabRegistry,
                 computerShutdown,
                 resetSettingsOnQuit,

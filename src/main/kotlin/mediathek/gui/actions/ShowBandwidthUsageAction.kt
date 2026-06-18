@@ -17,4 +17,10 @@ class ShowBandwidthUsageAction(private val mediathekGui: MediathekGui) : Abstrac
         val dialog = BandwidthDialog(mediathekGui, this)
         dialog.isVisible = true
     }
+
+    fun closeBandwidthMonitorForShutdown() {
+        dialogOptional.ifPresent { dialog ->
+            dialog.disposeForShutdown()
+        }
+    }
 }
