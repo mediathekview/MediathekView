@@ -198,7 +198,7 @@ class MediathekGuiMac : MediathekGui(
             }
         }
         if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
-            desktop.setAboutHandler { ShowAboutAction().actionPerformed(null) }
+            desktop.setAboutHandler { ShowAboutAction(this).actionPerformed(null) }
         }
 
         if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {

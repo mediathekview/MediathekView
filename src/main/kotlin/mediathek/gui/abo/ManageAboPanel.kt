@@ -56,11 +56,11 @@ import java.time.LocalDate
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class ManageAboPanel(dialog: JDialog) : JPanel() {
+class ManageAboPanel(dialog: JDialog, owner: JFrame?) : JPanel() {
     private val tabelle = AboTable()
     private val daten = Daten.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
-    private val createAboAction = CreateNewAboAction(daten.listeAbo)
+    private val createAboAction = CreateNewAboAction(daten.listeAbo) { owner ?: MediathekGui.ui() }
     private lateinit var tableBinding: AboTableBinding
     private lateinit var tableColumnSettings: AboTableColumnSettings
     private val infoPanel = JXStatusBar()

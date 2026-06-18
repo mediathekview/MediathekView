@@ -99,13 +99,13 @@ class MainWindowMenuBuilder(
         fileMenu.addSeparator()
 
         val exportMenu = JMenu("Export")
-        exportMenu.add(ExportReadableFilmlistAction())
-        exportMenu.add(ExportDecompressedFilmlistAction())
+        exportMenu.add(ExportReadableFilmlistAction(owner))
+        exportMenu.add(ExportDecompressedFilmlistAction(owner))
 
         val importMenu = JMenu("Import")
-        importMenu.add(ImportOldAbosAction())
-        importMenu.add(ImportOldBlacklistAction())
-        importMenu.add(ImportOldReplacementListAction())
+        importMenu.add(ImportOldAbosAction(owner))
+        importMenu.add(ImportOldBlacklistAction(owner))
+        importMenu.add(ImportOldReplacementListAction(owner))
 
         fileMenu.add(exportMenu)
         fileMenu.add(importMenu)
@@ -145,7 +145,7 @@ class MainWindowMenuBuilder(
     }
 
     private fun createHelpMenu() {
-        helpMenu.add(ShowOnlineHelpAction())
+        helpMenu.add(ShowOnlineHelpAction(owner))
         helpMenu.add(showLuceneTutorialAction)
         helpMenu.add(ShowOnlineFaqAction(owner))
         helpMenu.addSeparator()
@@ -168,7 +168,7 @@ class MainWindowMenuBuilder(
         }
         helpMenu.add(ShowProgramInfosAction())
 
-        menuPolicy.addHelpTail(helpMenu)
+        menuPolicy.addHelpTail(helpMenu, owner)
     }
 
     private fun createHelperToolsEntries() {
@@ -191,7 +191,7 @@ class MainWindowMenuBuilder(
     }
 
     private fun createAboMenu() {
-        aboMenu.add(CreateNewAboAction(daten.listeAbo))
+        aboMenu.add(CreateNewAboAction(daten.listeAbo) { owner })
         aboMenu.add(ShowAboHistoryAction(owner))
         aboMenu.addSeparator()
         aboMenu.add(manageAboAction)

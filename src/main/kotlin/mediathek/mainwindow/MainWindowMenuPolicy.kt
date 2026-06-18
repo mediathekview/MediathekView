@@ -12,7 +12,7 @@ interface MainWindowMenuPolicy {
 
     fun addQuitItem(fileMenu: JMenu, owner: MediathekGui)
 
-    fun addHelpTail(helpMenu: JMenu)
+    fun addHelpTail(helpMenu: JMenu, owner: MediathekGui)
 }
 
 object DefaultMainWindowMenuPolicy : MainWindowMenuPolicy {
@@ -28,9 +28,9 @@ object DefaultMainWindowMenuPolicy : MainWindowMenuPolicy {
         fileMenu.add(QuitAction(owner))
     }
 
-    override fun addHelpTail(helpMenu: JMenu) {
+    override fun addHelpTail(helpMenu: JMenu, owner: MediathekGui) {
         helpMenu.addSeparator()
-        helpMenu.add(ShowAboutAction())
+        helpMenu.add(ShowAboutAction(owner))
     }
 }
 
@@ -41,5 +41,5 @@ object MacMainWindowMenuPolicy : MainWindowMenuPolicy {
 
     override fun addQuitItem(fileMenu: JMenu, owner: MediathekGui) = Unit
 
-    override fun addHelpTail(helpMenu: JMenu) = Unit
+    override fun addHelpTail(helpMenu: JMenu, owner: MediathekGui) = Unit
 }

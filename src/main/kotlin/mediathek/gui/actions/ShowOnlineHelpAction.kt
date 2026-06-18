@@ -19,7 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.config.Konstanten
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.SwingErrorDialog
 import java.awt.Desktop
@@ -29,7 +29,9 @@ import java.net.URI
 import java.net.URISyntaxException
 import javax.swing.AbstractAction
 
-class ShowOnlineHelpAction : AbstractAction() {
+class ShowOnlineHelpAction(
+    private val owner: MainWindowHandle,
+) : AbstractAction() {
     init {
         putValue(NAME, "Online-Hilfe anzeigen...")
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
@@ -62,7 +64,7 @@ class ShowOnlineHelpAction : AbstractAction() {
 
     private fun showError(ex: Exception) {
         SwingErrorDialog.showExceptionMessage(
-            MediathekGui.ui(),
+            owner.ownerFrame(),
             "Es trat ein Fehler beim Öffnen der Online-Hilfe auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
             ex,
         )

@@ -4,10 +4,10 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.EscapeKeyHandler
 import java.awt.BorderLayout
 import java.awt.Dimension
-import java.awt.Frame
 import javax.swing.JDialog
+import javax.swing.JFrame
 
-class ManageAboDialog(owner: Frame?) : JDialog(owner) {
+class ManageAboDialog(owner: JFrame?) : JDialog(owner) {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val aboPanel: ManageAboPanel
     private var disposed = false
@@ -47,7 +47,7 @@ class ManageAboDialog(owner: Frame?) : JDialog(owner) {
         defaultCloseOperation = DISPOSE_ON_CLOSE
         isResizable = true
         isModal = true
-        aboPanel = ManageAboPanel(this)
+        aboPanel = ManageAboPanel(this, owner)
         val contentPane = contentPane
         contentPane.layout = BorderLayout()
         contentPane.add(aboPanel, BorderLayout.CENTER)
