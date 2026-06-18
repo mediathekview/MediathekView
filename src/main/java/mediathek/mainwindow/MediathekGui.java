@@ -56,7 +56,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jspecify.annotations.NonNull;
-import raven.toast.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
@@ -140,6 +139,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ComputerShutdown computerShutdown;
     private final DownloadProgressIndicator downloadProgressIndicator;
     private final MainWindowController mainWindowController;
+    private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowStatusBarController statusBarController =
             new MainWindowStatusBarController(this, this::runOnEventDispatchThreadAndWait);
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
@@ -198,6 +198,11 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 this::getCurrentZeitraumFilterValue
         );
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
+        platformIntegration = new MainWindowPlatformIntegration(
+                this,
+                loadFilmListAction,
+                this::setupSystemTray
+        );
         mainWindowController = createMainWindowController();
     }
 
@@ -260,8 +265,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void startMainWindowRuntime() {
         mainWindowLifecycle.start();
-        setupTaskbarMenuLater();
-        setupSystemTray();
+        platformIntegration.setupTaskbarMenuLater();
+        platformIntegration.setupSystemTray();
         setApplicationWindowSizeLater();
         loadFilmlist();
         setupAutomaticUpdateCheck();
@@ -270,15 +275,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         loadBandwidthMonitor();
         setupFilmInfoDialog();
         resetTabPlacement();
-        setupRavenNotifications();
+        platformIntegration.setupRavenNotifications();
         performGeoCountryStartupCheck();
-    }
-
-    private void setupTaskbarMenuLater() {
-        SwingUtilities.invokeLater(() -> {
-            if (Taskbar.isTaskbarSupported())
-                setupTaskbarMenu();
-        });
     }
 
     private void setApplicationWindowSizeLater() {
@@ -287,10 +285,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void setupAutomaticUpdateCheck() {
         setupUpdateCheck(ApplicationConfiguration.getInstance().getAutomaticUpdateCheck());
-    }
-
-    private void setupRavenNotifications() {
-        Notifications.getInstance().setJFrame(this);
     }
 
     @Override
@@ -565,20 +559,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 }
             });
         });
-    }
-
-    private void setupTaskbarMenu() {
-        var taskbar = Taskbar.getTaskbar();
-        if (taskbar.isSupported(Taskbar.Feature.MENU)) {
-            PopupMenu popupMenu = taskbar.getMenu();
-            if (popupMenu == null)
-                popupMenu = new PopupMenu();
-
-            popupMenu.addSeparator();
-            popupMenu.add(new NoIconAwtMenuItem(loadFilmListAction));
-
-            taskbar.setMenu(popupMenu);
-        }
     }
 
     private void setIconAndWindowImage() {
