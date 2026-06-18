@@ -20,7 +20,7 @@ package mediathek.gui.actions
 
 import mediathek.config.Daten
 import mediathek.config.Konstanten
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.FilmBookmarkHost
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF
 import java.awt.event.ActionEvent
@@ -28,7 +28,7 @@ import javax.swing.AbstractAction
 import javax.swing.JOptionPane
 
 class DeleteBookmarksAction(
-    private val owner: MediathekGui,
+    private val host: FilmBookmarkHost,
 ) : AbstractAction() {
     init {
         putValue(SHORT_DESCRIPTION, "Merkliste vollständig löschen")
@@ -38,7 +38,8 @@ class DeleteBookmarksAction(
 
     override fun actionPerformed(event: ActionEvent?) {
         var restoreManageBookmarkWindow = false
-        val bookmarkDialog = owner.bookmarkDialog
+        val owner = host.ownerFrame()
+        val bookmarkDialog = host.bookmarkDialog
 
         if (bookmarkDialog != null && bookmarkDialog.isVisible) {
             restoreManageBookmarkWindow = true

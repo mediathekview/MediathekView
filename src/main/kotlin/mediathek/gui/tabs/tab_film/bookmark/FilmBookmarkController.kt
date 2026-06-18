@@ -39,7 +39,7 @@ class FilmBookmarkController(private val host: Host) {
     }
 
     fun showManageBookmarkWindow() {
-        val dialog = bookmarkDialog ?: BookmarkDialog(host.mediathekGui()).also { bookmarkDialog = it }
+        val dialog = bookmarkDialog ?: BookmarkDialog(host.mediathekGui(), host::repaintOwner).also { bookmarkDialog = it }
         dialog.isVisible = true
     }
 

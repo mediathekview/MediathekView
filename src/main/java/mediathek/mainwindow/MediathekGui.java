@@ -79,7 +79,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class MediathekGui extends JFrame {
+public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost {
 
     protected static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
@@ -331,6 +331,11 @@ public class MediathekGui extends JFrame {
         return ui;
     }
 
+    @Override
+    public JFrame ownerFrame() {
+        return this;
+    }
+
     public int getFilmTableRowCount() {
         return tabFilme.getTableRowCount();
     }
@@ -339,22 +344,27 @@ public class MediathekGui extends JFrame {
         return tabFilme.getCurrentZeitraumFilterValue();
     }
 
+    @Override
     public BookmarkDialog getBookmarkDialog() {
         return tabFilme.getBookmarkDialog();
     }
 
+    @Override
     public void showManageBookmarkWindow() {
         tabFilme.showManageBookmarkWindow();
     }
 
+    @Override
     public void resetFilterDialogPosition() {
         tabFilme.resetFilterDialogPosition();
     }
 
+    @Override
     public void repaintFilmTab() {
         tabFilme.repaint();
     }
 
+    @Override
     public void stopAllWaitingDownloads() {
         tabDownloads.stopAllWaitingDownloads();
     }
@@ -1157,7 +1167,7 @@ public class MediathekGui extends JFrame {
     private QuitConfirmation confirmApplicationQuit(boolean shutdownComputer) {
         if (daten.getListeDownloads().unfinishedDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
-            DialogBeenden dialogBeenden = new DialogBeenden(this);
+            DialogBeenden dialogBeenden = new DialogBeenden(this, this);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.getApplicationCanTerminate()) {
                 return QuitConfirmation.declined();

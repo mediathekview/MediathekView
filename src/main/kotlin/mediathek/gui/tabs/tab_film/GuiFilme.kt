@@ -121,7 +121,7 @@ class GuiFilme(
     init {
         val psetButtonsTab = JTabbedPane()
         val descriptionTabController = DescriptionTabController()
-        val deleteBookmarksAction = DeleteBookmarksAction(MediathekGui.ui())
+        val deleteBookmarksAction = DeleteBookmarksAction(mediathekGui)
         val filterConfiguration = ApplicationConfiguration.getInstance().createFilterConfiguration()
         val selectionComponents = createSelectionComponents(filterConfiguration)
         selectionController = selectionComponents.selectionController
@@ -249,7 +249,7 @@ class GuiFilme(
         val toggleFilterDialogVisibilityAction = ToggleFilterDialogVisibilityAction(filmActionHost)
         val bookmarkAddFilmAction = BookmarkAddFilmAction(filmActionHost)
         val bookmarkRemoveFilmAction = BookmarkRemoveFilmAction(filmActionHost)
-        val manageBookmarkAction = ManageBookmarkAction(MediathekGui.ui())
+        val manageBookmarkAction = ManageBookmarkAction(mediathekGui)
         val markFilmAsSeenAction =
             MarkFilmAsSeenAction { selectionController.getSelectedFilms() }
         val markFilmAsUnseenAction =

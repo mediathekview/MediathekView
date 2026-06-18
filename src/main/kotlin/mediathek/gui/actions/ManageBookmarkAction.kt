@@ -1,13 +1,13 @@
 package mediathek.gui.actions
 
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.FilmBookmarkHost
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 
 class ManageBookmarkAction(
-    private val mediathekGui: MediathekGui,
+    private val host: FilmBookmarkHost,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Merkliste verwalten...")
@@ -16,6 +16,6 @@ class ManageBookmarkAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        mediathekGui.showManageBookmarkWindow()
+        host.showManageBookmarkWindow()
     }
 }
