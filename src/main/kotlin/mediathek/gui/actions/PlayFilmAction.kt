@@ -3,11 +3,11 @@ package mediathek.gui.actions
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.daten.DatenPset
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen
 import org.apache.commons.lang3.SystemUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
+import java.awt.Component
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.function.Consumer
@@ -17,6 +17,7 @@ import javax.swing.KeyStroke
 
 class PlayFilmAction(
     private val startFilm: Consumer<DatenPset>,
+    private val parentProvider: () -> Component?,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Film abspielen")
@@ -37,7 +38,7 @@ class PlayFilmAction(
             startFilm.accept(pset)
         } else {
             JOptionPane.showMessageDialog(
-                MediathekGui.ui(),
+                parentProvider(),
                 "Es wurde kein Videoplayer eingerichtet.\n" +
                     "Bitte legen Sie diesen unter \"Einstellungen->Set bearbeiten\" fest.",
                 Konstanten.PROGRAMMNAME,

@@ -106,7 +106,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     public final LoadFilmListAction loadFilmListAction;
     public final EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
     public final ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
-    public final ShowFilmInformationAction showFilmInformationAction = new ShowFilmInformationAction();
+    public final ShowFilmInformationAction showFilmInformationAction;
     /**
      * this property keeps track how many items are currently selected in the active table view
      */
@@ -192,6 +192,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
         loadFilmListAction = new LoadFilmListAction(this);
+        showFilmInformationAction = new ShowFilmInformationAction(this::getFilmInfoDialog);
         filmListListener = new MainWindowFilmListListener(
                 SwingDispatch.INSTANCE,
                 () -> loadFilmListAction,

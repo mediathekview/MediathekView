@@ -240,7 +240,7 @@ class GuiFilme(
     ): FilmActions {
         val selectionController = selectionComponents.selectionController
         val filmActionHost = selectionComponents.filmActionHost
-        val playFilmAction = PlayFilmAction { selectionController.startFilm(it) }
+        val playFilmAction = PlayFilmAction({ selectionController.startFilm(it) }) { mediathekGui }
         val saveFilmAction = SaveFilmAction(filmActionHost)
         val copyHqUrlToClipboardAction =
             CopyUrlToClipboardAction(filmActionHost, FilmResolution.Enum.HIGH_QUALITY)

@@ -4,24 +4,27 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen
 import mediathek.gui.messages.ProgramLocationChangedEvent
 import mediathek.mac.escapeAppleScriptString
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.MessageBus
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.awt.Desktop
+import java.awt.Frame
 import java.awt.event.ActionEvent
 import java.io.IOException
 import java.net.URI
 import javax.swing.AbstractAction
 import javax.swing.Action
 
-class UrlHyperlinkAction(url: String) : AbstractAction(url) {
+class UrlHyperlinkAction(
+    url: String,
+    private val parentProvider: () -> Frame? = { null },
+) : AbstractAction(url) {
     init {
         putValue(Action.SHORT_DESCRIPTION, url)
     }
 
     override fun actionPerformed(event: ActionEvent) {
-        openURL(event.actionCommand)
+        openURL(event.actionCommand, parentProvider())
     }
 
     companion object {
@@ -29,12 +32,15 @@ class UrlHyperlinkAction(url: String) : AbstractAction(url) {
         private const val BROWSER_NOT_FOUND_TEXT =
             "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen."
 
-        fun openURI(uri: URI) {
-            openURL(uri.toString())
+        @JvmOverloads
+        @JvmStatic
+        fun openURI(uri: URI, parent: Frame? = null) {
+            openURL(uri.toString(), parent)
         }
 
+        @JvmOverloads
         @JvmStatic
-        fun openURL(url: String) {
+        fun openURL(url: String, parent: Frame? = null) {
             var launchFailed = false
 
             if (SystemUtils.IS_OS_MAC_OSX) {
@@ -60,17 +66,17 @@ class UrlHyperlinkAction(url: String) : AbstractAction(url) {
                 }
             } else {
                 logger.trace("trying to launch custom web browser")
-                configureAndStartCustomWebBrowser(url)
+                configureAndStartCustomWebBrowser(url, parent)
             }
 
             if (launchFailed) {
-                configureAndStartCustomWebBrowser(url)
+                configureAndStartCustomWebBrowser(url, parent)
             }
         }
 
-        private fun configureAndStartCustomWebBrowser(url: String) {
+        private fun configureAndStartCustomWebBrowser(url: String, parent: Frame?) {
             try {
-                val program = resolveBrowserProgram()
+                val program = resolveBrowserProgram(parent)
                 launchApplication(program, url)
 
                 ApplicationConfiguration.getInstance().webBrowserProgram = program
@@ -81,13 +87,13 @@ class UrlHyperlinkAction(url: String) : AbstractAction(url) {
             }
         }
 
-        private fun resolveBrowserProgram(): String {
+        private fun resolveBrowserProgram(parent: Frame?): String {
             val configuredProgram = ApplicationConfiguration.getInstance().webBrowserProgram
             if (configuredProgram.isNotEmpty()) {
                 return configuredProgram
             }
 
-            val dialog = DialogProgrammOrdnerOeffnen(MediathekGui.ui(), true, "", "Browser suchen", BROWSER_NOT_FOUND_TEXT)
+            val dialog = DialogProgrammOrdnerOeffnen(parent, true, "", "Browser suchen", BROWSER_NOT_FOUND_TEXT)
             dialog.isVisible = true
             return if (dialog.ok) dialog.ziel else ""
         }
