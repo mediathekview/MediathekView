@@ -112,11 +112,11 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
-    protected final JMenu jMenuHilfe = new JMenu();
-    protected final SettingsAction settingsAction = new SettingsAction();
+    private final JMenu jMenuHilfe = new JMenu();
+    private final SettingsAction settingsAction = new SettingsAction();
     private final JToolBar commonToolBar = new JToolBar();
-    protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
-    protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction(this);
+    private final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
+    private final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction(this);
     private final JMenu fontMenu = new JMenu("Schrift");
     private final JMenu jMenuDatei = new JMenu();
     private final JMenu jMenuFilme = new JMenu();
