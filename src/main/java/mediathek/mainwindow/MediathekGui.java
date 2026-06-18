@@ -141,12 +141,12 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ManageAboAction manageAboAction = new ManageAboAction(this);
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
-    private final LivestreamPanel tabLivestreams = new LivestreamPanel();
+    private final LivestreamPanel tabLivestreams = new LivestreamPanel(this);
     private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams);
     private final OnlineSearchPanel tabOnlineSearch = new OnlineSearchPanel(this);
     private final ToggleOnlineSearchTabAction toggleOnlineSearchTabAction = new ToggleOnlineSearchTabAction(tabbedPane, tabOnlineSearch);
     private final AudioRepository audiothekRepository = new AudioRepository();
-    private final AudiothekPanel tabAudiothek = new AudiothekPanel(audiothekRepository);
+    private final AudiothekPanel tabAudiothek = new AudiothekPanel(audiothekRepository, this);
     private final ToggleAudiothekTabAction toggleAudiothekTabAction = new ToggleAudiothekTabAction(tabbedPane, tabAudiothek);
     private final LogDialog logDialog = new LogDialog(this);
     private final Supplier<INotificationCenter> notificationCenterFactory;

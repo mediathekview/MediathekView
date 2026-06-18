@@ -40,7 +40,6 @@ import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
 import mediathek.mac.MacMultimediaPlayerLocator
 import mediathek.mac.SingleIinaPlayer
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.OverlayPanel
 import mediathek.tool.FileDialogs
 import mediathek.tool.GuiFunktionenProgramme
@@ -53,6 +52,7 @@ import org.jdesktop.swingx.VerticalLayout
 import java.awt.AWTEvent
 import java.awt.BorderLayout
 import java.awt.Desktop
+import java.awt.Frame
 import java.awt.Toolkit
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
@@ -67,7 +67,8 @@ import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.toKotlinDuration
 
 class AudiothekPanel(
-    private val repository: AudioRepository
+    private val repository: AudioRepository,
+    private val owner: Frame,
 ) : JPanel(BorderLayout()) {
     private val logger = LogManager.getLogger(AudiothekPanel::class.java)
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -489,7 +490,7 @@ class AudiothekPanel(
 
     private fun chooseDownloadTarget(entry: AudioEntry): File? {
         return FileDialogs.chooseSaveFileLocation(
-            MediathekGui.ui(),
+            owner,
             "Audio speichern",
             suggestFileName(entry)
         )
