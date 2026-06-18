@@ -166,7 +166,7 @@ class MainWindowMenuBuilder(
         if (GuiFunktionen.isNotUsingExternalUpdater()) {
             helpMenu.add(searchProgramUpdateAction)
         }
-        helpMenu.add(ShowProgramInfosAction())
+        helpMenu.add(ShowProgramInfosAction(owner))
 
         menuPolicy.addHelpTail(helpMenu, owner)
     }

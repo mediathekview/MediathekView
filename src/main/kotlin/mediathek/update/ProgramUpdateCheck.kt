@@ -26,7 +26,6 @@ import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
 import mediathek.daten.ListePsetVorlagen
 import mediathek.gui.dialog.DialogNewSet
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.NetUtils
@@ -40,12 +39,14 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Perform check for updates every 24 hours if program is running long enough.
  */
-class ProgramUpdateCheck : AutoCloseable {
+class ProgramUpdateCheck(
+    private val host: ProgramUpdateHost,
+) : AutoCloseable {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(job + Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
         logger.error("Program update check failed", ex)
     })
-    private val programUpdateSearch = ProgrammUpdateSuchen(scope)
+    private val programUpdateSearch = ProgrammUpdateSuchen(host::ownerFrame, scope)
     private var updateCheckJob: Job? = null
 
     fun start() {
@@ -66,7 +67,7 @@ class ProgramUpdateCheck : AutoCloseable {
         try {
             if (NetUtils.isReachable(UPDATE_CHECK_HOST, 1.seconds)) {
                 withContext(Dispatchers.Swing) {
-                    MediathekGui.ui().enableUpdateMenuItem(false)
+                    host.enableUpdateMenuItem(false)
                 }
                 updateMenuItemDisabled = true
 
@@ -83,7 +84,7 @@ class ProgramUpdateCheck : AutoCloseable {
         } finally {
             if (updateMenuItemDisabled) {
                 withContext(NonCancellable + Dispatchers.Swing) {
-                    MediathekGui.ui().enableUpdateMenuItem(true)
+                    host.enableUpdateMenuItem(true)
                 }
             }
             logger.debug("performUpdateCheck finished.")
@@ -111,7 +112,7 @@ class ProgramUpdateCheck : AutoCloseable {
     }
 
     private fun checkForPsetUpdatesOnSwingThread(standardPset: ListePset) {
-        val parent = MediathekGui.ui()
+        val parent = host.ownerFrame()
         if (!shouldInstallStandardPset(parent, standardPset)) {
             return
         }

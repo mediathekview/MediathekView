@@ -51,6 +51,7 @@ import mediathek.tool.notification.NotificationService;
 import mediathek.tool.timer.TimerPool;
 import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateCheck;
+import mediathek.update.ProgramUpdateHost;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
@@ -79,7 +80,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost {
+public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost {
 
     protected static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
@@ -197,7 +198,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 () -> daten.allesSpeichern(),
                 this::setupAutomaticFilmlistReload
         );
-        searchProgramUpdateAction = new SearchProgramUpdateAction();
+        searchProgramUpdateAction = new SearchProgramUpdateAction(this);
         mainWindowController = createMainWindowController();
     }
 
@@ -879,7 +880,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private void setupUpdateCheck(boolean newState) {
         if (newState) {
             endProgramUpdateChecker();
-            programUpdateChecker = new ProgramUpdateCheck();
+            programUpdateChecker = new ProgramUpdateCheck(this);
             programUpdateChecker.start();
         }
         else {

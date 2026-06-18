@@ -22,7 +22,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.Version
 import mediathek.tool.http.MVHttpClient
@@ -30,6 +29,7 @@ import okhttp3.Request
 import org.apache.logging.log4j.LogManager
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
+import javax.swing.JFrame
 import javax.swing.JDialog
 import javax.swing.JOptionPane
 import javax.xml.stream.XMLInputFactory
@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamReader
 
 class ProgrammUpdateSuchen(
+    private val ownerProvider: () -> JFrame,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
         logger.error("Program update search failed", ex)
     }),
@@ -113,7 +114,7 @@ class ProgrammUpdateSuchen(
                     displayUpdateError(PI_VERSION_INVALID_MSG)
                 }
             } else if (Konstanten.MVVERSION.isOlderThan(remoteVersion)) {
-                val dlg = UpdateNotificationDialog(MediathekGui.ui(), "Software Update", remoteVersion)
+                val dlg = UpdateNotificationDialog(ownerProvider(), "Software Update", remoteVersion)
                 dlg.isVisible = true
             } else if (options.showAlert) {
                 displayNoUpdateAvailableMessage()
@@ -123,7 +124,7 @@ class ProgrammUpdateSuchen(
 
     private fun displayUpdateError(message: String) {
         SwingErrorDialog.showExceptionMessage(
-            MediathekGui.ui(),
+            ownerProvider(),
             UPDATE_ERROR_MESSAGE,
             RuntimeException(message),
         )
@@ -131,7 +132,7 @@ class ProgrammUpdateSuchen(
 
     private fun displayNoUpdateAvailableMessage() {
         JOptionPane.showMessageDialog(
-            MediathekGui.ui(),
+            ownerProvider(),
             "Sie benutzen die aktuellste Version von MediathekView.",
             UPDATE_SEARCH_TITLE,
             JOptionPane.INFORMATION_MESSAGE,
@@ -170,7 +171,7 @@ class ProgrammUpdateSuchen(
 
     private fun displayNoNewInfoMessage() {
         JOptionPane.showMessageDialog(
-            MediathekGui.ui(),
+            ownerProvider(),
             "Es liegen keine aktuellen Informationen vor.",
             "Programminformationen",
             JOptionPane.INFORMATION_MESSAGE,
