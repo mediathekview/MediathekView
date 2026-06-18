@@ -858,7 +858,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 editBlacklistAction,
                 showFilmInformationAction,
                 showLuceneTutorialAction,
-                this::setSelectedListItemsCount
+                this::setSelectedListItemsCount,
+                film -> getFilmInfoDialog().updateCurrentFilm(film)
         );
     }
 

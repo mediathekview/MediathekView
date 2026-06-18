@@ -19,9 +19,11 @@
 package mediathek.gui.tabs.tab_film.selection
 
 import mediathek.config.Daten
+import mediathek.daten.DatenFilm
 import mediathek.mainwindow.MediathekGui
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
+import java.util.function.Consumer
 
 class FilmSelectionHostAdapter(
     private val tableProvider: () -> MVFilmTable,
@@ -29,6 +31,7 @@ class FilmSelectionHostAdapter(
     private val mediathekGui: MediathekGui,
     private val datenProvider: () -> Daten,
     private val showHighQualityOnlyProvider: () -> Boolean,
+    private val currentFilm: Consumer<DatenFilm?>,
 ) : FilmSelectionController.Host {
     override fun table(): MVFilmTable = tableProvider()
 
@@ -39,4 +42,8 @@ class FilmSelectionHostAdapter(
     override fun daten(): Daten = datenProvider()
 
     override fun showHighQualityOnly(): Boolean = showHighQualityOnlyProvider()
+
+    override fun updateCurrentFilm(film: DatenFilm?) {
+        currentFilm.accept(film)
+    }
 }

@@ -36,6 +36,7 @@ class FilmSelectionController(private val host: Host) {
         fun mediathekGui(): MediathekGui
         fun daten(): Daten
         fun showHighQualityOnly(): Boolean
+        fun updateCurrentFilm(film: DatenFilm?)
     }
 
     fun getTableRowCount(): Int = host.table().model.rowCount
@@ -103,9 +104,7 @@ class FilmSelectionController(private val host: Host) {
     }
 
     fun updateFilmData() {
-        host.mediathekGui().filmInfoDialog?.let { infoDialog ->
-            getCurrentlySelectedFilm().ifPresent(infoDialog::updateCurrentFilm)
-        }
+        host.updateCurrentFilm(getCurrentlySelectedFilm().orElse(null))
     }
 
     private fun filmAtModelRow(modelRow: Int): DatenFilm {
