@@ -67,6 +67,7 @@ class GuiFilme(
     private val toggleBlacklistAction: Action,
     private val editBlacklistAction: Action,
     private val showFilmInformationAction: Action,
+    private val showLuceneTutorialAction: Action,
 ) : JPanel() {
     private val daten: Daten = aDaten
     private val copyHqUrlToClipboardActionValue: CopyUrlToClipboardAction
@@ -226,6 +227,8 @@ class GuiFilme(
 
     private fun createSearchFieldHost(): SearchField.Host =
         object : SearchField.Host {
+            override val showLuceneTutorialAction: Action = this@GuiFilme.showLuceneTutorialAction
+
             override fun mediathekGui() = mediathekGui
 
             override fun loadTable() {

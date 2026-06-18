@@ -814,11 +814,14 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private JPanel createTabFilme(@NonNull Daten daten) {
-        return new GuiFilme(daten, this, toggleBlacklistAction, editBlacklistAction, showFilmInformationAction);
-    }
-
-    public Action getShowLuceneTutorialAction() {
-        return showLuceneTutorialAction;
+        return new GuiFilme(
+                daten,
+                this,
+                toggleBlacklistAction,
+                editBlacklistAction,
+                showFilmInformationAction,
+                showLuceneTutorialAction
+        );
     }
 
     private JPanel createTabDownloads(@NonNull Daten daten) {

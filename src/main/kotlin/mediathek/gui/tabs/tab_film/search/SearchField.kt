@@ -47,6 +47,8 @@ private const val SEARCHMODE_PROPERTY_STRING = "searchMode"
 
 abstract class SearchField(protected val host: Host) : JTextField("", 40) {
     interface Host {
+        val showLuceneTutorialAction: Action
+
         fun mediathekGui(): MediathekGui
         fun loadTable()
         fun loadTable(fromSearchField: Boolean)
@@ -245,7 +247,7 @@ class LuceneSearchField(host: SearchField.Host) : SearchField(host) {
         val searchToolbar = JToolBar()
         searchToolbar.addSeparator()
 
-        val luceneButton = JButton(host.mediathekGui().showLuceneTutorialAction)
+        val luceneButton = JButton(host.showLuceneTutorialAction)
         luceneButton.text = null
         searchToolbar.add(luceneButton)
         putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT, searchToolbar)
