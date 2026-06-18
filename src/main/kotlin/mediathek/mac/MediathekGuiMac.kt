@@ -28,6 +28,7 @@ import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MacMainWindowMenuPolicy
 import mediathek.mainwindow.MediathekGui
 import mediathek.mainwindow.MainWindowMenuPolicy
+import mediathek.mainwindow.MainWindowToolbarInstaller
 import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
 import mediathek.tool.RuntimeArchitecture
@@ -35,11 +36,13 @@ import mediathek.tool.notification.MacNotificationCenter
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
+import java.awt.Container
 import java.awt.Desktop
 import java.awt.FlowLayout
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.lang.foreign.*
+import javax.swing.JTabbedPane
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JToolBar
@@ -49,6 +52,7 @@ class MediathekGuiMac : MediathekGui(
     ::MacNotificationCenter,
     MacComputerShutdown(),
     { _ -> MacDownloadProgressIndicator() },
+    MacMainWindowToolbarInstaller,
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -148,25 +152,6 @@ class MediathekGuiMac : MediathekGui(
         // do not configure as it interferes with installToolBar and is not necessary...
     }
 
-    private class MacToolBarPanel(commonToolBar: JToolBar) : JPanel() {
-        private class MacFullWindowPlaceHolder : JPanel() {
-            init {
-                layout = FlowLayout()
-                putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen")
-            }
-        }
-
-        init {
-            layout = BorderLayout()
-            add(MacFullWindowPlaceHolder(), BorderLayout.WEST)
-            add(commonToolBar, BorderLayout.CENTER)
-        }
-    }
-
-    override fun installToolBar() {
-        contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
-    }
-
     override fun createMenuPolicy(): MainWindowMenuPolicy = MacMainWindowMenuPolicy
 
     override fun setupScrollBarWidth() {
@@ -217,5 +202,26 @@ class MediathekGuiMac : MediathekGui(
 
     companion object {
         val logger: Logger = LogManager.getLogger()
+    }
+}
+
+private object MacMainWindowToolbarInstaller : MainWindowToolbarInstaller {
+    override fun install(contentPane: Container, tabbedPane: JTabbedPane, commonToolBar: JToolBar) {
+        contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
+    }
+}
+
+private class MacToolBarPanel(commonToolBar: JToolBar) : JPanel() {
+    private class MacFullWindowPlaceHolder : JPanel() {
+        init {
+            layout = FlowLayout()
+            putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen")
+        }
+    }
+
+    init {
+        layout = BorderLayout()
+        add(MacFullWindowPlaceHolder(), BorderLayout.WEST)
+        add(commonToolBar, BorderLayout.CENTER)
     }
 }

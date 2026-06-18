@@ -87,6 +87,10 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private static final ComputerShutdown NO_COMPUTER_SHUTDOWN = () -> {};
     private static final Function<MediathekGui, DownloadProgressIndicator> NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY = _ ->
             NoDownloadProgressIndicator.INSTANCE;
+    private static final MainWindowToolbarInstaller DEFAULT_TOOLBAR_INSTALLER = (_, tabbedPane, commonToolBar) -> {
+        tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
+        tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
+    };
     private final AtomicBoolean applicationQuitInProgress = new AtomicBoolean();
     private final AtomicBoolean disposed = new AtomicBoolean();
     private final LoadFilmListAction loadFilmListAction;
@@ -101,7 +105,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
     protected final SettingsAction settingsAction = new SettingsAction();
-    protected final JToolBar commonToolBar = new JToolBar();
+    private final JToolBar commonToolBar = new JToolBar();
     protected final ManageBookmarkAction manageBookmarkAction = new ManageBookmarkAction(this);
     protected final ToggleDarkModeAction toggleDarkModeAction = new ToggleDarkModeAction(this);
     private final JMenu fontMenu = new JMenu("Schrift");
@@ -141,6 +145,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ComputerShutdown computerShutdown;
     private final DownloadProgressIndicator downloadProgressIndicator;
     private final MainWindowDarkModeActionPlacement darkModeActionPlacement;
+    private final MainWindowToolbarInstaller toolbarInstaller;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -184,7 +189,23 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 notificationCenterFactory,
                 computerShutdown,
                 downloadProgressIndicatorFactory,
-                MainWindowDarkModeActionPlacement.TOOL_BAR
+                MainWindowDarkModeActionPlacement.TOOL_BAR,
+                DEFAULT_TOOLBAR_INSTALLER
+        );
+    }
+
+    protected MediathekGui(
+            Supplier<INotificationCenter> notificationCenterFactory,
+            ComputerShutdown computerShutdown,
+            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
+            MainWindowToolbarInstaller toolbarInstaller
+    ) {
+        this(
+                notificationCenterFactory,
+                computerShutdown,
+                downloadProgressIndicatorFactory,
+                MainWindowDarkModeActionPlacement.TOOL_BAR,
+                toolbarInstaller
         );
     }
 
@@ -194,9 +215,26 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowDarkModeActionPlacement darkModeActionPlacement
     ) {
+        this(
+                notificationCenterFactory,
+                computerShutdown,
+                downloadProgressIndicatorFactory,
+                darkModeActionPlacement,
+                DEFAULT_TOOLBAR_INSTALLER
+        );
+    }
+
+    protected MediathekGui(
+            Supplier<INotificationCenter> notificationCenterFactory,
+            ComputerShutdown computerShutdown,
+            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
+            MainWindowDarkModeActionPlacement darkModeActionPlacement,
+            MainWindowToolbarInstaller toolbarInstaller
+    ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
         this.darkModeActionPlacement = Objects.requireNonNull(darkModeActionPlacement);
+        this.toolbarInstaller = Objects.requireNonNull(toolbarInstaller);
         this.downloadProgressIndicator = Objects.requireNonNull(
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
@@ -492,9 +530,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         commonToolBar.setName("Allgemein");
     }
 
-    protected void installToolBar() {
-        tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
-        tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
+    private void installToolBar() {
+        toolbarInstaller.install(getContentPane(), tabbedPane, commonToolBar);
     }
 
     protected void createCommonToolBar() {
