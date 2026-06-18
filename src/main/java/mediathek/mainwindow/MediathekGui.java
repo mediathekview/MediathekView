@@ -106,14 +106,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * this property keeps track how many items are currently selected in the active table view
      */
     public final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
-    /**
-     * Used for status bar progress.
-     */
-    private final JLabel progressLabel = new JLabel();
-    /**
-     * Used for status bar progress.
-     */
-    private final JProgressBar progressBar = new JProgressBar();
     private final PropertyChangeListener lookAndFeelListener = this::handleLookAndFeelChange;
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
@@ -148,10 +140,11 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ComputerShutdown computerShutdown;
     private final DownloadProgressIndicator downloadProgressIndicator;
     private final MainWindowController mainWindowController;
+    private final MainWindowStatusBarController statusBarController =
+            new MainWindowStatusBarController(this, this::runOnEventDispatchThreadAndWait);
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
-            new FilmlistProgressPresenter(SwingDispatch.INSTANCE, this::showStatusBarProgress);
+            new FilmlistProgressPresenter(SwingDispatch.INSTANCE, statusBarController::showProgress);
     private final ListenerFilmeLaden filmListListener;
-    private FixedRedrawStatusBar swingStatusBar;
     private GuiFilme tabFilme;
     private GuiDownloads tabDownloads;
     private FilmInfoDialog filmInfo;
@@ -311,8 +304,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void handleLookAndFeelChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equalsIgnoreCase("lookAndFeel")) {
-            SwingUtilities.updateComponentTreeUI(progressLabel);
-            SwingUtilities.updateComponentTreeUI(progressBar);
+            statusBarController.updateComponentTreeUi();
         }
     }
 
@@ -663,8 +655,13 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * Read a local filmlist or load a new one in auto mode.
      */
     private void loadFilmlist() {
-        installStatusBarProgressOnEdt(progressLabel, progressBar);
-        startupFilmlistLoader = new StartupFilmlistLoader(daten, progressLabel, progressBar, this::finishStartupFilmlistLoad);
+        statusBarController.installStartupProgress();
+        startupFilmlistLoader = new StartupFilmlistLoader(
+                daten,
+                statusBarController.getStartupProgressLabel(),
+                statusBarController.getStartupProgressBar(),
+                this::finishStartupFilmlistLoad
+        );
         startupFilmlistLoader.start();
     }
 
@@ -674,7 +671,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, failed));
             }
         } finally {
-            uninstallStatusBarProgressOnEdt(progressLabel, progressBar);
+            statusBarController.uninstallStartupProgress();
         }
     }
 
@@ -682,9 +679,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * Create the status bar item.
      */
     private void createStatusBar() {
-        swingStatusBar = new FixedRedrawStatusBar(this);
-        getContentPane().add(swingStatusBar, BorderLayout.SOUTH);
-
+        statusBarController.createStatusBar();
         createFilmlistDownloadProgress();
     }
 
@@ -701,13 +696,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         filmlistDownloadProgressListener.close();
     }
 
-    private StatusBarProgressHandle showStatusBarProgress(JLabel label, JProgressBar progressBar) {
-        installStatusBarProgressOnEdt(label, progressBar);
-        return new StatusBarProgressRegistration(label, progressBar);
-    }
-
     public StatusBarProgressHandle showStatusBarProgress() {
-        return showStatusBarProgress(new JLabel(), new JProgressBar());
+        return statusBarController.showProgress();
     }
 
     @Override
@@ -715,39 +705,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         toggleBlacklistAction.setEnabled(enabled);
         editBlacklistAction.setEnabled(enabled);
         loadFilmListAction.setEnabled(enabled);
-    }
-
-    private void installStatusBarProgressOnEdt(JLabel label, JProgressBar progressBar) {
-        runOnEventDispatchThreadAndWait("Install status bar progress", () -> installStatusBarProgress(label, progressBar));
-    }
-
-    private void installStatusBarProgress(JLabel label, JProgressBar progressBar) {
-        if (label.getParent() != swingStatusBar) {
-            swingStatusBar.add(label);
-        }
-        if (progressBar.getParent() != swingStatusBar) {
-            swingStatusBar.add(progressBar);
-        }
-        refreshStatusBar();
-    }
-
-    private void uninstallStatusBarProgressOnEdt(JLabel label, JProgressBar progressBar) {
-        runOnEventDispatchThreadAndWait("Uninstall status bar progress", () -> uninstallStatusBarProgress(label, progressBar));
-    }
-
-    private void uninstallStatusBarProgress(JLabel label, JProgressBar progressBar) {
-        if (progressBar.getParent() == swingStatusBar) {
-            swingStatusBar.remove(progressBar);
-        }
-        if (label.getParent() == swingStatusBar) {
-            swingStatusBar.remove(label);
-        }
-        refreshStatusBar();
-    }
-
-    private void refreshStatusBar() {
-        swingStatusBar.revalidate();
-        swingStatusBar.repaint();
     }
 
     private void runOnEventDispatchThreadAndWait(String description, Runnable action) {
@@ -765,35 +722,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         }
         catch (InvocationTargetException e) {
             throw new IllegalStateException(description + " failed", e.getCause());
-        }
-    }
-
-    private final class StatusBarProgressRegistration implements StatusBarProgressHandle {
-        private final JLabel label;
-        private final JProgressBar progressBar;
-        private final AtomicBoolean closed = new AtomicBoolean();
-
-        private StatusBarProgressRegistration(JLabel label, JProgressBar progressBar) {
-            this.label = label;
-            this.progressBar = progressBar;
-        }
-
-        @Override
-        public @NonNull JLabel label() {
-            return label;
-        }
-
-        @Override
-        public @NonNull JProgressBar progressBar() {
-            return progressBar;
-        }
-
-        @Override
-        public void close() {
-            if (!closed.compareAndSet(false, true)) {
-                return;
-            }
-            uninstallStatusBarProgressOnEdt(label, progressBar);
         }
     }
 
