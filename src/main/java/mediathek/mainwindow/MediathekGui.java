@@ -836,6 +836,8 @@ public class MediathekGui extends JFrame {
      * Reload filmlist every 24h when in automatic mode.
      */
     private void setupAutomaticFilmlistReload() {
+        closeAutomaticFilmlistUpdate();
+
         final Runnable performUpdate = () -> {
             if (FilmListUpdateType.AUTOMATIC.isConfigured()) {
                 //if downloads are running, don´t update
