@@ -169,23 +169,20 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowLifecycle mainWindowLifecycle;
 
     public MediathekGui() {
-        this(GenericNotificationCenter::new);
-    }
-
-    protected MediathekGui(Supplier<INotificationCenter> notificationCenterFactory) {
-        this(notificationCenterFactory, NO_COMPUTER_SHUTDOWN);
-    }
-
-    protected MediathekGui(Supplier<INotificationCenter> notificationCenterFactory, ComputerShutdown computerShutdown) {
-        this(notificationCenterFactory, computerShutdown, NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY);
-    }
-
-    protected MediathekGui(
-            Supplier<INotificationCenter> notificationCenterFactory,
-            ComputerShutdown computerShutdown,
-            MainWindowDarkModeActionPlacement darkModeActionPlacement
-    ) {
-        this(notificationCenterFactory, computerShutdown, NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY, darkModeActionPlacement);
+        this(
+                GenericNotificationCenter::new,
+                NO_COMPUTER_SHUTDOWN,
+                NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY,
+                MainWindowDarkModeActionPlacement.TOOL_BAR,
+                DEFAULT_TOOLBAR_INSTALLER,
+                new MainWindowTabPlacementController(true),
+                DefaultMainWindowMenuPolicy.INSTANCE,
+                true,
+                DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                DefaultMainWindowSystemTrayController.INSTANCE,
+                true,
+                _ -> {}
+        );
     }
 
     protected MediathekGui(
@@ -205,49 +202,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 true,
                 DefaultMainWindowScrollBarConfigurator.INSTANCE,
                 systemTrayController,
-                true,
-                _ -> {}
-        );
-    }
-
-    protected MediathekGui(
-            Supplier<INotificationCenter> notificationCenterFactory,
-            ComputerShutdown computerShutdown,
-            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory
-    ) {
-        this(
-                notificationCenterFactory,
-                computerShutdown,
-                downloadProgressIndicatorFactory,
-                MainWindowDarkModeActionPlacement.TOOL_BAR,
-                DEFAULT_TOOLBAR_INSTALLER,
-                new MainWindowTabPlacementController(true),
-                DefaultMainWindowMenuPolicy.INSTANCE,
-                true,
-                DefaultMainWindowScrollBarConfigurator.INSTANCE,
-                DefaultMainWindowSystemTrayController.INSTANCE,
-                true,
-                _ -> {}
-        );
-    }
-
-    protected MediathekGui(
-            Supplier<INotificationCenter> notificationCenterFactory,
-            ComputerShutdown computerShutdown,
-            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
-            MainWindowToolbarInstaller toolbarInstaller
-    ) {
-        this(
-                notificationCenterFactory,
-                computerShutdown,
-                downloadProgressIndicatorFactory,
-                MainWindowDarkModeActionPlacement.TOOL_BAR,
-                toolbarInstaller,
-                new MainWindowTabPlacementController(true),
-                DefaultMainWindowMenuPolicy.INSTANCE,
-                true,
-                DefaultMainWindowScrollBarConfigurator.INSTANCE,
-                DefaultMainWindowSystemTrayController.INSTANCE,
                 true,
                 _ -> {}
         );
@@ -304,7 +258,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         );
     }
 
-    protected MediathekGui(
+    private MediathekGui(
             Supplier<INotificationCenter> notificationCenterFactory,
             ComputerShutdown computerShutdown,
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
