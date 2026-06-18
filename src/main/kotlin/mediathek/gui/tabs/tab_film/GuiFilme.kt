@@ -120,7 +120,7 @@ class GuiFilme(
 
     init {
         val psetButtonsTab = JTabbedPane()
-        val descriptionTabController = DescriptionTabController()
+        val descriptionTabController = DescriptionTabController { mediathekGui }
         val deleteBookmarksAction = DeleteBookmarksAction(mediathekGui)
         val filterConfiguration = ApplicationConfiguration.getInstance().createFilterConfiguration()
         val selectionComponents = createSelectionComponents(filterConfiguration)

@@ -23,7 +23,6 @@ import mediathek.config.Konstanten
 import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.dialog.DialogFilmBeschreibung
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.CopyToClipboardAction
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.SwingErrorDialog
@@ -40,7 +39,9 @@ import java.util.*
 import java.util.function.Supplier
 import javax.swing.*
 
-class FilmDescriptionPanel : JPanel() {
+class FilmDescriptionPanel(
+    private val ownerProvider: () -> JFrame? = { null },
+) : JPanel() {
     private val scrollPane1 = JScrollPane()
     private val popupMenu = JPopupMenu()
     private val lblIcon = SenderIconLabel()
@@ -71,7 +72,7 @@ class FilmDescriptionPanel : JPanel() {
                         desktop.browse(URI(toolTipText))
                     } catch (ex: Exception) {
                         SwingErrorDialog.showExceptionMessage(
-                            MediathekGui.ui(),
+                            ownerProvider(),
                             "Es trat ein Fehler beim Öffnen des Links auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
                             ex
                         )
@@ -90,7 +91,7 @@ class FilmDescriptionPanel : JPanel() {
     private fun createPopupMenu() {
         editDescriptionItem.addActionListener {
             val film = currentFilm ?: return@addActionListener
-            DialogFilmBeschreibung(MediathekGui.ui(), film).isVisible = true
+            DialogFilmBeschreibung(ownerProvider(), film).isVisible = true
         }
         popupMenu.add(editDescriptionItem)
         popupMenu.add(editSeparator)
