@@ -24,11 +24,9 @@ import javax.swing.event.MenuEvent
 import javax.swing.event.MenuListener
 
 internal class MenuTabSwitchListener(
-    mediathekGui: MediathekGui,
+    private val tabbedPane: JTabbedPane,
     private val targetTab: Component,
 ) : MenuListener {
-    private val tabbedPane: JTabbedPane = mediathekGui.tabbedPane
-
     override fun menuSelected(e: MenuEvent) {
         setTabIfContain(targetTab)
     }

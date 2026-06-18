@@ -59,7 +59,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -112,8 +111,17 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final JMenu jMenuDownload = new JMenu();
     private final JMenu jMenuAbos = new JMenu();
     private final JMenu jMenuAnsicht = new JMenu();
-    private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
     private final MainWindowTabRegistry tabRegistry = new MainWindowTabRegistry(tabbedPane);
+    private GuiFilme tabFilme;
+    private GuiDownloads tabDownloads;
+    private final MainWindowMenuTabSwitchController menuTabSwitchController = new MainWindowMenuTabSwitchController(
+            tabbedPane,
+            jMenuFilme,
+            jMenuDownload,
+            () -> tabFilme,
+            () -> tabDownloads,
+            this::supportsAutomaticMenuTabSwitching
+    );
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final ManageAboAction manageAboAction = new ManageAboAction(this);
@@ -143,10 +151,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
             new FilmlistProgressPresenter(SwingDispatch.INSTANCE, statusBarController::showProgress);
     private final MainWindowFilmlistReloadCoordinator filmlistReloadCoordinator;
-    private GuiFilme tabFilme;
-    private GuiDownloads tabDownloads;
     private boolean resetSettingsOnQuit;
-    private boolean menuTabSwitchListenersInstalled;
     private final MainWindowLifecycle mainWindowLifecycle;
 
     public MediathekGui() {
@@ -831,38 +836,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
      */
     protected void installMenuTabSwitchListener() {
-        if (!supportsAutomaticMenuTabSwitching()) {
-            return;
-        }
-
-        //initial setup
-        menuListeners.put(jMenuFilme, new MenuTabSwitchListener(this, tabFilme));
-        menuListeners.put(jMenuDownload, new MenuTabSwitchListener(this, tabDownloads));
-
-        //now assign if really necessary
-        if (ApplicationConfiguration.getInstance().getInstallTabSwitchListener()) {
-            installConfiguredMenuTabSwitchListeners();
-        }
-    }
-
-    private void installConfiguredMenuTabSwitchListeners() {
-        if (menuTabSwitchListenersInstalled) {
-            return;
-        }
-
-        jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
-        jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
-        menuTabSwitchListenersInstalled = true;
-    }
-
-    private void removeConfiguredMenuTabSwitchListeners() {
-        if (!menuTabSwitchListenersInstalled) {
-            return;
-        }
-
-        jMenuFilme.removeMenuListener(menuListeners.get(jMenuFilme));
-        jMenuDownload.removeMenuListener(menuListeners.get(jMenuDownload));
-        menuTabSwitchListenersInstalled = false;
+        menuTabSwitchController.initialize();
     }
 
     /**
@@ -870,14 +844,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      */
     @Handler
     protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
-        if (!supportsAutomaticMenuTabSwitching()) {
-            return;
-        }
-
-        switch (msg.getEvent()) {
-            case INSTALL -> SwingUtilities.invokeLater(this::installConfiguredMenuTabSwitchListeners);
-            case REMOVE -> SwingUtilities.invokeLater(this::removeConfiguredMenuTabSwitchListeners);
-        }
+        menuTabSwitchController.handleInstallTabSwitchListenerEvent(msg);
     }
 
     @Handler
