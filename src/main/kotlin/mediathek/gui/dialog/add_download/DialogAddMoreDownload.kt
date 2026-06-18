@@ -21,7 +21,6 @@ package mediathek.gui.dialog.add_download
 import mediathek.config.MVColor
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenPset
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FileDialogs
 import mediathek.tool.FilenameUtils
@@ -34,7 +33,7 @@ import javax.swing.event.DocumentListener
 import javax.swing.text.JTextComponent
 
 class DialogAddMoreDownload(
-    parent: JFrame,
+    private val parent: JFrame,
     private val pSet: DatenPset,
 ) : DialogAddMoreDownloadBase(parent) {
     private val orgPfad: String
@@ -79,7 +78,7 @@ class DialogAddMoreDownload(
         jButtonPath.addActionListener {
             val initialDirectory = jComboBoxPath.selectedItem?.toString().orEmpty()
             val selectedDirectory = FileDialogs.chooseDirectoryLocation(
-                MediathekGui.ui(),
+                parent,
                 "Film speichern",
                 initialDirectory,
             )
