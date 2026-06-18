@@ -593,7 +593,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      *
      * @return true when alternating row colors should be used, false otherwise.
      */
-    protected boolean useAlternateRowColors() {
+    private boolean useAlternateRowColors() {
         return true;
     }
 
@@ -633,7 +633,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         toolbarInstaller.install(getContentPane(), tabbedPane, commonToolBar);
     }
 
-    protected void createCommonToolBar() {
+    private void createCommonToolBar() {
         createToolbarBuilder().createCommonToolBar();
     }
 
@@ -693,7 +693,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         setupNotificationCenter();
     }
 
-    protected void closeNotificationCenter() {
+    private void closeNotificationCenter() {
         NotificationService.INSTANCE.close();
     }
 
@@ -720,7 +720,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         }
     }
 
-    protected void createMenuBar() {
+    private void createMenuBar() {
         setJMenuBar(createMenuBuilder().createMenuBar());
         createDarkModeMenuAction();
     }
@@ -854,7 +854,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         programUpdateCoordinator.close();
     }
 
-    protected JPanel createTabFilme(@NonNull Daten daten) {
+    private JPanel createTabFilme(@NonNull Daten daten) {
         return new GuiFilme(daten, this, toggleBlacklistAction, editBlacklistAction, showFilmInformationAction);
     }
 
@@ -862,7 +862,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         return showLuceneTutorialAction;
     }
 
-    protected JPanel createTabDownloads(@NonNull Daten daten) {
+    private JPanel createTabDownloads(@NonNull Daten daten) {
         return new GuiDownloads(daten, this, showFilmInformationAction);
     }
 
@@ -982,7 +982,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     /**
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
      */
-    protected void installMenuTabSwitchListener() {
+    private void installMenuTabSwitchListener() {
         menuTabSwitchController.initialize();
     }
 
