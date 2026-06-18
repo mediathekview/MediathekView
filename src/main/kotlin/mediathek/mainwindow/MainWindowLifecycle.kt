@@ -19,6 +19,7 @@
 package mediathek.mainwindow
 
 import mediathek.config.Daten
+import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.tool.MessageBus
 import java.beans.PropertyChangeListener
@@ -29,10 +30,16 @@ class MainWindowLifecycle(
     private val daten: Daten,
     private val dialogOwner: MainWindowHandle,
     private val lookAndFeelListener: PropertyChangeListener,
+    private val filmlistProgressListener: ListenerFilmeLaden,
+    private val filmListListener: ListenerFilmeLaden,
+    private val filmListLoadHost: FilmListLoadHost,
+    private val zeitraumFilterValueProvider: () -> String?,
 ) : AutoCloseable {
     private var messageBusSubscribed = false
     private var downloadDialogOwnerRegistered = false
     private var lookAndFeelListenerRegistered = false
+    private var filmlistProgressListenerRegistered = false
+    private var filmListListenersRegistered = false
 
     fun registerLookAndFeelListener() {
         if (lookAndFeelListenerRegistered) {
@@ -41,6 +48,26 @@ class MainWindowLifecycle(
 
         UIManager.addPropertyChangeListener(lookAndFeelListener)
         lookAndFeelListenerRegistered = true
+    }
+
+    fun registerFilmlistProgressListener() {
+        if (filmlistProgressListenerRegistered) {
+            return
+        }
+
+        daten.filmeLaden.addAdListener(filmlistProgressListener)
+        filmlistProgressListenerRegistered = true
+    }
+
+    fun registerFilmListListeners() {
+        if (filmListListenersRegistered) {
+            return
+        }
+
+        daten.listeBlacklist.setZeitraumFilterValueProvider(zeitraumFilterValueProvider)
+        daten.filmeLaden.setUiHost(filmListLoadHost)
+        daten.filmeLaden.addAdListener(filmListListener)
+        filmListListenersRegistered = true
     }
 
     fun start() {
@@ -72,6 +99,8 @@ class MainWindowLifecycle(
     override fun close() {
         unsubscribeFromMessageBus()
         unregisterDownloadDialogOwner()
+        unregisterFilmListListeners()
+        unregisterFilmlistProgressListener()
         unregisterLookAndFeelListener()
     }
 
@@ -91,6 +120,26 @@ class MainWindowLifecycle(
 
         daten.downloadStartCoordinator.setDialogOwner(null)
         downloadDialogOwnerRegistered = false
+    }
+
+    private fun unregisterFilmListListeners() {
+        if (!filmListListenersRegistered) {
+            return
+        }
+
+        daten.listeBlacklist.setZeitraumFilterValueProvider(null)
+        daten.filmeLaden.setUiHost(null)
+        daten.filmeLaden.removeAdListener(filmListListener)
+        filmListListenersRegistered = false
+    }
+
+    private fun unregisterFilmlistProgressListener() {
+        if (!filmlistProgressListenerRegistered) {
+            return
+        }
+
+        daten.filmeLaden.removeAdListener(filmlistProgressListener)
+        filmlistProgressListenerRegistered = false
     }
 
     private fun unregisterLookAndFeelListener() {

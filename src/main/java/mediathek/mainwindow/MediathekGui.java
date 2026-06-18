@@ -155,7 +155,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
     private boolean menuTabSwitchListenersInstalled;
-    private final MainWindowLifecycle mainWindowLifecycle = new MainWindowLifecycle(this, daten, this, lookAndFeelListener);
+    private final MainWindowLifecycle mainWindowLifecycle;
 
     public MediathekGui() {
         this(GenericNotificationCenter::new);
@@ -186,6 +186,16 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 () -> loadFilmListAction,
                 () -> daten.allesSpeichern(),
                 this::setupAutomaticFilmlistReload
+        );
+        mainWindowLifecycle = new MainWindowLifecycle(
+                this,
+                daten,
+                this,
+                lookAndFeelListener,
+                filmlistDownloadProgressListener,
+                filmListListener,
+                this,
+                this::getCurrentZeitraumFilterValue
         );
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
         mainWindowController = createMainWindowController();
@@ -228,7 +238,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         createStatusBar();
 
         SplashScreenLifecycle.update(UIProgressState.SETUP_FILM_LISTENERS);
-        setupFilmListListener();
+        mainWindowLifecycle.registerFilmListListeners();
 
         SplashScreenLifecycle.update(UIProgressState.LOAD_TABS);
         initTabs();
@@ -287,7 +297,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     public void dispose() {
         if (disposed.compareAndSet(false, true)) {
             mainWindowLifecycle.close();
-            removeFilmListListeners();
             closeStartupFilmlistLoader();
             closeFilmlistDownloadProgress();
             closeAutomaticFilmlistUpdate();
@@ -660,11 +669,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      */
     private void createStatusBar() {
         statusBarController.createStatusBar();
-        createFilmlistDownloadProgress();
-    }
-
-    private void createFilmlistDownloadProgress() {
-        daten.getFilmeLaden().addAdListener(filmlistDownloadProgressListener);
+        mainWindowLifecycle.registerFilmlistProgressListener();
     }
 
     @Handler
@@ -748,19 +753,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             restoreSizeFromConfig();
 
         SwingUtilities.invokeLater(() -> addComponentListener(new WindowLocationConfigSaverListener()));
-    }
-
-    private void setupFilmListListener() {
-        daten.getListeBlacklist().setZeitraumFilterValueProvider(this::getCurrentZeitraumFilterValue);
-        daten.getFilmeLaden().setUiHost(this);
-        daten.getFilmeLaden().addAdListener(filmListListener);
-    }
-
-    private void removeFilmListListeners() {
-        daten.getListeBlacklist().setZeitraumFilterValueProvider(null);
-        daten.getFilmeLaden().setUiHost(null);
-        daten.getFilmeLaden().removeAdListener(filmlistDownloadProgressListener);
-        daten.getFilmeLaden().removeAdListener(filmListListener);
     }
 
     private void closeStartupFilmlistLoader() {
