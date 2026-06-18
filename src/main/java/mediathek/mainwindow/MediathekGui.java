@@ -973,7 +973,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         filmlistLoadCoordinator.performFilmListLoadOperation(manualMode);
     }
 
-    public DialogEinstellungen getSettingsDialog() {
+    private DialogEinstellungen getSettingsDialog() {
         return dialogCoordinator.getSettingsDialog();
     }
 
