@@ -48,7 +48,6 @@ import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationService;
 import mediathek.tool.timer.TimerPool;
 import mediathek.update.AutomaticFilmlistUpdate;
-import mediathek.update.ProgramUpdateCheck;
 import mediathek.update.ProgramUpdateHost;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
@@ -137,6 +136,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final DownloadProgressIndicator downloadProgressIndicator;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
+    private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
+            new MainWindowProgramUpdateCoordinator(this);
     private final MainWindowStatusBarController statusBarController =
             new MainWindowStatusBarController(this, this::runOnEventDispatchThreadAndWait);
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
@@ -146,7 +147,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private GuiDownloads tabDownloads;
     private FilmInfoDialog filmInfo;
     private DialogEinstellungen dialogEinstellungen;
-    private ProgramUpdateCheck programUpdateChecker;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
@@ -280,7 +280,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void setupAutomaticUpdateCheck() {
-        setupUpdateCheck(ApplicationConfiguration.getInstance().getAutomaticUpdateCheck());
+        programUpdateCoordinator.startFromConfiguration();
     }
 
     @Override
@@ -290,7 +290,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             closeStartupFilmlistLoader();
             closeFilmlistDownloadProgress();
             closeAutomaticFilmlistUpdate();
-            endProgramUpdateChecker();
+            closeProgramUpdateCoordinator();
             closeSystemTray();
             closeNotificationCenter();
             downloadProgressIndicator.close();
@@ -746,28 +746,11 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     @Handler
     private void handleUpdateStateChanged(UpdateStateChangedEvent e) {
-        SwingUtilities.invokeLater(() -> setupUpdateCheck(e.isActive()));
+        SwingUtilities.invokeLater(() -> programUpdateCoordinator.update(e.isActive()));
     }
 
-    /**
-     * This creates a repeating update check every 24 hours.
-     */
-    private void setupUpdateCheck(boolean newState) {
-        if (newState) {
-            endProgramUpdateChecker();
-            programUpdateChecker = new ProgramUpdateCheck(this);
-            programUpdateChecker.start();
-        }
-        else {
-            endProgramUpdateChecker();
-        }
-    }
-
-    private void endProgramUpdateChecker() {
-        if (programUpdateChecker != null) {
-            programUpdateChecker.close();
-            programUpdateChecker = null;
-        }
+    private void closeProgramUpdateCoordinator() {
+        programUpdateCoordinator.close();
     }
 
     public void initializeSystemTray() {
@@ -1094,7 +1077,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 computerShutdown,
                 resetSettingsOnQuit,
                 this::closeAutomaticFilmlistUpdate,
-                this::endProgramUpdateChecker,
+                this::closeProgramUpdateCoordinator,
                 this::closeSystemTray,
                 this::closeNotificationCenter,
                 this::shutdownTimerPool,
