@@ -80,7 +80,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost {
+public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost {
 
     protected static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
@@ -335,6 +335,25 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     @Override
     public JFrame ownerFrame() {
         return this;
+    }
+
+    @Override
+    public void showMainWindow() {
+        setVisible(true);
+    }
+
+    @Override
+    public void toggleMainWindowVisibility() {
+        setVisible(!isVisible());
+        if (isVisible()) {
+            toFront();
+            requestFocusInWindow();
+        }
+    }
+
+    @Override
+    public void refreshSystemTray() {
+        initializeSystemTray();
     }
 
     public int getFilmTableRowCount() {
@@ -898,7 +917,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     public void initializeSystemTray() {
         final var useTray = ApplicationConfiguration.getInstance().getUseTray();
         if (tray == null && useTray) {
-            tray = new MVTray().systemTray();
+            tray = new MVTray(this).systemTray();
         }
         else if (tray != null && !useTray) {
             tray.beenden();
@@ -1133,6 +1152,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         resetSettingsOnQuit = true;
     }
 
+    @Override
     public boolean quitApplication() {
         return quitApplication(false);
     }

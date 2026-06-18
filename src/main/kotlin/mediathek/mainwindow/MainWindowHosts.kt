@@ -38,3 +38,13 @@ interface FilmBookmarkHost : MainWindowHandle {
 interface DownloadControlHost {
     fun stopAllWaitingDownloads()
 }
+
+interface TrayHost {
+    fun showMainWindow()
+
+    fun toggleMainWindowVisibility()
+
+    fun refreshSystemTray()
+
+    fun quitApplication(): Boolean
+}

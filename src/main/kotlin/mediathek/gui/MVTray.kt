@@ -12,7 +12,7 @@ import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.TimerEvent
 import mediathek.gui.messages.TrayIconEvent
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.TrayHost
 import mediathek.tool.GetIcon
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.MessageType
@@ -28,7 +28,9 @@ import java.awt.TrayIcon
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 
-class MVTray {
+class MVTray(
+    private val host: TrayHost,
+) {
     private enum class TrayState {
         IDLE,
         DOWNLOADING,
@@ -118,16 +120,16 @@ class MVTray {
 
         val itemRemoveTray = MenuItem("Trayicon ausblenden")
         itemRemoveTray.addActionListener {
-            MediathekGui.ui().isVisible = true
+            host.showMainWindow()
             ApplicationConfiguration.getInstance().useTray = false
-            MediathekGui.ui().initializeSystemTray()
+            host.refreshSystemTray()
             MessageBus.messageBus.publishAsync(TrayIconEvent())
         }
         popup.add(itemRemoveTray)
 
         popup.addSeparator()
         val itemBeenden = MenuItem("Programm beenden")
-        itemBeenden.addActionListener { MediathekGui.ui().quitApplication() }
+        itemBeenden.addActionListener { host.quitApplication() }
         popup.add(itemBeenden)
 
         newTrayIcon.popupMenu = popup
@@ -149,12 +151,7 @@ class MVTray {
         currentTrayIcon.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
                 if (e.button == MouseEvent.BUTTON1 && e.clickCount == 1) {
-                    val ui = MediathekGui.ui()
-                    ui.isVisible = !ui.isVisible
-                    if (ui.isVisible) {
-                        ui.toFront()
-                        ui.requestFocusInWindow()
-                    }
+                    host.toggleMainWindowVisibility()
                 }
             }
         })
