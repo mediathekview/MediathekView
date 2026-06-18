@@ -21,7 +21,6 @@ package mediathek.mainwindow
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.InstallTabSwitchListenerEvent
 import java.awt.Component
-import java.util.function.BooleanSupplier
 import java.util.function.Supplier
 import javax.swing.JMenu
 import javax.swing.JTabbedPane
@@ -33,14 +32,16 @@ class MainWindowMenuTabSwitchController(
     private val downloadMenu: JMenu,
     private val filmTab: Supplier<out Component?>,
     private val downloadTab: Supplier<out Component?>,
-    private val automaticSwitchingSupported: BooleanSupplier,
+    private val automaticSwitchingSupported: Boolean,
 ) {
     private var filmMenuListener: MenuTabSwitchListener? = null
     private var downloadMenuListener: MenuTabSwitchListener? = null
     private var listenersInstalled = false
 
+    fun supportsAutomaticSwitching(): Boolean = automaticSwitchingSupported
+
     fun initialize() {
-        if (!automaticSwitchingSupported.asBoolean) {
+        if (!automaticSwitchingSupported) {
             return
         }
 
@@ -57,7 +58,7 @@ class MainWindowMenuTabSwitchController(
     }
 
     fun handleInstallTabSwitchListenerEvent(event: InstallTabSwitchListenerEvent) {
-        if (!automaticSwitchingSupported.asBoolean) {
+        if (!automaticSwitchingSupported) {
             return
         }
 

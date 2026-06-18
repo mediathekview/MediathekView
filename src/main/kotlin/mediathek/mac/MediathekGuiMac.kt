@@ -55,6 +55,7 @@ class MediathekGuiMac : MediathekGui(
     MacMainWindowToolbarInstaller,
     MainWindowTabPlacementController(false),
     MacMainWindowMenuPolicy,
+    false,
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -149,8 +150,6 @@ class MediathekGuiMac : MediathekGui(
     override fun initializeSystemTray() {
         //we don´t use it on macOS
     }
-
-    override fun supportsAutomaticMenuTabSwitching(): Boolean = false
 
     override fun initMenus() {
         super.initMenus()

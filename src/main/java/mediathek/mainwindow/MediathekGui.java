@@ -126,14 +126,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowTabRegistry tabRegistry = new MainWindowTabRegistry(tabbedPane);
     private GuiFilme tabFilme;
     private GuiDownloads tabDownloads;
-    private final MainWindowMenuTabSwitchController menuTabSwitchController = new MainWindowMenuTabSwitchController(
-            tabbedPane,
-            jMenuFilme,
-            jMenuDownload,
-            () -> tabFilme,
-            () -> tabDownloads,
-            this::supportsAutomaticMenuTabSwitching
-    );
+    private final MainWindowMenuTabSwitchController menuTabSwitchController;
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final ManageAboAction manageAboAction = new ManageAboAction(this);
@@ -202,7 +195,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
                 DEFAULT_TOOLBAR_INSTALLER,
                 new MainWindowTabPlacementController(true),
-                DefaultMainWindowMenuPolicy.INSTANCE
+                DefaultMainWindowMenuPolicy.INSTANCE,
+                true
         );
     }
 
@@ -219,7 +213,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
                 toolbarInstaller,
                 new MainWindowTabPlacementController(true),
-                DefaultMainWindowMenuPolicy.INSTANCE
+                DefaultMainWindowMenuPolicy.INSTANCE,
+                true
         );
     }
 
@@ -229,7 +224,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowToolbarInstaller toolbarInstaller,
             MainWindowTabPlacementController tabPlacementController,
-            MainWindowMenuPolicy menuPolicy
+            MainWindowMenuPolicy menuPolicy,
+            boolean automaticMenuTabSwitchingSupported
     ) {
         this(
                 notificationCenterFactory,
@@ -238,7 +234,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
                 toolbarInstaller,
                 tabPlacementController,
-                menuPolicy
+                menuPolicy,
+                automaticMenuTabSwitchingSupported
         );
     }
 
@@ -255,7 +252,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 darkModeActionPlacement,
                 DEFAULT_TOOLBAR_INSTALLER,
                 new MainWindowTabPlacementController(true),
-                DefaultMainWindowMenuPolicy.INSTANCE
+                DefaultMainWindowMenuPolicy.INSTANCE,
+                true
         );
     }
 
@@ -266,7 +264,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowDarkModeActionPlacement darkModeActionPlacement,
             MainWindowToolbarInstaller toolbarInstaller,
             MainWindowTabPlacementController tabPlacementController,
-            MainWindowMenuPolicy menuPolicy
+            MainWindowMenuPolicy menuPolicy,
+            boolean automaticMenuTabSwitchingSupported
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
@@ -274,6 +273,14 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         this.toolbarInstaller = Objects.requireNonNull(toolbarInstaller);
         this.tabPlacementController = Objects.requireNonNull(tabPlacementController);
         this.menuPolicy = Objects.requireNonNull(menuPolicy);
+        menuTabSwitchController = new MainWindowMenuTabSwitchController(
+                tabbedPane,
+                jMenuFilme,
+                jMenuDownload,
+                () -> tabFilme,
+                () -> tabDownloads,
+                automaticMenuTabSwitchingSupported
+        );
         this.downloadProgressIndicator = Objects.requireNonNull(
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
@@ -491,8 +498,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         }
     }
 
-    public boolean supportsAutomaticMenuTabSwitching() {
-        return true;
+    public final boolean supportsAutomaticMenuTabSwitching() {
+        return menuTabSwitchController.supportsAutomaticSwitching();
     }
 
     private void resetTabPlacement() {
