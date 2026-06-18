@@ -25,10 +25,10 @@ import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
 import java.util.*
+import javax.swing.JFrame
 import javax.swing.JScrollPane
 
 class FilmTableReloadHostAdapter(
@@ -70,7 +70,7 @@ class TableContextMenuHostAdapter(
     private val startFilmWithPsetAction: (DatenPset) -> Unit,
     private val setSelectionUpdatesSuspendedAction: (Boolean) -> Unit,
     private val showFilmInfoAction: () -> Unit,
-    private val gui: MediathekGui,
+    private val ownerFrame: JFrame,
     private val actionsProvider: () -> FilmUiActions,
 ) : TableContextMenuHandler.Host {
     override fun table(): MVFilmTable = tableProvider()
@@ -99,7 +99,7 @@ class TableContextMenuHostAdapter(
         showFilmInfoAction()
     }
 
-    override fun gui(): MediathekGui = gui
+    override fun ownerFrame(): JFrame = ownerFrame
 
     override fun actions(): FilmUiActions = actionsProvider()
 }
