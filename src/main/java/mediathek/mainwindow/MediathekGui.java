@@ -155,7 +155,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
     private boolean menuTabSwitchListenersInstalled;
-    private boolean messageBusSubscribed;
+    private final MainWindowLifecycle mainWindowLifecycle = new MainWindowLifecycle(this);
 
     public MediathekGui() {
         this(GenericNotificationCenter::new);
@@ -250,7 +250,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void startMainWindowRuntime() {
         daten.getDownloadStartCoordinator().setDialogOwner(this);
-        subscribeTableModelChangeEvent();
+        mainWindowLifecycle.subscribeToMessageBus();
         setupTaskbarMenuLater();
         setupSystemTray();
         setApplicationWindowSizeLater();
@@ -287,7 +287,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     @Override
     public void dispose() {
         if (disposed.compareAndSet(false, true)) {
-            unsubscribeFromMessageBus();
+            mainWindowLifecycle.close();
             daten.getDownloadStartCoordinator().setDialogOwner(null);
             removeFilmListListeners();
             closeStartupFilmlistLoader();
@@ -413,23 +413,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             showBandwidthUsageAction.actionPerformed(null);
         }
         logger.trace("Finished loading bandwidth monitor");
-    }
-
-    private void subscribeTableModelChangeEvent() {
-        var messageBus = MessageBus.getMessageBus();
-        //send before subscribing
-        messageBus.publishAsync(new TableModelChangeEvent(true, false));
-        messageBus.subscribe(this);
-        messageBusSubscribed = true;
-    }
-
-    private void unsubscribeFromMessageBus() {
-        if (!messageBusSubscribed) {
-            return;
-        }
-
-        MessageBus.getMessageBus().unsubscribe(this);
-        messageBusSubscribed = false;
     }
 
     private void mapFilmUrlCopyCommands() {
