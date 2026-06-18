@@ -33,10 +33,14 @@ import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.progress.DownloadProgressIndicator;
 import mediathek.gui.progress.NoDownloadProgressIndicator;
+import mediathek.gui.tabs.tab_film.FilmDownloadStarterKt;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
+import mediathek.gui.tabs.tab_online_search.OnlineSearchFilmAdapter;
+import mediathek.gui.tabs.tab_online_search.OnlineSearchHost;
 import mediathek.gui.tabs.tab_online_search.OnlineSearchPanel;
+import mediathek.gui.tabs.tab_online_search.OnlineSearchResult;
 import mediathek.logging.LogDialog;
 import mediathek.shutdown.ComputerShutdown;
 import mediathek.swing.SwingDispatch;
@@ -59,6 +63,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -95,7 +100,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         }
 
         @Override
-        public void install(Container contentPane, JTabbedPane tabbedPane, JToolBar commonToolBar) {
+        public void install(@NonNull Container contentPane, JTabbedPane tabbedPane, @NonNull JToolBar commonToolBar) {
             tabbedPane.putClientProperty(MainWindowTabPlacementController.TRAILING_COMPONENT_KEY, commonToolBar);
             tabbedPane.putClientProperty(MainWindowTabPlacementController.TAB_ROTATION_KEY, "auto");
         }
@@ -137,7 +142,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel(this);
     private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams);
-    private final OnlineSearchPanel tabOnlineSearch = new OnlineSearchPanel(this);
+    private final OnlineSearchPanel tabOnlineSearch = new OnlineSearchPanel(createOnlineSearchHost());
     private final ToggleOnlineSearchTabAction toggleOnlineSearchTabAction = new ToggleOnlineSearchTabAction(tabbedPane, tabOnlineSearch);
     private final AudioRepository audiothekRepository = new AudioRepository();
     private final AudiothekPanel tabAudiothek = new AudiothekPanel(audiothekRepository, this);
@@ -151,7 +156,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowTabPlacementController tabPlacementController;
     private final MainWindowMenuPolicy menuPolicy;
     private final MainWindowScrollBarConfigurator scrollBarConfigurator;
-    private final MainWindowSystemTrayController systemTrayController;
     private final boolean disableF10MenuShortcut;
     private final Consumer<MediathekGui> afterMenusInitialized;
     private final MainWindowController mainWindowController;
@@ -284,7 +288,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         this.tabPlacementController = Objects.requireNonNull(tabPlacementController);
         this.menuPolicy = Objects.requireNonNull(menuPolicy);
         this.scrollBarConfigurator = Objects.requireNonNull(scrollBarConfigurator);
-        this.systemTrayController = Objects.requireNonNull(systemTrayController);
         this.disableF10MenuShortcut = disableF10MenuShortcut;
         this.afterMenusInitialized = Objects.requireNonNull(afterMenusInitialized);
         menuTabSwitchController = new MainWindowMenuTabSwitchController(
@@ -329,7 +332,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 this,
                 loadFilmListAction,
                 this::setupSystemTray,
-                systemTrayController
+                Objects.requireNonNull(systemTrayController)
         );
         mainWindowController = createMainWindowController();
     }
@@ -813,6 +816,38 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void closeProgramUpdateCoordinator() {
         programUpdateCoordinator.close();
+    }
+
+    private OnlineSearchHost createOnlineSearchHost() {
+        return new OnlineSearchHost() {
+            @Override
+            public void updateCurrentResult(OnlineSearchResult result) {
+                getFilmInfoDialog().updateCurrentFilm(result == null ? null : OnlineSearchFilmAdapter.INSTANCE.toDatenFilm(result));
+            }
+
+            @Override
+            public void showFilmInfo(@NonNull OnlineSearchResult result) {
+                updateCurrentResult(result);
+                getFilmInfoDialog().showInfo();
+            }
+
+            @Override
+            public void startDownload(@NonNull List<OnlineSearchResult> results) {
+                FilmDownloadStarterKt.startDownloads(
+                        MediathekGui.this,
+                        results.stream()
+                                .map(OnlineSearchFilmAdapter.INSTANCE::toDatenFilm)
+                                .toList(),
+                        null,
+                        null
+                );
+            }
+
+            @Override
+            public void playResult(@NonNull OnlineSearchResult result) {
+                UrlHyperlinkAction.openURL(result.getNormalQualityUrl());
+            }
+        };
     }
 
     private JPanel createTabFilme(@NonNull Daten daten) {
