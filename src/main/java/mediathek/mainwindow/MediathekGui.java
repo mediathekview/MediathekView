@@ -298,7 +298,9 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         this.downloadProgressIndicator = Objects.requireNonNull(
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
-        loadFilmListAction = new LoadFilmListAction(this);
+        loadFilmListAction = new LoadFilmListAction(
+                () -> filmlistLoadCoordinator.performFilmListLoadOperation(false)
+        );
         showFilmInformationAction = new ShowFilmInformationAction(this::getFilmInfoDialog);
         PropertyChangeListener lookAndFeelListener = this::handleLookAndFeelChange;
         filmlistReloadCoordinator = new MainWindowFilmlistReloadCoordinator(
@@ -970,10 +972,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         installMenuTabSwitchListener();
         createMenuBuilder().initializeMenus();
         afterMenusInitialized.accept(this);
-    }
-
-    public void performFilmListLoadOperation(boolean manualMode) {
-        filmlistLoadCoordinator.performFilmListLoadOperation(manualMode);
     }
 
     private DialogEinstellungen getSettingsDialog() {

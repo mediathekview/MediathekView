@@ -1,6 +1,5 @@
 package mediathek.gui.actions
 
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import java.awt.event.ActionEvent
@@ -9,7 +8,7 @@ import javax.swing.AbstractAction
 import javax.swing.KeyStroke
 
 class LoadFilmListAction(
-    private val mediathekGui: MediathekGui,
+    private val loadFilmList: Runnable,
 ) : AbstractAction() {
     init {
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0))
@@ -19,6 +18,6 @@ class LoadFilmListAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        mediathekGui.performFilmListLoadOperation(false)
+        loadFilmList.run()
     }
 }
