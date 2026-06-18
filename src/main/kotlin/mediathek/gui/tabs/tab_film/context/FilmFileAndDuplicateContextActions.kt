@@ -25,7 +25,6 @@ import mediathek.config.StandardLocations
 import mediathek.daten.DatenFilm
 import mediathek.filmlisten.writer.FilmListWriter
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FileDialogs
 import mediathek.tool.MVInfoFile
 import org.apache.logging.log4j.LogManager
@@ -58,7 +57,7 @@ class FilmFileAndDuplicateContextActions(
     private fun createInfoFileMenuItem(film: DatenFilm): JMenuItem =
         JMenuItem("Infodatei erzeugen...").apply {
             addActionListener {
-                val file = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infodatei speichern", "")
+                val file = FileDialogs.chooseSaveFileLocation(host.gui(), "Infodatei speichern", "")
                     ?: return@addActionListener
 
                 isEnabled = false
@@ -87,7 +86,7 @@ class FilmFileAndDuplicateContextActions(
     private fun createDuplicateDetailsMenuItem(film: DatenFilm): JMenuItem =
         JMenuItem("Zusammengehörige Filme anzeigen...").apply {
             addActionListener {
-                DuplicateFilmDetailsDialog(MediathekGui.ui(), film).isVisible = true
+                DuplicateFilmDetailsDialog(host.gui(), film).isVisible = true
             }
         }
 

@@ -255,7 +255,7 @@ class GuiFilme(
         val markFilmAsUnseenAction =
             MarkFilmAsUnseenAction { selectionController.getSelectedFilms() }
         val downloadSubtitleAction =
-            DownloadSubtitleAction { selectionController.getCurrentlySelectedFilm() }
+            DownloadSubtitleAction(mediathekGui) { selectionController.getCurrentlySelectedFilm() }
         val filmUiActions = FilmUiActions(
             playFilmAction,
             saveFilmAction,
