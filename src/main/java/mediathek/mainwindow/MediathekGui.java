@@ -47,7 +47,6 @@ import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
 import mediathek.tool.notification.NotificationService;
 import mediathek.tool.timer.TimerPool;
-import mediathek.update.AutomaticFilmlistUpdate;
 import mediathek.update.ProgramUpdateHost;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.lang3.SystemUtils;
@@ -145,9 +144,9 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
             new FilmlistProgressPresenter(SwingDispatch.INSTANCE, statusBarController::showProgress);
     private final ListenerFilmeLaden filmListListener;
+    private final MainWindowFilmlistReloadCoordinator filmlistReloadCoordinator;
     private GuiFilme tabFilme;
     private GuiDownloads tabDownloads;
-    private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
     private boolean menuTabSwitchListenersInstalled;
@@ -177,11 +176,16 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         );
         loadFilmListAction = new LoadFilmListAction(this);
         showFilmInformationAction = new ShowFilmInformationAction(this::getFilmInfoDialog);
+        filmlistReloadCoordinator = new MainWindowFilmlistReloadCoordinator(
+                daten,
+                loadFilmListAction,
+                () -> performFilmListLoadOperation(false)
+        );
         filmListListener = new MainWindowFilmListListener(
                 SwingDispatch.INSTANCE,
                 () -> loadFilmListAction,
                 () -> daten.allesSpeichern(),
-                this::setupAutomaticFilmlistReload
+                filmlistReloadCoordinator::setupAutomaticFilmlistReload
         );
         mainWindowLifecycle = new MainWindowLifecycle(
                 this,
@@ -285,7 +289,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             mainWindowLifecycle.close();
             closeStartupFilmlistLoader();
             closeFilmlistDownloadProgress();
-            closeAutomaticFilmlistUpdate();
+            filmlistReloadCoordinator.close();
             closeProgramUpdateCoordinator();
             closeSystemTray();
             closeNotificationCenter();
@@ -704,26 +708,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         }
     }
 
-    /**
-     * Reload filmlist every 24h when in automatic mode.
-     */
-    private void setupAutomaticFilmlistReload() {
-        closeAutomaticFilmlistUpdate();
-
-        final Runnable performUpdate = () -> {
-            if (FilmListUpdateType.AUTOMATIC.isConfigured()) {
-                //if downloads are running, don´t update
-                if (daten.getListeDownloads().unfinishedDownloads() == 0) {
-                    loadFilmListAction.setEnabled(false);
-                    performFilmListLoadOperation(false);
-                }
-            }
-        };
-
-        automaticFilmlistUpdate = new AutomaticFilmlistUpdate(performUpdate);
-        automaticFilmlistUpdate.start();
-    }
-
     @Handler
     private void handleUpdateStateChanged(UpdateStateChangedEvent e) {
         SwingUtilities.invokeLater(() -> programUpdateCoordinator.update(e.isActive()));
@@ -1054,7 +1038,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 tabRegistry,
                 computerShutdown,
                 resetSettingsOnQuit,
-                this::closeAutomaticFilmlistUpdate,
+                filmlistReloadCoordinator::close,
                 this::closeProgramUpdateCoordinator,
                 this::closeSystemTray,
                 this::closeNotificationCenter,
@@ -1066,13 +1050,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void closeSystemTray() {
         platformIntegration.closeSystemTray();
-    }
-
-    private void closeAutomaticFilmlistUpdate() {
-        if (automaticFilmlistUpdate != null) {
-            automaticFilmlistUpdate.close();
-            automaticFilmlistUpdate = null;
-        }
     }
 
     private void shutdownTimerPool() {
