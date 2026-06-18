@@ -330,6 +330,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         searchProgramUpdateAction = new SearchProgramUpdateAction(this);
         platformIntegration = new MainWindowPlatformIntegration(
                 this,
+                this,
                 loadFilmListAction,
                 this::setupSystemTray,
                 Objects.requireNonNull(systemTrayController)

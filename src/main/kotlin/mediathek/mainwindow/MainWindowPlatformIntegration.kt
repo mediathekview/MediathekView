@@ -26,10 +26,12 @@ import java.awt.Taskbar
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.Action
+import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
 class MainWindowPlatformIntegration(
-    private val owner: MediathekGui,
+    private val ownerFrame: JFrame,
+    private val trayHost: TrayHost,
     private val loadFilmListAction: Action,
     private val setupSystemTray: Runnable,
     private val systemTrayController: MainWindowSystemTrayController,
@@ -53,12 +55,12 @@ class MainWindowPlatformIntegration(
         SwingUtilities.invokeLater {
             initializeSystemTray()
 
-            owner.addWindowListener(object : WindowAdapter() {
+            ownerFrame.addWindowListener(object : WindowAdapter() {
                 override fun windowClosing(evt: WindowEvent) {
                     if (tray != null && ApplicationConfiguration.getInstance().useTray) {
-                        owner.isVisible = false
+                        ownerFrame.isVisible = false
                     } else {
-                        owner.quitApplication()
+                        trayHost.quitApplication()
                     }
                 }
             })
@@ -68,7 +70,7 @@ class MainWindowPlatformIntegration(
     fun initializeSystemTray() {
         val useTray = ApplicationConfiguration.getInstance().useTray
         if (tray == null && useTray) {
-            tray = systemTrayController.initialize(owner)
+            tray = systemTrayController.initialize(trayHost)
         } else if (tray != null && !useTray) {
             closeSystemTray()
         }
@@ -80,7 +82,7 @@ class MainWindowPlatformIntegration(
     }
 
     fun setupRavenNotifications() {
-        Notifications.getInstance().setJFrame(owner)
+        Notifications.getInstance().setJFrame(ownerFrame)
     }
 
     private fun setupTaskbarMenu() {
