@@ -47,6 +47,14 @@ interface LookAndFeelHost {
     fun setupAlternatingRowColors()
 }
 
+interface SettingsDialogHost : MainWindowHandle, LookAndFeelHost {
+    fun repaintMainWindow()
+
+    fun refreshSystemTray()
+
+    fun supportsAutomaticMenuTabSwitching(): Boolean
+}
+
 interface TrayHost : MainWindowQuitHost {
     fun showMainWindow()
 

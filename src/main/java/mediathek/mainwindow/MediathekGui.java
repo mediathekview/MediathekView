@@ -80,7 +80,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost, LookAndFeelHost {
+public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost, SettingsDialogHost {
 
     protected static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
@@ -354,6 +354,11 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     @Override
     public void refreshSystemTray() {
         initializeSystemTray();
+    }
+
+    @Override
+    public void repaintMainWindow() {
+        repaint();
     }
 
     public int getFilmTableRowCount() {
@@ -1142,7 +1147,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     public DialogEinstellungen getSettingsDialog() {
         if (dialogEinstellungen == null) {
-            dialogEinstellungen = new DialogEinstellungen();
+            dialogEinstellungen = new DialogEinstellungen(this);
         }
 
         return dialogEinstellungen;
