@@ -150,6 +150,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowTabPlacementController tabPlacementController;
     private final MainWindowMenuPolicy menuPolicy;
     private final MainWindowScrollBarConfigurator scrollBarConfigurator;
+    private final boolean disableF10MenuShortcut;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -198,7 +199,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 new MainWindowTabPlacementController(true),
                 DefaultMainWindowMenuPolicy.INSTANCE,
                 true,
-                DefaultMainWindowScrollBarConfigurator.INSTANCE
+                DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                true
         );
     }
 
@@ -217,7 +219,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 new MainWindowTabPlacementController(true),
                 DefaultMainWindowMenuPolicy.INSTANCE,
                 true,
-                DefaultMainWindowScrollBarConfigurator.INSTANCE
+                DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                true
         );
     }
 
@@ -229,7 +232,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowTabPlacementController tabPlacementController,
             MainWindowMenuPolicy menuPolicy,
             boolean automaticMenuTabSwitchingSupported,
-            MainWindowScrollBarConfigurator scrollBarConfigurator
+            MainWindowScrollBarConfigurator scrollBarConfigurator,
+            boolean disableF10MenuShortcut
     ) {
         this(
                 notificationCenterFactory,
@@ -240,7 +244,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 tabPlacementController,
                 menuPolicy,
                 automaticMenuTabSwitchingSupported,
-                scrollBarConfigurator
+                scrollBarConfigurator,
+                disableF10MenuShortcut
         );
     }
 
@@ -259,7 +264,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 new MainWindowTabPlacementController(true),
                 DefaultMainWindowMenuPolicy.INSTANCE,
                 true,
-                DefaultMainWindowScrollBarConfigurator.INSTANCE
+                DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                true
         );
     }
 
@@ -272,7 +278,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowTabPlacementController tabPlacementController,
             MainWindowMenuPolicy menuPolicy,
             boolean automaticMenuTabSwitchingSupported,
-            MainWindowScrollBarConfigurator scrollBarConfigurator
+            MainWindowScrollBarConfigurator scrollBarConfigurator,
+            boolean disableF10MenuShortcut
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
@@ -281,6 +288,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         this.tabPlacementController = Objects.requireNonNull(tabPlacementController);
         this.menuPolicy = Objects.requireNonNull(menuPolicy);
         this.scrollBarConfigurator = Objects.requireNonNull(scrollBarConfigurator);
+        this.disableF10MenuShortcut = disableF10MenuShortcut;
         menuTabSwitchController = new MainWindowMenuTabSwitchController(
                 tabbedPane,
                 jMenuFilme,
@@ -666,14 +674,10 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void configureMenuKeyboardShortcuts() {
-        if (shouldDisableF10MenuShortcut()) {
+        if (disableF10MenuShortcut) {
             var im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), DISABLED_ACTION_KEY);
         }
-    }
-
-    protected boolean shouldDisableF10MenuShortcut() {
-        return true;
     }
 
     protected void createMenuBar() {

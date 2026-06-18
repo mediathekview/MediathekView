@@ -58,6 +58,7 @@ class MediathekGuiMac : MediathekGui(
     MacMainWindowMenuPolicy,
     false,
     NoOpMainWindowScrollBarConfigurator,
+    false,
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -72,8 +73,6 @@ class MediathekGuiMac : MediathekGui(
         architectureCheckScope.cancel()
         super.dispose()
     }
-
-    override fun shouldDisableF10MenuShortcut(): Boolean = false
 
     @Throws(Throwable::class)
     private fun processorBrand(): String {
