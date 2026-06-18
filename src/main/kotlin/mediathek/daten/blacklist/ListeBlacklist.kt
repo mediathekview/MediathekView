@@ -12,7 +12,6 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
 import mediathek.gui.messages.BlacklistChangedEvent
 import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.MessageBus
 import java.util.function.Predicate
 import kotlin.time.Duration.Companion.days
@@ -28,6 +27,8 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
     private var doNotShowFutureFilms = false
     private var doNotShowGeoBlockedFilms = false
     private var blacklistIsActive = false
+    @Volatile
+    private var zeitraumFilterValueProvider: (() -> String?)? = null
 
     /**
      * The minimum length in minutes a film should have.
@@ -331,6 +332,10 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
         MessageBus.messageBus.publishAsync(BlacklistChangedEvent())
     }
 
+    fun setZeitraumFilterValueProvider(provider: (() -> String?)?) {
+        zeitraumFilterValueProvider = provider
+    }
+
     private fun filterFilmSnapshot(
         filmSnapshot: List<DatenFilm>,
         filterDuplicates: Boolean,
@@ -388,8 +393,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
 
     private fun calculateZeitraumBoundaries() {
         try {
-            val gui = MediathekGui.ui()
-            val strZeitraum = gui?.currentZeitraumFilterValue ?: ZeitraumSpinner.INFINITE_TEXT
+            val strZeitraum = zeitraumFilterValueProvider?.invoke() ?: ZeitraumSpinner.INFINITE_TEXT
             daysLowerBoundary =
                 if (strZeitraum.equals(ZeitraumSpinner.INFINITE_TEXT, ignoreCase = true)) {
                     0

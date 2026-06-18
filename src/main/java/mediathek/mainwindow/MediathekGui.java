@@ -868,11 +868,13 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void setupFilmListListener() {
+        daten.getListeBlacklist().setZeitraumFilterValueProvider(this::getCurrentZeitraumFilterValue);
         daten.getFilmeLaden().setUiHost(this);
         daten.getFilmeLaden().addAdListener(filmListListener);
     }
 
     private void removeFilmListListeners() {
+        daten.getListeBlacklist().setZeitraumFilterValueProvider(null);
         daten.getFilmeLaden().setUiHost(null);
         daten.getFilmeLaden().removeAdListener(filmlistDownloadProgressListener);
         daten.getFilmeLaden().removeAdListener(filmListListener);
