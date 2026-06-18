@@ -31,7 +31,7 @@ import javax.swing.AbstractAction
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 
-class CreateNewAboAction @JvmOverloads constructor(
+class CreateNewAboAction(
     private val listeAbo: ListeAbo,
     private val parentProvider: () -> JFrame,
 ) : AbstractAction() {
