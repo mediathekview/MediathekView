@@ -42,7 +42,6 @@ import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
 import mediathek.gui.tabs.tab_online_search.OnlineSearchPanel;
 import mediathek.logging.LogDialog;
 import mediathek.shutdown.ComputerShutdown;
-import mediathek.swing.IconOnlyButton;
 import mediathek.swing.SwingDispatch;
 import mediathek.tool.*;
 import mediathek.tool.notification.GenericNotificationCenter;
@@ -498,28 +497,22 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
     }
 
-    protected void createToggleBlacklistButton() {
-        boolean useIconWithText = ApplicationConfiguration.getInstance().getToolbarBlacklistIconWithText();
-        if (useIconWithText) {
-            commonToolBar.add(new JButton(toggleBlacklistAction));
-        }
-        else {
-            commonToolBar.add(new IconOnlyButton(toggleBlacklistAction));
-        }
+    protected void createCommonToolBar() {
+        createToolbarBuilder().createCommonToolBar();
     }
 
-    protected void createCommonToolBar() {
-        commonToolBar.add(new IconOnlyButton(loadFilmListAction));
-        commonToolBar.add(new IconOnlyButton(showFilmInformationAction));
-        createToggleBlacklistButton();
-        commonToolBar.addSeparator();
-        commonToolBar.add(new IconOnlyButton(editBlacklistAction));
-        commonToolBar.add(new IconOnlyButton(manageAboAction));
-        commonToolBar.addSeparator();
-        commonToolBar.add(new IconOnlyButton(settingsAction));
-        createDarkModeToggleButton();
-
-        setToolBarProperties();
+    private MainWindowToolbarBuilder createToolbarBuilder() {
+        return new MainWindowToolbarBuilder(
+                commonToolBar,
+                loadFilmListAction,
+                showFilmInformationAction,
+                toggleBlacklistAction,
+                editBlacklistAction,
+                manageAboAction,
+                settingsAction,
+                this::createDarkModeToggleButton,
+                this::setToolBarProperties
+        );
     }
 
     /**
