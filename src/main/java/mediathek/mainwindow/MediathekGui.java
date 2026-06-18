@@ -25,11 +25,9 @@ import mediathek.audiothek.ui.main.AudiothekPanel;
 import mediathek.config.*;
 import mediathek.config.application.ApplicationConfiguration;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.actions.*;
 import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.messages.*;
@@ -100,7 +98,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * this property keeps track how many items are currently selected in the active table view
      */
     public final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
-    private final PropertyChangeListener lookAndFeelListener = this::handleLookAndFeelChange;
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
@@ -141,13 +138,13 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             new MainWindowProgramUpdateCoordinator(this);
     private final MainWindowStatusBarController statusBarController =
             new MainWindowStatusBarController(this, this::runOnEventDispatchThreadAndWait);
+    private final MainWindowFilmlistLoadCoordinator filmlistLoadCoordinator =
+            new MainWindowFilmlistLoadCoordinator(this, daten, statusBarController);
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
             new FilmlistProgressPresenter(SwingDispatch.INSTANCE, statusBarController::showProgress);
-    private final ListenerFilmeLaden filmListListener;
     private final MainWindowFilmlistReloadCoordinator filmlistReloadCoordinator;
     private GuiFilme tabFilme;
     private GuiDownloads tabDownloads;
-    private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
     private boolean menuTabSwitchListenersInstalled;
     private final MainWindowLifecycle mainWindowLifecycle;
@@ -176,15 +173,16 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         );
         loadFilmListAction = new LoadFilmListAction(this);
         showFilmInformationAction = new ShowFilmInformationAction(this::getFilmInfoDialog);
+        PropertyChangeListener lookAndFeelListener = this::handleLookAndFeelChange;
         filmlistReloadCoordinator = new MainWindowFilmlistReloadCoordinator(
                 daten,
                 loadFilmListAction,
-                () -> performFilmListLoadOperation(false)
+                () -> filmlistLoadCoordinator.performFilmListLoadOperation(false)
         );
-        filmListListener = new MainWindowFilmListListener(
+        ListenerFilmeLaden filmListListener = new MainWindowFilmListListener(
                 SwingDispatch.INSTANCE,
                 () -> loadFilmListAction,
-                () -> daten.allesSpeichern(),
+                daten::allesSpeichern,
                 filmlistReloadCoordinator::setupAutomaticFilmlistReload
         );
         mainWindowLifecycle = new MainWindowLifecycle(
@@ -265,7 +263,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         platformIntegration.setupTaskbarMenuLater();
         platformIntegration.setupSystemTray();
         setApplicationWindowSizeLater();
-        loadFilmlist();
+        filmlistLoadCoordinator.loadStartupFilmlist();
         setupAutomaticUpdateCheck();
         setupShutdownHook();
         checkInvalidRegularExpressions();
@@ -287,7 +285,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     public void dispose() {
         if (disposed.compareAndSet(false, true)) {
             mainWindowLifecycle.close();
-            closeStartupFilmlistLoader();
+            filmlistLoadCoordinator.close();
             closeFilmlistDownloadProgress();
             filmlistReloadCoordinator.close();
             closeProgramUpdateCoordinator();
@@ -305,7 +303,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     @Override
-    public JFrame ownerFrame() {
+    public @NonNull JFrame ownerFrame() {
         return this;
     }
 
@@ -587,30 +585,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     /**
-     * Read a local filmlist or load a new one in auto mode.
-     */
-    private void loadFilmlist() {
-        statusBarController.installStartupProgress();
-        startupFilmlistLoader = new StartupFilmlistLoader(
-                daten,
-                statusBarController.getStartupProgressLabel(),
-                statusBarController.getStartupProgressBar(),
-                this::finishStartupFilmlistLoad
-        );
-        startupFilmlistLoader.start();
-    }
-
-    private void finishStartupFilmlistLoad(boolean remoteUpdateStarted, boolean failed) {
-        try {
-            if (!remoteUpdateStarted) {
-                Daten.getInstance().getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, failed));
-            }
-        } finally {
-            statusBarController.uninstallStartupProgress();
-        }
-    }
-
-    /**
      * Create the status bar item.
      */
     private void createStatusBar() {
@@ -627,7 +601,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         filmlistDownloadProgressListener.close();
     }
 
-    public StatusBarProgressHandle showStatusBarProgress() {
+    public @NonNull StatusBarProgressHandle showStatusBarProgress() {
         return statusBarController.showProgress();
     }
 
@@ -699,13 +673,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             restoreSizeFromConfig();
 
         SwingUtilities.invokeLater(() -> addComponentListener(new WindowLocationConfigSaverListener()));
-    }
-
-    private void closeStartupFilmlistLoader() {
-        if (startupFilmlistLoader != null) {
-            startupFilmlistLoader.close();
-            startupFilmlistLoader = null;
-        }
     }
 
     @Handler
@@ -925,15 +892,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     public void performFilmListLoadOperation(boolean manualMode) {
-        if (manualMode || FilmListUpdateType.MANUAL.isConfigured()) {
-            // Dialog zum Laden der Filme anzeigen
-            LoadFilmListDialog dlg = new LoadFilmListDialog(this);
-            dlg.setVisible(true);
-        }
-        else {
-            // Filme werden automatisch geladen
-            daten.getFilmeLaden().loadFilmlist("", false);
-        }
+        filmlistLoadCoordinator.performFilmListLoadOperation(manualMode);
     }
 
     public DialogEinstellungen getSettingsDialog() {
