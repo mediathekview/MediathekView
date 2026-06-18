@@ -21,10 +21,10 @@ package mediathek.sqlite
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.sql.SqlDatabaseConfig
 import java.awt.Desktop
 import java.awt.Dimension
+import java.awt.Frame
 import java.awt.event.ActionEvent
 import java.net.URISyntaxException
 import java.nio.file.Files
@@ -35,7 +35,7 @@ import javax.swing.JOptionPane
 import javax.swing.event.HyperlinkEvent
 import kotlin.io.path.name
 
-class RecoverHistoryDbAction(private val mediathekGui: MediathekGui) : AbstractAction() {
+class RecoverHistoryDbAction(private val owner: Frame) : AbstractAction() {
     private val recoverService = SqliteRecoverService()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
 
@@ -47,7 +47,7 @@ class RecoverHistoryDbAction(private val mediathekGui: MediathekGui) : AbstractA
         val sourceDatabase = SqlDatabaseConfig.historyDbPath.toAbsolutePath().normalize()
         if (Files.notExists(sourceDatabase)) {
             JOptionPane.showMessageDialog(
-                mediathekGui,
+                owner,
                 "Die Verlaufdatenbank existiert nicht:\n$sourceDatabase",
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.ERROR_MESSAGE
@@ -57,7 +57,7 @@ class RecoverHistoryDbAction(private val mediathekGui: MediathekGui) : AbstractA
 
         val targetDatabase = sourceDatabase.resolveSibling(suggestedTarget(sourceDatabase))
         isEnabled = false
-        val progressDialog = SqliteRecoveryProgressDialog(mediathekGui)
+        val progressDialog = SqliteRecoveryProgressDialog(owner)
         val job = uiScope.launch {
             try {
                 val summary = recoverService.recover(sourceDatabase, targetDatabase) { progress ->
@@ -66,7 +66,7 @@ class RecoverHistoryDbAction(private val mediathekGui: MediathekGui) : AbstractA
                     }
                 }
                 JOptionPane.showMessageDialog(
-                    mediathekGui,
+                    owner,
                     "Wiederherstellung abgeschlossen.\n" +
                         "Quelle:\n${summary.sourceDatabase}\n\n" +
                         "Ziel:\n${summary.targetDatabase}\n\n" +
@@ -77,14 +77,14 @@ class RecoverHistoryDbAction(private val mediathekGui: MediathekGui) : AbstractA
                 )
             } catch (_: CancellationException) {
                 JOptionPane.showMessageDialog(
-                    mediathekGui,
+                    owner,
                     "SQLite-Recovery wurde abgebrochen.",
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.INFORMATION_MESSAGE
                 )
             } catch (ex: Exception) {
                 JOptionPane.showMessageDialog(
-                    mediathekGui,
+                    owner,
                     buildDialogMessage(ex.message ?: "SQLite-Recovery ist fehlgeschlagen."),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.ERROR_MESSAGE
