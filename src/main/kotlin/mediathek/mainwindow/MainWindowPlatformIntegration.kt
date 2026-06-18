@@ -45,6 +45,7 @@ class MainWindowPlatformIntegration(
     }
 
     fun setupSystemTray() {
+        systemTrayController.setup()
         setupSystemTray.run()
     }
 

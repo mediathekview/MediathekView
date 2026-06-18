@@ -191,6 +191,28 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     protected MediathekGui(
             Supplier<INotificationCenter> notificationCenterFactory,
             ComputerShutdown computerShutdown,
+            MainWindowDarkModeActionPlacement darkModeActionPlacement,
+            MainWindowSystemTrayController systemTrayController
+    ) {
+        this(
+                notificationCenterFactory,
+                computerShutdown,
+                NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY,
+                darkModeActionPlacement,
+                DEFAULT_TOOLBAR_INSTALLER,
+                new MainWindowTabPlacementController(true),
+                DefaultMainWindowMenuPolicy.INSTANCE,
+                true,
+                DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                systemTrayController,
+                true,
+                _ -> {}
+        );
+    }
+
+    protected MediathekGui(
+            Supplier<INotificationCenter> notificationCenterFactory,
+            ComputerShutdown computerShutdown,
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory
     ) {
         this(
@@ -682,7 +704,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         Runtime.getRuntime().addShutdownHook(new Log4jShutdownHookThread());
     }
 
-    protected void setupSystemTray() {
+    private void setupSystemTray() {
         platformIntegration.setupSystemTrayLater();
     }
 

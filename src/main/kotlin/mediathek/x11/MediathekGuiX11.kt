@@ -19,7 +19,6 @@
 package mediathek.x11
 
 import mediathek.config.Konstanten
-import mediathek.config.application.ApplicationConfiguration
 import mediathek.mainwindow.MainWindowDarkModeActionPlacement
 import mediathek.mainwindow.MediathekGui
 import mediathek.shutdown.X11ComputerShutdown
@@ -49,18 +48,10 @@ class MediathekGuiX11 : MediathekGui(
     ::createNotificationCenter,
     X11ComputerShutdown(),
     MainWindowDarkModeActionPlacement.MENU_BAR,
+    X11MainWindowSystemTrayController,
 ) {
     init {
         setupX11WindowManagerClassName()
-    }
-
-    override fun setupSystemTray() {
-        val useTray = ApplicationConfiguration.getInstance().useTray
-        if (!DesktopEnvDetector.trayIconSupported() && useTray) {
-            logger.warn("Application tray icon is not supported on this platform, deactivating.")
-            ApplicationConfiguration.getInstance().useTray = false
-        }
-        super.setupSystemTray()
     }
 
     /**

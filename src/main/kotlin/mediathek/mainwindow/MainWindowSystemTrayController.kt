@@ -21,6 +21,8 @@ package mediathek.mainwindow
 import mediathek.gui.MVTray
 
 interface MainWindowSystemTrayController {
+    fun setup() = Unit
+
     fun initialize(owner: TrayHost): MVTray?
 }
 
