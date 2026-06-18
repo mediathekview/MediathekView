@@ -1,6 +1,5 @@
 package mediathek.mainwindow
 
-import mediathek.audiothek.ui.main.AudiothekPanel
 import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
 import mediathek.config.SettingsResetService
@@ -9,8 +8,6 @@ import mediathek.controller.history.SeenHistoryController
 import mediathek.gui.actions.ManageAboAction
 import mediathek.gui.actions.MemoryMonitorAction
 import mediathek.gui.actions.ShowBandwidthUsageAction
-import mediathek.gui.tabs.tab_downloads.GuiDownloads
-import mediathek.gui.tabs.tab_film.GuiFilme
 import mediathek.shutdown.ComputerShutdown
 import mediathek.tool.RuntimeStatistics
 import java.awt.Cursor
@@ -21,9 +18,7 @@ class MainWindowShutdownCoordinator(
     private val showMemoryMonitorAction: MemoryMonitorAction,
     private val showBandwidthUsageAction: ShowBandwidthUsageAction,
     private val manageAboAction: ManageAboAction,
-    private val tabFilme: GuiFilme,
-    private val tabDownloads: GuiDownloads,
-    private val tabAudiothek: AudiothekPanel,
+    private val tabRegistry: MainWindowTabRegistry,
     private val computerShutdown: ComputerShutdown,
     private val resetSettingsOnQuit: Boolean,
     private val closeAutomaticFilmlistUpdate: Runnable,
@@ -64,9 +59,7 @@ class MainWindowShutdownCoordinator(
             .background("Stop starter thread") { daten.downloadStartCoordinator.shutdown() }
             .edt("Close system tray", closeSystemTray)
             .background("Close notification center", closeNotificationCenter)
-            .edt("Save tab Filme data", tabFilme::disposePanel)
-            .edt("Save tab Download data", tabDownloads::tabelleSpeichern)
-            .edt("Dispose tab Audiothek", tabAudiothek::disposePanel)
+            .edt("Dispose main window tabs", tabRegistry::disposeTabs)
             .background("Stop all downloads") { daten.listeDownloads.requestStopForShutdown() }
             .background("Save app data", daten::allesSpeichern)
             .background("Close seen history database", SeenHistoryController::closeSharedStore)

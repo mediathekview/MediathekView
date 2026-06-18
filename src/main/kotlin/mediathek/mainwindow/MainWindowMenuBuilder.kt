@@ -34,6 +34,7 @@ class MainWindowMenuBuilder(
     private val viewMenu: JMenu,
     private val helpMenu: JMenu,
     private val menuPolicy: MainWindowMenuPolicy,
+    private val tabRegistry: MainWindowTabRegistry,
     private val filmTab: Supplier<GuiFilme>,
     private val downloadsTab: Supplier<GuiDownloads>,
     private val logDialog: LogDialog,
@@ -43,9 +44,6 @@ class MainWindowMenuBuilder(
     private val manageAboAction: Action,
     private val showBandwidthUsageAction: Action,
     private val showLuceneTutorialAction: Action,
-    private val toggleOnlineSearchTabAction: Action,
-    private val toggleZappLivestreamsTabAction: Action,
-    private val toggleAudiothekTabAction: Action,
     private val showFilmInformationAction: Action,
     private val manageBookmarkAction: Action,
     private val searchProgramUpdateAction: Action,
@@ -119,9 +117,7 @@ class MainWindowMenuBuilder(
     private fun createViewMenu() {
         val filmTab = filmTab.get()
         filmTab.installViewMenuEntry(viewMenu)
-        viewMenu.add(toggleOnlineSearchTabAction)
-        viewMenu.add(toggleZappLivestreamsTabAction)
-        viewMenu.add(toggleAudiothekTabAction)
+        tabRegistry.installViewMenuEntries(viewMenu)
         viewMenu.addSeparator()
         viewMenu.add(showMemoryMonitorAction)
         viewMenu.add(showBandwidthUsageAction)

@@ -132,6 +132,7 @@ public class MediathekGui extends JFrame {
     private final JMenu jMenuAbos = new JMenu();
     private final JMenu jMenuAnsicht = new JMenu();
     private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
+    private final MainWindowTabRegistry tabRegistry = new MainWindowTabRegistry(tabbedPane);
     private final SearchProgramUpdateAction searchProgramUpdateAction;
     private final MemoryMonitorAction showMemoryMonitorAction = new MemoryMonitorAction(this);
     private final ManageAboAction manageAboAction = new ManageAboAction();
@@ -609,6 +610,7 @@ public class MediathekGui extends JFrame {
                 jMenuAnsicht,
                 jMenuHilfe,
                 createMenuPolicy(),
+                tabRegistry,
                 () -> tabFilme,
                 () -> tabDownloads,
                 logDialog,
@@ -618,9 +620,6 @@ public class MediathekGui extends JFrame {
                 manageAboAction,
                 showBandwidthUsageAction,
                 showLuceneTutorialAction,
-                toggleOnlineSearchTabAction,
-                toggleZappLivestreamsTabAction,
-                toggleAudiothekTabAction,
                 showFilmInformationAction,
                 manageBookmarkAction,
                 searchProgramUpdateAction
@@ -911,11 +910,8 @@ public class MediathekGui extends JFrame {
         tabFilme = (GuiFilme) createTabFilme(daten);
 
         SplashScreenLifecycle.update(UIProgressState.ADD_TABS_TO_UI);
-        tabbedPane.addTab(GuiFilme.NAME, tabFilme);
-        tabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
-        installOnlineSearchTab();
-        installLivestreamsTab();
-        installAudiothekTab();
+        registerMainWindowTabs();
+        tabRegistry.installVisibleTabs();
 
         if (ApplicationConfiguration.getInstance().getRestoreSelectedTab())
             tabbedPane.restoreSavedTabPosition();
@@ -926,25 +922,45 @@ public class MediathekGui extends JFrame {
         configureTabIcons();
     }
 
-    protected void installOnlineSearchTab() {
-        var show = ApplicationConfiguration.getInstance().getOnlineSearchTabVisible();
-        if (show) {
-            tabbedPane.addTab("Onlinesuche", tabOnlineSearch);
-        }
-    }
-
-    protected void installLivestreamsTab() {
-        var show = ApplicationConfiguration.getInstance().getZappLivestreamsTabVisible();
-        if (show) {
-            tabbedPane.addTab("zapp Livestreams", tabLivestreams);
-        }
-    }
-
-    protected void installAudiothekTab() {
-        var show = ApplicationConfiguration.getInstance().getAudiothekTabVisible();
-        if (show) {
-            tabbedPane.addTab("Audiothek", tabAudiothek);
-        }
+    private void registerMainWindowTabs() {
+        tabRegistry.register(new MainWindowTab(
+                GuiFilme.NAME,
+                tabFilme,
+                () -> true,
+                () -> GetIcon.getProgramIcon("tab-film.png", 32, 32),
+                null,
+                () -> tabFilme.disposePanel()
+        ));
+        tabRegistry.register(new MainWindowTab(
+                GuiDownloads.NAME,
+                tabDownloads,
+                () -> true,
+                () -> GetIcon.getProgramIcon("tab-download.png", 32, 32),
+                null,
+                () -> tabDownloads.tabelleSpeichern()
+        ));
+        tabRegistry.register(new MainWindowTab(
+                "Onlinesuche",
+                tabOnlineSearch,
+                () -> ApplicationConfiguration.getInstance().getOnlineSearchTabVisible(),
+                null,
+                toggleOnlineSearchTabAction
+        ));
+        tabRegistry.register(new MainWindowTab(
+                "zapp Livestreams",
+                tabLivestreams,
+                () -> ApplicationConfiguration.getInstance().getZappLivestreamsTabVisible(),
+                null,
+                toggleZappLivestreamsTabAction
+        ));
+        tabRegistry.register(new MainWindowTab(
+                "Audiothek",
+                tabAudiothek,
+                () -> ApplicationConfiguration.getInstance().getAudiothekTabVisible(),
+                null,
+                toggleAudiothekTabAction,
+                tabAudiothek::disposePanel
+        ));
     }
 
     /**
@@ -974,26 +990,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void configureTabIcons() {
-        final boolean icon = ApplicationConfiguration.getInstance().getMainWindowTabIcons();
-
-        //no icons...
-        if (!icon) {
-            setTabIcon(tabFilme, null);
-            setTabIcon(tabDownloads, null);
-        }
-        else {
-            //setup icons for each tab here
-            setTabIcon(tabFilme, GetIcon.getProgramIcon("tab-film.png", 32, 32));
-            setTabIcon(tabDownloads, GetIcon.getProgramIcon("tab-download.png", 32, 32));
-        }
-    }
-
-    private void setTabIcon(Component tab, Icon icon) {
-        final int index = tabbedPane.indexOfComponent(tab);
-        if (index < 0) {
-            return;
-        }
-        tabbedPane.setIconAt(index, icon);
+        tabRegistry.configureIcons(ApplicationConfiguration.getInstance().getMainWindowTabIcons());
     }
 
     /**
@@ -1205,9 +1202,7 @@ public class MediathekGui extends JFrame {
                 showMemoryMonitorAction,
                 showBandwidthUsageAction,
                 manageAboAction,
-                tabFilme,
-                tabDownloads,
-                tabAudiothek,
+                tabRegistry,
                 computerShutdown,
                 resetSettingsOnQuit,
                 this::closeAutomaticFilmlistUpdate,
