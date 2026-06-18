@@ -39,6 +39,10 @@ interface DownloadControlHost {
     fun stopAllWaitingDownloads()
 }
 
+interface FilmListLoadHost : MainWindowHandle {
+    fun showStatusBarProgress(): StatusBarProgressHandle
+}
+
 interface MainWindowQuitHost : MainWindowHandle {
     fun quitApplication(): Boolean
 }
