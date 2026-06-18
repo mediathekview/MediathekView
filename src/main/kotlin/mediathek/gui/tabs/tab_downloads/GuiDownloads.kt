@@ -59,6 +59,7 @@ import java.awt.event.KeyEvent
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
+import java.util.function.Consumer
 import java.util.function.LongConsumer
 import javax.swing.*
 import javax.swing.Timer
@@ -71,6 +72,7 @@ class GuiDownloads(
     private val mediathekGui: MediathekGui,
     private val showFilmInformationAction: Action,
     private val selectedListItemsCount: LongConsumer,
+    private val selectedFilm: Consumer<DatenFilm?>,
 ) : JPanel() {
     val startAllDownloadsAction = StartAllDownloadsAction(this)
     val startAllDownloadsTimedAction = StartAllDownloadsTimedAction(this)
@@ -862,7 +864,7 @@ class GuiDownloads(
             return
         }
 
-        mediathekGui.filmInfoDialog?.updateCurrentFilm(getCurrentlySelectedFilm().orElse(null))
+        selectedFilm.accept(getCurrentlySelectedFilm().orElse(null))
     }
 
     private fun createDismissableMessageDialog(

@@ -863,7 +863,13 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private JPanel createTabDownloads(@NonNull Daten daten) {
-        return new GuiDownloads(daten, this, showFilmInformationAction, this::setSelectedListItemsCount);
+        return new GuiDownloads(
+                daten,
+                this,
+                showFilmInformationAction,
+                this::setSelectedListItemsCount,
+                film -> getFilmInfoDialog().updateCurrentFilm(film)
+        );
     }
 
     private void initTabs() {
