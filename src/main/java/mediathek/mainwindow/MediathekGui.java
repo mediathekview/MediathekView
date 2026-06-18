@@ -689,7 +689,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     @Handler
-    protected void handleNotificationCenterChangeEvent(NotificationCenterChangeEvent e) {
+    private void handleNotificationCenterChangeEvent(NotificationCenterChangeEvent e) {
         setupNotificationCenter();
     }
 
@@ -956,7 +956,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * @param msg Information about the download
      */
     @Handler
-    protected void handleDownloadStart(DownloadStartEvent msg) {
+    private void handleDownloadStart(DownloadStartEvent msg) {
         downloadProgressIndicator.downloadStarted();
     }
 
@@ -966,7 +966,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * @param msg Information about the download
      */
     @Handler
-    protected void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
+    private void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
         downloadProgressIndicator.downloadFinished();
     }
 
@@ -990,7 +990,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
      * Handle the install/or remove event sent from settings dialog
      */
     @Handler
-    protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
+    private void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
         menuTabSwitchController.handleInstallTabSwitchListenerEvent(msg);
     }
 
