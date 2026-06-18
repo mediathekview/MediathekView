@@ -18,15 +18,33 @@
 
 package mediathek.mainwindow
 
+import mediathek.config.Daten
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.tool.MessageBus
 
 class MainWindowLifecycle(
     private val messageBusSubscriber: Any,
+    private val daten: Daten,
+    private val dialogOwner: MainWindowHandle,
 ) : AutoCloseable {
     private var messageBusSubscribed = false
+    private var downloadDialogOwnerRegistered = false
 
-    fun subscribeToMessageBus() {
+    fun start() {
+        registerDownloadDialogOwner()
+        subscribeToMessageBus()
+    }
+
+    private fun registerDownloadDialogOwner() {
+        if (downloadDialogOwnerRegistered) {
+            return
+        }
+
+        daten.downloadStartCoordinator.setDialogOwner(dialogOwner)
+        downloadDialogOwnerRegistered = true
+    }
+
+    private fun subscribeToMessageBus() {
         if (messageBusSubscribed) {
             return
         }
@@ -39,11 +57,25 @@ class MainWindowLifecycle(
     }
 
     override fun close() {
+        unsubscribeFromMessageBus()
+        unregisterDownloadDialogOwner()
+    }
+
+    private fun unsubscribeFromMessageBus() {
         if (!messageBusSubscribed) {
             return
         }
 
         MessageBus.messageBus.unsubscribe(messageBusSubscriber)
         messageBusSubscribed = false
+    }
+
+    private fun unregisterDownloadDialogOwner() {
+        if (!downloadDialogOwnerRegistered) {
+            return
+        }
+
+        daten.downloadStartCoordinator.setDialogOwner(null)
+        downloadDialogOwnerRegistered = false
     }
 }

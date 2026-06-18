@@ -155,7 +155,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
     private boolean menuTabSwitchListenersInstalled;
-    private final MainWindowLifecycle mainWindowLifecycle = new MainWindowLifecycle(this);
+    private final MainWindowLifecycle mainWindowLifecycle = new MainWindowLifecycle(this, daten, this);
 
     public MediathekGui() {
         this(GenericNotificationCenter::new);
@@ -249,8 +249,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void startMainWindowRuntime() {
-        daten.getDownloadStartCoordinator().setDialogOwner(this);
-        mainWindowLifecycle.subscribeToMessageBus();
+        mainWindowLifecycle.start();
         setupTaskbarMenuLater();
         setupSystemTray();
         setApplicationWindowSizeLater();
@@ -288,7 +287,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     public void dispose() {
         if (disposed.compareAndSet(false, true)) {
             mainWindowLifecycle.close();
-            daten.getDownloadStartCoordinator().setDialogOwner(null);
             removeFilmListListeners();
             closeStartupFilmlistLoader();
             closeFilmlistDownloadProgress();
