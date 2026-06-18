@@ -24,7 +24,6 @@ import mediathek.audiothek.repository.AudioRepository;
 import mediathek.audiothek.ui.main.AudiothekPanel;
 import mediathek.config.*;
 import mediathek.config.application.ApplicationConfiguration;
-import mediathek.controller.history.SeenHistoryController;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.MVTray;
@@ -1195,76 +1194,30 @@ public class MediathekGui extends JFrame {
     }
 
     private void performApplicationShutdown(boolean shutdownComputer) {
-        runShutdownStepOnEdt("Show shutdown wait cursor", () -> setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)));
-        try {
-            runShutdownStep("Close automatic filmlist update", () -> {
-                closeAutomaticFilmlistUpdate();
-            });
-
-            runShutdownStep("Close program update checker", this::endProgramUpdateChecker);
-
-            runShutdownStepOnEdt("Close memory monitor", showMemoryMonitorAction::closeMemoryMonitor);
-
-            runShutdownStepOnEdt("Close bandwidth monitor", () -> showBandwidthUsageAction.getDialogOptional().ifPresent(dlg -> {
-                dlg.dispose();
-                //little hack, we must preserve the visible state since it was open when app quits...
-                ApplicationConfiguration.getInstance().setBandwidthMonitorVisible(true);
-            }));
-
-            runShutdownStepOnEdt("Close abo dialog", manageAboAction::closeDialog);
-
-            runShutdownStep("Perform history maintenance", () -> {
-                try (SeenHistoryController history = new SeenHistoryController()) {
-                    history.performMaintenance();
-                }
-            });
-
-            runShutdownStep("Save bookmark list", () -> daten.getListeBookmarkList().saveToFile());
-
-            runShutdownStep("Stop starter thread", () -> daten.getDownloadStartCoordinator().shutdown());
-
-            runShutdownStepOnEdt("Close system tray", this::closeSystemTray);
-
-            runShutdownStep("Close notification center", this::closeNotificationCenter);
-
-            runShutdownStepOnEdt("Save tab Filme data", () -> tabFilme.disposePanel());
-
-            runShutdownStepOnEdt("Save tab Download data", () -> tabDownloads.tabelleSpeichern());
-
-            runShutdownStepOnEdt("Dispose tab Audiothek", tabAudiothek::disposePanel);
-
-            runShutdownStep("Stop all downloads", () -> daten.getListeDownloads().requestStopForShutdown());
-
-            runShutdownStep("Save app data", daten::allesSpeichern);
-
-            runShutdownStep("Close seen history database", SeenHistoryController::closeSharedStore);
-
-            runShutdownStepOnEdt("Close main window", this::dispose);
-
-            runShutdownStep("Write app config", () -> ApplicationConfiguration.getInstance().writeConfiguration());
-
-            runShutdownStep("Shutdown timer pool", this::shutdownTimerPool);
-            runShutdownStep("Wait for common pool", this::waitForCommonPoolToComplete);
-
-            if (resetSettingsOnQuit) {
-                runShutdownStep("Move settings directory aside for reset", SettingsResetService::moveSettingsDirectoryAside);
-            }
-
-            runShutdownStep("Print runtime statistics", () -> {
-                RuntimeStatistics.INSTANCE.printRuntimeStatistics();
-                if (CommandLineOptions.isEnhancedLoggingEnabled()) {
-                    RuntimeStatistics.INSTANCE.printDataUsageStatistics();
-                }
-            });
-        } finally {
-            runShutdownStepOnEdt("Restore default cursor", () -> setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)));
-        }
-
-        if (shutdownComputer) {
-            runShutdownStep("Request computer shutdown", computerShutdown::requestShutdown);
-        }
-
+        createShutdownCoordinator().shutdown(shutdownComputer);
         System.exit(0);
+    }
+
+    private MainWindowShutdownCoordinator createShutdownCoordinator() {
+        return new MainWindowShutdownCoordinator(
+                this,
+                daten,
+                showMemoryMonitorAction,
+                showBandwidthUsageAction,
+                manageAboAction,
+                tabFilme,
+                tabDownloads,
+                tabAudiothek,
+                computerShutdown,
+                resetSettingsOnQuit,
+                this::closeAutomaticFilmlistUpdate,
+                this::endProgramUpdateChecker,
+                this::closeSystemTray,
+                this::closeNotificationCenter,
+                this::shutdownTimerPool,
+                this::waitForCommonPoolToComplete,
+                this::runOnEventDispatchThreadAndWait
+        );
     }
 
     private void closeSystemTray() {
@@ -1279,20 +1232,6 @@ public class MediathekGui extends JFrame {
             automaticFilmlistUpdate.close();
             automaticFilmlistUpdate = null;
         }
-    }
-
-    private void runShutdownStep(String description, Runnable step) {
-        logger.trace(description);
-        try {
-            step.run();
-        }
-        catch (RuntimeException ex) {
-            logger.error("Shutdown step failed: {}", description, ex);
-        }
-    }
-
-    private void runShutdownStepOnEdt(String description, Runnable step) {
-        runShutdownStep(description, () -> runOnEventDispatchThreadAndWait(description, step));
     }
 
     private void shutdownTimerPool() {
