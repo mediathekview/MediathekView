@@ -25,9 +25,11 @@ import mediathek.gui.actions.ShowBandwidthUsageAction
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen
 import mediathek.gui.filmInformation.FilmInfoDialog
 import org.apache.logging.log4j.LogManager
+import java.awt.Window
 
 class MainWindowDialogCoordinator(
-    private val owner: MediathekGui,
+    private val owner: Window,
+    private val settingsDialogHost: SettingsDialogHost,
     private val showMemoryMonitorAction: MemoryMonitorAction,
     private val showBandwidthUsageAction: ShowBandwidthUsageAction,
     private val manageAboAction: ManageAboAction,
@@ -63,7 +65,7 @@ class MainWindowDialogCoordinator(
     fun getFilmInfoDialog(): FilmInfoDialog? = filmInfo
 
     fun getSettingsDialog(): DialogEinstellungen =
-        settingsDialog ?: DialogEinstellungen(owner).also {
+        settingsDialog ?: DialogEinstellungen(settingsDialogHost).also {
             settingsDialog = it
         }
 

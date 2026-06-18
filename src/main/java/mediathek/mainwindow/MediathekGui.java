@@ -138,7 +138,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final ManageAboAction manageAboAction = new ManageAboAction(this);
     private final ShowBandwidthUsageAction showBandwidthUsageAction = new ShowBandwidthUsageAction(this);
     private final MainWindowDialogCoordinator dialogCoordinator =
-            new MainWindowDialogCoordinator(this, showMemoryMonitorAction, showBandwidthUsageAction, manageAboAction);
+            new MainWindowDialogCoordinator(this, this, showMemoryMonitorAction, showBandwidthUsageAction, manageAboAction);
     private final ShowLuceneTutorialAction showLuceneTutorialAction = new ShowLuceneTutorialAction(this);
     private final LivestreamPanel tabLivestreams = new LivestreamPanel(this);
     private final ToggleZappLivestreamsTabAction toggleZappLivestreamsTabAction = new ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams);
@@ -164,7 +164,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             new MainWindowProgramUpdateCoordinator(this);
     private final MainWindowStatusBarController statusBarController =
             new MainWindowStatusBarController(
-                    this,
+                    getContentPane(),
                     selectedListItemsProperty,
                     this::getFilmTableRowCount,
                     this::runOnEventDispatchThreadAndWait
