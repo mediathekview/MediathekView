@@ -42,6 +42,7 @@ import mediathek.gui.tabs.tab_online_search.OnlineSearchPanel;
 import mediathek.logging.LogDialog;
 import mediathek.shutdown.ComputerShutdown;
 import mediathek.swing.IconOnlyButton;
+import mediathek.swing.SwingDispatch;
 import mediathek.tool.*;
 import mediathek.tool.notification.GenericNotificationCenter;
 import mediathek.tool.notification.INotificationCenter;
@@ -149,53 +150,9 @@ public class MediathekGui extends JFrame {
     private final Supplier<INotificationCenter> notificationCenterFactory;
     private final ComputerShutdown computerShutdown;
     private final DownloadProgressIndicator downloadProgressIndicator;
-    private final ListenerFilmeLaden filmlistDownloadProgressListener = new ListenerFilmeLaden() {
-        @Override
-        public void start(@NonNull ListenerFilmeLadenEvent event) {
-            closeFilmlistDownloadProgress();
-            filmlistDownloadProgressHandle = showStatusBarProgress();
-        }
-
-        @Override
-        public void progress(@NonNull ListenerFilmeLadenEvent event) {
-            if (filmlistDownloadProgressHandle == null) {
-                return;
-            }
-            var progressBar = filmlistDownloadProgressHandle.progressBar();
-            if (event.getMax() == 0 || event.getProgress() == event.getMax()) {
-                progressBar.setIndeterminate(true);
-            }
-            else {
-                progressBar.setIndeterminate(false);
-                progressBar.setMinimum(0);
-                progressBar.setMaximum(event.getMax());
-                progressBar.setValue(event.getProgress());
-            }
-            filmlistDownloadProgressHandle.label().setText(event.getText());
-        }
-
-        @Override
-        public void fertig(@NonNull ListenerFilmeLadenEvent event) {
-            closeFilmlistDownloadProgress();
-        }
-    };
-    private final ListenerFilmeLaden filmListListener = new ListenerFilmeLaden() {
-        @Override
-        public void start(@NonNull ListenerFilmeLadenEvent event) {
-            loadFilmListAction.setEnabled(false);
-        }
-
-        @Override
-        public void fertig(@NonNull ListenerFilmeLadenEvent event) {
-            loadFilmListAction.setEnabled(true);
-            daten.allesSpeichern(); // damit nichts verlorengeht
-        }
-
-        @Override
-        public void fertigOnlyOne(@NonNull ListenerFilmeLadenEvent event) {
-            setupAutomaticFilmlistReload();
-        }
-    };
+    private final FilmlistProgressPresenter filmlistDownloadProgressListener =
+            new FilmlistProgressPresenter(SwingDispatch.INSTANCE, this::showStatusBarProgress);
+    private final ListenerFilmeLaden filmListListener;
     private FixedRedrawStatusBar swingStatusBar;
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
@@ -205,7 +162,6 @@ public class MediathekGui extends JFrame {
     private ProgramUpdateCheck programUpdateChecker;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
     private StartupFilmlistLoader startupFilmlistLoader;
-    private StatusBarProgressHandle filmlistDownloadProgressHandle;
     private boolean resetSettingsOnQuit;
     private boolean menuTabSwitchListenersInstalled;
     private boolean messageBusSubscribed;
@@ -243,6 +199,12 @@ public class MediathekGui extends JFrame {
         setupAlternatingRowColors();
 
         loadFilmListAction = new LoadFilmListAction(this);
+        filmListListener = new MainWindowFilmListListener(
+                SwingDispatch.INSTANCE,
+                () -> loadFilmListAction,
+                () -> daten.allesSpeichern(),
+                this::setupAutomaticFilmlistReload
+        );
         searchProgramUpdateAction = new SearchProgramUpdateAction();
 
         SplashScreenLifecycle.update(UIProgressState.LOAD_MAINWINDOW);
@@ -675,11 +637,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void closeFilmlistDownloadProgress() {
-        if (filmlistDownloadProgressHandle == null) {
-            return;
-        }
-        filmlistDownloadProgressHandle.close();
-        filmlistDownloadProgressHandle = null;
+        filmlistDownloadProgressListener.close();
     }
 
     private StatusBarProgressHandle showStatusBarProgress(JLabel label, JProgressBar progressBar) {

@@ -16,43 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek
+package mediathek.swing
 
-import mediathek.tool.UIProgressState
-import mediathek.swing.SwingDispatch
+import javax.swing.SwingUtilities
 
-object SplashScreenLifecycle {
-    private var splashScreen: SplashScreen? = null
+fun interface SwingDispatcher {
+    fun dispatch(action: Runnable)
+}
 
-    fun set(splashScreen: SplashScreen?) {
-        this.splashScreen = splashScreen
-    }
-
-    fun show() {
-        SwingDispatch.dispatch {
-            splashScreen?.isVisible = true
+object SwingDispatch : SwingDispatcher {
+    override fun dispatch(action: Runnable) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            action.run()
+        } else {
+            SwingUtilities.invokeLater(action)
         }
     }
-
-    fun hide() {
-        SwingDispatch.dispatch {
-            splashScreen?.isVisible = false
-        }
-    }
-
-    @JvmStatic
-    fun update(state: UIProgressState) {
-        splashScreen?.update(state)
-    }
-
-    fun close() {
-        splashScreen?.close()
-    }
-
-    fun clearIfCurrent(splashScreen: SplashScreen) {
-        if (this.splashScreen === splashScreen) {
-            this.splashScreen = null
-        }
-    }
-
 }
