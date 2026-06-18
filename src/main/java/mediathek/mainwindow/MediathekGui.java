@@ -97,10 +97,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private static final ComputerShutdown NO_COMPUTER_SHUTDOWN = () -> {};
     private static final Function<MediathekGui, DownloadProgressIndicator> NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY = _ ->
             NoDownloadProgressIndicator.INSTANCE;
-    /**
-     * "Pointer" to UI
-     */
-    private static MediathekGui ui;
     private final AtomicBoolean applicationQuitInProgress = new AtomicBoolean();
     private final AtomicBoolean disposed = new AtomicBoolean();
     public final LoadFilmListAction loadFilmListAction;
@@ -215,8 +211,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void initializeMainWindow() {
-        ui = this;
-
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         setupScrollBarWidth();
@@ -312,9 +306,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             closeNotificationCenter();
             downloadProgressIndicator.close();
             UIManager.removePropertyChangeListener(lookAndFeelListener);
-            if (ui == this) {
-                ui = null;
-            }
         }
         super.dispose();
     }
@@ -324,15 +315,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             SwingUtilities.updateComponentTreeUI(progressLabel);
             SwingUtilities.updateComponentTreeUI(progressBar);
         }
-    }
-
-    /**
-     * Return the user interface instance
-     *
-     * @return the class instance or null.
-     */
-    public static MediathekGui ui() {
-        return ui;
     }
 
     @Override
