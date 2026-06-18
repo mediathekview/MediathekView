@@ -16,6 +16,6 @@ class ManageBookmarkAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        mediathekGui.tabFilme.showManageBookmarkWindow()
+        mediathekGui.showManageBookmarkWindow()
     }
 }

@@ -92,7 +92,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         glassPane?.isVisible = true
 
         if (waitForRunningDownloadsOnly)
-            MediathekGui.ui().tabDownloads.stopAllWaitingDownloads()
+            MediathekGui.ui().stopAllWaitingDownloads()
 
         downloadMonitorJob = coroutineScope.launch {
             try {

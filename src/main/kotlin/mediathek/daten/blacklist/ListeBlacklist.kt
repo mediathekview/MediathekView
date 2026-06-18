@@ -389,7 +389,7 @@ class ListeBlacklist : ArrayList<BlacklistRule>() {
     private fun calculateZeitraumBoundaries() {
         try {
             val gui = MediathekGui.ui()
-            val strZeitraum = gui?.tabFilme?.currentZeitraumFilterValue ?: ZeitraumSpinner.INFINITE_TEXT
+            val strZeitraum = gui?.currentZeitraumFilterValue ?: ZeitraumSpinner.INFINITE_TEXT
             daysLowerBoundary =
                 if (strZeitraum.equals(ZeitraumSpinner.INFINITE_TEXT, ignoreCase = true)) {
                     0

@@ -28,6 +28,7 @@ import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.gui.MVTray;
 import mediathek.gui.actions.*;
+import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.LoadFilmListDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
@@ -155,8 +156,8 @@ public class MediathekGui extends JFrame {
             new FilmlistProgressPresenter(SwingDispatch.INSTANCE, this::showStatusBarProgress);
     private final ListenerFilmeLaden filmListListener;
     private FixedRedrawStatusBar swingStatusBar;
-    public GuiFilme tabFilme;
-    public GuiDownloads tabDownloads;
+    private GuiFilme tabFilme;
+    private GuiDownloads tabDownloads;
     private FilmInfoDialog filmInfo;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
@@ -328,6 +329,34 @@ public class MediathekGui extends JFrame {
      */
     public static MediathekGui ui() {
         return ui;
+    }
+
+    public int getFilmTableRowCount() {
+        return tabFilme.getTableRowCount();
+    }
+
+    public String getCurrentZeitraumFilterValue() {
+        return tabFilme.getCurrentZeitraumFilterValue();
+    }
+
+    public BookmarkDialog getBookmarkDialog() {
+        return tabFilme.getBookmarkDialog();
+    }
+
+    public void showManageBookmarkWindow() {
+        tabFilme.showManageBookmarkWindow();
+    }
+
+    public void resetFilterDialogPosition() {
+        tabFilme.resetFilterDialogPosition();
+    }
+
+    public void repaintFilmTab() {
+        tabFilme.repaint();
+    }
+
+    public void stopAllWaitingDownloads() {
+        tabDownloads.stopAllWaitingDownloads();
     }
 
     private void setupFilmInfoDialog() {

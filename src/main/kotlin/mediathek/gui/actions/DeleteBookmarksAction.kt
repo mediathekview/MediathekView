@@ -38,7 +38,7 @@ class DeleteBookmarksAction(
 
     override fun actionPerformed(event: ActionEvent?) {
         var restoreManageBookmarkWindow = false
-        val bookmarkDialog = owner.tabFilme.getBookmarkDialog()
+        val bookmarkDialog = owner.bookmarkDialog
 
         if (bookmarkDialog != null && bookmarkDialog.isVisible) {
             restoreManageBookmarkWindow = true

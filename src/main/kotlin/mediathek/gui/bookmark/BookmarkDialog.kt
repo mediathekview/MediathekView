@@ -494,7 +494,7 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
                 withContext(Dispatchers.IO) {
                     bookmarkList.saveToFile()
                 }
-                MediathekGui.ui().tabFilme.repaint()
+                MediathekGui.ui().repaintFilmTab()
             }
         }
     }

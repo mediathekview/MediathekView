@@ -92,7 +92,7 @@ class FilmSizeInfoLabel(private val mediathekGui: MediathekGui) : JLabel() {
 
     private fun updateValues() {
         val gesamt = Daten.getInstance().listeFilme.size
-        val rowCount = mediathekGui.tabFilme.tableRowCount
+        val rowCount = mediathekGui.filmTableRowCount
 
         if (gesamt == oldGesamt && rowCount == oldRowCount) {
             return
