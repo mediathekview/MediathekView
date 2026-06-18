@@ -73,7 +73,7 @@ import java.util.stream.Collectors;
 
 public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadControlHost, ProgramUpdateHost, TrayHost, SettingsDialogHost, SettingsResetHost, FilmListLoadHost {
 
-    protected static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
     private static final String ICON_NAME = "MediathekView.png";
     private static final String ICON_PATH = "/mediathek/res/";
     private static final int ICON_WIDTH = 58;
