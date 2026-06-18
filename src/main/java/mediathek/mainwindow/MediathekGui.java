@@ -494,7 +494,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         tabDownloads.stopAllWaitingDownloads();
     }
 
-    public void setSelectedListItemsCount(long count) {
+    private void setSelectedListItemsCount(long count) {
         selectedListItemsProperty.setSelectedItems(count);
     }
 
@@ -822,12 +822,13 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 toggleBlacklistAction,
                 editBlacklistAction,
                 showFilmInformationAction,
-                showLuceneTutorialAction
+                showLuceneTutorialAction,
+                this::setSelectedListItemsCount
         );
     }
 
     private JPanel createTabDownloads(@NonNull Daten daten) {
-        return new GuiDownloads(daten, this, showFilmInformationAction);
+        return new GuiDownloads(daten, this, showFilmInformationAction, this::setSelectedListItemsCount);
     }
 
     private void initTabs() {

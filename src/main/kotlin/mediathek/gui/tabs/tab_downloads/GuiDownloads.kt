@@ -59,6 +59,7 @@ import java.awt.event.KeyEvent
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
+import java.util.function.LongConsumer
 import javax.swing.*
 import javax.swing.Timer
 import kotlin.time.Duration
@@ -69,6 +70,7 @@ class GuiDownloads(
     private val daten: Daten,
     private val mediathekGui: MediathekGui,
     private val showFilmInformationAction: Action,
+    private val selectedListItemsCount: LongConsumer,
 ) : JPanel() {
     val startAllDownloadsAction = StartAllDownloadsAction(this)
     val startAllDownloadsTimedAction = StartAllDownloadsTimedAction(this)
@@ -254,7 +256,7 @@ class GuiDownloads(
     }
 
     private fun updateSelectedListItemsCount(table: JTable) {
-        mediathekGui.setSelectedListItemsCount(table.selectedRowCount.toLong())
+        selectedListItemsCount.accept(table.selectedRowCount.toLong())
     }
 
     private fun updateStartInfoProperty() {

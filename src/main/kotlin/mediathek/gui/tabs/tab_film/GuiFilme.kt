@@ -58,6 +58,7 @@ import mediathek.tool.table.MVFilmTable
 import net.engio.mbassy.listener.Handler
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.BorderLayout
+import java.util.function.LongConsumer
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -68,6 +69,7 @@ class GuiFilme(
     private val editBlacklistAction: Action,
     private val showFilmInformationAction: Action,
     private val showLuceneTutorialAction: Action,
+    private val selectedListItemsCount: LongConsumer,
 ) : JPanel() {
     private val daten: Daten = aDaten
     private val copyHqUrlToClipboardActionValue: CopyUrlToClipboardAction
@@ -537,7 +539,7 @@ class GuiFilme(
     }
 
     private fun updateSelectedListItemsCount(table: JTable) {
-        mediathekGui.setSelectedListItemsCount(table.selectedRowCount.toLong())
+        selectedListItemsCount.accept(table.selectedRowCount.toLong())
     }
 
     private fun updateStartInfoProperty() {
