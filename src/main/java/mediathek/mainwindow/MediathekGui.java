@@ -140,6 +140,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final Supplier<INotificationCenter> notificationCenterFactory;
     private final ComputerShutdown computerShutdown;
     private final DownloadProgressIndicator downloadProgressIndicator;
+    private final MainWindowDarkModeActionPlacement darkModeActionPlacement;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -169,10 +170,33 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     protected MediathekGui(
             Supplier<INotificationCenter> notificationCenterFactory,
             ComputerShutdown computerShutdown,
+            MainWindowDarkModeActionPlacement darkModeActionPlacement
+    ) {
+        this(notificationCenterFactory, computerShutdown, NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY, darkModeActionPlacement);
+    }
+
+    protected MediathekGui(
+            Supplier<INotificationCenter> notificationCenterFactory,
+            ComputerShutdown computerShutdown,
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory
+    ) {
+        this(
+                notificationCenterFactory,
+                computerShutdown,
+                downloadProgressIndicatorFactory,
+                MainWindowDarkModeActionPlacement.TOOL_BAR
+        );
+    }
+
+    protected MediathekGui(
+            Supplier<INotificationCenter> notificationCenterFactory,
+            ComputerShutdown computerShutdown,
+            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
+            MainWindowDarkModeActionPlacement darkModeActionPlacement
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
+        this.darkModeActionPlacement = Objects.requireNonNull(darkModeActionPlacement);
         this.downloadProgressIndicator = Objects.requireNonNull(
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
@@ -440,12 +464,20 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             UIManager.put("Table.alternateRowColor", MVColor.getAlternatingRowColor());
     }
 
-    protected void createDarkModeToggleButton() {
+    private void createDarkModeToolBarAction() {
+        if (darkModeActionPlacement != MainWindowDarkModeActionPlacement.TOOL_BAR) {
+            return;
+        }
+
         commonToolBar.add(Box.createHorizontalGlue());
         commonToolBar.add(toggleDarkModeAction);
     }
 
-    protected void createDarkModeMenuAction() {
+    private void createDarkModeMenuAction() {
+        if (darkModeActionPlacement != MainWindowDarkModeActionPlacement.MENU_BAR) {
+            return;
+        }
+
         var actionButton = new FlatButton();
         actionButton.setButtonType(FlatButton.ButtonType.toolBarButton);
         actionButton.setFocusable(false);
@@ -478,7 +510,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 editBlacklistAction,
                 manageAboAction,
                 settingsAction,
-                this::createDarkModeToggleButton,
+                this::createDarkModeToolBarAction,
                 this::setToolBarProperties
         );
     }
@@ -558,6 +590,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     protected void createMenuBar() {
         setJMenuBar(createMenuBuilder().createMenuBar());
+        createDarkModeMenuAction();
     }
 
     private MainWindowMenuBuilder createMenuBuilder() {

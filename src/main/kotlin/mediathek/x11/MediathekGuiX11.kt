@@ -20,6 +20,7 @@ package mediathek.x11
 
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.mainwindow.MainWindowDarkModeActionPlacement
 import mediathek.mainwindow.MediathekGui
 import mediathek.shutdown.X11ComputerShutdown
 import mediathek.tool.notification.GenericNotificationCenter
@@ -44,18 +45,13 @@ private fun createNotificationCenter(): INotificationCenter {
     return GenericNotificationCenter()
 }
 
-class MediathekGuiX11 : MediathekGui(::createNotificationCenter, X11ComputerShutdown()) {
+class MediathekGuiX11 : MediathekGui(
+    ::createNotificationCenter,
+    X11ComputerShutdown(),
+    MainWindowDarkModeActionPlacement.MENU_BAR,
+) {
     init {
         setupX11WindowManagerClassName()
-    }
-
-    override fun createDarkModeToggleButton() {
-        // we are using a menu item here
-    }
-
-    override fun createMenuBar() {
-        super.createMenuBar()
-        createDarkModeMenuAction()
     }
 
     override fun setupSystemTray() {
