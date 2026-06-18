@@ -26,6 +26,7 @@ import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MacMainWindowMenuPolicy
+import mediathek.mainwindow.MainWindowQuitHost
 import mediathek.mainwindow.MediathekGui
 import mediathek.mainwindow.MainWindowTabPlacementController
 import mediathek.mainwindow.MainWindowToolbarInstaller
@@ -155,8 +156,9 @@ class MediathekGuiMac : MediathekGui(
 /**
  * Setup the UI for OS X
  */
-private fun setupUserInterfaceForOsx(mainWindow: MediathekGui) {
+private fun setupUserInterfaceForOsx(mainWindow: MainWindowQuitHost) {
     val desktop = Desktop.getDesktop()
+    val ownerFrame = mainWindow.ownerFrame()
 
     desktop.disableSuddenTermination()
     if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
@@ -166,7 +168,7 @@ private fun setupUserInterfaceForOsx(mainWindow: MediathekGui) {
         }
     }
     if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
-        desktop.setAboutHandler { ShowAboutAction(mainWindow).actionPerformed(null) }
+        desktop.setAboutHandler { ShowAboutAction(ownerFrame).actionPerformed(null) }
     }
 
     if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
@@ -175,7 +177,7 @@ private fun setupUserInterfaceForOsx(mainWindow: MediathekGui) {
         }
     }
 
-    val rootPane = mainWindow.rootPane
+    val rootPane = ownerFrame.rootPane
     rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
     if (SystemInfo.isMacFullWindowContentSupported) {
         rootPane.putClientProperty("apple.awt.fullWindowContent", true)

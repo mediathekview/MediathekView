@@ -157,7 +157,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowMenuPolicy menuPolicy;
     private final MainWindowScrollBarConfigurator scrollBarConfigurator;
     private final boolean disableF10MenuShortcut;
-    private final Consumer<MediathekGui> afterMenusInitialized;
+    private final Consumer<MainWindowQuitHost> afterMenusInitialized;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -227,7 +227,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowScrollBarConfigurator scrollBarConfigurator,
             MainWindowSystemTrayController systemTrayController,
             boolean disableF10MenuShortcut,
-            Consumer<MediathekGui> afterMenusInitialized
+            Consumer<MainWindowQuitHost> afterMenusInitialized
     ) {
         this(
                 notificationCenterFactory,
@@ -279,7 +279,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowScrollBarConfigurator scrollBarConfigurator,
             MainWindowSystemTrayController systemTrayController,
             boolean disableF10MenuShortcut,
-            Consumer<MediathekGui> afterMenusInitialized
+            Consumer<MainWindowQuitHost> afterMenusInitialized
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
