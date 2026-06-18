@@ -61,6 +61,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import java.util.function.Consumer
 import java.util.function.LongConsumer
+import java.util.function.Predicate
 import javax.swing.*
 import javax.swing.Timer
 import kotlin.time.Duration
@@ -73,6 +74,7 @@ class GuiDownloads(
     private val showFilmInformationAction: Action,
     private val selectedListItemsCount: LongConsumer,
     private val selectedFilm: Consumer<DatenFilm?>,
+    private val quitApplication: Predicate<Boolean>,
 ) : JPanel() {
     val startAllDownloadsAction = StartAllDownloadsAction(this)
     val startAllDownloadsTimedAction = StartAllDownloadsTimedAction(this)
@@ -756,7 +758,7 @@ class GuiDownloads(
         val dialogBeenden = DialogBeendenZeit(mediathekGui, downloadsToStart)
         dialogBeenden.isVisible = true
         if (dialogBeenden.applicationCanTerminate()) {
-            mediathekGui.quitApplication(dialogBeenden.isShutdownRequested())
+            quitApplication.test(dialogBeenden.isShutdownRequested())
         }
 
         reloadTable()

@@ -869,7 +869,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 this,
                 showFilmInformationAction,
                 this::setSelectedListItemsCount,
-                film -> getFilmInfoDialog().updateCurrentFilm(film)
+                film -> getFilmInfoDialog().updateCurrentFilm(film),
+                this::quitApplication
         );
     }
 
@@ -1034,7 +1035,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         return quitApplication(false);
     }
 
-    public boolean quitApplication(boolean shutdownComputer) {
+    private boolean quitApplication(boolean shutdownComputer) {
         if (!applicationQuitInProgress.compareAndSet(false, true)) {
             return true;
         }
