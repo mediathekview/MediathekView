@@ -86,9 +86,18 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private static final ComputerShutdown NO_COMPUTER_SHUTDOWN = () -> {};
     private static final Function<MediathekGui, DownloadProgressIndicator> NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY = _ ->
             NoDownloadProgressIndicator.INSTANCE;
-    private static final MainWindowToolbarInstaller DEFAULT_TOOLBAR_INSTALLER = (_, tabbedPane, commonToolBar) -> {
-        tabbedPane.putClientProperty(MainWindowTabPlacementController.TRAILING_COMPONENT_KEY, commonToolBar);
-        tabbedPane.putClientProperty(MainWindowTabPlacementController.TAB_ROTATION_KEY, "auto");
+    private static final MainWindowToolbarInstaller DEFAULT_TOOLBAR_INSTALLER = new MainWindowToolbarInstaller() {
+        @Override
+        public void configure(JToolBar commonToolBar) {
+            commonToolBar.setFloatable(true);
+            commonToolBar.setName("Allgemein");
+        }
+
+        @Override
+        public void install(Container contentPane, JTabbedPane tabbedPane, JToolBar commonToolBar) {
+            tabbedPane.putClientProperty(MainWindowTabPlacementController.TRAILING_COMPONENT_KEY, commonToolBar);
+            tabbedPane.putClientProperty(MainWindowTabPlacementController.TAB_ROTATION_KEY, "auto");
+        }
     };
     private final AtomicBoolean applicationQuitInProgress = new AtomicBoolean();
     private final AtomicBoolean disposed = new AtomicBoolean();
@@ -546,9 +555,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         jMenuBar.add(actionButton);
     }
 
-    protected void setToolBarProperties() {
-        commonToolBar.setFloatable(true);
-        commonToolBar.setName("Allgemein");
+    private void setToolBarProperties() {
+        toolbarInstaller.configure(commonToolBar);
     }
 
     private void installToolBar() {

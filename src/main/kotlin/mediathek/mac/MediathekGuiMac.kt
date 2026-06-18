@@ -142,10 +142,6 @@ class MediathekGuiMac : MediathekGui(
 
     }
 
-    override fun setToolBarProperties() {
-        //not used on macOS
-    }
-
     override fun createMenuPolicy(): MainWindowMenuPolicy = MacMainWindowMenuPolicy
 
     override fun setupScrollBarWidth() {

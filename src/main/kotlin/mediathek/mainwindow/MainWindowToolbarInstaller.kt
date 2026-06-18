@@ -22,6 +22,8 @@ import java.awt.Container
 import javax.swing.JTabbedPane
 import javax.swing.JToolBar
 
-fun interface MainWindowToolbarInstaller {
+interface MainWindowToolbarInstaller {
+    fun configure(commonToolBar: JToolBar) = Unit
+
     fun install(contentPane: Container, tabbedPane: JTabbedPane, commonToolBar: JToolBar)
 }
