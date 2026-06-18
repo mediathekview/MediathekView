@@ -26,9 +26,10 @@ import mediathek.controller.history.SeenHistoryController
 import mediathek.shutdown.ComputerShutdown
 import mediathek.tool.RuntimeStatistics
 import java.awt.Cursor
+import javax.swing.JFrame
 
 class MainWindowShutdownCoordinator(
-    private val owner: MediathekGui,
+    private val owner: JFrame,
     private val daten: Daten,
     private val dialogCoordinator: MainWindowDialogCoordinator,
     private val tabRegistry: MainWindowTabRegistry,
