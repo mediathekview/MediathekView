@@ -734,6 +734,13 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         return showStatusBarProgress(new JLabel(), new JProgressBar());
     }
 
+    @Override
+    public void setFilmIndexingActionsEnabled(boolean enabled) {
+        toggleBlacklistAction.setEnabled(enabled);
+        editBlacklistAction.setEnabled(enabled);
+        loadFilmListAction.setEnabled(enabled);
+    }
+
     private void installStatusBarProgressOnEdt(JLabel label, JProgressBar progressBar) {
         runOnEventDispatchThreadAndWait("Install status bar progress", () -> installStatusBarProgress(label, progressBar));
     }

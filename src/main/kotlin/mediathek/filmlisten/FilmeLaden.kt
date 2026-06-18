@@ -59,6 +59,7 @@ class FilmeLaden(private val daten: Daten) {
     private data class StatusBarWidgets(
         val handle: StatusBarProgressHandle,
         val attachedToStatusBar: Boolean,
+        val host: FilmListLoadHost?,
     ) {
         val label
             get() = handle.label()
@@ -581,10 +582,11 @@ class FilmeLaden(private val daten: Daten) {
                 StatusBarWidgets(
                     handle = host.showStatusBarProgress(),
                     attachedToStatusBar = true,
+                    host = host,
                 )
             }
         }
-        return StatusBarWidgets(NoStatusBarProgressHandle(), attachedToStatusBar = false)
+        return StatusBarWidgets(NoStatusBarProgressHandle(), attachedToStatusBar = false, host = null)
     }
 
     private suspend fun detachStatusBarWidgets(widgets: StatusBarWidgets) {
@@ -625,7 +627,7 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private suspend fun buildPostLoadWorkerChain(writeFilmList: Boolean, widgets: StatusBarWidgets) =
-        FilmlistPostLoadTasks(daten, widgets.label, widgets.progressBar).run(writeFilmList)
+        FilmlistPostLoadTasks(daten, widgets.label, widgets.progressBar, widgets.host).run(writeFilmList)
 
     private fun runOnSwing(action: () -> Unit) {
         scope.launch(Dispatchers.Swing) {

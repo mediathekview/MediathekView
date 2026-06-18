@@ -39,8 +39,10 @@ interface DownloadControlHost {
     fun stopAllWaitingDownloads()
 }
 
-interface FilmListLoadHost : MainWindowHandle {
+interface FilmListLoadHost : MainWindowQuitHost {
     fun showStatusBarProgress(): StatusBarProgressHandle
+
+    fun setFilmIndexingActionsEnabled(enabled: Boolean)
 }
 
 interface MainWindowQuitHost : MainWindowHandle {

@@ -24,7 +24,7 @@ import mediathek.config.Daten
 import mediathek.config.StandardLocations.getFilmIndexPath
 import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.FilmListLoadHost
 import mediathek.tool.FileUtils.deletePathRecursively
 import mediathek.tool.LuceneDefaultAnalyzer
 import mediathek.tool.SwingErrorDialog
@@ -49,7 +49,11 @@ import javax.swing.JLabel
 import javax.swing.JProgressBar
 import kotlin.coroutines.cancellation.CancellationException
 
-class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: JProgressBar) : Runnable {
+class LuceneIndexWorker(
+    private val progLabel: JLabel,
+    private val progressBar: JProgressBar,
+    private val host: FilmListLoadHost? = null,
+) : Runnable {
 
     private data class IndexingTuning(val queueCapacity: Int, val writeBatchSize: Int)
 
@@ -187,11 +191,7 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
     }
 
     private suspend fun setupIndexingUi() = withContext(Dispatchers.Swing) {
-        MediathekGui.ui()?.let { ui ->
-            ui.toggleBlacklistAction.isEnabled = false
-            ui.editBlacklistAction.isEnabled = false
-            ui.loadFilmListAction.isEnabled = false
-        }
+        host?.setFilmIndexingActionsEnabled(false)
 
         progLabel.text = "Indiziere Filme"
         progressBar.isIndeterminate = false
@@ -285,23 +285,19 @@ class LuceneIndexWorker(private val progLabel: JLabel, private val progressBar: 
             }
         }
         withContext(Dispatchers.Swing) {
-            MediathekGui.ui()?.let { ui ->
+            host?.let { host ->
                 SwingErrorDialog.showExceptionMessage(
-                    ui,
+                    host.ownerFrame(),
                     "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
                     ex
                 )
-                ui.quitApplication()
+                host.quitApplication()
             }
         }
     }
 
     private suspend fun enableFilmListActions() = withContext(Dispatchers.Swing) {
-        MediathekGui.ui()?.let { ui ->
-            ui.toggleBlacklistAction.isEnabled = true
-            ui.editBlacklistAction.isEnabled = true
-            ui.loadFilmListAction.isEnabled = true
-        }
+        host?.setFilmIndexingActionsEnabled(true)
     }
 
     companion object {

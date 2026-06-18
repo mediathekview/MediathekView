@@ -27,6 +27,7 @@ import mediathek.gui.tasks.BlacklistFilterWorker
 import mediathek.gui.tasks.FilmlistWriterWorker
 import mediathek.gui.tasks.LuceneIndexWorker
 import mediathek.gui.tasks.RefreshAboWorker
+import mediathek.mainwindow.FilmListLoadHost
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 
@@ -34,6 +35,7 @@ class FilmlistPostLoadTasks(
     private val daten: Daten,
     private val label: JLabel,
     private val progressBar: JProgressBar,
+    private val host: FilmListLoadHost? = null,
 ) {
     suspend fun run(writeFilmList: Boolean) {
         RefreshAboWorker(label, progressBar).execute()
@@ -49,7 +51,7 @@ class FilmlistPostLoadTasks(
             FilmlistWriterWorker(label, progressBar).run()
         }
         if (daten.listeFilmeNachBlackList is IndexedFilmList) {
-            LuceneIndexWorker(label, progressBar).execute()
+            LuceneIndexWorker(label, progressBar, host).execute()
         }
     }
 }
