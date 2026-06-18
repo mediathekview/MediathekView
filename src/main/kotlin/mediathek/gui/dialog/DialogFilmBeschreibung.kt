@@ -25,7 +25,6 @@ import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
@@ -35,7 +34,7 @@ import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 class DialogFilmBeschreibung(
-    parent: JFrame?,
+    private val parent: JFrame?,
     private val datenFilm: DatenFilm,
 ) : DialogFilmBeschreibungBase(parent) {
     private val dialogScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -78,7 +77,7 @@ class DialogFilmBeschreibung(
         datenFilm.description = jTextArea1.text
 
         val destinationPath = buildDestinationPath()
-        val destinationFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Infos speichern", destinationPath)
+        val destinationFile = FileDialogs.chooseSaveFileLocation(this, "Infos speichern", destinationPath)
             ?: return
         val path = destinationFile.toPath()
 

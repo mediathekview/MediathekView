@@ -27,7 +27,6 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.expiration.SenderExpirationService
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.CopyToClipboardAction
 import mediathek.tool.DurationFormatter
 import mediathek.tool.GuiFunktionen
@@ -143,7 +142,7 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
                             desktop.browse(URI(toolTipText))
                         } catch (ex: Exception) {
                             SwingErrorDialog.showExceptionMessage(
-                                MediathekGui.ui(),
+                                this@FilmInfoDialog,
                                 "Es trat ein Fehler beim Öffnen des Links auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
                                 ex
                             )
