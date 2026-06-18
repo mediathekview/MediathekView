@@ -68,6 +68,7 @@ import kotlin.time.toJavaDuration
 class GuiDownloads(
     private val daten: Daten,
     private val mediathekGui: MediathekGui,
+    private val showFilmInformationAction: Action,
 ) : JPanel() {
     val startAllDownloadsAction = StartAllDownloadsAction(this)
     val startAllDownloadsTimedAction = StartAllDownloadsTimedAction(this)
@@ -253,7 +254,7 @@ class GuiDownloads(
     }
 
     private fun updateSelectedListItemsCount(table: JTable) {
-        mediathekGui.selectedListItemsProperty.setSelectedItems(table.selectedRowCount.toLong())
+        mediathekGui.setSelectedListItemsCount(table.selectedRowCount.toLong())
     }
 
     private fun updateStartInfoProperty() {
@@ -307,7 +308,9 @@ class GuiDownloads(
 
         model = TModelDownload()
         tabelle.model = model
-        tabelle.addMouseListener(DownloadsTableMouseHandler(this, tabelle, daten, mediathekGui))
+        tabelle.addMouseListener(
+            DownloadsTableMouseHandler(this, tabelle, daten, mediathekGui, showFilmInformationAction)
+        )
         tabelle.selectionModel.addListSelectionListener { event ->
             if (!event.valueIsAdjusting) {
                 updateFilmData()
@@ -321,9 +324,10 @@ class GuiDownloads(
                 DownloadColumns.visibilityStore(),
                 COLUMNS_DISABLED,
                 intArrayOf(DownloadColumns.BUTTON_START, DownloadColumns.BUTTON_DELETE),
-                true,
-                { ApplicationConfiguration.getInstance().downloadTableLineBreak = it },
-            )
+                true
+            ) {
+                ApplicationConfiguration.getInstance().downloadTableLineBreak = it
+            }
         )
     }
 

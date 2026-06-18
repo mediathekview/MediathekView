@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities
 
 class MainWindowStatusBarController(
     private val owner: MediathekGui,
+    private val selectedListItemsProperty: ListSelectedItemsProperty,
     private val runOnEventDispatchThreadAndWait: BiConsumer<String, Runnable>,
 ) {
     val startupProgressLabel: JLabel = JLabel()
@@ -34,7 +35,7 @@ class MainWindowStatusBarController(
     private lateinit var statusBar: FixedRedrawStatusBar
 
     fun createStatusBar() {
-        statusBar = FixedRedrawStatusBar(owner)
+        statusBar = FixedRedrawStatusBar(owner, selectedListItemsProperty)
         owner.contentPane.add(statusBar, BorderLayout.SOUTH)
     }
 

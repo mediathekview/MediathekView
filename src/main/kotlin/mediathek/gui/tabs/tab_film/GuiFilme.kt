@@ -64,6 +64,9 @@ import kotlin.time.Duration.Companion.milliseconds
 class GuiFilme(
     aDaten: Daten,
     private val mediathekGui: MediathekGui,
+    private val toggleBlacklistAction: Action,
+    private val editBlacklistAction: Action,
+    private val showFilmInformationAction: Action,
 ) : JPanel() {
     private val daten: Daten = aDaten
     private val copyHqUrlToClipboardActionValue: CopyUrlToClipboardAction
@@ -267,9 +270,9 @@ class GuiFilme(
             copyHqUrlToClipboardAction,
             markFilmAsSeenAction,
             markFilmAsUnseenAction,
-            mediathekGui.toggleBlacklistAction,
-            mediathekGui.editBlacklistAction,
-            mediathekGui.showFilmInformationAction,
+            toggleBlacklistAction,
+            editBlacklistAction,
+            showFilmInformationAction,
             downloadSubtitleAction,
         )
 
@@ -531,7 +534,7 @@ class GuiFilme(
     }
 
     private fun updateSelectedListItemsCount(table: JTable) {
-        mediathekGui.selectedListItemsProperty.setSelectedItems(table.selectedRowCount.toLong())
+        mediathekGui.setSelectedListItemsCount(table.selectedRowCount.toLong())
     }
 
     private fun updateStartInfoProperty() {

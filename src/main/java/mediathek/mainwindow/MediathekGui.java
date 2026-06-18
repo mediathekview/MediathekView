@@ -90,14 +90,14 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             NoDownloadProgressIndicator.INSTANCE;
     private final AtomicBoolean applicationQuitInProgress = new AtomicBoolean();
     private final AtomicBoolean disposed = new AtomicBoolean();
-    public final LoadFilmListAction loadFilmListAction;
-    public final EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
-    public final ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
-    public final ShowFilmInformationAction showFilmInformationAction;
+    private final LoadFilmListAction loadFilmListAction;
+    private final EditBlacklistAction editBlacklistAction = new EditBlacklistAction(this);
+    private final ToggleBlacklistAction toggleBlacklistAction = new ToggleBlacklistAction();
+    private final ShowFilmInformationAction showFilmInformationAction;
     /**
      * this property keeps track how many items are currently selected in the active table view
      */
-    public final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
+    private final ListSelectedItemsProperty selectedListItemsProperty = new ListSelectedItemsProperty(0);
     protected final Daten daten = Daten.getInstance();
     protected final PositionSavingTabbedPane tabbedPane = new PositionSavingTabbedPane();
     protected final JMenu jMenuHilfe = new JMenu();
@@ -137,7 +137,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
             new MainWindowProgramUpdateCoordinator(this);
     private final MainWindowStatusBarController statusBarController =
-            new MainWindowStatusBarController(this, this::runOnEventDispatchThreadAndWait);
+            new MainWindowStatusBarController(this, selectedListItemsProperty, this::runOnEventDispatchThreadAndWait);
     private final MainWindowFilmlistLoadCoordinator filmlistLoadCoordinator =
             new MainWindowFilmlistLoadCoordinator(this, daten, statusBarController);
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
@@ -362,6 +362,10 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     @Override
     public void stopAllWaitingDownloads() {
         tabDownloads.stopAllWaitingDownloads();
+    }
+
+    public void setSelectedListItemsCount(long count) {
+        selectedListItemsProperty.setSelectedItems(count);
     }
 
     private void setupFilmInfoDialog() {
@@ -689,7 +693,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     protected JPanel createTabFilme(@NonNull Daten daten) {
-        return new GuiFilme(daten, this);
+        return new GuiFilme(daten, this, toggleBlacklistAction, editBlacklistAction, showFilmInformationAction);
     }
 
     public Action getShowLuceneTutorialAction() {
@@ -697,7 +701,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     protected JPanel createTabDownloads(@NonNull Daten daten) {
-        return new GuiDownloads(daten, this);
+        return new GuiDownloads(daten, this, showFilmInformationAction);
     }
 
     private void initTabs() {

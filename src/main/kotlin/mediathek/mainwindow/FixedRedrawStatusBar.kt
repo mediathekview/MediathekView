@@ -28,9 +28,12 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * This class tries to fix some redraw issues with JXStatusBar on removal.
  */
-class FixedRedrawStatusBar(mediathekGui: MediathekGui) : JXStatusBar() {
+class FixedRedrawStatusBar(
+    mediathekGui: MediathekGui,
+    selectedListItemsProperty: ListSelectedItemsProperty,
+) : JXStatusBar() {
     init {
-        add(SelectedListItemsLabel(mediathekGui.selectedListItemsProperty))
+        add(SelectedListItemsLabel(selectedListItemsProperty))
         add(FilmSizeInfoLabel(mediathekGui))
         add(DownloadInformationLabel())
 
