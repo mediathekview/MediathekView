@@ -458,7 +458,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         return tabFilme.getTableRowCount();
     }
 
-    public String getCurrentZeitraumFilterValue() {
+    private String getCurrentZeitraumFilterValue() {
         return tabFilme.getCurrentZeitraumFilterValue();
     }
 
