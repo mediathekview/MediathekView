@@ -149,6 +149,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowToolbarInstaller toolbarInstaller;
     private final MainWindowTabPlacementController tabPlacementController;
     private final MainWindowMenuPolicy menuPolicy;
+    private final MainWindowScrollBarConfigurator scrollBarConfigurator;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -196,7 +197,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 DEFAULT_TOOLBAR_INSTALLER,
                 new MainWindowTabPlacementController(true),
                 DefaultMainWindowMenuPolicy.INSTANCE,
-                true
+                true,
+                DefaultMainWindowScrollBarConfigurator.INSTANCE
         );
     }
 
@@ -214,7 +216,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 toolbarInstaller,
                 new MainWindowTabPlacementController(true),
                 DefaultMainWindowMenuPolicy.INSTANCE,
-                true
+                true,
+                DefaultMainWindowScrollBarConfigurator.INSTANCE
         );
     }
 
@@ -225,7 +228,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowToolbarInstaller toolbarInstaller,
             MainWindowTabPlacementController tabPlacementController,
             MainWindowMenuPolicy menuPolicy,
-            boolean automaticMenuTabSwitchingSupported
+            boolean automaticMenuTabSwitchingSupported,
+            MainWindowScrollBarConfigurator scrollBarConfigurator
     ) {
         this(
                 notificationCenterFactory,
@@ -235,7 +239,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 toolbarInstaller,
                 tabPlacementController,
                 menuPolicy,
-                automaticMenuTabSwitchingSupported
+                automaticMenuTabSwitchingSupported,
+                scrollBarConfigurator
         );
     }
 
@@ -253,7 +258,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 DEFAULT_TOOLBAR_INSTALLER,
                 new MainWindowTabPlacementController(true),
                 DefaultMainWindowMenuPolicy.INSTANCE,
-                true
+                true,
+                DefaultMainWindowScrollBarConfigurator.INSTANCE
         );
     }
 
@@ -265,7 +271,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowToolbarInstaller toolbarInstaller,
             MainWindowTabPlacementController tabPlacementController,
             MainWindowMenuPolicy menuPolicy,
-            boolean automaticMenuTabSwitchingSupported
+            boolean automaticMenuTabSwitchingSupported,
+            MainWindowScrollBarConfigurator scrollBarConfigurator
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
@@ -273,6 +280,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         this.toolbarInstaller = Objects.requireNonNull(toolbarInstaller);
         this.tabPlacementController = Objects.requireNonNull(tabPlacementController);
         this.menuPolicy = Objects.requireNonNull(menuPolicy);
+        this.scrollBarConfigurator = Objects.requireNonNull(scrollBarConfigurator);
         menuTabSwitchController = new MainWindowMenuTabSwitchController(
                 tabbedPane,
                 jMenuFilme,
@@ -527,9 +535,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         am.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabFilme.copyNormalUrlToClipboardAction());
     }
 
-    protected void setupScrollBarWidth() {
-        // win and linux users complain about scrollbars being too small...
-        UIManager.put("ScrollBar.width", 16);
+    private void setupScrollBarWidth() {
+        scrollBarConfigurator.configure();
     }
 
     /**
