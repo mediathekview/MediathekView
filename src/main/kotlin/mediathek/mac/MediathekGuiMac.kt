@@ -30,6 +30,7 @@ import mediathek.mainwindow.MediathekGui
 import mediathek.mainwindow.MainWindowTabPlacementController
 import mediathek.mainwindow.MainWindowToolbarInstaller
 import mediathek.mainwindow.NoOpMainWindowScrollBarConfigurator
+import mediathek.mainwindow.NoOpMainWindowSystemTrayController
 import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
 import mediathek.tool.RuntimeArchitecture
@@ -58,6 +59,7 @@ class MediathekGuiMac : MediathekGui(
     MacMainWindowMenuPolicy,
     false,
     NoOpMainWindowScrollBarConfigurator,
+    NoOpMainWindowSystemTrayController,
     false,
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -142,10 +144,6 @@ class MediathekGuiMac : MediathekGui(
             logger.error("Failed to query processor brand", e)
         }
 
-    }
-
-    override fun initializeSystemTray() {
-        //we don´t use it on macOS
     }
 
     override fun initMenus() {

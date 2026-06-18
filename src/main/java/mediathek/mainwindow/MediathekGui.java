@@ -150,6 +150,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowTabPlacementController tabPlacementController;
     private final MainWindowMenuPolicy menuPolicy;
     private final MainWindowScrollBarConfigurator scrollBarConfigurator;
+    private final MainWindowSystemTrayController systemTrayController;
     private final boolean disableF10MenuShortcut;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
@@ -200,6 +201,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 DefaultMainWindowMenuPolicy.INSTANCE,
                 true,
                 DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                DefaultMainWindowSystemTrayController.INSTANCE,
                 true
         );
     }
@@ -220,6 +222,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 DefaultMainWindowMenuPolicy.INSTANCE,
                 true,
                 DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                DefaultMainWindowSystemTrayController.INSTANCE,
                 true
         );
     }
@@ -233,6 +236,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowMenuPolicy menuPolicy,
             boolean automaticMenuTabSwitchingSupported,
             MainWindowScrollBarConfigurator scrollBarConfigurator,
+            MainWindowSystemTrayController systemTrayController,
             boolean disableF10MenuShortcut
     ) {
         this(
@@ -245,6 +249,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 menuPolicy,
                 automaticMenuTabSwitchingSupported,
                 scrollBarConfigurator,
+                systemTrayController,
                 disableF10MenuShortcut
         );
     }
@@ -265,6 +270,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 DefaultMainWindowMenuPolicy.INSTANCE,
                 true,
                 DefaultMainWindowScrollBarConfigurator.INSTANCE,
+                DefaultMainWindowSystemTrayController.INSTANCE,
                 true
         );
     }
@@ -279,6 +285,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             MainWindowMenuPolicy menuPolicy,
             boolean automaticMenuTabSwitchingSupported,
             MainWindowScrollBarConfigurator scrollBarConfigurator,
+            MainWindowSystemTrayController systemTrayController,
             boolean disableF10MenuShortcut
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
@@ -288,6 +295,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         this.tabPlacementController = Objects.requireNonNull(tabPlacementController);
         this.menuPolicy = Objects.requireNonNull(menuPolicy);
         this.scrollBarConfigurator = Objects.requireNonNull(scrollBarConfigurator);
+        this.systemTrayController = Objects.requireNonNull(systemTrayController);
         this.disableF10MenuShortcut = disableF10MenuShortcut;
         menuTabSwitchController = new MainWindowMenuTabSwitchController(
                 tabbedPane,
@@ -328,7 +336,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         platformIntegration = new MainWindowPlatformIntegration(
                 this,
                 loadFilmListAction,
-                this::setupSystemTray
+                this::setupSystemTray,
+                systemTrayController
         );
         mainWindowController = createMainWindowController();
     }
@@ -452,7 +461,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     @Override
     public void refreshSystemTray() {
-        initializeSystemTray();
+        platformIntegration.initializeSystemTray();
     }
 
     @Override
@@ -812,10 +821,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
     private void closeProgramUpdateCoordinator() {
         programUpdateCoordinator.close();
-    }
-
-    public void initializeSystemTray() {
-        platformIntegration.initializeSystemTray();
     }
 
     protected JPanel createTabFilme(@NonNull Daten daten) {

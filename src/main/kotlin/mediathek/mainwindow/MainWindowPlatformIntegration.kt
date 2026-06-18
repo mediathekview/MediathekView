@@ -32,6 +32,7 @@ class MainWindowPlatformIntegration(
     private val owner: MediathekGui,
     private val loadFilmListAction: Action,
     private val setupSystemTray: Runnable,
+    private val systemTrayController: MainWindowSystemTrayController,
 ) {
     private var tray: MVTray? = null
 
@@ -49,7 +50,7 @@ class MainWindowPlatformIntegration(
 
     fun setupSystemTrayLater() {
         SwingUtilities.invokeLater {
-            owner.initializeSystemTray()
+            initializeSystemTray()
 
             owner.addWindowListener(object : WindowAdapter() {
                 override fun windowClosing(evt: WindowEvent) {
@@ -66,7 +67,7 @@ class MainWindowPlatformIntegration(
     fun initializeSystemTray() {
         val useTray = ApplicationConfiguration.getInstance().useTray
         if (tray == null && useTray) {
-            tray = MVTray(owner).systemTray()
+            tray = systemTrayController.initialize(owner)
         } else if (tray != null && !useTray) {
             closeSystemTray()
         }
