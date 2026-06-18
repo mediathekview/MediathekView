@@ -838,7 +838,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             @Override
             public void startDownload(@NonNull List<OnlineSearchResult> results) {
                 FilmDownloadStarterKt.startDownloads(
-                        MediathekGui.this,
+                        ownerFrame(),
                         results.stream()
                                 .map(OnlineSearchFilmAdapter.INSTANCE::toDatenFilm)
                                 .toList(),
