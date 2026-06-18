@@ -92,7 +92,7 @@ class LivestreamPanel(
         showService = ShowService(json, Konstanten.ZAPP_API_URL)
     }
 
-    private var iinaPlayer = SingleIinaPlayer()
+    private var iinaPlayer = SingleIinaPlayer { owner }
 
     override fun addNotify() {
         super.addNotify()

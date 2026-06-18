@@ -129,7 +129,7 @@ class AudiothekPanel(
     }
     private val activeDownloadCount = AtomicInteger(0)
     private var datasetTimestamp: LocalDateTime? = null
-    private val iinaPlayer = SingleIinaPlayer()
+    private val iinaPlayer = SingleIinaPlayer { owner }
     private val isDownloadManagerVisible: Boolean
         get() = downloadManagerPopup.isPopupVisible
 
