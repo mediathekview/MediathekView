@@ -21,6 +21,7 @@ package mediathek.mainwindow
 import java.awt.BorderLayout
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.BiConsumer
+import java.util.function.IntSupplier
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 import javax.swing.SwingUtilities
@@ -28,6 +29,7 @@ import javax.swing.SwingUtilities
 class MainWindowStatusBarController(
     private val owner: MediathekGui,
     private val selectedListItemsProperty: ListSelectedItemsProperty,
+    private val filmTableRowCount: IntSupplier,
     private val runOnEventDispatchThreadAndWait: BiConsumer<String, Runnable>,
 ) {
     val startupProgressLabel: JLabel = JLabel()
@@ -35,7 +37,7 @@ class MainWindowStatusBarController(
     private lateinit var statusBar: FixedRedrawStatusBar
 
     fun createStatusBar() {
-        statusBar = FixedRedrawStatusBar(owner, selectedListItemsProperty)
+        statusBar = FixedRedrawStatusBar(filmTableRowCount, selectedListItemsProperty)
         owner.contentPane.add(statusBar, BorderLayout.SOUTH)
     }
 

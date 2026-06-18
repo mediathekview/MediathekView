@@ -159,7 +159,12 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
             new MainWindowProgramUpdateCoordinator(this);
     private final MainWindowStatusBarController statusBarController =
-            new MainWindowStatusBarController(this, selectedListItemsProperty, this::runOnEventDispatchThreadAndWait);
+            new MainWindowStatusBarController(
+                    this,
+                    selectedListItemsProperty,
+                    this::getFilmTableRowCount,
+                    this::runOnEventDispatchThreadAndWait
+            );
     private final MainWindowFilmlistLoadCoordinator filmlistLoadCoordinator =
             new MainWindowFilmlistLoadCoordinator(this, daten, statusBarController);
     private final FilmlistProgressPresenter filmlistDownloadProgressListener =
@@ -454,7 +459,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         repaint();
     }
 
-    public int getFilmTableRowCount() {
+    private int getFilmTableRowCount() {
         return tabFilme.getTableRowCount();
     }
 
