@@ -7,7 +7,7 @@ import java.awt.Dimension
 import javax.swing.JDialog
 import javax.swing.JFrame
 
-class ManageAboDialog(owner: JFrame?) : JDialog(owner) {
+class ManageAboDialog(owner: JFrame) : JDialog(owner) {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val aboPanel: ManageAboPanel
     private var disposed = false
