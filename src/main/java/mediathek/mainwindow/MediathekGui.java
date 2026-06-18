@@ -155,7 +155,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private StartupFilmlistLoader startupFilmlistLoader;
     private boolean resetSettingsOnQuit;
     private boolean menuTabSwitchListenersInstalled;
-    private final MainWindowLifecycle mainWindowLifecycle = new MainWindowLifecycle(this, daten, this);
+    private final MainWindowLifecycle mainWindowLifecycle = new MainWindowLifecycle(this, daten, this, lookAndFeelListener);
 
     public MediathekGui() {
         this(GenericNotificationCenter::new);
@@ -207,7 +207,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
 
         setupScrollBarWidth();
         UIManager.put("TabbedPane.showTabSeparators", true);
-        UIManager.addPropertyChangeListener(lookAndFeelListener);
+        mainWindowLifecycle.registerLookAndFeelListener();
 
         setupAlternatingRowColors();
 
@@ -295,7 +295,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             closeSystemTray();
             closeNotificationCenter();
             downloadProgressIndicator.close();
-            UIManager.removePropertyChangeListener(lookAndFeelListener);
         }
         super.dispose();
     }

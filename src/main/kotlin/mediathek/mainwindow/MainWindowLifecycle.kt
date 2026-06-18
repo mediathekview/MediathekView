@@ -21,14 +21,27 @@ package mediathek.mainwindow
 import mediathek.config.Daten
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.tool.MessageBus
+import java.beans.PropertyChangeListener
+import javax.swing.UIManager
 
 class MainWindowLifecycle(
     private val messageBusSubscriber: Any,
     private val daten: Daten,
     private val dialogOwner: MainWindowHandle,
+    private val lookAndFeelListener: PropertyChangeListener,
 ) : AutoCloseable {
     private var messageBusSubscribed = false
     private var downloadDialogOwnerRegistered = false
+    private var lookAndFeelListenerRegistered = false
+
+    fun registerLookAndFeelListener() {
+        if (lookAndFeelListenerRegistered) {
+            return
+        }
+
+        UIManager.addPropertyChangeListener(lookAndFeelListener)
+        lookAndFeelListenerRegistered = true
+    }
 
     fun start() {
         registerDownloadDialogOwner()
@@ -59,6 +72,7 @@ class MainWindowLifecycle(
     override fun close() {
         unsubscribeFromMessageBus()
         unregisterDownloadDialogOwner()
+        unregisterLookAndFeelListener()
     }
 
     private fun unsubscribeFromMessageBus() {
@@ -77,5 +91,14 @@ class MainWindowLifecycle(
 
         daten.downloadStartCoordinator.setDialogOwner(null)
         downloadDialogOwnerRegistered = false
+    }
+
+    private fun unregisterLookAndFeelListener() {
+        if (!lookAndFeelListenerRegistered) {
+            return
+        }
+
+        UIManager.removePropertyChangeListener(lookAndFeelListener)
+        lookAndFeelListenerRegistered = false
     }
 }
