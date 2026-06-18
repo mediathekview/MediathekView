@@ -90,7 +90,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
     private static final int COMMON_POOL_SHUTDOWN_TIMEOUT_SECONDS = 5;
     private static final ComputerShutdown NO_COMPUTER_SHUTDOWN = () -> {};
-    private static final Function<MediathekGui, DownloadProgressIndicator> NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY = _ ->
+    private static final Function<JFrame, DownloadProgressIndicator> NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY = _ ->
             NoDownloadProgressIndicator.INSTANCE;
     private static final MainWindowToolbarInstaller DEFAULT_TOOLBAR_INSTALLER = new MainWindowToolbarInstaller() {
         @Override
@@ -219,7 +219,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     protected MediathekGui(
             Supplier<INotificationCenter> notificationCenterFactory,
             ComputerShutdown computerShutdown,
-            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
+            Function<JFrame, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowToolbarInstaller toolbarInstaller,
             MainWindowTabPlacementController tabPlacementController,
             MainWindowMenuPolicy menuPolicy,
@@ -248,7 +248,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     protected MediathekGui(
             Supplier<INotificationCenter> notificationCenterFactory,
             ComputerShutdown computerShutdown,
-            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
+            Function<JFrame, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowDarkModeActionPlacement darkModeActionPlacement
     ) {
         this(
@@ -270,7 +270,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private MediathekGui(
             Supplier<INotificationCenter> notificationCenterFactory,
             ComputerShutdown computerShutdown,
-            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
+            Function<JFrame, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowDarkModeActionPlacement darkModeActionPlacement,
             MainWindowToolbarInstaller toolbarInstaller,
             MainWindowTabPlacementController tabPlacementController,
