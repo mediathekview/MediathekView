@@ -28,6 +28,7 @@ import mediathek.gui.messages.ShowSettingsDialogEvent
 import mediathek.mainwindow.MacMainWindowMenuPolicy
 import mediathek.mainwindow.MediathekGui
 import mediathek.mainwindow.MainWindowMenuPolicy
+import mediathek.mainwindow.MainWindowTabPlacementController
 import mediathek.mainwindow.MainWindowToolbarInstaller
 import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
@@ -53,6 +54,7 @@ class MediathekGuiMac : MediathekGui(
     MacComputerShutdown(),
     { _ -> MacDownloadProgressIndicator() },
     MacMainWindowToolbarInstaller,
+    MainWindowTabPlacementController(false),
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -140,16 +142,8 @@ class MediathekGuiMac : MediathekGui(
 
     }
 
-    override fun resetTabPlacement() {
-        // do not reset tab placement as it is not necessary...
-    }
-
     override fun setToolBarProperties() {
         //not used on macOS
-    }
-
-    override fun configureTabPlacement() {
-        // do not configure as it interferes with installToolBar and is not necessary...
     }
 
     override fun createMenuPolicy(): MainWindowMenuPolicy = MacMainWindowMenuPolicy

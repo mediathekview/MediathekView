@@ -82,14 +82,13 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private static final int MIN_WINDOW_HEIGHT = 600;
     private static final String ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL";
     private static final String ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL";
-    private static final String TABBED_PANE_TRAILING_COMPONENT = "JTabbedPane.trailingComponent";
     private static final int COMMON_POOL_SHUTDOWN_TIMEOUT_SECONDS = 5;
     private static final ComputerShutdown NO_COMPUTER_SHUTDOWN = () -> {};
     private static final Function<MediathekGui, DownloadProgressIndicator> NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY = _ ->
             NoDownloadProgressIndicator.INSTANCE;
     private static final MainWindowToolbarInstaller DEFAULT_TOOLBAR_INSTALLER = (_, tabbedPane, commonToolBar) -> {
-        tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
-        tabbedPane.putClientProperty("JTabbedPane.tabRotation", "auto");
+        tabbedPane.putClientProperty(MainWindowTabPlacementController.TRAILING_COMPONENT_KEY, commonToolBar);
+        tabbedPane.putClientProperty(MainWindowTabPlacementController.TAB_ROTATION_KEY, "auto");
     };
     private final AtomicBoolean applicationQuitInProgress = new AtomicBoolean();
     private final AtomicBoolean disposed = new AtomicBoolean();
@@ -146,6 +145,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private final DownloadProgressIndicator downloadProgressIndicator;
     private final MainWindowDarkModeActionPlacement darkModeActionPlacement;
     private final MainWindowToolbarInstaller toolbarInstaller;
+    private final MainWindowTabPlacementController tabPlacementController;
     private final MainWindowController mainWindowController;
     private final MainWindowPlatformIntegration platformIntegration;
     private final MainWindowProgramUpdateCoordinator programUpdateCoordinator =
@@ -190,7 +190,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 computerShutdown,
                 downloadProgressIndicatorFactory,
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
-                DEFAULT_TOOLBAR_INSTALLER
+                DEFAULT_TOOLBAR_INSTALLER,
+                new MainWindowTabPlacementController(true)
         );
     }
 
@@ -205,7 +206,25 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 computerShutdown,
                 downloadProgressIndicatorFactory,
                 MainWindowDarkModeActionPlacement.TOOL_BAR,
-                toolbarInstaller
+                toolbarInstaller,
+                new MainWindowTabPlacementController(true)
+        );
+    }
+
+    protected MediathekGui(
+            Supplier<INotificationCenter> notificationCenterFactory,
+            ComputerShutdown computerShutdown,
+            Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
+            MainWindowToolbarInstaller toolbarInstaller,
+            MainWindowTabPlacementController tabPlacementController
+    ) {
+        this(
+                notificationCenterFactory,
+                computerShutdown,
+                downloadProgressIndicatorFactory,
+                MainWindowDarkModeActionPlacement.TOOL_BAR,
+                toolbarInstaller,
+                tabPlacementController
         );
     }
 
@@ -220,7 +239,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
                 computerShutdown,
                 downloadProgressIndicatorFactory,
                 darkModeActionPlacement,
-                DEFAULT_TOOLBAR_INSTALLER
+                DEFAULT_TOOLBAR_INSTALLER,
+                new MainWindowTabPlacementController(true)
         );
     }
 
@@ -229,12 +249,14 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
             ComputerShutdown computerShutdown,
             Function<MediathekGui, DownloadProgressIndicator> downloadProgressIndicatorFactory,
             MainWindowDarkModeActionPlacement darkModeActionPlacement,
-            MainWindowToolbarInstaller toolbarInstaller
+            MainWindowToolbarInstaller toolbarInstaller,
+            MainWindowTabPlacementController tabPlacementController
     ) {
         this.notificationCenterFactory = Objects.requireNonNull(notificationCenterFactory);
         this.computerShutdown = Objects.requireNonNull(computerShutdown);
         this.darkModeActionPlacement = Objects.requireNonNull(darkModeActionPlacement);
         this.toolbarInstaller = Objects.requireNonNull(toolbarInstaller);
+        this.tabPlacementController = Objects.requireNonNull(tabPlacementController);
         this.downloadProgressIndicator = Objects.requireNonNull(
                 Objects.requireNonNull(downloadProgressIndicatorFactory).apply(this)
         );
@@ -456,9 +478,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
         return true;
     }
 
-    protected void resetTabPlacement() {
-        // we need to re-setup tab-placement if the tabs are not in top position as toolbar is installed after tab creation
-        MessageBus.getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
+    private void resetTabPlacement() {
+        tabPlacementController.resetTabPlacement();
     }
 
     private void performAustrianVlcCheck() {
@@ -855,18 +876,8 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     /**
      * Change placement of tabs based on settings
      */
-    protected void configureTabPlacement() {
-        final boolean topPosition = ApplicationConfiguration.getInstance().getTabPositionTop();
-        if (topPosition) {
-            tabbedPane.setTabPlacement(JTabbedPane.TOP);
-            getContentPane().remove(commonToolBar);
-            tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, commonToolBar);
-        }
-        else {
-            tabbedPane.setTabPlacement(JTabbedPane.LEFT);
-            tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, null);
-            getContentPane().add(commonToolBar, BorderLayout.PAGE_START);
-        }
+    private void configureTabPlacement() {
+        tabPlacementController.configureTabPlacement(getContentPane(), tabbedPane, commonToolBar);
     }
 
     private void configureTabIcons() {
