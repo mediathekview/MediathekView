@@ -33,14 +33,11 @@ import mediathek.gui.filmInformation.FilmInfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.gui.progress.DownloadProgressIndicator;
 import mediathek.gui.progress.NoDownloadProgressIndicator;
-import mediathek.gui.tabs.tab_film.FilmDownloadStarterKt;
 import mediathek.gui.tabs.tab_downloads.GuiDownloads;
 import mediathek.gui.tabs.tab_film.GuiFilme;
 import mediathek.gui.tabs.tab_livestreams.LivestreamPanel;
-import mediathek.gui.tabs.tab_online_search.OnlineSearchFilmAdapter;
 import mediathek.gui.tabs.tab_online_search.OnlineSearchHost;
 import mediathek.gui.tabs.tab_online_search.OnlineSearchPanel;
-import mediathek.gui.tabs.tab_online_search.OnlineSearchResult;
 import mediathek.logging.LogDialog;
 import mediathek.shutdown.ComputerShutdown;
 import mediathek.swing.SwingDispatch;
@@ -63,7 +60,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -823,35 +819,11 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private OnlineSearchHost createOnlineSearchHost() {
-        return new OnlineSearchHost() {
-            @Override
-            public void updateCurrentResult(OnlineSearchResult result) {
-                getFilmInfoDialog().updateCurrentFilm(result == null ? null : OnlineSearchFilmAdapter.INSTANCE.toDatenFilm(result));
-            }
-
-            @Override
-            public void showFilmInfo(@NonNull OnlineSearchResult result) {
-                updateCurrentResult(result);
-                getFilmInfoDialog().showInfo();
-            }
-
-            @Override
-            public void startDownload(@NonNull List<OnlineSearchResult> results) {
-                FilmDownloadStarterKt.startDownloads(
-                        ownerFrame(),
-                        results.stream()
-                                .map(OnlineSearchFilmAdapter.INSTANCE::toDatenFilm)
-                                .toList(),
-                        null,
-                        null
-                );
-            }
-
-            @Override
-            public void playResult(@NonNull OnlineSearchResult result) {
-                UrlHyperlinkAction.openURL(result.getNormalQualityUrl());
-            }
-        };
+        return new MainWindowOnlineSearchHost(
+                ownerFrame(),
+                film -> getFilmInfoDialog().updateCurrentFilm(film),
+                () -> getFilmInfoDialog().showInfo()
+        );
     }
 
     private JPanel createTabFilme(@NonNull Daten daten) {
