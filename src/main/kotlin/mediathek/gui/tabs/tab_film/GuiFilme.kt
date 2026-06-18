@@ -234,7 +234,7 @@ class GuiFilme(
         object : SearchField.Host {
             override val showLuceneTutorialAction: Action = this@GuiFilme.showLuceneTutorialAction
 
-            override fun mediathekGui() = mediathekGui
+            override fun ownerWindow() = mediathekGui
 
             override fun loadTable() {
                 this@GuiFilme.loadTable()
