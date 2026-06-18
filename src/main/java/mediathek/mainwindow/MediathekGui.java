@@ -26,7 +26,6 @@ import mediathek.config.*;
 import mediathek.config.application.ApplicationConfiguration;
 import mediathek.filmeSuchen.ListenerFilmeLaden;
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.gui.MVTray;
 import mediathek.gui.actions.*;
 import mediathek.gui.bookmark.BookmarkDialog;
 import mediathek.gui.dialog.DialogBeenden;
@@ -60,8 +59,6 @@ import org.jspecify.annotations.NonNull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
@@ -148,7 +145,6 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     private GuiFilme tabFilme;
     private GuiDownloads tabDownloads;
     private FilmInfoDialog filmInfo;
-    private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private ProgramUpdateCheck programUpdateChecker;
     private AutomaticFilmlistUpdate automaticFilmlistUpdate;
@@ -544,21 +540,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     protected void setupSystemTray() {
-        SwingUtilities.invokeLater(() -> {
-            initializeSystemTray();
-
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent evt) {
-                    if (tray != null && ApplicationConfiguration.getInstance().getUseTray()) {
-                        setVisible(false);
-                    }
-                    else {
-                        quitApplication();
-                    }
-                }
-            });
-        });
+        platformIntegration.setupSystemTrayLater();
     }
 
     private void setIconAndWindowImage() {
@@ -789,14 +771,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     public void initializeSystemTray() {
-        final var useTray = ApplicationConfiguration.getInstance().getUseTray();
-        if (tray == null && useTray) {
-            tray = new MVTray(this).systemTray();
-        }
-        else if (tray != null && !useTray) {
-            tray.beenden();
-            tray = null;
-        }
+        platformIntegration.initializeSystemTray();
     }
 
     protected JPanel createTabFilme(@NonNull Daten daten) {
@@ -1129,10 +1104,7 @@ public class MediathekGui extends JFrame implements FilmBookmarkHost, DownloadCo
     }
 
     private void closeSystemTray() {
-        if (tray != null) {
-            tray.beenden();
-            tray = null;
-        }
+        platformIntegration.closeSystemTray();
     }
 
     private void closeAutomaticFilmlistUpdate() {

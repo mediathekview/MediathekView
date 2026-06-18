@@ -18,18 +18,23 @@
 
 package mediathek.mainwindow
 
+import mediathek.config.application.ApplicationConfiguration
+import mediathek.gui.MVTray
 import raven.toast.Notifications
 import java.awt.PopupMenu
 import java.awt.Taskbar
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import javax.swing.Action
-import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
 class MainWindowPlatformIntegration(
-    private val owner: JFrame,
+    private val owner: MediathekGui,
     private val loadFilmListAction: Action,
     private val setupSystemTray: Runnable,
 ) {
+    private var tray: MVTray? = null
+
     fun setupTaskbarMenuLater() {
         SwingUtilities.invokeLater {
             if (Taskbar.isTaskbarSupported()) {
@@ -40,6 +45,36 @@ class MainWindowPlatformIntegration(
 
     fun setupSystemTray() {
         setupSystemTray.run()
+    }
+
+    fun setupSystemTrayLater() {
+        SwingUtilities.invokeLater {
+            owner.initializeSystemTray()
+
+            owner.addWindowListener(object : WindowAdapter() {
+                override fun windowClosing(evt: WindowEvent) {
+                    if (tray != null && ApplicationConfiguration.getInstance().useTray) {
+                        owner.isVisible = false
+                    } else {
+                        owner.quitApplication()
+                    }
+                }
+            })
+        }
+    }
+
+    fun initializeSystemTray() {
+        val useTray = ApplicationConfiguration.getInstance().useTray
+        if (tray == null && useTray) {
+            tray = MVTray(owner).systemTray()
+        } else if (tray != null && !useTray) {
+            closeSystemTray()
+        }
+    }
+
+    fun closeSystemTray() {
+        tray?.beenden()
+        tray = null
     }
 
     fun setupRavenNotifications() {
