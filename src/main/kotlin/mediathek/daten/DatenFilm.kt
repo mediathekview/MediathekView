@@ -32,6 +32,7 @@ import java.net.HttpURLConnection
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.time.DateTimeException
 import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -69,8 +70,11 @@ class DatenFilm private constructor(
             invalidateSha256()
         }
     var title: String = ""
-    var sendeDatum: String = ""
-    var sendeZeit: String = ""
+    private var sendeDateTimeStorage = packSendeDateTime(
+        UNDEFINED_SENDE_DATUM_EPOCH_DAY,
+        UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY,
+    )
+    private var sendeDateTimeFallback: Array<String?>? = null
     var filmLength: Int = 0
         private set
     private var filmLengthAsStringCache = ""
@@ -106,8 +110,8 @@ class DatenFilm private constructor(
             knownBlockedCountries = EnumSet.copyOf(it)
         }
         flags = other.flags
-        sendeDatum = other.sendeDatum
-        sendeZeit = other.sendeZeit
+        sendeDateTimeStorage = other.sendeDateTimeStorage
+        sendeDateTimeFallback = other.sendeDateTimeFallback?.copyOf()
         filmLength = other.filmLength
         filmLengthAsStringCache = other.filmLengthAsStringCache
         season = other.season
@@ -167,6 +171,79 @@ class DatenFilm private constructor(
 
     fun setDatumLongSeconds(datumLongSeconds: Long) {
         this.datumLongSeconds = datumLongSeconds
+    }
+
+    var sendeDatum: String
+        get() {
+            val fallback = sendeDateTimeFallback?.get(SENDE_DATUM_FALLBACK_INDEX)
+            if (fallback != null) {
+                return fallback
+            }
+
+            return if (sendeDatumEpochDay == UNDEFINED_SENDE_DATUM_EPOCH_DAY) {
+                ""
+            } else {
+                formatSendeDatum(sendeDatumEpochDay)
+            }
+        }
+        set(value) {
+            val epochDay = parseSendeDatum(value)
+            if (epochDay == null) {
+                sendeDatumEpochDay = UNDEFINED_SENDE_DATUM_EPOCH_DAY
+                setSendeDateTimeFallback(SENDE_DATUM_FALLBACK_INDEX, value.ifEmpty { null })
+            } else {
+                sendeDatumEpochDay = epochDay
+                setSendeDateTimeFallback(SENDE_DATUM_FALLBACK_INDEX, null)
+            }
+        }
+
+    var sendeZeit: String
+        get() {
+            val fallback = sendeDateTimeFallback?.get(SENDE_ZEIT_FALLBACK_INDEX)
+            if (fallback != null) {
+                return fallback
+            }
+
+            return if (sendeZeitSecondOfDay == UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY) {
+                ""
+            } else {
+                formatSendeZeit(sendeZeitSecondOfDay)
+            }
+        }
+        set(value) {
+            val secondOfDay = parseSendeZeit(value)
+            if (secondOfDay == null) {
+                sendeZeitSecondOfDay = UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+                setSendeDateTimeFallback(SENDE_ZEIT_FALLBACK_INDEX, value.ifEmpty { null })
+            } else {
+                sendeZeitSecondOfDay = secondOfDay
+                setSendeDateTimeFallback(SENDE_ZEIT_FALLBACK_INDEX, null)
+            }
+        }
+
+    private var sendeDatumEpochDay: Int
+        get() = (sendeDateTimeStorage shr Int.SIZE_BITS).toInt()
+        set(value) {
+            sendeDateTimeStorage = packSendeDateTime(value, sendeZeitSecondOfDay)
+        }
+
+    private var sendeZeitSecondOfDay: Int
+        get() = sendeDateTimeStorage.toInt()
+        set(value) {
+            sendeDateTimeStorage = packSendeDateTime(sendeDatumEpochDay, value)
+        }
+
+    private fun setSendeDateTimeFallback(index: Int, value: String?) {
+        if (value == null && sendeDateTimeFallback == null) {
+            return
+        }
+
+        val fallback = sendeDateTimeFallback ?: arrayOfNulls<String>(SENDE_DATE_TIME_FALLBACK_SIZE)
+            .also { sendeDateTimeFallback = it }
+        fallback[index] = value
+        if (fallback.all { it == null }) {
+            sendeDateTimeFallback = null
+        }
     }
 
     private fun hasFlag(flag: Int): Boolean = flags and flag != 0
@@ -668,6 +745,11 @@ class DatenFilm private constructor(
         private val logger = LogManager.getLogger(DatenFilm::class.java)
         private val USE_SHA256_FAST_PATH = RuntimeArchitecture.isIntelOrAmd64Bit
         private val UNDEFINED_DATUM_FILM_TIME_MILLIS = DatumFilm.UNDEFINED_FILM_DATE.time
+        private const val UNDEFINED_SENDE_DATUM_EPOCH_DAY = Int.MIN_VALUE
+        private const val UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY = -1
+        private const val SENDE_DATUM_FALLBACK_INDEX = 0
+        private const val SENDE_ZEIT_FALLBACK_INDEX = 1
+        private const val SENDE_DATE_TIME_FALLBACK_SIZE = 2
         private val FILMNR_GENERATOR = AtomicInteger(0)
 
         fun isCompressedUrl(requestedUrl: String): Boolean =
@@ -681,6 +763,95 @@ class DatenFilm private constructor(
                 throw IllegalStateException("SHA-256 algorithm is unavailable", ex)
             }
         }
+
+        private fun parseSendeDatum(value: String): Int? {
+            if (value.isEmpty()) {
+                return UNDEFINED_SENDE_DATUM_EPOCH_DAY
+            }
+            if (value.length != 10 || value[2] != '.' || value[5] != '.') {
+                return null
+            }
+
+            val day = parseTwoDigitPositiveInt(value, 0) ?: return null
+            val month = parseTwoDigitPositiveInt(value, 3) ?: return null
+            val year = parseFourDigitPositiveInt(value, 6) ?: return null
+            return try {
+                LocalDate.of(year, month, day).toEpochDay().toInt()
+            } catch (_: DateTimeException) {
+                null
+            }
+        }
+
+        private fun formatSendeDatum(epochDay: Int): String {
+            val date = LocalDate.ofEpochDay(epochDay.toLong())
+            return buildString(10) {
+                appendTwoDigits(date.dayOfMonth)
+                append('.')
+                appendTwoDigits(date.monthValue)
+                append('.')
+                appendFourDigits(date.year)
+            }
+        }
+
+        private fun parseSendeZeit(value: String): Int? {
+            if (value.isEmpty()) {
+                return UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+            }
+            if (value.length != 8 || value[2] != ':' || value[5] != ':') {
+                return null
+            }
+
+            val hour = parseTwoDigitPositiveInt(value, 0) ?: return null
+            val minute = parseTwoDigitPositiveInt(value, 3) ?: return null
+            val second = parseTwoDigitPositiveInt(value, 6) ?: return null
+            if (hour !in 0..23 || minute !in 0..59 || second !in 0..59) {
+                return null
+            }
+            return hour * 3600 + minute * 60 + second
+        }
+
+        private fun formatSendeZeit(secondOfDay: Int): String {
+            val hour = secondOfDay / 3600
+            val minute = secondOfDay % 3600 / 60
+            val second = secondOfDay % 60
+            return buildString(8) {
+                appendTwoDigits(hour)
+                append(':')
+                appendTwoDigits(minute)
+                append(':')
+                appendTwoDigits(second)
+            }
+        }
+
+        private fun StringBuilder.appendTwoDigits(value: Int) {
+            append(('0'.code + value / 10).toChar())
+            append(('0'.code + value % 10).toChar())
+        }
+
+        private fun StringBuilder.appendFourDigits(value: Int) {
+            append(('0'.code + value / 1000 % 10).toChar())
+            append(('0'.code + value / 100 % 10).toChar())
+            append(('0'.code + value / 10 % 10).toChar())
+            append(('0'.code + value % 10).toChar())
+        }
+
+        private fun parseTwoDigitPositiveInt(value: String, start: Int): Int? =
+            parseFixedWidthPositiveInt(value, start, start + 2)
+
+        private fun parseFourDigitPositiveInt(value: String, start: Int): Int? =
+            parseFixedWidthPositiveInt(value, start, start + 4)
+
+        private fun parseFixedWidthPositiveInt(value: String, start: Int, end: Int): Int? {
+            var result = 0
+            for (index in start..<end) {
+                val digit = value[index].digitToIntOrNull() ?: return null
+                result = result * 10 + digit
+            }
+            return result
+        }
+
+        private fun packSendeDateTime(epochDay: Int, secondOfDay: Int): Long =
+            epochDay.toLong() shl Int.SIZE_BITS or (secondOfDay.toLong() and 0xffffffffL)
     }
 
     private data class FileSizeLookupKey(

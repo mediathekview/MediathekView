@@ -231,6 +231,62 @@ internal class DatenFilmTest {
     }
 
     @Test
+    fun sendeDatumAndSendeZeitUseCompactStorageForStandardValues() {
+        val film = DatenFilm()
+
+        film.sendeDatum = "15.05.2026"
+        film.sendeZeit = "20:15:30"
+
+        assertEquals("15.05.2026", film.sendeDatum)
+        assertEquals("20:15:30", film.sendeZeit)
+        assertNull(film.privateField("sendeDateTimeFallback"))
+    }
+
+    @Test
+    fun sendeDatumAndSendeZeitKeepFallbackStorageForNonStandardValues() {
+        val film = DatenFilm()
+
+        film.sendeDatum = "unknown"
+        film.sendeZeit = "20:15"
+
+        assertEquals("unknown", film.sendeDatum)
+        assertEquals("20:15", film.sendeZeit)
+        val fallback = film.privateField("sendeDateTimeFallback") as Array<*>
+        assertEquals("unknown", fallback[0])
+        assertEquals("20:15", fallback[1])
+    }
+
+    @Test
+    fun sendeDatumAndSendeZeitClearFallbackStorageForStandardValues() {
+        val film = DatenFilm().apply {
+            sendeDatum = "unknown"
+            sendeZeit = "20:15"
+        }
+
+        film.sendeDatum = "15.05.2026"
+        film.sendeZeit = "20:15:30"
+
+        assertEquals("15.05.2026", film.sendeDatum)
+        assertEquals("20:15:30", film.sendeZeit)
+        assertNull(film.privateField("sendeDateTimeFallback"))
+    }
+
+    @Test
+    fun copyPreservesCompactSendeDatumAndSendeZeitStorage() {
+        val film = DatenFilm().apply {
+            sendeDatum = "15.05.2026"
+            sendeZeit = "20:15:30"
+        }
+
+        val copy = DatenFilm(film)
+
+        assertEquals(film.sendeDatum, copy.sendeDatum)
+        assertEquals(film.sendeZeit, copy.sendeZeit)
+        assertEquals(film.privateField("sendeDateTimeStorage"), copy.privateField("sendeDateTimeStorage"))
+        assertNull(copy.privateField("sendeDateTimeFallback"))
+    }
+
+    @Test
     fun optionalUrlPresenceUsesNullableState() {
         val film = DatenFilm()
 
