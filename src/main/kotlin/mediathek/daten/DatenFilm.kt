@@ -220,9 +220,9 @@ class DatenFilm private constructor(
         }
 
     var websiteUrl: String
-        get() = websiteUrlStorage ?: ""
+        get() = websiteUrlStorage?.let(UrlHostDictionary::expand) ?: ""
         set(value) {
-            websiteUrlStorage = value.ifEmpty { null }
+            websiteUrlStorage = value.takeIf { it.isNotEmpty() }?.let(UrlHostDictionary::compress)
             invalidateSha256()
         }
 
@@ -580,9 +580,9 @@ class DatenFilm private constructor(
     }
 
     var subtitleUrl: String
-        get() = subtitleUrlStorage ?: ""
+        get() = subtitleUrlStorage?.let(UrlHostDictionary::expand) ?: ""
         set(value) {
-            subtitleUrlStorage = value.ifEmpty { null }
+            subtitleUrlStorage = value.takeIf { it.isNotEmpty() }?.let(UrlHostDictionary::compress)
         }
 
     val isBookmarked: Boolean

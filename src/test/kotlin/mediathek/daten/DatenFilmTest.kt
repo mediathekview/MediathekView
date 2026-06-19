@@ -256,13 +256,15 @@ internal class DatenFilmTest {
         film.subtitleUrl = "https://example.org/subtitle.vtt"
         film.websiteUrl = "https://example.org/page"
 
+        assertEquals("https://example.org/subtitle.vtt", film.subtitleUrl)
+        assertEquals("https://example.org/page", film.websiteUrl)
         assertTrue(film.hasLowQuality())
         assertTrue(film.isHighQuality)
         assertTrue(film.hasSubtitle())
         assertEquals("https://example.org/low.mp4", film.privateField("lowQualityUrlStorage"))
         assertEquals("https://example.org/high.mp4", film.privateField("highQualityUrlStorage"))
-        assertEquals("https://example.org/subtitle.vtt", film.privateField("subtitleUrlStorage"))
-        assertEquals("https://example.org/page", film.privateField("websiteUrlStorage"))
+        assertCompressedUrlStorage(film, "subtitleUrlStorage", "https://example.org/subtitle.vtt")
+        assertCompressedUrlStorage(film, "websiteUrlStorage", "https://example.org/page")
     }
 
     @Test
@@ -288,6 +290,19 @@ internal class DatenFilmTest {
         val copy = DatenFilm(film)
 
         assertEquals(url, copy.urlNormalQuality)
+    }
+
+    @Test
+    fun copyPreservesWebsiteAndSubtitleUrlsWithHostDictionaryStorage() {
+        val film = DatenFilm().apply {
+            websiteUrl = "https://www.example.org/path/to/page.html"
+            subtitleUrl = "https://subtitle.example.org/path/to/subtitle.vtt"
+        }
+
+        val copy = DatenFilm(film)
+
+        assertEquals(film.websiteUrl, copy.websiteUrl)
+        assertEquals(film.subtitleUrl, copy.subtitleUrl)
     }
 
     @Test
@@ -422,6 +437,12 @@ internal class DatenFilmTest {
             val field = DatenFilm::class.java.getDeclaredField(name)
             field.isAccessible = true
             return field.get(this)
+        }
+
+        private fun assertCompressedUrlStorage(film: DatenFilm, fieldName: String, expandedUrl: String) {
+            val storedUrl = film.privateField(fieldName) as String
+            assertTrue(storedUrl.startsWith("~"))
+            assertTrue(storedUrl.length < expandedUrl.length)
         }
     }
 }
