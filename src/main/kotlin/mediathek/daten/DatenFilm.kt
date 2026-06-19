@@ -197,11 +197,19 @@ class DatenFilm private constructor(
     }
 
     fun setSendeDatumFromFilmlistValue(value: String) {
-        storedSendeDatumEpochDay = parseSendeDatum(value) ?: UNDEFINED_SENDE_DATUM_EPOCH_DAY
+        storedSendeDatumEpochDay = if (value.isEmpty()) {
+            UNDEFINED_SENDE_DATUM_EPOCH_DAY
+        } else {
+            parseSendeDatum(value) ?: UNDEFINED_SENDE_DATUM_EPOCH_DAY
+        }
     }
 
     fun setSendeZeitFromFilmlistValue(value: String) {
-        storedSendeZeitSecondOfDay = parseSendeZeit(value) ?: UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+        storedSendeZeitSecondOfDay = if (value.isEmpty()) {
+            UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+        } else {
+            parseSendeZeit(value) ?: UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+        }
     }
 
     fun clearSendeDateTime() {
@@ -736,9 +744,6 @@ class DatenFilm private constructor(
         }
 
         private fun parseSendeDatum(value: String): Int? {
-            if (value.isEmpty()) {
-                return UNDEFINED_SENDE_DATUM_EPOCH_DAY
-            }
             if (value.length != 10 || value[2] != '.' || value[5] != '.') {
                 return null
             }
@@ -765,9 +770,6 @@ class DatenFilm private constructor(
         }
 
         private fun parseSendeZeit(value: String): Int? {
-            if (value.isEmpty()) {
-                return UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
-            }
             if ((value.length != 5 && value.length != 8) || value[2] != ':') {
                 return null
             }
