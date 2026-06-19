@@ -31,7 +31,6 @@ import javax.swing.JOptionPane
 object SettingsResetService {
     private val logger = LogManager.getLogger()
 
-    @JvmStatic
     fun moveSettingsDirectoryAside() {
         val source = StandardLocations.getSettingsDirectory()
         try {

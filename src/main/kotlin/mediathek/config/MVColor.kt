@@ -147,7 +147,6 @@ object MVColor {
 
         fun getBlueColor(): Color = getRegExPatternColor()
 
-        @JvmStatic
         fun getAlternatingRowColor(): Color {
             if (!FlatLaf.isLafDark()) {
                 return ALTERNATE_ROW_COLOR.color

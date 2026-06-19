@@ -29,7 +29,6 @@ object NotificationService : Closeable {
     private val logger = LogManager.getLogger()
     private var notificationCenter: INotificationCenter = NullNotificationCenter()
 
-    @JvmStatic
     fun configure(notificationCenterFactory: Supplier<INotificationCenter>, enabled: Boolean) {
         closeCurrentNotificationCenter()
         notificationCenter = if (enabled) notificationCenterFactory.get() else NullNotificationCenter()

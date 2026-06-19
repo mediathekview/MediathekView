@@ -40,7 +40,6 @@ object SplashScreenLifecycle {
         }
     }
 
-    @JvmStatic
     fun update(state: UIProgressState) {
         splashScreen?.update(state)
     }

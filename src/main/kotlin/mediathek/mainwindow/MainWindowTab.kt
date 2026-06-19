@@ -24,7 +24,7 @@ import javax.swing.Action
 import javax.swing.Icon
 import javax.swing.JComponent
 
-class MainWindowTab @JvmOverloads constructor(
+class MainWindowTab(
     val title: String,
     val component: JComponent,
     val visible: BooleanSupplier = BooleanSupplier { true },

@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:JvmName("FileNameExtensions")
-
 package mediathek.tool
 
 fun getLikelyExtensionDotIndex(fileName: String): Int {

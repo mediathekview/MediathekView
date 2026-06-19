@@ -18,15 +18,8 @@
 
 package mediathek.gui.dialogEinstellungen.blacklist
 
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Daten
 import mediathek.config.Konstanten
@@ -73,7 +66,7 @@ class PanelBlacklist(
     private var blacklistRefreshJob: Job? = null
     private var blacklistRefreshSequence = 0
     private var listenersRegistered = false
-    private lateinit var tableColumnSettings: BlacklistRuleTableColumnSettings
+    private var tableColumnSettings: BlacklistRuleTableColumnSettings
 
     init {
         jButtonHilfe.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
