@@ -10,6 +10,8 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+private const val ZDF_APP_ID = "ffw-mt-web-036df51e"
+
 fun interface ZdfGraphqlSearchLoader {
     suspend fun load(query: String, cursor: String?, bearer: String): ZdfSearchGraphqlResult
 }
@@ -129,7 +131,7 @@ class ZdfOnlineSearchService(
     private fun zdfHeaders(bearer: String): Map<String, String> = mapOf(
         "Referer" to "https://www.zdf.de/",
         "content-type" to "application/json",
-        "zdf-app-id" to "ffw-mt-web-05d9aa4f",
+        "zdf-app-id" to ZDF_APP_ID,
         "api-auth" to "Bearer $bearer",
         "Origin" to "https://www.zdf.de",
     )
@@ -326,7 +328,7 @@ private class ZdfDefaultGraphqlSearchLoader(
     private fun zdfHeaders(bearer: String): Map<String, String> = mapOf(
         "Referer" to "https://www.zdf.de/",
         "content-type" to "application/json",
-        "zdf-app-id" to "ffw-mt-web-05d9aa4f",
+        "zdf-app-id" to ZDF_APP_ID,
         "api-auth" to "Bearer $bearer",
         "Origin" to "https://www.zdf.de",
     )
@@ -352,17 +354,19 @@ internal object ZdfGraphqlUrlFactory {
                 put("after", cursor)
             }
         }.toString()
-        val extensions = buildJsonObject {
-            put(
-                "persistedQuery",
-                buildJsonObject {
-                    put("version", 1)
-                    put("sha256Hash", "7617f9fb0a7dd8ea236318372b9991fbda70a0068fc3dbb7e75d7605f7b91340")
-                },
-            )
-        }.toString()
         return "https://api.zdf.de/graphql?operationName=getSearchResults" +
             "&variables=${URLEncoder.encode(variables, StandardCharsets.UTF_8)}" +
-            "&extensions=${URLEncoder.encode(extensions, StandardCharsets.UTF_8)}"
+            "&query=${URLEncoder.encode(SEARCH_QUERY, StandardCharsets.UTF_8)}"
     }
+
+    private const val SEARCH_QUERY =
+        "query getSearchResults(\$query: String!, \$mode: SearchMode, \$first: Int, \$after: Cursor, " +
+            "\$filters: SearchFilters, \$group: String) { " +
+            "searchDocuments(query: \$query, mode: \$mode, first: \$first, after: \$after, filters: \$filters, " +
+            "group: \$group) { " +
+            "pageInfo { hasNextPage endCursor } " +
+            "results { item { __typename ... on IBaseDocument { canonical } ... on ISmartCollection { canonical } " +
+            "... on CuratedCollection { canonical } ... on MetaCollection { canonical } } } " +
+            "} " +
+            "}"
 }
