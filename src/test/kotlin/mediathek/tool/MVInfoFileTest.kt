@@ -111,8 +111,8 @@ internal class MVInfoFileTest {
                 sender = "Sender"
                 thema = "Thema"
                 title = "Titel"
-                sendeDatum = "01.01.2026"
-                sendeZeit = "20:15"
+                setSendeDatumFromString("01.01.2026")
+                setSendeZeitFromString("20:15")
                 setFilmLengthSeconds(3600)
                 description = "Beschreibung"
                 websiteUrl = "https://example.org/film"

@@ -34,6 +34,8 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.time.DateTimeException
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
@@ -74,7 +76,6 @@ class DatenFilm private constructor(
         UNDEFINED_SENDE_DATUM_EPOCH_DAY,
         UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY,
     )
-    private var sendeDateTimeFallback: Array<String?>? = null
     var filmLength: Int = 0
         private set
     private var filmLengthAsStringCache = ""
@@ -111,7 +112,6 @@ class DatenFilm private constructor(
         }
         flags = other.flags
         sendeDateTimeStorage = other.sendeDateTimeStorage
-        sendeDateTimeFallback = other.sendeDateTimeFallback?.copyOf()
         filmLength = other.filmLength
         filmLengthAsStringCache = other.filmLengthAsStringCache
         season = other.season
@@ -173,78 +173,68 @@ class DatenFilm private constructor(
         this.datumLongSeconds = datumLongSeconds
     }
 
-    var sendeDatum: String
-        get() {
-            val fallback = sendeDateTimeFallback?.get(SENDE_DATUM_FALLBACK_INDEX)
-            if (fallback != null) {
-                return fallback
-            }
+    val sendeDatum: String
+        get() = sendeDatumEpochDay?.let(::formatSendeDatum) ?: ""
 
-            return if (sendeDatumEpochDay == UNDEFINED_SENDE_DATUM_EPOCH_DAY) {
-                ""
-            } else {
-                formatSendeDatum(sendeDatumEpochDay)
-            }
-        }
-        set(value) {
-            val epochDay = parseSendeDatum(value)
-            if (epochDay == null) {
-                sendeDatumEpochDay = UNDEFINED_SENDE_DATUM_EPOCH_DAY
-                setSendeDateTimeFallback(SENDE_DATUM_FALLBACK_INDEX, value.ifEmpty { null })
-            } else {
-                sendeDatumEpochDay = epochDay
-                setSendeDateTimeFallback(SENDE_DATUM_FALLBACK_INDEX, null)
-            }
-        }
+    val sendeZeit: String
+        get() = sendeZeitSecondOfDay?.let(::formatSendeZeit) ?: ""
 
-    var sendeZeit: String
-        get() {
-            val fallback = sendeDateTimeFallback?.get(SENDE_ZEIT_FALLBACK_INDEX)
-            if (fallback != null) {
-                return fallback
-            }
+    val sendeZeitForFilmList: String
+        get() = sendeZeitSecondOfDay?.let(::formatSendeZeitWithoutSeconds) ?: ""
 
-            return if (sendeZeitSecondOfDay == UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY) {
-                ""
-            } else {
-                formatSendeZeit(sendeZeitSecondOfDay)
-            }
-        }
-        set(value) {
-            val secondOfDay = parseSendeZeit(value)
-            if (secondOfDay == null) {
-                sendeZeitSecondOfDay = UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
-                setSendeDateTimeFallback(SENDE_ZEIT_FALLBACK_INDEX, value.ifEmpty { null })
-            } else {
-                sendeZeitSecondOfDay = secondOfDay
-                setSendeDateTimeFallback(SENDE_ZEIT_FALLBACK_INDEX, null)
-            }
-        }
+    val sendeDatumEpochDay: Int?
+        get() = storedSendeDatumEpochDay.takeUnless { it == UNDEFINED_SENDE_DATUM_EPOCH_DAY }
 
-    private var sendeDatumEpochDay: Int
-        get() = (sendeDateTimeStorage shr Int.SIZE_BITS).toInt()
-        set(value) {
-            sendeDateTimeStorage = packSendeDateTime(value, sendeZeitSecondOfDay)
-        }
+    val sendeZeitSecondOfDay: Int?
+        get() = storedSendeZeitSecondOfDay.takeUnless { it == UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY }
 
-    private var sendeZeitSecondOfDay: Int
-        get() = sendeDateTimeStorage.toInt()
-        set(value) {
-            sendeDateTimeStorage = packSendeDateTime(sendeDatumEpochDay, value)
-        }
+    val sendeLocalDate: LocalDate?
+        get() = sendeDatumEpochDay?.let { LocalDate.ofEpochDay(it.toLong()) }
 
-    private fun setSendeDateTimeFallback(index: Int, value: String?) {
-        if (value == null && sendeDateTimeFallback == null) {
-            return
-        }
+    val sendeLocalTime: LocalTime?
+        get() = sendeZeitSecondOfDay?.let { LocalTime.ofSecondOfDay(it.toLong()) }
 
-        val fallback = sendeDateTimeFallback ?: arrayOfNulls<String>(SENDE_DATE_TIME_FALLBACK_SIZE)
-            .also { sendeDateTimeFallback = it }
-        fallback[index] = value
-        if (fallback.all { it == null }) {
-            sendeDateTimeFallback = null
+    fun setSendeDatum(date: LocalDate?) {
+        storedSendeDatumEpochDay = date?.toEpochDay()?.toInt() ?: UNDEFINED_SENDE_DATUM_EPOCH_DAY
+    }
+
+    fun setSendeZeit(time: LocalTime?) {
+        storedSendeZeitSecondOfDay = time?.toSecondOfDay() ?: UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+    }
+
+    fun setSendeDateTime(dateTime: LocalDateTime?) {
+        if (dateTime == null) {
+            clearSendeDateTime()
+        } else {
+            setSendeDatum(dateTime.toLocalDate())
+            setSendeZeit(dateTime.toLocalTime())
         }
     }
+
+    fun setSendeDatumFromString(value: String) {
+        storedSendeDatumEpochDay = parseSendeDatum(value) ?: UNDEFINED_SENDE_DATUM_EPOCH_DAY
+    }
+
+    fun setSendeZeitFromString(value: String) {
+        storedSendeZeitSecondOfDay = parseSendeZeit(value) ?: UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+    }
+
+    fun clearSendeDateTime() {
+        storedSendeDatumEpochDay = UNDEFINED_SENDE_DATUM_EPOCH_DAY
+        storedSendeZeitSecondOfDay = UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+    }
+
+    private var storedSendeDatumEpochDay: Int
+        get() = (sendeDateTimeStorage shr Int.SIZE_BITS).toInt()
+        set(value) {
+            sendeDateTimeStorage = packSendeDateTime(value, storedSendeZeitSecondOfDay)
+        }
+
+    private var storedSendeZeitSecondOfDay: Int
+        get() = sendeDateTimeStorage.toInt()
+        set(value) {
+            sendeDateTimeStorage = packSendeDateTime(storedSendeDatumEpochDay, value)
+        }
 
     private fun hasFlag(flag: Int): Boolean = flags and flag != 0
 
@@ -528,8 +518,7 @@ class DatenFilm private constructor(
     private fun setupDatumFilm() {
         if (sendeDatum.isNotEmpty()) {
             if (datumLongSeconds == 0L) {
-                sendeDatum = ""
-                sendeZeit = ""
+                clearSendeDateTime()
                 datumFilmTimeMillisStorage = 0
             } else {
                 datumFilmTimeMillisStorage = datumLongSeconds.seconds.inWholeMilliseconds
@@ -747,9 +736,6 @@ class DatenFilm private constructor(
         private val UNDEFINED_DATUM_FILM_TIME_MILLIS = DatumFilm.UNDEFINED_FILM_DATE.time
         private const val UNDEFINED_SENDE_DATUM_EPOCH_DAY = Int.MIN_VALUE
         private const val UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY = -1
-        private const val SENDE_DATUM_FALLBACK_INDEX = 0
-        private const val SENDE_ZEIT_FALLBACK_INDEX = 1
-        private const val SENDE_DATE_TIME_FALLBACK_SIZE = 2
         private val FILMNR_GENERATOR = AtomicInteger(0)
 
         fun isCompressedUrl(requestedUrl: String): Boolean =
@@ -797,13 +783,20 @@ class DatenFilm private constructor(
             if (value.isEmpty()) {
                 return UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
             }
-            if (value.length != 8 || value[2] != ':' || value[5] != ':') {
+            if ((value.length != 5 && value.length != 8) || value[2] != ':') {
                 return null
             }
 
             val hour = parseTwoDigitPositiveInt(value, 0) ?: return null
             val minute = parseTwoDigitPositiveInt(value, 3) ?: return null
-            val second = parseTwoDigitPositiveInt(value, 6) ?: return null
+            val second = if (value.length == 8) {
+                if (value[5] != ':') {
+                    return null
+                }
+                parseTwoDigitPositiveInt(value, 6) ?: return null
+            } else {
+                0
+            }
             if (hour !in 0..23 || minute !in 0..59 || second !in 0..59) {
                 return null
             }
@@ -820,6 +813,16 @@ class DatenFilm private constructor(
                 appendTwoDigits(minute)
                 append(':')
                 appendTwoDigits(second)
+            }
+        }
+
+        private fun formatSendeZeitWithoutSeconds(secondOfDay: Int): String {
+            val hour = secondOfDay / 3600
+            val minute = secondOfDay % 3600 / 60
+            return buildString(5) {
+                appendTwoDigits(hour)
+                append(':')
+                appendTwoDigits(minute)
             }
         }
 

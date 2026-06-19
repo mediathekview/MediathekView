@@ -67,7 +67,7 @@ internal class DatenFilmTest {
     fun setDatumLongAcceptsNegativeValues() {
         val film = DatenFilm()
 
-        film.sendeDatum = "01.01.1966"
+        film.setSendeDatumFromString("01.01.1966")
         film.setDatumLongSeconds(-122749200L)
         film.init()
 
@@ -207,7 +207,7 @@ internal class DatenFilmTest {
             websiteUrl = "https://example.org/page"
             this.abo = abo
             this.bookmark = bookmark
-            sendeDatum = "01.01.1966"
+            setSendeDatumFromString("01.01.1966")
             setDatumLongSeconds(-122749200L)
         }
 
@@ -234,48 +234,43 @@ internal class DatenFilmTest {
     fun sendeDatumAndSendeZeitUseCompactStorageForStandardValues() {
         val film = DatenFilm()
 
-        film.sendeDatum = "15.05.2026"
-        film.sendeZeit = "20:15:30"
+        film.setSendeDatumFromString("15.05.2026")
+        film.setSendeZeitFromString("20:15:30")
 
         assertEquals("15.05.2026", film.sendeDatum)
         assertEquals("20:15:30", film.sendeZeit)
-        assertNull(film.privateField("sendeDateTimeFallback"))
+        assertEquals(20 * 3600 + 15 * 60 + 30, film.sendeZeitSecondOfDay)
     }
 
     @Test
-    fun sendeDatumAndSendeZeitKeepFallbackStorageForNonStandardValues() {
+    fun sendeDatumAndSendeZeitClearNonStandardValues() {
         val film = DatenFilm()
 
-        film.sendeDatum = "unknown"
-        film.sendeZeit = "20:15"
+        film.setSendeDatumFromString("unknown")
+        film.setSendeZeitFromString("unknown")
 
-        assertEquals("unknown", film.sendeDatum)
-        assertEquals("20:15", film.sendeZeit)
-        val fallback = film.privateField("sendeDateTimeFallback") as Array<*>
-        assertEquals("unknown", fallback[0])
-        assertEquals("20:15", fallback[1])
+        assertEquals("", film.sendeDatum)
+        assertEquals("", film.sendeZeit)
+        assertNull(film.sendeDatumEpochDay)
+        assertNull(film.sendeZeitSecondOfDay)
     }
 
     @Test
-    fun sendeDatumAndSendeZeitClearFallbackStorageForStandardValues() {
-        val film = DatenFilm().apply {
-            sendeDatum = "unknown"
-            sendeZeit = "20:15"
-        }
+    fun sendeZeitAcceptsFilmListFormatWithoutSeconds() {
+        val film = DatenFilm()
 
-        film.sendeDatum = "15.05.2026"
-        film.sendeZeit = "20:15:30"
+        film.setSendeZeitFromString("20:15")
 
-        assertEquals("15.05.2026", film.sendeDatum)
-        assertEquals("20:15:30", film.sendeZeit)
-        assertNull(film.privateField("sendeDateTimeFallback"))
+        assertEquals("20:15:00", film.sendeZeit)
+        assertEquals("20:15", film.sendeZeitForFilmList)
+        assertEquals(20 * 3600 + 15 * 60, film.sendeZeitSecondOfDay)
     }
 
     @Test
     fun copyPreservesCompactSendeDatumAndSendeZeitStorage() {
         val film = DatenFilm().apply {
-            sendeDatum = "15.05.2026"
-            sendeZeit = "20:15:30"
+            setSendeDatumFromString("15.05.2026")
+            setSendeZeitFromString("20:15:30")
         }
 
         val copy = DatenFilm(film)
@@ -283,7 +278,6 @@ internal class DatenFilmTest {
         assertEquals(film.sendeDatum, copy.sendeDatum)
         assertEquals(film.sendeZeit, copy.sendeZeit)
         assertEquals(film.privateField("sendeDateTimeStorage"), copy.privateField("sendeDateTimeStorage"))
-        assertNull(copy.privateField("sendeDateTimeFallback"))
     }
 
     @Test
@@ -394,7 +388,7 @@ internal class DatenFilmTest {
     @Test
     fun datumFilmIsCreatedLazilyFromStoredTime() {
         val film = DatenFilm().apply {
-            sendeDatum = "01.01.1966"
+            setSendeDatumFromString("01.01.1966")
             setDatumLongSeconds(-122749200L)
             init()
         }

@@ -285,13 +285,7 @@ class FilmListWriter(private val readable: Boolean) {
     }
 
     private fun writeZeit(jg: JsonGenerator, datenFilm: DatenFilm) {
-        val strZeit = datenFilm.sendeZeit
-
-        if (strZeit.isEmpty() || strZeit.length < 8) {
-            jg.writeString("")
-        } else {
-            jg.writeString(strZeit.substring(0, strZeit.length - 3))
-        }
+        jg.writeString(datenFilm.sendeZeitForFilmList)
     }
 
     /**

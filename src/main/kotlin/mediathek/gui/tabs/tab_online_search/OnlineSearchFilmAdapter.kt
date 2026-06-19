@@ -2,12 +2,8 @@ package mediathek.gui.tabs.tab_online_search
 
 import mediathek.daten.DatenFilm
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 object OnlineSearchFilmAdapter {
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-
     fun toDatenFilm(source: OnlineSearchResult): DatenFilm = DatenFilm().apply {
         sender = source.sender
         thema = source.topic
@@ -20,8 +16,7 @@ object OnlineSearchFilmAdapter {
         subtitleUrl = source.subtitleUrl
         source.duration?.let { setFilmLengthSeconds(it.seconds.toInt()) }
         source.broadcastTime?.let { broadcast ->
-            sendeDatum = broadcast.format(dateFormatter)
-            sendeZeit = broadcast.format(timeFormatter)
+            setSendeDateTime(broadcast)
             setDatumLongSeconds(broadcast.atZone(ZoneId.systemDefault()).toEpochSecond())
         }
         isSignLanguage = source.isSignLanguage

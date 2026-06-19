@@ -168,8 +168,7 @@ internal object DownloadTargetBuilder {
         return replacement.replace("%q", resolution)
     }
 
-    private fun replaceYearParameter(replacement: String, film: DatenFilm): String {
-        val date = film.sendeDatum.ifEmpty { currentDate() }
+    private fun replaceYearParameter(replacement: String, date: String): String {
         var year = getDMY(DMYTag.YEAR, date)
         return if (replacement.contains(TWO_LETTER_YEAR_PARAMETER)) {
             year = year.substring(2)
@@ -190,6 +189,8 @@ internal object DownloadTargetBuilder {
         var result = replacement
         val pSet = request.pSet
         val film = request.film
+        val sendeDatum = film.sendeDatum.ifEmpty { currentDate() }
+        val sendeZeit = film.sendeZeit.ifEmpty { currentTime() }
         val fieldLength = if (pSet.isLaengeFieldBeschraenken) {
             pSet.maxLaengeField ?: Konstanten.LAENGE_FELD
         } else {
@@ -220,20 +221,20 @@ internal object DownloadTargetBuilder {
 
         result = result.replace(
             "%D",
-            if (film.sendeDatum.isEmpty()) currentDateCompact() else stripDotsAndColons(rotateDate(film.sendeDatum)),
+            stripDotsAndColons(rotateDate(sendeDatum)),
         ).replace(
             "%d",
-            film.sendeZeit.ifEmpty { currentTimeCompact() }.let { stripDotsAndColons(it) },
+            stripDotsAndColons(sendeZeit),
         ).replace("%H", currentDateCompact())
             .replace("%h", currentTimeCompact())
-            .replace("%1", getDMY(DMYTag.DAY, film.sendeDatum.ifEmpty { currentDate() }))
-            .replace("%2", getDMY(DMYTag.MONTH, film.sendeDatum.ifEmpty { currentDate() }))
+            .replace("%1", getDMY(DMYTag.DAY, sendeDatum))
+            .replace("%2", getDMY(DMYTag.MONTH, sendeDatum))
 
-        result = replaceYearParameter(result, film)
+        result = replaceYearParameter(result, sendeDatum)
 
-        result = result.replace("%4", getHMS(HMSTag.HOUR, film.sendeZeit.ifEmpty { currentTime() }))
-            .replace("%5", getHMS(HMSTag.MINUTE, film.sendeZeit.ifEmpty { currentTime() }))
-            .replace("%6", getHMS(HMSTag.SECOND, film.sendeZeit.ifEmpty { currentTime() }))
+        result = result.replace("%4", getHMS(HMSTag.HOUR, sendeZeit))
+            .replace("%5", getHMS(HMSTag.MINUTE, sendeZeit))
+            .replace("%6", getHMS(HMSTag.SECOND, sendeZeit))
             .replace("%i", System.currentTimeMillis().toString())
 
         result = replaceResolutionParameter(result, film, request.downloadUrl)

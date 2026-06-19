@@ -293,7 +293,7 @@ open class FilmListReader : AutoCloseable {
     }
 
     private fun parseSendedatum(jp: JsonParser, datenFilm: DatenFilm) {
-        datenFilm.sendeDatum = checkedString(jp)
+        datenFilm.setSendeDatumFromString(checkedString(jp))
     }
 
     private fun parseFilmLength(jp: JsonParser, datenFilm: DatenFilm) {
@@ -371,7 +371,7 @@ open class FilmListReader : AutoCloseable {
         if (zeit.isNotEmpty() && zeit.length < 8) {
             zeit += ":00" // add seconds
         }
-        datenFilm.sendeZeit = zeit
+        datenFilm.setSendeZeitFromString(zeit)
     }
 
     /**
