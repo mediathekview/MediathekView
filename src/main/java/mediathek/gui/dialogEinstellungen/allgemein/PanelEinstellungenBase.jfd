@@ -22,6 +22,9 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTabsTop"
 					"text": "Tabs oben anzeigen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
@@ -29,12 +32,18 @@ new FormModel {
 					name: "jCheckBoxTabIcon"
 					"text": "Icons anzeigen"
 					"toolTipText": "Im Tab keine Icons anzeigen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbAutomaticMenuTabSwitching"
 					"text": "Tabs schalten automatisch bei Menünutzung um"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 2 0"
 				} )
@@ -42,6 +51,9 @@ new FormModel {
 					name: "cbRestoreSelectedTab"
 					"text": "Letzte Auswahl beim Start wiederherstellen"
 					"toolTipText": "Wenn gewählt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert."
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1 3 1"
 				} )
@@ -66,6 +78,9 @@ new FormModel {
 					name: "jtfUserAgent"
 					"minimumSize": new java.awt.Dimension( 200, 26 )
 					"preferredSize": new java.awt.Dimension( 520, 26 )
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -87,6 +102,9 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jtfProxyHost"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel5"
@@ -97,6 +115,9 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jtfProxyPort"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel7"
@@ -107,6 +128,9 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jtfProxyUser"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel8"
@@ -117,10 +141,16 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JPasswordField" ) {
 					name: "jpfProxyPassword"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonApplyProxySettings"
 					"text": "Proxy übernehmen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
@@ -135,6 +165,9 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTray"
 					"text": "Programm ins Tray minimieren"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
@@ -142,24 +175,36 @@ new FormModel {
 					name: "cbShowBlacklistIconWithText"
 					"text": "Blacklist-Filter-Icon mit Text anzeigen"
 					"toolTipText": "Neustart erforderlich"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbUseWikipediaSenderLogos"
 					"text": "Senderlogos von Wikipedia verwenden"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbAutomaticUpdateChecks"
 					"text": "Programmupdates täglich suchen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDrawListIconsRight"
 					"text": "Info-Icons der Listen rechts darstellen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 3"
 				} )
@@ -169,6 +214,7 @@ new FormModel {
 					"toolTipText": "Stellt den Hell-/Dunkelmodus der App beim Programmstart nach den aktuellen Einstellungen des Betriebssystem ein."
 					auxiliary() {
 						"JavaCodeGenerator.variableName": "cbUseSystemDarkMode"
+						"JavaCodeGenerator.variableModifiers": 4
 					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 4 2 1"
@@ -176,6 +222,9 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbTabFilmeTimeUseLongFormat"
 					"text": "Langes Zeitformat (HH:mm:ss) im Tab Filme für Zeit verwenden"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 5"
 				} )
@@ -183,6 +232,9 @@ new FormModel {
 			add( new FormComponent( "org.jdesktop.swingx.JXTitledPanel" ) {
 				name: "modernSearchTitlePanel"
 				"title": "Moderne Suche"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 680, 470 )

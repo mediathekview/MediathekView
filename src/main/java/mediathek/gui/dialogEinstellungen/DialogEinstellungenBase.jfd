@@ -8,11 +8,14 @@ new FormModel {
 			"$verticalGroup": "par l {seq l {space :::p, comp jSplitPane1::::620:x, space u:::p, comp jButtonBeenden:::p::p, space :p:6:p}}"
 		} ) {
 			name: "this"
-			"defaultCloseOperation": 2
+			"defaultCloseOperation": 0
 			"title": "Einstellungen"
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonBeenden"
 				"text": "Schließen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			} )
 			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
 				name: "jSplitPane1"
@@ -30,6 +33,9 @@ new FormModel {
 					}
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 						name: "jPanelExtra"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "right"
@@ -43,6 +49,9 @@ new FormModel {
 						name: "jTree1"
 						"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
 						"rootVisible": false
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "left"

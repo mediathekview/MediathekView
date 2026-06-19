@@ -12,13 +12,9 @@ import javax.swing.*;
 /**
  * @author Christian Franzke
  */
-public class ModernSearchConfigPanel extends JPanel {
-    public ModernSearchConfigPanel() {
+public class ModernSearchConfigPanelBase extends JPanel {
+    public ModernSearchConfigPanelBase() {
         initComponents();
-    }
-
-    public JCheckBox getCbActivateModernSearch() {
-        return cbActivateModernSearch;
     }
 
     private void initComponents() {
@@ -48,6 +44,6 @@ public class ModernSearchConfigPanel extends JPanel {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JCheckBox cbActivateModernSearch;
+    protected JCheckBox cbActivateModernSearch;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
