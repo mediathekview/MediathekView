@@ -68,6 +68,7 @@ import java.util.function.Consumer
 import java.util.function.Function
 import java.util.function.Supplier
 import javax.swing.*
+import kotlin.system.exitProcess
 
 open class MediathekGui private constructor(
     notificationCenterFactory: Supplier<INotificationCenter>,
@@ -143,6 +144,7 @@ open class MediathekGui private constructor(
     private val toolbarInstaller = toolbarInstaller
     private val tabPlacementController = tabPlacementController
     private val menuPolicy = menuPolicy
+    private val menuBuilder by lazy(LazyThreadSafetyMode.NONE) { createMenuBuilder() }
     private val scrollBarConfigurator = scrollBarConfigurator
     private val downloadProgressIndicator: DownloadProgressIndicator = requireNotNull(downloadProgressIndicatorFactory.apply(this))
     private val mainWindowController: MainWindowController
@@ -249,9 +251,8 @@ open class MediathekGui private constructor(
             ::handleLookAndFeelChange,
             filmlistDownloadProgressListener,
             filmListListener,
-            this,
-            { getCurrentZeitraumFilterValue() },
-        )
+            this
+        ) { getCurrentZeitraumFilterValue() }
         searchProgramUpdateAction = SearchProgramUpdateAction(this)
         platformIntegration = MainWindowPlatformIntegration(
             this,
@@ -274,7 +275,7 @@ open class MediathekGui private constructor(
     }
 
     private fun initializeMainWindow() {
-        defaultCloseOperation = WindowConstants.DO_NOTHING_ON_CLOSE
+        defaultCloseOperation = DO_NOTHING_ON_CLOSE
 
         setupScrollBarWidth()
         UIManager.put("TabbedPane.showTabSeparators", true)
@@ -586,7 +587,7 @@ open class MediathekGui private constructor(
     }
 
     private fun createMenuBar() {
-        setJMenuBar(createMenuBuilder().createMenuBar())
+        setJMenuBar(menuBuilder.createMenuBar())
         createDarkModeMenuAction()
     }
 
@@ -867,7 +868,7 @@ open class MediathekGui private constructor(
 
     private fun initMenus() {
         installMenuTabSwitchListener()
-        createMenuBuilder().initializeMenus()
+        menuBuilder.initializeMenus()
         afterMenusInitialized.accept(this)
     }
 
@@ -962,7 +963,7 @@ open class MediathekGui private constructor(
 
     private fun performApplicationShutdown(shutdownComputer: Boolean) {
         createShutdownCoordinator().shutdown(shutdownComputer)
-        System.exit(0)
+        exitProcess(0)
     }
 
     private fun createShutdownCoordinator(): MainWindowShutdownCoordinator =
