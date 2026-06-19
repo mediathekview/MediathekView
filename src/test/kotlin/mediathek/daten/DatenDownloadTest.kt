@@ -201,6 +201,63 @@ internal class DatenDownloadTest {
     }
 
     @Test
+    fun buildsTargetFromFilmDateTimePlaceholders() {
+        val film = DatenFilm().apply {
+            setSendeDatumFromString("01.06.2026")
+            setSendeZeitFromString("20:15:00")
+            urlNormalQuality = "https://example.invalid/video.mp4"
+        }
+        val programSet = DatenPset("Set").apply {
+            zielDateiname = "%D-%d-%1-%2-%3-%4-%5-%6.%S"
+            zielPfad = "/downloads"
+            addProg(DatenProg("Program", "program", "--target **", false.toString(), false.toString()))
+        }
+
+        val target = DownloadTargetBuilder.build(
+            DownloadTargetRequest(
+                pSet = programSet,
+                film = film,
+                abo = null,
+                requestedFileName = "",
+                requestedPath = "",
+                downloadUrl = film.urlNormalQuality,
+                topic = "Topic One",
+                title = "Title One",
+            ),
+        )
+
+        assertEquals("20260601-201500-01-06-2026-20-15-00.mp4", target.fileName)
+    }
+
+    @Test
+    fun buildsTargetFromTwoDigitYearPlaceholder() {
+        val film = DatenFilm().apply {
+            setSendeDatumFromString("01.06.2026")
+            urlNormalQuality = "https://example.invalid/video.mp4"
+        }
+        val programSet = DatenPset("Set").apply {
+            zielDateiname = "%3_2.%S"
+            zielPfad = "/downloads"
+            addProg(DatenProg("Program", "program", "--target **", false.toString(), false.toString()))
+        }
+
+        val target = DownloadTargetBuilder.build(
+            DownloadTargetRequest(
+                pSet = programSet,
+                film = film,
+                abo = null,
+                requestedFileName = "",
+                requestedPath = "",
+                downloadUrl = film.urlNormalQuality,
+                topic = "Topic One",
+                title = "Title One",
+            ),
+        )
+
+        assertEquals("26.mp4", target.fileName)
+    }
+
+    @Test
     fun buildsTargetSuffixFromDownloadUrlWithoutQueryParameters() {
         val film = DatenFilm().apply {
             sender = "Sender One"

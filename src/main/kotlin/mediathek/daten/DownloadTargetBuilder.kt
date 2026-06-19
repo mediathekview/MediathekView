@@ -31,7 +31,6 @@ import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
 internal data class DownloadTarget(
@@ -53,10 +52,6 @@ internal data class DownloadTargetRequest(
 )
 
 internal object DownloadTargetBuilder {
-    private val HHMMSS = DateTimeFormatter.ofPattern("HHmmss")
-    private val HH_MM_SS = DateTimeFormatter.ofPattern("HH:mm:ss")
-    private val YYYYMMDD = DateTimeFormatter.ofPattern("yyyyMMdd")
-    private val DATUM_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private const val TWO_LETTER_YEAR_PARAMETER = "%3_2"
     private const val FOUR_LETTER_YEAR_PARAMETER = "%3"
     private val logger = LogManager.getLogger(DownloadTargetBuilder::class.java)
@@ -168,8 +163,12 @@ internal object DownloadTargetBuilder {
         return replacement.replace("%q", resolution)
     }
 
-    private fun replaceYearParameter(replacement: String, date: String): String {
-        var year = getDMY(DMYTag.YEAR, date)
+    private fun replaceYearParameter(replacement: String, dateParts: CachedValue<DateParts>): String {
+        if (!replacement.contains(FOUR_LETTER_YEAR_PARAMETER)) {
+            return replacement
+        }
+
+        var year = dateParts.value.yearString
         return if (replacement.contains(TWO_LETTER_YEAR_PARAMETER)) {
             year = year.substring(2)
             replacement.replace(TWO_LETTER_YEAR_PARAMETER, year)
@@ -177,9 +176,6 @@ internal object DownloadTargetBuilder {
             replacement.replace(FOUR_LETTER_YEAR_PARAMETER, year)
         }
     }
-
-    private fun currentDate(): String =
-        LocalDate.now().format(DATUM_FORMAT)
 
     private fun replaceString(
         replacement: String,
@@ -189,8 +185,6 @@ internal object DownloadTargetBuilder {
         var result = replacement
         val pSet = request.pSet
         val film = request.film
-        val sendeDatum = film.sendeDatum.ifEmpty { currentDate() }
-        val sendeZeit = film.sendeZeit.ifEmpty { currentTime() }
         val fieldLength = if (pSet.isLaengeFieldBeschraenken) {
             pSet.maxLaengeField ?: Konstanten.LAENGE_FELD
         } else {
@@ -219,23 +213,21 @@ internal object DownloadTargetBuilder {
             result.replace("%N", getField(GuiFunktionen.getDateiName(request.downloadUrl), fieldLength, cleanupOptions))
         }
 
-        result = result.replace(
-            "%D",
-            stripDotsAndColons(rotateDate(sendeDatum)),
-        ).replace(
-            "%d",
-            stripDotsAndColons(sendeZeit),
-        ).replace("%H", currentDateCompact())
-            .replace("%h", currentTimeCompact())
-            .replace("%1", getDMY(DMYTag.DAY, sendeDatum))
-            .replace("%2", getDMY(DMYTag.MONTH, sendeDatum))
+        val dateParts = CachedValue { DateParts.fromFilmOrCurrent(film) }
+        val timeParts = CachedValue { TimeParts.fromFilmOrCurrent(film) }
+        result = result.replaceParameter("%D") { dateParts.value.compact }
+            .replaceParameter("%d") { timeParts.value.compact }
+            .replaceParameter("%H") { DateParts.current().compact }
+            .replaceParameter("%h") { TimeParts.current().compact }
+            .replaceParameter("%1") { dateParts.value.dayString }
+            .replaceParameter("%2") { dateParts.value.monthString }
 
-        result = replaceYearParameter(result, sendeDatum)
+        result = replaceYearParameter(result, dateParts)
 
-        result = result.replace("%4", getHMS(HMSTag.HOUR, sendeZeit))
-            .replace("%5", getHMS(HMSTag.MINUTE, sendeZeit))
-            .replace("%6", getHMS(HMSTag.SECOND, sendeZeit))
-            .replace("%i", System.currentTimeMillis().toString())
+        result = result.replaceParameter("%4") { timeParts.value.hourString }
+            .replaceParameter("%5") { timeParts.value.minuteString }
+            .replaceParameter("%6") { timeParts.value.secondString }
+            .replaceParameter("%i") { System.currentTimeMillis().toString() }
 
         result = replaceResolutionParameter(result, film, request.downloadUrl)
 
@@ -245,38 +237,6 @@ internal object DownloadTargetBuilder {
 
         return result
     }
-
-    private fun getDMY(tag: DMYTag, date: String): String =
-        if (date.length == 10) {
-            when (tag) {
-                DMYTag.DAY -> date.substring(0, 2)
-                DMYTag.MONTH -> date.substring(3, 5)
-                DMYTag.YEAR -> date.substring(6)
-            }
-        } else {
-            ""
-        }
-
-    private fun getHMS(tag: HMSTag, time: String): String =
-        if (time.length == 8) {
-            when (tag) {
-                HMSTag.HOUR -> time.substring(0, 2)
-                HMSTag.MINUTE -> time.substring(3, 5)
-                HMSTag.SECOND -> time.substring(6)
-            }
-        } else {
-            ""
-        }
-
-    private fun stripDotsAndColons(date: String): String =
-        date.replace(":", "").replace(".", "")
-
-    private fun rotateDate(date: String): String =
-        if (date.length == 10) {
-            date.substring(6) + '.' + date.substring(3, 5) + '.' + date.substring(0, 2)
-        } else {
-            ""
-        }
 
     private fun getHash(path: String): String {
         val hash = abs(path.hashCode())
@@ -324,26 +284,120 @@ internal object DownloadTargetBuilder {
         return result
     }
 
-    private fun currentTimeCompact(): String =
-        LocalTime.now().format(HHMMSS)
+    private inline fun String.replaceParameter(parameter: String, replacement: () -> String): String =
+        if (contains(parameter)) {
+            replace(parameter, replacement())
+        } else {
+            this
+        }
 
-    private fun currentTime(): String =
-        LocalTime.now().format(HH_MM_SS)
+    private class CachedValue<T>(
+        private val initializer: () -> T,
+    ) {
+        private var cachedValue: T? = null
+
+        val value: T
+            get() {
+                cachedValue?.let { return it }
+                return initializer().also { cachedValue = it }
+            }
+    }
+
+    private data class DateParts(
+        val year: Int,
+        val month: Int,
+        val day: Int,
+    ) {
+        val compact: String
+            get() = buildString(8) {
+                appendFourDigits(year)
+                appendTwoDigits(month)
+                appendTwoDigits(day)
+            }
+
+        val dayString: String
+            get() = twoDigits(day)
+
+        val monthString: String
+            get() = twoDigits(month)
+
+        val yearString: String
+            get() = buildString(4) {
+                appendFourDigits(year)
+            }
+
+        companion object {
+            fun fromFilmOrCurrent(film: DatenFilm): DateParts =
+                film.sendeDatumEpochDay?.let { epochDay ->
+                    fromLocalDate(LocalDate.ofEpochDay(epochDay.toLong()))
+                } ?: current()
+
+            fun current(): DateParts =
+                fromLocalDate(LocalDate.now())
+
+            private fun fromLocalDate(date: LocalDate): DateParts =
+                DateParts(date.year, date.monthValue, date.dayOfMonth)
+        }
+    }
+
+    private data class TimeParts(
+        val hour: Int,
+        val minute: Int,
+        val second: Int,
+    ) {
+        val compact: String
+            get() = buildString(6) {
+                appendTwoDigits(hour)
+                appendTwoDigits(minute)
+                appendTwoDigits(second)
+            }
+
+        val hourString: String
+            get() = twoDigits(hour)
+
+        val minuteString: String
+            get() = twoDigits(minute)
+
+        val secondString: String
+            get() = twoDigits(second)
+
+        companion object {
+            fun fromFilmOrCurrent(film: DatenFilm): TimeParts =
+                film.sendeZeitSecondOfDay?.let(::fromSecondOfDay) ?: current()
+
+            fun current(): TimeParts =
+                LocalTime.now().let { time ->
+                    TimeParts(time.hour, time.minute, time.second)
+                }
+
+            private fun fromSecondOfDay(secondOfDay: Int): TimeParts =
+                TimeParts(
+                    hour = secondOfDay / 3600,
+                    minute = secondOfDay % 3600 / 60,
+                    second = secondOfDay % 60,
+                )
+        }
+    }
+
+    private fun twoDigits(value: Int): String =
+        buildString(2) {
+            appendTwoDigits(value)
+        }
+
+    private fun StringBuilder.appendTwoDigits(value: Int) {
+        append(('0'.code + value / 10).toChar())
+        append(('0'.code + value % 10).toChar())
+    }
+
+    private fun StringBuilder.appendFourDigits(value: Int) {
+        append(('0'.code + value / 1000 % 10).toChar())
+        append(('0'.code + value / 100 % 10).toChar())
+        append(('0'.code + value / 10 % 10).toChar())
+        append(('0'.code + value % 10).toChar())
+    }
 
     private fun currentDateCompact(): String =
-        LocalDate.now().format(YYYYMMDD)
-
-    private enum class DMYTag {
-        DAY,
-        MONTH,
-        YEAR,
-    }
-
-    private enum class HMSTag {
-        HOUR,
-        MINUTE,
-        SECOND,
-    }
+        DateParts.current().compact
 
     private data class FilenameCleanupOptions(
         val useReplaceTable: Boolean,
