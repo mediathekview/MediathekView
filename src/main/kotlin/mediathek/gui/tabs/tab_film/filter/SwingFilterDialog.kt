@@ -35,6 +35,7 @@ import mediathek.tool.SVGIconUtilities
 import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
+import org.kordamp.ikonli.materialdesign2.MaterialDesignD
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Window
@@ -247,7 +248,7 @@ class SwingFilterDialog internal constructor(
 
     private fun configureComponents() {
         setupRoundControls()
-        btnSplit.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/ellipsis-vertical.svg")
+        btnSplit.icon = IconUtils.of(MaterialDesignD.DOTS_VERTICAL)
         populateSplitButton()
         ToggleVisibilityKeyHandler(this).installHandler(filterToggleButton.action)
         setupButtons()
