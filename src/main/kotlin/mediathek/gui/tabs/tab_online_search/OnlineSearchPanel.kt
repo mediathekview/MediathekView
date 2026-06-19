@@ -5,9 +5,6 @@ import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.TransactionList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.gui.actions.UrlHyperlinkAction
-import mediathek.gui.tabs.tab_film.startDownloads
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import java.awt.BorderLayout
@@ -25,7 +22,13 @@ class OnlineSearchPanel(
     private val arteService: OnlineSearchService = ArteOnlineSearchService(),
     private val historyStore: OnlineSearchHistoryStore = ApplicationOnlineSearchHistoryStore,
 ) : JPanel(BorderLayout()) {
-    constructor(mediathekGui: MediathekGui) : this(MediathekGuiOnlineSearchHost(mediathekGui))
+    constructor(host: OnlineSearchHost) : this(
+        host,
+        ArdOnlineSearchService(),
+        ZdfOnlineSearchService(),
+        ArteOnlineSearchService(),
+        ApplicationOnlineSearchHistoryStore,
+    )
 
     val senderComboBox = JComboBox(OnlineSearchProvider.entries.toTypedArray()).apply {
         preferredSize = Dimension(SENDER_COMBO_BOX_MAXIMUM_WIDTH, preferredSize.height)
@@ -345,25 +348,4 @@ interface OnlineSearchHost {
     fun showFilmInfo(result: OnlineSearchResult)
     fun startDownload(results: List<OnlineSearchResult>)
     fun playResult(result: OnlineSearchResult)
-}
-
-private class MediathekGuiOnlineSearchHost(
-    private val mediathekGui: MediathekGui,
-) : OnlineSearchHost {
-    override fun updateCurrentResult(result: OnlineSearchResult?) {
-        mediathekGui.filmInfoDialog.updateCurrentFilm(result?.let(OnlineSearchFilmAdapter::toDatenFilm))
-    }
-
-    override fun showFilmInfo(result: OnlineSearchResult) {
-        updateCurrentResult(result)
-        mediathekGui.filmInfoDialog.showInfo()
-    }
-
-    override fun startDownload(results: List<OnlineSearchResult>) {
-        startDownloads(mediathekGui, results.map(OnlineSearchFilmAdapter::toDatenFilm), null, null)
-    }
-
-    override fun playResult(result: OnlineSearchResult) {
-        UrlHyperlinkAction.openURL(result.normalQualityUrl)
-    }
 }

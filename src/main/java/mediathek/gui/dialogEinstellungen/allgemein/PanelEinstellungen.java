@@ -2,7 +2,7 @@ package mediathek.gui.dialogEinstellungen.allgemein;
 
 import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.messages.*;
-import mediathek.mainwindow.MediathekGui;
+import mediathek.mainwindow.SettingsDialogHost;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MessageBus;
 import mediathek.tool.http.MVHttpClient;
@@ -21,6 +21,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class PanelEinstellungen extends JPanel {
+    private final SettingsDialogHost host;
+
     private void setupProxySettings() {
         var applicationConfiguration = ApplicationConfiguration.getInstance();
 
@@ -62,7 +64,7 @@ public class PanelEinstellungen extends JPanel {
     private void cbUseWikipediaSenderLogosActionPerformed(ActionEvent evt) {
         ApplicationConfiguration.getInstance().setLocalSenderIcons(!cbUseWikipediaSenderLogos.isSelected());
         MessageBus.getMessageBus().publish(new SenderIconStyleChangedEvent());
-        MediathekGui.ui().repaint();
+        host.repaintMainWindow();
     }
     
     private void cbAutomaticUpdateChecksActionPerformed(ActionEvent evt) {
@@ -105,7 +107,7 @@ public class PanelEinstellungen extends JPanel {
             jCheckBoxTray.setSelected(ApplicationConfiguration.getInstance().getUseTray());
             jCheckBoxTray.addActionListener(_ -> {
                 ApplicationConfiguration.getInstance().setUseTray(jCheckBoxTray.isSelected());
-                MediathekGui.ui().initializeSystemTray();
+                host.refreshSystemTray();
             });
         }
     }
@@ -123,8 +125,9 @@ public class PanelEinstellungen extends JPanel {
         modernSearchTitlePanel.setContentContainer(searchPanel);
     }
 
-    public PanelEinstellungen() {
+    public PanelEinstellungen(SettingsDialogHost host) {
         super();
+        this.host = host;
         initComponents();
 
         setupModernSearch();
@@ -158,7 +161,7 @@ public class PanelEinstellungen extends JPanel {
         cbDrawListIconsRight.setSelected(drawIconsRight);
         cbDrawListIconsRight.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setListIconPositionRight(cbDrawListIconsRight.isSelected());
-            MediathekGui.ui().repaint();
+            host.repaintMainWindow();
         });
 
         boolean useIconWithText = ApplicationConfiguration.getInstance().getToolbarBlacklistIconWithText();
@@ -177,14 +180,14 @@ public class PanelEinstellungen extends JPanel {
         cbTabFilmeTimeUseLongFormat.setSelected(useLongTimeFormat);
         cbTabFilmeTimeUseLongFormat.addActionListener(_ -> {
             ApplicationConfiguration.getInstance().setFilmTimeUseLongFormat(cbTabFilmeTimeUseLongFormat.isSelected());
-            MediathekGui.ui().repaint();
+            host.repaintMainWindow();
         });
     }
 
     private static final String NO_INFLUENCE_TEXT = "Einstellung hat unter macOS keine Auswirkung";
 
     private void setupTabSwitchListener() {
-        if (!MediathekGui.ui().supportsAutomaticMenuTabSwitching()) {
+        if (!host.supportsAutomaticMenuTabSwitching()) {
             cbAutomaticMenuTabSwitching.setEnabled(false);
             cbAutomaticMenuTabSwitching.setToolTipText(NO_INFLUENCE_TEXT);
             ApplicationConfiguration.getInstance().setInstallTabSwitchListener(false);

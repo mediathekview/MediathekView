@@ -19,18 +19,18 @@
 package mediathek.gui.actions
 
 import mediathek.gui.dialog.subripmerge.MergeSubripVideoDialog
-import mediathek.mainwindow.MediathekGui
+import java.awt.Window
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 
 class MergeSubtitleWithVideoAction(
-    private val ui: MediathekGui,
+    private val owner: Window,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Untertiteldatei zu Video hinzufügen...")
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        MergeSubripVideoDialog(ui).isVisible = true
+        MergeSubripVideoDialog(owner).isVisible = true
     }
 }

@@ -306,7 +306,6 @@ class SeenHistoryController : AutoCloseable {
             }
         }
 
-        @JvmStatic
         fun closeSharedStore() {
             runBlocking {
                 withContext(databaseDispatcher) {

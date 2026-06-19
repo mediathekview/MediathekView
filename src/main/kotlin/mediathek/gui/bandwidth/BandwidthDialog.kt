@@ -66,6 +66,7 @@ class BandwidthDialog(
     private val averageMarker = createAverageMarker()
     private val dialogJob = SupervisorJob()
     private val uiScope = CoroutineScope(dialogJob + Dispatchers.Swing)
+    private var preserveVisibilityOnClose = false
 
     init {
         initDialog()
@@ -92,6 +93,11 @@ class BandwidthDialog(
         dialogJob.cancel()
         MessageBus.messageBus.unsubscribe(this)
         super.dispose()
+    }
+
+    fun disposeForShutdown() {
+        preserveVisibilityOnClose = true
+        dispose()
     }
 
     fun storeVisibilityState(visible: Boolean) {
@@ -254,7 +260,7 @@ class BandwidthDialog(
             }
 
             override fun windowClosed(event: java.awt.event.WindowEvent) {
-                storeVisibilityState(false)
+                storeVisibilityState(preserveVisibilityOnClose)
                 menuAction.dialogOptional = Optional.empty()
                 menuAction.isEnabled = true
             }

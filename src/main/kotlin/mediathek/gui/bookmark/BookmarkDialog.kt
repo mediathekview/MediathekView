@@ -36,7 +36,6 @@ import mediathek.controller.history.SeenHistoryController
 import mediathek.gui.bookmark.renderer.*
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
 import mediathek.gui.tabs.tab_film.startDownloads
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconUtils
 import mediathek.swing.NoIconMenuItem
@@ -50,14 +49,17 @@ import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignE
 import org.kordamp.ikonli.materialdesign2.MaterialDesignN
 import java.awt.BorderLayout
-import java.awt.Frame
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.*
 
-class BookmarkDialog(owner: Frame) : JDialog(owner) {
+class BookmarkDialog(
+    owner: JFrame,
+    private val repaintFilmTab: Runnable,
+) : JDialog(owner) {
+    private val ownerFrame = owner
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val filmDescriptionPanel = FilmDescriptionPanel()
     private val noteArea = JTextArea()
@@ -357,7 +359,7 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
             val pSet = Daten.getInstance().listePset.psetAbspielen
             if (pSet == null) {
                 JOptionPane.showMessageDialog(
-                    MediathekGui.ui(),
+                    this@BookmarkDialog,
                     "Es wurde kein Videoplayer eingerichtet.\n" +
                         "Bitte legen Sie diesen unter \"Einstellungen->Set bearbeiten\" fest.",
                     Konstanten.PROGRAMMNAME,
@@ -384,7 +386,7 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
                 return
             }
 
-            startDownloads(MediathekGui.ui(), films, null, null)
+            startDownloads(ownerFrame, films, null, null)
 
             val skippedBookmarks = selectedBookmarks.size - films.size
             if (skippedBookmarks > 0) {
@@ -494,7 +496,7 @@ class BookmarkDialog(owner: Frame) : JDialog(owner) {
                 withContext(Dispatchers.IO) {
                     bookmarkList.saveToFile()
                 }
-                MediathekGui.ui().tabFilme.repaint()
+                repaintFilmTab.run()
             }
         }
     }

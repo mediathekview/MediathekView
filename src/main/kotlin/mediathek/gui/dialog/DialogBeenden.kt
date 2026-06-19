@@ -23,7 +23,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.DownloadControlHost
 import mediathek.swing.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
@@ -37,7 +37,10 @@ import java.awt.event.WindowEvent
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
+class DialogBeenden(
+    parent: JFrame,
+    private val downloadControlHost: DownloadControlHost,
+) : JDialog(parent, true) {
     /**
      * Indicate whether the application can terminate.
      */
@@ -92,7 +95,7 @@ class DialogBeenden(parent: JFrame) : JDialog(parent, true) {
         glassPane?.isVisible = true
 
         if (waitForRunningDownloadsOnly)
-            MediathekGui.ui().tabDownloads.stopAllWaitingDownloads()
+            downloadControlHost.stopAllWaitingDownloads()
 
         downloadMonitorJob = coroutineScope.launch {
             try {

@@ -24,7 +24,6 @@ import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FilenameUtils
 import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
@@ -32,9 +31,9 @@ import javax.swing.AbstractAction
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 
-class CreateNewAboAction @JvmOverloads constructor(
+class CreateNewAboAction(
     private val listeAbo: ListeAbo,
-    private val parentProvider: () -> JFrame = { MediathekGui.ui() },
+    private val parentProvider: () -> JFrame,
 ) : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {
         createAbo()

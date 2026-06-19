@@ -24,13 +24,16 @@ import java.util.*
 import java.util.function.BooleanSupplier
 import java.util.function.IntConsumer
 import java.util.function.Supplier
+import javax.swing.JFrame
 import javax.swing.JCheckBoxMenuItem
 import javax.swing.JTabbedPane
 import javax.swing.JTable
 
-class DescriptionTabController {
+class DescriptionTabController(
+    ownerProvider: () -> JFrame? = { null },
+) {
     val tabbedPane: JTabbedPane = JTabbedPane()
-    private val descriptionPanel = FilmDescriptionPanel()
+    private val descriptionPanel = FilmDescriptionPanel(ownerProvider)
 
     fun install(
         table: JTable,

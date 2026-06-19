@@ -52,7 +52,6 @@ object TimerPool {
         executor.execute(command)
     }
 
-    @JvmStatic
     fun schedule(command: Runnable, delay: Long, unit: TimeUnit): ScheduledFuture<*> =
         executor.schedule(command, delay, unit)
 
@@ -97,7 +96,6 @@ object TimerPool {
             TimeUnit.NANOSECONDS,
         )
 
-    @JvmStatic
     @Throws(InterruptedException::class)
     fun shutdown(timeout: Long, unit: TimeUnit): List<Runnable> {
         timerEventFuture.cancel(true)

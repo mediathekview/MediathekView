@@ -25,11 +25,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.daten.DatenFilm
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FileDialogs
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.subtitles.SubtitleExportResult
 import mediathek.tool.subtitles.SubtitleExportService
+import java.awt.Frame
 import java.awt.event.ActionEvent
 import java.util.*
 import java.util.function.Supplier
@@ -38,6 +38,7 @@ import javax.swing.Action
 import javax.swing.JOptionPane
 
 class DownloadSubtitleAction(
+    private val owner: Frame,
     private val currentlySelectedFilm: Supplier<Optional<DatenFilm>>,
 ) : AbstractAction() {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -48,11 +49,11 @@ class DownloadSubtitleAction(
 
     override fun actionPerformed(e: ActionEvent?) {
         val film = currentlySelectedFilm.get().orElse(null) ?: return
-        val selectedFile = FileDialogs.chooseSaveFileLocation(MediathekGui.ui(), "Untertitel speichern", "")
+        val selectedFile = FileDialogs.chooseSaveFileLocation(owner, "Untertitel speichern", "")
 
         if (selectedFile == null) {
             JOptionPane.showMessageDialog(
-                MediathekGui.ui(),
+                owner,
                 "Vorgang wurde abgebrochen.",
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.WARNING_MESSAGE
@@ -68,7 +69,7 @@ class DownloadSubtitleAction(
                 when (result) {
                     SubtitleExportResult.InvalidFormat -> {
                         JOptionPane.showMessageDialog(
-                            MediathekGui.ui(),
+                            owner,
                             "Untertitelformat konnte nicht erkannt werden.",
                             Konstanten.PROGRAMMNAME,
                             JOptionPane.ERROR_MESSAGE
@@ -77,7 +78,7 @@ class DownloadSubtitleAction(
 
                     SubtitleExportResult.UnsupportedFormat -> {
                         JOptionPane.showMessageDialog(
-                            MediathekGui.ui(),
+                            owner,
                             "Untertitelformat wird nicht unterstützt.",
                             Konstanten.PROGRAMMNAME,
                             JOptionPane.ERROR_MESSAGE
@@ -86,7 +87,7 @@ class DownloadSubtitleAction(
 
                     is SubtitleExportResult.Success -> {
                         JOptionPane.showMessageDialog(
-                            MediathekGui.ui(),
+                            owner,
                             buildCompletionMessage(result),
                             Konstanten.PROGRAMMNAME,
                             if (result.failures.isEmpty()) JOptionPane.INFORMATION_MESSAGE else JOptionPane.WARNING_MESSAGE
@@ -95,7 +96,7 @@ class DownloadSubtitleAction(
 
                     is SubtitleExportResult.Failure -> {
                         SwingErrorDialog.showExceptionMessage(
-                            MediathekGui.ui(),
+                            owner,
                             "Untertitel konnte nicht geladen werden.",
                             result.exception
                         )

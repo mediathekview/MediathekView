@@ -21,7 +21,6 @@ package mediathek.sqlite
 import mediathek.SplashScreenLifecycle
 import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryStore
-import mediathek.mainwindow.MediathekGui
 import org.apache.logging.log4j.LogManager
 import org.sqlite.SQLiteErrorCode
 import org.sqlite.SQLiteException
@@ -67,7 +66,7 @@ internal object SeenHistoryCorruptionHandler {
             return
         }
         showMessage(
-            currentOwner(),
+            null,
             "<html>Die History-Datenbank ist beschädigt:<br/>$dbPath<br/><br/>" +
                 "Für diese Sitzung wird eine leere temporäre History-Datenbank verwendet.<br/>" +
                 "Reparieren Sie die Datenbank mittels dem Menüpunkt:<br/>" +
@@ -94,8 +93,6 @@ internal object SeenHistoryCorruptionHandler {
                     sqliteEx.resultCode == SQLiteErrorCode.SQLITE_NOTADB
             }
     }
-
-    private fun currentOwner(): Component? = runCatching { MediathekGui.ui() }.getOrNull()
 
     private fun showMessage(owner: Component?, message: String, messageType: Int) {
         invokeOnEdt {

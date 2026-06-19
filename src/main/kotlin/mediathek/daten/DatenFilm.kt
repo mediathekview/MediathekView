@@ -32,7 +32,9 @@ import java.net.HttpURLConnection
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import java.time.DateTimeException
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
@@ -69,8 +71,10 @@ class DatenFilm private constructor(
             invalidateSha256()
         }
     var title: String = ""
-    var sendeDatum: String = ""
-    var sendeZeit: String = ""
+    private var sendeDateTimeStorage = packSendeDateTime(
+        UNDEFINED_SENDE_DATUM_EPOCH_DAY,
+        UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY,
+    )
     var filmLength: Int = 0
         private set
     private var filmLengthAsStringCache = ""
@@ -83,7 +87,7 @@ class DatenFilm private constructor(
     private var subtitleUrlStorage: String? = null
     private var websiteUrlStorage: String? = null
     private var lowQualityUrlStorage: String? = null
-    private var normalQualityUrl = ""
+    private var normalQualityUrlStorage = ""
     private var highQualityUrlStorage: String? = null
     var bookmark: BookmarkData? = null
     var abo: DatenAbo? = null
@@ -106,8 +110,7 @@ class DatenFilm private constructor(
             knownBlockedCountries = EnumSet.copyOf(it)
         }
         flags = other.flags
-        sendeDatum = other.sendeDatum
-        sendeZeit = other.sendeZeit
+        sendeDateTimeStorage = other.sendeDateTimeStorage
         filmLength = other.filmLength
         filmLengthAsStringCache = other.filmLengthAsStringCache
         season = other.season
@@ -118,7 +121,7 @@ class DatenFilm private constructor(
         subtitleUrlStorage = other.subtitleUrlStorage
         websiteUrlStorage = other.websiteUrlStorage
         lowQualityUrlStorage = other.lowQualityUrlStorage
-        normalQualityUrl = other.normalQualityUrl
+        normalQualityUrlStorage = UrlHostDictionary.compress(other.urlNormalQuality)
         highQualityUrlStorage = other.highQualityUrlStorage
         bookmark = other.bookmark
         abo = other.abo
@@ -155,18 +158,76 @@ class DatenFilm private constructor(
         }
 
     var highQualityUrl: String
-        get() = highQualityUrlStorage ?: ""
+        get() = highQualityUrlStorage?.let {
+            if (isCompressedUrl(it)) decompressUrl(it) else it
+        } ?: ""
         set(value) {
-            highQualityUrlStorage = if (value.isEmpty()) {
-                null
-            } else {
-                if (isCompressedUrl(value)) decompressUrl(value) else value
-            }
+            highQualityUrlStorage = value.takeIf { it.isNotEmpty() }?.let(::compressUrlIfBeneficial)
         }
+
+    internal val storedHighQualityUrl: String
+        get() = highQualityUrlStorage ?: ""
 
     fun setDatumLongSeconds(datumLongSeconds: Long) {
         this.datumLongSeconds = datumLongSeconds
     }
+
+    val sendeDatum: String
+        get() = sendeDatumEpochDay?.let(::formatSendeDatum) ?: ""
+
+    val sendeZeit: String
+        get() = sendeZeitSecondOfDay?.let(::formatSendeZeit) ?: ""
+
+    val sendeZeitForFilmList: String
+        get() = sendeZeitSecondOfDay?.let(::formatSendeZeitWithoutSeconds) ?: ""
+
+    val sendeDatumEpochDay: Int?
+        get() = storedSendeDatumEpochDay.takeUnless { it == UNDEFINED_SENDE_DATUM_EPOCH_DAY }
+
+    val sendeZeitSecondOfDay: Int?
+        get() = storedSendeZeitSecondOfDay.takeUnless { it == UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY }
+
+    fun setSendeDateTime(dateTime: LocalDateTime?) {
+        if (dateTime == null) {
+            clearSendeDateTime()
+        } else {
+            storedSendeDatumEpochDay = dateTime.toLocalDate().toEpochDay().toInt()
+            storedSendeZeitSecondOfDay = dateTime.toLocalTime().toSecondOfDay()
+        }
+    }
+
+    fun setSendeDatumFromFilmlistValue(value: String) {
+        storedSendeDatumEpochDay = if (value.isEmpty()) {
+            UNDEFINED_SENDE_DATUM_EPOCH_DAY
+        } else {
+            parseSendeDatum(value) ?: UNDEFINED_SENDE_DATUM_EPOCH_DAY
+        }
+    }
+
+    fun setSendeZeitFromFilmlistValue(value: String) {
+        storedSendeZeitSecondOfDay = if (value.isEmpty()) {
+            UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+        } else {
+            parseSendeZeit(value) ?: UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+        }
+    }
+
+    fun clearSendeDateTime() {
+        storedSendeDatumEpochDay = UNDEFINED_SENDE_DATUM_EPOCH_DAY
+        storedSendeZeitSecondOfDay = UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
+    }
+
+    private var storedSendeDatumEpochDay: Int
+        get() = (sendeDateTimeStorage shr Int.SIZE_BITS).toInt()
+        set(value) {
+            sendeDateTimeStorage = packSendeDateTime(value, storedSendeZeitSecondOfDay)
+        }
+
+    private var storedSendeZeitSecondOfDay: Int
+        get() = sendeDateTimeStorage.toInt()
+        set(value) {
+            sendeDateTimeStorage = packSendeDateTime(storedSendeDatumEpochDay, value)
+        }
 
     private fun hasFlag(flag: Int): Boolean = flags and flag != 0
 
@@ -219,9 +280,9 @@ class DatenFilm private constructor(
         }
 
     var websiteUrl: String
-        get() = websiteUrlStorage ?: ""
+        get() = websiteUrlStorage?.let(UrlHostDictionary::expand) ?: ""
         set(value) {
-            websiteUrlStorage = value.ifEmpty { null }
+            websiteUrlStorage = value.takeIf { it.isNotEmpty() }?.let(UrlHostDictionary::compress)
             invalidateSha256()
         }
 
@@ -450,8 +511,7 @@ class DatenFilm private constructor(
     private fun setupDatumFilm() {
         if (sendeDatum.isNotEmpty()) {
             if (datumLongSeconds == 0L) {
-                sendeDatum = ""
-                sendeZeit = ""
+                clearSendeDateTime()
                 datumFilmTimeMillisStorage = 0
             } else {
                 datumFilmTimeMillisStorage = datumLongSeconds.seconds.inWholeMilliseconds
@@ -483,12 +543,32 @@ class DatenFilm private constructor(
     }
 
     fun decompressUrl(requestedUrl: String): String {
+        return decompressUrl(requestedUrl, urlNormalQuality)
+    }
+
+    private fun decompressUrl(requestedUrl: String, baseUrl: String): String {
         val indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER)
         val prefixLength = parseCompressionPrefixLength(requestedUrl, indexPipe)
         return buildString(prefixLength + requestedUrl.length - indexPipe - 1) {
-            append(urlNormalQuality, 0, prefixLength)
+            append(baseUrl, 0, prefixLength)
             append(requestedUrl, indexPipe + 1, requestedUrl.length)
         }
+    }
+
+    private fun compressUrlIfBeneficial(requestedUrl: String): String {
+        val baseUrl = urlNormalQuality
+        if (isCompressedUrl(requestedUrl) || baseUrl.isEmpty()) {
+            return requestedUrl
+        }
+
+        var prefixLength = 0
+        val maxPrefixLength = minOf(baseUrl.length, requestedUrl.length)
+        while (prefixLength < maxPrefixLength && baseUrl[prefixLength] == requestedUrl[prefixLength]) {
+            ++prefixLength
+        }
+
+        val compressedUrl = "$prefixLength$COMPRESSION_MARKER${requestedUrl.substring(prefixLength)}"
+        return if (compressedUrl.length < requestedUrl.length) compressedUrl else requestedUrl
     }
 
     private fun parseCompressionPrefixLength(requestedUrl: String, markerIndex: Int): Int {
@@ -528,10 +608,10 @@ class DatenFilm private constructor(
         }
 
     var urlNormalQuality: String
-        get() = normalQualityUrl
+        get() = UrlHostDictionary.expand(normalQualityUrlStorage)
         set(urlNormalQuality) {
             val previousUrl = this.urlNormalQuality
-            normalQualityUrl = urlNormalQuality
+            normalQualityUrlStorage = UrlHostDictionary.compress(urlNormalQuality)
             handleNormalQualityUrlChange(previousUrl, urlNormalQuality)
             invalidateSha256()
         }
@@ -541,16 +621,27 @@ class DatenFilm private constructor(
             return
         }
 
+        rebaseHighQualityUrlStorage(previousUrl)
         cachedFileSizeLookups = null
         if (previousUrl.isNotEmpty() || !canBootstrapFileSizeFromNormalQualityUrl) {
             canBootstrapFileSizeFromNormalQualityUrl = false
         }
     }
 
+    private fun rebaseHighQualityUrlStorage(previousNormalQualityUrl: String) {
+        val storedUrl = highQualityUrlStorage ?: return
+        val expandedUrl = if (isCompressedUrl(storedUrl)) {
+            runCatching { decompressUrl(storedUrl, previousNormalQualityUrl) }.getOrElse { return }
+        } else {
+            storedUrl
+        }
+        highQualityUrlStorage = compressUrlIfBeneficial(expandedUrl)
+    }
+
     var subtitleUrl: String
-        get() = subtitleUrlStorage ?: ""
+        get() = subtitleUrlStorage?.let(UrlHostDictionary::expand) ?: ""
         set(value) {
-            subtitleUrlStorage = value.ifEmpty { null }
+            subtitleUrlStorage = value.takeIf { it.isNotEmpty() }?.let(UrlHostDictionary::compress)
         }
 
     val isBookmarked: Boolean
@@ -636,6 +727,8 @@ class DatenFilm private constructor(
         private val logger = LogManager.getLogger(DatenFilm::class.java)
         private val USE_SHA256_FAST_PATH = RuntimeArchitecture.isIntelOrAmd64Bit
         private val UNDEFINED_DATUM_FILM_TIME_MILLIS = DatumFilm.UNDEFINED_FILM_DATE.time
+        private const val UNDEFINED_SENDE_DATUM_EPOCH_DAY = Int.MIN_VALUE
+        private const val UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY = -1
         private val FILMNR_GENERATOR = AtomicInteger(0)
 
         fun isCompressedUrl(requestedUrl: String): Boolean =
@@ -649,10 +742,169 @@ class DatenFilm private constructor(
                 throw IllegalStateException("SHA-256 algorithm is unavailable", ex)
             }
         }
+
+        private fun parseSendeDatum(value: String): Int? {
+            if (value.length != 10 || value[2] != '.' || value[5] != '.') {
+                return null
+            }
+
+            val day = parseTwoDigitPositiveInt(value, 0) ?: return null
+            val month = parseTwoDigitPositiveInt(value, 3) ?: return null
+            val year = parseFourDigitPositiveInt(value, 6) ?: return null
+            return try {
+                LocalDate.of(year, month, day).toEpochDay().toInt()
+            } catch (_: DateTimeException) {
+                null
+            }
+        }
+
+        private fun formatSendeDatum(epochDay: Int): String {
+            val date = LocalDate.ofEpochDay(epochDay.toLong())
+            return buildString(10) {
+                appendTwoDigits(date.dayOfMonth)
+                append('.')
+                appendTwoDigits(date.monthValue)
+                append('.')
+                appendFourDigits(date.year)
+            }
+        }
+
+        private fun parseSendeZeit(value: String): Int? {
+            if ((value.length != 5 && value.length != 8) || value[2] != ':') {
+                return null
+            }
+
+            val hour = parseTwoDigitPositiveInt(value, 0) ?: return null
+            val minute = parseTwoDigitPositiveInt(value, 3) ?: return null
+            val second = if (value.length == 8) {
+                if (value[5] != ':') {
+                    return null
+                }
+                parseTwoDigitPositiveInt(value, 6) ?: return null
+            } else {
+                0
+            }
+            if (hour !in 0..23 || minute !in 0..59 || second !in 0..59) {
+                return null
+            }
+            return hour * 3600 + minute * 60 + second
+        }
+
+        private fun formatSendeZeit(secondOfDay: Int): String {
+            val hour = secondOfDay / 3600
+            val minute = secondOfDay % 3600 / 60
+            val second = secondOfDay % 60
+            return buildString(8) {
+                appendTwoDigits(hour)
+                append(':')
+                appendTwoDigits(minute)
+                append(':')
+                appendTwoDigits(second)
+            }
+        }
+
+        private fun formatSendeZeitWithoutSeconds(secondOfDay: Int): String {
+            val hour = secondOfDay / 3600
+            val minute = secondOfDay % 3600 / 60
+            return buildString(5) {
+                appendTwoDigits(hour)
+                append(':')
+                appendTwoDigits(minute)
+            }
+        }
+
+        private fun StringBuilder.appendTwoDigits(value: Int) {
+            append(('0'.code + value / 10).toChar())
+            append(('0'.code + value % 10).toChar())
+        }
+
+        private fun StringBuilder.appendFourDigits(value: Int) {
+            append(('0'.code + value / 1000 % 10).toChar())
+            append(('0'.code + value / 100 % 10).toChar())
+            append(('0'.code + value / 10 % 10).toChar())
+            append(('0'.code + value % 10).toChar())
+        }
+
+        private fun parseTwoDigitPositiveInt(value: String, start: Int): Int? =
+            parseFixedWidthPositiveInt(value, start, start + 2)
+
+        private fun parseFourDigitPositiveInt(value: String, start: Int): Int? =
+            parseFixedWidthPositiveInt(value, start, start + 4)
+
+        private fun parseFixedWidthPositiveInt(value: String, start: Int, end: Int): Int? {
+            var result = 0
+            for (index in start..<end) {
+                val digit = value[index].digitToIntOrNull() ?: return null
+                result = result * 10 + digit
+            }
+            return result
+        }
+
+        private fun packSendeDateTime(epochDay: Int, secondOfDay: Int): Long =
+            epochDay.toLong() shl Int.SIZE_BITS or (secondOfDay.toLong() and 0xffffffffL)
     }
 
     private data class FileSizeLookupKey(
         val url: String,
         val resolution: String?,
     )
+}
+
+private object UrlHostDictionary {
+    private const val MARKER = '~'
+    private val baseIds = HashMap<String, Int>()
+    private val bases = ArrayList<String>()
+
+    fun compress(url: String): String {
+        if (url.isEmpty() || isCompressed(url)) {
+            return url
+        }
+
+        val baseEnd = hostPrefixEnd(url)
+        if (baseEnd <= 0 || baseEnd >= url.length) {
+            return url
+        }
+
+        val base = url.substring(0, baseEnd)
+        val suffix = url.substring(baseEnd)
+        val id = idFor(base)
+        val compressed = "$MARKER$id/$suffix"
+        return if (compressed.length < url.length) compressed else url
+    }
+
+    @Synchronized
+    private fun idFor(base: String): Int =
+        baseIds[base] ?: bases.size.also { id ->
+            bases += base
+            baseIds[base] = id
+        }
+
+    fun expand(url: String): String {
+        if (!isCompressed(url)) {
+            return url
+        }
+
+        val separator = url.indexOf('/', startIndex = 1)
+        if (separator <= 1) {
+            return url
+        }
+
+        val id = url.substring(1, separator).toIntOrNull() ?: return url
+        val base = baseFor(id) ?: return url
+        return base + url.substring(separator + 1)
+    }
+
+    @Synchronized
+    private fun baseFor(id: Int): String? = bases.getOrNull(id)
+
+    private fun isCompressed(url: String): Boolean = url.firstOrNull() == MARKER
+
+    private fun hostPrefixEnd(url: String): Int {
+        val schemeSeparator = url.indexOf("://")
+        if (schemeSeparator <= 0) {
+            return -1
+        }
+        val pathStart = url.indexOf('/', startIndex = schemeSeparator + 3)
+        return if (pathStart < 0) -1 else pathStart + 1
+    }
 }

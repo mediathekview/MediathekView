@@ -19,13 +19,15 @@
 package mediathek.mac
 
 import mediathek.config.Konstanten
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.MVMessageDialog
+import java.awt.Component
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JOptionPane
 
-class SingleIinaPlayer {
+class SingleIinaPlayer(
+    private val ownerProvider: () -> Component? = { null },
+) {
     @Synchronized
     @Throws(IOException::class)
     fun play(url: String) {
@@ -50,7 +52,7 @@ class SingleIinaPlayer {
         }
 
         if (!hasAccessibilityPermission) {
-            maybeShowAccessibilityWarning()
+            maybeShowAccessibilityWarning(ownerProvider())
         }
 
         try {
@@ -74,13 +76,13 @@ class SingleIinaPlayer {
     companion object {
         private val ACCESSIBILITY_WARNING_SHOWN = AtomicBoolean(false)
 
-        private fun maybeShowAccessibilityWarning() {
+        private fun maybeShowAccessibilityWarning(owner: Component?) {
             if (!ACCESSIBILITY_WARNING_SHOWN.compareAndSet(false, true)) {
                 return
             }
 
             MVMessageDialog.showMessageDialog(
-                MediathekGui.ui(),
+                owner,
                 """
                 MediathekView hat keine macOS-Bedienungshilfen-Berechtigung.
                 Der Livestream kann trotzdem in IINA geoeffnet werden, aber das vorherige Fenster kann nicht automatisch geschlossen werden.

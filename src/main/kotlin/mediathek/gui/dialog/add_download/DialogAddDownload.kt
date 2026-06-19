@@ -35,7 +35,6 @@ import mediathek.gui.dialog.download.DownloadQualityResolutionSizeLoadResult
 import mediathek.gui.dialog.download.DownloadQualityResolutionSizes
 import mediathek.gui.dialog.download.DownloadQualitySupport
 import mediathek.gui.messages.DownloadListChangedEvent
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.*
 import mediathek.tool.MessageBus.messageBus
 import org.apache.commons.lang3.SystemUtils
@@ -56,14 +55,14 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class DialogAddDownload(
-    parent: Frame,
+    private val ownerFrame: Frame,
     private val film: DatenFilm,
     /**
      * The currently selected pSet or null when no selection.
      */
     private var activeProgramSet: DatenPset,
     private val requestedResolution: Optional<FilmResolution.Enum>
-) : DialogAddDownloadBase(parent) {
+) : DialogAddDownloadBase(ownerFrame) {
     private sealed interface LiveInfoCommand {
         data object Cancel : LiveInfoCommand
         data class Fetch(val resolution: FilmResolution.Enum) : LiveInfoCommand
@@ -167,7 +166,7 @@ class DialogAddDownload(
         configureWindowDefaults()
         initializeUi()
         bindUi()
-        initializeDialogSize(parent)
+        initializeDialogSize(ownerFrame)
         registerWindowPositionTracking()
         startCoroutineBindings()
         btnDownloadImmediately.requestFocus()
@@ -941,7 +940,7 @@ class DialogAddDownload(
             addActionListener {
                 val initialDirectory = (jComboBoxPfad.selectedItem as? String).orEmpty()
                 FileDialogs.chooseDirectoryLocation(
-                    MediathekGui.ui(),
+                    ownerFrame,
                     "Film speichern",
                     initialDirectory
                 )?.absolutePath?.let { selectedDirectory ->

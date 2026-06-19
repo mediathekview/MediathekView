@@ -29,12 +29,12 @@ import mediathek.gui.tabs.tab_film.JDownloadHelper
 import mediathek.gui.tabs.tab_film.PyLoadHelper
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.table.FilmTableButtonClickHandler
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.table.MVFilmTable
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.util.*
+import javax.swing.JFrame
 
 /**
  * Implements the context menu for tab film.
@@ -50,7 +50,8 @@ class TableContextMenuHandler(
         fun saveSelectedFilm()
         fun startFilmWithPset(pSet: DatenPset)
         fun setSelectionUpdatesSuspended(suspended: Boolean)
-        fun gui(): MediathekGui
+        fun showFilmInfo()
+        fun ownerFrame(): JFrame
         fun actions(): FilmUiActions
     }
 
@@ -59,8 +60,8 @@ class TableContextMenuHandler(
     private val filmTableButtonClickHandler = FilmTableButtonClickHandler(host, daten)
     private val filmAboAndBlacklistContextActions =
         FilmAboAndBlacklistContextActions(host, daten, this::selectedFilmAtPopupPoint)
-    private val jDownloadHelper = JDownloadHelper()
-    private val pyLoadHelper = PyLoadHelper()
+    private val jDownloadHelper = JDownloadHelper(host.ownerFrame())
+    private val pyLoadHelper = PyLoadHelper(host.ownerFrame())
     private val filmSpecificContextMenuBuilder = FilmSpecificContextMenuBuilder(host, jDownloadHelper, pyLoadHelper)
     private val filmFileAndDuplicateContextActions = FilmFileAndDuplicateContextActions(host, daten, uiScope)
     private val filmPrintAndHistoryContextActions =
@@ -78,11 +79,7 @@ class TableContextMenuHandler(
     override fun mouseClicked(event: MouseEvent) {
         if (event.button == MouseEvent.BUTTON1) {
             if (event.clickCount > 1) {
-                host.gui().filmInfoDialog?.let { infoDialog ->
-                    if (!infoDialog.isVisible) {
-                        infoDialog.showInfo()
-                    }
-                }
+                host.showFilmInfo()
             }
         }
     }

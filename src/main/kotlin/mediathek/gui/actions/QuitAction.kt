@@ -18,14 +18,14 @@
 
 package mediathek.gui.actions
 
-import mediathek.mainwindow.MediathekGui
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
+import java.util.function.BooleanSupplier
 import javax.swing.AbstractAction
 import javax.swing.KeyStroke
 
 class QuitAction(
-    private val mediathekGui: MediathekGui,
+    private val quitApplication: BooleanSupplier,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Beenden")
@@ -33,6 +33,6 @@ class QuitAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        mediathekGui.quitApplication()
+        quitApplication.asBoolean
     }
 }

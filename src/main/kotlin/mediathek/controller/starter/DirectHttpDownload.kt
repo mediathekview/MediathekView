@@ -34,7 +34,6 @@ import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.*
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
@@ -56,12 +55,14 @@ import java.nio.file.StandardOpenOption
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
+import javax.swing.JFrame
 import javax.swing.SwingUtilities
 import kotlin.time.Duration.Companion.milliseconds
 
 class DirectHttpDownload(
     private val daten: Daten,
-    private val datenDownload: DatenDownload
+    private val datenDownload: DatenDownload,
+    private val dialogOwnerProvider: () -> JFrame? = { null },
 ) : Thread() {
 
     private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
@@ -477,7 +478,7 @@ class DirectHttpDownload(
         var result = false
         if (file.exists() || finalFile.exists()) {
             val hasPartFile = file.exists()
-            val dialogContinueDownload = DialogContinueDownload(MediathekGui.ui(), datenDownload, true)
+            val dialogContinueDownload = DialogContinueDownload(dialogOwnerProvider(), datenDownload, true)
             dialogContinueDownload.isVisible = true
 
             when (dialogContinueDownload.result) {
@@ -529,7 +530,7 @@ class DirectHttpDownload(
             return
         }
         SwingUtilities.invokeLater {
-            MeldungDownloadfehler(MediathekGui.ui(), message, datenDownload).isVisible = true
+            MeldungDownloadfehler(dialogOwnerProvider(), message, datenDownload).isVisible = true
         }
     }
 

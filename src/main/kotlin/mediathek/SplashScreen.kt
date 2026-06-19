@@ -1,6 +1,7 @@
 package mediathek
 
 import mediathek.config.Konstanten
+import mediathek.swing.SwingDispatch
 import mediathek.tool.UIProgressState
 import org.apache.commons.lang3.SystemUtils
 import org.jdesktop.swingx.StackLayout
@@ -174,13 +175,7 @@ class SplashScreen : JWindow() {
         pack()
     }
 
-    private fun runOnEdt(block: () -> Unit) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            block()
-        } else {
-            SwingUtilities.invokeLater(block)
-        }
-    }
+    private fun runOnEdt(block: () -> Unit) = SwingDispatch.dispatch(block)
 
     companion object {
         private val MAXIMUM_STEPS = EnumSet.allOf(UIProgressState::class.java).size.toDouble()

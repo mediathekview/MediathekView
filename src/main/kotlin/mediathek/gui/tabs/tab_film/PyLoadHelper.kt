@@ -5,7 +5,6 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
 import okhttp3.Credentials
@@ -15,6 +14,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.apache.logging.log4j.LogManager
+import java.awt.Component
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JOptionPane
@@ -22,7 +22,9 @@ import javax.swing.JPopupMenu
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.toJavaDuration
 
-class PyLoadHelper {
+class PyLoadHelper(
+    private val owner: Component,
+) {
     private val historyController = SeenHistoryController()
 
     private fun downloadUrl(url: HttpUrl, film: DatenFilm) {
@@ -36,7 +38,7 @@ class PyLoadHelper {
         } catch (e: IllegalArgumentException) {
             logger.error("Invalid pyLoad URL in config: {}", baseUrl)
             SwingErrorDialog.showExceptionMessage(
-                MediathekGui.ui(),
+                owner,
                 "<html>Die konfigurierte pyLoad-URL ist ungültig:<br><br><b>$baseUrl</b></html>",
                 e
             )
@@ -85,7 +87,7 @@ class PyLoadHelper {
 
     private fun showErrorMessage() {
         JOptionPane.showMessageDialog(
-            MediathekGui.ui(),
+            owner,
             "Verbindung mit pyLoad nicht möglich.\n" +
                     "Bitte stellen Sie sicher, dass pyLoad gestartet wurde und die in den Einstellungen hinterlegten Daten (URL, Benutzer und Passwort) korrekt sind.",
             Konstanten.PROGRAMMNAME,

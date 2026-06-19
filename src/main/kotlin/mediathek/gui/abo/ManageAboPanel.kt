@@ -32,7 +32,6 @@ import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.messages.AboListChangedEvent
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.InfiniteProgressPanel
 import mediathek.tool.EventListWithEmptyFirstEntry
 import mediathek.tool.MessageBus
@@ -56,11 +55,11 @@ import java.time.LocalDate
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class ManageAboPanel(dialog: JDialog) : JPanel() {
+class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
     private val tabelle = AboTable()
     private val daten = Daten.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
-    private val createAboAction = CreateNewAboAction(daten.listeAbo)
+    private val createAboAction = CreateNewAboAction(daten.listeAbo) { owner }
     private lateinit var tableBinding: AboTableBinding
     private lateinit var tableColumnSettings: AboTableColumnSettings
     private val infoPanel = JXStatusBar()
@@ -159,11 +158,11 @@ class ManageAboPanel(dialog: JDialog) : JPanel() {
         val multiEdit = selectedAbos.size > 1
         val dialogAbo = if (multiEdit) editedAbo.copyForEditDialog() else editedAbo
 
-        if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(MediathekGui.ui())) {
+        if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(owner)) {
             return
         }
 
-        val dialog = DialogEditAbo(MediathekGui.ui(), dialogAbo, multiEdit)
+        val dialog = DialogEditAbo(owner, dialogAbo, multiEdit)
         dialog.title = EDIT_ABO_TEXT
         dialog.isVisible = true
         if (!dialog.successful()) {

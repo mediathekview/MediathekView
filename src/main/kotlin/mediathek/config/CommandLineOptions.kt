@@ -146,7 +146,6 @@ object CommandLineOptions {
         this.portableMode = portableMode
     }
 
-    @JvmStatic
     fun isEnhancedLoggingEnabled(): Boolean = enhancedLogging
 
     @JvmStatic
@@ -154,7 +153,6 @@ object CommandLineOptions {
 
     fun isFileLoggingDisabled(): Boolean = fileLoggingDisabled
 
-    @JvmStatic
     fun isStartMaximized(): Boolean = startMaximized
 
     fun isHttpTrafficDebuggingEnabled(): Boolean = debugHttpTraffic

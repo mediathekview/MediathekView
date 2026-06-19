@@ -4,7 +4,6 @@ import mediathek.config.CommandLineOptions;
 import mediathek.config.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
-import mediathek.mainwindow.MediathekGui;
 import mediathek.swing.IconUtils;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.SVGIconUtilities;
@@ -198,7 +197,7 @@ public class PanelPsetImport extends JPanel {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Programmset auswählen");
+                FileDialog chooser = new FileDialog(parentComponent, "Programmset auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

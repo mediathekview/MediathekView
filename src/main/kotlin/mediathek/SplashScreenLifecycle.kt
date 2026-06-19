@@ -19,7 +19,7 @@
 package mediathek
 
 import mediathek.tool.UIProgressState
-import javax.swing.SwingUtilities
+import mediathek.swing.SwingDispatch
 
 object SplashScreenLifecycle {
     private var splashScreen: SplashScreen? = null
@@ -29,18 +29,17 @@ object SplashScreenLifecycle {
     }
 
     fun show() {
-        runOnEdt {
+        SwingDispatch.dispatch {
             splashScreen?.isVisible = true
         }
     }
 
     fun hide() {
-        runOnEdt {
+        SwingDispatch.dispatch {
             splashScreen?.isVisible = false
         }
     }
 
-    @JvmStatic
     fun update(state: UIProgressState) {
         splashScreen?.update(state)
     }
@@ -55,11 +54,4 @@ object SplashScreenLifecycle {
         }
     }
 
-    private fun runOnEdt(block: () -> Unit) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            block()
-        } else {
-            SwingUtilities.invokeLater(block)
-        }
-    }
 }

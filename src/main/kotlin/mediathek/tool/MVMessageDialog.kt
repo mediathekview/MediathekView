@@ -5,7 +5,6 @@ import javax.swing.JOptionPane
 import javax.swing.SwingUtilities
 
 object MVMessageDialog {
-    @JvmStatic
     fun showMessageDialog(
         parent: Component?,
         message: String,

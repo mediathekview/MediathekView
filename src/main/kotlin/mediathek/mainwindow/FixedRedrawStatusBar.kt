@@ -22,16 +22,20 @@ import mediathek.config.Daten
 import mediathek.swing.FilmAgeLabel
 import org.jdesktop.swingx.JXStatusBar
 import java.awt.Component
+import java.util.function.IntSupplier
 import javax.swing.JPanel
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * This class tries to fix some redraw issues with JXStatusBar on removal.
  */
-class FixedRedrawStatusBar(mediathekGui: MediathekGui) : JXStatusBar() {
+class FixedRedrawStatusBar(
+    filmTableRowCount: IntSupplier,
+    selectedListItemsProperty: ListSelectedItemsProperty,
+) : JXStatusBar() {
     init {
-        add(SelectedListItemsLabel(mediathekGui.selectedListItemsProperty))
-        add(FilmSizeInfoLabel(mediathekGui))
+        add(SelectedListItemsLabel(selectedListItemsProperty))
+        add(FilmSizeInfoLabel(filmTableRowCount))
         add(DownloadInformationLabel())
 
         add(JPanel(), Constraint(Constraint.ResizeBehavior.FILL))

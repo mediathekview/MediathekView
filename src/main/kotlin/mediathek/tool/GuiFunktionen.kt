@@ -30,7 +30,6 @@ object GuiFunktionen {
     private val logger = LogManager.getLogger()
     private const val EXTERNAL_UPDATE_PROPERTY = "externalUpdateCheck"
 
-    @JvmStatic
     fun isNotUsingExternalUpdater(): Boolean {
         val externalUpdateCheck = System.getProperty(EXTERNAL_UPDATE_PROPERTY)
         val usesExternalUpdater = externalUpdateCheck?.let {
@@ -104,7 +103,6 @@ object GuiFunktionen {
         return result
     }
 
-    @JvmStatic
     fun getPlatformControlKey(): Int =
         if (SystemUtils.IS_OS_MAC_OSX) {
             InputEvent.META_DOWN_MASK

@@ -24,10 +24,11 @@ import mediathek.config.Daten
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
+import java.util.function.IntSupplier
 import javax.swing.JLabel
 import kotlin.time.Duration.Companion.seconds
 
-class FilmSizeInfoLabel(private val mediathekGui: MediathekGui) : JLabel() {
+class FilmSizeInfoLabel(private val filmTableRowCount: IntSupplier) : JLabel() {
     private var oldGesamt = 0
     private var oldRowCount = 0
     private var uiScope: CoroutineScope? = null
@@ -92,7 +93,7 @@ class FilmSizeInfoLabel(private val mediathekGui: MediathekGui) : JLabel() {
 
     private fun updateValues() {
         val gesamt = Daten.getInstance().listeFilme.size
-        val rowCount = mediathekGui.tabFilme.tableRowCount
+        val rowCount = filmTableRowCount.asInt
 
         if (gesamt == oldGesamt && rowCount == oldRowCount) {
             return

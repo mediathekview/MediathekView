@@ -20,13 +20,13 @@ package mediathek.gui.actions
 
 import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryController
-import mediathek.mainwindow.MediathekGui
+import java.awt.Component
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JOptionPane
 
 class OptimizeHistoryDbAction(
-    private val mediathekGui: MediathekGui,
+    private val parentComponent: Component,
 ) : AbstractAction() {
     init {
         putValue(NAME, "History-Datenbank optimieren...")
@@ -38,14 +38,14 @@ class OptimizeHistoryDbAction(
                 controller.performDatabaseCompact()
             }
             JOptionPane.showMessageDialog(
-                mediathekGui,
+                parentComponent,
                 "Datenbankoptimierung abgeschlossen.",
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.INFORMATION_MESSAGE,
             )
         } catch (ex: RuntimeException) {
             JOptionPane.showMessageDialog(
-                mediathekGui,
+                parentComponent,
                 ex.message,
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.ERROR_MESSAGE,

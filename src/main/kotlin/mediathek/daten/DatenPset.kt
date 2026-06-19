@@ -53,7 +53,6 @@ class DatenPset() : Comparable<DatenPset> {
     @set:JvmName("setZielPfadValue")
     var zielPfad: String = ""
 
-    @set:JvmName("setZielDateinameValue")
     var zielDateiname: String = ""
 
     var maxLaenge: Int? = null

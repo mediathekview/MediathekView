@@ -26,11 +26,11 @@ import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon
 import mediathek.config.MVColor
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.tabs.tab_film.EditHistoryDialog
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.*
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.Dimension
+import java.awt.Window
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.beans.PropertyChangeListener
@@ -47,7 +47,9 @@ private const val SEARCHMODE_PROPERTY_STRING = "searchMode"
 
 abstract class SearchField(protected val host: Host) : JTextField("", 40) {
     interface Host {
-        fun mediathekGui(): MediathekGui
+        val showLuceneTutorialAction: Action
+
+        fun ownerWindow(): Window
         fun loadTable()
         fun loadTable(fromSearchField: Boolean)
     }
@@ -117,7 +119,7 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
             }
 
             miEditHistory.addActionListener {
-                val dialog = EditHistoryDialog(host.mediathekGui(), miEditHistory, historyList)
+                val dialog = EditHistoryDialog(host.ownerWindow(), miEditHistory, historyList)
                 dialog.isVisible = true
             }
 
@@ -245,7 +247,7 @@ class LuceneSearchField(host: SearchField.Host) : SearchField(host) {
         val searchToolbar = JToolBar()
         searchToolbar.addSeparator()
 
-        val luceneButton = JButton(host.mediathekGui().showLuceneTutorialAction)
+        val luceneButton = JButton(host.showLuceneTutorialAction)
         luceneButton.text = null
         searchToolbar.add(luceneButton)
         putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT, searchToolbar)

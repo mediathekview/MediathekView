@@ -6,7 +6,7 @@ import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.dialogEinstellungen.allgemein.LuceneDirectoryModePanel;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist;
-import mediathek.mainwindow.MediathekGui;
+import mediathek.mainwindow.SettingsDialogHost;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GetIcon;
 
@@ -21,6 +21,7 @@ import java.awt.*;
 
 public class DialogEinstellungen extends JFrame {
     private final Daten daten;
+    private final SettingsDialogHost host;
     private static final String NAME_einstellungen = "Einstellungen";
     private static final String NAME_allgemeineEinstellungen = "Allgemein";
     private static final String NAME_notifications = "Benachrichtigungen";
@@ -54,7 +55,8 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
 
-    public DialogEinstellungen() {
+    public DialogEinstellungen(SettingsDialogHost host) {
+        this.host = host;
         initComponents();
         daten = Daten.getInstance();
 
@@ -78,7 +80,7 @@ public class DialogEinstellungen extends JFrame {
         if (state.x() > 0 && state.y() > 0) {
             setLocation(state.x(), state.y());
         } else {
-            final var parentFrame = MediathekGui.ui();
+            final var parentFrame = host.ownerFrame();
             if (parentFrame != null)
                 setLocationRelativeTo(parentFrame);
         }
@@ -135,11 +137,11 @@ public class DialogEinstellungen extends JFrame {
                     }
                     case NAME_allgemeineEinstellungen -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelEinstellungen());
+                        jPanelExtra.add(new PanelEinstellungen(host));
                     }
                     case NAME_allgemeineEinstellungenErweitert -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelEinstellungenErweitert());
+                        jPanelExtra.add(new PanelEinstellungenErweitert(host.ownerFrame()));
                     }
                     case NAME_allgemeineEinstellungenGeo -> {
                         jPanelExtra.removeAll();
@@ -147,7 +149,7 @@ public class DialogEinstellungen extends JFrame {
                     }
                     case NAME_allgemeineEinstellungenColor -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelEinstellungenColor());
+                        jPanelExtra.add(new PanelEinstellungenColor(host));
                     }
                     case NAME_allgemeineEinstellungenLucene -> {
                         jPanelExtra.removeAll();
@@ -156,7 +158,7 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_filmListe -> jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
                     case NAME_filmListeLaden -> {
                         jPanelExtra.removeAll();
-                        jPanelExtra.add(new PanelFilmlisteLaden(true));
+                        jPanelExtra.add(new PanelFilmlisteLaden(true, host.ownerFrame()));
                     }
                     case NAME_blacklist -> {
                         jPanelExtra.removeAll();

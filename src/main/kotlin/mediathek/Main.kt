@@ -68,6 +68,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.security.Security
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.ExecutionException
 import javax.imageio.ImageIO
 import javax.swing.*
 import kotlin.system.exitProcess
@@ -847,33 +848,56 @@ object Main {
         }
     }
 
-    private suspend fun startGuiMode() = withContext(Dispatchers.Swing) {
-        SplashScreenLifecycle.update(UIProgressState.INIT_FX)
+    private suspend fun startGuiMode() {
+        withContext(Dispatchers.Swing) {
+            SplashScreenLifecycle.update(UIProgressState.INIT_FX)
 
-        SplashScreenLifecycle.update(UIProgressState.FILE_CLEANUP)
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            checkForOfficialOSXAppUse()
-            System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, true.toString())
-            cleanupOsxFiles()
+            SplashScreenLifecycle.update(UIProgressState.FILE_CLEANUP)
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                checkForOfficialOSXAppUse()
+                System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, true.toString())
+                cleanupOsxFiles()
+            }
+
+            if (CommandLineOptions.isDebugModeEnabled() || CommandLineOptions.isInstallThreadCheckingRepaintManager()) {
+                // use for debugging EDT violations
+                RepaintManager.setCurrentManager(ThreadCheckingRepaintManager())
+                logger.debug("Swing Thread checking repaint manager installed.")
+            }
+
+            SplashScreenLifecycle.update(UIProgressState.WAIT_FOR_HISTORY_DATA)
         }
 
-        if (CommandLineOptions.isDebugModeEnabled() || CommandLineOptions.isInstallThreadCheckingRepaintManager()) {
-            // use for debugging EDT violations
-            RepaintManager.setCurrentManager(ThreadCheckingRepaintManager())
-            logger.debug("Swing Thread checking repaint manager installed.")
-        }
+        waitForHistoryDataLoadingToComplete()
 
-        SplashScreenLifecycle.update(UIProgressState.START_UI)
-        val window = getPlatformWindow()
-        SplashScreenLifecycle.close()
-        window.isVisible = true
-        /*
-            on windows and linux there is a strange behaviour that the main window gets sent behind
-            other open windows after the splash screen is closed.
-         */
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            window.toFront()
-            window.requestFocusInWindow()
+        withContext(Dispatchers.Swing) {
+            SplashScreenLifecycle.update(UIProgressState.START_UI)
+            val window = getPlatformWindow()
+            window.start()
+            SplashScreenLifecycle.close()
+            window.isVisible = true
+            /*
+                on windows and linux there is a strange behaviour that the main window gets sent behind
+                other open windows after the splash screen is closed.
+             */
+            if (!SystemUtils.IS_OS_MAC_OSX) {
+                window.toFront()
+                window.requestFocusInWindow()
+            }
+            window.restoreStartupDialogs()
+        }
+    }
+
+    private suspend fun waitForHistoryDataLoadingToComplete() {
+        try {
+            withContext(Dispatchers.IO) {
+                Daten.getInstance().waitForHistoryDataLoadingToComplete()
+            }
+        } catch (exception: InterruptedException) {
+            Thread.currentThread().interrupt()
+            logger.error("waitForHistoryDataLoadingToComplete()", exception)
+        } catch (exception: ExecutionException) {
+            logger.error("waitForHistoryDataLoadingToComplete()", exception)
         }
     }
 

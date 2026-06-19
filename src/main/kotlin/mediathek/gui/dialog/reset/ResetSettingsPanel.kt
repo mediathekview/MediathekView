@@ -23,16 +23,17 @@ import mediathek.config.Konstanten
 import mediathek.daten.ListePset
 import mediathek.daten.ListePsetVorlagen
 import mediathek.gui.dialog.DialogHilfe
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.SettingsResetHost
 import mediathek.tool.GetFile
 import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.SVGIconUtilities
-import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 class ResetSettingsPanel(
-    private val parent: JFrame?,
+    private val host: SettingsResetHost,
 ) : ResetSettingsPanelBase() {
+    private val parent = host.ownerFrame()
+
     init {
         jButtonHilfeReset.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
         jButtonHilfeReset.addActionListener {
@@ -65,8 +66,8 @@ class ResetSettingsPanel(
             if (ret == JOptionPane.OK_OPTION) {
                 // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
                 // Programm wie beim ersten Start
-                MediathekGui.ui().requestSettingsResetOnQuit()
-                MediathekGui.ui().quitApplication()
+                host.requestSettingsResetOnQuit()
+                host.quitApplication()
             }
         }
     }

@@ -36,6 +36,7 @@ class MemoryMonitorDialog(
 ) : JDialog(parent, "Speicherverbrauch", false) {
 
     private val memoryUsagePanel = MemoryUsagePanel(HISTORY_WINDOW, SAMPLE_INTERVAL)
+    private var preserveVisibilityOnClose = false
 
     init {
         type = Type.UTILITY
@@ -61,7 +62,7 @@ class MemoryMonitorDialog(
             }
 
             override fun windowClosed(event: WindowEvent) {
-                storeVisibility(false)
+                storeVisibility(preserveVisibilityOnClose)
                 notifyClosed()
             }
         })
@@ -70,6 +71,11 @@ class MemoryMonitorDialog(
     override fun dispose() {
         memoryUsagePanel.close()
         super.dispose()
+    }
+
+    fun disposeForShutdown() {
+        preserveVisibilityOnClose = true
+        dispose()
     }
 
     private fun restoreBounds() {

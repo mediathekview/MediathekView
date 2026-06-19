@@ -1,7 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.MVColor;
-import mediathek.mainwindow.MediathekGui;
+import mediathek.mainwindow.SettingsDialogHost;
 import mediathek.tool.MVC;
 import mediathek.tool.cellrenderer.CellRendererColor;
 import mediathek.tool.models.TModelColor;
@@ -18,8 +18,10 @@ import java.awt.event.MouseEvent;
 public class PanelEinstellungenColor extends JPanel {
     private final TModelColor lightColorTableModel = new TModelColor(false);
     private final TModelColor darkColorTableModel = new TModelColor(true);
+    private final SettingsDialogHost host;
 
-    public PanelEinstellungenColor() {
+    public PanelEinstellungenColor(SettingsDialogHost host) {
+        this.host = host;
         initComponents();
         init();
     }
@@ -29,8 +31,8 @@ public class PanelEinstellungenColor extends JPanel {
      */
     public void updateGui() {
         try {
-            MediathekGui.ui().setupAlternatingRowColors();
-            SwingUtilities.updateComponentTreeUI(MediathekGui.ui());
+            host.setupAlternatingRowColors();
+            SwingUtilities.updateComponentTreeUI(host.ownerFrame());
             for (Frame f : Frame.getFrames()) {
                 SwingUtilities.updateComponentTreeUI(f);
                 for (Window w : f.getOwnedWindows()) {

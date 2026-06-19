@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatLaf
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.DarkModeChangeEvent
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.LookAndFeelHost
 import mediathek.tool.DarkModeFactory
 import mediathek.tool.LightModeFactory
 import mediathek.tool.MessageBus
@@ -13,7 +13,9 @@ import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.LookAndFeel
 
-class ToggleDarkModeAction : AbstractAction() {
+class ToggleDarkModeAction(
+    private val host: LookAndFeelHost,
+) : AbstractAction() {
     init {
         putValue(SHORT_DESCRIPTION, "Dunkelmodus ein-/ausschalten")
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-half-stroke.svg"))
@@ -28,7 +30,7 @@ class ToggleDarkModeAction : AbstractAction() {
             LightModeFactory.lookAndFeel
         }
         FlatLaf.setup(laf)
-        MediathekGui.ui().setupAlternatingRowColors()
+        host.setupAlternatingRowColors()
         // update all components
         FlatLaf.updateUI()
 

@@ -35,7 +35,7 @@ class FilmAboAndBlacklistContextActions(
     private val daten: Daten,
     private val selectedFilmAtPopupPoint: () -> DatenFilm?,
 ) {
-    private val createAboAction = CreateNewAboAction(daten.listeAbo) { host.gui() }
+    private val createAboAction = CreateNewAboAction(daten.listeAbo) { host.ownerFrame() }
     private val aboWithoutTitleAction = AboActionListener(false)
     private val aboWithTitleAction = AboActionListener(true)
 

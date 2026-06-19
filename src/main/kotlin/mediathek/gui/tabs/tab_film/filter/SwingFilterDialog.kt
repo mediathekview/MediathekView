@@ -28,7 +28,6 @@ import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
 import mediathek.tool.EventListWithEmptyFirstEntry
 import mediathek.tool.FilterDTO
@@ -36,6 +35,7 @@ import mediathek.tool.SVGIconUtilities
 import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
+import org.kordamp.ikonli.materialdesign2.MaterialDesignD
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Window
@@ -46,11 +46,11 @@ import javax.swing.event.ListDataListener
 import kotlin.time.Duration.Companion.milliseconds
 
 class SwingFilterDialog internal constructor(
-    owner: Window,
+    private val owner: Window,
     private val filterSelectionComboBoxModel: FilterSelectionComboBoxModel,
     private val filterToggleButton: JToggleButton,
     private val filterController: FilmFilterController,
-    private val prompts: DialogPrompts = JOptionPaneDialogPrompts
+    private val prompts: DialogPrompts = JOptionPaneDialogPrompts(owner),
 ) : SwingFilterDialogBase(owner, filterSelectionComboBoxModel) {
 
     companion object {
@@ -181,10 +181,12 @@ class SwingFilterDialog internal constructor(
         fun requestRenameFilterName(currentFilterName: String): String?
     }
 
-    private object JOptionPaneDialogPrompts : DialogPrompts {
+    private class JOptionPaneDialogPrompts(
+        private val owner: Window,
+    ) : DialogPrompts {
         override fun confirmDeleteCurrentFilter(): Boolean {
             return JOptionPane.showConfirmDialog(
-                MediathekGui.ui(),
+                owner,
                 "Möchten Sie wirklich den aktuellen Filter löschen?",
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.YES_NO_OPTION
@@ -193,7 +195,7 @@ class SwingFilterDialog internal constructor(
 
         override fun confirmResetCurrentFilter(): Boolean {
             return JOptionPane.showConfirmDialog(
-                MediathekGui.ui(),
+                owner,
                 "Sind Sie sicher, dass Sie den Filter zurücksetzen möchten?",
                 "Filter zurücksetzen",
                 JOptionPane.YES_NO_OPTION
@@ -202,7 +204,7 @@ class SwingFilterDialog internal constructor(
 
         override fun requestNewFilterName(suggestedName: String): String? {
             return JOptionPane.showInputDialog(
-                MediathekGui.ui(),
+                owner,
                 "Filtername:",
                 STR_NEW_FILTER,
                 JOptionPane.PLAIN_MESSAGE,
@@ -214,7 +216,7 @@ class SwingFilterDialog internal constructor(
 
         override fun requestRenameFilterName(currentFilterName: String): String? {
             return JOptionPane.showInputDialog(
-                MediathekGui.ui(),
+                owner,
                 "Neuer Name des Filters:",
                 "Filter umbenennen",
                 JOptionPane.PLAIN_MESSAGE,
@@ -246,7 +248,7 @@ class SwingFilterDialog internal constructor(
 
     private fun configureComponents() {
         setupRoundControls()
-        btnSplit.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/ellipsis-vertical.svg")
+        btnSplit.icon = IconUtils.of(MaterialDesignD.DOTS_VERTICAL)
         populateSplitButton()
         ToggleVisibilityKeyHandler(this).installHandler(filterToggleButton.action)
         setupButtons()
@@ -670,7 +672,7 @@ class SwingFilterDialog internal constructor(
                 when (val result = filterController.addFilter(newFilterName)) {
                     FilmFilterController.AddFilterResult.NameAlreadyExists -> {
                         JOptionPane.showMessageDialog(
-                            MediathekGui.ui(),
+                            owner,
                             "Ein Filter mit dem gewählten Namen existiert bereits!",
                             STR_NEW_FILTER,
                             JOptionPane.ERROR_MESSAGE
@@ -756,7 +758,7 @@ class SwingFilterDialog internal constructor(
 
             if (input.isEmpty()) {
                 JOptionPane.showMessageDialog(
-                    MediathekGui.ui(),
+                    owner,
                     "Filtername darf nicht leer sein!",
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.ERROR_MESSAGE
@@ -774,7 +776,7 @@ class SwingFilterDialog internal constructor(
             when (filterController.renameCurrentFilter(trimmedName)) {
                 FilmFilterController.RenameFilterResult.NameAlreadyExists -> {
                     JOptionPane.showMessageDialog(
-                        MediathekGui.ui(),
+                        owner,
                         "Filter $trimmedName existiert bereits.\nAktion wird abgebrochen",
                         Konstanten.PROGRAMMNAME,
                         JOptionPane.ERROR_MESSAGE

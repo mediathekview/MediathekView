@@ -36,6 +36,10 @@ class MemoryMonitorAction(
         dialog?.dispose()
     }
 
+    fun closeMemoryMonitorForShutdown() {
+        dialog?.disposeForShutdown()
+    }
+
     fun showMemoryMonitor() {
         if (dialog?.isDisplayable != true) {
             dialog = MemoryMonitorDialog(parent) {

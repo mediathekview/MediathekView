@@ -22,13 +22,15 @@ import mediathek.config.Daten
 import mediathek.daten.IndexedFilmList
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
+import java.awt.Component
 
 object GuiModelHelperFactory {
     fun createGuiModelHelper(
+        owner: Component,
         searchFieldData: SearchFieldData,
         filterController: FilmFilterController
     ): GuiModelHelper = if (Daten.getInstance().listeFilmeNachBlackList is IndexedFilmList) {
-        LuceneGuiFilmeModelHelper(searchFieldData, filterController)
+        LuceneGuiFilmeModelHelper(owner, searchFieldData, filterController)
     } else {
         GuiFilmeModelHelper(searchFieldData, filterController)
     }

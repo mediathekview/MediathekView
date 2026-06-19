@@ -13,9 +13,9 @@ import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.DownloadFinishedEvent
 import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.gui.messages.DownloadStartEvent
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
+import javax.swing.JFrame
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -27,7 +27,8 @@ import kotlin.time.Duration.Companion.milliseconds
  * Download files via an external program.
  */
 class ExternalProgramDownload(
-    private val datenDownload: DatenDownload
+    private val datenDownload: DatenDownload,
+    private val dialogOwnerProvider: () -> JFrame? = { null },
 ) : Thread("EXTERNAL PROGRAM DL THREAD: ${datenDownload.title}") {
 
     private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
@@ -222,7 +223,7 @@ class ExternalProgramDownload(
     private fun abbrechen(): Boolean {
         var result = false
         if (file.exists()) {
-            val dialogContinueDownload = DialogContinueDownload(MediathekGui.ui(), datenDownload, false)
+            val dialogContinueDownload = DialogContinueDownload(dialogOwnerProvider(), datenDownload, false)
             dialogContinueDownload.isVisible = true
 
             when (dialogContinueDownload.result) {
@@ -277,7 +278,7 @@ class ExternalProgramDownload(
             return
         }
         SwingUtilities.invokeLater {
-            MeldungDownloadfehler(MediathekGui.ui(), message, datenDownload).isVisible = true
+            MeldungDownloadfehler(dialogOwnerProvider(), message, datenDownload).isVisible = true
         }
     }
 

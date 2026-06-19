@@ -25,7 +25,13 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.ShowSettingsDialogEvent
+import mediathek.mainwindow.MacMainWindowMenuPolicy
+import mediathek.mainwindow.MainWindowQuitHost
 import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.MainWindowTabPlacementController
+import mediathek.mainwindow.MainWindowToolbarInstaller
+import mediathek.mainwindow.NoOpMainWindowScrollBarConfigurator
+import mediathek.mainwindow.NoOpMainWindowSystemTrayController
 import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
 import mediathek.tool.RuntimeArchitecture
@@ -33,11 +39,13 @@ import mediathek.tool.notification.MacNotificationCenter
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
+import java.awt.Container
 import java.awt.Desktop
 import java.awt.FlowLayout
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.lang.foreign.*
+import javax.swing.JTabbedPane
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JToolBar
@@ -47,6 +55,14 @@ class MediathekGuiMac : MediathekGui(
     ::MacNotificationCenter,
     MacComputerShutdown(),
     { _ -> MacDownloadProgressIndicator() },
+    MacMainWindowToolbarInstaller,
+    MainWindowTabPlacementController(false),
+    MacMainWindowMenuPolicy,
+    false,
+    NoOpMainWindowScrollBarConfigurator,
+    NoOpMainWindowSystemTrayController,
+    false,
+    ::setupUserInterfaceForOsx,
 ) {
     private val architectureCheckScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -61,8 +77,6 @@ class MediathekGuiMac : MediathekGui(
         architectureCheckScope.cancel()
         super.dispose()
     }
-
-    override fun shouldDisableF10MenuShortcut(): Boolean = false
 
     @Throws(Throwable::class)
     private fun processorBrand(): String {
@@ -134,98 +148,60 @@ class MediathekGuiMac : MediathekGui(
 
     }
 
-    override fun resetTabPlacement() {
-        // do not reset tab placement as it is not necessary...
-    }
-
-    override fun addQuitMenuItem() {
-        //using native handler instead
-    }
-
-    override fun addSettingsMenuItem() {
-        //using native handler instead
-    }
-
-    override fun setToolBarProperties() {
-        //not used on macOS
-    }
-
-    override fun configureTabPlacement() {
-        // do not configure as it interferes with installToolBar and is not necessary...
-    }
-
-    private class MacToolBarPanel(commonToolBar: JToolBar) : JPanel() {
-        private class MacFullWindowPlaceHolder : JPanel() {
-            init {
-                layout = FlowLayout()
-                putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen")
-            }
-        }
-
-        init {
-            layout = BorderLayout()
-            add(MacFullWindowPlaceHolder(), BorderLayout.WEST)
-            add(commonToolBar, BorderLayout.CENTER)
-        }
-    }
-
-    override fun installToolBar() {
-        contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
-    }
-
-    override fun supportsFontMenu(): Boolean = false
-
-    override fun installAdditionalHelpEntries() {
-        //unused on macOS
-    }
-
-    override fun setupScrollBarWidth() {
-        // unused on macOS
-    }
-
-    override fun initializeSystemTray() {
-        //we don´t use it on macOS
-    }
-
-    override fun supportsAutomaticMenuTabSwitching(): Boolean = false
-
-    override fun initMenus() {
-        super.initMenus()
-        setupUserInterfaceForOsx()
-    }
-
-    /**
-     * Setup the UI for OS X
-     */
-    private fun setupUserInterfaceForOsx() {
-        val desktop = Desktop.getDesktop()
-
-        desktop.disableSuddenTermination()
-        if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
-            desktop.setQuitHandler { _: QuitEvent?, response: QuitResponse ->
-                quitApplication()
-                response.cancelQuit()
-            }
-        }
-        if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
-            desktop.setAboutHandler { ShowAboutAction().actionPerformed(null) }
-        }
-
-        if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
-            desktop.setPreferencesHandler {
-                MessageBus.messageBus.publishAsync(ShowSettingsDialogEvent())
-            }
-        }
-
-        val rootPane = getRootPane()
-        rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
-        if (SystemInfo.isMacFullWindowContentSupported) {
-            rootPane.putClientProperty("apple.awt.fullWindowContent", true)
-            rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
-        }
-    }
-
     companion object {
         val logger: Logger = LogManager.getLogger()
+    }
+}
+
+/**
+ * Setup the UI for OS X
+ */
+private fun setupUserInterfaceForOsx(mainWindow: MainWindowQuitHost) {
+    val desktop = Desktop.getDesktop()
+    val ownerFrame = mainWindow.ownerFrame()
+
+    desktop.disableSuddenTermination()
+    if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+        desktop.setQuitHandler { _: QuitEvent?, response: QuitResponse ->
+            mainWindow.quitApplication()
+            response.cancelQuit()
+        }
+    }
+    if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+        desktop.setAboutHandler { ShowAboutAction(ownerFrame).actionPerformed(null) }
+    }
+
+    if (desktop.isSupported(Desktop.Action.APP_PREFERENCES)) {
+        desktop.setPreferencesHandler {
+            MessageBus.messageBus.publishAsync(ShowSettingsDialogEvent())
+        }
+    }
+
+    val rootPane = ownerFrame.rootPane
+    rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
+    if (SystemInfo.isMacFullWindowContentSupported) {
+        rootPane.putClientProperty("apple.awt.fullWindowContent", true)
+        rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
+    }
+}
+
+private object MacMainWindowToolbarInstaller : MainWindowToolbarInstaller {
+    override fun install(contentPane: Container, tabbedPane: JTabbedPane, commonToolBar: JToolBar) {
+        contentPane.add(MacToolBarPanel(commonToolBar), BorderLayout.PAGE_START)
+    }
+}
+
+private class MacToolBarPanel(commonToolBar: JToolBar) : JPanel() {
+    private class MacFullWindowPlaceHolder : JPanel() {
+        init {
+            layout = FlowLayout()
+            putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT_BUTTONS_PLACEHOLDER, "mac zeroInFullScreen")
+        }
+    }
+
+    init {
+        layout = BorderLayout()
+        add(MacFullWindowPlaceHolder(), BorderLayout.WEST)
+        add(commonToolBar, BorderLayout.CENTER)
     }
 }

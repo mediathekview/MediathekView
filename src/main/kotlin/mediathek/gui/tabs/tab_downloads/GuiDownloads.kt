@@ -40,7 +40,6 @@ import mediathek.gui.messages.*
 import mediathek.gui.tabs.DescriptionTabController
 import mediathek.gui.tabs.actions.MarkFilmAsSeenAction
 import mediathek.gui.tabs.actions.MarkFilmAsUnseenAction
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.DirOpenAction
 import mediathek.tool.DownloadSizeState
 import mediathek.tool.MessageBus
@@ -59,6 +58,9 @@ import java.awt.event.KeyEvent
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
+import java.util.function.Consumer
+import java.util.function.LongConsumer
+import java.util.function.Predicate
 import javax.swing.*
 import javax.swing.Timer
 import kotlin.time.Duration
@@ -67,7 +69,11 @@ import kotlin.time.toJavaDuration
 
 class GuiDownloads(
     private val daten: Daten,
-    private val mediathekGui: MediathekGui,
+    private val ownerFrame: JFrame,
+    private val showFilmInformationAction: Action,
+    private val selectedListItemsCount: LongConsumer,
+    private val selectedFilm: Consumer<DatenFilm?>,
+    private val quitApplication: Predicate<Boolean>,
 ) : JPanel() {
     val startAllDownloadsAction = StartAllDownloadsAction(this)
     val startAllDownloadsTimedAction = StartAllDownloadsTimedAction(this)
@@ -84,7 +90,7 @@ class GuiDownloads(
     val editDownloadAction = EditDownloadAction(this)
     val deleteDownloadAction = DeleteDownloadAction(this)
     val openTargetFolderAction = OpenTargetFolderAction(this)
-    val mergeSubtitleWithVideoAction = MergeSubtitleWithVideoAction(MediathekGui.ui())
+    val mergeSubtitleWithVideoAction = MergeSubtitleWithVideoAction(ownerFrame)
     val swingToolBar: JToolBar = DownloadsToolBar(
         refreshDownloadListAction,
         startAllDownloadsAction,
@@ -253,7 +259,7 @@ class GuiDownloads(
     }
 
     private fun updateSelectedListItemsCount(table: JTable) {
-        mediathekGui.selectedListItemsProperty.setSelectedItems(table.selectedRowCount.toLong())
+        selectedListItemsCount.accept(table.selectedRowCount.toLong())
     }
 
     private fun updateStartInfoProperty() {
@@ -307,7 +313,9 @@ class GuiDownloads(
 
         model = TModelDownload()
         tabelle.model = model
-        tabelle.addMouseListener(DownloadsTableMouseHandler(this, tabelle, daten, mediathekGui))
+        tabelle.addMouseListener(
+            DownloadsTableMouseHandler(this, tabelle, daten, ownerFrame, showFilmInformationAction)
+        )
         tabelle.selectionModel.addListSelectionListener { event ->
             if (!event.valueIsAdjusting) {
                 updateFilmData()
@@ -321,9 +329,10 @@ class GuiDownloads(
                 DownloadColumns.visibilityStore(),
                 COLUMNS_DISABLED,
                 intArrayOf(DownloadColumns.BUTTON_START, DownloadColumns.BUTTON_DELETE),
-                true,
-                { ApplicationConfiguration.getInstance().downloadTableLineBreak = it },
-            )
+                true
+            ) {
+                ApplicationConfiguration.getInstance().downloadTableLineBreak = it
+            }
         )
     }
 
@@ -464,7 +473,7 @@ class GuiDownloads(
         val listeDownloads = daten.listeDownloads
         rememberAboSizes(listeDownloads)
         listeDownloads.abosAuffrischen()
-        listeDownloads.abosSuchen(mediathekGui)
+        listeDownloads.abosSuchen(ownerFrame)
         listeDownloads.restoreKnownAboSizes()
         rememberAboSizes(listeDownloads)
         reloadTable()
@@ -560,7 +569,7 @@ class GuiDownloads(
         val datenDownload = getSelDownload() ?: return
         val gestartet = datenDownload.runtime.runState?.let { it.status >= StartStatus.RUNNING } == true
         val datenDownloadCopy = datenDownload.copy
-        val dialog = DialogEditDownload(mediathekGui, datenDownloadCopy, gestartet)
+        val dialog = DialogEditDownload(ownerFrame, datenDownloadCopy, gestartet)
         dialog.isVisible = true
         if (dialog.isConfirmed()) {
             datenDownload.aufMichKopieren(datenDownloadCopy)
@@ -579,13 +588,13 @@ class GuiDownloads(
     fun zielordnerOeffnen() {
         val datenDownload = getSelDownload() ?: return
         val targetPath = datenDownload.targetPath
-        DirOpenAction.zielordnerOeffnen(mediathekGui, targetPath)
+        DirOpenAction.zielordnerOeffnen(ownerFrame, targetPath)
     }
 
     fun filmAbspielen() {
         val datenDownload = getSelDownload() ?: return
         val targetFile = datenDownload.targetPathFileName
-        OpenPlayerAction.filmAbspielen(mediathekGui, targetFile)
+        OpenPlayerAction.filmAbspielen(ownerFrame, targetFile)
     }
 
     fun filmLoeschen_() {
@@ -593,19 +602,19 @@ class GuiDownloads(
 
         val currentStart = datenDownload.runtime.runState
         if (currentStart != null && currentStart.status < StartStatus.FINISHED) {
-            JOptionPane.showMessageDialog(mediathekGui, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(ownerFrame, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
             return
         }
 
         try {
             val file = getExistingDownloadFile(datenDownload)
             if (!file.exists()) {
-                JOptionPane.showMessageDialog(mediathekGui, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(ownerFrame, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE)
                 return
             }
 
             val result = JOptionPane.showConfirmDialog(
-                mediathekGui,
+                ownerFrame,
                 file.absolutePath,
                 "Film Löschen?",
                 JOptionPane.YES_NO_OPTION,
@@ -617,7 +626,7 @@ class GuiDownloads(
                 }
             }
         } catch (_: Exception) {
-            JOptionPane.showMessageDialog(mediathekGui, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(ownerFrame, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
             logger.error("Fehler beim löschen: {}", datenDownload.targetPathFileName)
         }
     }
@@ -723,7 +732,7 @@ class GuiDownloads(
                 }
                 if (start.status > StartStatus.RUNNING) {
                     val reply = createDismissableMessageDialog(
-                        mediathekGui,
+                        ownerFrame,
                         "Fertiger Download",
                         "Film nochmal starten?  ==> " + download.title,
                         JOptionPane.YES_NO_OPTION,
@@ -745,10 +754,10 @@ class GuiDownloads(
 
         daten.listeDownloads.downloadAbbrechen(downloadsToCancel)
 
-        val dialogBeenden = DialogBeendenZeit(mediathekGui, downloadsToStart)
+        val dialogBeenden = DialogBeendenZeit(ownerFrame, downloadsToStart)
         dialogBeenden.isVisible = true
         if (dialogBeenden.applicationCanTerminate()) {
-            mediathekGui.quitApplication(dialogBeenden.isShutdownRequested())
+            quitApplication.test(dialogBeenden.isShutdownRequested())
         }
 
         reloadTable()
@@ -796,7 +805,7 @@ class GuiDownloads(
                                 "Film nochmal starten?  ==> " + download.title
                             }
                             answer = createDismissableMessageDialog(
-                                mediathekGui,
+                                ownerFrame,
                                 "Fertiger Download",
                                 text,
                                 JOptionPane.YES_NO_CANCEL_OPTION,
@@ -856,7 +865,7 @@ class GuiDownloads(
             return
         }
 
-        mediathekGui.filmInfoDialog?.updateCurrentFilm(getCurrentlySelectedFilm().orElse(null))
+        selectedFilm.accept(getCurrentlySelectedFilm().orElse(null))
     }
 
     private fun createDismissableMessageDialog(

@@ -67,7 +67,7 @@ internal class DatenFilmTest {
     fun setDatumLongAcceptsNegativeValues() {
         val film = DatenFilm()
 
-        film.sendeDatum = "01.01.1966"
+        film.setSendeDatumFromFilmlistValue("01.01.1966")
         film.setDatumLongSeconds(-122749200L)
         film.init()
 
@@ -207,7 +207,7 @@ internal class DatenFilmTest {
             websiteUrl = "https://example.org/page"
             this.abo = abo
             this.bookmark = bookmark
-            sendeDatum = "01.01.1966"
+            setSendeDatumFromFilmlistValue("01.01.1966")
             setDatumLongSeconds(-122749200L)
         }
 
@@ -228,6 +228,56 @@ internal class DatenFilmTest {
         assertTrue(copy.isBookmarked)
         assertNotEquals(DatumFilm.UNDEFINED_FILM_DATE, copy.datumFilm)
         assertEquals((-122749200L).seconds.inWholeMilliseconds, copy.datumFilm.time)
+    }
+
+    @Test
+    fun sendeDatumAndSendeZeitUseCompactStorageForStandardValues() {
+        val film = DatenFilm()
+
+        film.setSendeDatumFromFilmlistValue("15.05.2026")
+        film.setSendeZeitFromFilmlistValue("20:15:30")
+
+        assertEquals("15.05.2026", film.sendeDatum)
+        assertEquals("20:15:30", film.sendeZeit)
+        assertEquals(20 * 3600 + 15 * 60 + 30, film.sendeZeitSecondOfDay)
+    }
+
+    @Test
+    fun sendeDatumAndSendeZeitClearNonStandardValues() {
+        val film = DatenFilm()
+
+        film.setSendeDatumFromFilmlistValue("unknown")
+        film.setSendeZeitFromFilmlistValue("unknown")
+
+        assertEquals("", film.sendeDatum)
+        assertEquals("", film.sendeZeit)
+        assertNull(film.sendeDatumEpochDay)
+        assertNull(film.sendeZeitSecondOfDay)
+    }
+
+    @Test
+    fun sendeZeitAcceptsFilmListFormatWithoutSeconds() {
+        val film = DatenFilm()
+
+        film.setSendeZeitFromFilmlistValue("20:15")
+
+        assertEquals("20:15:00", film.sendeZeit)
+        assertEquals("20:15", film.sendeZeitForFilmList)
+        assertEquals(20 * 3600 + 15 * 60, film.sendeZeitSecondOfDay)
+    }
+
+    @Test
+    fun copyPreservesCompactSendeDatumAndSendeZeitStorage() {
+        val film = DatenFilm().apply {
+            setSendeDatumFromFilmlistValue("15.05.2026")
+            setSendeZeitFromFilmlistValue("20:15:30")
+        }
+
+        val copy = DatenFilm(film)
+
+        assertEquals(film.sendeDatum, copy.sendeDatum)
+        assertEquals(film.sendeZeit, copy.sendeZeit)
+        assertEquals(film.privateField("sendeDateTimeStorage"), copy.privateField("sendeDateTimeStorage"))
     }
 
     @Test
@@ -256,19 +306,89 @@ internal class DatenFilmTest {
         film.subtitleUrl = "https://example.org/subtitle.vtt"
         film.websiteUrl = "https://example.org/page"
 
+        assertEquals("https://example.org/subtitle.vtt", film.subtitleUrl)
+        assertEquals("https://example.org/page", film.websiteUrl)
         assertTrue(film.hasLowQuality())
         assertTrue(film.isHighQuality)
         assertTrue(film.hasSubtitle())
         assertEquals("https://example.org/low.mp4", film.privateField("lowQualityUrlStorage"))
         assertEquals("https://example.org/high.mp4", film.privateField("highQualityUrlStorage"))
-        assertEquals("https://example.org/subtitle.vtt", film.privateField("subtitleUrlStorage"))
-        assertEquals("https://example.org/page", film.privateField("websiteUrlStorage"))
+        assertCompressedUrlStorage(film, "subtitleUrlStorage", "https://example.org/subtitle.vtt")
+        assertCompressedUrlStorage(film, "websiteUrlStorage", "https://example.org/page")
+    }
+
+    @Test
+    fun normalQualityUrlStorageUsesHostDictionary() {
+        val film = DatenFilm()
+        val url = "https://cdn.example.org/path/to/video.mp4"
+
+        film.urlNormalQuality = url
+
+        assertEquals(url, film.urlNormalQuality)
+        val storedUrl = film.privateField("normalQualityUrlStorage") as String
+        assertTrue(storedUrl.startsWith("~"))
+        assertTrue(storedUrl.length < url.length)
+    }
+
+    @Test
+    fun copyPreservesNormalQualityUrlWithHostDictionaryStorage() {
+        val url = "https://cdn.example.org/path/to/video.mp4"
+        val film = DatenFilm().apply {
+            urlNormalQuality = url
+        }
+
+        val copy = DatenFilm(film)
+
+        assertEquals(url, copy.urlNormalQuality)
+    }
+
+    @Test
+    fun copyPreservesWebsiteAndSubtitleUrlsWithHostDictionaryStorage() {
+        val film = DatenFilm().apply {
+            websiteUrl = "https://www.example.org/path/to/page.html"
+            subtitleUrl = "https://subtitle.example.org/path/to/subtitle.vtt"
+        }
+
+        val copy = DatenFilm(film)
+
+        assertEquals(film.websiteUrl, copy.websiteUrl)
+        assertEquals(film.subtitleUrl, copy.subtitleUrl)
+    }
+
+    @Test
+    fun highQualityUrlStorageKeepsCompressedValue() {
+        val film = DatenFilm()
+        val sharedPrefix = "https://example.org/video/"
+        val compressedHighQualityUrl = "${sharedPrefix.length}|high.mp4"
+
+        film.urlNormalQuality = sharedPrefix + "normal.mp4"
+        film.highQualityUrl = sharedPrefix + "high.mp4"
+
+        assertEquals(sharedPrefix + "high.mp4", film.highQualityUrl)
+        assertEquals(compressedHighQualityUrl, film.privateField("highQualityUrlStorage"))
+        assertEquals(
+            sharedPrefix + "high.mp4",
+            film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY),
+        )
+    }
+
+    @Test
+    fun highQualityUrlStorageRebasesWhenNormalQualityUrlChanges() {
+        val film = DatenFilm()
+        val originalPrefix = "https://example.org/original/"
+        val highQualityUrl = originalPrefix + "high.mp4"
+
+        film.urlNormalQuality = originalPrefix + "normal.mp4"
+        film.highQualityUrl = highQualityUrl
+        film.urlNormalQuality = "https://example.org/updated/normal.mp4"
+
+        assertEquals(highQualityUrl, film.highQualityUrl)
     }
 
     @Test
     fun datumFilmIsCreatedLazilyFromStoredTime() {
         val film = DatenFilm().apply {
-            sendeDatum = "01.01.1966"
+            setSendeDatumFromFilmlistValue("01.01.1966")
             setDatumLongSeconds(-122749200L)
             init()
         }
@@ -367,6 +487,12 @@ internal class DatenFilmTest {
             val field = DatenFilm::class.java.getDeclaredField(name)
             field.isAccessible = true
             return field.get(this)
+        }
+
+        private fun assertCompressedUrlStorage(film: DatenFilm, fieldName: String, expandedUrl: String) {
+            val storedUrl = film.privateField(fieldName) as String
+            assertTrue(storedUrl.startsWith("~"))
+            assertTrue(storedUrl.length < expandedUrl.length)
         }
     }
 }

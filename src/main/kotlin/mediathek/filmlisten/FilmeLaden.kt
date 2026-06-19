@@ -31,7 +31,7 @@ import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.reader.FilmListReader
 import mediathek.gui.messages.FilmListReadStopEvent
-import mediathek.mainwindow.MediathekGui
+import mediathek.mainwindow.FilmListLoadHost
 import mediathek.mainwindow.StatusBarProgressHandle
 import mediathek.tool.FilmListUpdateType
 import mediathek.tool.MessageBus
@@ -59,6 +59,7 @@ class FilmeLaden(private val daten: Daten) {
     private data class StatusBarWidgets(
         val handle: StatusBarProgressHandle,
         val attachedToStatusBar: Boolean,
+        val host: FilmListLoadHost?,
     ) {
         val label
             get() = handle.label()
@@ -90,10 +91,9 @@ class FilmeLaden(private val daten: Daten) {
     private val listeners = EventListenerList()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val loadRunning = AtomicBoolean(false)
+    @Volatile
+    private var uiHost: FilmListLoadHost? = null
     private var onlyOne = false
-
-    private val canShowUiDialogs: Boolean
-        get() = MediathekGui.ui() != null && !CommandLineOptions.isDownloadAndQuit() && !GraphicsEnvironment.isHeadless()
 
     init {
         filmListReader.addAdListener(object : ListenerFilmeLaden() {
@@ -116,11 +116,11 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private fun showNoUpdateAvailableDialog() {
-        val ui = MediathekGui.ui()
-        if (canShowUiDialogs && ui != null) {
+        val host = dialogHost()
+        if (host != null) {
             runOnSwing {
                 JOptionPane.showMessageDialog(
-                    ui,
+                    host.ownerFrame(),
                     NO_UPDATE_AVAILABLE,
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.INFORMATION_MESSAGE,
@@ -132,12 +132,20 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private fun showExceptionMessage(message: String, ex: Exception, showDialogs: Boolean) {
-        val ui = MediathekGui.ui()
-        if (showDialogs && canShowUiDialogs && ui != null) {
+        val host = dialogHost()
+        if (showDialogs && host != null) {
             runOnSwing {
-                SwingErrorDialog.showExceptionMessage(ui, message, ex)
+                SwingErrorDialog.showExceptionMessage(host.ownerFrame(), message, ex)
             }
         }
+    }
+
+    private fun dialogHost(): FilmListLoadHost? {
+        val host = uiHost ?: return null
+        if (CommandLineOptions.isDownloadAndQuit() || GraphicsEnvironment.isHeadless()) {
+            return null
+        }
+        return host
     }
 
     private fun hasNewRemoteFilmlist(sourceUrl: String): Boolean {
@@ -302,6 +310,10 @@ class FilmeLaden(private val daten: Daten) {
         listeners.remove(ListenerFilmeLaden::class.java, listener)
     }
 
+    fun setUiHost(host: FilmListLoadHost?) {
+        uiHost = host
+    }
+
     val isLoadRunning: Boolean
         get() = loadRunning.get()
 
@@ -436,8 +448,7 @@ class FilmeLaden(private val daten: Daten) {
             if (result == ImportResult.NO_UPDATE) {
                 finishLoadRunning()
                 if (options.postProcessWhenNoUpdate) {
-                    val ui = MediathekGui.ui()
-                    val statusBarWidgets = attachStatusBarWidgets(ui)
+                    val statusBarWidgets = attachStatusBarWidgets(uiHost)
                     startPostLoadWork(writeFilmList = false, statusBarWidgets)
                 } else {
                     notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, false))
@@ -475,15 +486,16 @@ class FilmeLaden(private val daten: Daten) {
 
         findAndMarkNewFilms(daten.listeFilme)
 
-        val ui = MediathekGui.ui()
+        val host = uiHost
         finishLoadRunning()
         val writeFilmList = if (event.fehler) {
             logger.info("")
             logger.info("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen")
-            if (canShowUiDialogs && ui != null) {
+            val dialogHost = dialogHost()
+            if (dialogHost != null) {
                 runOnSwing {
                     JOptionPane.showMessageDialog(
-                        ui,
+                        dialogHost.ownerFrame(),
                         "Das Laden der Filmliste hat nicht geklappt!",
                         Konstanten.PROGRAMMNAME,
                         JOptionPane.ERROR_MESSAGE,
@@ -511,7 +523,7 @@ class FilmeLaden(private val daten: Daten) {
         logger.info("")
 
         MessageBus.messageBus.publish(FilmListReadStopEvent())
-        val statusBarWidgets = attachStatusBarWidgets(ui)
+        val statusBarWidgets = attachStatusBarWidgets(host)
         startPostLoadWork(writeFilmList, statusBarWidgets)
     }
 
@@ -564,16 +576,17 @@ class FilmeLaden(private val daten: Daten) {
         }
     }
 
-    private suspend fun attachStatusBarWidgets(ui: MediathekGui?): StatusBarWidgets {
-        if (ui != null) {
+    private suspend fun attachStatusBarWidgets(host: FilmListLoadHost?): StatusBarWidgets {
+        if (host != null) {
             return withContext(Dispatchers.Swing) {
                 StatusBarWidgets(
-                    handle = ui.showStatusBarProgress(),
+                    handle = host.showStatusBarProgress(),
                     attachedToStatusBar = true,
+                    host = host,
                 )
             }
         }
-        return StatusBarWidgets(NoStatusBarProgressHandle(), attachedToStatusBar = false)
+        return StatusBarWidgets(NoStatusBarProgressHandle(), attachedToStatusBar = false, host = null)
     }
 
     private suspend fun detachStatusBarWidgets(widgets: StatusBarWidgets) {
@@ -614,7 +627,7 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private suspend fun buildPostLoadWorkerChain(writeFilmList: Boolean, widgets: StatusBarWidgets) =
-        FilmlistPostLoadTasks(daten, widgets.label, widgets.progressBar).run(writeFilmList)
+        FilmlistPostLoadTasks(daten, widgets.label, widgets.progressBar, widgets.host).run(writeFilmList)
 
     private fun runOnSwing(action: () -> Unit) {
         scope.launch(Dispatchers.Swing) {

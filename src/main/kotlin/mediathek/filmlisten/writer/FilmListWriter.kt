@@ -239,7 +239,7 @@ class FilmListWriter(private val readable: Boolean) {
     }
 
     private fun writeHighQualityUrl(jg: JsonGenerator, datenFilm: DatenFilm) {
-        var url = datenFilm.highQualityUrl
+        var url = datenFilm.storedHighQualityUrl
         if (decompressUrls && DatenFilm.isCompressedUrl(url)) {
             url = datenFilm.decompressUrl(url)
         }
@@ -285,13 +285,7 @@ class FilmListWriter(private val readable: Boolean) {
     }
 
     private fun writeZeit(jg: JsonGenerator, datenFilm: DatenFilm) {
-        val strZeit = datenFilm.sendeZeit
-
-        if (strZeit.isEmpty() || strZeit.length < 8) {
-            jg.writeString("")
-        } else {
-            jg.writeString(strZeit.substring(0, strZeit.length - 3))
-        }
+        jg.writeString(datenFilm.sendeZeitForFilmList)
     }
 
     /**

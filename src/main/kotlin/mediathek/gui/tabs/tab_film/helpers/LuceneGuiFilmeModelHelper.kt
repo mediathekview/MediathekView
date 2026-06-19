@@ -28,7 +28,6 @@ import mediathek.gui.tabs.tab_film.filter.FilmFilterState
 import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
 import mediathek.gui.tasks.LuceneIndexKeys
-import mediathek.mainwindow.MediathekGui
 import mediathek.tool.LuceneDefaultAnalyzer
 import mediathek.tool.SwingErrorDialog
 import org.apache.logging.log4j.LogManager
@@ -40,6 +39,7 @@ import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser
 import org.apache.lucene.queryparser.flexible.standard.config.PointsConfig
 import org.apache.lucene.search.*
+import java.awt.Component
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -48,6 +48,7 @@ import javax.swing.SwingUtilities
 import javax.swing.table.TableModel
 
 class LuceneGuiFilmeModelHelper(
+    private val owner: Component,
     searchFieldData: SearchFieldData,
     filterController: FilmFilterController,
 ) : GuiModelHelper {
@@ -146,7 +147,7 @@ class LuceneGuiFilmeModelHelper(
             logger.error("Lucene filtering failed!", ex)
             SwingUtilities.invokeLater {
                 SwingErrorDialog.showExceptionMessage(
-                    MediathekGui.ui(),
+                    owner,
                     "Die Lucene Abfrage ist inkorrekt und führt zu keinen Ergebnissen.",
                     ex,
                 )

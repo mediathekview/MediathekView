@@ -106,7 +106,7 @@ class LoadFilmListDialog(owner: Frame?) : JDialog(owner, "Filmliste laden", true
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
         contentPane.layout = BorderLayout()
-        contentPanel = PanelFilmlisteLaden(false)
+        contentPanel = PanelFilmlisteLaden(false, requireNotNull(owner))
         val scrollPane = JScrollPane(contentPanel)
         contentPane.add(scrollPane, BorderLayout.CENTER)
         createButtonPanel()

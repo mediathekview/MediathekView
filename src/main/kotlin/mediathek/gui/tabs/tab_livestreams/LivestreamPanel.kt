@@ -30,7 +30,6 @@ import mediathek.gui.tabs.tab_livestreams.services.ShowService
 import mediathek.gui.tabs.tab_livestreams.services.StreamService
 import mediathek.mac.MacMultimediaPlayerLocator
 import mediathek.mac.SingleIinaPlayer
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.OverlayPanel
 import mediathek.tool.GermanStringSorter
 import mediathek.tool.GuiFunktionenProgramme
@@ -39,6 +38,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.awt.BorderLayout
 import java.awt.Desktop
+import java.awt.Frame
 import java.awt.Rectangle
 import java.awt.event.*
 import java.net.URI
@@ -46,7 +46,9 @@ import java.time.Instant
 import javax.swing.*
 import kotlin.time.Duration.Companion.seconds
 
-class LivestreamPanel : JPanel(BorderLayout()) {
+class LivestreamPanel(
+    private val owner: Frame? = null,
+) : JPanel(BorderLayout()) {
 
     private val listModel = LivestreamListModel()
     private val list = JList(listModel)
@@ -90,7 +92,7 @@ class LivestreamPanel : JPanel(BorderLayout()) {
         showService = ShowService(json, Konstanten.ZAPP_API_URL)
     }
 
-    private var iinaPlayer = SingleIinaPlayer()
+    private var iinaPlayer = SingleIinaPlayer { owner }
 
     override fun addNotify() {
         super.addNotify()
@@ -214,10 +216,12 @@ class LivestreamPanel : JPanel(BorderLayout()) {
                 ProcessBuilder(vlcPath.toAbsolutePath().toString(), selected.streamUrl).start()
             }
             catch (_: IllegalStateException) {
-                JOptionPane.showMessageDialog(MediathekGui.ui(),
+                JOptionPane.showMessageDialog(
+                    owner,
                     "<html>Es konnte kein VLC auf dem System gefunden werden.<br/>" +
-                            "Es wird versucht, den Stream über den Browser zu öffnen.</html>")
-                UrlHyperlinkAction.openURL(selected.streamUrl)
+                            "Es wird versucht, den Stream über den Browser zu öffnen.</html>",
+                )
+                UrlHyperlinkAction.openURL(selected.streamUrl, owner)
             }
         }
         else {

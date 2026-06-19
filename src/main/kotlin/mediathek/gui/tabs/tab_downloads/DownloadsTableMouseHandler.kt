@@ -27,16 +27,17 @@ import mediathek.daten.DownloadColumns
 import mediathek.daten.abo.DatenAbo
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
-import mediathek.mainwindow.MediathekGui
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.table.MVDownloadsTable
 import org.apache.commons.lang3.SystemUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
+import javax.swing.JFrame
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import javax.swing.Action
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JOptionPane
@@ -46,7 +47,8 @@ class DownloadsTableMouseHandler(
     private val downloadsTab: GuiDownloads,
     private val tabelle: MVDownloadsTable,
     private val daten: Daten,
-    private val mediathekGui: MediathekGui
+    private val ownerFrame: JFrame,
+    private val showFilmInformationAction: Action,
 ) : MouseAdapter() {
     private var datenDownload: DatenDownload? = null
     private var point: Point = Point()
@@ -220,10 +222,10 @@ class DownloadsTableMouseHandler(
     private fun enableAboActions(itemChangeAbo: JMenuItem, itemDelAbo: JMenuItem, datenAbo: DatenAbo) {
         itemDelAbo.addActionListener { daten.listeAbo.aboLoeschen(datenAbo) }
         itemChangeAbo.addActionListener {
-            if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(mediathekGui)) {
+            if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(ownerFrame)) {
                 return@addActionListener
             }
-            val dialog = DialogEditAbo(mediathekGui, datenAbo, false)
+            val dialog = DialogEditAbo(ownerFrame, datenAbo, false)
             dialog.isVisible = true
             if (dialog.successful()) {
                 daten.listeAbo.aenderungMelden()
@@ -243,7 +245,7 @@ class DownloadsTableMouseHandler(
         }
         popupMenu.add(itemUrl)
 
-        popupMenu.add(mediathekGui.showFilmInformationAction)
+        popupMenu.add(showFilmInformationAction)
     }
 
     private fun playUrlAtPopupRow() {
@@ -277,7 +279,7 @@ class DownloadsTableMouseHandler(
             "Datei->Einstellungen->Set bearbeiten"
         }
         JOptionPane.showMessageDialog(
-            mediathekGui,
+            ownerFrame,
             "Bitte legen Sie im Menü \"$menuPath\" ein Programm zum Abspielen fest.",
             "Kein Videoplayer!",
             JOptionPane.INFORMATION_MESSAGE

@@ -155,7 +155,6 @@ object Filter {
         }
     }
 
-    @JvmStatic
     fun drainRegExpErrors(): Set<String> {
         val errors = ConcurrentHashMap.newKeySet<String>()
         regExpErrorList.removeIf(errors::add)

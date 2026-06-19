@@ -21,7 +21,7 @@ public class DialogImportPset extends JDialog {
         ddaten = dd;
         this.setTitle("Programmset");
         liste = lliste;
-        jScrollPane1.setViewportView(new PanelPsetKurz(liste));
+        jScrollPane1.setViewportView(new PanelPsetKurz(parentComponent, liste));
         jButtonOk.addActionListener(e -> disposeWithCode(true));
         jButtonAbbrechen.addActionListener(e -> disposeWithCode(false));
 
@@ -31,7 +31,7 @@ public class DialogImportPset extends JDialog {
             if (jCheckBoxAlleEinstellungen.isSelected()) {
                 jScrollPane1.setViewportView(new PanelPsetLang(parentComponent, liste));
             } else {
-                jScrollPane1.setViewportView(new PanelPsetKurz(liste));
+                jScrollPane1.setViewportView(new PanelPsetKurz(parentComponent, liste));
             }
         });
     }

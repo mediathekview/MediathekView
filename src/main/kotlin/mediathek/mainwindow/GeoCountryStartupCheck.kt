@@ -35,7 +35,7 @@ import java.awt.Component
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 
-class GeoCountryStartupCheck @JvmOverloads constructor(
+class GeoCountryStartupCheck(
     private val owner: JFrame,
     private val onFinished: Runnable = Runnable {},
     private val httpClient: OkHttpClient = MVHttpClient.httpClient,
