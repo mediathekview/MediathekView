@@ -83,7 +83,7 @@ class DatenFilm private constructor(
     private var subtitleUrlStorage: String? = null
     private var websiteUrlStorage: String? = null
     private var lowQualityUrlStorage: String? = null
-    private var normalQualityUrl = ""
+    private var normalQualityUrlStorage = ""
     private var highQualityUrlStorage: String? = null
     var bookmark: BookmarkData? = null
     var abo: DatenAbo? = null
@@ -118,7 +118,7 @@ class DatenFilm private constructor(
         subtitleUrlStorage = other.subtitleUrlStorage
         websiteUrlStorage = other.websiteUrlStorage
         lowQualityUrlStorage = other.lowQualityUrlStorage
-        normalQualityUrl = other.normalQualityUrl
+        normalQualityUrlStorage = UrlHostDictionary.compress(other.urlNormalQuality)
         highQualityUrlStorage = other.highQualityUrlStorage
         bookmark = other.bookmark
         abo = other.abo
@@ -497,13 +497,14 @@ class DatenFilm private constructor(
     }
 
     private fun compressUrlIfBeneficial(requestedUrl: String): String {
-        if (isCompressedUrl(requestedUrl) || normalQualityUrl.isEmpty()) {
+        val baseUrl = urlNormalQuality
+        if (isCompressedUrl(requestedUrl) || baseUrl.isEmpty()) {
             return requestedUrl
         }
 
         var prefixLength = 0
-        val maxPrefixLength = minOf(normalQualityUrl.length, requestedUrl.length)
-        while (prefixLength < maxPrefixLength && normalQualityUrl[prefixLength] == requestedUrl[prefixLength]) {
+        val maxPrefixLength = minOf(baseUrl.length, requestedUrl.length)
+        while (prefixLength < maxPrefixLength && baseUrl[prefixLength] == requestedUrl[prefixLength]) {
             ++prefixLength
         }
 
@@ -548,10 +549,10 @@ class DatenFilm private constructor(
         }
 
     var urlNormalQuality: String
-        get() = normalQualityUrl
+        get() = UrlHostDictionary.expand(normalQualityUrlStorage)
         set(urlNormalQuality) {
             val previousUrl = this.urlNormalQuality
-            normalQualityUrl = urlNormalQuality
+            normalQualityUrlStorage = UrlHostDictionary.compress(urlNormalQuality)
             handleNormalQualityUrlChange(previousUrl, urlNormalQuality)
             invalidateSha256()
         }
@@ -686,4 +687,63 @@ class DatenFilm private constructor(
         val url: String,
         val resolution: String?,
     )
+}
+
+private object UrlHostDictionary {
+    private const val MARKER = '~'
+    private val baseIds = HashMap<String, Int>()
+    private val bases = ArrayList<String>()
+
+    fun compress(url: String): String {
+        if (url.isEmpty() || isCompressed(url)) {
+            return url
+        }
+
+        val baseEnd = hostPrefixEnd(url)
+        if (baseEnd <= 0 || baseEnd >= url.length) {
+            return url
+        }
+
+        val base = url.substring(0, baseEnd)
+        val suffix = url.substring(baseEnd)
+        val id = idFor(base)
+        val compressed = "$MARKER$id/$suffix"
+        return if (compressed.length < url.length) compressed else url
+    }
+
+    @Synchronized
+    private fun idFor(base: String): Int =
+        baseIds[base] ?: bases.size.also { id ->
+            bases += base
+            baseIds[base] = id
+        }
+
+    fun expand(url: String): String {
+        if (!isCompressed(url)) {
+            return url
+        }
+
+        val separator = url.indexOf('/', startIndex = 1)
+        if (separator <= 1) {
+            return url
+        }
+
+        val id = url.substring(1, separator).toIntOrNull() ?: return url
+        val base = baseFor(id) ?: return url
+        return base + url.substring(separator + 1)
+    }
+
+    @Synchronized
+    private fun baseFor(id: Int): String? = bases.getOrNull(id)
+
+    private fun isCompressed(url: String): Boolean = url.firstOrNull() == MARKER
+
+    private fun hostPrefixEnd(url: String): Int {
+        val schemeSeparator = url.indexOf("://")
+        if (schemeSeparator <= 0) {
+            return -1
+        }
+        val pathStart = url.indexOf('/', startIndex = schemeSeparator + 3)
+        return if (pathStart < 0) -1 else pathStart + 1
+    }
 }

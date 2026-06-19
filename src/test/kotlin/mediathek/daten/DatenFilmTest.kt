@@ -266,6 +266,31 @@ internal class DatenFilmTest {
     }
 
     @Test
+    fun normalQualityUrlStorageUsesHostDictionary() {
+        val film = DatenFilm()
+        val url = "https://cdn.example.org/path/to/video.mp4"
+
+        film.urlNormalQuality = url
+
+        assertEquals(url, film.urlNormalQuality)
+        val storedUrl = film.privateField("normalQualityUrlStorage") as String
+        assertTrue(storedUrl.startsWith("~"))
+        assertTrue(storedUrl.length < url.length)
+    }
+
+    @Test
+    fun copyPreservesNormalQualityUrlWithHostDictionaryStorage() {
+        val url = "https://cdn.example.org/path/to/video.mp4"
+        val film = DatenFilm().apply {
+            urlNormalQuality = url
+        }
+
+        val copy = DatenFilm(film)
+
+        assertEquals(url, copy.urlNormalQuality)
+    }
+
+    @Test
     fun highQualityUrlStorageKeepsCompressedValue() {
         val film = DatenFilm()
         val sharedPrefix = "https://example.org/video/"
