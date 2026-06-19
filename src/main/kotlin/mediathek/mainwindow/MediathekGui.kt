@@ -59,7 +59,6 @@ import java.awt.Container
 import java.awt.event.KeyEvent
 import java.beans.PropertyChangeEvent
 import java.lang.reflect.InvocationTargetException
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -293,9 +292,6 @@ open class MediathekGui private constructor(
 
         configureMenuKeyboardShortcuts()
 
-        SplashScreenLifecycle.update(UIProgressState.WAIT_FOR_HISTORY_DATA)
-        waitForHistoryDataLoadingToComplete()
-
         SplashScreenLifecycle.update(UIProgressState.CREATE_STATUS_BAR)
         createStatusBar()
 
@@ -411,17 +407,6 @@ open class MediathekGui private constructor(
 
     private fun setupFilmInfoDialog() {
         dialogCoordinator.setupFilmInfoDialog()
-    }
-
-    private fun waitForHistoryDataLoadingToComplete() {
-        try {
-            daten.waitForHistoryDataLoadingToComplete()
-        } catch (exception: InterruptedException) {
-            Thread.currentThread().interrupt()
-            logger.error("waitForHistoryDataLoadingToComplete()", exception)
-        } catch (exception: ExecutionException) {
-            logger.error("waitForHistoryDataLoadingToComplete()", exception)
-        }
     }
 
     override fun supportsAutomaticMenuTabSwitching(): Boolean =
