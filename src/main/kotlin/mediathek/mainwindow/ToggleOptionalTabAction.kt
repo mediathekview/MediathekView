@@ -19,30 +19,26 @@
 package mediathek.mainwindow
 
 import java.awt.event.ActionEvent
-import java.util.function.IntConsumer
 import javax.swing.AbstractAction
-import javax.swing.JComponent
 import javax.swing.JTabbedPane
 
 abstract class ToggleOptionalTabAction(
     private val tabbedPane: JTabbedPane,
-    private val tabComponent: JComponent,
+    private val tab: MainWindowTab,
     actionTitle: String,
-    private val tabTitle: String,
     private val visibilityWriter: (Boolean) -> Unit,
     private val preferredInsertIndex: Int,
 ) : AbstractAction() {
 
     init {
         putValue(NAME, actionTitle)
-        tabComponent.putClientProperty("JTabbedPane.tabClosable", true)
-        tabComponent.putClientProperty("JTabbedPane.tabCloseCallback", IntConsumer { actionPerformed(null) })
     }
 
     private fun toggleTab() {
-        val tabIndex = tabbedPane.indexOfComponent(tabComponent)
+        val tabComponent = tab.existingComponent()
+        val tabIndex = tabComponent?.let(tabbedPane::indexOfComponent) ?: -1
         if (tabIndex == -1) {
-            tabbedPane.insertTab(tabTitle, null, tabComponent, null, clampedInsertIndex())
+            tabbedPane.insertTab(tab.title, null, tab.component(), null, clampedInsertIndex())
             visibilityWriter(true)
         } else {
             tabbedPane.remove(tabIndex)

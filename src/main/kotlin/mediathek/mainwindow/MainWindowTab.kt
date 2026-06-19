@@ -26,9 +26,27 @@ import javax.swing.JComponent
 
 class MainWindowTab(
     val title: String,
-    val component: JComponent,
+    private val componentFactory: () -> JComponent,
     val visible: BooleanSupplier = BooleanSupplier { true },
     val icon: Supplier<Icon?>? = null,
-    val toggleAction: Action? = null,
-    val dispose: Runnable = Runnable {},
-)
+    private val toggleActionFactory: (() -> Action?)? = null,
+    private val onComponentCreated: (JComponent) -> Unit = {},
+    private val dispose: (JComponent) -> Unit = {},
+) {
+    private var component: JComponent? = null
+
+    fun component(): JComponent =
+        component ?: componentFactory().also {
+            onComponentCreated(it)
+            component = it
+        }
+
+    fun existingComponent(): JComponent? = component
+
+    fun toggleAction(): Action? = toggleActionFactory?.invoke()
+
+    fun dispose() {
+        component?.let(dispose)
+        component = null
+    }
+}

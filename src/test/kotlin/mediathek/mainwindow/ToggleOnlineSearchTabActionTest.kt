@@ -1,7 +1,7 @@
 package mediathek.mainwindow
 
-import mediathek.gui.tabs.tab_livestreams.LivestreamPanel
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import javax.swing.JPanel
 import javax.swing.JTabbedPane
@@ -14,10 +14,16 @@ class ToggleOnlineSearchTabActionTest {
             addTab("Downloads", JPanel())
             addTab("Onlinesuche", JPanel())
         }
-        val action = ToggleZappLivestreamsTabAction(tabbedPane, LivestreamPanel())
+        var createdPanels = 0
+        val zappTab = MainWindowTab("zapp Livestreams", { JPanel().also { createdPanels++ } })
+        val action = ToggleZappLivestreamsTabAction(tabbedPane, zappTab)
+
+        assertNull(zappTab.existingComponent())
+        assertEquals(0, createdPanels)
 
         action.actionPerformed(null)
 
+        assertEquals(1, createdPanels)
         assertEquals(
             listOf("Filme", "Downloads", "Onlinesuche", "zapp Livestreams"),
             tabbedPane.tabTitles(),

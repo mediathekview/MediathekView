@@ -65,6 +65,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer
 import java.util.function.Function
+import java.util.function.IntConsumer
 import java.util.function.Supplier
 import javax.swing.*
 import kotlin.system.exitProcess
@@ -129,13 +130,43 @@ open class MediathekGui private constructor(
     private val dialogCoordinator =
         MainWindowDialogCoordinator(this, this, showMemoryMonitorAction, showBandwidthUsageAction, manageAboAction)
     private val showLuceneTutorialAction = ShowLuceneTutorialAction(this)
-    private val tabLivestreams = LivestreamPanel(this)
-    private val toggleZappLivestreamsTabAction = ToggleZappLivestreamsTabAction(tabbedPane, tabLivestreams)
-    private val tabOnlineSearch = OnlineSearchPanel(createOnlineSearchHost())
-    private val toggleOnlineSearchTabAction = ToggleOnlineSearchTabAction(tabbedPane, tabOnlineSearch)
-    private val audiothekRepository = AudioRepository()
-    private val tabAudiothek = AudiothekPanel(audiothekRepository, this)
-    private val toggleAudiothekTabAction = ToggleAudiothekTabAction(tabbedPane, tabAudiothek)
+    private val onlineSearchTab: MainWindowTab by lazy(LazyThreadSafetyMode.NONE) {
+        MainWindowTab(
+            "Onlinesuche",
+            { OnlineSearchPanel(createOnlineSearchHost()) },
+            visible = { ApplicationConfiguration.getInstance().onlineSearchTabVisible },
+            toggleActionFactory = { toggleOnlineSearchTabAction },
+            onComponentCreated = { configureClosableOptionalTab(it, toggleOnlineSearchTabAction) },
+        )
+    }
+    private val toggleOnlineSearchTabAction: ToggleOnlineSearchTabAction by lazy(LazyThreadSafetyMode.NONE) {
+        ToggleOnlineSearchTabAction(tabbedPane, onlineSearchTab)
+    }
+    private val zappLivestreamsTab: MainWindowTab by lazy(LazyThreadSafetyMode.NONE) {
+        MainWindowTab(
+            "zapp Livestreams",
+            { LivestreamPanel(this) },
+            visible = { ApplicationConfiguration.getInstance().zappLivestreamsTabVisible },
+            toggleActionFactory = { toggleZappLivestreamsTabAction },
+            onComponentCreated = { configureClosableOptionalTab(it, toggleZappLivestreamsTabAction) },
+        )
+    }
+    private val toggleZappLivestreamsTabAction: ToggleZappLivestreamsTabAction by lazy(LazyThreadSafetyMode.NONE) {
+        ToggleZappLivestreamsTabAction(tabbedPane, zappLivestreamsTab)
+    }
+    private val audiothekTab: MainWindowTab by lazy(LazyThreadSafetyMode.NONE) {
+        MainWindowTab(
+            "Audiothek",
+            { AudiothekPanel(AudioRepository(), this) },
+            visible = { ApplicationConfiguration.getInstance().audiothekTabVisible },
+            toggleActionFactory = { toggleAudiothekTabAction },
+            onComponentCreated = { configureClosableOptionalTab(it, toggleAudiothekTabAction) },
+            dispose = { (it as AudiothekPanel).disposePanel() },
+        )
+    }
+    private val toggleAudiothekTabAction: ToggleAudiothekTabAction by lazy(LazyThreadSafetyMode.NONE) {
+        ToggleAudiothekTabAction(tabbedPane, audiothekTab)
+    }
     private val logDialog = LogDialog(this)
     private val notificationCenterFactory = notificationCenterFactory
     private val computerShutdown = computerShutdown
@@ -748,51 +779,29 @@ open class MediathekGui private constructor(
         tabRegistry.register(
             MainWindowTab(
                 GuiFilme.NAME,
-                tabFilme,
-                { true },
-                { GetIcon.getProgramIcon("tab-film.png", 32, 32) },
-                null,
-                { tabFilme.disposePanel() },
+                { tabFilme },
+                visible = { true },
+                icon = { GetIcon.getProgramIcon("tab-film.png", 32, 32) },
+                dispose = { tabFilme.disposePanel() },
             )
         )
         tabRegistry.register(
             MainWindowTab(
                 GuiDownloads.NAME,
-                tabDownloads,
-                { true },
-                { GetIcon.getProgramIcon("tab-download.png", 32, 32) },
-                null,
-                { tabDownloads.tabelleSpeichern() },
+                { tabDownloads },
+                visible = { true },
+                icon = { GetIcon.getProgramIcon("tab-download.png", 32, 32) },
+                dispose = { tabDownloads.tabelleSpeichern() },
             )
         )
-        tabRegistry.register(
-            MainWindowTab(
-                "Onlinesuche",
-                tabOnlineSearch,
-                { ApplicationConfiguration.getInstance().onlineSearchTabVisible },
-                null,
-                toggleOnlineSearchTabAction,
-            ),
-        )
-        tabRegistry.register(
-            MainWindowTab(
-                "zapp Livestreams",
-                tabLivestreams,
-                { ApplicationConfiguration.getInstance().zappLivestreamsTabVisible },
-                null,
-                toggleZappLivestreamsTabAction,
-            ),
-        )
-        tabRegistry.register(
-            MainWindowTab(
-                "Audiothek",
-                tabAudiothek,
-                { ApplicationConfiguration.getInstance().audiothekTabVisible },
-                null,
-                toggleAudiothekTabAction,
-                { tabAudiothek.disposePanel() }
-            ),
-        )
+        tabRegistry.register(onlineSearchTab)
+        tabRegistry.register(zappLivestreamsTab)
+        tabRegistry.register(audiothekTab)
+    }
+
+    private fun configureClosableOptionalTab(component: JComponent, toggleAction: Action) {
+        component.putClientProperty("JTabbedPane.tabClosable", true)
+        component.putClientProperty("JTabbedPane.tabCloseCallback", IntConsumer { toggleAction.actionPerformed(null) })
     }
 
     override fun enableUpdateMenuItem(enable: Boolean) {
@@ -908,8 +917,9 @@ open class MediathekGui private constructor(
             shutdownComputer = dialogBeenden.isShutdownRequested
         }
 
-        if (tabAudiothek.activeDownloadCount() > 0) {
-            val activeAudiothekDownloads = tabAudiothek.activeDownloadCount()
+        val audiothekPanel = audiothekTab.existingComponent() as? AudiothekPanel
+        val activeAudiothekDownloads = audiothekPanel?.activeDownloadCount() ?: 0
+        if (activeAudiothekDownloads > 0) {
             val result = JOptionPane.showConfirmDialog(
                 this,
                 if (activeAudiothekDownloads == 1) {
@@ -924,7 +934,7 @@ open class MediathekGui private constructor(
             if (result != JOptionPane.YES_OPTION) {
                 return QuitConfirmation.declined()
             }
-            tabAudiothek.pauseDownloadsForShutdown()
+            audiothekPanel?.pauseDownloadsForShutdown()
         }
 
         return QuitConfirmation(true, shutdownComputer)
