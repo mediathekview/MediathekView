@@ -35,7 +35,6 @@ import java.security.NoSuchAlgorithmException
 import java.time.DateTimeException
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.seconds
@@ -188,26 +187,12 @@ class DatenFilm private constructor(
     val sendeZeitSecondOfDay: Int?
         get() = storedSendeZeitSecondOfDay.takeUnless { it == UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY }
 
-    val sendeLocalDate: LocalDate?
-        get() = sendeDatumEpochDay?.let { LocalDate.ofEpochDay(it.toLong()) }
-
-    val sendeLocalTime: LocalTime?
-        get() = sendeZeitSecondOfDay?.let { LocalTime.ofSecondOfDay(it.toLong()) }
-
-    fun setSendeDatum(date: LocalDate?) {
-        storedSendeDatumEpochDay = date?.toEpochDay()?.toInt() ?: UNDEFINED_SENDE_DATUM_EPOCH_DAY
-    }
-
-    fun setSendeZeit(time: LocalTime?) {
-        storedSendeZeitSecondOfDay = time?.toSecondOfDay() ?: UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
-    }
-
     fun setSendeDateTime(dateTime: LocalDateTime?) {
         if (dateTime == null) {
             clearSendeDateTime()
         } else {
-            setSendeDatum(dateTime.toLocalDate())
-            setSendeZeit(dateTime.toLocalTime())
+            storedSendeDatumEpochDay = dateTime.toLocalDate().toEpochDay().toInt()
+            storedSendeZeitSecondOfDay = dateTime.toLocalTime().toSecondOfDay()
         }
     }
 
