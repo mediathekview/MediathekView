@@ -196,11 +196,11 @@ class DatenFilm private constructor(
         }
     }
 
-    fun setSendeDatumFromString(value: String) {
+    fun setSendeDatumFromFilmlistValue(value: String) {
         storedSendeDatumEpochDay = parseSendeDatum(value) ?: UNDEFINED_SENDE_DATUM_EPOCH_DAY
     }
 
-    fun setSendeZeitFromString(value: String) {
+    fun setSendeZeitFromFilmlistValue(value: String) {
         storedSendeZeitSecondOfDay = parseSendeZeit(value) ?: UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY
     }
 

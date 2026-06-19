@@ -172,8 +172,8 @@ internal class DatenDownloadTest {
             sender = "Sender One"
             thema = "Topic One"
             title = "Title One"
-            setSendeDatumFromString("01.06.2026")
-            setSendeZeitFromString("20:15:00")
+            setSendeDatumFromFilmlistValue("01.06.2026")
+            setSendeZeitFromFilmlistValue("20:15:00")
             urlNormalQuality = "https://example.invalid/video.mp4"
         }
         val programSet = DatenPset("Set").apply {
@@ -203,8 +203,8 @@ internal class DatenDownloadTest {
     @Test
     fun buildsTargetFromFilmDateTimePlaceholders() {
         val film = DatenFilm().apply {
-            setSendeDatumFromString("01.06.2026")
-            setSendeZeitFromString("20:15:00")
+            setSendeDatumFromFilmlistValue("01.06.2026")
+            setSendeZeitFromFilmlistValue("20:15:00")
             urlNormalQuality = "https://example.invalid/video.mp4"
         }
         val programSet = DatenPset("Set").apply {
@@ -232,7 +232,7 @@ internal class DatenDownloadTest {
     @Test
     fun buildsTargetFromTwoDigitYearPlaceholder() {
         val film = DatenFilm().apply {
-            setSendeDatumFromString("01.06.2026")
+            setSendeDatumFromFilmlistValue("01.06.2026")
             urlNormalQuality = "https://example.invalid/video.mp4"
         }
         val programSet = DatenPset("Set").apply {
@@ -294,8 +294,8 @@ internal class DatenDownloadTest {
             sender = "Sender One"
             thema = "Topic One"
             title = "Title One"
-            setSendeDatumFromString("01.06.2026")
-            setSendeZeitFromString("20:15:00")
+            setSendeDatumFromFilmlistValue("01.06.2026")
+            setSendeZeitFromFilmlistValue("20:15:00")
             urlNormalQuality = "https://example.invalid/video.mp4"
             setFileSize("123")
         }
@@ -312,8 +312,8 @@ internal class DatenDownloadTest {
             sender = "Sender One"
             thema = "Topic One"
             title = "Title One"
-            setSendeDatumFromString("01.06.2026")
-            setSendeZeitFromString("20:15:00")
+            setSendeDatumFromFilmlistValue("01.06.2026")
+            setSendeZeitFromFilmlistValue("20:15:00")
             urlNormalQuality = "https://example.invalid/video.mp4?token=temporary"
             setFileSize("456")
         }
@@ -347,8 +347,8 @@ internal class DatenDownloadTest {
             sender = "Sender One"
             thema = "Topic One"
             title = "Title One"
-            setSendeDatumFromString("01.06.2026")
-            setSendeZeitFromString("20:15:00")
+            setSendeDatumFromFilmlistValue("01.06.2026")
+            setSendeZeitFromFilmlistValue("20:15:00")
             urlNormalQuality = "https://example.invalid/video.mp4"
             websiteUrl = "https://example.invalid/film-page"
         }

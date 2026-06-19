@@ -67,8 +67,8 @@ class FilmListWriterTest {
         this.sender = sender
         this.thema = thema
         title = "Titel"
-        setSendeDatumFromString("15.05.2026")
-        setSendeZeitFromString("12:00:00")
+        setSendeDatumFromFilmlistValue("15.05.2026")
+        setSendeZeitFromFilmlistValue("12:00:00")
         description = "Beschreibung"
         urlNormalQuality = "https://example.test/$sender/$thema.mp4"
         websiteUrl = "https://example.test/$sender/$thema"

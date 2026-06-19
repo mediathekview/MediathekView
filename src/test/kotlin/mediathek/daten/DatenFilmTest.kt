@@ -67,7 +67,7 @@ internal class DatenFilmTest {
     fun setDatumLongAcceptsNegativeValues() {
         val film = DatenFilm()
 
-        film.setSendeDatumFromString("01.01.1966")
+        film.setSendeDatumFromFilmlistValue("01.01.1966")
         film.setDatumLongSeconds(-122749200L)
         film.init()
 
@@ -207,7 +207,7 @@ internal class DatenFilmTest {
             websiteUrl = "https://example.org/page"
             this.abo = abo
             this.bookmark = bookmark
-            setSendeDatumFromString("01.01.1966")
+            setSendeDatumFromFilmlistValue("01.01.1966")
             setDatumLongSeconds(-122749200L)
         }
 
@@ -234,8 +234,8 @@ internal class DatenFilmTest {
     fun sendeDatumAndSendeZeitUseCompactStorageForStandardValues() {
         val film = DatenFilm()
 
-        film.setSendeDatumFromString("15.05.2026")
-        film.setSendeZeitFromString("20:15:30")
+        film.setSendeDatumFromFilmlistValue("15.05.2026")
+        film.setSendeZeitFromFilmlistValue("20:15:30")
 
         assertEquals("15.05.2026", film.sendeDatum)
         assertEquals("20:15:30", film.sendeZeit)
@@ -246,8 +246,8 @@ internal class DatenFilmTest {
     fun sendeDatumAndSendeZeitClearNonStandardValues() {
         val film = DatenFilm()
 
-        film.setSendeDatumFromString("unknown")
-        film.setSendeZeitFromString("unknown")
+        film.setSendeDatumFromFilmlistValue("unknown")
+        film.setSendeZeitFromFilmlistValue("unknown")
 
         assertEquals("", film.sendeDatum)
         assertEquals("", film.sendeZeit)
@@ -259,7 +259,7 @@ internal class DatenFilmTest {
     fun sendeZeitAcceptsFilmListFormatWithoutSeconds() {
         val film = DatenFilm()
 
-        film.setSendeZeitFromString("20:15")
+        film.setSendeZeitFromFilmlistValue("20:15")
 
         assertEquals("20:15:00", film.sendeZeit)
         assertEquals("20:15", film.sendeZeitForFilmList)
@@ -269,8 +269,8 @@ internal class DatenFilmTest {
     @Test
     fun copyPreservesCompactSendeDatumAndSendeZeitStorage() {
         val film = DatenFilm().apply {
-            setSendeDatumFromString("15.05.2026")
-            setSendeZeitFromString("20:15:30")
+            setSendeDatumFromFilmlistValue("15.05.2026")
+            setSendeZeitFromFilmlistValue("20:15:30")
         }
 
         val copy = DatenFilm(film)
@@ -388,7 +388,7 @@ internal class DatenFilmTest {
     @Test
     fun datumFilmIsCreatedLazilyFromStoredTime() {
         val film = DatenFilm().apply {
-            setSendeDatumFromString("01.01.1966")
+            setSendeDatumFromFilmlistValue("01.01.1966")
             setDatumLongSeconds(-122749200L)
             init()
         }
