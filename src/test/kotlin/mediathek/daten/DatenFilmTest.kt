@@ -266,6 +266,36 @@ internal class DatenFilmTest {
     }
 
     @Test
+    fun highQualityUrlStorageKeepsCompressedValue() {
+        val film = DatenFilm()
+        val sharedPrefix = "https://example.org/video/"
+        val compressedHighQualityUrl = "${sharedPrefix.length}|high.mp4"
+
+        film.urlNormalQuality = sharedPrefix + "normal.mp4"
+        film.highQualityUrl = sharedPrefix + "high.mp4"
+
+        assertEquals(sharedPrefix + "high.mp4", film.highQualityUrl)
+        assertEquals(compressedHighQualityUrl, film.privateField("highQualityUrlStorage"))
+        assertEquals(
+            sharedPrefix + "high.mp4",
+            film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY),
+        )
+    }
+
+    @Test
+    fun highQualityUrlStorageRebasesWhenNormalQualityUrlChanges() {
+        val film = DatenFilm()
+        val originalPrefix = "https://example.org/original/"
+        val highQualityUrl = originalPrefix + "high.mp4"
+
+        film.urlNormalQuality = originalPrefix + "normal.mp4"
+        film.highQualityUrl = highQualityUrl
+        film.urlNormalQuality = "https://example.org/updated/normal.mp4"
+
+        assertEquals(highQualityUrl, film.highQualityUrl)
+    }
+
+    @Test
     fun datumFilmIsCreatedLazilyFromStoredTime() {
         val film = DatenFilm().apply {
             sendeDatum = "01.01.1966"

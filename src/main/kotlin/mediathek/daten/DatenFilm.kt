@@ -155,14 +155,15 @@ class DatenFilm private constructor(
         }
 
     var highQualityUrl: String
-        get() = highQualityUrlStorage ?: ""
+        get() = highQualityUrlStorage?.let {
+            if (isCompressedUrl(it)) decompressUrl(it) else it
+        } ?: ""
         set(value) {
-            highQualityUrlStorage = if (value.isEmpty()) {
-                null
-            } else {
-                if (isCompressedUrl(value)) decompressUrl(value) else value
-            }
+            highQualityUrlStorage = value.takeIf { it.isNotEmpty() }?.let(::compressUrlIfBeneficial)
         }
+
+    internal val storedHighQualityUrl: String
+        get() = highQualityUrlStorage ?: ""
 
     fun setDatumLongSeconds(datumLongSeconds: Long) {
         this.datumLongSeconds = datumLongSeconds
@@ -483,12 +484,31 @@ class DatenFilm private constructor(
     }
 
     fun decompressUrl(requestedUrl: String): String {
+        return decompressUrl(requestedUrl, urlNormalQuality)
+    }
+
+    private fun decompressUrl(requestedUrl: String, baseUrl: String): String {
         val indexPipe = requestedUrl.indexOf(COMPRESSION_MARKER)
         val prefixLength = parseCompressionPrefixLength(requestedUrl, indexPipe)
         return buildString(prefixLength + requestedUrl.length - indexPipe - 1) {
-            append(urlNormalQuality, 0, prefixLength)
+            append(baseUrl, 0, prefixLength)
             append(requestedUrl, indexPipe + 1, requestedUrl.length)
         }
+    }
+
+    private fun compressUrlIfBeneficial(requestedUrl: String): String {
+        if (isCompressedUrl(requestedUrl) || normalQualityUrl.isEmpty()) {
+            return requestedUrl
+        }
+
+        var prefixLength = 0
+        val maxPrefixLength = minOf(normalQualityUrl.length, requestedUrl.length)
+        while (prefixLength < maxPrefixLength && normalQualityUrl[prefixLength] == requestedUrl[prefixLength]) {
+            ++prefixLength
+        }
+
+        val compressedUrl = "$prefixLength$COMPRESSION_MARKER${requestedUrl.substring(prefixLength)}"
+        return if (compressedUrl.length < requestedUrl.length) compressedUrl else requestedUrl
     }
 
     private fun parseCompressionPrefixLength(requestedUrl: String, markerIndex: Int): Int {
@@ -541,10 +561,21 @@ class DatenFilm private constructor(
             return
         }
 
+        rebaseHighQualityUrlStorage(previousUrl)
         cachedFileSizeLookups = null
         if (previousUrl.isNotEmpty() || !canBootstrapFileSizeFromNormalQualityUrl) {
             canBootstrapFileSizeFromNormalQualityUrl = false
         }
+    }
+
+    private fun rebaseHighQualityUrlStorage(previousNormalQualityUrl: String) {
+        val storedUrl = highQualityUrlStorage ?: return
+        val expandedUrl = if (isCompressedUrl(storedUrl)) {
+            runCatching { decompressUrl(storedUrl, previousNormalQualityUrl) }.getOrElse { return }
+        } else {
+            storedUrl
+        }
+        highQualityUrlStorage = compressUrlIfBeneficial(expandedUrl)
     }
 
     var subtitleUrl: String

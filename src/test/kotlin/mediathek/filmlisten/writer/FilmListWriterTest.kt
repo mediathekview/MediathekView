@@ -42,6 +42,21 @@ class FilmListWriterTest {
         }
     }
 
+    @Test
+    fun `writeFilmList preserves compressed high quality urls by default`() {
+        val target = tempDir.resolve("filmlist.json")
+        val sharedPrefix = "https://example.test/video/"
+        val compressedHighQualityUrl = "${sharedPrefix.length}|high.mp4"
+        val film = film("ARD", "Thema").apply {
+            urlNormalQuality = sharedPrefix + "normal.mp4"
+            highQualityUrl = sharedPrefix + "high.mp4"
+        }
+
+        FilmListWriter(false).writeFilmList(target.toString(), filmList(film))
+
+        assertTrue(Files.readString(target).contains("\"$compressedHighQualityUrl\""))
+    }
+
     private fun filmList(vararg films: DatenFilm) = ListeFilme().apply {
         metaData.datum = "15.05.2026, 12:00"
         metaData.id = "test-list"

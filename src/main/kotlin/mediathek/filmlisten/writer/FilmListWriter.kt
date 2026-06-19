@@ -239,7 +239,7 @@ class FilmListWriter(private val readable: Boolean) {
     }
 
     private fun writeHighQualityUrl(jg: JsonGenerator, datenFilm: DatenFilm) {
-        var url = datenFilm.highQualityUrl
+        var url = datenFilm.storedHighQualityUrl
         if (decompressUrls && DatenFilm.isCompressedUrl(url)) {
             url = datenFilm.decompressUrl(url)
         }
