@@ -19,6 +19,7 @@
 package mediathek.mainwindow
 
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.daten.DatenFilm
 import mediathek.gui.actions.ManageAboAction
 import mediathek.gui.actions.MemoryMonitorAction
 import mediathek.gui.actions.ShowBandwidthUsageAction
@@ -35,6 +36,7 @@ class MainWindowDialogCoordinator(
     private val manageAboAction: ManageAboAction,
 ) {
     private var filmInfo: FilmInfoDialog? = null
+    private var currentFilm: DatenFilm? = null
     private var settingsDialog: DialogEinstellungen? = null
 
     fun restoreStartupDialogs() {
@@ -57,12 +59,28 @@ class MainWindowDialogCoordinator(
     }
 
     fun setupFilmInfoDialog() {
-        logger.trace("Loading info dialog")
-        filmInfo = FilmInfoDialog(owner)
-        logger.trace("Finished loading info dialog")
+        if (ApplicationConfiguration.getInstance().filmInfoDialogVisible) {
+            getFilmInfoDialog()
+        }
     }
 
-    fun getFilmInfoDialog(): FilmInfoDialog? = filmInfo
+    fun updateFilmInfoCurrentFilm(film: DatenFilm?) {
+        currentFilm = film
+        filmInfo?.updateCurrentFilm(film)
+    }
+
+    fun getFilmInfoDialog(): FilmInfoDialog =
+        filmInfo ?: createFilmInfoDialog().also { dialog ->
+            dialog.updateCurrentFilm(currentFilm)
+            filmInfo = dialog
+        }
+
+    private fun createFilmInfoDialog(): FilmInfoDialog {
+        logger.trace("Loading info dialog")
+        val dialog = FilmInfoDialog(owner)
+        logger.trace("Finished loading info dialog")
+        return dialog
+    }
 
     fun getSettingsDialog(): DialogEinstellungen =
         settingsDialog ?: DialogEinstellungen(settingsDialogHost).also {

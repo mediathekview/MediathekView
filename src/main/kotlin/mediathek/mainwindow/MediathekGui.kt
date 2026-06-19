@@ -663,7 +663,7 @@ open class MediathekGui private constructor(
     }
 
     private fun getFilmInfoDialog(): FilmInfoDialog =
-        requireNotNull(dialogCoordinator.getFilmInfoDialog())
+        dialogCoordinator.getFilmInfoDialog()
 
     @Handler
     @Suppress("UNUSED_PARAMETER")
@@ -709,7 +709,7 @@ open class MediathekGui private constructor(
     private fun createOnlineSearchHost(): OnlineSearchHost =
         MainWindowOnlineSearchHost(
             ownerFrame(),
-            { film: DatenFilm? -> getFilmInfoDialog().updateCurrentFilm(film) },
+            { film: DatenFilm? -> dialogCoordinator.updateFilmInfoCurrentFilm(film) },
             { getFilmInfoDialog().showInfo() }
         )
 
@@ -722,7 +722,7 @@ open class MediathekGui private constructor(
             showFilmInformationAction,
             showLuceneTutorialAction,
             { setSelectedListItemsCount(it) },
-            { film: DatenFilm? -> getFilmInfoDialog().updateCurrentFilm(film) }
+            { film: DatenFilm? -> dialogCoordinator.updateFilmInfoCurrentFilm(film) }
         )
 
     private fun createTabDownloads(daten: Daten): GuiDownloads =
@@ -731,7 +731,7 @@ open class MediathekGui private constructor(
             this,
             showFilmInformationAction,
             { setSelectedListItemsCount(it) },
-            { film: DatenFilm? -> getFilmInfoDialog().updateCurrentFilm(film) },
+            { film: DatenFilm? -> dialogCoordinator.updateFilmInfoCurrentFilm(film) },
             { shutdownComputer -> quitApplication(shutdownComputer) }
         )
 
