@@ -3,11 +3,7 @@ package mediathek.gui.tabs.tab_online_search
 import kotlinx.coroutines.suspendCancellableCoroutine
 import mediathek.config.Konstanten
 import mediathek.tool.http.MVHttpClient
-import okhttp3.Callback
-import okhttp3.Call
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import java.io.IOException
 import java.time.Duration
 import java.time.Instant

@@ -4,12 +4,7 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
 import mediathek.tool.EscapeKeyHandler
 import java.awt.BorderLayout
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
+import java.awt.event.*
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 import javax.swing.Timer

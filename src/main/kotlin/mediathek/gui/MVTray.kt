@@ -1,11 +1,6 @@
 package mediathek.gui
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Daten
 import mediathek.config.Konstanten
@@ -20,11 +15,7 @@ import mediathek.tool.notification.NotificationMessage
 import mediathek.tool.notification.NotificationService
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
-import java.awt.AWTException
-import java.awt.MenuItem
-import java.awt.PopupMenu
-import java.awt.SystemTray
-import java.awt.TrayIcon
+import java.awt.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 

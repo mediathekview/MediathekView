@@ -1,14 +1,13 @@
 package mediathek.gui.dialog;
 
-import java.awt.*;
-import javax.swing.border.*;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import java.awt.Dimension;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 public class DialogContinueDownloadBase extends JDialog {
     protected DialogContinueDownloadBase(JFrame parent) {

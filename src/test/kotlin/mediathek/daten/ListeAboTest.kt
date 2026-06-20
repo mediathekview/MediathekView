@@ -21,10 +21,7 @@ package mediathek.daten
 import ca.odell.glazedlists.event.ListEvent
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertSame
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class ListeAboTest {

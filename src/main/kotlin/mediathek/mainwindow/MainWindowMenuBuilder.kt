@@ -35,11 +35,7 @@ import mediathek.logging.LogDialog
 import mediathek.sqlite.RecoverHistoryDbAction
 import mediathek.tool.GuiFunktionen
 import java.util.function.Supplier
-import javax.swing.Action
-import javax.swing.JFrame
-import javax.swing.JMenu
-import javax.swing.JMenuBar
-import javax.swing.JMenuItem
+import javax.swing.*
 
 class MainWindowMenuBuilder(
     private val ownerFrame: JFrame,

@@ -3,8 +3,8 @@ package mediathek.gui.actions
 import mediathek.config.Konstanten
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.SwingErrorDialog
-import java.awt.Desktop
 import java.awt.Component
+import java.awt.Desktop
 import java.awt.event.ActionEvent
 import java.io.IOException
 import java.net.URI

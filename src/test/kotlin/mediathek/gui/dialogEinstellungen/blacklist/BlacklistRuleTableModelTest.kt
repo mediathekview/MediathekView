@@ -3,9 +3,7 @@ package mediathek.gui.dialogEinstellungen.blacklist
 import mediathek.daten.DatenFilm
 import mediathek.daten.blacklist.BlacklistRule
 import mediathek.daten.blacklist.ListeBlacklist
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class BlacklistRuleTableModelTest {

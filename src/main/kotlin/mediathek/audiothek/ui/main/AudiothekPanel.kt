@@ -49,11 +49,7 @@ import mediathek.tool.notification.NotificationService
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.VerticalLayout
-import java.awt.AWTEvent
-import java.awt.BorderLayout
-import java.awt.Desktop
-import java.awt.Frame
-import java.awt.Toolkit
+import java.awt.*
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.awt.event.MouseEvent

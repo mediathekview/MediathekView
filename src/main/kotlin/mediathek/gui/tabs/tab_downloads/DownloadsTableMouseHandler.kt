@@ -33,15 +33,10 @@ import mediathek.tool.SVGIconUtilities
 import mediathek.tool.table.MVDownloadsTable
 import org.apache.commons.lang3.SystemUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
-import javax.swing.JFrame
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import javax.swing.Action
-import javax.swing.JMenu
-import javax.swing.JMenuItem
-import javax.swing.JOptionPane
-import javax.swing.JPopupMenu
+import javax.swing.*
 
 class DownloadsTableMouseHandler(
     private val downloadsTab: GuiDownloads,

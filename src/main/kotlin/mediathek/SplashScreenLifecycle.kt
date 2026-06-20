@@ -18,8 +18,8 @@
 
 package mediathek
 
-import mediathek.tool.UIProgressState
 import mediathek.swing.SwingDispatch
+import mediathek.tool.UIProgressState
 
 object SplashScreenLifecycle {
     private var splashScreen: SplashScreen? = null

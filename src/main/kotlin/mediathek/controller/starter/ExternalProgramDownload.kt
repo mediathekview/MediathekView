@@ -15,11 +15,11 @@ import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.gui.messages.DownloadStartEvent
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
-import javax.swing.JFrame
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
+import javax.swing.JFrame
 import javax.swing.SwingUtilities
 import kotlin.time.Duration.Companion.milliseconds
 

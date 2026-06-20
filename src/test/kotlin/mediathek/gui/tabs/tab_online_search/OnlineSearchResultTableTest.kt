@@ -1,9 +1,7 @@
 package mediathek.gui.tabs.tab_online_search
 
 import ca.odell.glazedlists.BasicEventList
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class OnlineSearchResultTableTest {

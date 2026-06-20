@@ -13,7 +13,7 @@ import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.util.IdentityHashMap
+import java.util.*
 import javax.swing.JPanel
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel

@@ -3,12 +3,7 @@ package mediathek.gui.tabs.tab_online_search
 import kotlinx.serialization.json.*
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
-import java.time.Clock
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 
 private const val ZDF_APP_ID = "ffw-mt-web-036df51e"
 

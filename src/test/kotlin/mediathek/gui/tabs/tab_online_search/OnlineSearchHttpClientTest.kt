@@ -1,11 +1,6 @@
 package mediathek.gui.tabs.tab_online_search
 
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
 import mediathek.config.Konstanten
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

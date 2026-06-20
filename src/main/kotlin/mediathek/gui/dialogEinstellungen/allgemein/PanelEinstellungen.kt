@@ -1,11 +1,7 @@
 package mediathek.gui.dialogEinstellungen.allgemein
 
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.gui.messages.InstallTabSwitchListenerEvent
-import mediathek.gui.messages.SenderIconStyleChangedEvent
-import mediathek.gui.messages.TabVisualSettingsChangedEvent
-import mediathek.gui.messages.TrayIconEvent
-import mediathek.gui.messages.UpdateStateChangedEvent
+import mediathek.gui.messages.*
 import mediathek.mainwindow.SettingsDialogHost
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.MessageBus

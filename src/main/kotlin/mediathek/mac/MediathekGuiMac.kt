@@ -25,13 +25,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.ShowSettingsDialogEvent
-import mediathek.mainwindow.MacMainWindowMenuPolicy
-import mediathek.mainwindow.MainWindowQuitHost
-import mediathek.mainwindow.MediathekGui
-import mediathek.mainwindow.MainWindowTabPlacementController
-import mediathek.mainwindow.MainWindowToolbarInstaller
-import mediathek.mainwindow.NoOpMainWindowScrollBarConfigurator
-import mediathek.mainwindow.NoOpMainWindowSystemTrayController
+import mediathek.mainwindow.*
 import mediathek.shutdown.MacComputerShutdown
 import mediathek.tool.MessageBus
 import mediathek.tool.RuntimeArchitecture
@@ -45,9 +39,9 @@ import java.awt.FlowLayout
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.lang.foreign.*
-import javax.swing.JTabbedPane
 import javax.swing.JOptionPane
 import javax.swing.JPanel
+import javax.swing.JTabbedPane
 import javax.swing.JToolBar
 import kotlin.time.Duration.Companion.seconds
 

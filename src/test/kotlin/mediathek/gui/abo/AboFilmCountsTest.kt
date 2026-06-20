@@ -21,9 +21,7 @@ package mediathek.gui.abo
 import mediathek.daten.DatenFilm
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class AboFilmCountsTest {

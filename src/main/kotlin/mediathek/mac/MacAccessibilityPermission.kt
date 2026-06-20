@@ -20,11 +20,7 @@ package mediathek.mac
 
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
-import java.lang.foreign.Arena
-import java.lang.foreign.FunctionDescriptor
-import java.lang.foreign.Linker
-import java.lang.foreign.SymbolLookup
-import java.lang.foreign.ValueLayout
+import java.lang.foreign.*
 import java.lang.invoke.MethodHandle
 
 object MacAccessibilityPermission {
