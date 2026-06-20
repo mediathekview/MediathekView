@@ -72,7 +72,7 @@
         <caffeine.version>3.2.4</caffeine.version>
         <dd-plist.version>1.29</dd-plist.version>
         <flatlaf.version>3.7.1</flatlaf.version>
-        <glazedlists.version>9ace85251c</glazedlists.version>
+        <glazedlists.version>9ace85251cc0f8e70eebc9dfdb2cb2a920cb0275</glazedlists.version>
         <ikonli.version>12.4.0</ikonli.version>
         <jackson.version>3.2.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
@@ -92,20 +92,17 @@
         <flexmark.version>0.64.8</flexmark.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
         <log4j2.version>2.25.4</log4j2.version>
-        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
         <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-        <maven-exec-maven-plugin.version>3.1.0</maven-exec-maven-plugin.version>
         <git-commit-id-maven-plugin.version>10.0.0</git-commit-id-maven-plugin.version>
         <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
         <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <mbassador.version>1.3.2</mbassador.version>
         <miglayout.version>11.4.3</miglayout.version>
@@ -135,6 +132,9 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
