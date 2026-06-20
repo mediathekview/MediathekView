@@ -1,6 +1,7 @@
 package mediathek.gui.tabs.tab_online_search
 
 import kotlinx.coroutines.suspendCancellableCoroutine
+import mediathek.config.Konstanten
 import mediathek.tool.http.MVHttpClient
 import okhttp3.Callback
 import okhttp3.Call
@@ -22,13 +23,17 @@ interface OnlineSearchHttpClient {
 class OnlineSearchHttpException(
     val statusCode: Int,
     message: String,
+    val url: String? = null,
     val retryAfter: Duration? = null,
-) : IOException("Online search request failed: HTTP $statusCode $message") {
+) : IOException("Online search request failed: HTTP $statusCode $message${url?.let { " for $it" }.orEmpty()}") {
     val isAuthorizationFailure: Boolean
         get() = statusCode == 401 || statusCode == 403
 
     val isRateLimit: Boolean
         get() = statusCode == 429
+
+    val isUnavailableItem: Boolean
+        get() = statusCode == 404 || statusCode == 410
 }
 
 class OkHttpOnlineSearchHttpClient(
@@ -38,6 +43,7 @@ class OkHttpOnlineSearchHttpClient(
         val request = Request.Builder()
             .url(url)
             .apply { headers.forEach { (name, value) -> header(name, value) } }
+            .header("User-Agent", Konstanten.JSOUP_USER_AGENT)
             .get()
             .build()
         val call = client.newCall(request)
@@ -57,6 +63,7 @@ class OkHttpOnlineSearchHttpClient(
                                 OnlineSearchHttpException(
                                     statusCode = it.code,
                                     message = it.message,
+                                    url = url,
                                     retryAfter = it.header("Retry-After")?.toRetryAfterDuration(),
                                 ),
                             )

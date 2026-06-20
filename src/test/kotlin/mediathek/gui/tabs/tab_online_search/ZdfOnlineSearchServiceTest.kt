@@ -137,6 +137,55 @@ class ZdfOnlineSearchServiceTest {
     }
 
     @Test
+    fun `ZDF search skips unavailable document details`() = runBlocking {
+        val indexUrl = "https://www.zdf.de/suche"
+        val detailUrl = "https://api.zdf.de/content/documents/available-100.json"
+        val ptmdUrl = "https://api.zdf.de/tmd/ptmd/test"
+        val http = object : OnlineSearchHttpClient {
+            override suspend fun get(url: String, headers: Map<String, String>): String = when (url) {
+                indexUrl -> ZdfFixtures.indexHtml("token-123")
+                "https://api.zdf.de/content/documents/gone-100.json" -> {
+                    throw OnlineSearchHttpException(statusCode = 410, message = "Gone", url = url)
+                }
+                detailUrl -> ZdfFixtures.detailJson("Available", ptmdUrl)
+                ptmdUrl -> ZdfFixtures.downloadJson("https://cdn.example/available.mp4")
+                else -> error("Unexpected URL: $url")
+            }
+        }
+        val service = ZdfOnlineSearchService(http) { _, _, _ ->
+            ZdfSearchGraphqlResult(
+                canonicalPaths = listOf("gone-100", "available-100"),
+                nextCursor = null,
+                totalResults = 2,
+            )
+        }
+
+        val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ZDF, "1, 2 oder 3"))
+
+        assertEquals(1, page.results.size)
+        assertEquals("Available - Folgentitel", page.results.single().title)
+        assertEquals("https://cdn.example/available.mp4", page.results.single().normalQualityUrl)
+    }
+
+    @Test
+    fun `ZDF URL search returns no result for unavailable document detail`() = runBlocking {
+        val indexUrl = "https://www.zdf.de/suche"
+        val detailUrl = "https://api.zdf.de/content/documents/gone-100.json"
+        val http = object : OnlineSearchHttpClient {
+            override suspend fun get(url: String, headers: Map<String, String>): String = when (url) {
+                indexUrl -> ZdfFixtures.indexHtml("token-123")
+                detailUrl -> throw OnlineSearchHttpException(statusCode = 410, message = "Gone", url = url)
+                else -> error("Unexpected URL: $url")
+            }
+        }
+        val service = ZdfOnlineSearchService(http)
+
+        val result = service.loadByUrl(OnlineUrlRequest(OnlineSearchProvider.ZDF, "https://www.zdf.de/video/gone-100"))
+
+        assertEquals(null, result)
+    }
+
+    @Test
     fun `ZDF URL search falls back to title when optional topic fields are null`() = runBlocking {
         val indexUrl = "https://www.zdf.de/suche"
         val detailUrl = "https://api.zdf.de/content/documents/null-topic-100.json"
@@ -227,6 +276,36 @@ class ZdfOnlineSearchServiceTest {
     }
 
     @Test
+    fun `ZDF search skips unavailable PTMD streams`() = runBlocking {
+        val indexUrl = "https://www.zdf.de/suche"
+        val detailUrl = "https://api.zdf.de/content/documents/miami-ibiza-wismar-100.json"
+        val defaultPtmdUrl = "https://api.zdf.de/tmd/2/android_native_5/vod/ptmd/mediathek/260121_1800_sendung_sok7/3"
+        val dgsPtmdUrl = "https://api.zdf.de/tmd/2/android_native_5/vod/ptmd/mediathek/260121_1800_sendung_sok7_dgs/3"
+        val http = object : OnlineSearchHttpClient {
+            override suspend fun get(url: String, headers: Map<String, String>): String = when (url) {
+                indexUrl -> ZdfFixtures.indexHtml("token-123")
+                detailUrl -> ZdfFixtures.realisticDetailJsonWithDgsStream("Miami, Ibiza, Wismar")
+                defaultPtmdUrl -> throw OnlineSearchHttpException(statusCode = 410, message = "Gone", url = url)
+                dgsPtmdUrl -> ZdfFixtures.downloadJson("https://cdn.example/soko-wismar-dgs.mp4")
+                else -> error("Unexpected URL: $url")
+            }
+        }
+        val service = ZdfOnlineSearchService(http) { _, _, _ ->
+            ZdfSearchGraphqlResult(
+                canonicalPaths = listOf("miami-ibiza-wismar-100"),
+                nextCursor = null,
+                totalResults = 1,
+            )
+        }
+
+        val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ZDF, "SOKO Wismar"))
+
+        assertEquals(1, page.results.size)
+        assertEquals("Miami, Ibiza, Wismar (Gebärdensprache)", page.results.single().title)
+        assertEquals("https://cdn.example/soko-wismar-dgs.mp4", page.results.single().normalQualityUrl)
+    }
+
+    @Test
     fun `ZDF search refreshes cached token after expiry`() = runBlocking {
         val clock = MutableClock(Instant.parse("2026-01-01T00:00:00Z"))
         val http = object : OnlineSearchHttpClient {
@@ -288,7 +367,7 @@ class ZdfOnlineSearchServiceTest {
                     detailUrl -> {
                         detailRequests++
                         if (detailRequests == 1) {
-                            throw OnlineSearchHttpException(401, "Unauthorized")
+                            throw OnlineSearchHttpException(statusCode = 401, message = "Unauthorized")
                         }
                         ZdfFixtures.realisticDetailJson("Miami, Ibiza, Wismar")
                     }

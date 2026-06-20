@@ -6,12 +6,47 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import mediathek.config.Konstanten
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.IOException
 
 class OnlineSearchHttpClientTest {
+    @Test
+    fun `get sends configured online search user agent`() = runBlocking {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(
+                Interceptor { chain ->
+                    assertEquals(Konstanten.JSOUP_USER_AGENT, chain.request().header("User-Agent"))
+                    assertEquals("value", chain.request().header("X-Test"))
+                    Response.Builder()
+                        .request(chain.request())
+                        .protocol(Protocol.HTTP_1_1)
+                        .code(200)
+                        .message("OK")
+                        .body("ok".toResponseBody())
+                        .build()
+                },
+            )
+            .build()
+        val httpClient = OkHttpOnlineSearchHttpClient(client)
+
+        val body = httpClient.get(
+            "https://example.invalid/test",
+            mapOf(
+                "User-Agent" to "ignored",
+                "X-Test" to "value",
+            ),
+        )
+
+        assertEquals("ok", body)
+    }
+
     @Test
     fun `cancelling get cancels underlying OkHttp call`() = runBlocking {
         val requestStarted = CompletableDeferred<Unit>()

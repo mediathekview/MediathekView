@@ -34,7 +34,7 @@ class ZdfOnlineSearchService(
         require(request.provider == OnlineSearchProvider.ZDF)
         return withFreshTokenRetry { bearer ->
             val searchResult = graphqlLoader.load(request.query, request.nextToken, bearer)
-            val results = searchResult.canonicalPaths.mapConcurrently { loadDocument(it, bearer) }.flatten()
+            val results = searchResult.canonicalPaths.mapConcurrently { loadDocumentIfAvailable(it, bearer) }.flatten()
             OnlineSearchPage(results, searchResult.nextCursor, searchResult.totalResults)
         }
     }
@@ -42,7 +42,7 @@ class ZdfOnlineSearchService(
     override suspend fun loadByUrl(request: OnlineUrlRequest): OnlineSearchResult? {
         require(request.provider == OnlineSearchProvider.ZDF)
         val canonical = request.url.toOnlineSearchUrlLastSegment()
-        return withFreshTokenRetry { bearer -> loadDocument(canonical, bearer).firstOrNull() }
+        return withFreshTokenRetry { bearer -> loadDocumentIfAvailable(canonical, bearer).firstOrNull() }
     }
 
     private suspend fun bearerToken(): String {
@@ -72,6 +72,13 @@ class ZdfOnlineSearchService(
     private fun ZdfApiToken.isUsable(now: Instant): Boolean =
         expiresAt == null || expiresAt.isAfter(now.plus(TOKEN_EXPIRY_SAFETY_MARGIN))
 
+    private suspend fun loadDocumentIfAvailable(canonical: String, bearer: String): List<OnlineSearchResult> =
+        try {
+            loadDocument(canonical, bearer)
+        } catch (ex: OnlineSearchHttpException) {
+            if (ex.isUnavailableItem) emptyList() else throw ex
+        }
+
     private suspend fun loadDocument(canonical: String, bearer: String): List<OnlineSearchResult> {
         val root = httpClient.get("https://api.zdf.de/content/documents/$canonical.json", zdfHeaders(bearer))
             .parseJsonObject(json)
@@ -82,7 +89,7 @@ class ZdfOnlineSearchService(
             .ifEmpty { return emptyList() }
         val downloadVariants = ptmdTemplates.mapConcurrently { stream ->
             val ptmdUrl = stream.template.replace("{playerId}", "android_native_5").withZdfApiBase()
-            loadDownloadVariants(ptmdUrl, bearer, stream.isSignLanguage)
+            loadDownloadVariantsIfAvailable(ptmdUrl, bearer, stream.isSignLanguage)
         }.flatten()
         val title = listOfNotNull(root.string("title"), root.string("subtitle"))
             .joinToString(" - ")
@@ -115,6 +122,17 @@ class ZdfOnlineSearchService(
         isSignLanguage: Boolean,
     ): List<ZdfDownloadVariant> =
         httpClient.get(ptmdUrl, zdfHeaders(bearer)).parseJsonObject(json).downloadVariants(isSignLanguage)
+
+    private suspend fun loadDownloadVariantsIfAvailable(
+        ptmdUrl: String,
+        bearer: String,
+        isSignLanguage: Boolean,
+    ): List<ZdfDownloadVariant> =
+        try {
+            loadDownloadVariants(ptmdUrl, bearer, isSignLanguage)
+        } catch (ex: OnlineSearchHttpException) {
+            if (ex.isUnavailableItem) emptyList() else throw ex
+        }
 
     private fun parseZdfDate(value: String?): LocalDateTime? = value?.let {
         ZonedDateTime.parse(it).withZoneSameInstant(BERLIN).toLocalDateTime()
