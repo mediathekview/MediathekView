@@ -11,14 +11,13 @@ class OnlineSearchResultTableFormatTest {
     fun `format exposes expected columns`() {
         val format = OnlineSearchResultTableFormat()
 
-        assertEquals(7, format.columnCount)
+        assertEquals(6, format.columnCount)
         assertEquals("Sender", format.getColumnName(OnlineSearchResultTableFormat.SENDER))
         assertEquals("Thema", format.getColumnName(OnlineSearchResultTableFormat.TOPIC))
         assertEquals("Titel", format.getColumnName(OnlineSearchResultTableFormat.TITLE))
         assertEquals("Datum", format.getColumnName(OnlineSearchResultTableFormat.DATE))
         assertEquals("Dauer", format.getColumnName(OnlineSearchResultTableFormat.DURATION))
         assertEquals("Website", format.getColumnName(OnlineSearchResultTableFormat.WEBSITE))
-        assertEquals("URL", format.getColumnName(OnlineSearchResultTableFormat.URL))
         assertEquals(String::class.java, format.getColumnClass(OnlineSearchResultTableFormat.TITLE))
         assertEquals(String::class.java, format.getColumnClass(OnlineSearchResultTableFormat.DATE))
         assertEquals(String::class.java, format.getColumnClass(OnlineSearchResultTableFormat.DURATION))

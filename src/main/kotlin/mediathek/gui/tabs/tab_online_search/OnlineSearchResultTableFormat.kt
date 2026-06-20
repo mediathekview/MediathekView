@@ -17,7 +17,6 @@ class OnlineSearchResultTableFormat : AdvancedTableFormat<OnlineSearchResult> {
         DATE -> "Datum"
         DURATION -> "Dauer"
         WEBSITE -> "Website"
-        URL -> "URL"
         else -> throw IndexOutOfBoundsException("Unknown online search column: $column")
     }
 
@@ -28,7 +27,6 @@ class OnlineSearchResultTableFormat : AdvancedTableFormat<OnlineSearchResult> {
         DATE -> baseObject.broadcastTime?.format(DATE_FORMATTER).orEmpty()
         DURATION -> baseObject.duration?.let { DurationFormatUtils.formatDuration(it.toMillis(), "HH:mm:ss", true) }.orEmpty()
         WEBSITE -> baseObject.websiteUrl
-        URL -> baseObject.normalQualityUrl
         else -> throw IndexOutOfBoundsException("Unknown online search column: $column")
     }
 
@@ -49,8 +47,7 @@ class OnlineSearchResultTableFormat : AdvancedTableFormat<OnlineSearchResult> {
         const val DATE = 3
         const val DURATION = 4
         const val WEBSITE = 5
-        const val URL = 6
-        private const val COLUMN_COUNT = 7
+        private const val COLUMN_COUNT = 6
         private val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         private val DATE_COMPARATOR: Comparator<String> = compareBy { value ->
             value.takeIf { it.isNotBlank() }?.let { LocalDate.parse(it, DATE_FORMATTER) }

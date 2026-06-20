@@ -13,7 +13,7 @@ import javax.swing.ListSelectionModel
 import javax.swing.table.TableColumn
 
 class OnlineSearchResultTable(
-    private val source: EventList<OnlineSearchResult>,
+    source: EventList<OnlineSearchResult>,
     private val stateStore: OnlineSearchTableStateStore = ApplicationOnlineSearchTableStateStore,
 ) : JTable() {
     private val sortedResults = SortedList(source, null)
@@ -70,7 +70,7 @@ class OnlineSearchResultTable(
     }
 
     private fun setDefaultColumnWidths() {
-        val widths = intArrayOf(90, 220, 320, 90, 90, 360, 480)
+        val widths = intArrayOf(90, 220, 320, 90, 90, 360)
         for (index in 0 until minOf(widths.size, columnModel.columnCount)) {
             val column = columnModel.getColumn(index)
             column.identifier = model.getColumnName(index)
@@ -129,7 +129,6 @@ class OnlineSearchResultTable(
     )
 
     private companion object {
-        private const val CONFIG_PREFIX = "online-search"
         private val TABLE_STATE_JSON = Json {
             ignoreUnknownKeys = true
             encodeDefaults = true
