@@ -6,6 +6,24 @@
         </Console>
     </Appenders>
     <Loggers>
+        <Logger name="mediathek.tool.FileSize" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.controller.history.SeenHistoryMigrator" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.sqlite.core.NativeDB" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.gui.tabs.tab_film.filter.FilmFilterController" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.gui.tabs.tab_film.filter.SwingFilterDialog" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.tool.timer.TimerPool" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
         <Root level="trace">
             <AppenderRef ref="Console"/>
         </Root>

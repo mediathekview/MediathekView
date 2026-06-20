@@ -72,7 +72,7 @@
         <caffeine.version>3.2.4</caffeine.version>
         <dd-plist.version>1.29</dd-plist.version>
         <flatlaf.version>3.7.1</flatlaf.version>
-        <glazedlists.version>1.11.0</glazedlists.version>
+        <glazedlists.version>9ace85251c</glazedlists.version>
         <ikonli.version>12.4.0</ikonli.version>
         <jackson.version>3.2.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
@@ -130,6 +130,13 @@
         <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
         <!-- @formatter:on -->
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -407,7 +414,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.glazedlists</groupId>
+            <groupId>com.github.glazedlists</groupId>
             <artifactId>glazedlists</artifactId>
             <version>${glazedlists.version}</version>
         </dependency>
@@ -591,7 +598,6 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <release>${jvm.target.version}</release>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
                     </compilerArgs>
