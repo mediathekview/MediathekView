@@ -168,6 +168,63 @@ class ZdfOnlineSearchServiceTest {
     }
 
     @Test
+    fun `ZDF search filters weak multi term token matches`() = runBlocking {
+        val indexUrl = "https://www.zdf.de/suche"
+        val goodDetailUrl = "https://api.zdf.de/content/documents/good-100.json"
+        val badDetailUrl = "https://api.zdf.de/content/documents/bad-100.json"
+        val goodPtmdUrl = "https://api.zdf.de/tmd/ptmd/good"
+        val badPtmdUrl = "https://api.zdf.de/tmd/ptmd/bad"
+        val http = FakeOnlineSearchHttpClient(
+            mapOf(
+                indexUrl to ZdfFixtures.indexHtml("token-123"),
+                goodDetailUrl to ZdfFixtures.detailJson("1, 2 oder 3", goodPtmdUrl),
+                badDetailUrl to ZdfFixtures.detailJson("RB Leipzig schlägt Wolfsburg 3:0", badPtmdUrl),
+                goodPtmdUrl to ZdfFixtures.downloadJson("https://cdn.example/good.mp4"),
+                badPtmdUrl to ZdfFixtures.downloadJson("https://cdn.example/bad.mp4"),
+            )
+        )
+        val service = ZdfOnlineSearchService(http) { _, _, _ ->
+            ZdfSearchGraphqlResult(
+                canonicalPaths = listOf("good-100", "bad-100"),
+                nextCursor = null,
+                totalResults = 2,
+            )
+        }
+
+        val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ZDF, "1, 2 oder 3"))
+
+        assertEquals(1, page.results.size)
+        assertEquals("1, 2 oder 3 - Folgentitel", page.results.single().title)
+        assertEquals("https://cdn.example/good.mp4", page.results.single().normalQualityUrl)
+    }
+
+    @Test
+    fun `ZDF search keeps API results when relevance filter finds no multi term match`() = runBlocking {
+        val indexUrl = "https://www.zdf.de/suche"
+        val detailUrl = "https://api.zdf.de/content/documents/fallback-100.json"
+        val ptmdUrl = "https://api.zdf.de/tmd/ptmd/fallback"
+        val http = FakeOnlineSearchHttpClient(
+            mapOf(
+                indexUrl to ZdfFixtures.indexHtml("token-123"),
+                detailUrl to ZdfFixtures.detailJson("Fallback", ptmdUrl),
+                ptmdUrl to ZdfFixtures.downloadJson("https://cdn.example/fallback.mp4"),
+            )
+        )
+        val service = ZdfOnlineSearchService(http) { _, _, _ ->
+            ZdfSearchGraphqlResult(
+                canonicalPaths = listOf("fallback-100"),
+                nextCursor = null,
+                totalResults = 1,
+            )
+        }
+
+        val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ZDF, "missing phrase"))
+
+        assertEquals(1, page.results.size)
+        assertEquals("Fallback - Folgentitel", page.results.single().title)
+    }
+
+    @Test
     fun `ZDF URL search returns no result for unavailable document detail`() = runBlocking {
         val indexUrl = "https://www.zdf.de/suche"
         val detailUrl = "https://api.zdf.de/content/documents/gone-100.json"

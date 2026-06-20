@@ -29,7 +29,10 @@ class ZdfOnlineSearchService(
         require(request.provider == OnlineSearchProvider.ZDF)
         return withFreshTokenRetry { bearer ->
             val searchResult = graphqlLoader.load(request.query, request.nextToken, bearer)
-            val results = searchResult.canonicalPaths.mapConcurrently { loadDocumentIfAvailable(it, bearer) }.flatten()
+            val results = searchResult.canonicalPaths
+                .mapConcurrently { loadDocumentIfAvailable(it, bearer) }
+                .flatten()
+                .filterRelevantTo(request.query)
             OnlineSearchPage(results, searchResult.nextCursor, searchResult.totalResults)
         }
     }
@@ -155,6 +158,32 @@ class ZdfOnlineSearchService(
                 ?.get("http://zdf.de/rels/target")?.jsonObjectOrNull()?.string("primaryBrand")
             ?: string("title")
 
+    private fun List<OnlineSearchResult>.filterRelevantTo(query: String): List<OnlineSearchResult> {
+        val terms = query.normalizedSearchTerms()
+        if (terms.size < 2) return this
+        val filtered = filter { result ->
+            val haystack = result.searchableText()
+            terms.all(haystack::contains)
+        }
+        return filtered.ifEmpty { this }
+    }
+
+    private fun OnlineSearchResult.searchableText(): String =
+        listOf(topic, title, description, websiteUrl)
+            .joinToString(" ")
+            .normalizeSearchText()
+
+    private fun String.normalizedSearchTerms(): List<String> =
+        normalizeSearchText()
+            .split(' ')
+            .filter { it.length > 1 || it.any(Char::isDigit) }
+            .distinct()
+
+    private fun String.normalizeSearchText(): String =
+        lowercase()
+            .replace(SEARCH_TEXT_SEPARATOR_PATTERN, " ")
+            .trim()
+
     private fun JsonObject.findPtmdTemplates(): List<ZdfPtmdStreamTemplate> {
         val templates = mutableListOf<ZdfPtmdStreamTemplate>()
         string("http://zdf.de/rels/streams/ptmd-template")?.let { template ->
@@ -240,6 +269,7 @@ class ZdfOnlineSearchService(
         private const val ZDF_SEARCH_URL = "https://www.zdf.de/suche"
         private val TOKEN_EXPIRY_SAFETY_MARGIN: Duration = Duration.ofMinutes(1)
         private val BERLIN: ZoneId = ZoneId.of("Europe/Berlin")
+        private val SEARCH_TEXT_SEPARATOR_PATTERN = Regex("[^\\p{L}\\p{Nd}]+")
     }
 }
 
