@@ -110,6 +110,18 @@
         <okhttp.version>5.4.0</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
         <sqlite-jdbc.version>3.53.2.0</sqlite-jdbc.version>
+        <sqlite.native.exclude.01>__unused__</sqlite.native.exclude.01>
+        <sqlite.native.exclude.02>__unused__</sqlite.native.exclude.02>
+        <sqlite.native.exclude.03>__unused__</sqlite.native.exclude.03>
+        <sqlite.native.exclude.04>__unused__</sqlite.native.exclude.04>
+        <sqlite.native.exclude.05>__unused__</sqlite.native.exclude.05>
+        <sqlite.native.exclude.06>__unused__</sqlite.native.exclude.06>
+        <sqlite.native.exclude.07>__unused__</sqlite.native.exclude.07>
+        <sqlite.native.exclude.08>__unused__</sqlite.native.exclude.08>
+        <sqlite.native.exclude.09>__unused__</sqlite.native.exclude.09>
+        <sqlite.native.exclude.10>__unused__</sqlite.native.exclude.10>
+        <sqlite.native.exclude.11>__unused__</sqlite.native.exclude.11>
+        <sqlite.native.exclude.12>__unused__</sqlite.native.exclude.12>
         <swingx.version>1.6.5-1</swingx.version>
         <xz.version>1.12</xz.version>
 
@@ -658,6 +670,38 @@
                 <version>${maven-deploy-plugin.version}</version>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>org.xerial:sqlite-jdbc</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                            <excludes>
+                                <exclude>**/native/${sqlite.native.exclude.01}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.02}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.03}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.04}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.05}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.06}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.07}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.08}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.09}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.10}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.11}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.12}/**</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resources-plugin.version}</version>
                 <executions>
@@ -752,42 +796,27 @@
             </activation>
             <properties>
                 <install4j.platform>windows</install4j.platform>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows/aarch64</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Windows/armv7</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Windows/x86</sqlite.native.exclude.08>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/aarch64/**</exclude>
-                                                <exclude>**/native/Windows/armv7/**</exclude>
-                                                <exclude>**/native/Windows/x86/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -857,41 +886,28 @@
                     <arch>aarch64</arch>
                 </os>
             </activation>
+            <properties>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows/armv7</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Windows/x86</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Windows/x86_64</sqlite.native.exclude.08>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/armv7/**</exclude>
-                                                <exclude>**/native/Windows/x86/**</exclude>
-                                                <exclude>**/native/Windows/x86_64/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -964,6 +980,18 @@
             </activation>
             <properties>
                 <install4j.platform>linux</install4j.platform>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux-Android</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Musl</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Mac</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Windows</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Linux/aarch64</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Linux/arm</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Linux/armv6</sqlite.native.exclude.08>
+                <sqlite.native.exclude.09>Linux/armv7</sqlite.native.exclude.09>
+                <sqlite.native.exclude.10>Linux/ppc64</sqlite.native.exclude.10>
+                <sqlite.native.exclude.11>Linux/riscv64</sqlite.native.exclude.11>
+                <sqlite.native.exclude.12>Linux/x86</sqlite.native.exclude.12>
             </properties>
             <build>
                 <plugins>
@@ -989,33 +1017,13 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1033,6 +1041,18 @@
             </activation>
             <properties>
                 <install4j.platform>arm</install4j.platform>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux-Android</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Musl</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Mac</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Windows</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Linux/arm</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Linux/armv6</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Linux/armv7</sqlite.native.exclude.08>
+                <sqlite.native.exclude.09>Linux/ppc64</sqlite.native.exclude.09>
+                <sqlite.native.exclude.10>Linux/riscv64</sqlite.native.exclude.10>
+                <sqlite.native.exclude.11>Linux/x86</sqlite.native.exclude.11>
+                <sqlite.native.exclude.12>Linux/x86_64</sqlite.native.exclude.12>
             </properties>
             <build>
                 <plugins>
@@ -1058,33 +1078,13 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1100,39 +1100,26 @@
                     <arch>x86_64</arch>
                 </os>
             </activation>
+            <properties>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac/aarch64</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows</sqlite.native.exclude.06>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/aarch64/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1170,12 +1157,19 @@
                     <arch>aarch64</arch>
                 </os>
             </activation>
+            <properties>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac/x86_64</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows</sqlite.native.exclude.06>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>shade-sqlite</id>
@@ -1183,27 +1177,6 @@
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/x86_64/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
