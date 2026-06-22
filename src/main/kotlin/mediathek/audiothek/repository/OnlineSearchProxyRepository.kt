@@ -50,7 +50,7 @@ class OnlineSearchProxyRepository(
             return@withContext emptyList()
         }
 
-        val requestUrl = Konstanten.AUDIOTHEK_ONLINE_SEARCH_PROXY_URL.toHttpUrlOrNull()
+        val requestUrl = AUDIOTHEK_ONLINE_SEARCH_PROXY_URL.toHttpUrlOrNull()
             ?.newBuilder()
             ?.addPathSegments("api/audiothek/podcast-search")
             ?.addQueryParameter("q", normalizedQuery)
@@ -58,7 +58,7 @@ class OnlineSearchProxyRepository(
             ?: run {
                 logger.warn(
                     "Ungültige Proxy-URL für die Audiothek-Onlinesuche: {}",
-                    Konstanten.AUDIOTHEK_ONLINE_SEARCH_PROXY_URL
+                    AUDIOTHEK_ONLINE_SEARCH_PROXY_URL
                 )
                 return@withContext emptyList()
             }
@@ -66,10 +66,7 @@ class OnlineSearchProxyRepository(
         val request = Request.Builder()
             .url(requestUrl)
             .header("User-Agent", readUserAgent())
-            .header(
-                Konstanten.AUDIOTHEK_PROXY_CLIENT_TOKEN_HEADER,
-                Konstanten.AUDIOTHEK_PROXY_CLIENT_TOKEN
-            )
+            .header(AUDIOTHEK_PROXY_CLIENT_TOKEN_HEADER, AUDIOTHEK_PROXY_CLIENT_TOKEN)
             .get()
             .build()
 
@@ -197,6 +194,10 @@ class OnlineSearchProxyRepository(
     }
 
     private companion object {
+        const val AUDIOTHEK_PROXY_CLIENT_TOKEN_HEADER = "X-MV-Client-Token"
+        const val AUDIOTHEK_PROXY_CLIENT_TOKEN = "mv-audiothek-static-2026-03"
+        const val AUDIOTHEK_ONLINE_SEARCH_PROXY_URL = "https://audiothek.mediathekview.de"
+
         private fun searchClient(): OkHttpClient =
             Konstanten.AUDIOTHEK_SEARCH_TIMEOUT_SECONDS.seconds.toJavaDuration().let { timeout ->
                 MVHttpClient.httpClient.newBuilder()

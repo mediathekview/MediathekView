@@ -47,7 +47,7 @@ object Konstanten {
     /**
      * Maximum number of backup files to be stored.
      */
-    const val MAX_NUM_BACKUP_FILE_COPIES: Short = 3
+    const val MAX_NUM_BACKUP_FILE_COPIES: Short = 2
 
     const val MAX_DOWNLOAD_RESTARTS = 2
     const val MAX_EXTERNAL_STARTS = 3
@@ -65,18 +65,12 @@ object Konstanten {
 
     val URL_MEDIATHEKVIEW_RESOURCES: HttpUrl = "https://res.mediathekview.de".toHttpUrl()
 
-    const val AUDIOTHEK_ONLINE_SEARCH_PROXY_URL = "https://audiothek.mediathekview.de"
-    const val AUDIOTHEK_PROXY_CLIENT_TOKEN_HEADER = "X-MV-Client-Token"
-    const val AUDIOTHEK_PROXY_CLIENT_TOKEN = "mv-audiothek-static-2026-03"
     const val HLS_STREAM_INFO_TOKEN_HEADER = "X-HLS-Stream-Info-Token"
     const val HLS_STREAM_INFO_TOKEN = "mv-hls-stream-info-test-2026-04-14"
-
     val HLS_STREAM_INFO_BASE_URL: HttpUrl = "https://hlssi.crystalpalace.info".toHttpUrl()
-
     val HLS_STREAM_INFO_UPLOAD_URL: HttpUrl = requireNotNull(
         HLS_STREAM_INFO_BASE_URL.resolve("/v1/hls-stream-info")
     )
-
     val AUDIOTHEK_DB_DOWNLOAD_URL: HttpUrl = requireNotNull(HLS_STREAM_INFO_BASE_URL.resolve("/audio-db"))
 
     const val PSET_PROGRAM_GROUP_LIST_PATH = "programmgruppen13/programmgruppen.xml"
