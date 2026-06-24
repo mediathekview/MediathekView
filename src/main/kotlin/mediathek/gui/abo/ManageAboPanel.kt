@@ -56,7 +56,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
     private val daten = Daten.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val createAboAction = CreateNewAboAction(daten.listeAbo) { owner }
-    private lateinit var tableBinding: AboTableBinding
+    private var tableBinding: AboTableBinding
     private lateinit var tableColumnSettings: AboTableColumnSettings
     private val infoPanel = JXStatusBar()
     private val totalAbos = JLabel("totalAbos")
@@ -98,7 +98,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
         updateInfoText()
 
         MessageBus.messageBus.subscribe(this)
-        daten.filmeLaden.addAdListener(filmLoadListener)
+        daten.filmeLaden.addFilmLoadListener(filmLoadListener)
 
         initListeners()
         initializeTable()
@@ -112,9 +112,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
     }
 
     fun tabelleSpeichern() {
-        if (::tableBinding.isInitialized) {
-            tableBinding.saveSortState()
-        }
+        tableBinding.saveSortState()
         if (::tableColumnSettings.isInitialized) {
             tableColumnSettings.save()
         }
@@ -123,12 +121,10 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
     override fun removeNotify() {
         if (!disposed) {
             disposed = true
-            daten.filmeLaden.removeAdListener(filmLoadListener)
+            daten.filmeLaden.removeFilmLoadListener(filmLoadListener)
             countRefreshJob?.cancel()
             uiScope.cancel()
-            if (::tableBinding.isInitialized) {
-                tableBinding.dispose()
-            }
+            tableBinding.dispose()
         }
         super.removeNotify()
     }
@@ -305,7 +301,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
         }
 
     private fun initializeAboFilmCounts() {
-        if (daten.filmeLaden.isLoadRunning) {
+        if (daten.filmeLaden.isFilmListImportRunning) {
             markAboFilmCountsLoading()
         } else {
             scheduleAboFilmCountRefresh()

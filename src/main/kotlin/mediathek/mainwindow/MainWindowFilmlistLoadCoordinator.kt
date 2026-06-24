@@ -19,7 +19,6 @@
 package mediathek.mainwindow
 
 import mediathek.config.Daten
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.dialog.LoadFilmListDialog
 import mediathek.tool.FilmListUpdateType
 import javax.swing.JFrame
@@ -56,7 +55,7 @@ class MainWindowFilmlistLoadCoordinator(
     private fun finishStartupFilmlistLoad(remoteUpdateStarted: Boolean, failed: Boolean) {
         try {
             if (!remoteUpdateStarted) {
-                daten.filmeLaden.notifyFertig(ListenerFilmeLadenEvent("", "", 100, 100, failed))
+                daten.filmeLaden.completeStartupFilmListLoad(failed)
             }
         } finally {
             statusBarController.uninstallStartupProgress()

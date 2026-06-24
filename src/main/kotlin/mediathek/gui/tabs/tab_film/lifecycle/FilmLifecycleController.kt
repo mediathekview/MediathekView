@@ -51,10 +51,11 @@ class FilmLifecycleController(private val host: Host) {
     }
 
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    private val filmListReloadListener = createFilmListReloadListener()
 
     fun start() {
         MessageBus.messageBus.subscribe(host.messageBusSubscriber())
-        host.daten().filmeLaden.addAdListener(filmListReloadListener())
+        host.daten().filmeLaden.addFilmLoadListener(filmListReloadListener)
         launchOnSwing { host.requestTableReload() }
     }
 
@@ -62,6 +63,7 @@ class FilmLifecycleController(private val host: Host) {
         host.saveTableConfiguration()
         host.swingFilterDialog().dispose()
         host.closeFilterSelectionModel()
+        host.daten().filmeLaden.removeFilmLoadListener(filmListReloadListener)
         uiScope.cancel()
     }
 
@@ -128,7 +130,7 @@ class FilmLifecycleController(private val host: Host) {
         uiScope.launch { block() }
     }
 
-    private fun filmListReloadListener(): ListenerFilmeLaden =
+    private fun createFilmListReloadListener(): ListenerFilmeLaden =
         object : ListenerFilmeLaden() {
             override fun start(@Suppress("UNUSED_PARAMETER") event: ListenerFilmeLadenEvent) {
                 launchOnSwing { host.swingFilterDialog().onFilmDataLoadingStarted() }

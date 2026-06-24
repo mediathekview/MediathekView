@@ -20,6 +20,7 @@ package mediathek.mainwindow
 
 import mediathek.config.Daten
 import mediathek.filmeSuchen.ListenerFilmeLaden
+import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.tool.MessageBus
 import java.beans.PropertyChangeListener
@@ -40,6 +41,11 @@ class MainWindowLifecycle(
     private var lookAndFeelListenerRegistered = false
     private var filmlistProgressListenerRegistered = false
     private var filmListListenersRegistered = false
+    private val bookmarkRefreshListener = object : ListenerFilmeLaden() {
+        override fun fertig(@Suppress("UNUSED_PARAMETER") event: ListenerFilmeLadenEvent) {
+            daten.listeBookmarkList.refreshFromCurrentFilmListAsync()
+        }
+    }
 
     fun registerLookAndFeelListener() {
         if (lookAndFeelListenerRegistered) {
@@ -55,7 +61,7 @@ class MainWindowLifecycle(
             return
         }
 
-        daten.filmeLaden.addAdListener(filmlistProgressListener)
+        daten.filmeLaden.addFilmLoadListener(filmlistProgressListener)
         filmlistProgressListenerRegistered = true
     }
 
@@ -66,7 +72,8 @@ class MainWindowLifecycle(
 
         daten.listeBlacklist.setZeitraumFilterValueProvider(zeitraumFilterValueProvider)
         daten.filmeLaden.setUiHost(filmListLoadHost)
-        daten.filmeLaden.addAdListener(filmListListener)
+        daten.filmeLaden.addFilmLoadListener(filmListListener)
+        daten.filmeLaden.addFilmLoadListener(bookmarkRefreshListener)
         filmListListenersRegistered = true
     }
 
@@ -129,7 +136,8 @@ class MainWindowLifecycle(
 
         daten.listeBlacklist.setZeitraumFilterValueProvider(null)
         daten.filmeLaden.setUiHost(null)
-        daten.filmeLaden.removeAdListener(filmListListener)
+        daten.filmeLaden.removeFilmLoadListener(bookmarkRefreshListener)
+        daten.filmeLaden.removeFilmLoadListener(filmListListener)
         filmListListenersRegistered = false
     }
 
@@ -138,7 +146,7 @@ class MainWindowLifecycle(
             return
         }
 
-        daten.filmeLaden.removeAdListener(filmlistProgressListener)
+        daten.filmeLaden.removeFilmLoadListener(filmlistProgressListener)
         filmlistProgressListenerRegistered = false
     }
 

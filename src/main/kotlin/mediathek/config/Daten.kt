@@ -59,7 +59,7 @@ class Daten private constructor() {
     val listeDownloads: ListeDownloads = ListeDownloads()
     val listeDownloadsButton: ListeDownloads = ListeDownloads()
     val listeBlacklist: ListeBlacklist = ListeBlacklist()
-    val listeBookmarkList: BookmarkDataList = BookmarkDataList(this)
+    val listeBookmarkList: BookmarkDataList = BookmarkDataList()
     val listeAbo: ListeAbo = ListeAbo()
     val downloadInfos: DownloadInfos = DownloadInfos()
     val downloadStartCoordinator: DownloadStartCoordinator = DownloadStartCoordinator(this)

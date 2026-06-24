@@ -144,7 +144,7 @@ object DownloadAndQuitRunner {
             }
 
             override fun fertig(event: ListenerFilmeLadenEvent) {
-                daten.filmeLaden.removeAdListener(this)
+                daten.filmeLaden.removeFilmLoadListener(this)
                 if (event.fehler) {
                     logger.error("Filmlist update failed.")
                 } else {
@@ -166,10 +166,10 @@ object DownloadAndQuitRunner {
             }
         }
 
-        daten.filmeLaden.addAdListener(listener)
+        daten.filmeLaden.addFilmLoadListener(listener)
         val loadStarted = daten.filmeLaden.loadFilmlist("", false)
         if (!loadStarted) {
-            daten.filmeLaden.removeAdListener(listener)
+            daten.filmeLaden.removeFilmLoadListener(listener)
             logger.info("Filmlist update skipped because another filmlist load is already running.")
             return@withContext true
         }
