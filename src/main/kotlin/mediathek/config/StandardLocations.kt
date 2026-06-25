@@ -82,6 +82,10 @@ object StandardLocations {
         return getSettingsDirectory().resolve("blacklist-rules.json")
     }
 
+    fun getAboRulesFilePath(): Path {
+        return getSettingsDirectory().resolve("abo-rules.json")
+    }
+
     fun getApplicationSettingsFile(): Path {
         return getSettingsDirectory().resolve("settings.xml")
     }

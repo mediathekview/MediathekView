@@ -1,8 +1,8 @@
 package mediathek.gui.actions.import_actions
 
 import mediathek.config.Daten
+import mediathek.controller.LegacyAboRuleXml
 import mediathek.controller.LegacyBlacklistRuleXml
-import mediathek.daten.abo.DatenAbo
 import mediathek.gui.messages.ReplaceListChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.ReplaceList
@@ -36,7 +36,7 @@ class OldConfigFileImporter {
                     while (parser!!.hasNext()) {
                         val event = parser.next()
                         if (event == XMLStreamConstants.START_ELEMENT) {
-                            if (importAbo && parser.localName == DatenAbo.TAG) {
+                            if (importAbo && parser.localName == LegacyAboRuleXml.TAG) {
                                 if (importAboEntry(parser))
                                     foundAbos++
                             } else if (importBlacklist && parser.localName == LegacyBlacklistRuleXml.TAG) {
@@ -84,8 +84,7 @@ class OldConfigFileImporter {
 
     private fun importAboEntry(parser: XMLStreamReader): Boolean {
         return try {
-            val datenAbo = DatenAbo()
-            datenAbo.readFromConfig(parser)
+            val datenAbo = LegacyAboRuleXml.readAbo(parser)
             daten.listeAbo.addAboFromConfig(datenAbo)
             true
         }

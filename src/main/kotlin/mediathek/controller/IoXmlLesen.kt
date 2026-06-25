@@ -37,6 +37,7 @@ import javax.xml.stream.XMLStreamReader
 class IoXmlLesen(
     private val downloadStoragePath: Path = StandardLocations.getDownloadsFilePath(),
     private val blacklistRuleStoragePath: Path = StandardLocations.getBlacklistRulesFilePath(),
+    private val aboRuleStoragePath: Path = StandardLocations.getAboRulesFilePath(),
 ) {
     private val inFactory: XMLInputFactory = XMLInputFactory.newInstance().apply {
         setProperty(XMLInputFactory.IS_COALESCING, false)
@@ -51,8 +52,10 @@ class IoXmlLesen(
             var datenPset: DatenPset? = null
             var legacyDownloadsRead = false
             var legacyBlacklistRulesRead = false
+            var legacyAboRulesRead = false
             val readDownloadsFromJson = Files.exists(downloadStoragePath)
             val readBlacklistRulesFromJson = Files.exists(blacklistRuleStoragePath)
+            val readAboRulesFromJson = Files.exists(aboRuleStoragePath)
 
             try {
                 Files.newInputStream(xmlFilePath).use { input ->
@@ -75,7 +78,12 @@ class IoXmlLesen(
                                         }
 
                                         ReplaceList.REPLACELIST -> readReplacementList(parser)
-                                        DatenAbo.TAG -> readAboEntry(parser)
+                                        LegacyAboRuleXml.TAG -> {
+                                            legacyAboRulesRead =
+                                                readAboEntry(parser, readLegacyAboRule = !readAboRulesFromJson) ||
+                                                    legacyAboRulesRead
+                                        }
+
                                         DatenDownload.TAG -> {
                                             legacyDownloadsRead =
                                                 readDownloadEntry(parser, readLegacyDownload = !readDownloadsFromJson) ||
@@ -109,6 +117,10 @@ class IoXmlLesen(
                 readBlacklistRulesFromJson()
             }
 
+            if (readAboRulesFromJson) {
+                readAboRulesFromJson()
+            }
+
             sortLists()
 
             if (!readDownloadsFromJson && legacyDownloadsRead) {
@@ -117,6 +129,10 @@ class IoXmlLesen(
 
             if (!readBlacklistRulesFromJson && legacyBlacklistRulesRead) {
                 writeMigratedBlacklistRules()
+            }
+
+            if (!readAboRulesFromJson && legacyAboRulesRead) {
+                writeMigratedAboRules()
             }
         }
 
@@ -175,14 +191,17 @@ class IoXmlLesen(
         }
     }
 
-    private fun readAboEntry(parser: XMLStreamReader) {
+    private fun readAboEntry(parser: XMLStreamReader, readLegacyAboRule: Boolean): Boolean {
         try {
-            val datenAbo = DatenAbo()
-            datenAbo.readFromConfig(parser)
-            daten.listeAbo.addAboFromConfig(datenAbo)
+            val datenAbo = LegacyAboRuleXml.readAbo(parser)
+            if (readLegacyAboRule) {
+                daten.listeAbo.addAboFromConfig(datenAbo)
+                return true
+            }
         } catch (ex: XMLStreamException) {
             logger.error("Failed to read abo entry", ex)
         }
+        return false
     }
 
     private fun readBlacklistRuleEntry(parser: XMLStreamReader, readLegacyBlacklistRule: Boolean): Boolean {
@@ -227,11 +246,27 @@ class IoXmlLesen(
         }
     }
 
+    private fun readAboRulesFromJson() {
+        try {
+            AboRuleStorage.read(aboRuleStoragePath).forEach(daten.listeAbo::addAboFromConfig)
+        } catch (ex: Exception) {
+            logger.error("Failed to read abo rules from {}", aboRuleStoragePath, ex)
+        }
+    }
+
     private fun writeMigratedDownloads() {
         try {
             DownloadStorage.write(downloadStoragePath, daten.listeDownloads)
         } catch (ex: Exception) {
             logger.error("Failed to migrate downloads to {}", downloadStoragePath, ex)
+        }
+    }
+
+    private fun writeMigratedAboRules() {
+        try {
+            AboRuleStorage.write(aboRuleStoragePath, daten.listeAbo)
+        } catch (ex: Exception) {
+            logger.error("Failed to migrate abo rules to {}", aboRuleStoragePath, ex)
         }
     }
 

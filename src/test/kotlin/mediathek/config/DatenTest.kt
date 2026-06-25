@@ -1,6 +1,8 @@
 package mediathek.config
 
+import mediathek.controller.AboRuleStorage
 import mediathek.controller.BlacklistRuleStorage
+import mediathek.daten.abo.DatenAbo
 import mediathek.daten.blacklist.BlacklistRule
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.LocalDate
 
 internal class DatenTest {
     @TempDir
@@ -54,6 +57,41 @@ internal class DatenTest {
         } finally {
             blacklist.clear()
             blacklist.addAll(originalBlacklist)
+        }
+    }
+
+    @Test
+    fun allesSpeichernWritesAboRulesToJsonOnly() {
+        StandardLocations.portableBaseDirectory = tempDir.toString()
+        val daten = Daten.getInstance()
+        val abos = daten.listeAbo
+        val originalAbos = ArrayList(abos)
+        try {
+            abos.clear()
+            abos.add(
+                DatenAbo().apply {
+                    name = "JSON Abo"
+                    sender = "ARD"
+                    title = "tagesschau"
+                    downloadDate = LocalDate.of(2026, 6, 25)
+                },
+            )
+
+            daten.allesSpeichern()
+
+            val xml = Files.readString(StandardLocations.getMediathekXmlFile())
+            assertTrue(Files.exists(StandardLocations.getAboRulesFilePath()))
+            assertFalse(xml.contains("<Abonnement>"))
+            assertFalse(xml.contains("JSON Abo"))
+
+            val restored = AboRuleStorage.read(StandardLocations.getAboRulesFilePath()).single()
+            assertEquals("JSON Abo", restored.name)
+            assertEquals("ARD", restored.sender)
+            assertEquals("tagesschau", restored.title)
+            assertEquals(LocalDate.of(2026, 6, 25), restored.downloadDate)
+        } finally {
+            abos.clear()
+            abos.addAll(originalAbos)
         }
     }
 

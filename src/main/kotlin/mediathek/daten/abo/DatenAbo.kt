@@ -19,14 +19,7 @@
 package mediathek.daten.abo
 
 import mediathek.tool.GermanStringSorter
-import mediathek.tool.datum.DateUtil
-import org.apache.logging.log4j.LogManager
 import java.time.LocalDate
-import java.time.format.DateTimeParseException
-import javax.xml.stream.XMLStreamConstants
-import javax.xml.stream.XMLStreamException
-import javax.xml.stream.XMLStreamReader
-import javax.xml.stream.XMLStreamWriter
 
 class DatenAbo : Comparable<DatenAbo> {
     var mindestDauerMinuten: Int = 0
@@ -59,105 +52,11 @@ class DatenAbo : Comparable<DatenAbo> {
      */
     var filmLengthState: FilmLengthState = FilmLengthState.MINIMUM
 
-    val downloadDateText: String
-        get() = downloadDate?.format(DateUtil.FORMATTER).orEmpty()
-
     val isInvalid: Boolean
         get() = isInvalidFilter(sender, thema, title, themaTitel, irgendwo)
 
-    private fun readDownloadDate(datum: String?) {
-        if (datum.isNullOrBlank()) {
-            downloadDate = null
-            return
-        }
-
-        downloadDate = try {
-            LocalDate.parse(datum, DateUtil.FORMATTER)
-        } catch (ex: DateTimeParseException) {
-            logger.error("Invalid download date: {}", datum, ex)
-            null
-        }
-    }
-
-    /**
-     * Write all data to config.
-     *
-     * @param writer the writer used.
-     */
-    @Throws(XMLStreamException::class)
-    fun writeToConfig(writer: XMLStreamWriter) {
-        writer.writeStartElement(TAG)
-        writer.writeCharacters("\n")
-
-        writeElement(writer, AboTags.EINGESCHALTET.xmlName, isActive.toString())
-        writeElement(writer, AboTags.NAME.xmlName, name)
-        writeElement(writer, AboTags.SENDER.xmlName, sender)
-        writeElement(writer, AboTags.THEMA.xmlName, thema)
-        writeElement(writer, AboTags.TITEL.xmlName, title)
-        writeElement(writer, AboTags.THEMA_TITEL.xmlName, themaTitel)
-        writeElement(writer, AboTags.IRGENDWO.xmlName, irgendwo)
-        writeElement(writer, AboTags.MINDESTDAUER.xmlName, mindestDauerMinuten.toString())
-        writeElement(writer, AboTags.MIN.xmlName, (filmLengthState == FilmLengthState.MINIMUM).toString())
-        writeElement(writer, AboTags.ZIELPFAD.xmlName, zielpfad)
-        writeElement(writer, AboTags.DOWN_DATUM.xmlName, downloadDateText)
-        writeElement(writer, AboTags.PSET.xmlName, psetName)
-        writeElement(writer, AboTags.DO_NOT_START_AUTOMATICALLY.xmlName, isDoNotStartAutomatically.toString())
-
-        writer.writeEndElement()
-        writer.writeCharacters("\n")
-    }
-
-    @Throws(XMLStreamException::class)
-    fun readFromConfig(parser: XMLStreamReader) {
-        while (parser.hasNext()) {
-            val event = parser.next()
-            if (event == XMLStreamConstants.END_ELEMENT && parser.localName == TAG) {
-                break
-            }
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                readElement(parser)
-            }
-        }
-    }
-
     override fun compareTo(other: DatenAbo): Int =
         GermanStringSorter.compare(name, other.name)
-
-    private fun readMindestdauer(text: String) {
-        mindestDauerMinuten = try {
-            text.toInt()
-        } catch (ex: NumberFormatException) {
-            logger.error("Invalid Mindestdauer value: {}", text, ex)
-            0
-        }
-    }
-
-    private fun readElement(parser: XMLStreamReader) {
-        val tag = AboTags.fromXmlTag(parser.localName).orElse(null) ?: return
-
-        try {
-            val text = parser.elementText
-            when (tag) {
-                AboTags.EINGESCHALTET -> isActive = text.toBoolean()
-                AboTags.MIN -> filmLengthState = if (text.toBoolean()) FilmLengthState.MINIMUM else FilmLengthState.MAXIMUM
-                AboTags.NAME -> name = text
-                AboTags.SENDER -> sender = text
-                AboTags.THEMA -> thema = text
-                AboTags.TITEL -> title = text
-                AboTags.THEMA_TITEL -> themaTitel = text
-                AboTags.IRGENDWO -> irgendwo = text
-                AboTags.MINDESTDAUER -> readMindestdauer(text)
-                AboTags.ZIELPFAD -> zielpfad = text
-                AboTags.DOWN_DATUM -> readDownloadDate(text)
-                AboTags.PSET -> psetName = text
-                AboTags.DO_NOT_START_AUTOMATICALLY -> isDoNotStartAutomatically = text.toBoolean()
-            }
-        } catch (ex: XMLStreamException) {
-            logger.error("Error reading abo entry", ex)
-        } catch (ex: RuntimeException) {
-            logger.error("Error reading abo entry", ex)
-        }
-    }
 
     companion object {
         const val ABO_EINGESCHALTET: Int = 0
@@ -175,19 +74,8 @@ class DatenAbo : Comparable<DatenAbo> {
         const val ABO_DO_NOT_START_AUTOMATICALLY: Int = 12
         const val ABO_FILM_COUNT: Int = 13
         const val MAX_ELEM: Int = 14
-        const val TAG: String = "Abonnement"
-
-        private val logger = LogManager.getLogger(DatenAbo::class.java)
 
         fun isInvalidFilter(sender: String, thema: String, title: String, themaTitel: String, irgendwo: String): Boolean =
             sender.isEmpty() && thema.isEmpty() && title.isEmpty() && themaTitel.isEmpty() && irgendwo.isEmpty()
-
-        private fun writeElement(writer: XMLStreamWriter, tagName: String, content: String) {
-            writer.writeCharacters("\t")
-            writer.writeStartElement(tagName)
-            writer.writeCharacters(content)
-            writer.writeEndElement()
-            writer.writeCharacters("\n")
-        }
     }
 }

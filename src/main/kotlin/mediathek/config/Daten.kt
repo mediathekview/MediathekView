@@ -25,6 +25,7 @@ import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.SortedList
 import kotlinx.coroutines.*
 import mediathek.SplashScreenLifecycle
+import mediathek.controller.AboRuleStorage
 import mediathek.controller.BlacklistRuleStorage
 import mediathek.controller.IoXmlLesen
 import mediathek.controller.IoXmlSchreiben
@@ -213,6 +214,7 @@ class Daten private constructor() {
         val configWriter = IoXmlSchreiben()
         configWriter.writeConfigurationFile(StandardLocations.getMediathekXmlFile())
         writeBlacklistRules()
+        writeAboRules()
     }
 
     private fun writeBlacklistRules() {
@@ -220,6 +222,14 @@ class Daten private constructor() {
             BlacklistRuleStorage.write(StandardLocations.getBlacklistRulesFilePath(), listeBlacklist)
         } catch (ex: Exception) {
             logger.error("Failed to write blacklist rules", ex)
+        }
+    }
+
+    private fun writeAboRules() {
+        try {
+            AboRuleStorage.write(StandardLocations.getAboRulesFilePath(), listeAbo)
+        } catch (ex: Exception) {
+            logger.error("Failed to write abo rules", ex)
         }
     }
 

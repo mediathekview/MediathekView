@@ -79,15 +79,6 @@ class IoXmlSchreiben(
         writer.close()
     }
 
-    private fun writeAbos(writer: XMLStreamWriter) {
-        writer.writeCharacters("\n\n")
-        writeNewLine(writer)
-
-        for (datenAbo in Daten.getInstance().listeAbo) {
-            datenAbo.writeToConfig(writer)
-        }
-    }
-
     private fun writeProgramSets(writer: XMLStreamWriter) {
         writer.writeCharacters("\n\n")
         writeNewLine(writer)
@@ -203,8 +194,6 @@ class IoXmlSchreiben(
                     val xmlWriter = outFactory.createXMLStreamWriter(writer)
 
                     writeFileHeader(xmlWriter)
-
-                    writeAbos(xmlWriter)
 
                     writeProgramSets(xmlWriter)
 

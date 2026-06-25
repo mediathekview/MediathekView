@@ -4,6 +4,7 @@ import mediathek.config.Daten
 import mediathek.controller.starter.DownloadRunState
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.*
+import mediathek.daten.abo.DatenAbo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -105,6 +106,32 @@ internal class IoXmlSchreibenTest {
         } finally {
             downloads.clear()
             downloads.addAll(originalDownloads)
+        }
+    }
+
+    @Test
+    fun writeConfigurationFileDoesNotWriteAbosToXml() {
+        val abos = Daten.getInstance().listeAbo
+        val originalAbos = ArrayList(abos)
+        try {
+            abos.clear()
+            abos.add(
+                DatenAbo().apply {
+                    name = "Legacy Writer Abo"
+                    sender = "ARD"
+                    title = "tagesschau"
+                },
+            )
+            val configFile = tempDir.resolve("mediathek.xml")
+
+            IoXmlSchreiben(downloadStoragePath = tempDir.resolve("downloads.json")).writeConfigurationFile(configFile)
+
+            val xml = Files.readString(configFile)
+            assertFalse(xml.contains("<Abonnement>"))
+            assertFalse(xml.contains("Legacy Writer Abo"))
+        } finally {
+            abos.clear()
+            abos.addAll(originalAbos)
         }
     }
 }

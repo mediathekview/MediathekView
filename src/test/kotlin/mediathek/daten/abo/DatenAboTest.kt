@@ -1,15 +1,11 @@
 package mediathek.daten.abo
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.lang.reflect.Proxy
 import java.util.stream.Stream
-import javax.xml.stream.XMLStreamException
-import javax.xml.stream.XMLStreamWriter
 
 class DatenAboTest {
 
@@ -34,15 +30,6 @@ class DatenAboTest {
         abo.mindestDauerMinuten = -1
 
         assertEquals(0, abo.mindestDauerMinuten)
-    }
-
-    @Test
-    fun `write config propagates xml writer failures`() {
-        val writer = failingXmlWriter()
-
-        assertThrows(XMLStreamException::class.java) {
-            DatenAbo().writeToConfig(writer)
-        }
     }
 
     @ParameterizedTest
@@ -72,17 +59,6 @@ class DatenAboTest {
     }
 
     private companion object {
-        fun failingXmlWriter(): XMLStreamWriter =
-            Proxy.newProxyInstance(
-                XMLStreamWriter::class.java.classLoader,
-                arrayOf(XMLStreamWriter::class.java),
-            ) { _, method, _ ->
-                if (method.name == "writeStartElement") {
-                    throw XMLStreamException("write failed")
-                }
-                null
-            } as XMLStreamWriter
-
         @JvmStatic
         fun filterValidationCases(): Stream<Arguments> =
             Stream.of(

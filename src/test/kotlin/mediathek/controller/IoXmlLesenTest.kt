@@ -2,12 +2,15 @@ package mediathek.controller
 
 import mediathek.config.Daten
 import mediathek.daten.*
+import mediathek.daten.abo.DatenAbo
+import mediathek.daten.abo.FilmLengthState
 import mediathek.daten.blacklist.BlacklistRule
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.LocalDate
 
 internal class IoXmlLesenTest {
     @TempDir
@@ -261,6 +264,114 @@ internal class IoXmlLesenTest {
         } finally {
             blacklist.clear()
             blacklist.addAll(originalBlacklist)
+        }
+    }
+
+    @Test
+    fun datenLesenMigratesLegacyAbosToJson() {
+        val abos = Daten.getInstance().listeAbo
+        val originalAbos = ArrayList(abos)
+        try {
+            abos.clear()
+            val configFile = tempDir.resolve("mediathek.xml")
+            val aboRulesFile = tempDir.resolve("abo-rules.json")
+            Files.writeString(
+                configFile,
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <Mediathek>
+                    <Abonnement>
+                        <aktiv>false</aktiv>
+                        <Name>Legacy Abo</Name>
+                        <Sender>ARD</Sender>
+                        <Thema>News</Thema>
+                        <Titel>tagesschau</Titel>
+                        <Thema-Titel>Politics</Thema-Titel>
+                        <Irgendwo>Berlin</Irgendwo>
+                        <Mindestdauer>15</Mindestdauer>
+                        <min_max>false</min_max>
+                        <Zielpfad>/tmp/legacy</Zielpfad>
+                        <letztes_Abo>25.06.2026</letztes_Abo>
+                        <Programmset>Save</Programmset>
+                        <nicht_automatisch_starten>true</nicht_automatisch_starten>
+                    </Abonnement>
+                </Mediathek>
+                """.trimIndent(),
+            )
+
+            assertTrue(
+                IoXmlLesen(
+                    downloadStoragePath = tempDir.resolve("downloads.json"),
+                    blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
+                    aboRuleStoragePath = aboRulesFile,
+                ).datenLesen(configFile),
+            )
+
+            assertTrue(Files.exists(aboRulesFile))
+            val loaded = abos.single()
+            assertEquals("Legacy Abo", loaded.name)
+            assertEquals("ARD", loaded.sender)
+            assertEquals("News", loaded.thema)
+            assertEquals("tagesschau", loaded.title)
+            assertEquals("Politics", loaded.themaTitel)
+            assertEquals("Berlin", loaded.irgendwo)
+            assertEquals(15, loaded.mindestDauerMinuten)
+            assertEquals(FilmLengthState.MAXIMUM, loaded.filmLengthState)
+            assertEquals("/tmp/legacy", loaded.zielpfad)
+            assertEquals(LocalDate.of(2026, 6, 25), loaded.downloadDate)
+            assertEquals("Save", loaded.psetName)
+            assertTrue(loaded.isDoNotStartAutomatically)
+            assertEquals("Legacy Abo", AboRuleStorage.read(aboRulesFile).single().name)
+        } finally {
+            abos.clear()
+            abos.addAll(originalAbos)
+        }
+    }
+
+    @Test
+    fun datenLesenUsesJsonAbosWhenPresent() {
+        val abos = Daten.getInstance().listeAbo
+        val originalAbos = ArrayList(abos)
+        try {
+            abos.clear()
+            val configFile = tempDir.resolve("mediathek.xml")
+            val aboRulesFile = tempDir.resolve("abo-rules.json")
+            Files.writeString(
+                configFile,
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <Mediathek>
+                    <Abonnement>
+                        <Name>Legacy Abo</Name>
+                        <Sender>ARD</Sender>
+                    </Abonnement>
+                </Mediathek>
+                """.trimIndent(),
+            )
+            AboRuleStorage.write(
+                aboRulesFile,
+                listOf(
+                    DatenAbo().apply {
+                        name = "JSON Abo"
+                        sender = "ZDF"
+                    },
+                ),
+            )
+
+            assertTrue(
+                IoXmlLesen(
+                    downloadStoragePath = tempDir.resolve("downloads.json"),
+                    blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
+                    aboRuleStoragePath = aboRulesFile,
+                ).datenLesen(configFile),
+            )
+
+            assertEquals(1, abos.size)
+            assertEquals("JSON Abo", abos.single().name)
+            assertEquals("ZDF", abos.single().sender)
+        } finally {
+            abos.clear()
+            abos.addAll(originalAbos)
         }
     }
 
