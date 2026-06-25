@@ -32,7 +32,7 @@ class FilmLifecycleHostAdapter(
     private val tableProvider: () -> MVFilmTable,
     private val filterConfiguration: FilterConfiguration,
     private val bookmarkStartupReloadCoordinator: BookmarkStartupReloadCoordinator,
-    private val swingFilterDialogProvider: () -> SwingFilterDialog,
+    private val swingFilterDialogProvider: () -> SwingFilterDialog?,
     private val filmToolBarProvider: () -> FilmToolBar,
     private val searchFieldProvider: () -> SearchField,
     private val actionsProvider: () -> FilmUiActions,
@@ -51,7 +51,7 @@ class FilmLifecycleHostAdapter(
 
     override fun bookmarkStartupReloadCoordinator(): BookmarkStartupReloadCoordinator = bookmarkStartupReloadCoordinator
 
-    override fun swingFilterDialog(): SwingFilterDialog = swingFilterDialogProvider()
+    override fun swingFilterDialog(): SwingFilterDialog? = swingFilterDialogProvider()
 
     override fun filmToolBar(): FilmToolBar = filmToolBarProvider()
 

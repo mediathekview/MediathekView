@@ -31,22 +31,41 @@ class MainWindowTab(
     val icon: Supplier<Icon?>? = null,
     private val toggleActionFactory: (() -> Action?)? = null,
     private val onComponentCreated: (JComponent) -> Unit = {},
+    private val onComponentSelected: (JComponent) -> Unit = {},
+    private val initialComponentFactory: (() -> JComponent)? = null,
     private val dispose: (JComponent) -> Unit = {},
 ) {
     private var component: JComponent? = null
+    private var installedComponent: JComponent? = null
 
     fun component(): JComponent =
         component ?: componentFactory().also {
             onComponentCreated(it)
             component = it
+            installedComponent = it
         }
 
+    fun initialComponent(): JComponent =
+        installedComponent ?: initialComponentFactory?.invoke()?.also {
+            onComponentCreated(it)
+            installedComponent = it
+        } ?: component()
+
     fun existingComponent(): JComponent? = component
+
+    fun installedComponent(): JComponent? = installedComponent
+
+    fun materializeComponent(): JComponent = component()
+
+    fun notifyComponentSelected() {
+        component?.let(onComponentSelected)
+    }
 
     fun toggleAction(): Action? = toggleActionFactory?.invoke()
 
     fun dispose() {
         component?.let(dispose)
         component = null
+        installedComponent = null
     }
 }

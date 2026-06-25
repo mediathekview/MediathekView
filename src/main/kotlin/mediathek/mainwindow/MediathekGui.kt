@@ -31,7 +31,6 @@ import mediathek.daten.DatenFilm
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.gui.actions.*
 import mediathek.gui.bookmark.BookmarkDialog
-import mediathek.gui.dialog.DialogBeenden
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen
 import mediathek.gui.filmInformation.FilmInfoDialog
 import mediathek.gui.messages.*
@@ -59,16 +58,13 @@ import java.awt.Container
 import java.awt.event.KeyEvent
 import java.beans.PropertyChangeEvent
 import java.lang.reflect.InvocationTargetException
-import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer
 import java.util.function.Function
 import java.util.function.IntConsumer
 import java.util.function.Supplier
 import javax.swing.*
-import kotlin.system.exitProcess
 
 open class MediathekGui private constructor(
     notificationCenterFactory: Supplier<INotificationCenter>,
@@ -91,7 +87,6 @@ open class MediathekGui private constructor(
     SettingsDialogHost,
     SettingsResetHost,
     FilmListLoadHost {
-    private val applicationQuitInProgress = AtomicBoolean()
     private val disposed = AtomicBoolean()
     private val editBlacklistAction = EditBlacklistAction(this)
     private val toggleBlacklistAction = ToggleBlacklistAction()
@@ -111,14 +106,13 @@ open class MediathekGui private constructor(
     private val jMenuAbos = JMenu()
     private val jMenuAnsicht = JMenu()
     private val tabRegistry = MainWindowTabRegistry(tabbedPane)
-    private lateinit var tabFilme: GuiFilme
-    private lateinit var tabDownloads: GuiDownloads
+    private var mainTabs: MainWindowTabs? = null
     private val menuTabSwitchController: MainWindowMenuTabSwitchController = MainWindowMenuTabSwitchController(
         tabbedPane,
         jMenuFilme,
         jMenuDownload,
-        Supplier { tabFilme },
-        Supplier { tabDownloads },
+        Supplier { tabs().films },
+        Supplier { tabs().downloads },
         automaticMenuTabSwitchingSupported,
     )
     private val loadFilmListAction: LoadFilmListAction
@@ -137,6 +131,7 @@ open class MediathekGui private constructor(
             visible = { ApplicationConfiguration.getInstance().onlineSearchTabVisible },
             toggleActionFactory = { toggleOnlineSearchTabAction },
             onComponentCreated = { configureClosableOptionalTab(it, toggleOnlineSearchTabAction) },
+            initialComponentFactory = { createDeferredTabPlaceholder("Onlinesuche") },
         )
     }
     private val toggleOnlineSearchTabAction: ToggleOnlineSearchTabAction by lazy(LazyThreadSafetyMode.NONE) {
@@ -161,6 +156,8 @@ open class MediathekGui private constructor(
             visible = { ApplicationConfiguration.getInstance().audiothekTabVisible },
             toggleActionFactory = { toggleAudiothekTabAction },
             onComponentCreated = { configureClosableOptionalTab(it, toggleAudiothekTabAction) },
+            onComponentSelected = { (it as AudiothekPanel).loadIfNecessary() },
+            initialComponentFactory = { createDeferredTabPlaceholder("Audiothek") },
             dispose = { (it as AudiothekPanel).disposePanel() },
         )
     }
@@ -169,7 +166,6 @@ open class MediathekGui private constructor(
     }
     private val logDialog = LogDialog(this)
     private val notificationCenterFactory = notificationCenterFactory
-    private val computerShutdown = computerShutdown
     private val darkModeActionPlacement = darkModeActionPlacement
     private val toolbarInstaller = toolbarInstaller
     private val tabPlacementController = tabPlacementController
@@ -177,9 +173,10 @@ open class MediathekGui private constructor(
     private val menuBuilder by lazy(LazyThreadSafetyMode.NONE) { createMenuBuilder() }
     private val scrollBarConfigurator = scrollBarConfigurator
     private val downloadProgressIndicator: DownloadProgressIndicator = requireNotNull(downloadProgressIndicatorFactory.apply(this))
-    private val mainWindowController: MainWindowController
+    private val startupOrchestrator: MainWindowStartupOrchestrator
     private val platformIntegration: MainWindowPlatformIntegration
     private val programUpdateCoordinator = MainWindowProgramUpdateCoordinator(this)
+    private val shutdownRuntime = MainWindowShutdownRuntime()
     private val statusBarController =
         MainWindowStatusBarController(
             contentPane,
@@ -191,7 +188,23 @@ open class MediathekGui private constructor(
     private val filmlistDownloadProgressListener =
         FilmlistProgressPresenter(SwingDispatch, statusBarController::showProgress)
     private val filmlistReloadCoordinator: MainWindowFilmlistReloadCoordinator
-    private var resetSettingsOnQuit = false
+    private val quitController = MainWindowQuitController(
+        this,
+        daten,
+        this,
+        dialogCoordinator,
+        tabRegistry,
+        computerShutdown,
+        ::activeAudiothekDownloadCount,
+        ::pauseAudiothekDownloadsForShutdown,
+        { filmlistReloadCoordinator.close() },
+        { closeProgramUpdateCoordinator() },
+        { closeSystemTray() },
+        { closeNotificationCenter() },
+        shutdownRuntime::shutdownTimerPool,
+        shutdownRuntime::waitForCommonPoolToComplete,
+        ::runOnEventDispatchThreadAndWait,
+    )
     private val mainWindowLifecycle: MainWindowLifecycle
 
     protected constructor(
@@ -291,17 +304,17 @@ open class MediathekGui private constructor(
             { setupSystemTray() },
             systemTrayController
         )
-        mainWindowController = createMainWindowController()
+        startupOrchestrator = createStartupOrchestrator()
     }
 
-    private fun createMainWindowController(): MainWindowController =
-        MainWindowController(
+    private fun createStartupOrchestrator(): MainWindowStartupOrchestrator =
+        MainWindowStartupOrchestrator(
             { initializeMainWindow() },
             { startMainWindowRuntime() }
         )
 
     fun start() {
-        mainWindowController.start()
+        startupOrchestrator.start()
     }
 
     private fun initializeMainWindow() {
@@ -359,8 +372,9 @@ open class MediathekGui private constructor(
         performGeoCountryStartupCheck()
     }
 
+
     private fun setApplicationWindowSizeLater() {
-        SwingUtilities.invokeLater(::setApplicationWindowSize)
+        runOnEventDispatchThread(::setApplicationWindowSize)
     }
 
     private fun setupAutomaticUpdateCheck() {
@@ -383,57 +397,59 @@ open class MediathekGui private constructor(
 
     private fun handleLookAndFeelChange(event: PropertyChangeEvent) {
         if (event.propertyName.equals("lookAndFeel", ignoreCase = true)) {
-            statusBarController.updateComponentTreeUi()
+            runOnEventDispatchThread { statusBarController.updateComponentTreeUi() }
         }
     }
 
     override fun ownerFrame(): JFrame = this
 
     override fun showMainWindow() {
-        isVisible = true
+        runOnEventDispatchThread { isVisible = true }
     }
 
     override fun toggleMainWindowVisibility() {
-        isVisible = !isVisible
-        if (isVisible) {
-            toFront()
-            requestFocusInWindow()
+        runOnEventDispatchThread {
+            isVisible = !isVisible
+            if (isVisible) {
+                toFront()
+                requestFocusInWindow()
+            }
         }
     }
 
     override fun refreshSystemTray() {
-        platformIntegration.initializeSystemTray()
+        runOnEventDispatchThread { platformIntegration.initializeSystemTray() }
     }
 
     override fun repaintMainWindow() {
-        repaint()
+        runOnEventDispatchThread { repaint() }
     }
 
-    private fun getFilmTableRowCount(): Int = tabFilme.tableRowCount
+    private fun getFilmTableRowCount(): Int = tabs().films.tableRowCount
 
-    private fun getCurrentZeitraumFilterValue(): String = tabFilme.currentZeitraumFilterValue
+    private fun getCurrentZeitraumFilterValue(): String = tabs().films.currentZeitraumFilterValue
 
     override val bookmarkDialog: BookmarkDialog?
-        get() = tabFilme.getBookmarkDialog()
+        get() = tabs().films.getBookmarkDialog()
 
     override fun showManageBookmarkWindow() {
-        tabFilme.showManageBookmarkWindow()
+        runOnEventDispatchThread { tabs().films.showManageBookmarkWindow() }
     }
 
     override fun resetFilterDialogPosition() {
-        tabFilme.resetFilterDialogPosition()
+        runOnEventDispatchThread { tabs().films.resetFilterDialogPosition() }
     }
 
     override fun repaintFilmTab() {
-        tabFilme.repaint()
+        runOnEventDispatchThread { tabs().films.repaint() }
     }
 
     override fun stopAllWaitingDownloads() {
-        tabDownloads.stopAllWaitingDownloads()
+        runOnEventDispatchThread { tabs().downloads.stopAllWaitingDownloads() }
     }
 
     private fun setSelectedListItemsCount(count: Long) {
-        selectedListItemsProperty.setSelectedItems(count)
+        runOnEventDispatchThread { selectedListItemsProperty.setSelectedItems(count) }
     }
 
     private fun setupFilmInfoDialog() {
@@ -473,8 +489,8 @@ open class MediathekGui private constructor(
         )
 
         val actionMap = jMenuBar.actionMap
-        actionMap.put(ACTION_MAP_KEY_COPY_HQ_URL, tabFilme.copyHqUrlToClipboardAction())
-        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabFilme.copyNormalUrlToClipboardAction())
+        actionMap.put(ACTION_MAP_KEY_COPY_HQ_URL, tabs().films.copyHqUrlToClipboardAction())
+        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabs().films.copyNormalUrlToClipboardAction())
     }
 
     private fun setupScrollBarWidth() {
@@ -624,8 +640,8 @@ open class MediathekGui private constructor(
             jMenuHilfe,
             menuPolicy,
             tabRegistry,
-            { tabFilme },
-            { tabDownloads },
+            { tabs().films },
+            { tabs().downloads },
             logDialog,
             loadFilmListAction,
             settingsAction,
@@ -646,7 +662,7 @@ open class MediathekGui private constructor(
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleFilmListReadStopEvent(event: FilmListReadStopEvent) {
-        SwingUtilities.invokeLater(::closeFilmlistDownloadProgress)
+        runOnEventDispatchThread(::closeFilmlistDownloadProgress)
     }
 
     private fun closeFilmlistDownloadProgress() {
@@ -657,9 +673,15 @@ open class MediathekGui private constructor(
         statusBarController.showProgress()
 
     override fun setFilmIndexingActionsEnabled(enabled: Boolean) {
-        toggleBlacklistAction.isEnabled = enabled
-        editBlacklistAction.isEnabled = enabled
-        loadFilmListAction.isEnabled = enabled
+        runOnEventDispatchThread {
+            toggleBlacklistAction.isEnabled = enabled
+            editBlacklistAction.isEnabled = enabled
+            loadFilmListAction.isEnabled = enabled
+        }
+    }
+
+    private fun runOnEventDispatchThread(action: () -> Unit) {
+        SwingDispatch.dispatch(Runnable(action))
     }
 
     private fun runOnEventDispatchThreadAndWait(description: String, action: Runnable) {
@@ -684,7 +706,7 @@ open class MediathekGui private constructor(
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleTabVisualSettingsChangedEvent(event: TabVisualSettingsChangedEvent) {
-        SwingUtilities.invokeLater {
+        runOnEventDispatchThread {
             configureTabPlacement()
             configureTabIcons()
         }
@@ -710,12 +732,12 @@ open class MediathekGui private constructor(
             restoreSizeFromConfig()
         }
 
-        SwingUtilities.invokeLater { addComponentListener(WindowLocationConfigSaverListener()) }
+        runOnEventDispatchThread { addComponentListener(WindowLocationConfigSaverListener()) }
     }
 
     @Handler
     private fun handleUpdateStateChanged(event: UpdateStateChangedEvent) {
-        SwingUtilities.invokeLater { programUpdateCoordinator.update(event.isActive) }
+        runOnEventDispatchThread { programUpdateCoordinator.update(event.isActive) }
     }
 
     private fun closeProgramUpdateCoordinator() {
@@ -751,15 +773,24 @@ open class MediathekGui private constructor(
             { shutdownComputer -> quitApplication(shutdownComputer) }
         )
 
+    private fun tabs(): MainWindowTabs =
+        checkNotNull(mainTabs) { "Main window tabs have not been initialized." }
+
+    private data class MainWindowTabs(
+        val films: GuiFilme,
+        val downloads: GuiDownloads,
+    )
+
     private fun initTabs() {
         val mainContentPane: Container = contentPane
         mainContentPane.add(tabbedPane, BorderLayout.CENTER)
 
         SplashScreenLifecycle.update(UIProgressState.LOAD_DOWNLOAD_TAB)
-        tabDownloads = createTabDownloads(daten)
+        val downloadsTab = createTabDownloads(daten)
 
         SplashScreenLifecycle.update(UIProgressState.LOAD_FILM_TAB)
-        tabFilme = createTabFilme(daten)
+        val filmsTab = createTabFilme(daten)
+        mainTabs = MainWindowTabs(filmsTab, downloadsTab)
 
         SplashScreenLifecycle.update(UIProgressState.ADD_TABS_TO_UI)
         registerMainWindowTabs()
@@ -768,6 +799,8 @@ open class MediathekGui private constructor(
         if (ApplicationConfiguration.getInstance().restoreSelectedTab) {
             tabbedPane.restoreSavedTabPosition()
         }
+        tabRegistry.materializeSelectedTab()
+        tabRegistry.installSelectedTabMaterializer()
         tabbedPane.installChangeListener()
 
         SplashScreenLifecycle.update(UIProgressState.CONFIGURE_TABS)
@@ -779,19 +812,19 @@ open class MediathekGui private constructor(
         tabRegistry.register(
             MainWindowTab(
                 GuiFilme.NAME,
-                { tabFilme },
+                { tabs().films },
                 visible = { true },
                 icon = { GetIcon.getProgramIcon("tab-film.png", 32, 32) },
-                dispose = { tabFilme.disposePanel() },
+                dispose = { tabs().films.disposePanel() },
             )
         )
         tabRegistry.register(
             MainWindowTab(
                 GuiDownloads.NAME,
-                { tabDownloads },
+                { tabs().downloads },
                 visible = { true },
                 icon = { GetIcon.getProgramIcon("tab-download.png", 32, 32) },
-                dispose = { tabDownloads.tabelleSpeichern() },
+                dispose = { tabs().downloads.tabelleSpeichern() },
             )
         )
         tabRegistry.register(onlineSearchTab)
@@ -804,8 +837,13 @@ open class MediathekGui private constructor(
         component.putClientProperty("JTabbedPane.tabCloseCallback", IntConsumer { toggleAction.actionPerformed(null) })
     }
 
+    private fun createDeferredTabPlaceholder(tabTitle: String): JComponent =
+        JPanel(BorderLayout()).apply {
+            add(JLabel("$tabTitle wird beim ersten Öffnen geladen.", SwingConstants.CENTER), BorderLayout.CENTER)
+        }
+
     override fun enableUpdateMenuItem(enable: Boolean) {
-        searchProgramUpdateAction.isEnabled = enable
+        runOnEventDispatchThread { searchProgramUpdateAction.isEnabled = enable }
     }
 
     private fun configureTabPlacement() {
@@ -819,19 +857,19 @@ open class MediathekGui private constructor(
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleDownloadStart(event: DownloadStartEvent) {
-        downloadProgressIndicator.downloadStarted()
+        runOnEventDispatchThread { downloadProgressIndicator.downloadStarted() }
     }
 
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleDownloadFinishedEvent(event: DownloadFinishedEvent) {
-        downloadProgressIndicator.downloadFinished()
+        runOnEventDispatchThread { downloadProgressIndicator.downloadFinished() }
     }
 
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleShowSettingsDialogEvent(event: ShowSettingsDialogEvent) {
-        SwingUtilities.invokeLater {
+        runOnEventDispatchThread {
             settingsDialog.isVisible = true
             if (!SystemUtils.IS_OS_LINUX) {
                 settingsDialog.toFront()
@@ -851,13 +889,13 @@ open class MediathekGui private constructor(
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleFilmlistWriteStartEvent(event: FilmListWriteStartEvent) {
-        SwingUtilities.invokeLater { loadFilmListAction.isEnabled = false }
+        runOnEventDispatchThread { loadFilmListAction.isEnabled = false }
     }
 
     @Handler
     @Suppress("UNUSED_PARAMETER")
     private fun handleFilmlistWriteStopEvent(event: FilmListWriteStopEvent) {
-        SwingUtilities.invokeLater { loadFilmListAction.isEnabled = true }
+        runOnEventDispatchThread { loadFilmListAction.isEnabled = true }
     }
 
     private fun initMenus() {
@@ -870,146 +908,26 @@ open class MediathekGui private constructor(
         get() = dialogCoordinator.getSettingsDialog()
 
     override fun requestSettingsResetOnQuit() {
-        resetSettingsOnQuit = true
+        quitController.requestSettingsResetOnQuit()
     }
 
     fun restoreStartupDialogs() {
         dialogCoordinator.restoreStartupDialogs()
     }
 
-    override fun quitApplication(): Boolean = quitApplication(false)
+    override fun quitApplication(): Boolean = quitController.quitApplication()
 
-    private fun quitApplication(shutdownComputer: Boolean): Boolean {
-        if (!applicationQuitInProgress.compareAndSet(false, true)) {
-            return true
-        }
+    private fun quitApplication(shutdownComputer: Boolean): Boolean = quitController.quitApplication(shutdownComputer)
 
-        val confirmation = confirmApplicationQuitOnEdt(shutdownComputer)
-        if (!confirmation.canQuit) {
-            applicationQuitInProgress.set(false)
-            return false
-        }
+    private fun activeAudiothekDownloadCount(): Int =
+        (audiothekTab.existingComponent() as? AudiothekPanel)?.activeDownloadCount() ?: 0
 
-        startApplicationShutdown(confirmation.shutdownComputer)
-        return true
+    private fun pauseAudiothekDownloadsForShutdown() {
+        (audiothekTab.existingComponent() as? AudiothekPanel)?.pauseDownloadsForShutdown()
     }
-
-    private fun confirmApplicationQuitOnEdt(shutdownComputer: Boolean): QuitConfirmation {
-        if (SwingUtilities.isEventDispatchThread()) {
-            return confirmApplicationQuit(shutdownComputer)
-        }
-
-        val confirmation = AtomicReference<QuitConfirmation>()
-        runOnEventDispatchThreadAndWait(
-            "Confirm application quit",
-        ) { confirmation.set(confirmApplicationQuit(shutdownComputer)) }
-        return confirmation.get() ?: QuitConfirmation.declined()
-    }
-
-    private fun confirmApplicationQuit(requestShutdownComputer: Boolean): QuitConfirmation {
-        var shutdownComputer = requestShutdownComputer
-        if (daten.listeDownloads.unfinishedDownloads() > 0) {
-            val dialogBeenden = DialogBeenden(this, this)
-            dialogBeenden.isVisible = true
-            if (!dialogBeenden.applicationCanTerminate) {
-                return QuitConfirmation.declined()
-            }
-            shutdownComputer = dialogBeenden.isShutdownRequested
-        }
-
-        val audiothekPanel = audiothekTab.existingComponent() as? AudiothekPanel
-        val activeAudiothekDownloads = audiothekPanel?.activeDownloadCount() ?: 0
-        if (activeAudiothekDownloads > 0) {
-            val result = JOptionPane.showConfirmDialog(
-                this,
-                if (activeAudiothekDownloads == 1) {
-                    "Es ist noch ein Audiothek-Download aktiv.\nTrotzdem beenden?"
-                } else {
-                    "Es sind noch $activeAudiothekDownloads Audiothek-Downloads aktiv.\nTrotzdem beenden?"
-                },
-                Konstanten.PROGRAMMNAME,
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-            )
-            if (result != JOptionPane.YES_OPTION) {
-                return QuitConfirmation.declined()
-            }
-            audiothekPanel?.pauseDownloadsForShutdown()
-        }
-
-        return QuitConfirmation(true, shutdownComputer)
-    }
-
-    private data class QuitConfirmation(
-        val canQuit: Boolean,
-        val shutdownComputer: Boolean,
-    ) {
-        companion object {
-            fun declined(): QuitConfirmation = QuitConfirmation(canQuit = false, shutdownComputer = false)
-        }
-    }
-
-    private fun startApplicationShutdown(shutdownComputer: Boolean) {
-        Thread.ofPlatform()
-            .name("MediathekView-shutdown")
-            .daemon(false)
-            .start { performApplicationShutdown(shutdownComputer) }
-    }
-
-    private fun performApplicationShutdown(shutdownComputer: Boolean) {
-        createShutdownCoordinator().shutdown(shutdownComputer)
-        exitProcess(0)
-    }
-
-    private fun createShutdownCoordinator(): MainWindowShutdownCoordinator =
-        MainWindowShutdownCoordinator(
-            this,
-            daten,
-            dialogCoordinator,
-            tabRegistry,
-            computerShutdown,
-            resetSettingsOnQuit,
-            { filmlistReloadCoordinator.close() },
-            { closeProgramUpdateCoordinator() },
-            { closeSystemTray() },
-            { closeNotificationCenter() },
-            { shutdownTimerPool() },
-            { waitForCommonPoolToComplete() },
-            ::runOnEventDispatchThreadAndWait
-        )
 
     private fun closeSystemTray() {
         platformIntegration.closeSystemTray()
-    }
-
-    private fun shutdownTimerPool() {
-        logger.trace("Entering shutdownTimerPool()")
-
-        try {
-            val taskList = TimerPool.shutdown(500, TimeUnit.MILLISECONDS)
-            if (CommandLineOptions.isDebugModeEnabled() && taskList.isNotEmpty()) {
-                logger.trace("timerPool taskList was not empty: {}", taskList.toString())
-            }
-        } catch (exception: InterruptedException) {
-            Thread.currentThread().interrupt()
-            logger.error("timerPool shutdown exception", exception)
-        }
-
-        logger.trace("Leaving shutdownTimerPool()")
-    }
-
-    private fun waitForCommonPoolToComplete() {
-        logger.trace("Entering waitForCommonPoolToComplete()")
-
-        val pool = ForkJoinPool.commonPool()
-        if (!pool.awaitQuiescence(COMMON_POOL_SHUTDOWN_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)) {
-            logger.warn(
-                "Common pool did not become quiescent within {} seconds. Continuing shutdown.",
-                COMMON_POOL_SHUTDOWN_TIMEOUT_SECONDS,
-            )
-        }
-
-        logger.trace("Leaving waitForCommonPoolToComplete()")
     }
 
     private companion object {
@@ -1023,7 +941,6 @@ open class MediathekGui private constructor(
         private const val MIN_WINDOW_HEIGHT = 600
         private const val ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL"
         private const val ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL"
-        private const val COMMON_POOL_SHUTDOWN_TIMEOUT_SECONDS = 5
         private val NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY =
             Function<JFrame, DownloadProgressIndicator> { NoDownloadProgressIndicator }
         private val DEFAULT_TOOLBAR_INSTALLER = object : MainWindowToolbarInstaller {

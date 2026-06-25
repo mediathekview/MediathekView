@@ -40,7 +40,7 @@ class FilmLifecycleController(private val host: Host) {
         fun table(): MVFilmTable
         fun filterConfiguration(): FilterConfiguration
         fun bookmarkStartupReloadCoordinator(): BookmarkStartupReloadCoordinator
-        fun swingFilterDialog(): SwingFilterDialog
+        fun swingFilterDialog(): SwingFilterDialog?
         fun filmToolBar(): FilmToolBar
         fun searchField(): SearchField
         fun actions(): FilmUiActions
@@ -61,7 +61,7 @@ class FilmLifecycleController(private val host: Host) {
 
     fun disposePanel() {
         host.saveTableConfiguration()
-        host.swingFilterDialog().dispose()
+        host.swingFilterDialog()?.dispose()
         host.closeFilterSelectionModel()
         host.daten().filmeLaden.removeFilmLoadListener(filmListReloadListener)
         uiScope.cancel()
@@ -79,7 +79,7 @@ class FilmLifecycleController(private val host: Host) {
             }
         }
 
-        host.swingFilterDialog().onTableModelChangeEvent(event)
+        host.swingFilterDialog()?.onTableModelChangeEvent(event)
     }
 
     fun handleDownloadHistoryChangedEvent(@Suppress("UNUSED_PARAMETER") event: DownloadHistoryChangedEvent) {
@@ -133,13 +133,13 @@ class FilmLifecycleController(private val host: Host) {
     private fun createFilmListReloadListener(): ListenerFilmeLaden =
         object : ListenerFilmeLaden() {
             override fun start(@Suppress("UNUSED_PARAMETER") event: ListenerFilmeLadenEvent) {
-                launchOnSwing { host.swingFilterDialog().onFilmDataLoadingStarted() }
+                launchOnSwing { host.swingFilterDialog()?.onFilmDataLoadingStarted() }
                 host.bookmarkStartupReloadCoordinator().onFilmListLoadingStarted()
             }
 
             override fun fertig(@Suppress("UNUSED_PARAMETER") event: ListenerFilmeLadenEvent) {
                 launchOnSwing {
-                    host.swingFilterDialog().onFilmDataLoaded()
+                    host.swingFilterDialog()?.onFilmDataLoaded()
                     if (host.bookmarkStartupReloadCoordinator()
                             .onFilmListLoaded(host.filterConfiguration().isShowBookMarkedOnly)
                     ) {

@@ -27,28 +27,32 @@ class FilmlistProgressPresenter(
     private val uiDispatcher: SwingDispatcher,
     private val progressFactory: Supplier<StatusBarProgressHandle>,
 ) : ListenerFilmeLaden(), AutoCloseable {
+    private val progressLock = Any()
     private var handle: StatusBarProgressHandle? = null
+    private var pendingProgress: ProgressSnapshot? = null
+    private var progressDispatchScheduled = false
 
     override fun start(event: ListenerFilmeLadenEvent) {
         uiDispatcher.dispatch {
             closeCurrent()
+            clearPendingProgress()
             handle = progressFactory.get()
         }
     }
 
     override fun progress(event: ListenerFilmeLadenEvent) {
-        uiDispatcher.dispatch {
-            val current = handle ?: return@dispatch
-            val progressBar = current.progressBar()
-            if (event.max == 0 || event.progress == event.max) {
-                progressBar.isIndeterminate = true
+        val shouldScheduleDispatch = synchronized(progressLock) {
+            pendingProgress = ProgressSnapshot(event.text, event.max, event.progress)
+            if (progressDispatchScheduled) {
+                false
             } else {
-                progressBar.isIndeterminate = false
-                progressBar.minimum = 0
-                progressBar.maximum = event.max
-                progressBar.value = event.progress
+                progressDispatchScheduled = true
+                true
             }
-            current.label().text = event.text
+        }
+
+        if (shouldScheduleDispatch) {
+            uiDispatcher.dispatch(::applyPendingProgress)
         }
     }
 
@@ -60,8 +64,40 @@ class FilmlistProgressPresenter(
         uiDispatcher.dispatch(::closeCurrent)
     }
 
+    private fun applyPendingProgress() {
+        val progress = synchronized(progressLock) {
+            progressDispatchScheduled = false
+            pendingProgress.also { pendingProgress = null }
+        } ?: return
+        val current = handle ?: return
+        val progressBar = current.progressBar()
+        if (progress.max == 0 || progress.progress == progress.max) {
+            progressBar.isIndeterminate = true
+        } else {
+            progressBar.isIndeterminate = false
+            progressBar.minimum = 0
+            progressBar.maximum = progress.max
+            progressBar.value = progress.progress
+        }
+        current.label().text = progress.text
+    }
+
     private fun closeCurrent() {
+        clearPendingProgress()
         handle?.close()
         handle = null
     }
+
+    private fun clearPendingProgress() {
+        synchronized(progressLock) {
+            pendingProgress = null
+            progressDispatchScheduled = false
+        }
+    }
+
+    private data class ProgressSnapshot(
+        val text: String,
+        val max: Int,
+        val progress: Int,
+    )
 }

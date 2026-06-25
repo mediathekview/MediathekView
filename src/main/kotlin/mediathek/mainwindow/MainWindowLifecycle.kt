@@ -24,6 +24,7 @@ import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.tool.MessageBus
 import java.beans.PropertyChangeListener
+import javax.swing.SwingUtilities
 import javax.swing.UIManager
 
 class MainWindowLifecycle(
@@ -48,6 +49,7 @@ class MainWindowLifecycle(
     }
 
     fun registerLookAndFeelListener() {
+        requireEventDispatchThread()
         if (lookAndFeelListenerRegistered) {
             return
         }
@@ -57,6 +59,7 @@ class MainWindowLifecycle(
     }
 
     fun registerFilmlistProgressListener() {
+        requireEventDispatchThread()
         if (filmlistProgressListenerRegistered) {
             return
         }
@@ -66,6 +69,7 @@ class MainWindowLifecycle(
     }
 
     fun registerFilmListListeners() {
+        requireEventDispatchThread()
         if (filmListListenersRegistered) {
             return
         }
@@ -78,8 +82,13 @@ class MainWindowLifecycle(
     }
 
     fun start() {
+        requireEventDispatchThread()
         registerDownloadDialogOwner()
         subscribeToMessageBus()
+    }
+
+    private fun requireEventDispatchThread() {
+        check(SwingUtilities.isEventDispatchThread()) { "MainWindowLifecycle must be accessed on the EDT." }
     }
 
     private fun registerDownloadDialogOwner() {
@@ -104,6 +113,7 @@ class MainWindowLifecycle(
     }
 
     override fun close() {
+        requireEventDispatchThread()
         unsubscribeFromMessageBus()
         unregisterDownloadDialogOwner()
         unregisterFilmListListeners()

@@ -35,10 +35,10 @@ abstract class ToggleOptionalTabAction(
     }
 
     private fun toggleTab() {
-        val tabComponent = tab.existingComponent()
+        val tabComponent = tab.installedComponent()
         val tabIndex = tabComponent?.let(tabbedPane::indexOfComponent) ?: -1
         if (tabIndex == -1) {
-            tabbedPane.insertTab(tab.title, null, tab.component(), null, clampedInsertIndex())
+            tabbedPane.insertTab(tab.title, null, tab.initialComponent(), null, clampedInsertIndex())
             visibilityWriter(true)
         } else {
             tabbedPane.remove(tabIndex)

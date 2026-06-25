@@ -20,13 +20,13 @@ package mediathek.mainwindow
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-class MainWindowController(
+class MainWindowStartupOrchestrator(
     private vararg val startupSteps: Runnable,
 ) {
     private val started = AtomicBoolean()
 
     fun start() {
-        check(started.compareAndSet(false, true)) { "Main window controller has already been started." }
+        check(started.compareAndSet(false, true)) { "Main window startup has already been started." }
         startupSteps.forEach(Runnable::run)
     }
 }

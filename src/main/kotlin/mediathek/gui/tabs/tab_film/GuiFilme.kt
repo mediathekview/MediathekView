@@ -76,7 +76,8 @@ class GuiFilme(
     private val daten: Daten = aDaten
     private val copyHqUrlToClipboardActionValue: CopyUrlToClipboardAction
     private val copyNormalUrlToClipboardActionValue: CopyUrlToClipboardAction
-    private val swingFilterDialog: SwingFilterDialog
+    private var swingFilterDialog: SwingFilterDialog? = null
+    private lateinit var swingFilterDialogFactory: () -> SwingFilterDialog
     private val toggleFilterDialogVisibilityActionValue: ToggleFilterDialogVisibilityAction
     private val reloadTableScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val filterController: FilmFilterController
@@ -123,7 +124,7 @@ class GuiFilme(
     private data class InstalledUi(
         val searchField: SearchField,
         val filmToolBar: FilmToolBar,
-        val swingFilterDialog: SwingFilterDialog,
+        val swingFilterDialogFactory: () -> SwingFilterDialog,
     )
 
     init {
@@ -168,7 +169,7 @@ class GuiFilme(
             cbkShowDescription,
             searchFieldHost,
         )
-        swingFilterDialog = installedUi.swingFilterDialog
+        swingFilterDialogFactory = installedUi.swingFilterDialogFactory
 
         tableInstaller.setupTable()
         tableReloader = createTableReloader(installedUi.searchField, filterComponents.filterController)
@@ -450,15 +451,22 @@ class GuiFilme(
         )
         add(filmToolBar, BorderLayout.NORTH)
 
-        val swingFilterDialog = SwingFilterDialog(
-            ownerFrame,
-            filterComponents.filterSelectionComboBoxModel,
-            filmToolBar.toggleFilterDialogVisibilityButton,
-            filterComponents.filterController,
-        )
+        val swingFilterDialogFactory = {
+            SwingFilterDialog(
+                ownerFrame,
+                filterComponents.filterSelectionComboBoxModel,
+                filmToolBar.toggleFilterDialogVisibilityButton,
+                filterComponents.filterController,
+            )
+        }
 
-        return InstalledUi(searchField, filmToolBar, swingFilterDialog)
+        return InstalledUi(searchField, filmToolBar, swingFilterDialogFactory)
     }
+
+    private fun swingFilterDialog(): SwingFilterDialog =
+        swingFilterDialog ?: swingFilterDialogFactory().also { swingFilterDialog = it }
+
+    private fun existingSwingFilterDialog(): SwingFilterDialog? = swingFilterDialog
 
     private fun createTableReloader(
         searchField: SearchField,
@@ -492,7 +500,7 @@ class GuiFilme(
             { tabelle },
             filterConfiguration,
             bookmarkStartupReloadCoordinator,
-            { installedUi.swingFilterDialog },
+            ::existingSwingFilterDialog,
             { installedUi.filmToolBar },
             { installedUi.searchField },
             { filmActions.filmUiActions },
@@ -506,7 +514,8 @@ class GuiFilme(
     }
 
     private fun toggleFilterDialogVisibility() {
-        swingFilterDialog.isVisible = !swingFilterDialog.isVisible
+        val filterDialog = swingFilterDialog()
+        filterDialog.isVisible = !filterDialog.isVisible
     }
 
     private fun requestTableReload() {
@@ -529,7 +538,7 @@ class GuiFilme(
     fun toggleFilterDialogVisibilityAction(): Action = toggleFilterDialogVisibilityActionValue
 
     fun resetFilterDialogPosition() {
-        swingFilterDialog.setLocation(100, 100)
+        swingFilterDialog().setLocation(100, 100)
     }
 
     fun disposePanel() {

@@ -33,12 +33,30 @@ class MainWindowTabRegistry(
 
     fun installVisibleTabs() {
         tabs.filter { it.visible.asBoolean }
-            .forEach { tabbedPane.addTab(it.title, it.component()) }
+            .forEach { tabbedPane.addTab(it.title, it.initialComponent()) }
+        materializeSelectedTab()
+    }
+
+    fun installSelectedTabMaterializer() {
+        tabbedPane.addChangeListener { materializeSelectedTab() }
+    }
+
+    fun materializeSelectedTab() {
+        val selectedComponent = tabbedPane.selectedComponent ?: return
+        val selectedTab = tabs.firstOrNull { it.installedComponent() === selectedComponent } ?: return
+        val realComponent = selectedTab.materializeComponent()
+        if (realComponent !== selectedComponent) {
+            val selectedIndex = tabbedPane.indexOfComponent(selectedComponent)
+            if (selectedIndex >= 0) {
+                tabbedPane.setComponentAt(selectedIndex, realComponent)
+            }
+        }
+        selectedTab.notifyComponentSelected()
     }
 
     fun configureIcons(showIcons: Boolean) {
         tabs.forEach { tab ->
-            val component = tab.existingComponent() ?: return@forEach
+            val component = tab.installedComponent() ?: return@forEach
             val index = tabbedPane.indexOfComponent(component)
             if (index >= 0) {
                 tabbedPane.setIconAt(index, if (showIcons) tab.icon?.get() else null)

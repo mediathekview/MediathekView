@@ -153,6 +153,8 @@ class AudiothekPanel(
 
     fun activeDownloadCount(): Int = activeDownloadCount.get()
 
+    fun loadIfNecessary() = requestInitialLoad()
+
     fun pauseDownloadsForShutdown() {
         downloadManagerPopup.hidePopupImmediately()
         runBlocking {
@@ -163,13 +165,7 @@ class AudiothekPanel(
     private fun setupListeners() {
         addComponentListener(object : ComponentAdapter() {
             override fun componentShown(event: ComponentEvent?) {
-                if (shouldLoadWhenShown()) {
-                    SwingUtilities.invokeLater {
-                        if (shouldLoadWhenShown()) {
-                            triggerLoad(isManualReload = false)
-                        }
-                    }
-                }
+                SwingUtilities.invokeLater(::requestInitialLoad)
             }
         })
         toolBar.addReloadListener { triggerLoad(isManualReload = true) }
@@ -203,6 +199,12 @@ class AudiothekPanel(
 
     private fun shouldLoadWhenShown(): Boolean {
         return datasetTimestamp == null && !table.hasEntries() && loadJob?.isActive != true
+    }
+
+    private fun requestInitialLoad() {
+        if (shouldLoadWhenShown()) {
+            triggerLoad(isManualReload = false)
+        }
     }
 
     private fun isPersistedOnlineSearchEnabled(): Boolean {
