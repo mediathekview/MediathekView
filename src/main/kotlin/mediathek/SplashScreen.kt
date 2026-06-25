@@ -45,7 +45,7 @@ class SplashScreen : JWindow() {
     }
 
     fun update(state: UIProgressState) {
-        runOnEdt {
+        SwingDispatch.dispatch {
             completedSteps++
             val pct = (100 * (completedSteps / MAXIMUM_STEPS)).roundToInt()
             updateStatus(state.title, pct)
@@ -53,7 +53,7 @@ class SplashScreen : JWindow() {
     }
 
     fun close() {
-        runOnEdt {
+        SwingDispatch.dispatch {
             isVisible = false
             dispose()
             SplashScreenLifecycle.clearIfCurrent(this)
@@ -174,8 +174,6 @@ class SplashScreen : JWindow() {
         )
         pack()
     }
-
-    private fun runOnEdt(block: () -> Unit) = SwingDispatch.dispatch(block)
 
     companion object {
         private val MAXIMUM_STEPS = EnumSet.allOf(UIProgressState::class.java).size.toDouble()

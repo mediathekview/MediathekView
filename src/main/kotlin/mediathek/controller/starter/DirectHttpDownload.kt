@@ -34,6 +34,7 @@ import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.*
+import mediathek.swing.SwingDispatch
 import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
@@ -56,7 +57,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import javax.swing.JFrame
-import javax.swing.SwingUtilities
 import kotlin.time.Duration.Companion.milliseconds
 
 class DirectHttpDownload(
@@ -78,7 +78,6 @@ class DirectHttpDownload(
     private lateinit var finalFile: File
     private lateinit var file: File
     private var retAbbrechen = false
-    private var dialogAbbrechenIsVis = false
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
 
     init {
@@ -451,19 +450,8 @@ class DirectHttpDownload(
             return resolveExistingDownloadForCli()
         }
 
-        dialogAbbrechenIsVis = true
         retAbbrechen = true
-        if (SwingUtilities.isEventDispatchThread()) {
-            retAbbrechen = abbrechen()
-        } else {
-            SwingUtilities.invokeLater {
-                retAbbrechen = abbrechen()
-                dialogAbbrechenIsVis = false
-            }
-        }
-        while (dialogAbbrechenIsVis) {
-            delay(DIALOG_POLL_DELAY_MILLIS.milliseconds)
-        }
+        retAbbrechen = SwingDispatch.call(::abbrechen)
         return retAbbrechen
     }
 
@@ -529,7 +517,7 @@ class DirectHttpDownload(
             logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }
-        SwingUtilities.invokeLater {
+        SwingDispatch.dispatch {
             MeldungDownloadfehler(dialogOwnerProvider(), message, datenDownload).isVisible = true
         }
     }
@@ -548,7 +536,6 @@ class DirectHttpDownload(
         private const val HTTP_RANGE_NOT_SATISFIABLE = 416
         private const val MAX_TRANSIENT_DOWNLOAD_RETRIES = 3
         private const val RETRY_DELAY_MILLIS = 1_000L
-        private const val DIALOG_POLL_DELAY_MILLIS = 100L
         /**
          * Keep the transfer buffer large enough that rate limiting does not depend on sub-millisecond sleep precision.
          * Windows is especially sensitive here when the limiter is driven by many 1 KiB reads per second.

@@ -21,6 +21,7 @@ package mediathek.sqlite
 import mediathek.SplashScreenLifecycle
 import mediathek.config.Konstanten
 import mediathek.controller.history.SeenHistoryStore
+import mediathek.swing.SwingDispatch
 import org.apache.logging.log4j.LogManager
 import org.sqlite.SQLiteErrorCode
 import org.sqlite.SQLiteException
@@ -31,7 +32,6 @@ import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JDialog
 import javax.swing.JOptionPane
-import javax.swing.SwingUtilities
 
 internal object SeenHistoryCorruptionHandler {
     private val logger = LogManager.getLogger()
@@ -95,7 +95,7 @@ internal object SeenHistoryCorruptionHandler {
     }
 
     private fun showMessage(owner: Component?, message: String, messageType: Int) {
-        invokeOnEdt {
+        SwingDispatch.callAndWait("Show seen history corruption warning") {
             val optionPane = JOptionPane(message, messageType)
             val dialog = optionPane.createDialog(owner, Konstanten.PROGRAMMNAME).apply {
                 modalityType = Dialog.ModalityType.APPLICATION_MODAL
@@ -109,28 +109,9 @@ internal object SeenHistoryCorruptionHandler {
     }
 
     private fun hideSplashScreen() {
-        invokeOnEdt {
+        SwingDispatch.callAndWait("Hide splash screen") {
             SplashScreenLifecycle.close()
         }
-    }
-
-    private fun <T> invokeOnEdt(block: () -> T): T {
-        if (SwingUtilities.isEventDispatchThread()) {
-            return block()
-        }
-
-        val resultBox = arrayOfNulls<Any>(1)
-        val failureBox = arrayOfNulls<Throwable>(1)
-        SwingUtilities.invokeAndWait {
-            try {
-                resultBox[0] = block()
-            } catch (ex: Throwable) {
-                failureBox[0] = ex
-            }
-        }
-        failureBox[0]?.let { throw it }
-        @Suppress("UNCHECKED_CAST")
-        return resultBox[0] as T
     }
 
     class CorruptSeenHistoryDatabaseException(

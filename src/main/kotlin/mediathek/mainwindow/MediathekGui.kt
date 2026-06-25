@@ -57,7 +57,6 @@ import java.awt.BorderLayout
 import java.awt.Container
 import java.awt.event.KeyEvent
 import java.beans.PropertyChangeEvent
-import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
@@ -685,18 +684,14 @@ open class MediathekGui private constructor(
     }
 
     private fun runOnEventDispatchThreadAndWait(description: String, action: Runnable) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            action.run()
-            return
-        }
-
         try {
-            SwingUtilities.invokeAndWait(action)
-        } catch (exception: InterruptedException) {
-            Thread.currentThread().interrupt()
-            logger.error("{} interrupted", description, exception)
-        } catch (exception: InvocationTargetException) {
-            throw IllegalStateException("$description failed", exception.cause)
+            SwingDispatch.runAndWait(description, action)
+        } catch (exception: IllegalStateException) {
+            if (exception.cause is InterruptedException) {
+                logger.error("{} interrupted", description, exception)
+            } else {
+                throw exception
+            }
         }
     }
 

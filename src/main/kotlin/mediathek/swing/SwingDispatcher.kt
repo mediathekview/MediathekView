@@ -18,7 +18,11 @@
 
 package mediathek.swing
 
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.lang.reflect.InvocationTargetException
 import javax.swing.SwingUtilities
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 fun interface SwingDispatcher {
     fun dispatch(action: Runnable)
@@ -30,6 +34,56 @@ object SwingDispatch : SwingDispatcher {
             action.run()
         } else {
             SwingUtilities.invokeLater(action)
+        }
+    }
+
+    fun dispatch(action: () -> Unit) {
+        dispatch(Runnable(action))
+    }
+
+    fun runAndWait(description: String = "EDT action", action: Runnable) {
+        callAndWait(description) {
+            action.run()
+        }
+    }
+
+    fun <T> callAndWait(description: String = "EDT action", action: () -> T): T {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return action()
+        }
+
+        var result: Result<T>? = null
+        try {
+            SwingUtilities.invokeAndWait {
+                result = runCatching(action)
+            }
+        } catch (exception: InterruptedException) {
+            Thread.currentThread().interrupt()
+            throw IllegalStateException("$description interrupted", exception)
+        } catch (exception: InvocationTargetException) {
+            throw IllegalStateException("$description failed", exception.cause)
+        }
+
+        return checkNotNull(result) { "$description did not produce a result" }.getOrThrow()
+    }
+
+    suspend fun <T> call(action: () -> T): T {
+        if (SwingUtilities.isEventDispatchThread()) {
+            return action()
+        }
+
+        return suspendCancellableCoroutine { continuation ->
+            SwingUtilities.invokeLater {
+                if (!continuation.isActive) {
+                    return@invokeLater
+                }
+
+                try {
+                    continuation.resume(action())
+                } catch (exception: Throwable) {
+                    continuation.resumeWithException(exception)
+                }
+            }
         }
     }
 }

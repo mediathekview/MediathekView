@@ -34,6 +34,7 @@ import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.*
+import mediathek.swing.SwingDispatch
 import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
@@ -55,7 +56,6 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import javax.swing.JFrame
-import javax.swing.SwingUtilities
 import kotlin.time.Duration.Companion.milliseconds
 
 class CdnAwareDirectDownloadThread(
@@ -77,7 +77,6 @@ class CdnAwareDirectDownloadThread(
     private lateinit var finalFile: File
     private lateinit var file: File
     private var retAbbrechen = false
-    private var dialogAbbrechenIsVis = false
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
     private var previousProgress = 0L
     private var startProgress = -1L
@@ -472,21 +471,8 @@ class CdnAwareDirectDownloadThread(
             return resolveExistingDownloadForCli()
         }
 
-        dialogAbbrechenIsVis = true
         retAbbrechen = true
-        if (SwingUtilities.isEventDispatchThread()) {
-            retAbbrechen = abortOrResume()
-            dialogAbbrechenIsVis = false
-        } else {
-            SwingUtilities.invokeLater {
-                retAbbrechen = abortOrResume()
-                dialogAbbrechenIsVis = false
-            }
-        }
-
-        while (dialogAbbrechenIsVis) {
-            delay(DIALOG_POLL_DELAY_MILLIS.milliseconds)
-        }
+        retAbbrechen = SwingDispatch.call(::abortOrResume)
         return retAbbrechen
     }
 
@@ -554,7 +540,7 @@ class CdnAwareDirectDownloadThread(
             logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }
-        SwingUtilities.invokeLater {
+        SwingDispatch.dispatch {
             MeldungDownloadfehler(dialogOwnerProvider(), message, datenDownload).isVisible = true
         }
     }
@@ -578,7 +564,6 @@ class CdnAwareDirectDownloadThread(
         private const val MAX_CHUNK_RETRIES = 25
         private const val DOWNLOAD_CHUNK_SIZE = 16L * 1024L * 1024L
         private const val DOWNLOAD_BUFFER_SIZE = 256 * 1024
-        private const val DIALOG_POLL_DELAY_MILLIS = 100L
         private const val NANOS_PER_SECOND = 1_000_000_000L
 
         private val dispatcher: Dispatcher = Dispatcher().apply {

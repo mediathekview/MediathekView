@@ -1,7 +1,6 @@
 package mediathek.controller.starter
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import mediathek.config.CommandLineOptions
 import mediathek.config.Daten
@@ -13,6 +12,7 @@ import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.DownloadFinishedEvent
 import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.gui.messages.DownloadStartEvent
+import mediathek.swing.SwingDispatch
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
 import java.io.File
@@ -20,8 +20,6 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 import javax.swing.JFrame
-import javax.swing.SwingUtilities
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Download files via an external program.
@@ -34,7 +32,6 @@ class ExternalProgramDownload(
     private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
     private var file: File
     private var retAbbrechen = false
-    private var dialogAbbrechenIsVis = false
     private var state = HttpDownloadState.DOWNLOAD
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
 
@@ -203,20 +200,8 @@ class ExternalProgramDownload(
             return resolveExistingDownloadForCli()
         }
 
-        dialogAbbrechenIsVis = true
         retAbbrechen = true
-        if (SwingUtilities.isEventDispatchThread()) {
-            retAbbrechen = abbrechen()
-            dialogAbbrechenIsVis = false
-        } else {
-            SwingUtilities.invokeLater {
-                retAbbrechen = abbrechen()
-                dialogAbbrechenIsVis = false
-            }
-        }
-        while (dialogAbbrechenIsVis) {
-            delay(DIALOG_POLL_DELAY_MILLIS.milliseconds)
-        }
+        retAbbrechen = SwingDispatch.call(::abbrechen)
         return retAbbrechen
     }
 
@@ -277,7 +262,7 @@ class ExternalProgramDownload(
             logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
             return
         }
-        SwingUtilities.invokeLater {
+        SwingDispatch.dispatch {
             MeldungDownloadfehler(dialogOwnerProvider(), message, datenDownload).isVisible = true
         }
     }
@@ -304,7 +289,6 @@ class ExternalProgramDownload(
         private const val STAT_ENDE = 99
 
         private const val PROCESS_POLL_DELAY_MILLIS = 2_000L
-        private const val DIALOG_POLL_DELAY_MILLIS = 100L
         private const val EMPTY_FILENAME_JDK25_WORKAROUND =
             "ORACLE/DO/NOT/FUCK/AROUND/WITH/CORE/JAVA/CLASSES/WITHOUT/COMPATIBILITY/SWITCH"
 
