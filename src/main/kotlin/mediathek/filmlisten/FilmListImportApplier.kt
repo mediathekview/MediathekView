@@ -25,7 +25,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Collections
+import java.util.*
 
 internal object FilmListImportApplier {
     fun collectFilmUrls(listeFilme: ListeFilme): Set<String> =

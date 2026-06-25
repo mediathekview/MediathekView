@@ -77,7 +77,6 @@ class DirectHttpDownload(
     private var alreadyDownloaded = 0L
     private lateinit var finalFile: File
     private lateinit var file: File
-    private var retAbbrechen = false
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
 
     init {
@@ -450,9 +449,7 @@ class DirectHttpDownload(
             return resolveExistingDownloadForCli()
         }
 
-        retAbbrechen = true
-        retAbbrechen = SwingDispatch.call(::abbrechen)
-        return retAbbrechen
+        return SwingDispatch.call(::abbrechen)
     }
 
     private fun createDirectory() {

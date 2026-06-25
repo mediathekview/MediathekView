@@ -21,7 +21,6 @@ package mediathek.filmlisten
 import mediathek.config.StandardLocations
 import mediathek.daten.ListeFilme
 import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.reader.FilmListReader
 import mediathek.tool.FilmListUpdateType
 import mediathek.tool.http.MVHttpClient

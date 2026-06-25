@@ -31,7 +31,6 @@ class ExternalProgramDownload(
 
     private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
     private var file: File
-    private var retAbbrechen = false
     private var state = HttpDownloadState.DOWNLOAD
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
 
@@ -200,9 +199,7 @@ class ExternalProgramDownload(
             return resolveExistingDownloadForCli()
         }
 
-        retAbbrechen = true
-        retAbbrechen = SwingDispatch.call(::abbrechen)
-        return retAbbrechen
+        return SwingDispatch.call(::abbrechen)
     }
 
     private fun abbrechen(): Boolean {

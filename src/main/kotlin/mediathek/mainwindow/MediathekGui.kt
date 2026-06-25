@@ -680,7 +680,7 @@ open class MediathekGui private constructor(
     }
 
     private fun runOnEventDispatchThread(action: () -> Unit) {
-        SwingDispatch.dispatch(Runnable(action))
+        SwingDispatch.dispatch(action)
     }
 
     private fun runOnEventDispatchThreadAndWait(description: String, action: Runnable) {

@@ -18,7 +18,10 @@
 
 package mediathek.filmlisten
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import mediathek.config.Daten
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration

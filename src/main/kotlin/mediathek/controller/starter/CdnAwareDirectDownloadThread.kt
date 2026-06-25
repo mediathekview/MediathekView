@@ -76,7 +76,6 @@ class CdnAwareDirectDownloadThread(
     private var alreadyDownloaded = 0L
     private lateinit var finalFile: File
     private lateinit var file: File
-    private var retAbbrechen = false
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
     private var previousProgress = 0L
     private var startProgress = -1L
@@ -471,9 +470,7 @@ class CdnAwareDirectDownloadThread(
             return resolveExistingDownloadForCli()
         }
 
-        retAbbrechen = true
-        retAbbrechen = SwingDispatch.call(::abortOrResume)
-        return retAbbrechen
+        return SwingDispatch.call(::abortOrResume)
     }
 
     private fun createDirectory() {

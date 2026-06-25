@@ -2,9 +2,7 @@ package mediathek.mainwindow
 
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.swing.SwingDispatcher
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import javax.swing.JLabel
 import javax.swing.JProgressBar

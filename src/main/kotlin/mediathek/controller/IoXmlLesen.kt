@@ -22,7 +22,6 @@ import mediathek.config.StandardLocations
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
 import mediathek.daten.DatenPset
-import mediathek.daten.abo.DatenAbo
 import mediathek.tool.ReplaceList
 import org.apache.logging.log4j.LogManager
 import java.io.InputStreamReader
