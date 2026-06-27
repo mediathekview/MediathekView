@@ -63,37 +63,6 @@ class SwingFilterDialog internal constructor(
         private const val STR_RENAME_FILTER = "Filter umbenennen"
         private val logger = LogManager.getLogger()
 
-        internal fun determineFilterSwitchReload(
-            previousState: FilmFilterState,
-            currentState: FilmFilterState,
-            requestReload: Boolean
-        ): FilterSwitchReloadType {
-            if (!requestReload || previousState.currentFilter == currentState.currentFilter) {
-                return FilterSwitchReloadType.NONE
-            }
-
-            return if (previousState.zeitraum != currentState.zeitraum) {
-                FilterSwitchReloadType.ZEITRAUM
-            } else {
-                FilterSwitchReloadType.TABLE
-            }
-        }
-
-        internal fun applyFilterSwitchReload(
-            previousState: FilmFilterState,
-            currentState: FilmFilterState,
-            requestReload: Boolean,
-            reloadRequester: FilmFilterController.ReloadRequester
-        ): FilterSwitchReloadType {
-            val reloadType = determineFilterSwitchReload(previousState, currentState, requestReload)
-            when (reloadType) {
-                FilterSwitchReloadType.ZEITRAUM -> reloadRequester.requestZeitraumReload()
-                FilterSwitchReloadType.TABLE -> reloadRequester.requestTableReload()
-                FilterSwitchReloadType.NONE -> Unit
-            }
-            return reloadType
-        }
-
         internal fun applyFilterStateChangeReload(
             previousState: FilmFilterState,
             currentState: FilmFilterState,
@@ -845,7 +814,7 @@ class SwingFilterDialog internal constructor(
         if (!changed) {
             return
         }
-        applyFilterSwitchReload(previousState, filterController.state(), requestReload, filterSwitchReloadRequester)
+        FilterSwitchReload.apply(previousState, filterController.state(), requestReload, filterSwitchReloadRequester)
     }
 
     private data class CheckBoxBinding(
@@ -862,10 +831,4 @@ private enum class SuppressedEventType {
     SENDER_SELECTION,
     ZEITRAUM,
     FILTER_SELECTION
-}
-
-internal enum class FilterSwitchReloadType {
-    NONE,
-    TABLE,
-    ZEITRAUM
 }

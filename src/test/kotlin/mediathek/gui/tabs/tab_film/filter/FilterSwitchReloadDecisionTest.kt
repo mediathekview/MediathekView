@@ -30,7 +30,7 @@ internal class FilterSwitchReloadDecisionTest {
         val filter = FilterDTO(UUID.randomUUID(), "Filter 1")
         val state = filterState(filter = filter, zeitraum = "∞")
 
-        val result = SwingFilterDialog.determineFilterSwitchReload(state, state, requestReload = false)
+        val result = FilterSwitchReload.determine(state, state, requestReload = false)
 
         assertEquals(FilterSwitchReloadType.NONE, result)
     }
@@ -41,7 +41,7 @@ internal class FilterSwitchReloadDecisionTest {
         val previous = filterState(filter = filter, zeitraum = "∞")
         val current = filterState(filter = filter, zeitraum = "7")
 
-        val result = SwingFilterDialog.determineFilterSwitchReload(previous, current, requestReload = true)
+        val result = FilterSwitchReload.determine(previous, current, requestReload = true)
 
         assertEquals(FilterSwitchReloadType.NONE, result)
     }
@@ -51,7 +51,7 @@ internal class FilterSwitchReloadDecisionTest {
         val previous = filterState(filter = FilterDTO(UUID.randomUUID(), "Filter 1"), zeitraum = "∞")
         val current = filterState(filter = FilterDTO(UUID.randomUUID(), "Filter 2"), zeitraum = "7")
 
-        val result = SwingFilterDialog.determineFilterSwitchReload(previous, current, requestReload = true)
+        val result = FilterSwitchReload.determine(previous, current, requestReload = true)
 
         assertEquals(FilterSwitchReloadType.ZEITRAUM, result)
     }
@@ -61,7 +61,7 @@ internal class FilterSwitchReloadDecisionTest {
         val previous = filterState(filter = FilterDTO(UUID.randomUUID(), "Filter 1"), zeitraum = "∞")
         val current = filterState(filter = FilterDTO(UUID.randomUUID(), "Filter 2"), zeitraum = "∞")
 
-        val result = SwingFilterDialog.determineFilterSwitchReload(previous, current, requestReload = true)
+        val result = FilterSwitchReload.determine(previous, current, requestReload = true)
 
         assertEquals(FilterSwitchReloadType.TABLE, result)
     }
