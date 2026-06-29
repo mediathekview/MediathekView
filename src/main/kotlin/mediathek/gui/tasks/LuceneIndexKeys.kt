@@ -25,6 +25,12 @@ object LuceneIndexKeys {
     const val ID = "id"
 
     /**
+     * Numeric doc-value mirror of [ID] for efficient result collection.
+     * In Abfragen nicht zu verwenden!
+     */
+    const val ID_DOC_VALUE = "id_doc_value"
+
+    /**
      * String-Value
      */
     const val SENDER = "sender"

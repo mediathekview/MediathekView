@@ -33,12 +33,15 @@ import mediathek.tool.SwingErrorDialog
 import org.apache.logging.log4j.LogManager
 import org.apache.lucene.analysis.Analyzer
 import org.apache.lucene.document.DateTools
+import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.index.LeafReaderContext
+import org.apache.lucene.index.NumericDocValues
 import org.apache.lucene.index.Term
 import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser
 import org.apache.lucene.queryparser.flexible.standard.config.PointsConfig
 import org.apache.lucene.search.*
+import org.apache.lucene.util.BytesRef
 import java.awt.Component
 import java.text.DecimalFormat
 import java.time.LocalDateTime
@@ -53,6 +56,7 @@ class LuceneGuiFilmeModelHelper(
     filterController: FilmFilterController,
 ) : GuiModelHelper {
     private val support = GuiModelHelperSupport(searchFieldData, filterController)
+    private val searcherCache = CurrentReaderIndexSearcherCache()
 
     override val filteredTableModel: TableModel
         get() {
@@ -107,16 +111,13 @@ class LuceneGuiFilmeModelHelper(
                     val finalQuery = queryBuilder.build()
                     logger.info("Executing Lucene query: {}", finalQuery)
 
-                    val searcher = IndexSearcher(listeFilme.reader)
-                    val matchingDocIds = searcher.search(finalQuery, NonScoringCollectorManager())
-                    val hitLength = matchingDocIds.size
+                    val searcher = searcherCache.searcherFor(listeFilme.reader)
+                    val matchingFilmNrs = searcher.search(finalQuery, FilmNumberCollectorManager())
+                    val hitLength = matchingFilmNrs.size
                     val matchingFilms = ArrayList<DatenFilm>(hitLength)
 
                     logger.trace("Hit size: {}", hitLength)
-                    val storedFields = searcher.storedFields()
-                    for (docId in matchingDocIds) {
-                        val document = storedFields.document(docId, INTEREST_SET)
-                        val filmNr = document[LuceneIndexKeys.ID].toInt()
+                    for (filmNr in matchingFilmNrs) {
                         val matchingFilm = listeFilme.getFilmByFilmNr(filmNr)
                         if (matchingFilm != null) {
                             matchingFilms.add(matchingFilm)
@@ -161,13 +162,7 @@ class LuceneGuiFilmeModelHelper(
             return
         }
 
-        val booleanQuery = BooleanQuery.Builder()
-        for (sender in selectedSenders) {
-            val term = Term(LuceneIndexKeys.SENDER, sender.lowercase(Locale.ROOT))
-            booleanQuery.add(TermQuery(term), BooleanClause.Occur.SHOULD)
-        }
-
-        queryBuilder.add(booleanQuery.build(), BooleanClause.Occur.FILTER)
+        queryBuilder.add(createSenderFilterQuery(selectedSenders), BooleanClause.Occur.FILTER)
     }
 
     private fun applyConfiguredQueries(queryBuilder: BooleanQuery.Builder, state: FilmFilterState) {
@@ -210,36 +205,6 @@ class LuceneGuiFilmeModelHelper(
         return QueryParser(LuceneIndexKeys.SENDE_DATUM, analyzer).parse(zeitraum)
     }
 
-    private class NonScoringCollector : SimpleCollector() {
-        private val matchingDocIds = ArrayList<Int>()
-        private var docBase = 0
-
-        fun getMatchingDocIds(): List<Int> = matchingDocIds
-
-        override fun doSetNextReader(context: LeafReaderContext) {
-            docBase = context.docBase
-        }
-
-        override fun collect(doc: Int) {
-            matchingDocIds.add(docBase + doc)
-        }
-
-        override fun scoreMode(): ScoreMode = ScoreMode.COMPLETE_NO_SCORES
-    }
-
-    private class NonScoringCollectorManager : CollectorManager<NonScoringCollector, ArrayList<Int>> {
-        override fun newCollector(): NonScoringCollector = NonScoringCollector()
-
-        override fun reduce(collectors: Collection<NonScoringCollector>): ArrayList<Int> {
-            val totalSize = collectors.sumOf { it.getMatchingDocIds().size }
-            val merged = ArrayList<Int>(totalSize)
-            for (collector in collectors) {
-                merged.addAll(collector.getMatchingDocIds())
-            }
-            return merged
-        }
-    }
-
     private companion object {
         private val logger = LogManager.getLogger()
         private val PARSER_CONFIG_MAP: Map<String, PointsConfig> = mapOf(
@@ -248,6 +213,63 @@ class LuceneGuiFilmeModelHelper(
             LuceneIndexKeys.EPISODE to PointsConfig(DecimalFormat(), Int::class.javaObjectType),
             LuceneIndexKeys.SEASON to PointsConfig(DecimalFormat(), Int::class.javaObjectType),
         )
-        private val INTEREST_SET: Set<String> = setOf(LuceneIndexKeys.ID)
+    }
+}
+
+internal fun createSenderFilterQuery(selectedSenders: Collection<String>): Query {
+    require(selectedSenders.isNotEmpty()) { "At least one sender is required" }
+    val senderTerms = selectedSenders.map { BytesRef(it.lowercase(Locale.ROOT)) }
+    return TermInSetQuery(LuceneIndexKeys.SENDER, senderTerms)
+}
+
+internal class CurrentReaderIndexSearcherCache {
+    private var cachedReader: DirectoryReader? = null
+    private var cachedSearcher: IndexSearcher? = null
+
+    @Synchronized
+    fun searcherFor(reader: DirectoryReader?): IndexSearcher {
+        val currentReader = checkNotNull(reader) { "Lucene filtering requires an open DirectoryReader" }
+        val searcher = cachedSearcher
+        if (cachedReader === currentReader && searcher != null) {
+            return searcher
+        }
+
+        return IndexSearcher(currentReader).also {
+            cachedReader = currentReader
+            cachedSearcher = it
+        }
+    }
+}
+
+internal class FilmNumberCollector : SimpleCollector() {
+    private val matchingFilmNrs = ArrayList<Int>()
+    private var filmNumberValues: NumericDocValues? = null
+
+    fun getMatchingFilmNrs(): List<Int> = matchingFilmNrs
+
+    override fun doSetNextReader(context: LeafReaderContext) {
+        filmNumberValues = context.reader().getNumericDocValues(LuceneIndexKeys.ID_DOC_VALUE)
+    }
+
+    override fun collect(doc: Int) {
+        val values = filmNumberValues ?: return
+        if (values.advanceExact(doc)) {
+            matchingFilmNrs.add(values.longValue().toInt())
+        }
+    }
+
+    override fun scoreMode(): ScoreMode = ScoreMode.COMPLETE_NO_SCORES
+}
+
+internal class FilmNumberCollectorManager : CollectorManager<FilmNumberCollector, ArrayList<Int>> {
+    override fun newCollector(): FilmNumberCollector = FilmNumberCollector()
+
+    override fun reduce(collectors: Collection<FilmNumberCollector>): ArrayList<Int> {
+        val totalSize = collectors.sumOf { it.getMatchingFilmNrs().size }
+        val merged = ArrayList<Int>(totalSize)
+        for (collector in collectors) {
+            merged.addAll(collector.getMatchingFilmNrs())
+        }
+        return merged
     }
 }

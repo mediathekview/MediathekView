@@ -62,6 +62,7 @@ class LuceneIndexWorker(
         val doc = Document()
         // store fields for debugging, otherwise they should stay disabled
         doc.add(StringField(LuceneIndexKeys.ID, film.filmNr.toString(), Field.Store.YES))
+        doc.add(NumericDocValuesField(LuceneIndexKeys.ID_DOC_VALUE, film.filmNr.toLong()))
         doc.add(StringField(LuceneIndexKeys.NEW, film.isNew.toString(), Field.Store.NO))
         doc.add(StringField(LuceneIndexKeys.SENDER, film.sender.lowercase(Locale.ROOT), Field.Store.NO))
         doc.add(TextField(LuceneIndexKeys.TITEL, film.title, Field.Store.NO))
