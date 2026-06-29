@@ -85,10 +85,10 @@
         <jna.version>5.19.1</jna.version>
         <jspecify.version>1.0.0</jspecify.version>
         <jsoup.version>1.22.2</jsoup.version>
-        <junit.jupiter.version>6.1.0</junit.jupiter.version>
+        <junit.jupiter.version>6.1.1</junit.jupiter.version>
         <kotlinx-coroutines.version>1.11.0</kotlinx-coroutines.version>
         <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
-        <lucene.version>10.4.0</lucene.version>
+        <lucene.version>10.5.0</lucene.version>
         <flexmark.version>0.64.8</flexmark.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
         <log4j2.version>2.25.4</log4j2.version>
