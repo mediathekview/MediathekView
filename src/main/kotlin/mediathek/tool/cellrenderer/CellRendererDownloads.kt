@@ -2,11 +2,11 @@ package mediathek.tool.cellrenderer
 
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import mediathek.config.MVColor
+import mediathek.controller.DownloadColumns
 import mediathek.controller.starter.DownloadProgressText
 import mediathek.controller.starter.DownloadRunState
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
-import mediathek.daten.DownloadColumns
 import mediathek.swing.IconUtils
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.table.MVTable

@@ -22,6 +22,7 @@ import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.util.SystemInfo
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.gui.actions.ShowAboutAction
 import mediathek.gui.messages.ShowSettingsDialogEvent
@@ -45,10 +46,11 @@ import javax.swing.JTabbedPane
 import javax.swing.JToolBar
 import kotlin.time.Duration.Companion.seconds
 
-class MediathekGuiMac : MediathekGui(
+class MediathekGuiMac(daten: Daten) : MediathekGui(
+    daten,
     ::MacNotificationCenter,
     MacComputerShutdown(),
-    { _ -> MacDownloadProgressIndicator() },
+    { _ -> MacDownloadProgressIndicator(daten.downloads) },
     MacMainWindowToolbarInstaller,
     MainWindowTabPlacementController(false),
     MacMainWindowMenuPolicy,

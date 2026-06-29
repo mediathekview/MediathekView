@@ -18,8 +18,8 @@
 
 package mediathek.gui.tabs.tab_film.context
 
-import mediathek.config.Daten
 import mediathek.daten.DatenFilm
+import mediathek.daten.ProgramSetRepository
 import java.util.*
 import javax.swing.JMenu
 import javax.swing.JMenuItem
@@ -27,6 +27,7 @@ import javax.swing.JPopupMenu
 
 class FilmContextMenuBuilder(
     private val host: TableContextMenuHandler.Host,
+    private val programSets: ProgramSetRepository,
     private val aboAndBlacklistContextActions: FilmAboAndBlacklistContextActions,
     private val filmSpecificContextMenuBuilder: FilmSpecificContextMenuBuilder,
     private val addPrintAndInfoActions: (JPopupMenu, Optional<DatenFilm>) -> Unit,
@@ -75,7 +76,7 @@ class FilmContextMenuBuilder(
     private fun addFilmProgramsMenu(popupMenu: JPopupMenu) {
         val submenu = JMenu("Film mit Set starten")
         popupMenu.add(submenu)
-        val liste = Daten.getInstance().listePset.listeButton
+        val liste = programSets.list.listeButton
         for (pset in liste) {
             if (pset.listeProg.isEmpty() && pset.name.isEmpty()) {
                 continue

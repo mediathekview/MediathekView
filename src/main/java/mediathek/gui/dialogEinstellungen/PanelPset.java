@@ -1,7 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
 import mediathek.config.application.ApplicationConfiguration;
+import mediathek.daten.DatenPset;
+import mediathek.daten.ProgramSetRepository;
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang;
 import net.miginfocom.layout.AC;
@@ -11,12 +12,21 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.BiConsumer;
 
 public class PanelPset extends JPanel {
     private final JFrame parentComponent;
+    private final ProgramSetRepository programSets;
+    private final BiConsumer<DatenPset[], String> programSetExporter;
 
-    public PanelPset(JFrame parentComponent) {
+    public PanelPset(
+            JFrame parentComponent,
+            ProgramSetRepository programSets,
+            BiConsumer<DatenPset[], String> programSetExporter
+    ) {
         this.parentComponent = parentComponent;
+        this.programSets = programSets;
+        this.programSetExporter = programSetExporter;
 
         initComponents();
         var applicationConfiguration = ApplicationConfiguration.getInstance();
@@ -33,11 +43,15 @@ public class PanelPset extends JPanel {
      */
     private void setupPSetVisiblePanels() {
         jPanelPset.removeAll();
-        var daten = Daten.getInstance();
         if (jCheckBoxAlleEinstellungen.isSelected()) {
-            jPanelPset.add(new PanelPsetLang(parentComponent, daten.getListePset()), BorderLayout.CENTER);
+            jPanelPset.add(new PanelPsetLang(
+                    parentComponent,
+                    programSets,
+                    programSets.getList(),
+                    programSetExporter
+            ), BorderLayout.CENTER);
         } else {
-            jPanelPset.add(new PanelPsetKurz(parentComponent, daten.getListePset()), BorderLayout.CENTER);
+            jPanelPset.add(new PanelPsetKurz(parentComponent, programSets.getList()), BorderLayout.CENTER);
         }
         jPanelPset.updateUI();
     }

@@ -18,8 +18,10 @@
 
 package mediathek.mainwindow
 
-import mediathek.config.Daten
+import mediathek.config.DatenConfigurationPersistence
 import mediathek.config.Konstanten
+import mediathek.controller.starter.DownloadServices
+import mediathek.gui.bookmark.BookmarkServices
 import mediathek.gui.dialog.DialogBeenden
 import mediathek.shutdown.ComputerShutdown
 import java.util.concurrent.atomic.AtomicBoolean
@@ -39,7 +41,9 @@ class MainWindowQuitController private constructor(
 
     constructor(
         owner: JFrame,
-        daten: Daten,
+        downloads: DownloadServices,
+        bookmarks: BookmarkServices,
+        configurationPersistence: DatenConfigurationPersistence,
         downloadControlHost: DownloadControlHost,
         dialogCoordinator: MainWindowDialogCoordinator,
         tabRegistry: MainWindowTabRegistry,
@@ -57,7 +61,7 @@ class MainWindowQuitController private constructor(
         quitConfirmer = { requestShutdownComputer ->
             confirmApplicationQuit(
                 owner,
-                daten,
+                downloads,
                 downloadControlHost,
                 activeAudiothekDownloads,
                 pauseAudiothekDownloadsForShutdown,
@@ -71,7 +75,9 @@ class MainWindowQuitController private constructor(
                 .start {
                     MainWindowShutdownCoordinator(
                         owner,
-                        daten,
+                        downloads,
+                        bookmarks,
+                        configurationPersistence,
                         dialogCoordinator,
                         tabRegistry,
                         computerShutdown,
@@ -140,15 +146,15 @@ class MainWindowQuitController private constructor(
     private companion object {
         private fun confirmApplicationQuit(
             owner: JFrame,
-            daten: Daten,
+            downloads: DownloadServices,
             downloadControlHost: DownloadControlHost,
             activeAudiothekDownloads: () -> Int,
             pauseAudiothekDownloadsForShutdown: Runnable,
             requestShutdownComputer: Boolean,
         ): QuitConfirmation {
             var shutdownComputer = requestShutdownComputer
-            if (daten.listeDownloads.unfinishedDownloads() > 0) {
-                val dialogBeenden = DialogBeenden(owner, downloadControlHost)
+            if (downloads.unfinishedDownloads() > 0) {
+                val dialogBeenden = DialogBeenden(owner, downloads, downloadControlHost)
                 dialogBeenden.isVisible = true
                 if (!dialogBeenden.applicationCanTerminate) {
                     return QuitConfirmation.declined()

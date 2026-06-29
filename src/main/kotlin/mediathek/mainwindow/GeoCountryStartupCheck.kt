@@ -20,11 +20,10 @@ package mediathek.mainwindow
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
-import mediathek.gui.messages.BlacklistChangedEvent
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.messages.GeoStateChangedEvent
 import mediathek.tool.GeoLocationDetector
 import mediathek.tool.MessageBus
@@ -36,6 +35,7 @@ import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 class GeoCountryStartupCheck(
+    private val blacklist: BlacklistServices,
     private val owner: JFrame,
     private val onFinished: Runnable = Runnable {},
     private val httpClient: OkHttpClient = MVHttpClient.httpClient,
@@ -102,9 +102,8 @@ class GeoCountryStartupCheck(
 
         if (answer == JOptionPane.YES_OPTION) {
             ApplicationConfiguration.getInstance().geographicLocation = mismatch.detectedCountry
-            Daten.getInstance().listeBlacklist.filterListe()
+            blacklist.applyToFilmListAndNotifyListeners()
             MessageBus.messageBus.publishAsync(GeoStateChangedEvent())
-            MessageBus.messageBus.publishAsync(BlacklistChangedEvent())
         }
     }
 

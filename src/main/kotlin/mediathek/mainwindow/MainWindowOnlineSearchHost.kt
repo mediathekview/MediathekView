@@ -18,16 +18,25 @@
 
 package mediathek.mainwindow
 
+import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DatenFilm
+import mediathek.daten.DatenPset
+import mediathek.daten.ProgramSetRepository
 import mediathek.gui.actions.UrlHyperlinkAction
+import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.tabs.tab_film.startDownloads
 import mediathek.gui.tabs.tab_online_search.OnlineSearchFilmAdapter
 import mediathek.gui.tabs.tab_online_search.OnlineSearchHost
 import mediathek.gui.tabs.tab_online_search.OnlineSearchResult
+import java.util.*
+import java.util.function.BiConsumer
 import java.util.function.Consumer
 import javax.swing.JFrame
 
 class MainWindowOnlineSearchHost(
+    private val programSets: ProgramSetRepository,
+    private val downloads: DownloadServices,
+    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
     private val ownerFrame: JFrame,
     private val updateCurrentFilm: Consumer<DatenFilm?>,
     private val showFilmInfoAction: Runnable,
@@ -43,11 +52,23 @@ class MainWindowOnlineSearchHost(
 
     override fun startDownload(results: List<OnlineSearchResult>) {
         startDownloads(
+            programSets,
+            downloads,
             ownerFrame,
             results.map { it.toDatenFilm() },
             null,
             null,
-        )
+            programSetExporter,
+        ) { film, pSet, requestedResolution ->
+            DialogAddDownload(
+                ownerFrame,
+                programSets,
+                downloads,
+                film,
+                pSet,
+                Optional.ofNullable(requestedResolution),
+            ).isVisible = true
+        }
     }
 
     override fun playResult(result: OnlineSearchResult) {

@@ -18,31 +18,30 @@ internal class DatenTest {
     lateinit var tempDir: Path
 
     private val previousPortableBaseDirectory = StandardLocations.portableBaseDirectory
-    private var previousBackupAlreadyHandled = false
+    private lateinit var daten: Daten
 
     @BeforeEach
     fun setUp() {
-        previousBackupAlreadyHandled = backupAlreadyHandled
+        daten = Daten()
     }
 
     @AfterEach
     fun tearDown() {
         StandardLocations.portableBaseDirectory = previousPortableBaseDirectory
-        backupAlreadyHandled = previousBackupAlreadyHandled
+        daten.downloads.shutdown()
     }
 
     @Test
-    fun allesSpeichernWritesBlacklistRulesToJsonOnly() {
+    fun configurationPersistenceWritesBlacklistRulesToJsonOnly() {
         StandardLocations.portableBaseDirectory = tempDir.toString()
-        val daten = Daten.getInstance()
-        val blacklist = daten.listeBlacklist
+        val blacklist = daten.blacklist.rules
         val originalBlacklist = ArrayList(blacklist)
         try {
             blacklist.clear()
             blacklist.add(BlacklistRule(sender = "ARD", thema = "News", titel = "tagesschau"))
             blacklist.add(BlacklistRule(sender = "ARD", thema = "News", titel = "tagesschau"))
 
-            daten.allesSpeichern()
+            daten.configurationPersistence.saveAll()
 
             val xml = Files.readString(StandardLocations.getMediathekXmlFile())
             assertTrue(Files.exists(StandardLocations.getBlacklistRulesFilePath()))
@@ -61,10 +60,9 @@ internal class DatenTest {
     }
 
     @Test
-    fun allesSpeichernWritesAboRulesToJsonOnly() {
+    fun configurationPersistenceWritesAboRulesToJsonOnly() {
         StandardLocations.portableBaseDirectory = tempDir.toString()
-        val daten = Daten.getInstance()
-        val abos = daten.listeAbo
+        val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
             abos.clear()
@@ -77,7 +75,7 @@ internal class DatenTest {
                 },
             )
 
-            daten.allesSpeichern()
+            daten.configurationPersistence.saveAll()
 
             val xml = Files.readString(StandardLocations.getMediathekXmlFile())
             assertTrue(Files.exists(StandardLocations.getAboRulesFilePath()))
@@ -92,18 +90,6 @@ internal class DatenTest {
         } finally {
             abos.clear()
             abos.addAll(originalAbos)
-        }
-    }
-
-    private var backupAlreadyHandled: Boolean
-        get() = backupAlreadyHandledField.getBoolean(Daten.getInstance())
-        set(value) {
-            backupAlreadyHandledField.setBoolean(Daten.getInstance(), value)
-        }
-
-    private companion object {
-        private val backupAlreadyHandledField = Daten::class.java.getDeclaredField("backupAlreadyHandled").apply {
-            isAccessible = true
         }
     }
 }

@@ -18,19 +18,23 @@
 
 package mediathek.gui.dialog.reset
 
-import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
 import mediathek.daten.ListePsetVorlagen
+import mediathek.daten.ProgramSetRepository
 import mediathek.gui.dialog.DialogHilfe
 import mediathek.mainwindow.SettingsResetHost
 import mediathek.tool.GetFile
 import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.SVGIconUtilities
+import java.util.function.BiConsumer
 import javax.swing.JOptionPane
 
 class ResetSettingsPanel(
     private val host: SettingsResetHost,
+    private val programSets: ProgramSetRepository,
+    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
 ) : ResetSettingsPanelBase() {
     private val parent = host.ownerFrame()
 
@@ -40,16 +44,17 @@ class ResetSettingsPanel(
             DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET)).isVisible = true
         }
         jButtonResetSets.addActionListener {
-            val listePset = Daten.getInstance().listePset
+            val listePset = programSets.list
             val previousPsets = ListePset()
             previousPsets.addAll(listePset)
 
             listePset.clear()
             if (!GuiFunktionenProgramme.addSetVorlagen(
                     parent,
-                    Daten.getInstance(),
+                    programSets,
                     ListePsetVorlagen.getStandarset(parent, true),
                     true,
+                    programSetExporter,
                 )
             ) {
                 listePset.clear()

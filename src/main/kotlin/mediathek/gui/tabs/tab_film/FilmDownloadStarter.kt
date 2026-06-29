@@ -18,36 +18,47 @@
 
 package mediathek.gui.tabs.tab_film
 
-import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.controller.starter.DownloadServices
 import mediathek.controller.starter.DownloadStartActions
 import mediathek.daten.*
 import mediathek.gui.dialog.MissingProgramSetDialog
-import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.dialog.add_download.DialogAddMoreDownload
 import mediathek.gui.messages.DownloadListChangedEvent
+import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.MessageBus
-import java.util.*
+import java.util.function.BiConsumer
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 fun startDownloads(
+    programSets: ProgramSetRepository,
+    downloads: DownloadServices,
     parent: JFrame,
     films: List<DatenFilm>,
     pSet: DatenPset?,
     requestedResolution: FilmResolution.Enum?,
+    programSetExporter: BiConsumer<Array<DatenPset>, String>,
+    showSingleDownloadDialog: (DatenFilm, DatenPset, FilmResolution.Enum?) -> Unit,
 ) {
     if (films.isEmpty()) {
         return
     }
 
-    if (!Daten.getInstance().listePset.hasDownloadProgramSet()) {
-        MissingProgramSetDialog.showMissingDownloadProgramSet(parent)
+    if (!programSets.list.hasDownloadProgramSet()) {
+        MissingProgramSetDialog.showMissingDownloadProgramSet(parent, programSets) { importParent, standardSets ->
+            GuiFunktionenProgramme.addSetVorlagen(
+                importParent,
+                programSets,
+                standardSets,
+                true,
+                programSetExporter,
+            )
+        }
         return
     }
 
-    val effectiveProgramSet = pSet ?: Daten.getInstance().listePset.listeSpeichern.first()
-    val downloadsList = Daten.getInstance().listeDownloads
+    val effectiveProgramSet = pSet ?: programSets.list.listeSpeichern.first()
 
     if (films.size > 1) {
         val dialog = DialogAddMoreDownload(parent, effectiveProgramSet)
@@ -57,7 +68,7 @@ fun startDownloads(
         }
 
         for (film in films) {
-            if (downloadsList.getDownloadUrlFilm(film.urlNormalQuality) != null && !confirmDuplicateDownload(parent)) {
+            if (downloads.findDownloadByFilmUrl(film.urlNormalQuality) != null && !confirmDuplicateDownload(parent)) {
                 continue
             }
 
@@ -73,13 +84,13 @@ fun startDownloads(
                     result.info(),
                     result.subtitle(),
                 )
-                downloadsList.addMitNummer(datenDownload)
+                downloads.addDownload(datenDownload)
                 MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                 if (result.startImmediately()) {
                     DownloadStartActions.start(datenDownload)
                 }
             } else {
-                showSingleDownloadDialog(parent, film, effectiveProgramSet, requestedResolution)
+                showSingleDownloadDialog(film, effectiveProgramSet, requestedResolution)
             }
         }
 
@@ -87,11 +98,11 @@ fun startDownloads(
     }
 
     val film = films.first()
-    if (downloadsList.getDownloadUrlFilm(film.urlNormalQuality) != null && !confirmDuplicateDownload(parent)) {
+    if (downloads.findDownloadByFilmUrl(film.urlNormalQuality) != null && !confirmDuplicateDownload(parent)) {
         return
     }
 
-    showSingleDownloadDialog(parent, film, effectiveProgramSet, requestedResolution)
+    showSingleDownloadDialog(film, effectiveProgramSet, requestedResolution)
 }
 
 private fun confirmDuplicateDownload(parent: JFrame): Boolean {
@@ -101,13 +112,4 @@ private fun confirmDuplicateDownload(parent: JFrame): Boolean {
         Konstanten.PROGRAMMNAME,
         JOptionPane.YES_NO_OPTION,
     ) == JOptionPane.YES_OPTION
-}
-
-private fun showSingleDownloadDialog(
-    parent: JFrame,
-    datenFilm: DatenFilm,
-    pSet: DatenPset,
-    requestedResolution: FilmResolution.Enum?,
-) {
-    DialogAddDownload(parent, datenFilm, pSet, Optional.ofNullable(requestedResolution)).isVisible = true
 }

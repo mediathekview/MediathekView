@@ -21,10 +21,8 @@ package mediathek.gui.dialogEinstellungen.pset;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import mediathek.audiothek.ui.table.TriStateTableRowSorter;
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.application.ApplicationConfiguration;
-import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.*;
 import mediathek.gui.messages.ProgramSetChangedEvent;
@@ -57,13 +55,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class PanelPsetLang extends JPanel {
     private static final ProgramTableFormat PROGRAM_TABLE_FORMAT = new ProgramTableFormat();
 
     private int neuZaehler;
+    private final ProgramSetRepository programSets;
     private final ListePset listePset;
+    private final BiConsumer<DatenPset[], String> programSetExporter;
     private final MVTable tabellePset;
     private final JTable tabelleProgramme;
     private final PsetNameCellRenderer psetNameRenderer = new PsetNameCellRenderer();
@@ -73,8 +74,15 @@ public class PanelPsetLang extends JPanel {
     private ListeProg currentProgramList;
     private boolean stopBeob;
 
-    public PanelPsetLang(JFrame parentComponent, ListePset llistePset) {
+    public PanelPsetLang(
+            JFrame parentComponent,
+            ProgramSetRepository programSets,
+            ListePset llistePset,
+            BiConsumer<DatenPset[], String> programSetExporter
+    ) {
         this.parentComponent = parentComponent;
+        this.programSets = programSets;
+        this.programSetExporter = programSetExporter;
         initComponents();
         tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
@@ -180,9 +188,8 @@ public class PanelPsetLang extends JPanel {
     private void installProgramSetActions() {
         jButtonAbspielen.addActionListener(_ -> {
             if (getPset() instanceof DatenPset pset) {
-                Daten.getInstance().getListePset().activateAsPlayer(pset);
+                programSets.activateAsPlayer(pset);
                 nurtabellePset();
-                notifyProgramSetChanged();
             }
         });
         jCheckBoxSpeichern.addActionListener(_ -> updateSelectedProgramSet(pset -> pset.setSpeichern(jCheckBoxSpeichern.isSelected()), true));
@@ -231,7 +238,7 @@ public class PanelPsetLang extends JPanel {
         tfGruppeZielPfad.getDocument().addDocumentListener(
                 new BeobDoc(tfGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD, false));
 
-        jTextFieldSetName.getDocument().addDocumentListener(new DuplicatePsetNameCheckListener(jTextFieldSetName));
+        jTextFieldSetName.getDocument().addDocumentListener(new DuplicatePsetNameCheckListener(jTextFieldSetName, listePset));
         jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
 
         installTextPopupMenus(
@@ -406,9 +413,8 @@ public class PanelPsetLang extends JPanel {
         final int row = tabellePset.getSelectedRow();
         if (row != -1) {
             var gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
-            listePset.addPset(gruppe.copy());
+            programSets.addProgramSet(gruppe.copy());
             tabellePset();
-            notifyProgramSetChanged();
         } else {
             NoSelectionErrorDialog.show(this);
         }
@@ -446,7 +452,7 @@ public class PanelPsetLang extends JPanel {
         var text = new StringBuilder();
 
         //check only pset which are not label or free line
-        Daten.getInstance().getListePset().stream()
+        listePset.stream()
                 .filter(pset -> !pset.isFreeLine())
                 .filter(pset -> !pset.isLabel())
                 .forEach(datenPset -> {
@@ -700,7 +706,7 @@ public class PanelPsetLang extends JPanel {
      * Send message that changes to the Pset were performed.
      */
     private void notifyProgramSetChanged() {
-        MessageBus.getMessageBus().publish(new ProgramSetChangedEvent());
+        programSets.notifyChanged();
     }
 
     private void fillTextProgramme() {
@@ -773,20 +779,18 @@ public class PanelPsetLang extends JPanel {
     private void setAufAb(boolean auf) {
         var row = tabellePset.getSelectedRow();
         if (row != -1) {
-            var neu = listePset.auf(tabellePset.convertRowIndexToModel(row), auf);
+            var neu = programSets.move(tabellePset.convertRowIndexToModel(row), auf);
             neu = tabellePset.convertRowIndexToView(neu);
             tabellePset.setRowSelectionInterval(neu, neu);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
-            notifyProgramSetChanged();
         } else {
             NoSelectionErrorDialog.show(this);
         }
     }
 
     private void setNeu() {
-        listePset.addPset(new DatenPset("Neu-" + ++neuZaehler));
+        programSets.addProgramSet(new DatenPset("Neu-" + ++neuZaehler));
         tabellePset();
-        notifyProgramSetChanged();
     }
 
     private void setLoeschen() {
@@ -802,13 +806,11 @@ public class PanelPsetLang extends JPanel {
             }
             var ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
-                for (int i = rows.length - 1; i >= 0; --i) {
-                    var delRow = tabellePset.convertRowIndexToModel(rows[i]);
-                    ((NonEditableTableModel) tabellePset.getModel()).removeRow(delRow);
-                    listePset.remove(delRow);
-                }
+                var modelRows = Arrays.stream(rows)
+                        .map(tabellePset::convertRowIndexToModel)
+                        .toArray();
+                programSets.removeAtIndexes(modelRows);
                 tabellePset();
-                notifyProgramSetChanged();
             }
         } else {
             NoSelectionErrorDialog.show(this);
@@ -833,8 +835,7 @@ public class PanelPsetLang extends JPanel {
             if (resultFile != null) {
                 var ziel = resultFile.getAbsolutePath();
 
-                var configWriter = new IoXmlSchreiben();
-                configWriter.exportPset(liste.toArray(new DatenPset[0]), ziel);
+                programSetExporter.accept(liste.toArray(new DatenPset[0]), ziel);
                 JOptionPane.showMessageDialog(this,
                         "Das Programmset wurde erfolgreich exportiert.",
                         Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE);

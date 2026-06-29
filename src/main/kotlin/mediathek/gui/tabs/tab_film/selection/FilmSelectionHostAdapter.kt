@@ -18,18 +18,18 @@
 
 package mediathek.gui.tabs.tab_film.selection
 
-import mediathek.config.Daten
 import mediathek.daten.DatenFilm
+import mediathek.daten.DatenPset
+import mediathek.daten.FilmResolution
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
 import java.util.function.Consumer
-import javax.swing.JFrame
 
 class FilmSelectionHostAdapter(
     private val tableProvider: () -> MVFilmTable,
     private val parentComponent: Component,
-    private val downloadParent: JFrame,
-    private val datenProvider: () -> Daten,
+    private val saveFilmsAction: (List<DatenFilm>, DatenPset?, FilmResolution.Enum?) -> Unit,
+    private val startFilmWithProgramAction: (DatenPset, DatenFilm, String) -> Unit,
     private val showHighQualityOnlyProvider: () -> Boolean,
     private val currentFilm: Consumer<DatenFilm?>,
 ) : FilmSelectionController.Host {
@@ -37,9 +37,13 @@ class FilmSelectionHostAdapter(
 
     override fun parentComponent(): Component = parentComponent
 
-    override fun downloadParent(): JFrame = downloadParent
+    override fun saveFilms(films: List<DatenFilm>, pSet: DatenPset?, requestedResolution: FilmResolution.Enum?) {
+        saveFilmsAction(films, pSet, requestedResolution)
+    }
 
-    override fun daten(): Daten = datenProvider()
+    override fun startFilmWithProgram(pSet: DatenPset, film: DatenFilm, resolution: String) {
+        startFilmWithProgramAction(pSet, film, resolution)
+    }
 
     override fun showHighQualityOnly(): Boolean = showHighQualityOnlyProvider()
 

@@ -22,7 +22,6 @@ import mediathek.audiothek.model.AudioEntry
 import mediathek.config.Konstanten
 import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
-import mediathek.gui.dialog.DialogFilmBeschreibung
 import mediathek.tool.CopyToClipboardAction
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.SwingErrorDialog
@@ -41,6 +40,7 @@ import javax.swing.*
 
 class FilmDescriptionPanel(
     private val ownerProvider: () -> JFrame? = { null },
+    private val editFilmDescription: ((DatenFilm) -> Unit)? = null,
 ) : JPanel() {
     private val scrollPane1 = JScrollPane()
     private val popupMenu = JPopupMenu()
@@ -91,7 +91,7 @@ class FilmDescriptionPanel(
     private fun createPopupMenu() {
         editDescriptionItem.addActionListener {
             val film = currentFilm ?: return@addActionListener
-            DialogFilmBeschreibung(ownerProvider(), film).isVisible = true
+            editFilmDescription?.invoke(film)
         }
         popupMenu.add(editDescriptionItem)
         popupMenu.add(editSeparator)
@@ -191,9 +191,10 @@ class FilmDescriptionPanel(
     private fun updatePopupMenuState() {
         val hasFilm = currentFilm != null
         val hasEntry = hasFilm || currentAudioEntry != null
-        editDescriptionItem.isVisible = hasFilm
-        editSeparator.isVisible = hasFilm
-        editDescriptionItem.isEnabled = hasFilm
+        val canEditFilm = hasFilm && editFilmDescription != null
+        editDescriptionItem.isVisible = canEditFilm
+        editSeparator.isVisible = canEditFilm
+        editDescriptionItem.isEnabled = canEditFilm
         copyDescriptionItem.isEnabled = hasEntry
         copyBaseInfoItem.isEnabled = hasEntry
     }

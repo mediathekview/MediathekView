@@ -18,8 +18,8 @@
 
 package mediathek.mainwindow
 
-import mediathek.config.Daten
-import mediathek.daten.DownloadInfos
+import mediathek.controller.starter.DownloadProgressSnapshot
+import mediathek.controller.starter.DownloadServices
 import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent
 import mediathek.tool.FileSize
 import mediathek.tool.MessageBus
@@ -27,7 +27,9 @@ import net.engio.mbassy.listener.Handler
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
 
-class DownloadInformationLabel : JLabel() {
+class DownloadInformationLabel(
+    private val downloads: DownloadServices,
+) : JLabel() {
     init {
         MessageBus.messageBus.subscribe(this)
     }
@@ -39,18 +41,18 @@ class DownloadInformationLabel : JLabel() {
     }
 
     private fun setInfoFilme() {
-        text = buildDownloadInfoText(Daten.getInstance())
+        text = buildDownloadInfoText(downloads)
     }
 
-    private fun buildDownloadInfoText(daten: Daten): String {
-        val info = daten.listeDownloads.starts
+    private fun buildDownloadInfoText(downloads: DownloadServices): String {
+        val info = downloads.startInfo()
         return buildString {
             append(totalDownloadsText(info.total_num_download_list_entries))
 
             if (info.hasValues()) {
                 append(": ")
                 append(activeDownloadsText(info.running))
-                appendRunningDetails(info.running, daten.downloadInfos)
+                appendRunningDetails(info.running, downloads.progressSnapshot())
                 append(waitingDownloadsText(info.initialized))
                 appendFinishedDownloads(info.finished)
                 appendFailedDownloads(info.error)
@@ -58,13 +60,13 @@ class DownloadInformationLabel : JLabel() {
         }
     }
 
-    private fun StringBuilder.appendRunningDetails(runningDownloads: Int, downloadInfos: DownloadInfos) {
+    private fun StringBuilder.appendRunningDetails(runningDownloads: Int, progress: DownloadProgressSnapshot) {
         if (runningDownloads <= 0) {
             return
         }
 
-        appendBandwidth(downloadInfos.bandwidthStr)
-        appendDownloadSize(downloadInfos.byteAktDownloads, downloadInfos.byteAlleDownloads)
+        appendBandwidth(progress.bandwidthText)
+        appendDownloadSize(progress.activeBytes, progress.totalBytes)
     }
 
     private fun StringBuilder.appendBandwidth(bandwidth: String) {

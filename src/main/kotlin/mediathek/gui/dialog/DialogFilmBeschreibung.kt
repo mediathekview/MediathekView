@@ -20,11 +20,11 @@ package mediathek.gui.dialog
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
+import mediathek.daten.ProgramSetRepository
 import mediathek.tool.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
@@ -35,6 +35,7 @@ import javax.swing.JOptionPane
 
 class DialogFilmBeschreibung(
     private val parent: JFrame?,
+    private val programSets: ProgramSetRepository,
     private val datenFilm: DatenFilm,
 ) : DialogFilmBeschreibungBase(parent) {
     private val dialogScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -118,11 +119,11 @@ class DialogFilmBeschreibung(
             applicationConfiguration.useFilenameReplaceTable,
             applicationConfiguration.onlyAsciiFilenames,
         )
-        val programSets = Daten.getInstance().listePset.listeSpeichern
-        val targetPath = if (programSets.isEmpty()) {
+        val saveProgramSets = programSets.list.listeSpeichern
+        val targetPath = if (saveProgramSets.isEmpty()) {
             StandardLocations.getStandardDownloadPath()
         } else {
-            programSets[0].zielPfad.ifEmpty { StandardLocations.getStandardDownloadPath() }
+            saveProgramSets[0].zielPfad.ifEmpty { StandardLocations.getStandardDownloadPath() }
         }
         val fileName = if (title.isEmpty()) {
             "${datenFilm.sender.replace(" ", "-")}$SUFFIX"

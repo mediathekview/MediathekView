@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.daten
+package mediathek.controller.starter
 
-import mediathek.controller.starter.DownloadProgressText
-import mediathek.controller.starter.DownloadRunState
+import mediathek.controller.DownloadColumns
+import mediathek.daten.DatenDownload
 import mediathek.tool.models.TModelDownload
 
 internal object DownloadTableModelUpdater {

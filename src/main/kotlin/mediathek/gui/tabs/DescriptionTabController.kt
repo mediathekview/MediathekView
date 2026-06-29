@@ -31,9 +31,10 @@ import javax.swing.JTable
 
 class DescriptionTabController(
     ownerProvider: () -> JFrame? = { null },
+    editFilmDescription: ((DatenFilm) -> Unit)? = null,
 ) {
     val tabbedPane: JTabbedPane = JTabbedPane()
-    private val descriptionPanel = FilmDescriptionPanel(ownerProvider)
+    private val descriptionPanel = FilmDescriptionPanel(ownerProvider, editFilmDescription)
 
     fun install(
         table: JTable,

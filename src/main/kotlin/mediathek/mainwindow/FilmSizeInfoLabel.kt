@@ -20,7 +20,7 @@ package mediathek.mainwindow
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
+import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
@@ -28,7 +28,10 @@ import java.util.function.IntSupplier
 import javax.swing.JLabel
 import kotlin.time.Duration.Companion.seconds
 
-class FilmSizeInfoLabel(private val filmTableRowCount: IntSupplier) : JLabel() {
+class FilmSizeInfoLabel(
+    private val filmCatalog: FilmCatalog,
+    private val filmTableRowCount: IntSupplier,
+) : JLabel() {
     private var oldGesamt = 0
     private var oldRowCount = 0
     private var uiScope: CoroutineScope? = null
@@ -92,7 +95,7 @@ class FilmSizeInfoLabel(private val filmTableRowCount: IntSupplier) : JLabel() {
     }
 
     private fun updateValues() {
-        val gesamt = Daten.getInstance().listeFilme.size
+        val gesamt = filmCatalog.allFilms.size
         val rowCount = filmTableRowCount.asInt
 
         if (gesamt == oldGesamt && rowCount == oldRowCount) {

@@ -18,6 +18,7 @@
 
 package mediathek.x11
 
+import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.mainwindow.MainWindowDarkModeActionPlacement
 import mediathek.mainwindow.MediathekGui
@@ -44,7 +45,8 @@ private fun createNotificationCenter(): INotificationCenter {
     return GenericNotificationCenter()
 }
 
-class MediathekGuiX11 : MediathekGui(
+class MediathekGuiX11(daten: Daten) : MediathekGui(
+    daten,
     ::createNotificationCenter,
     X11ComputerShutdown(),
     MainWindowDarkModeActionPlacement.MENU_BAR,

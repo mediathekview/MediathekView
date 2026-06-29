@@ -20,11 +20,8 @@ package mediathek.update
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.daten.DatenPset
-import mediathek.daten.ListePset
-import mediathek.daten.ListePsetVorlagen
+import mediathek.daten.*
 import mediathek.gui.dialog.DialogNewSet
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.GuiFunktionenProgramme
@@ -32,6 +29,7 @@ import mediathek.tool.NetUtils
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.function.BiConsumer
 import javax.swing.JFrame
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
@@ -41,6 +39,8 @@ import kotlin.time.Duration.Companion.seconds
  */
 class ProgramUpdateCheck(
     private val host: ProgramUpdateHost,
+    private val programSets: ProgramSetRepository,
+    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
 ) : AutoCloseable {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(job + Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
@@ -138,7 +138,7 @@ class ProgramUpdateCheck(
     }
 
     private fun confirmStandardPsetUpdate(parent: JFrame, standardPset: ListePset): Boolean {
-        val dialogNewSet = DialogNewSet(parent)
+        val dialogNewSet = DialogNewSet(parent, programSets)
         dialogNewSet.isVisible = true
         if (dialogNewSet.ok) {
             return true
@@ -153,13 +153,13 @@ class ProgramUpdateCheck(
     }
 
     private fun installStandardPset(parent: JFrame, standardPset: ListePset) {
-        ListePset.progMusterErsetzen(parent, standardPset)
+        ProgramSetTemplateResolver.replaceTemplates(parent, standardPset)
 
         updateInstalledStandardPsetVersion(standardPset)
         copySaveSettingsFromExistingSet(standardPset)
         prepareImportedSetsForExistingConfiguration(standardPset)
 
-        GuiFunktionenProgramme.addSetVorlagen(parent, Daten.getInstance(), standardPset, true)
+        GuiFunktionenProgramme.addSetVorlagen(parent, programSets, standardPset, true, programSetExporter)
         logger.info("Setanlegen: OK")
         logger.info("==========================================")
     }
@@ -210,7 +210,7 @@ class ProgramUpdateCheck(
         }
     }
 
-    private fun currentPsets(): ListePset = Daten.getInstance().listePset
+    private fun currentPsets(): ListePset = programSets.list
 
     override fun close() {
         job.cancel()

@@ -22,12 +22,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import mediathek.config.CommandLineOptions
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.ByteRateLimiter
 import mediathek.controller.MVBandwidthCountingInputStream
 import mediathek.controller.ThrottlingInputStream
+import mediathek.controller.history.AboHistoryController
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadSource
@@ -59,6 +59,7 @@ import javax.swing.JFrame
 import kotlin.time.Duration.Companion.milliseconds
 
 class CdnAwareDirectDownloadThread(
+    private val aboHistoryControllerProvider: () -> AboHistoryController,
     private val datenDownload: DatenDownload,
     private val dialogOwnerProvider: () -> JFrame? = { null },
 ) : Thread("CDN AWARE DIRECT DL THREAD_${datenDownload.title}") {
@@ -390,7 +391,11 @@ class CdnAwareDirectDownloadThread(
 
         if (
             datenDownload.quelle == DownloadSource.BUTTON ||
-            DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(Daten.getInstance(), datenDownload, start)
+            DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
+                aboHistoryControllerProvider(),
+                datenDownload,
+                start,
+            )
         ) {
             start.markFinished()
         } else {

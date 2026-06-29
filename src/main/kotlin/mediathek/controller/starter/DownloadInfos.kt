@@ -1,14 +1,16 @@
-package mediathek.daten
+package mediathek.controller.starter
 
-import mediathek.config.Daten
-import mediathek.controller.starter.StartStatus
+import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadSource
 import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent
 import mediathek.gui.messages.TimerEvent
 import mediathek.tool.BandwidthFormatter
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
 
-class DownloadInfos {
+class DownloadInfos(
+    private val unfinishedDownloadsProvider: (DownloadSource) -> List<DatenDownload>,
+) {
     /**
      * Bandbreite: bytes per second
      */
@@ -57,9 +59,7 @@ class DownloadInfos {
     private fun makeDownloadInfos() {
         resetData()
 
-        val activeDownloads = Daten.getInstance()
-            .listeDownloads
-            .getListOfStartsNotFinished(DownloadSource.ALL)
+        val activeDownloads = unfinishedDownloadsProvider(DownloadSource.ALL)
 
         for (download in activeDownloads) {
             anzDownloadsRun++

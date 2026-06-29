@@ -18,11 +18,11 @@
 
 package mediathek.gui.tabs.tab_film.context
 
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
+import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistRule
-import mediathek.gui.actions.CreateNewAboAction
+import mediathek.daten.blacklist.BlacklistServices
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.util.*
@@ -32,10 +32,11 @@ import javax.swing.JPopupMenu
 
 class FilmAboAndBlacklistContextActions(
     private val host: TableContextMenuHandler.Host,
-    private val daten: Daten,
+    private val abos: AboServices,
+    private val blacklistServices: BlacklistServices,
+    private val createAbo: (DatenFilm, Boolean) -> Unit,
     private val selectedFilmAtPopupPoint: () -> DatenFilm?,
 ) {
-    private val createAboAction = CreateNewAboAction(daten.listeAbo) { host.ownerFrame() }
     private val aboWithoutTitleAction = AboActionListener(false)
     private val aboWithTitleAction = AboActionListener(true)
 
@@ -59,7 +60,7 @@ class FilmAboAndBlacklistContextActions(
         val itemBlackSender = JMenuItem("Sender in die Blacklist einfügen")
         itemBlackSender.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
-                daten.listeBlacklist.add(BlacklistRule(film.sender, "", "", ""))
+                blacklistServices.rules.add(BlacklistRule(film.sender, "", "", ""))
             }
         }
         submenuBlack.add(itemBlackSender)
@@ -67,7 +68,7 @@ class FilmAboAndBlacklistContextActions(
         val itemBlackThema = JMenuItem("Thema in die Blacklist einfügen")
         itemBlackThema.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
-                daten.listeBlacklist.add(BlacklistRule("", film.thema, "", ""))
+                blacklistServices.rules.add(BlacklistRule("", film.thema, "", ""))
             }
         }
         submenuBlack.add(itemBlackThema)
@@ -75,7 +76,7 @@ class FilmAboAndBlacklistContextActions(
         val itemAddTitleToBlacklist = JMenuItem("Titel in die Blacklist einfügen")
         itemAddTitleToBlacklist.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
-                daten.listeBlacklist.add(BlacklistRule("", "", film.title, ""))
+                blacklistServices.rules.add(BlacklistRule("", "", film.title, ""))
             }
         }
         submenuBlack.add(itemAddTitleToBlacklist)
@@ -83,7 +84,7 @@ class FilmAboAndBlacklistContextActions(
         val itemBlackSenderThema = JMenuItem("Sender und Thema in die Blacklist einfügen")
         itemBlackSenderThema.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
-                daten.listeBlacklist.add(BlacklistRule(film.sender, film.thema, "", ""))
+                blacklistServices.rules.add(BlacklistRule(film.sender, film.thema, "", ""))
             }
         }
         submenuBlack.add(itemBlackSenderThema)
@@ -94,7 +95,7 @@ class FilmAboAndBlacklistContextActions(
         itemAbo: JMenuItem,
         itemAboMitTitel: JMenuItem,
     ) {
-        if (daten.listeAbo.getAboForFilmFast(film, false) != null) {
+        if (abos.findAboForFilm(film, false) != null) {
             itemAbo.isEnabled = false
             itemAboMitTitel.isEnabled = false
         } else {
@@ -110,16 +111,11 @@ class FilmAboAndBlacklistContextActions(
             selectedFilmAtPopupPoint()?.let { film ->
                 host.setSelectionUpdatesSuspended(true)
                 try {
-                    val datenAbo = daten.listeAbo.getAboForFilmFast(film, false)
+                    val datenAbo = abos.findAboForFilm(film, false)
                     if (datenAbo != null) {
-                        daten.listeAbo.aboLoeschen(datenAbo)
+                        abos.list.aboLoeschen(datenAbo)
                     } else {
-                        createAboAction.createAbo(
-                            aboname = film.thema,
-                            filmSender = film.sender,
-                            filmThema = film.thema,
-                            filmTitel = if (mitTitel) film.title else "",
-                        )
+                        createAbo(film, mitTitel)
                     }
                 } finally {
                     host.setSelectionUpdatesSuspended(false)

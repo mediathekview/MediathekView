@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.daten
+package mediathek.controller
 
 import kotlinx.serialization.Serializable
+import mediathek.daten.DownloadSource
+import mediathek.daten.DownloadType
+import mediathek.daten.FilmResolution
 
 @Serializable
 internal data class DownloadConfig(

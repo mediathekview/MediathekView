@@ -1,5 +1,7 @@
 package mediathek.daten
 
+import mediathek.controller.DownloadConfig
+import mediathek.controller.starter.*
 import mediathek.tool.FileSize
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

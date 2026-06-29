@@ -20,10 +20,10 @@ package mediathek.gui.tabs.tab_film.lifecycle
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.application.FilterConfiguration
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
+import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.messages.*
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
 import mediathek.gui.tabs.tab_film.FilmToolBar
@@ -36,7 +36,7 @@ import mediathek.tool.table.MVFilmTable
 class FilmLifecycleController(private val host: Host) {
     interface Host {
         fun messageBusSubscriber(): Any
-        fun daten(): Daten
+        fun filmListLoader(): FilmeLaden
         fun table(): MVFilmTable
         fun filterConfiguration(): FilterConfiguration
         fun bookmarkStartupReloadCoordinator(): BookmarkStartupReloadCoordinator
@@ -55,7 +55,7 @@ class FilmLifecycleController(private val host: Host) {
 
     fun start() {
         MessageBus.messageBus.subscribe(host.messageBusSubscriber())
-        host.daten().filmeLaden.addFilmLoadListener(filmListReloadListener)
+        host.filmListLoader().addFilmLoadListener(filmListReloadListener)
         launchOnSwing { host.requestTableReload() }
     }
 
@@ -63,7 +63,7 @@ class FilmLifecycleController(private val host: Host) {
         host.saveTableConfiguration()
         host.swingFilterDialog()?.dispose()
         host.closeFilterSelectionModel()
-        host.daten().filmeLaden.removeFilmLoadListener(filmListReloadListener)
+        host.filmListLoader().removeFilmLoadListener(filmListReloadListener)
         uiScope.cancel()
     }
 

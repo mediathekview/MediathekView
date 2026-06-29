@@ -24,14 +24,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import kotlinx.coroutines.withContext
-import mediathek.config.Daten
 import mediathek.config.StandardLocations.getFilmlistFilePathString
+import mediathek.daten.ListeFilme
 import mediathek.filmlisten.writer.FilmListWriter
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 import kotlin.math.roundToInt
 
 class FilmlistWriterWorker(
+    private val films: ListeFilme,
     private val progLabel: JLabel,
     private val progressBar: JProgressBar,
 ) {
@@ -51,7 +52,7 @@ class FilmlistWriterWorker(
 
             withContext(Dispatchers.IO) {
                 var lastProgress = 0
-                FilmListWriter(false).writeFilmList(getFilmlistFilePathString(), Daten.getInstance().listeFilme) { prog ->
+                FilmListWriter(false).writeFilmList(getFilmlistFilePathString(), films) { prog ->
                     val progress = (100.0 * prog).roundToInt().coerceIn(0, 100)
                     if (progress >= lastProgress + 1) {
                         lastProgress = progress

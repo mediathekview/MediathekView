@@ -1,11 +1,14 @@
 package mediathek.controller
 
 import mediathek.config.Daten
+import mediathek.config.DatenXmlConfigDataFactory
 import mediathek.controller.starter.DownloadRunState
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.*
 import mediathek.daten.abo.DatenAbo
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
@@ -14,6 +17,17 @@ import java.nio.file.Path
 internal class IoXmlSchreibenTest {
     @TempDir
     lateinit var tempDir: Path
+    private lateinit var daten: Daten
+
+    @BeforeEach
+    fun setUp() {
+        daten = Daten()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        daten.downloads.shutdown()
+    }
 
     @Test
     fun exportPsetWritesProgramSetAndProgramsInImportableFormat() {
@@ -41,7 +55,7 @@ internal class IoXmlSchreibenTest {
         }
         val exportFile = tempDir.resolve("pset.xml")
 
-        IoXmlSchreiben().exportPset(arrayOf(pset), exportFile.toString())
+        IoXmlSchreiben(DatenXmlConfigDataFactory.from(daten)).exportPset(arrayOf(pset), exportFile.toString())
 
         assertTrue(Files.exists(exportFile))
         val imported = ListePsetVorlagen.importPsetFile(exportFile.toString(), false)
@@ -71,11 +85,9 @@ internal class IoXmlSchreibenTest {
 
     @Test
     fun writeConfigurationFileWritesDownloadsToJsonOnly() {
-        val downloads = Daten.getInstance().listeDownloads
-        val originalDownloads = ArrayList(downloads)
-        try {
-            downloads.clear()
-            downloads.add(
+        daten.downloads.clearQueuedDownloads()
+        daten.downloads.addLoadedDownloads(
+            listOf(
                 DatenDownload().apply {
                     title = "Queued Download"
                     downloadUrl = "https://example.invalid/download.mp4"
@@ -84,8 +96,6 @@ internal class IoXmlSchreibenTest {
                     quelle = DownloadSource.DOWNLOAD
                     init()
                 },
-            )
-            downloads.add(
                 DatenDownload().apply {
                     title = "Finished Download"
                     art = DownloadType.DIRECT
@@ -93,25 +103,23 @@ internal class IoXmlSchreibenTest {
                     runtime.runState = DownloadRunState().also { it.status = StartStatus.FINISHED }
                     init()
                 },
-            )
-            val configFile = tempDir.resolve("mediathek.xml")
-            val storageFile = tempDir.resolve("downloads.json")
+            ),
+        )
+        val configFile = tempDir.resolve("mediathek.xml")
+        val storageFile = tempDir.resolve("downloads.json")
 
-            IoXmlSchreiben(downloadStoragePath = storageFile).writeConfigurationFile(configFile)
+        IoXmlSchreiben(DatenXmlConfigDataFactory.from(daten), downloadStoragePath = storageFile)
+            .writeConfigurationFile(configFile)
 
-            val xml = Files.readString(configFile)
-            assertTrue(Files.exists(storageFile))
-            assertFalse(xml.contains("<Downlad>"))
-            assertEquals(listOf("Queued Download"), DownloadStorage.read(storageFile).map(DatenDownload::title))
-        } finally {
-            downloads.clear()
-            downloads.addAll(originalDownloads)
-        }
+        val xml = Files.readString(configFile)
+        assertTrue(Files.exists(storageFile))
+        assertFalse(xml.contains("<Downlad>"))
+        assertEquals(listOf("Queued Download"), DownloadStorage.read(storageFile).map(DatenDownload::title))
     }
 
     @Test
     fun writeConfigurationFileDoesNotWriteAbosToXml() {
-        val abos = Daten.getInstance().listeAbo
+        val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
             abos.clear()
@@ -124,7 +132,10 @@ internal class IoXmlSchreibenTest {
             )
             val configFile = tempDir.resolve("mediathek.xml")
 
-            IoXmlSchreiben(downloadStoragePath = tempDir.resolve("downloads.json")).writeConfigurationFile(configFile)
+            IoXmlSchreiben(
+                DatenXmlConfigDataFactory.from(daten),
+                downloadStoragePath = tempDir.resolve("downloads.json"),
+            ).writeConfigurationFile(configFile)
 
             val xml = Files.readString(configFile)
             assertFalse(xml.contains("<Abonnement>"))

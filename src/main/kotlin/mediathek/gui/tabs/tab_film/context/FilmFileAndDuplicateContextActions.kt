@@ -19,10 +19,11 @@
 package mediathek.gui.tabs.tab_film.context
 
 import kotlinx.coroutines.*
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenFilm
+import mediathek.daten.blacklist.BlacklistServices
+import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.writer.FilmListWriter
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog
 import mediathek.tool.FileDialogs
@@ -34,7 +35,8 @@ import javax.swing.JPopupMenu
 
 class FilmFileAndDuplicateContextActions(
     private val host: TableContextMenuHandler.Host,
-    private val daten: Daten,
+    private val filmCatalog: FilmCatalog,
+    private val blacklistServices: BlacklistServices,
     private val uiScope: CoroutineScope,
 ) {
     fun addActions(popupMenu: JPopupMenu, film: DatenFilm) {
@@ -86,7 +88,7 @@ class FilmFileAndDuplicateContextActions(
     private fun createDuplicateDetailsMenuItem(film: DatenFilm): JMenuItem =
         JMenuItem("Zusammengehörige Filme anzeigen...").apply {
             addActionListener {
-                DuplicateFilmDetailsDialog(host.ownerFrame(), film).isVisible = true
+                DuplicateFilmDetailsDialog(host.ownerFrame(), filmCatalog, film).isVisible = true
             }
         }
 
@@ -115,8 +117,7 @@ class FilmFileAndDuplicateContextActions(
         }
 
     private suspend fun performDuplicateRemoval(film: DatenFilm) {
-        val completeFilmList = daten.listeFilme
-        val filteredFilmList = daten.listeBlacklist
+        val completeFilmList = filmCatalog.allFilms
         val duplicateList = findDuplicates(completeFilmList.snapshot(), film)
         val filmCount = duplicateList.size
 
@@ -157,7 +158,7 @@ class FilmFileAndDuplicateContextActions(
 
         writeResult
             .onSuccess {
-                filteredFilmList.filterListAndNotifyListeners()
+                blacklistServices.applyToFilmListAndNotifyListeners()
                 JOptionPane.showMessageDialog(
                     host.ownerFrame(),
                     "Duplikate wurden entfernt.",

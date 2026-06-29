@@ -21,7 +21,6 @@ package mediathek.controller
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.daten.DatenDownload
-import mediathek.daten.DownloadConfig
 import mediathek.tool.FileUtils
 import java.nio.file.Path
 import kotlin.io.path.*

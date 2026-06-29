@@ -1,7 +1,7 @@
 package mediathek.gui.actions
 
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.messages.BlacklistChangedEvent
 import mediathek.swing.IconUtils
 import mediathek.tool.MessageBus
@@ -13,7 +13,9 @@ import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.SwingUtilities
 
-class ToggleBlacklistAction : AbstractAction() {
+class ToggleBlacklistAction(
+    private val blacklist: BlacklistServices,
+) : AbstractAction() {
     private val enabledIcon: FontIcon = IconUtils.windowBarSpecificToolbarIcon(MaterialDesignL.LIST_STATUS)
     private val disabledIcon: FontIcon = IconUtils.windowBarSpecificToolbarIcon(MaterialDesignL.LIST_STATUS, Color.RED)
     private var blacklistIsOn: Boolean = ApplicationConfiguration.getInstance().isBlacklistEnabled
@@ -48,7 +50,6 @@ class ToggleBlacklistAction : AbstractAction() {
         blacklistIsOn = !blacklistIsOn
 
         ApplicationConfiguration.getInstance().isBlacklistEnabled = blacklistIsOn
-        Daten.getInstance().listeBlacklist.filterListe()
-        MessageBus.messageBus.publishAsync(BlacklistChangedEvent())
+        blacklist.applyToFilmListAndNotifyListeners()
     }
 }

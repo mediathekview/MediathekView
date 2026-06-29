@@ -22,11 +22,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.swing.Swing
 import kotlinx.coroutines.withContext
-import mediathek.config.Daten
+import mediathek.daten.blacklist.BlacklistServices
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 
 class BlacklistFilterWorker(
+    private val blacklist: BlacklistServices,
     private val progLabel: JLabel,
     private val progressBar: JProgressBar,
 ) : Runnable {
@@ -41,7 +42,7 @@ class BlacklistFilterWorker(
         }
 
         withContext(Dispatchers.IO) {
-            Daten.getInstance().listeBlacklist.filterListe()
+            blacklist.applyToFilmList()
         }
     }
 }

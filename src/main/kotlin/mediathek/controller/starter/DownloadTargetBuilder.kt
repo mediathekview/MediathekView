@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.daten
+package mediathek.controller.starter
 
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.daten.DatenFilm
+import mediathek.daten.DatenPset
+import mediathek.daten.FilmResolution
 import mediathek.daten.abo.DatenAbo
 import mediathek.tool.FileSpecifier
 import mediathek.tool.FileUtils

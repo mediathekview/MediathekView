@@ -18,7 +18,7 @@
 
 package mediathek.gui.tabs.tab_downloads
 
-import mediathek.daten.DownloadStartInfo
+import mediathek.controller.starter.DownloadStartInfo
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
 

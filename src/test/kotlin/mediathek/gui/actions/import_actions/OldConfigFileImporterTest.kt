@@ -2,8 +2,10 @@ package mediathek.gui.actions.import_actions
 
 import mediathek.config.Daten
 import mediathek.daten.abo.FilmLengthState
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
@@ -13,10 +15,21 @@ import java.time.LocalDate
 internal class OldConfigFileImporterTest {
     @TempDir
     lateinit var tempDir: Path
+    private lateinit var daten: Daten
+
+    @BeforeEach
+    fun setUp() {
+        daten = Daten()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        daten.downloads.shutdown()
+    }
 
     @Test
     fun importAboBlacklistStillImportsLegacyXmlAbos() {
-        val abos = Daten.getInstance().listeAbo
+        val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
             abos.clear()
@@ -45,7 +58,7 @@ internal class OldConfigFileImporterTest {
                 """.trimIndent(),
             )
 
-            val result = OldConfigFileImporter().importAboBlacklist(
+            val result = OldConfigFileImporter(daten.abos, daten.blacklist).importAboBlacklist(
                 configFile.toString(),
                 importAbo = true,
                 importBlacklist = false,

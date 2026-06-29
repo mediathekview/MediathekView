@@ -18,10 +18,10 @@
 
 package mediathek.tool
 
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
+import mediathek.daten.ProgramSetRepository
 import mediathek.gui.dialogEinstellungen.DialogImportPset
 import mediathek.tool.http.MVHttpClient
 import okhttp3.Request
@@ -33,6 +33,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import java.util.function.BiConsumer
 import java.util.zip.ZipFile
 import javax.swing.JFrame
 import javax.swing.JOptionPane
@@ -166,7 +167,13 @@ object GuiFunktionenProgramme {
         runCatching { findExecutableOnPath(name).toString() }.getOrDefault(fallbackPath)
 
     @JvmStatic
-    fun addSetVorlagen(parent: JFrame?, daten: Daten, pSet: ListePset?, setVersion: Boolean): Boolean {
+    fun addSetVorlagen(
+        parent: JFrame?,
+        programSets: ProgramSetRepository,
+        pSet: ListePset?,
+        setVersion: Boolean,
+        programSetExporter: BiConsumer<Array<DatenPset>, String>,
+    ): Boolean {
         if (pSet == null) {
             JOptionPane.showMessageDialog(
                 null,
@@ -192,10 +199,10 @@ object GuiFunktionenProgramme {
         }
         parent?.cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
 
-        val dialog = DialogImportPset(parent, true, daten, pSet)
+        val dialog = DialogImportPset(parent, true, programSets, pSet, programSetExporter)
         dialog.isVisible = true
         if (dialog.ok) {
-            if (Daten.getInstance().listePset.addPset(pSet)) {
+            if (programSets.addProgramSets(pSet)) {
                 if (setVersion) {
                     ApplicationConfiguration.getInstance().standardProgramSetVersion = pSet.version
                 }

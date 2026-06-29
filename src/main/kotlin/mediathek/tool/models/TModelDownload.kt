@@ -1,7 +1,7 @@
 package mediathek.tool.models
 
+import mediathek.controller.DownloadColumns
 import mediathek.daten.DatenDownload
-import mediathek.daten.DownloadColumns
 import mediathek.tool.DownloadSizeState
 import mediathek.tool.datum.Datum
 import javax.swing.table.DefaultTableModel

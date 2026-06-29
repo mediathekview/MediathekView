@@ -20,10 +20,10 @@ package mediathek.gui.tasks
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.StandardLocations.getFilmIndexPath
 import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
+import mediathek.filmlisten.FilmCatalog
 import mediathek.mainwindow.FilmListLoadHost
 import mediathek.tool.FileUtils.deletePathRecursively
 import mediathek.tool.LuceneDefaultAnalyzer
@@ -50,6 +50,7 @@ import javax.swing.JProgressBar
 import kotlin.coroutines.cancellation.CancellationException
 
 class LuceneIndexWorker(
+    private val filmCatalog: FilmCatalog,
     private val progLabel: JLabel,
     private val progressBar: JProgressBar,
     private val host: FilmListLoadHost? = null,
@@ -202,10 +203,9 @@ class LuceneIndexWorker(
     }
 
     private suspend fun rebuildIndex() = withContext(Dispatchers.IO) {
-        val daten = Daten.getInstance()
-        val indexList = daten.listeFilmeNachBlackList as IndexedFilmList
+        val indexList = filmCatalog.filteredFilms as IndexedFilmList
         // Search all films, then map hits through the current blacklist-filtered list at query time.
-        val sourceFilms = daten.listeFilme.snapshot()
+        val sourceFilms = filmCatalog.allFilms.snapshot()
         val indexingThreads = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
         val indexingTuning = calculateIndexingTuning(indexingThreads)
         createIndexWriter(indexList).use { writer ->

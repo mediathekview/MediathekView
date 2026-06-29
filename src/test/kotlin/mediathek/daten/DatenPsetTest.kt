@@ -1,14 +1,27 @@
 package mediathek.daten
 
 import mediathek.config.Daten
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class DatenPsetTest {
+    private lateinit var daten: Daten
+
+    @BeforeEach
+    fun setUp() {
+        daten = Daten()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        daten.downloads.shutdown()
+    }
 
     @Test
     fun parsingAbspielenFlagDoesNotResetGlobalPlaybackSelection() {
-        val listePset = Daten.getInstance().listePset
+        val listePset = daten.programSets.list
         val originalState = ListePset()
         originalState.addAll(listePset)
         try {

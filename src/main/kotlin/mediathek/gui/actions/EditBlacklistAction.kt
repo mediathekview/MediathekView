@@ -1,6 +1,8 @@
 package mediathek.gui.actions
 
-import mediathek.config.Daten
+import mediathek.daten.blacklist.BlacklistServices
+import mediathek.filmlisten.FilmCatalog
+import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.dialog.StandardCloseDialog
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
 import mediathek.swing.IconUtils
@@ -17,6 +19,9 @@ import javax.swing.KeyStroke
 
 class EditBlacklistAction(
     private val parent: JFrame,
+    private val blacklist: BlacklistServices,
+    private val filmCatalog: FilmCatalog,
+    private val filmListLoader: FilmeLaden,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Blacklist bearbeiten...")
@@ -33,7 +38,7 @@ class EditBlacklistAction(
     override fun actionPerformed(event: ActionEvent?) {
         object : StandardCloseDialog(parent, "Blacklist", true) {
             override fun createContentPanel(): JComponent =
-                PanelBlacklist(Daten.getInstance(), null)
+                PanelBlacklist(blacklist, filmCatalog, filmListLoader, null)
         }.apply {
             centerOnScreen()
             isVisible = true

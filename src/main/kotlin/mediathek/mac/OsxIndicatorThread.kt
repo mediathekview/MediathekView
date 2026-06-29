@@ -18,6 +18,7 @@
 
 package mediathek.mac
 
+import mediathek.controller.starter.DownloadServices
 import mediathek.tool.threads.IndicatorThread
 import java.awt.Taskbar
 import kotlin.time.Duration.Companion.milliseconds
@@ -26,7 +27,7 @@ import kotlin.time.toJavaDuration
 /**
  * This thread will update the percentage drawn on the dock icon on OS X.
  */
-internal class OsxIndicatorThread : IndicatorThread() {
+internal class OsxIndicatorThread(downloads: DownloadServices) : IndicatorThread(downloads) {
     private var oldPercentage = 0
     override fun run() {
         val taskbar = Taskbar.getTaskbar()

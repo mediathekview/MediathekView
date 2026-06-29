@@ -23,10 +23,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import mediathek.audiothek.model.AudioEntry
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
+import mediathek.gui.messages.history.FilmSeenStateChangedEvent
 import mediathek.sqlite.SeenHistoryCorruptionHandler
 import mediathek.tool.MessageBus
 import mediathek.tool.sql.SqlDatabaseConfig
@@ -65,7 +65,7 @@ class SeenHistoryController : AutoCloseable {
         }
         if (success) {
             SeenHistoryCache.remove(film.urlNormalQuality)
-            Daten.getInstance().listeBookmarkList.updateSeen(false, film)
+            sendFilmSeenStateChanged(false, listOf(film))
             sendChangeMessage()
         }
     }
@@ -85,7 +85,7 @@ class SeenHistoryController : AutoCloseable {
         }
         if (success) {
             SeenHistoryCache.remove(urls)
-            Daten.getInstance().listeBookmarkList.updateSeen(false, list)
+            sendFilmSeenStateChanged(false, list)
             sendChangeMessage()
         }
     }
@@ -106,7 +106,7 @@ class SeenHistoryController : AutoCloseable {
         }
         if (inserted) {
             SeenHistoryCache.add(entry.url)
-            Daten.getInstance().listeBookmarkList.updateSeen(true, film)
+            sendFilmSeenStateChanged(true, listOf(film))
             sendChangeMessage()
         }
     }
@@ -126,7 +126,7 @@ class SeenHistoryController : AutoCloseable {
         }
         if (success) {
             SeenHistoryCache.add(candidates.asSequence().map(SeenHistoryEntry::url).toList())
-            Daten.getInstance().listeBookmarkList.updateSeen(true, list)
+            sendFilmSeenStateChanged(true, list)
             sendChangeMessage()
         }
     }
@@ -263,6 +263,12 @@ class SeenHistoryController : AutoCloseable {
 
     private fun sendChangeMessage() {
         MessageBus.messageBus.publishAsync(DownloadHistoryChangedEvent())
+    }
+
+    private fun sendFilmSeenStateChanged(seen: Boolean, films: List<DatenFilm>) {
+        if (films.isNotEmpty()) {
+            MessageBus.messageBus.publishAsync(FilmSeenStateChangedEvent(seen, films))
+        }
     }
 
     companion object {

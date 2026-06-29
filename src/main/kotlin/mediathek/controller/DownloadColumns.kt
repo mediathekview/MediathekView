@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.daten
+package mediathek.controller
 
 import mediathek.tool.table.ColumnVisibilityStore
 

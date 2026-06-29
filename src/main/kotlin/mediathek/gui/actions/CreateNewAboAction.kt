@@ -19,11 +19,12 @@
 package mediathek.gui.actions
 
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.daten.ListeAbo
+import mediathek.daten.ProgramSetRepository
+import mediathek.daten.abo.AboServices
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
+import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.dialog.DialogEditAbo
-import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.tool.FilenameUtils
 import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
@@ -32,8 +33,11 @@ import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 class CreateNewAboAction(
-    private val listeAbo: ListeAbo,
+    private val programSets: ProgramSetRepository,
+    private val filmCatalog: FilmCatalog,
+    private val abos: AboServices,
     private val parentProvider: () -> JFrame,
+    private val ensureAboProgramSetAvailable: (JFrame) -> Boolean,
 ) : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {
         createAbo()
@@ -48,17 +52,17 @@ class CreateNewAboAction(
         val parent = parentProvider()
         val datenAbo = createAboDraft(aboname, filmSender, filmThema, filmTitel)
 
-        if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(parent)) {
+        if (!ensureAboProgramSetAvailable(parent)) {
             return
         }
 
-        val dialogEditAbo = DialogEditAbo(parent, datenAbo, false)
+        val dialogEditAbo = DialogEditAbo(parent, programSets, filmCatalog, abos, datenAbo, false)
         dialogEditAbo.isVisible = true
         if (!dialogEditAbo.successful()) {
             return
         }
 
-        if (listeAbo.existsAlready(datenAbo)) {
+        if (abos.list.existsAlready(datenAbo)) {
             JOptionPane.showMessageDialog(
                 parent,
                 "Abo existiert bereits",
@@ -69,7 +73,7 @@ class CreateNewAboAction(
         }
 
         ApplicationConfiguration.getInstance().defaultAboMinimumDurationMinutes = datenAbo.mindestDauerMinuten
-        listeAbo.addAbo(datenAbo)
+        abos.list.addAbo(datenAbo)
     }
 
     private fun createAboDraft(

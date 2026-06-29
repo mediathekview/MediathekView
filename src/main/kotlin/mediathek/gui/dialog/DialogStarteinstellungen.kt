@@ -2,10 +2,12 @@ package mediathek.gui.dialog
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.daten.ListePset
+import mediathek.daten.DatenPset
 import mediathek.daten.ListePsetVorlagen
+import mediathek.daten.ProgramSetRepository
+import mediathek.daten.ProgramSetTemplateResolver
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz
@@ -16,10 +18,16 @@ import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import java.util.function.BiConsumer
 import javax.swing.JFrame
 import kotlin.coroutines.CoroutineContext
 
-class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(parent), CoroutineScope {
+class DialogStarteinstellungen(
+    parent: JFrame?,
+    private val programSets: ProgramSetRepository,
+    private val blacklist: BlacklistServices,
+    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
+) : DialogStarteinstellungenBase(parent), CoroutineScope {
     private enum class State { START, PFAD, PSET, FERTIG }
 
     enum class ResultCode {
@@ -81,7 +89,7 @@ class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(p
     }
 
     private fun createLayout() {
-        val panelEinstellungenGeo = PanelEinstellungenGeo(parentComponent, true)
+        val panelEinstellungenGeo = PanelEinstellungenGeo(parentComponent, true, blacklist)
         jPanelExtra.layout = BorderLayout()
         jPanelExtra.add(panelEinstellungenGeo, BorderLayout.CENTER)
     }
@@ -152,15 +160,14 @@ class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(p
     private suspend fun statusPset() {
         jButtonAnpassen.isVisible = false
         jCheckBoxAlleEinstellungen.isVisible = true
-        if (Daten.getInstance().listePset.isEmpty()) {
+        if (programSets.list.isEmpty()) {
             addStandardSetWithNavigationLock(parentComponent)
         }
 
-        val daten = Daten.getInstance()
         if (jCheckBoxAlleEinstellungen.isSelected) {
-            setMainContent(PanelPsetLang(parentComponent, daten.listePset))
+            setMainContent(PanelPsetLang(parentComponent, programSets, programSets.list, programSetExporter))
         } else {
-            setMainContent(PanelPsetKurz(parentComponent, daten.listePset))
+            setMainContent(PanelPsetKurz(parentComponent, programSets.list))
         }
         status = State.FERTIG
         setContinueButtonText()
@@ -171,8 +178,8 @@ class DialogStarteinstellungen(parent: JFrame?) : DialogStarteinstellungenBase(p
             ListePsetVorlagen.getStandarset(parent, false)
         } ?: return false
 
-        ListePset.progMusterErsetzen(parent, pSet)
-        Daten.getInstance().listePset.addPset(pSet)
+        ProgramSetTemplateResolver.replaceTemplates(parent, pSet)
+        programSets.addProgramSets(pSet)
         ApplicationConfiguration.getInstance().standardProgramSetVersion = pSet.version
         return true
     }

@@ -18,13 +18,13 @@
 
 package mediathek.mainwindow
 
-import mediathek.config.Daten
+import mediathek.controller.starter.DownloadServices
 import mediathek.tool.FilmListUpdateType
 import mediathek.update.AutomaticFilmlistUpdate
 import javax.swing.Action
 
 class MainWindowFilmlistReloadCoordinator(
-    private val daten: Daten,
+    private val downloads: DownloadServices,
     private val loadFilmListAction: Action,
     private val loadFilmListAutomatically: Runnable,
 ) : AutoCloseable {
@@ -38,7 +38,7 @@ class MainWindowFilmlistReloadCoordinator(
 
         automaticFilmlistUpdate = AutomaticFilmlistUpdate {
             if (FilmListUpdateType.AUTOMATIC.isConfigured() &&
-                daten.listeDownloads.unfinishedDownloads() == 0L
+                downloads.unfinishedDownloads() == 0L
             ) {
                 loadFilmListAction.isEnabled = false
                 loadFilmListAutomatically.run()

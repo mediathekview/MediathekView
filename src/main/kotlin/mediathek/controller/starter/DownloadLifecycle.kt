@@ -1,8 +1,8 @@
 package mediathek.controller.starter
 
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.controller.history.AboHistoryController
 import mediathek.controller.history.AboHistoryEntry
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadSource
@@ -34,7 +34,11 @@ private val logger = LogManager.getLogger(DownloadCompletionHandler::class.java)
 private const val MIN_COMPLETED_DOWNLOAD_PERCENT = 995
 
 internal object DownloadCompletionValidator {
-    fun validateAndRecordSuccessfulAboDownload(daten: Daten, datenDownload: DatenDownload, start: DownloadRunState?): Boolean {
+    fun validateAndRecordSuccessfulAboDownload(
+        aboHistoryController: AboHistoryController,
+        datenDownload: DatenDownload,
+        start: DownloadRunState?,
+    ): Boolean {
         if (!isSuccessfulDownload(datenDownload, start)) {
             return false
         }
@@ -45,7 +49,7 @@ internal object DownloadCompletionValidator {
                 datenDownload.title,
                 datenDownload.historyUrl,
             )
-            daten.aboHistoryController.add(entry)
+            aboHistoryController.add(entry)
         }
 
         return true

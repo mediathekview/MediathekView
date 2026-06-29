@@ -1,8 +1,8 @@
 package mediathek.gui.actions
 
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.daten.DatenPset
+import mediathek.daten.ProgramSetRepository
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen
 import org.apache.commons.lang3.SystemUtils
@@ -16,6 +16,7 @@ import javax.swing.JOptionPane
 import javax.swing.KeyStroke
 
 class PlayFilmAction(
+    private val programSets: ProgramSetRepository,
     private val startFilm: Consumer<DatenPset>,
     private val parentProvider: () -> Component?,
 ) : AbstractAction() {
@@ -33,7 +34,7 @@ class PlayFilmAction(
 
     @Synchronized
     override fun actionPerformed(event: ActionEvent?) {
-        val pset = Daten.getInstance().listePset.psetAbspielen
+        val pset = programSets.list.psetAbspielen
         if (pset != null) {
             startFilm.accept(pset)
         } else {

@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
+import mediathek.daten.ListeFilme
 import mediathek.tool.FileDialogs.chooseSaveFileLocation
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
@@ -14,6 +15,7 @@ import javax.swing.ProgressMonitor
 
 abstract class AbstractExportFilmlistAction(
     actionName: String,
+    private val films: ListeFilme,
     private val saveDialogTitle: String,
     private val exportSettings: FilmlistExportSettings,
     private val parent: JFrame,
@@ -38,6 +40,7 @@ abstract class AbstractExportFilmlistAction(
 
             else -> {
                 FilmlistExportWorker(
+                    films = films,
                     selectedFile = selectedFile,
                     exportSettings = exportSettings,
                     uiScope = uiScope,

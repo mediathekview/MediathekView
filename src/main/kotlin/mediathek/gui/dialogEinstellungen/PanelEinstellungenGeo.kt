@@ -3,12 +3,11 @@ package mediathek.gui.dialogEinstellungen
 import com.formdev.flatlaf.util.ScaledImageIcon
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.dialog.DialogHilfe
-import mediathek.gui.messages.BlacklistChangedEvent
 import mediathek.gui.messages.GeoStateChangedEvent
 import mediathek.tool.GeoLocationDetector
 import mediathek.tool.GetFile
@@ -23,6 +22,7 @@ import kotlin.coroutines.CoroutineContext
 class PanelEinstellungenGeo @JvmOverloads constructor(
     private val parentComponent: JFrame?,
     private val preselectFromPublicIp: Boolean = false,
+    private val blacklist: BlacklistServices,
 ) : PanelEinstellungenGeoBase(), CoroutineScope {
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Swing
 
@@ -147,9 +147,8 @@ class PanelEinstellungenGeo @JvmOverloads constructor(
     }
 
     private fun filterBlacklistAndNotifyChanges() {
-        Daten.getInstance().listeBlacklist.filterListe()
+        blacklist.applyToFilmListAndNotifyListeners()
         MessageBus.messageBus.publishAsync(GeoStateChangedEvent())
-        MessageBus.messageBus.publishAsync(BlacklistChangedEvent())
     }
 
     companion object {

@@ -21,17 +21,22 @@ package mediathek.cli
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import mediathek.config.Daten
+import mediathek.config.DatenConfigurationPersistence
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.controller.starter.DownloadLifecycleActions
+import mediathek.controller.starter.DownloadServices
 import mediathek.controller.starter.DownloadStartActions
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
+import mediathek.daten.abo.AboServices
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
+import mediathek.filmlisten.FilmCatalog
+import mediathek.filmlisten.FilmeLaden
 import mediathek.filmlisten.reader.FilmListReader
+import mediathek.gui.bookmark.BookmarkServices
 import mediathek.tool.BandwidthFormatter
 import mediathek.tool.FileSize
 import org.apache.logging.log4j.LogManager
@@ -40,9 +45,14 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
-object DownloadAndQuitRunner {
-    const val INTERRUPTED_EXIT_CODE = 130
-
+class DownloadAndQuitRunner(
+    private val downloads: DownloadServices,
+    private val filmCatalog: FilmCatalog,
+    private val filmListLoader: FilmeLaden,
+    private val abos: AboServices,
+    private val bookmarks: BookmarkServices,
+    private val configurationPersistence: DatenConfigurationPersistence,
+) {
     private val logger = LogManager.getLogger()
     private val shutdownRequested = AtomicBoolean(false)
 
@@ -50,11 +60,9 @@ object DownloadAndQuitRunner {
     private var activeDownloads: List<DatenDownload> = emptyList()
 
     suspend fun run(): Int {
-        val daten = Daten.getInstance()
-
         logger.info("CLI download mode started.")
         try {
-            return runInternal(daten)
+            return runInternal()
         } catch (ex: Exception) {
             logger.error("CLI download mode failed.", ex)
             return 1
@@ -72,46 +80,47 @@ object DownloadAndQuitRunner {
         return true
     }
 
-    private suspend fun runInternal(daten: Daten): Int {
-        if (!updateFilmlistWithProgress(daten)) {
+    private suspend fun runInternal(): Int {
+        if (!updateFilmlistWithProgress()) {
             return 1
         }
 
         if (shutdownRequested.get()) {
             logger.info("CLI shutdown requested before abo download search.")
-            persistState(daten)
+            persistState()
             return INTERRUPTED_EXIT_CODE
         }
 
         logger.info("Loading downloads from abos...")
-        prepareAboSearch(daten)
-        daten.listeDownloads.abosAuffrischen()
-        val addedDownloads = daten.listeDownloads.abosSuchen(null)
+        prepareAboSearch()
+        downloads.refreshAboDownloads()
+        val addedDownloads = downloads.searchAboDownloads(null)
         updateAboDownloadSizes(addedDownloads)
 
-        val downloadsToStart = collectDownloadsToStart(daten)
+        val downloadsToStart = downloads.automaticAboDownloadsToStart()
         activeDownloads = downloadsToStart
         if (shutdownRequested.get()) {
             logger.info("CLI shutdown requested before downloads were started.")
             markDownloadsInterrupted(downloadsToStart)
-            persistState(daten)
+            persistState()
             return INTERRUPTED_EXIT_CODE
         }
 
         if (downloadsToStart.isEmpty()) {
             logger.info("No abo downloads to start.")
-            persistState(daten)
+            persistState()
             return 0
         }
 
         logger.info("Starting {} abo download(s)...", downloadsToStart.size)
         DownloadStartActions.startAll(downloadsToStart)
+        downloads.startStarter()
         if (shutdownRequested.get()) {
             stopDownloads(downloadsToStart)
         }
         val failedDownloads = monitorDownloads(downloadsToStart)
 
-        persistState(daten)
+        persistState()
 
         if (shutdownRequested.get()) {
             logger.info("CLI shutdown completed after stopping downloads.")
@@ -127,8 +136,8 @@ object DownloadAndQuitRunner {
         return 0
     }
 
-    private suspend fun updateFilmlistWithProgress(daten: Daten): Boolean = withContext(Dispatchers.IO) {
-        loadLocalFilmlist(daten)
+    private suspend fun updateFilmlistWithProgress(): Boolean = withContext(Dispatchers.IO) {
+        loadLocalFilmlist()
 
         val completion = CompletableFuture<Boolean>()
         val listener = object : ListenerFilmeLaden() {
@@ -144,7 +153,7 @@ object DownloadAndQuitRunner {
             }
 
             override fun fertig(event: ListenerFilmeLadenEvent) {
-                daten.filmeLaden.removeFilmLoadListener(this)
+                filmListLoader.removeFilmLoadListener(this)
                 if (event.fehler) {
                     logger.error("Filmlist update failed.")
                 } else {
@@ -166,19 +175,19 @@ object DownloadAndQuitRunner {
             }
         }
 
-        daten.filmeLaden.addFilmLoadListener(listener)
-        val loadStarted = daten.filmeLaden.loadFilmlist("", false)
+        filmListLoader.addFilmLoadListener(listener)
+        val loadStarted = filmListLoader.loadFilmlist("", false)
         if (!loadStarted) {
-            daten.filmeLaden.removeFilmLoadListener(listener)
+            filmListLoader.removeFilmLoadListener(listener)
             logger.info("Filmlist update skipped because another filmlist load is already running.")
             return@withContext true
         }
         completion.get()
     }
 
-    private suspend fun prepareAboSearch(daten: Daten) = withContext(Dispatchers.Default) {
-        logger.info("Preparing abo matches for {} film(s)...", daten.listeFilme.size)
-        daten.listeAbo.setAboFuerFilm(daten.listeFilme, false)
+    private suspend fun prepareAboSearch() = withContext(Dispatchers.Default) {
+        logger.info("Preparing abo matches for {} film(s)...", filmCatalog.allFilms.size)
+        abos.assignAbosToFilms(removeMissingAbos = false)
     }
 
     private suspend fun updateAboDownloadSizes(downloads: List<DatenDownload>) = withContext(Dispatchers.IO) {
@@ -200,29 +209,16 @@ object DownloadAndQuitRunner {
         }
     }
 
-    private fun loadLocalFilmlist(daten: Daten) {
-        if (daten.listeFilme.isNotEmpty()) {
+    private fun loadLocalFilmlist() {
+        if (filmCatalog.allFilms.isNotEmpty()) {
             return
         }
 
         logger.info("Reading local filmlist cache...")
         FilmListReader().use { reader ->
             val numDays = ApplicationConfiguration.getInstance().filmListLoadNumDays
-            reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), daten.listeFilme, numDays)
+            reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), filmCatalog.allFilms, numDays)
         }
-    }
-
-    private fun collectDownloadsToStart(daten: Daten): ArrayList<DatenDownload> {
-        val downloadsToStart = ArrayList<DatenDownload>()
-        for (download in daten.listeDownloads) {
-            if (!download.isFromAbo || download.isAutomaticStartBlockedByAbo) {
-                continue
-            }
-            if (download.runtime.runState == null) {
-                downloadsToStart.add(download)
-            }
-        }
-        return downloadsToStart
     }
 
     private suspend fun monitorDownloads(downloads: List<DatenDownload>): Int {
@@ -297,7 +293,7 @@ object DownloadAndQuitRunner {
             return
         }
 
-        Daten.getInstance().downloadStartCoordinator.delayNewStarts()
+        this.downloads.delayNewStarts()
         for (download in downloads) {
             val start = download.runtime.runState
             if (start == null) {
@@ -319,14 +315,14 @@ object DownloadAndQuitRunner {
         downloads.forEach(DownloadLifecycleActions::markInterrupted)
     }
 
-    private fun persistState(daten: Daten) {
+    private fun persistState() {
         logger.info("Persisting download and configuration state...")
-        daten.listeDownloads.listePutzen()
+        downloads.cleanupFinishedDownloads()
         SeenHistoryController().use { history ->
             history.performMaintenance()
         }
-        daten.listeBookmarkList.saveToFile()
-        daten.allesSpeichern()
+        bookmarks.saveToFile()
+        configurationPersistence.saveAll()
         ApplicationConfiguration.getInstance().writeConfiguration()
     }
 
@@ -334,4 +330,8 @@ object DownloadAndQuitRunner {
         val url: String,
         val quality: String,
     )
+
+    companion object {
+        const val INTERRUPTED_EXIT_CODE = 130
+    }
 }

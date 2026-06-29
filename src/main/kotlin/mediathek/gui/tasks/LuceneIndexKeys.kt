@@ -18,6 +18,9 @@
 
 package mediathek.gui.tasks
 
+import mediathek.gui.tasks.LuceneIndexKeys.ID
+
+
 object LuceneIndexKeys {
     /**
      * In Abfragen nicht zu verwenden!

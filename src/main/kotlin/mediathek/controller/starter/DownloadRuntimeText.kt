@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.daten
+package mediathek.controller.starter
 
-import mediathek.controller.starter.DownloadRunState
-import mediathek.controller.starter.StartStatus
 import mediathek.tool.BandwidthFormatter
 import kotlin.math.roundToLong
 

@@ -18,19 +18,18 @@
 
 package mediathek.tool.threads
 
-import mediathek.config.Daten
+import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DownloadSource
 
 /**
  * Base class for platform-specific progress indicator threads
  */
-open class IndicatorThread : Thread() {
-    protected val daten: Daten
+open class IndicatorThread(private val downloads: DownloadServices) : Thread() {
     protected fun calculateOverallPercentage(): Double {
         var numOfDownloadsActive = 0
         var accumPercentage = 0.0
         //only count running/active downloads and calc accumulated progress..
-        val activeDownloadList = daten.listeDownloads.getListOfStartsNotFinished(DownloadSource.ALL)
+        val activeDownloadList = downloads.unfinishedDownloads(DownloadSource.ALL)
         for (download in activeDownloadList) {
             val start = download.runtime.runState
             if (start?.isRunning == true) {
@@ -43,6 +42,5 @@ open class IndicatorThread : Thread() {
 
     init {
         name = "IndicatorThread"
-        daten = Daten.getInstance()
     }
 }

@@ -20,17 +20,21 @@ package mediathek.gui.tabs.tab_film
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.config.application.FilterConfiguration
-import mediathek.daten.DatenFilm
-import mediathek.daten.DatenPset
-import mediathek.daten.FilmResolution
-import mediathek.daten.IndexedFilmList
+import mediathek.controller.starter.DownloadServices
+import mediathek.daten.*
+import mediathek.daten.abo.AboServices
+import mediathek.daten.blacklist.BlacklistServices
+import mediathek.filmlisten.FilmCatalog
+import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.actions.DeleteBookmarksAction
 import mediathek.gui.actions.ManageBookmarkAction
 import mediathek.gui.actions.PlayFilmAction
 import mediathek.gui.bookmark.BookmarkDialog
+import mediathek.gui.bookmark.BookmarkServices
+import mediathek.gui.dialog.DialogFilmBeschreibung
+import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.messages.*
 import mediathek.gui.messages.history.DownloadHistoryChangedEvent
 import mediathek.gui.tabs.DescriptionTabController
@@ -59,13 +63,22 @@ import mediathek.tool.table.MVFilmTable
 import net.engio.mbassy.listener.Handler
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.BorderLayout
+import java.util.*
+import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.LongConsumer
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
 class GuiFilme(
-    aDaten: Daten,
+    private val programSets: ProgramSetRepository,
+    private val filmCatalog: FilmCatalog,
+    private val abos: AboServices,
+    private val blacklist: BlacklistServices,
+    private val bookmarks: BookmarkServices,
+    private val downloads: DownloadServices,
+    private val filmListLoader: FilmeLaden,
+    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
     private val ownerFrame: JFrame,
     private val toggleBlacklistAction: Action,
     private val editBlacklistAction: Action,
@@ -74,11 +87,10 @@ class GuiFilme(
     private val selectedListItemsCount: LongConsumer,
     private val currentFilm: Consumer<DatenFilm?>,
 ) : JPanel() {
-    private val daten: Daten = aDaten
     private val copyHqUrlToClipboardActionValue: CopyUrlToClipboardAction
     private val copyNormalUrlToClipboardActionValue: CopyUrlToClipboardAction
     private var swingFilterDialog: SwingFilterDialog? = null
-    private lateinit var swingFilterDialogFactory: () -> SwingFilterDialog
+    private var swingFilterDialogFactory: () -> SwingFilterDialog
     private val toggleFilterDialogVisibilityActionValue: ToggleFilterDialogVisibilityAction
     private val reloadTableScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val filterController: FilmFilterController
@@ -131,13 +143,13 @@ class GuiFilme(
 
     init {
         val psetButtonsTab = JTabbedPane()
-        val descriptionTabController = DescriptionTabController { ownerFrame }
+        val descriptionTabController = DescriptionTabController({ ownerFrame }, ::editFilmDescription)
         val filterConfiguration = ApplicationConfiguration.getInstance().createFilterConfiguration()
         val selectionComponents = createSelectionComponents(filterConfiguration)
         selectionController = selectionComponents.selectionController
         bookmarkController = selectionComponents.bookmarkController
         val bookmarkActionHost = createBookmarkActionHost()
-        val deleteBookmarksAction = DeleteBookmarksAction(bookmarkActionHost)
+        val deleteBookmarksAction = DeleteBookmarksAction(bookmarks, bookmarkActionHost)
         val filmActions = createFilmActions(deleteBookmarksAction, selectionComponents)
         copyHqUrlToClipboardActionValue = filmActions.copyHqUrlToClipboardAction
         copyNormalUrlToClipboardActionValue = filmActions.copyNormalUrlToClipboardAction
@@ -194,14 +206,28 @@ class GuiFilme(
         val selectionHost = FilmSelectionHostAdapter(
             { tabelle },
             this,
-            ownerFrame,
-            { daten },
+            this::startFilmDownloads,
+            { pset, film, resolution -> downloads.startWithProgram(pset, film, resolution) },
             { filterConfiguration.isShowHighQualityOnly },
             currentFilm,
         )
         val selectionController = FilmSelectionController(selectionHost)
         val bookmarkHost = object : FilmBookmarkController.Host {
             override fun ownerFrame() = ownerFrame
+
+            override fun bookmarks() = bookmarks
+
+            override fun programSets() = programSets
+
+            override fun downloads() = downloads
+
+            override fun addDownloads(films: List<DatenFilm>) {
+                startFilmDownloads(films, null, null)
+            }
+
+            override fun editFilmDescription(film: DatenFilm) {
+                this@GuiFilme.editFilmDescription(film)
+            }
 
             override fun repaintOwner() {
                 repaint()
@@ -259,6 +285,35 @@ class GuiFilme(
             }
         }
 
+    private fun editFilmDescription(film: DatenFilm) {
+        DialogFilmBeschreibung(ownerFrame, programSets, film).isVisible = true
+    }
+
+    private fun startFilmDownloads(
+        films: List<DatenFilm>,
+        pSet: DatenPset?,
+        requestedResolution: FilmResolution.Enum?,
+    ) {
+        startDownloads(
+            programSets,
+            downloads,
+            ownerFrame,
+            films,
+            pSet,
+            requestedResolution,
+            programSetExporter,
+        ) { film, effectivePSet, resolution ->
+            DialogAddDownload(
+                ownerFrame,
+                programSets,
+                downloads,
+                film,
+                effectivePSet,
+                Optional.ofNullable(resolution),
+            ).isVisible = true
+        }
+    }
+
     private fun createSearchFieldHost(): SearchField.Host =
         object : SearchField.Host {
             override val showLuceneTutorialAction: Action = this@GuiFilme.showLuceneTutorialAction
@@ -280,7 +335,7 @@ class GuiFilme(
     ): FilmActions {
         val selectionController = selectionComponents.selectionController
         val filmActionHost = selectionComponents.filmActionHost
-        val playFilmAction = PlayFilmAction({ selectionController.startFilm(it) }) { ownerFrame }
+        val playFilmAction = PlayFilmAction(programSets, { selectionController.startFilm(it) }) { ownerFrame }
         val saveFilmAction = SaveFilmAction(filmActionHost)
         val copyHqUrlToClipboardAction =
             CopyUrlToClipboardAction(filmActionHost, FilmResolution.Enum.HIGH_QUALITY)
@@ -330,7 +385,7 @@ class GuiFilme(
     private fun createFilterComponents(filterConfiguration: FilterConfiguration): FilterComponents {
         val filterController = FilmFilterController(
             filterConfiguration,
-            FilmFilterDataProviderAdapter { daten },
+            FilmFilterDataProviderAdapter(filmCatalog),
             object : FilmFilterController.ReloadRequester {
                 override fun requestTableReload() {
                     this@GuiFilme.requestTableReload()
@@ -362,7 +417,7 @@ class GuiFilme(
     ): ViewComponents {
         val selectionController = selectionComponents.selectionController
         val filmUiActions = filmActions.filmUiActions
-        val psetButtonsPanel = PsetButtonsPanel { pset -> selectionController.startFilm(pset) }
+        val psetButtonsPanel = PsetButtonsPanel(programSets) { pset -> selectionController.startFilm(pset) }
         val viewHost = object : FilmViewController.Host {
             override fun psetButtonsTab() = psetButtonsTab
 
@@ -380,6 +435,12 @@ class GuiFilme(
 
         }
         val tableContextMenuHost = TableContextMenuHostAdapter(
+            downloads,
+            programSets,
+            filmCatalog,
+            abos,
+            blacklist,
+            programSetExporter,
             { tabelle },
             selectionController::getCurrentlySelectedFilm,
             selectionController::getFilm,
@@ -392,6 +453,7 @@ class GuiFilme(
             { filmUiActions },
         )
         val tableInstallerHost = FilmTableInstallerHostAdapter(
+            downloads,
             { tabelle },
             filmListScrollPane,
             this,
@@ -426,7 +488,7 @@ class GuiFilme(
         val extensionArea = JPanel(VerticalLayout())
         add(extensionArea, BorderLayout.SOUTH)
 
-        val searchField = if (daten.listeFilmeNachBlackList is IndexedFilmList) {
+        val searchField = if (filmCatalog.filteredFilms is IndexedFilmList) {
             LuceneSearchField(searchFieldHost)
         } else {
             RegularSearchField(searchFieldHost)
@@ -499,6 +561,7 @@ class GuiFilme(
         filterController: FilmFilterController,
     ): FilmTableReloader {
         val tableReloadHost = FilmTableReloadHostAdapter(
+            filmCatalog,
             ownerFrame,
             { tabelle },
             {
@@ -522,7 +585,7 @@ class GuiFilme(
     ): FilmLifecycleController {
         val lifecycleHost = FilmLifecycleHostAdapter(
             this,
-            daten,
+            filmListLoader,
             { tabelle },
             filterConfiguration,
             bookmarkStartupReloadCoordinator,
@@ -553,7 +616,7 @@ class GuiFilme(
     }
 
     private fun requestZeitraumReload() {
-        daten.listeBlacklist.filterListe()
+        blacklist.applyToFilmList()
         requestTableReload()
     }
 

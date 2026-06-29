@@ -137,7 +137,7 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
 
             if (replaceMuster && listePset != null) {
                 // damit die Variablen ersetzt werden
-                ListePset.progMusterErsetzen(parent, listePset)
+                ProgramSetTemplateResolver.replaceTemplates(parent, listePset)
             }
             return listePset
         }

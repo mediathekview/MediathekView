@@ -22,10 +22,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import mediathek.config.Daten
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.ListeFilme
+import mediathek.daten.abo.AboServices
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.gui.messages.FilmListReadStopEvent
@@ -35,11 +36,15 @@ import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
 import kotlin.coroutines.cancellation.CancellationException
 
-class FilmeLaden(private val daten: Daten) {
+class FilmeLaden(
+    private val filmCatalog: FilmCatalog,
+    abos: AboServices,
+    blacklist: BlacklistServices,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val ui = FilmListLoadUi(scope)
     private val events = FilmListLoadEventDispatcher(scope)
-    private val postLoadRunner = FilmListPostLoadRunner(daten, scope, ui)
+    private val postLoadRunner = FilmListPostLoadRunner(filmCatalog, abos, blacklist, scope, ui)
     private val importState = FilmListImportState()
     private val importService = FilmListImportService(
         feedback = ui,
@@ -80,11 +85,11 @@ class FilmeLaden(private val daten: Daten) {
 
     private fun shouldStartAutomaticStartupUpdate(): Boolean =
         FilmListUpdateType.fromConfig() == FilmListUpdateType.AUTOMATIC &&
-            daten.listeFilme.needsUpdate()
+            filmCatalog.allFilms.needsUpdate()
 
     fun loadFilmlist(dateiUrl: String, immerNeuLaden: Boolean, loadOptions: FilmListLoadOptions): Boolean {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
-        val listeFilme = daten.listeFilme
+        val listeFilme = filmCatalog.allFilms
 
         logger.trace("loadFilmlist(String,boolean,FilmListLoadOptions)")
         logger.info("")
@@ -120,7 +125,7 @@ class FilmeLaden(private val daten: Daten) {
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         logger.debug("Filme laden (Update), start")
         logger.info("")
-        displayLogInfo(daten.listeFilme)
+        displayLogInfo(filmCatalog.allFilms)
 
         if (!beginLoad()) {
             return
@@ -159,8 +164,8 @@ class FilmeLaden(private val daten: Daten) {
     }
 
     private fun prepareLoad(): Set<String> {
-        val oldFilmUrls = FilmListImportApplier.collectFilmUrls(daten.listeFilme)
-        daten.listeFilmeNachBlackList.clear()
+        val oldFilmUrls = FilmListImportApplier.collectFilmUrls(filmCatalog.allFilms)
+        filmCatalog.filteredFilms.clear()
         return oldFilmUrls
     }
 
@@ -212,7 +217,7 @@ class FilmeLaden(private val daten: Daten) {
         // beim Ändern von Abos gemacht wird
 
         logger.debug("finishImport()")
-        val listeFilme = daten.listeFilme
+        val listeFilme = filmCatalog.allFilms
         FilmListImportApplier.applyImportedFilms(listeFilme, diffListe, oldFilmUrls)
 
         val host = ui.currentHost

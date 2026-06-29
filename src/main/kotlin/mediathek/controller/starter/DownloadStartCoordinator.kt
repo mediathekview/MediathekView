@@ -18,8 +18,8 @@
 
 package mediathek.controller.starter
 
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.controller.history.AboHistoryController
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.*
 import mediathek.mainwindow.MainWindowHandle
@@ -37,21 +37,33 @@ private val logger = LogManager.getLogger(DownloadStartCoordinator::class.java)
 private const val DOWNLOAD_DELAY_SECONDS = 2L
 private const val NEW_START_PAUSE_SECONDS = 5L
 
-class DownloadStartCoordinator(private val daten: Daten) {
+class DownloadStartCoordinator(
+    private val downloads: DownloadServices,
+    private val aboHistoryControllerProvider: () -> AboHistoryController,
+) {
     private val starterScheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor { runnable ->
         Thread.ofPlatform().name("StarterScheduler").daemon(true).unstarted(runnable)
     }
-    private val starterFuture: ScheduledFuture<*> = starterScheduler.scheduleWithFixedDelay(
-        ::processStarterTick,
-        0,
-        DOWNLOAD_DELAY_SECONDS,
-        TimeUnit.SECONDS,
-    )
+    @Volatile
+    private var starterFuture: ScheduledFuture<*>? = null
     private val pause = AtomicBoolean(false)
     @Volatile
     private var pauseUntilEpochMillis: Long = 0
     @Volatile
     private var dialogOwner: MainWindowHandle? = null
+
+    @Synchronized
+    fun start() {
+        if (starterFuture != null) {
+            return
+        }
+        starterFuture = starterScheduler.scheduleWithFixedDelay(
+            ::processStarterTick,
+            0,
+            DOWNLOAD_DELAY_SECONDS,
+            TimeUnit.SECONDS,
+        )
+    }
 
     fun setDialogOwner(owner: MainWindowHandle?) {
         dialogOwner = owner
@@ -76,7 +88,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
                 film.bookmark?.seen = true
             }
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
-            daten.listeDownloadsButton.addMitNummer(download)
+            downloads.addButtonDownload(download)
         }
     }
 
@@ -85,7 +97,8 @@ class DownloadStartCoordinator(private val daten: Daten) {
     }
 
     fun shutdown() {
-        starterFuture.cancel(true)
+        starterFuture?.cancel(true)
+        starterFuture = null
         starterScheduler.shutdownNow()
     }
 
@@ -110,7 +123,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
                 return
             }
 
-            daten.listeDownloadsButton.buttonStartsPutzen() // Button Starts aus der Liste löschen
+            downloads.cleanupFinishedButtonDownloads() // Button Starts aus der Liste löschen
         } catch (ex: Exception) {
             logger.error("Fehler im Starter-Scheduler:", ex)
         }
@@ -127,11 +140,10 @@ class DownloadStartCoordinator(private val daten: Daten) {
     private fun getNextStart(): DatenDownload? {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
-        val listeDownloads = daten.listeDownloads
-        var download = listeDownloads.nextStart
+        var download = downloads.nextStart()
         if (download == null) {
             // dann versuchen einen Fehlerhaften nochmal zu starten
-            download = listeDownloads.restartDownload
+            download = downloads.restartDownload()
             if (download != null) {
                 reStartmeldung(download)
             }
@@ -144,14 +156,14 @@ class DownloadStartCoordinator(private val daten: Daten) {
         val result = CdnDetector.detect(datenDownload.downloadUrl)
         return if (useCdnAwareDirectDownload && CdnDetector.isCdn(result)) {
             logger.trace("CDN detected: {}", result)
-            CdnAwareDirectDownloadThread(datenDownload, ::dialogOwnerFrame)
+            CdnAwareDirectDownloadThread(aboHistoryControllerProvider, datenDownload, ::dialogOwnerFrame)
         } else {
             if (!useCdnAwareDirectDownload) {
                 logger.info("CDN detection is disabled")
             } else {
                 logger.trace("Not a CDN detected: {}", result)
             }
-            DirectHttpDownload(daten, datenDownload, ::dialogOwnerFrame)
+            DirectHttpDownload(aboHistoryControllerProvider, datenDownload, ::dialogOwnerFrame)
         }
     }
 
@@ -167,7 +179,7 @@ class DownloadStartCoordinator(private val daten: Daten) {
         DownloadProgressEventPublisher.publishThrottled()
 
         val downloadThread = when (datenDownload.art) {
-            DownloadType.PROGRAM -> ExternalProgramDownload(datenDownload, ::dialogOwnerFrame)
+            DownloadType.PROGRAM -> ExternalProgramDownload(aboHistoryControllerProvider, datenDownload, ::dialogOwnerFrame)
             DownloadType.DIRECT -> selectDirectDownload(datenDownload)
         }
         downloadThread.start()

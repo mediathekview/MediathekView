@@ -22,12 +22,11 @@ import com.formdev.flatlaf.extras.components.FlatButton
 import mediathek.SplashScreenLifecycle
 import mediathek.audiothek.repository.AudioRepository
 import mediathek.audiothek.ui.main.AudiothekPanel
-import mediathek.config.CommandLineOptions
-import mediathek.config.Daten
-import mediathek.config.Konstanten
-import mediathek.config.MVColor
+import mediathek.config.*
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.controller.IoXmlSchreiben
 import mediathek.daten.DatenFilm
+import mediathek.daten.DatenPset
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.gui.actions.*
 import mediathek.gui.bookmark.BookmarkDialog
@@ -59,13 +58,12 @@ import java.awt.event.KeyEvent
 import java.beans.PropertyChangeEvent
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.function.Consumer
+import java.util.function.*
 import java.util.function.Function
-import java.util.function.IntConsumer
-import java.util.function.Supplier
 import javax.swing.*
 
 open class MediathekGui private constructor(
+    private val daten: Daten,
     notificationCenterFactory: Supplier<INotificationCenter>,
     computerShutdown: ComputerShutdown,
     downloadProgressIndicatorFactory: Function<JFrame, DownloadProgressIndicator>,
@@ -87,10 +85,9 @@ open class MediathekGui private constructor(
     SettingsResetHost,
     FilmListLoadHost {
     private val disposed = AtomicBoolean()
-    private val editBlacklistAction = EditBlacklistAction(this)
-    private val toggleBlacklistAction = ToggleBlacklistAction()
+    private val editBlacklistAction = EditBlacklistAction(this, daten.blacklist, daten.filmCatalog, daten.filmListLoader)
+    private val toggleBlacklistAction = ToggleBlacklistAction(daten.blacklist)
     private val selectedListItemsProperty = ListSelectedItemsProperty(0)
-    private val daten = Daten.getInstance()
     private val tabbedPane = PositionSavingTabbedPane()
     private val jMenuHilfe = JMenu()
     private val settingsAction = SettingsAction()
@@ -118,10 +115,29 @@ open class MediathekGui private constructor(
     private val showFilmInformationAction: ShowFilmInformationAction
     private val searchProgramUpdateAction: SearchProgramUpdateAction
     private val showMemoryMonitorAction = MemoryMonitorAction(this)
-    private val manageAboAction = ManageAboAction(this)
+    private val manageAboAction = ManageAboAction(
+        this,
+        daten.programSets,
+        daten.filmCatalog,
+        daten.abos,
+        daten.filmListLoader,
+        programSetExporter(),
+    )
     private val showBandwidthUsageAction = ShowBandwidthUsageAction(this)
     private val dialogCoordinator =
-        MainWindowDialogCoordinator(this, this, showMemoryMonitorAction, showBandwidthUsageAction, manageAboAction)
+        MainWindowDialogCoordinator(
+            daten.programSets,
+            daten.filmCatalog,
+            daten.filmListLoader,
+            daten.blacklist,
+            daten.configurationPersistence,
+            programSetExporter(),
+            this,
+            this,
+            showMemoryMonitorAction,
+            showBandwidthUsageAction,
+            manageAboAction,
+        )
     private val showLuceneTutorialAction = ShowLuceneTutorialAction(this)
     private val onlineSearchTab: MainWindowTab by lazy(LazyThreadSafetyMode.NONE) {
         MainWindowTab(
@@ -174,22 +190,33 @@ open class MediathekGui private constructor(
     private val downloadProgressIndicator: DownloadProgressIndicator = requireNotNull(downloadProgressIndicatorFactory.apply(this))
     private val startupOrchestrator: MainWindowStartupOrchestrator
     private val platformIntegration: MainWindowPlatformIntegration
-    private val programUpdateCoordinator = MainWindowProgramUpdateCoordinator(this)
+    private val programUpdateCoordinator = MainWindowProgramUpdateCoordinator(daten.programSets, programSetExporter(), this)
     private val shutdownRuntime = MainWindowShutdownRuntime()
     private val statusBarController =
         MainWindowStatusBarController(
+            daten.filmCatalog,
+            daten.downloads,
             contentPane,
             selectedListItemsProperty,
             ::getFilmTableRowCount,
             ::runOnEventDispatchThreadAndWait,
         )
-    private val filmlistLoadCoordinator = MainWindowFilmlistLoadCoordinator(this, daten, statusBarController)
+    private val filmlistLoadCoordinator = MainWindowFilmlistLoadCoordinator(
+        this,
+        daten.filmCatalog,
+        daten.filmListLoader,
+        daten.abos,
+        daten.blacklist,
+        statusBarController,
+    )
     private val filmlistDownloadProgressListener =
         FilmlistProgressPresenter(SwingDispatch, statusBarController::showProgress)
     private val filmlistReloadCoordinator: MainWindowFilmlistReloadCoordinator
     private val quitController = MainWindowQuitController(
         this,
-        daten,
+        daten.downloads,
+        daten.bookmarks,
+        daten.configurationPersistence,
         this,
         dialogCoordinator,
         tabRegistry,
@@ -206,12 +233,19 @@ open class MediathekGui private constructor(
     )
     private val mainWindowLifecycle: MainWindowLifecycle
 
+    private fun programSetExporter(): BiConsumer<Array<DatenPset>, String> =
+        BiConsumer { programSets, target ->
+            IoXmlSchreiben(DatenXmlConfigDataFactory.from(daten)).exportPset(programSets, target)
+        }
+
     protected constructor(
+        daten: Daten,
         notificationCenterFactory: Supplier<INotificationCenter>,
         computerShutdown: ComputerShutdown,
         darkModeActionPlacement: MainWindowDarkModeActionPlacement,
         systemTrayController: MainWindowSystemTrayController,
     ) : this(
+        daten,
         notificationCenterFactory,
         computerShutdown,
         NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY,
@@ -227,6 +261,7 @@ open class MediathekGui private constructor(
     )
 
     protected constructor(
+        daten: Daten,
         notificationCenterFactory: Supplier<INotificationCenter>,
         computerShutdown: ComputerShutdown,
         downloadProgressIndicatorFactory: Function<JFrame, DownloadProgressIndicator>,
@@ -239,6 +274,7 @@ open class MediathekGui private constructor(
         disableF10MenuShortcut: Boolean,
         afterMenusInitialized: Consumer<MainWindowQuitHost>,
     ) : this(
+        daten,
         notificationCenterFactory,
         computerShutdown,
         downloadProgressIndicatorFactory,
@@ -254,11 +290,13 @@ open class MediathekGui private constructor(
     )
 
     protected constructor(
+        daten: Daten,
         notificationCenterFactory: Supplier<INotificationCenter>,
         computerShutdown: ComputerShutdown,
         downloadProgressIndicatorFactory: Function<JFrame, DownloadProgressIndicator>,
         darkModeActionPlacement: MainWindowDarkModeActionPlacement,
     ) : this(
+        daten,
         notificationCenterFactory,
         computerShutdown,
         downloadProgressIndicatorFactory,
@@ -277,18 +315,21 @@ open class MediathekGui private constructor(
         loadFilmListAction = LoadFilmListAction { filmlistLoadCoordinator.performFilmListLoadOperation(false) }
         showFilmInformationAction = ShowFilmInformationAction(::getFilmInfoDialog)
         filmlistReloadCoordinator = MainWindowFilmlistReloadCoordinator(
-            daten,
+            daten.downloads,
             loadFilmListAction,
         ) { filmlistLoadCoordinator.performFilmListLoadOperation(false) }
         val filmListListener: ListenerFilmeLaden = MainWindowFilmListListener(
             SwingDispatch,
             { loadFilmListAction },
-            { daten.allesSpeichern() },
+            { daten.configurationPersistence.saveAll() },
             { filmlistReloadCoordinator.setupAutomaticFilmlistReload() }
         )
         mainWindowLifecycle = MainWindowLifecycle(
             this,
-            daten,
+            daten.downloads,
+            daten.filmListLoader,
+            daten.blacklist,
+            daten.bookmarks,
             this,
             ::handleLookAndFeelChange,
             filmlistDownloadProgressListener,
@@ -297,6 +338,8 @@ open class MediathekGui private constructor(
         ) { getCurrentZeitraumFilterValue() }
         searchProgramUpdateAction = SearchProgramUpdateAction(this)
         platformIntegration = MainWindowPlatformIntegration(
+            daten.filmCatalog,
+            daten.downloads,
             this,
             this,
             loadFilmListAction,
@@ -467,7 +510,7 @@ open class MediathekGui private constructor(
     }
 
     private fun performGeoCountryStartupCheck() {
-        GeoCountryStartupCheck(this, { performAustrianVlcCheck() }).perform()
+        GeoCountryStartupCheck(daten.blacklist, this, { performAustrianVlcCheck() }).perform()
     }
 
     private fun mapFilmUrlCopyCommands() {
@@ -628,7 +671,12 @@ open class MediathekGui private constructor(
             this,
             this,
             this,
-            daten,
+            daten.programSets,
+            daten.filmCatalog,
+            daten.abos,
+            daten.blacklist,
+            daten.bookmarks,
+            programSetExporter(),
             jMenuBar,
             jMenuDatei,
             jMenuFilme,
@@ -741,6 +789,9 @@ open class MediathekGui private constructor(
 
     private fun createOnlineSearchHost(): OnlineSearchHost =
         MainWindowOnlineSearchHost(
+            daten.programSets,
+            daten.downloads,
+            programSetExporter(),
             ownerFrame(),
             { film: DatenFilm? -> dialogCoordinator.updateFilmInfoCurrentFilm(film) },
             { getFilmInfoDialog().showInfo() }
@@ -748,7 +799,14 @@ open class MediathekGui private constructor(
 
     private fun createTabFilme(daten: Daten): GuiFilme =
         GuiFilme(
-            daten,
+            daten.programSets,
+            daten.filmCatalog,
+            daten.abos,
+            daten.blacklist,
+            daten.bookmarks,
+            daten.downloads,
+            daten.filmListLoader,
+            programSetExporter(),
             this,
             toggleBlacklistAction,
             editBlacklistAction,
@@ -760,7 +818,13 @@ open class MediathekGui private constructor(
 
     private fun createTabDownloads(daten: Daten): GuiDownloads =
         GuiDownloads(
-            daten,
+            daten.programSets,
+            daten.filmCatalog,
+            daten.abos,
+            daten.downloads,
+            daten.filmListLoader,
+            daten.configurationPersistence,
+            programSetExporter(),
             this,
             showFilmInformationAction,
             { setSelectedListItemsCount(it) },

@@ -18,7 +18,7 @@
 
 package mediathek.gui.dialogEinstellungen.pset
 
-import mediathek.config.Daten
+import mediathek.daten.ListePset
 import java.awt.Color
 import javax.swing.JTextField
 import javax.swing.UIManager
@@ -27,6 +27,7 @@ import javax.swing.event.DocumentListener
 
 class DuplicatePsetNameCheckListener(
     private val textField: JTextField,
+    private val listePset: ListePset,
 ) : DocumentListener {
     override fun insertUpdate(e: DocumentEvent) {
         duplicateNameCheck()
@@ -50,7 +51,7 @@ class DuplicatePsetNameCheckListener(
     }
 
     private fun duplicateNameCheck() {
-        val count = Daten.getInstance().listePset
+        val count = listePset
             .map { pset -> pset.name }
             .count { name -> name == textField.text }
 

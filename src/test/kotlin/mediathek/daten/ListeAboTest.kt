@@ -120,6 +120,29 @@ class ListeAboTest {
     }
 
     @Test
+    fun addAboInvokesChangeCallback() {
+        var changes = 0
+        val abos = ListeAbo(onChanged = { changes++ })
+
+        abos.addAbo(DatenAbo().apply { name = "Alpha" })
+
+        assertEquals(1, changes)
+    }
+
+    @Test
+    fun aboLoeschenInvokesChangeCallbackWhenAboWasRemoved() {
+        var changes = 0
+        val abo = DatenAbo().apply { name = "Alpha" }
+        val abos = ListeAbo(onChanged = { changes++ }).apply {
+            addAboWithoutNotification(abo)
+        }
+
+        abos.aboLoeschen(abo)
+
+        assertEquals(1, changes)
+    }
+
+    @Test
     fun inactiveAboDoesNotShadowLaterActiveMatch() {
         val inactiveBroadAbo = DatenAbo().apply {
             sender = "ZDF"

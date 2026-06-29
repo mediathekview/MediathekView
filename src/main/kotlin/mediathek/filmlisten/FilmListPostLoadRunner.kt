@@ -20,13 +20,16 @@ package mediathek.filmlisten
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
+import mediathek.daten.abo.AboServices
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import org.apache.logging.log4j.LogManager
 import kotlin.coroutines.cancellation.CancellationException
 
 internal class FilmListPostLoadRunner(
-    private val daten: Daten,
+    private val filmCatalog: FilmCatalog,
+    private val abos: AboServices,
+    private val blacklist: BlacklistServices,
     private val scope: CoroutineScope,
     private val ui: FilmListLoadUi,
 ) {
@@ -62,7 +65,14 @@ internal class FilmListPostLoadRunner(
     }
 
     private suspend fun buildPostLoadWorkerChain(writeFilmList: Boolean, widgets: FilmListStatusBarWidgets) =
-        FilmlistPostLoadTasks(daten, widgets.label, widgets.progressBar, widgets.host).run(writeFilmList)
+        FilmlistPostLoadTasks(
+            filmCatalog,
+            abos,
+            blacklist,
+            widgets.label,
+            widgets.progressBar,
+            widgets.host,
+        ).run(writeFilmList)
 
     private companion object {
         private val logger = LogManager.getLogger(FilmListPostLoadRunner::class.java)

@@ -18,13 +18,6 @@
 
 package mediathek.daten
 
-import mediathek.config.StandardLocations
-import mediathek.config.application.ApplicationConfiguration
-import mediathek.gui.dialog.DialogOk
-import mediathek.gui.dialogEinstellungen.PanelProgrammPfade
-import mediathek.gui.messages.ProgramSetChangedEvent
-import mediathek.tool.MessageBus
-import javax.swing.JFrame
 import javax.swing.table.DefaultTableModel
 import javax.swing.table.TableModel
 
@@ -114,44 +107,6 @@ class ListePset : ArrayList<DatenPset>() {
     val objectDataCombo: Array<String>
         get() = Array(size) { index -> this[index].name }
 
-    fun auf(idx: Int, auf: Boolean): Int {
-        val prog = removeAt(idx)
-        var neu = idx
-        if (auf) {
-            if (neu > 0) {
-                --neu
-            }
-        } else if (neu < size) {
-            ++neu
-        }
-        add(neu, prog)
-
-        MessageBus.messageBus.publishAsync(ProgramSetChangedEvent())
-
-        return neu
-    }
-
-    fun addPset(datenPset: DatenPset) {
-        add(datenPset)
-
-        MessageBus.messageBus.publishAsync(ProgramSetChangedEvent())
-    }
-
-    fun addPset(liste: ListePset): Boolean {
-        var ret = true
-        for (entry in liste) {
-            if (!add(entry)) {
-                ret = false
-            }
-        }
-
-        if (ret) {
-            MessageBus.messageBus.publishAsync(ProgramSetChangedEvent())
-        }
-
-        return ret
-    }
-
     fun createModel(): TableModel {
         val data = Array(size) { index -> createModelRow(this[index]) }
         return PsetTableModel(data)
@@ -170,63 +125,6 @@ class ListePset : ArrayList<DatenPset>() {
     }
 
     companion object {
-        const val MUSTER_PFAD_ZIEL = "ZIELPFAD"
-        const val MUSTER_PFAD_VLC = "PFAD_VLC"
-        const val MUSTER_PFAD_FFMPEG = "PFAD_FFMPEG"
-
-        @JvmStatic
-        fun progMusterErsetzen(parent: JFrame?, liste: ListePset) {
-            for (pSet in liste) {
-                progMusterErsetzen(parent, pSet)
-            }
-
-            MessageBus.messageBus.publishAsync(ProgramSetChangedEvent())
-        }
-
-        private fun progMusterErsetzen(parent: JFrame?, pSet: DatenPset) {
-            pSet.zielPfad = pSet.zielPfad.replace(MUSTER_PFAD_ZIEL, StandardLocations.getStandardDownloadPath())
-            var vlc = ""
-            var ffmpeg = ""
-
-            // damit nur die Variablen abgefragt werden, die auch verwendet werden
-            for (prog in pSet.listeProg) {
-                if (prog.programPath.contains(MUSTER_PFAD_VLC) || prog.switches.contains(MUSTER_PFAD_VLC)) {
-                    vlc = getPfadVlc(parent)
-                    break
-                }
-            }
-
-            for (prog in pSet.listeProg) {
-                if (prog.programPath.contains(MUSTER_PFAD_FFMPEG) || prog.switches.contains(MUSTER_PFAD_FFMPEG)) {
-                    ffmpeg = getPfadFFmpeg(parent)
-                    break
-                }
-            }
-
-            for (prog in pSet.listeProg) {
-                prog.programPath = prog.programPath.replace(MUSTER_PFAD_VLC, vlc)
-                prog.switches = prog.switches.replace(MUSTER_PFAD_VLC, vlc)
-                prog.programPath = prog.programPath.replace(MUSTER_PFAD_FFMPEG, ffmpeg)
-                prog.switches = prog.switches.replace(MUSTER_PFAD_FFMPEG, ffmpeg)
-            }
-        }
-
-        private fun getPfadVlc(parent: JFrame?): String {
-            // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-            if (ApplicationConfiguration.getInstance().standardVlcPath.isEmpty()) {
-                DialogOk(null, true, PanelProgrammPfade(parent, true, false), "Pfade Standardprogramme").isVisible = true
-            }
-            return ApplicationConfiguration.getInstance().standardVlcPath
-        }
-
-        private fun getPfadFFmpeg(parent: JFrame?): String {
-            // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-            if (ApplicationConfiguration.getInstance().standardFFmpegPath.isEmpty()) {
-                DialogOk(null, true, PanelProgrammPfade(parent, false, true), "Pfade Standardprogramme").isVisible = true
-            }
-            return ApplicationConfiguration.getInstance().standardFFmpegPath
-        }
-
         private fun createModelRow(datenPset: DatenPset): Array<Any?> {
             val values = datenPset.toArray()
             return Array<Any?>(DatenPset.MAX_ELEM) { index -> values[index] }.apply {

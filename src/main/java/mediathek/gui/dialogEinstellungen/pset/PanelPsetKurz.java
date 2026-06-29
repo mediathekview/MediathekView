@@ -83,7 +83,7 @@ public class PanelPsetKurz extends JPanel {
     }
 
     private void initBeob() {
-        jTextFieldName.getDocument().addDocumentListener(new DuplicatePsetNameCheckListener(jTextFieldName));
+        jTextFieldName.getDocument().addDocumentListener(new DuplicatePsetNameCheckListener(jTextFieldName, listePset));
         jTextFieldName.getDocument().addDocumentListener(new BeobDocName());
         var handler = new TextCopyPasteHandler<>(jTextFieldName);
         jTextFieldName.setComponentPopupMenu(handler.getPopupMenu());

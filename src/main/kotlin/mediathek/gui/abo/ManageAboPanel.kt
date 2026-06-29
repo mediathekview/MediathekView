@@ -23,11 +23,15 @@ import ca.odell.glazedlists.swing.GlazedListsSwing
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer
-import mediathek.config.Daten
+import mediathek.daten.DatenPset
+import mediathek.daten.ProgramSetRepository
+import mediathek.daten.abo.AboServices
 import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
 import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
+import mediathek.filmlisten.FilmCatalog
+import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
@@ -48,14 +52,28 @@ import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.time.LocalDate
+import java.util.function.BiConsumer
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
-class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
+class ManageAboPanel(
+    dialog: JDialog,
+    private val owner: JFrame,
+    private val programSets: ProgramSetRepository,
+    private val filmCatalog: FilmCatalog,
+    private val abos: AboServices,
+    private val filmListLoader: FilmeLaden,
+    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
+) : JPanel() {
     private val tabelle = AboTable()
-    private val daten = Daten.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
-    private val createAboAction = CreateNewAboAction(daten.listeAbo) { owner }
+    private val createAboAction = CreateNewAboAction(
+        programSets,
+        filmCatalog,
+        abos,
+        { owner },
+        this::ensureAboProgramSetAvailable,
+    )
     private var tableBinding: AboTableBinding
     private lateinit var tableColumnSettings: AboTableColumnSettings
     private val infoPanel = JXStatusBar()
@@ -92,13 +110,13 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
     init {
         initComponents()
 
-        tableBinding = AboTableBinding(tabelle, daten.listeAbo, this::filmCountForAbo)
+        tableBinding = AboTableBinding(tabelle, abos.list, this::filmCountForAbo)
         setupToolBar()
         setupInfoPanel()
         updateInfoText()
 
         MessageBus.messageBus.subscribe(this)
-        daten.filmeLaden.addFilmLoadListener(filmLoadListener)
+        filmListLoader.addFilmLoadListener(filmLoadListener)
 
         initListeners()
         initializeTable()
@@ -121,7 +139,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
     override fun removeNotify() {
         if (!disposed) {
             disposed = true
-            daten.filmeLaden.removeFilmLoadListener(filmLoadListener)
+            filmListLoader.removeFilmLoadListener(filmLoadListener)
             countRefreshJob?.cancel()
             uiScope.cancel()
             tableBinding.dispose()
@@ -150,11 +168,11 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
         val multiEdit = selectedAbos.size > 1
         val dialogAbo = if (multiEdit) editedAbo.copyForEditDialog() else editedAbo
 
-        if (!MissingProgramSetDialog.ensureAboProgramSetAvailable(owner)) {
+        if (!ensureAboProgramSetAvailable(owner)) {
             return
         }
 
-        val dialog = DialogEditAbo(owner, dialogAbo, multiEdit)
+        val dialog = DialogEditAbo(owner, programSets, filmCatalog, abos, dialogAbo, multiEdit)
         dialog.title = EDIT_ABO_TEXT
         dialog.isVisible = true
         if (!dialog.successful()) {
@@ -164,11 +182,22 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
         if (multiEdit) {
             applyMultiEdit(dialogAbo, selectedAbos, dialog.multiEditCbIndices)
         } else {
-            daten.listeAbo.fireAboChanged(editedAbo)
+            abos.list.fireAboChanged(editedAbo)
         }
 
         processAboChanges()
     }
+
+    private fun ensureAboProgramSetAvailable(parent: JFrame): Boolean =
+        MissingProgramSetDialog.ensureAboProgramSetAvailable(parent, programSets) { importParent, standardSets ->
+            GuiFunktionenProgramme.addSetVorlagen(
+                importParent,
+                programSets,
+                standardSets,
+                true,
+                programSetExporter,
+            )
+        }
 
     private fun DatenAbo.copyForEditDialog(): DatenAbo =
         DatenAbo().also { copy ->
@@ -212,7 +241,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
                     }
                 }
             }
-            daten.listeAbo.fireAboChanged(targetAbo)
+            abos.list.fireAboChanged(targetAbo)
         }
     }
 
@@ -268,19 +297,19 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
 
         swingToolBar.add(JLabel("Abos für Sender:"))
         senderCombo.maximumSize = Dimension(150, Int.MAX_VALUE)
-        val model = GlazedListsSwing.eventComboBoxModel(EventListWithEmptyFirstEntry(daten.allSendersList))
+        val model = GlazedListsSwing.eventComboBoxModel(EventListWithEmptyFirstEntry(filmCatalog.allSendersList))
         senderCombo.model = model
         senderCombo.selectedIndex = 0
         senderCombo.addActionListener { applySenderFilter() }
         swingToolBar.add(senderCombo)
     }
 
-    private fun numActiveAbos(): Int = daten.listeAbo.count { abo -> abo.isActive }
+    private fun numActiveAbos(): Int = abos.list.count { abo -> abo.isActive }
 
-    private fun numInactiveAbos(): Int = daten.listeAbo.count { abo -> !abo.isActive }
+    private fun numInactiveAbos(): Int = abos.list.count { abo -> !abo.isActive }
 
     private fun updateInfoText() {
-        val listeAbo = daten.listeAbo
+        val listeAbo = abos.list
         val numAbos = listeAbo.size
 
         totalAbos.text = if (numAbos == 1) {
@@ -301,7 +330,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
         }
 
     private fun initializeAboFilmCounts() {
-        if (daten.filmeLaden.isFilmListImportRunning) {
+        if (filmListLoader.isFilmListImportRunning) {
             markAboFilmCountsLoading()
         } else {
             scheduleAboFilmCountRefresh()
@@ -320,8 +349,8 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
             countRefreshJob = launch {
                 val counts = withContext(Dispatchers.Default) {
                     AboFilmCounts.countMatchingFilms(
-                        daten.listeAbo.withReadLock { toList() },
-                        daten.listeFilme.snapshot(),
+                        abos.list.withReadLock { toList() },
+                        filmCatalog.allFilms.snapshot(),
                     )
                 }
                 if (!disposed && refreshSequence == countRefreshSequence) {
@@ -345,20 +374,20 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
 
     private fun applyAboFilmCounts(counts: Map<DatenAbo, Int>) {
         val changedAbos = if (aboFilmCountsLoading) {
-            daten.listeAbo.withReadLock { toList() }
+            abos.list.withReadLock { toList() }
         } else {
             AboFilmCounts.changedAbos(aboFilmCounts, counts)
         }
         aboFilmCounts = counts
         aboFilmCountsLoading = false
         if (changedAbos.isNotEmpty()) {
-            daten.listeAbo.fireAbosChanged(changedAbos)
+            abos.list.fireAbosChanged(changedAbos)
         }
     }
 
     private fun markAboFilmCountsLoading() {
         aboFilmCountsLoading = true
-        daten.listeAbo.fireAbosChanged(daten.listeAbo.withReadLock { toList() })
+        abos.list.fireAbosChanged(abos.list.withReadLock { toList() })
     }
 
     private fun setupKeyMap() {
@@ -613,7 +642,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
             val ret = JOptionPane.showConfirmDialog(this, text, "Abo löschen", JOptionPane.YES_NO_OPTION)
             if (ret == JOptionPane.OK_OPTION) {
                 try {
-                    daten.listeAbo.removeAbosWithoutNotification(selectedAbos)
+                    abos.list.removeAbosWithoutNotification(selectedAbos)
                 } catch (e: Exception) {
                     logger.error("aboLoeschen", e)
                 }
@@ -636,7 +665,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
         if (selectedAbos.isNotEmpty()) {
             for (abo in selectedAbos) {
                 abo.isActive = ein
-                daten.listeAbo.fireAboChanged(abo)
+                abos.list.fireAboChanged(abo)
             }
             tabelle.requestFocusInWindow()
 
@@ -663,7 +692,7 @@ class ManageAboPanel(dialog: JDialog, private val owner: JFrame) : JPanel() {
             }
             try {
                 withContext(Dispatchers.Default) {
-                    daten.listeAbo.aenderungMelden()
+                    abos.notifyListChanged()
                 }
             } finally {
                 progressJob.cancel()

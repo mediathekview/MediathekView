@@ -18,11 +18,11 @@
 
 package mediathek.gui.tabs.tab_film.helpers
 
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
+import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.filter.FilmFilterState
 import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
@@ -51,6 +51,7 @@ import javax.swing.SwingUtilities
 import javax.swing.table.TableModel
 
 class LuceneGuiFilmeModelHelper(
+    private val filmCatalog: FilmCatalog,
     private val owner: Component,
     searchFieldData: SearchFieldData,
     filterController: FilmFilterController,
@@ -67,7 +68,7 @@ class LuceneGuiFilmeModelHelper(
             }
         }
 
-    private fun allFilms(): Collection<DatenFilm> = Daten.getInstance().listeFilmeNachBlackList
+    private fun allFilms(): Collection<DatenFilm> = filmCatalog.filteredFilms
 
     private fun filterFilms(
         listeFilme: IndexedFilmList,

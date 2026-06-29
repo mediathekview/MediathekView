@@ -20,9 +20,9 @@ package mediathek.gui.statistics
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
+import mediathek.filmlisten.FilmCatalog
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GermanStringSorter
 import org.apache.logging.log4j.LogManager
@@ -52,6 +52,7 @@ import kotlin.coroutines.CoroutineContext
 
 class FilmStatisticsDialog(
     owner: Window,
+    private val filmCatalog: FilmCatalog,
     private val action: AbstractAction
 ) : JDialog(owner), CoroutineScope {
 
@@ -133,7 +134,7 @@ class FilmStatisticsDialog(
         val zoneId = ZoneId.systemDefault()
         val currentGeoLocation = ApplicationConfiguration.getInstance().geographicLocation
 
-        val allEntries = Daten.getInstance().listeFilme.parallelStream().toList()
+        val allEntries = filmCatalog.allFilms.parallelStream().toList()
         val livestreams = allEntries.count(DatenFilm::isLivestream).toLong()
         val filmsWithoutLivestreams = allEntries.filterNot(DatenFilm::isLivestream)
         val totalFilms = filmsWithoutLivestreams.size.toLong()

@@ -1,24 +1,34 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
+import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
+import mediathek.daten.ProgramSetRepository;
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang;
 import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
+import java.util.function.BiConsumer;
 
 public class DialogImportPset extends JDialog {
     public boolean ok = false;
     private final ListePset liste;
-    private final Daten ddaten;
+    private final ProgramSetRepository programSets;
+    private final BiConsumer<DatenPset[], String> programSetExporter;
     private final JFrame parentComponent;
 
-    public DialogImportPset(JFrame parent, boolean modal, Daten dd, ListePset lliste) {
+    public DialogImportPset(
+            JFrame parent,
+            boolean modal,
+            ProgramSetRepository programSets,
+            ListePset lliste,
+            BiConsumer<DatenPset[], String> programSetExporter
+    ) {
         super(parent, modal);
         parentComponent = parent;
         initComponents();
-        ddaten = dd;
+        this.programSets = programSets;
+        this.programSetExporter = programSetExporter;
         this.setTitle("Programmset");
         liste = lliste;
         jScrollPane1.setViewportView(new PanelPsetKurz(parentComponent, liste));
@@ -29,7 +39,7 @@ public class DialogImportPset extends JDialog {
 
         jCheckBoxAlleEinstellungen.addActionListener(e -> {
             if (jCheckBoxAlleEinstellungen.isSelected()) {
-                jScrollPane1.setViewportView(new PanelPsetLang(parentComponent, liste));
+                jScrollPane1.setViewportView(new PanelPsetLang(parentComponent, programSets, liste, programSetExporter));
             } else {
                 jScrollPane1.setViewportView(new PanelPsetKurz(parentComponent, liste));
             }

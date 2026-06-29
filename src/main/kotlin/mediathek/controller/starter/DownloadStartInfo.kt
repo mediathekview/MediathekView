@@ -1,4 +1,4 @@
-package mediathek.daten
+package mediathek.controller.starter
 
 class DownloadStartInfo {
     /**

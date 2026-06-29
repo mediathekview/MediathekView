@@ -11,9 +11,9 @@ import ca.odell.glazedlists.swing.GlazedListsSwing
 import ca.odell.glazedlists.swing.TableComparatorChooser
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
+import mediathek.filmlisten.FilmCatalog
 import org.apache.logging.log4j.LogManager
 import java.awt.Window
 import java.awt.event.WindowAdapter
@@ -21,6 +21,7 @@ import java.awt.event.WindowEvent
 
 class DuplicateFilmDetailsDialog(
     owner: Window,
+    private val filmCatalog: FilmCatalog,
     private val film: DatenFilm,
 ) : DuplicateFilmDetailsDialogBase(owner) {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
@@ -67,7 +68,7 @@ class DuplicateFilmDetailsDialog(
         val url = film.urlNormalQuality
         dialogScope.launch {
             val duplicates = withContext(Dispatchers.Default) {
-                Daten.getInstance().listeFilme
+                filmCatalog.allFilms
                     .asSequence()
                     .filter { it.urlNormalQuality == url }
                     .toList()

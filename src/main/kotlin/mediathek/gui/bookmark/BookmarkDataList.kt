@@ -20,14 +20,16 @@ package mediathek.gui.bookmark
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
-import mediathek.config.Daten
 import mediathek.config.StandardLocations
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
+import mediathek.daten.ListeFilme
 import mediathek.gui.messages.BookmarkRefreshCompletedEvent
+import mediathek.gui.messages.history.FilmSeenStateChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.withReadLock
 import mediathek.tool.withWriteLock
+import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.time.LocalDate
@@ -36,8 +38,14 @@ import java.util.*
 /**
  * Stores a full list of bookmarked movies.
  */
-class BookmarkDataList {
+class BookmarkDataList(
+    private val allFilms: ListeFilme,
+) {
     private val bookmarks = BasicEventList<BookmarkData>()
+
+    init {
+        MessageBus.messageBus.subscribe(this)
+    }
 
     /**
      * Remove all bookmarks and deassociate film data
@@ -174,11 +182,15 @@ class BookmarkDataList {
             }
     }
 
-    // called from [SeenHistoryController].
     fun updateSeen(seen: Boolean, film: DatenFilm) {
         if (film.isBookmarked) {
             film.bookmark?.seen = seen
         }
+    }
+
+    @Handler
+    private fun handleFilmSeenStateChanged(event: FilmSeenStateChangedEvent) {
+        updateSeen(event.seen, event.films)
     }
 
     /**
@@ -211,10 +223,9 @@ class BookmarkDataList {
             ArrayList(bookmarks)
         }
 
-        val listeFilme = Daten.getInstance().listeFilme
         val filmSnapshot: List<DatenFilm> =
-            synchronized(listeFilme) {
-                ArrayList(listeFilme)
+            synchronized(allFilms) {
+                ArrayList(allFilms)
             }
         val requestedHashes = bookmarkSnapshot
             .asSequence()

@@ -18,9 +18,11 @@
 
 package mediathek.gui.tabs.tab_film.bookmark
 
-import mediathek.config.Daten
+import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DatenFilm
+import mediathek.daten.ProgramSetRepository
 import mediathek.gui.bookmark.BookmarkDialog
+import mediathek.gui.bookmark.BookmarkServices
 import javax.swing.JFrame
 
 class FilmBookmarkController(private val host: Host) {
@@ -28,18 +30,31 @@ class FilmBookmarkController(private val host: Host) {
 
     interface Host {
         fun ownerFrame(): JFrame
+        fun bookmarks(): BookmarkServices
+        fun programSets(): ProgramSetRepository
+        fun downloads(): DownloadServices
+        fun addDownloads(films: List<DatenFilm>)
+        fun editFilmDescription(film: DatenFilm)
         fun repaintOwner()
     }
 
     fun updateBookmarkListAndRefresh(filmList: List<DatenFilm>) {
-        val bookmarkList = Daten.getInstance().listeBookmarkList
+        val bookmarkList = host.bookmarks().list
         bookmarkList.checkAndBookmarkMovies(filmList)
         bookmarkList.saveToFile()
         host.repaintOwner()
     }
 
     fun showManageBookmarkWindow() {
-        val dialog = bookmarkDialog ?: BookmarkDialog(host.ownerFrame(), host::repaintOwner).also { bookmarkDialog = it }
+        val dialog = bookmarkDialog ?: BookmarkDialog(
+            host.ownerFrame(),
+            host.bookmarks(),
+            host.programSets(),
+            host.downloads(),
+            host::addDownloads,
+            host::editFilmDescription,
+            host::repaintOwner,
+        ).also { bookmarkDialog = it }
         dialog.isVisible = true
     }
 

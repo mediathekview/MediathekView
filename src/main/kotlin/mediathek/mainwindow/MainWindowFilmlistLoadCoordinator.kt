@@ -18,14 +18,20 @@
 
 package mediathek.mainwindow
 
-import mediathek.config.Daten
+import mediathek.daten.abo.AboServices
+import mediathek.daten.blacklist.BlacklistServices
+import mediathek.filmlisten.FilmCatalog
+import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.dialog.LoadFilmListDialog
 import mediathek.tool.FilmListUpdateType
 import javax.swing.JFrame
 
 class MainWindowFilmlistLoadCoordinator(
     private val owner: JFrame,
-    private val daten: Daten,
+    private val filmCatalog: FilmCatalog,
+    private val filmListLoader: FilmeLaden,
+    private val abos: AboServices,
+    private val blacklist: BlacklistServices,
     private val statusBarController: MainWindowStatusBarController,
 ) : AutoCloseable {
     private var startupFilmlistLoader: StartupFilmlistLoader? = null
@@ -36,7 +42,10 @@ class MainWindowFilmlistLoadCoordinator(
     fun loadStartupFilmlist() {
         statusBarController.installStartupProgress()
         startupFilmlistLoader = StartupFilmlistLoader(
-            daten,
+            filmCatalog,
+            filmListLoader,
+            abos,
+            blacklist,
             statusBarController.startupProgressLabel,
             statusBarController.startupProgressBar,
             ::finishStartupFilmlistLoad,
@@ -46,16 +55,16 @@ class MainWindowFilmlistLoadCoordinator(
 
     fun performFilmListLoadOperation(manualMode: Boolean) {
         if (manualMode || FilmListUpdateType.MANUAL.isConfigured()) {
-            LoadFilmListDialog(owner).isVisible = true
+            LoadFilmListDialog(owner, filmCatalog, filmListLoader).isVisible = true
         } else {
-            daten.filmeLaden.loadFilmlist("", false)
+            filmListLoader.loadFilmlist("", false)
         }
     }
 
     private fun finishStartupFilmlistLoad(remoteUpdateStarted: Boolean, failed: Boolean) {
         try {
             if (!remoteUpdateStarted) {
-                daten.filmeLaden.completeStartupFilmListLoad(failed)
+                filmListLoader.completeStartupFilmListLoad(failed)
             }
         } finally {
             statusBarController.uninstallStartupProgress()

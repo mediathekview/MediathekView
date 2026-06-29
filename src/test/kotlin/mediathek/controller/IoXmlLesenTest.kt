@@ -1,11 +1,14 @@
 package mediathek.controller
 
 import mediathek.config.Daten
+import mediathek.config.DatenXmlConfigDataFactory
 import mediathek.daten.*
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
 import mediathek.daten.blacklist.BlacklistRule
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
@@ -15,10 +18,21 @@ import java.time.LocalDate
 internal class IoXmlLesenTest {
     @TempDir
     lateinit var tempDir: Path
+    private lateinit var daten: Daten
+
+    @BeforeEach
+    fun setUp() {
+        daten = Daten()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        daten.downloads.shutdown()
+    }
 
     @Test
     fun datenLesenReadsProgramSetsAndFollowingPrograms() {
-        val listePset = Daten.getInstance().listePset
+        val listePset = daten.programSets.list
         val originalState = ListePset()
         originalState.addAll(listePset)
         try {
@@ -58,6 +72,7 @@ internal class IoXmlLesenTest {
 
             assertTrue(
                 IoXmlLesen(
+                    DatenXmlConfigDataFactory.from(daten),
                     downloadStoragePath = tempDir.resolve("downloads.json"),
                     blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
                 ).datenLesen(configFile),
@@ -94,24 +109,21 @@ internal class IoXmlLesenTest {
 
     @Test
     fun datenLesenReturnsFalseWhenFileDoesNotExist() {
-        assertFalse(IoXmlLesen().datenLesen(tempDir.resolve("missing.xml")))
+        assertFalse(IoXmlLesen(DatenXmlConfigDataFactory.from(daten)).datenLesen(tempDir.resolve("missing.xml")))
     }
 
     @Test
     fun datenLesenMigratesLegacyDownloadsToJson() {
-        val downloads = Daten.getInstance().listeDownloads
-        val originalDownloads = ArrayList(downloads)
-        try {
-            downloads.clear()
-            val configFile = tempDir.resolve("mediathek.xml")
-            val storageFile = tempDir.resolve("downloads.json")
-            Files.writeString(
-                configFile,
-                """
+        daten.downloads.clearQueuedDownloads()
+        val configFile = tempDir.resolve("mediathek.xml")
+        val storageFile = tempDir.resolve("downloads.json")
+        Files.writeString(
+            configFile,
+            """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <Mediathek>
                     <Downlad>
-                        <Nr>1</Nr>
+                        <Nr>42</Nr>
                         <Sender>ARD</Sender>
                         <Thema>Legacy Topic</Thema>
                         <Titel>Legacy Download</Titel>
@@ -119,38 +131,48 @@ internal class IoXmlLesenTest {
                         <Art>1</Art>
                         <Quelle>2</Quelle>
                     </Downlad>
+                    <Downlad>
+                        <Nr>99</Nr>
+                        <Sender>ZDF</Sender>
+                        <Thema>Legacy Topic</Thema>
+                        <Titel>Second Legacy Download</Titel>
+                        <URL>https://example.invalid/second-legacy.mp4</URL>
+                        <Art>1</Art>
+                        <Quelle>2</Quelle>
+                    </Downlad>
                 </Mediathek>
                 """.trimIndent(),
-            )
+        )
 
-            assertTrue(
-                IoXmlLesen(
-                    downloadStoragePath = storageFile,
-                    blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
-                ).datenLesen(configFile),
-            )
+        assertTrue(
+            IoXmlLesen(
+                DatenXmlConfigDataFactory.from(daten),
+                downloadStoragePath = storageFile,
+                blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
+            ).datenLesen(configFile),
+        )
 
-            assertTrue(Files.exists(storageFile))
-            assertEquals(1, downloads.size)
-            assertEquals("Legacy Download", downloads.single().title)
-            assertEquals("Legacy Download", DownloadStorage.read(storageFile).single().title)
-        } finally {
-            downloads.clear()
-            downloads.addAll(originalDownloads)
-        }
+        val downloads = daten.downloads.queuedDownloads()
+        assertTrue(Files.exists(storageFile))
+        assertEquals(2, downloads.size)
+        assertEquals("Legacy Download", downloads[0].title)
+        assertEquals(1, downloads[0].nr)
+        assertEquals("Second Legacy Download", downloads[1].title)
+        assertEquals(2, downloads[1].nr)
+        assertEquals(
+            listOf("Legacy Download", "Second Legacy Download"),
+            DownloadStorage.read(storageFile).map(DatenDownload::title),
+        )
     }
 
     @Test
     fun datenLesenUsesJsonDownloadsWhenPresent() {
-        val downloads = Daten.getInstance().listeDownloads
-        val originalDownloads = ArrayList(downloads)
-        try {
-            downloads.clear()
-            val configFile = tempDir.resolve("mediathek.xml")
-            val storageFile = tempDir.resolve("downloads.json")
-            Files.writeString(
-                configFile,
-                """
+        daten.downloads.clearQueuedDownloads()
+        val configFile = tempDir.resolve("mediathek.xml")
+        val storageFile = tempDir.resolve("downloads.json")
+        Files.writeString(
+            configFile,
+            """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <Mediathek>
                     <Downlad>
@@ -160,37 +182,35 @@ internal class IoXmlLesenTest {
                     </Downlad>
                 </Mediathek>
                 """.trimIndent(),
-            )
-            DownloadStorage.write(
-                storageFile,
-                listOf(
-                    DatenDownload().apply {
-                        title = "JSON Download"
-                        art = DownloadType.DIRECT
-                        quelle = DownloadSource.DOWNLOAD
-                        init()
-                    },
-                ),
-            )
+        )
+        DownloadStorage.write(
+            storageFile,
+            listOf(
+                DatenDownload().apply {
+                    title = "JSON Download"
+                    art = DownloadType.DIRECT
+                    quelle = DownloadSource.DOWNLOAD
+                    init()
+                },
+            ),
+        )
 
-            assertTrue(
-                IoXmlLesen(
-                    downloadStoragePath = storageFile,
-                    blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
-                ).datenLesen(configFile),
-            )
+        assertTrue(
+            IoXmlLesen(
+                DatenXmlConfigDataFactory.from(daten),
+                downloadStoragePath = storageFile,
+                blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
+            ).datenLesen(configFile),
+        )
 
-            assertEquals(1, downloads.size)
-            assertEquals("JSON Download", downloads.single().title)
-        } finally {
-            downloads.clear()
-            downloads.addAll(originalDownloads)
-        }
+        val downloads = daten.downloads.queuedDownloads()
+        assertEquals(1, downloads.size)
+        assertEquals("JSON Download", downloads.single().title)
     }
 
     @Test
     fun datenLesenMigratesLegacyBlacklistRulesToJson() {
-        val blacklist = Daten.getInstance().listeBlacklist
+        val blacklist = daten.blacklist.rules
         val originalBlacklist = ArrayList(blacklist)
         try {
             blacklist.clear()
@@ -214,6 +234,7 @@ internal class IoXmlLesenTest {
 
             assertTrue(
                 IoXmlLesen(
+                    DatenXmlConfigDataFactory.from(daten),
                     downloadStoragePath = downloadStorageFile,
                     blacklistRuleStoragePath = blacklistStorageFile,
                 ).datenLesen(configFile),
@@ -233,7 +254,7 @@ internal class IoXmlLesenTest {
 
     @Test
     fun datenLesenUsesJsonBlacklistRulesWhenPresent() {
-        val blacklist = Daten.getInstance().listeBlacklist
+        val blacklist = daten.blacklist.rules
         val originalBlacklist = ArrayList(blacklist)
         try {
             blacklist.clear()
@@ -255,6 +276,7 @@ internal class IoXmlLesenTest {
 
             assertTrue(
                 IoXmlLesen(
+                    DatenXmlConfigDataFactory.from(daten),
                     downloadStoragePath = downloadStorageFile,
                     blacklistRuleStoragePath = blacklistStorageFile,
                 ).datenLesen(configFile),
@@ -269,7 +291,7 @@ internal class IoXmlLesenTest {
 
     @Test
     fun datenLesenMigratesLegacyAbosToJson() {
-        val abos = Daten.getInstance().listeAbo
+        val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
             abos.clear()
@@ -301,6 +323,7 @@ internal class IoXmlLesenTest {
 
             assertTrue(
                 IoXmlLesen(
+                    DatenXmlConfigDataFactory.from(daten),
                     downloadStoragePath = tempDir.resolve("downloads.json"),
                     blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
                     aboRuleStoragePath = aboRulesFile,
@@ -330,7 +353,7 @@ internal class IoXmlLesenTest {
 
     @Test
     fun datenLesenUsesJsonAbosWhenPresent() {
-        val abos = Daten.getInstance().listeAbo
+        val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
             abos.clear()
@@ -360,6 +383,7 @@ internal class IoXmlLesenTest {
 
             assertTrue(
                 IoXmlLesen(
+                    DatenXmlConfigDataFactory.from(daten),
                     downloadStoragePath = tempDir.resolve("downloads.json"),
                     blacklistRuleStoragePath = tempDir.resolve("blacklist-rules.json"),
                     aboRuleStoragePath = aboRulesFile,

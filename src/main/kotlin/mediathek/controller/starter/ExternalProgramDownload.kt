@@ -3,8 +3,8 @@ package mediathek.controller.starter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import mediathek.config.CommandLineOptions
-import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.controller.history.AboHistoryController
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
@@ -25,6 +25,7 @@ import javax.swing.JFrame
  * Download files via an external program.
  */
 class ExternalProgramDownload(
+    private val aboHistoryControllerProvider: () -> AboHistoryController,
     private val datenDownload: DatenDownload,
     private val dialogOwnerProvider: () -> JFrame? = { null },
 ) : Thread("EXTERNAL PROGRAM DL THREAD: ${datenDownload.title}") {
@@ -97,7 +98,13 @@ class ExternalProgramDownload(
                 STAT_PRUEFEN -> {
                     if (datenDownload.quelle == DownloadSource.BUTTON || datenDownload.isDownloadManager) {
                         STAT_FERTIG_OK
-                    } else if (DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(Daten.getInstance(), datenDownload, start)) {
+                    } else if (
+                        DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
+                            aboHistoryControllerProvider(),
+                            datenDownload,
+                            start,
+                        )
+                    ) {
                         STAT_FERTIG_OK
                     } else {
                         STAT_FERTIG_FEHLER

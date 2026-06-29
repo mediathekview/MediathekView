@@ -1,8 +1,9 @@
 package mediathek.gui.actions.import_actions
 
-import mediathek.config.Daten
 import mediathek.controller.LegacyAboRuleXml
 import mediathek.controller.LegacyBlacklistRuleXml
+import mediathek.daten.abo.AboServices
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.messages.ReplaceListChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.ReplaceList
@@ -16,8 +17,10 @@ import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamException
 import javax.xml.stream.XMLStreamReader
 
-class OldConfigFileImporter {
-    private val daten: Daten = Daten.getInstance()
+class OldConfigFileImporter(
+    private val abos: AboServices,
+    private val blacklist: BlacklistServices,
+) {
     private val inFactory: XMLInputFactory = XMLInputFactory.newInstance()
 
     @Throws(IOException::class, XMLStreamException::class)
@@ -42,7 +45,7 @@ class OldConfigFileImporter {
                             } else if (importBlacklist && parser.localName == LegacyBlacklistRuleXml.TAG) {
                                 try {
                                     val rule = LegacyBlacklistRuleXml.readRule(parser)
-                                    if (daten.listeBlacklist.addWithoutNotification(rule)) {
+                                    if (blacklist.rules.addWithoutNotification(rule)) {
                                         foundBlacklistEntries++
                                     }
                                 }
@@ -69,11 +72,11 @@ class OldConfigFileImporter {
         }
 
         if (foundAbos > 0) {
-            daten.listeAbo.finishLoading()
-            daten.listeAbo.aenderungMelden()
+            abos.list.finishLoading()
+            abos.notifyListChanged()
         }
         if (foundBlacklistEntries > 0)
-            daten.listeBlacklist.filterListAndNotifyListeners()
+            blacklist.applyToFilmListAndNotifyListeners()
         if (foundReplaceListEntries > 0)
             MessageBus.messageBus.publishAsync(ReplaceListChangedEvent())
 
@@ -85,7 +88,7 @@ class OldConfigFileImporter {
     private fun importAboEntry(parser: XMLStreamReader): Boolean {
         return try {
             val datenAbo = LegacyAboRuleXml.readAbo(parser)
-            daten.listeAbo.addAboFromConfig(datenAbo)
+            abos.list.addAboFromConfig(datenAbo)
             true
         }
         catch (_: Exception) {

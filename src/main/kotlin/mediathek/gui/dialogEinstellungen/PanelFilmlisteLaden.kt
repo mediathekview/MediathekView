@@ -24,10 +24,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.SenderFilmlistLoadApprover
+import mediathek.filmlisten.FilmCatalog
+import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.messages.FilmListImportTypeChangedEvent
 import mediathek.swing.IconUtils
 import mediathek.tool.*
@@ -44,6 +45,8 @@ import javax.swing.event.DocumentListener
 class PanelFilmlisteLaden(
     inSettingsDialog: Boolean,
     private val owner: Frame,
+    private val filmCatalog: FilmCatalog,
+    private val filmListLoader: FilmeLaden,
 ) : PanelFilmlisteLadenBase() {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -84,9 +87,8 @@ class PanelFilmlisteLaden(
     private fun initReloadButton() {
         btnReloadFilmlist.icon = IconUtils.of(FontAwesomeSolid.REDO_ALT)
         btnReloadFilmlist.addActionListener {
-            val daten = Daten.getInstance()
-            daten.listeFilme.clear()
-            daten.filmeLaden.loadFilmlist("", hasSenderSelectionChanged())
+            filmCatalog.allFilms.clear()
+            filmListLoader.loadFilmlist("", hasSenderSelectionChanged())
         }
     }
 

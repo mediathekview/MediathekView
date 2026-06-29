@@ -1,5 +1,6 @@
 package mediathek.daten.blacklist
 
+import mediathek.config.Daten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import org.junit.jupiter.api.AfterEach
@@ -69,15 +70,15 @@ internal class ApplyBlacklistFilterPredicateTest {
 
     @Test
     fun downloadsPredicateUsesCompiledSnapshot() {
-        val blacklist = ListeBlacklist()
-        blacklist.addWithoutNotification(BlacklistRule("ARD", "", "tagesschau", ""))
+        val blacklist = BlacklistServices(Daten().filmCatalog)
+        blacklist.rules.addWithoutNotification(BlacklistRule("ARD", "", "tagesschau", ""))
 
         val predicate = blacklist.createDownloadsPredicate()
 
         assertFalse(predicate.test(film(sender = "ARD", thema = "News", title = "Tagesschau um acht")))
         assertTrue(predicate.test(film(sender = "ZDF", thema = "News", title = "Heute Journal")))
 
-        blacklist.addWithoutNotification(BlacklistRule("ZDF", "", "", ""))
+        blacklist.rules.addWithoutNotification(BlacklistRule("ZDF", "", "", ""))
 
         assertTrue(predicate.test(film(sender = "ZDF", thema = "News", title = "Heute Journal")))
         assertFalse(blacklist.createDownloadsPredicate().test(film(sender = "ZDF", thema = "News", title = "Heute Journal")))
@@ -85,8 +86,8 @@ internal class ApplyBlacklistFilterPredicateTest {
 
     @Test
     fun downloadsPredicateIgnoresInactiveRules() {
-        val blacklist = ListeBlacklist()
-        blacklist.addWithoutNotification(BlacklistRule("ARD", "", "tagesschau", "", active = false))
+        val blacklist = BlacklistServices(Daten().filmCatalog)
+        blacklist.rules.addWithoutNotification(BlacklistRule("ARD", "", "tagesschau", "", active = false))
 
         val predicate = blacklist.createDownloadsPredicate()
 

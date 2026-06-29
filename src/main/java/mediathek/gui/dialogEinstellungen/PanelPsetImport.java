@@ -1,9 +1,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.CommandLineOptions;
-import mediathek.config.Daten;
-import mediathek.daten.ListePset;
-import mediathek.daten.ListePsetVorlagen;
+import mediathek.daten.*;
 import mediathek.swing.IconUtils;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.SVGIconUtilities;
@@ -24,15 +22,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Arrays;
+import java.util.function.BiConsumer;
 
 public class PanelPsetImport extends JPanel {
     private final ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
     private static final Logger logger = LogManager.getLogger();
-    private final Daten daten;
+    private final ProgramSetRepository programSets;
+    private final BiConsumer<DatenPset[], String> programSetExporter;
     private final JFrame parentComponent;
 
-    public PanelPsetImport(Daten d, JFrame parentComponent) {
-        daten = d;
+    public PanelPsetImport(
+            ProgramSetRepository programSets,
+            BiConsumer<DatenPset[], String> programSetExporter,
+            JFrame parentComponent
+    ) {
+        this.programSets = programSets;
+        this.programSetExporter = programSetExporter;
         this.parentComponent = parentComponent;
         initComponents();
         init();
@@ -76,7 +81,7 @@ public class PanelPsetImport extends JPanel {
             colModel.getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             colModel.getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
         }
-        jButtonImportStandard.addActionListener(_ -> GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, true), true));
+        jButtonImportStandard.addActionListener(_ -> addSetVorlagen(ListePsetVorlagen.getStandarset(parentComponent, true), true));
     }
 
     private void importDatei(String datei) {
@@ -84,20 +89,30 @@ public class PanelPsetImport extends JPanel {
         ListePset listePset = ListePsetVorlagen.importPsetFile(datei, true);
         if (listePset != null) {
             // damit die Variablen ersetzt werden
-            ListePset.progMusterErsetzen(parentComponent, listePset);
+            ProgramSetTemplateResolver.replaceTemplates(parentComponent, listePset);
         }
 
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false);
+        addSetVorlagen(listePset, false);
     }
 
     private void importText() {
         ListePset listePset = ListePsetVorlagen.importPsetText(jTextAreaImport.getText(), true);
         if (listePset != null) {
             // damit die Variablen ersetzt werden
-            ListePset.progMusterErsetzen(parentComponent, listePset);
+            ProgramSetTemplateResolver.replaceTemplates(parentComponent, listePset);
         }
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false);
+        addSetVorlagen(listePset, false);
+    }
+
+    private boolean addSetVorlagen(ListePset listePset, boolean setVersion) {
+        return GuiFunktionenProgramme.addSetVorlagen(
+                parentComponent,
+                programSets,
+                listePset,
+                setVersion,
+                programSetExporter
+        );
     }
 
     private void tabelleLaden() {

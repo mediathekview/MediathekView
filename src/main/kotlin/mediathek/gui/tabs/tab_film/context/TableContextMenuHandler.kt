@@ -22,18 +22,26 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.swing.Swing
-import mediathek.config.Daten
+import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
+import mediathek.daten.ProgramSetRepository
+import mediathek.daten.abo.AboServices
+import mediathek.daten.blacklist.BlacklistServices
+import mediathek.filmlisten.FilmCatalog
+import mediathek.gui.actions.CreateNewAboAction
+import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.tabs.tab_film.JDownloadHelper
 import mediathek.gui.tabs.tab_film.PyLoadHelper
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.table.FilmTableButtonClickHandler
+import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.table.MVFilmTable
 import java.awt.Point
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.util.*
+import java.util.function.BiConsumer
 import javax.swing.JFrame
 
 /**
@@ -44,6 +52,12 @@ class TableContextMenuHandler(
 ) : MouseAdapter() {
     interface Host {
         fun table(): MVFilmTable
+        fun downloads(): DownloadServices
+        fun programSets(): ProgramSetRepository
+        fun filmCatalog(): FilmCatalog
+        fun abos(): AboServices
+        fun blacklist(): BlacklistServices
+        fun programSetExporter(): BiConsumer<Array<DatenPset>, String>
         fun getCurrentlySelectedFilm(): Optional<DatenFilm>
         fun getFilm(row: Int): Optional<DatenFilm>
         fun playSelectedFilm()
@@ -55,19 +69,49 @@ class TableContextMenuHandler(
         fun actions(): FilmUiActions
     }
 
-    private val daten = Daten.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
-    private val filmTableButtonClickHandler = FilmTableButtonClickHandler(host, daten)
-    private val filmAboAndBlacklistContextActions =
-        FilmAboAndBlacklistContextActions(host, daten, this::selectedFilmAtPopupPoint)
+    private val filmTableButtonClickHandler = FilmTableButtonClickHandler(host, host.downloads())
+    private val createAboAction = CreateNewAboAction(
+        host.programSets(),
+        host.filmCatalog(),
+        host.abos(),
+        { host.ownerFrame() },
+        { parent ->
+            MissingProgramSetDialog.ensureAboProgramSetAvailable(parent, host.programSets()) { importParent, standardSets ->
+                GuiFunktionenProgramme.addSetVorlagen(
+                    importParent,
+                    host.programSets(),
+                    standardSets,
+                    true,
+                    host.programSetExporter(),
+                )
+            }
+        },
+    )
+    private val filmAboAndBlacklistContextActions = FilmAboAndBlacklistContextActions(
+        host,
+        host.abos(),
+        host.blacklist(),
+        { film, withTitle ->
+            createAboAction.createAbo(
+                aboname = film.thema,
+                filmSender = film.sender,
+                filmThema = film.thema,
+                filmTitel = if (withTitle) film.title else "",
+            )
+        },
+        this::selectedFilmAtPopupPoint,
+    )
     private val jDownloadHelper = JDownloadHelper(host.ownerFrame())
     private val pyLoadHelper = PyLoadHelper(host.ownerFrame())
     private val filmSpecificContextMenuBuilder = FilmSpecificContextMenuBuilder(host, jDownloadHelper, pyLoadHelper)
-    private val filmFileAndDuplicateContextActions = FilmFileAndDuplicateContextActions(host, daten, uiScope)
+    private val filmFileAndDuplicateContextActions =
+        FilmFileAndDuplicateContextActions(host, host.filmCatalog(), host.blacklist(), uiScope)
     private val filmPrintAndHistoryContextActions =
         FilmPrintAndHistoryContextActions(host, this::selectedFilmAtPopupPoint)
     private val contextMenuBuilder = FilmContextMenuBuilder(
         host,
+        host.programSets(),
         filmAboAndBlacklistContextActions,
         filmSpecificContextMenuBuilder,
         filmPrintAndHistoryContextActions::addActions,

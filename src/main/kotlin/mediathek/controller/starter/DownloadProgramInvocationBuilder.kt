@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.daten
+package mediathek.controller.starter
 
-import mediathek.controller.starter.RuntimeExec
+import mediathek.daten.DatenProg
+import mediathek.daten.DownloadType
+import mediathek.daten.FilmResolution
 import mediathek.tool.ArteHlsQualitySelector
 
 internal data class DownloadInvocation(

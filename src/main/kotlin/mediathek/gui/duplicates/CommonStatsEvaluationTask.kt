@@ -1,13 +1,15 @@
 package mediathek.gui.duplicates
 
-import mediathek.config.Daten
+import mediathek.filmlisten.FilmCatalog
 
-class CommonStatsEvaluationTask : Runnable {
+class CommonStatsEvaluationTask(
+    private val filmCatalog: FilmCatalog,
+) : Runnable {
     override fun run() {
-        val statisticsMap = Daten.getInstance().listeFilme.parallelStream()
+        val statisticsMap = filmCatalog.allFilms.parallelStream()
             .filter { film -> !film.isLivestream }
             .countFilmsBySender()
 
-        replaceFilmStatistics(Daten.getInstance().commonStatistics, statisticsMap)
+        replaceFilmStatistics(filmCatalog.commonStatistics, statisticsMap)
     }
 }

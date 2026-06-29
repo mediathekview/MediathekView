@@ -18,14 +18,13 @@
 
 package mediathek.gui.tabs.tab_film.table
 
-import mediathek.config.Daten
-import mediathek.controller.starter.StartStatus
+import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
 
 class FilmTableButtonClickHandler(
     private val host: TableContextMenuHandler.Host,
-    private val daten: Daten,
+    private val downloads: DownloadServices,
 ) {
     fun isButtonColumn(column: Int): Boolean {
         if (column < 0) {
@@ -49,13 +48,7 @@ class FilmTableButtonClickHandler(
 
         when (host.table().convertColumnIndexToModel(column)) {
             DatenFilm.FILM_ABSPIELEN -> host.getCurrentlySelectedFilm().ifPresent { film ->
-                var dontPlay = false
-                val download = daten.listeDownloadsButton.getDownloadUrlFilm(film.urlNormalQuality)
-                if (download?.runtime?.runState?.status == StartStatus.RUNNING) {
-                    dontPlay = true
-                    daten.listeDownloadsButton.delDownloadButton(film.urlNormalQuality)
-                }
-                if (!dontPlay) {
+                if (!downloads.cancelRunningButtonDownloadByFilmUrl(film.urlNormalQuality)) {
                     host.playSelectedFilm()
                 }
             }

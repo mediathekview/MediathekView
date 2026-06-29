@@ -18,8 +18,8 @@
 
 package mediathek.gui.tabs.tab_film.lifecycle
 
-import mediathek.config.Daten
 import mediathek.config.application.FilterConfiguration
+import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.tabs.tab_film.FilmToolBar
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.filter.SwingFilterDialog
@@ -28,7 +28,7 @@ import mediathek.tool.table.MVFilmTable
 
 class FilmLifecycleHostAdapter(
     private val messageBusSubscriber: Any,
-    private val daten: Daten,
+    private val filmListLoader: FilmeLaden,
     private val tableProvider: () -> MVFilmTable,
     private val filterConfiguration: FilterConfiguration,
     private val bookmarkStartupReloadCoordinator: BookmarkStartupReloadCoordinator,
@@ -43,7 +43,7 @@ class FilmLifecycleHostAdapter(
 ) : FilmLifecycleController.Host {
     override fun messageBusSubscriber(): Any = messageBusSubscriber
 
-    override fun daten(): Daten = daten
+    override fun filmListLoader(): FilmeLaden = filmListLoader
 
     override fun table(): MVFilmTable = tableProvider()
 

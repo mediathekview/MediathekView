@@ -19,6 +19,8 @@
 package mediathek.mainwindow
 
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.controller.starter.DownloadServices
+import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.MVTray
 import raven.toast.Notifications
 import java.awt.PopupMenu
@@ -30,6 +32,8 @@ import javax.swing.JFrame
 import javax.swing.SwingUtilities
 
 class MainWindowPlatformIntegration(
+    private val filmCatalog: FilmCatalog,
+    private val downloads: DownloadServices,
     private val ownerFrame: JFrame,
     private val trayHost: TrayHost,
     private val loadFilmListAction: Action,
@@ -70,7 +74,7 @@ class MainWindowPlatformIntegration(
     fun initializeSystemTray() {
         val useTray = ApplicationConfiguration.getInstance().useTray
         if (tray == null && useTray) {
-            tray = systemTrayController.initialize(trayHost)
+            tray = systemTrayController.initialize(filmCatalog, downloads, trayHost)
         } else if (tray != null && !useTray) {
             closeSystemTray()
         }

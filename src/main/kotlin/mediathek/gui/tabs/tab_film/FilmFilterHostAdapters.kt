@@ -20,16 +20,16 @@ package mediathek.gui.tabs.tab_film
 
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.FilterList
-import mediathek.config.Daten
 import mediathek.controller.SenderFilmlistLoadApprover
+import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 
 class FilmFilterDataProviderAdapter(
-    private val datenProvider: () -> Daten,
+    private val filmCatalog: FilmCatalog,
 ) : FilmFilterController.DataProvider {
     override fun senderList(): EventList<String> =
-        FilterList(datenProvider().allSendersList, SenderFilmlistLoadApprover::isApproved)
+        FilterList(filmCatalog.allSendersList, SenderFilmlistLoadApprover::isApproved)
 
     override fun getThemen(senders: Collection<String>): List<String> =
-        datenProvider().listeFilmeNachBlackList.getThemen(senders)
+        filmCatalog.filteredFilms.getThemen(senders)
 }

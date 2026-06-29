@@ -17,7 +17,6 @@
  */
 package mediathek.controller
 
-import mediathek.config.Daten
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
@@ -33,7 +32,8 @@ import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamException
 import javax.xml.stream.XMLStreamReader
 
-class IoXmlLesen(
+class IoXmlLesen @JvmOverloads constructor(
+    private val configData: XmlConfigData,
     private val downloadStoragePath: Path = StandardLocations.getDownloadsFilePath(),
     private val blacklistRuleStoragePath: Path = StandardLocations.getBlacklistRulesFilePath(),
     private val aboRuleStoragePath: Path = StandardLocations.getAboRulesFilePath(),
@@ -43,8 +43,6 @@ class IoXmlLesen(
         setProperty(XMLInputFactory.SUPPORT_DTD, false)
         setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false)
     }
-    private val daten = Daten.getInstance()
-
     fun datenLesen(xmlFilePath: Path): Boolean {
         var ret = false
         if (Files.exists(xmlFilePath)) {
@@ -68,7 +66,7 @@ class IoXmlLesen(
                                             datenPset = readProgramSet(parser)
                                             val currentPset = datenPset
                                             if (currentPset != null) {
-                                                daten.listePset.add(currentPset)
+                                                configData.programSets.add(currentPset)
                                             }
                                         }
 
@@ -194,7 +192,7 @@ class IoXmlLesen(
         try {
             val datenAbo = LegacyAboRuleXml.readAbo(parser)
             if (readLegacyAboRule) {
-                daten.listeAbo.addAboFromConfig(datenAbo)
+                configData.abos.addAboFromConfig(datenAbo)
                 return true
             }
         } catch (ex: XMLStreamException) {
@@ -207,7 +205,7 @@ class IoXmlLesen(
         try {
             val rule = LegacyBlacklistRuleXml.readRule(parser)
             if (readLegacyBlacklistRule) {
-                return daten.listeBlacklist.addWithoutNotification(rule)
+                return configData.blacklistRules.addWithoutNotification(rule)
             }
         } catch (ex: XMLStreamException) {
             logger.error("Failed to read blacklist rule", ex)
@@ -220,7 +218,7 @@ class IoXmlLesen(
             val download = DatenDownload.readFromConfig(parser)
             // abo entries will be generated...but we need this for CLI so far
             if (readLegacyDownload && !download.isFromAbo) {
-                daten.listeDownloads.add(download)
+                configData.downloads.addLoadedDownload(download)
                 return true
             }
         } catch (ex: Exception) {
@@ -231,7 +229,7 @@ class IoXmlLesen(
 
     private fun readDownloadsFromJson() {
         try {
-            daten.listeDownloads.addAll(DownloadStorage.read(downloadStoragePath))
+            configData.downloads.addLoadedDownloads(DownloadStorage.read(downloadStoragePath))
         } catch (ex: Exception) {
             logger.error("Failed to read downloads from {}", downloadStoragePath, ex)
         }
@@ -239,7 +237,7 @@ class IoXmlLesen(
 
     private fun readBlacklistRulesFromJson() {
         try {
-            daten.listeBlacklist.addAllWithoutNotification(BlacklistRuleStorage.read(blacklistRuleStoragePath))
+            configData.blacklistRules.addAllWithoutNotification(BlacklistRuleStorage.read(blacklistRuleStoragePath))
         } catch (ex: Exception) {
             logger.error("Failed to read blacklist rules from {}", blacklistRuleStoragePath, ex)
         }
@@ -247,7 +245,7 @@ class IoXmlLesen(
 
     private fun readAboRulesFromJson() {
         try {
-            AboRuleStorage.read(aboRuleStoragePath).forEach(daten.listeAbo::addAboFromConfig)
+            AboRuleStorage.read(aboRuleStoragePath).forEach(configData.abos::addAboFromConfig)
         } catch (ex: Exception) {
             logger.error("Failed to read abo rules from {}", aboRuleStoragePath, ex)
         }
@@ -255,7 +253,7 @@ class IoXmlLesen(
 
     private fun writeMigratedDownloads() {
         try {
-            DownloadStorage.write(downloadStoragePath, daten.listeDownloads)
+            DownloadStorage.write(downloadStoragePath, configData.downloads.queuedDownloads())
         } catch (ex: Exception) {
             logger.error("Failed to migrate downloads to {}", downloadStoragePath, ex)
         }
@@ -263,7 +261,7 @@ class IoXmlLesen(
 
     private fun writeMigratedAboRules() {
         try {
-            AboRuleStorage.write(aboRuleStoragePath, daten.listeAbo)
+            AboRuleStorage.write(aboRuleStoragePath, configData.abos)
         } catch (ex: Exception) {
             logger.error("Failed to migrate abo rules to {}", aboRuleStoragePath, ex)
         }
@@ -271,7 +269,7 @@ class IoXmlLesen(
 
     private fun writeMigratedBlacklistRules() {
         try {
-            BlacklistRuleStorage.write(blacklistRuleStoragePath, daten.listeBlacklist)
+            BlacklistRuleStorage.write(blacklistRuleStoragePath, configData.blacklistRules)
         } catch (ex: Exception) {
             logger.error("Failed to migrate blacklist rules to {}", blacklistRuleStoragePath, ex)
         }
@@ -289,8 +287,8 @@ class IoXmlLesen(
     }
 
     private fun sortLists() {
-        daten.listeDownloads.listeNummerieren()
-        daten.listeAbo.finishLoading()
+        configData.downloads.renumberQueuedDownloads()
+        configData.abos.finishLoading()
     }
 
     private inline fun XMLStreamReader.use(block: (XMLStreamReader) -> Unit) {

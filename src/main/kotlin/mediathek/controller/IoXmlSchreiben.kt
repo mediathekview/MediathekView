@@ -17,7 +17,6 @@
  */
 package mediathek.controller
 
-import mediathek.config.Daten
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenProg
 import mediathek.daten.DatenPset
@@ -31,7 +30,8 @@ import java.nio.file.Paths
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
 
-class IoXmlSchreiben(
+class IoXmlSchreiben @JvmOverloads constructor(
+    private val configData: XmlConfigData,
     private val downloadStoragePath: Path = StandardLocations.getDownloadsFilePath(),
 ) {
     private val outFactory: XMLOutputFactory = XMLOutputFactory.newInstance()
@@ -83,7 +83,7 @@ class IoXmlSchreiben(
         writer.writeCharacters("\n\n")
         writeNewLine(writer)
         // Proggruppen schreiben, bei Konfig-Datei
-        for (datenPset in Daten.getInstance().listePset) {
+        for (datenPset in configData.programSets) {
             writeProgramSet(writer, datenPset)
             for (datenProg in datenPset.listeProg) {
                 xmlSchreibenDaten(writer, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.toArray(), true)
@@ -103,7 +103,7 @@ class IoXmlSchreiben(
 
     private fun writeDownloads() {
         try {
-            DownloadStorage.write(downloadStoragePath, Daten.getInstance().listeDownloads)
+            DownloadStorage.write(downloadStoragePath, configData.downloads.queuedDownloads())
         } catch (ex: Exception) {
             logger.error("writeDownloads error!", ex)
         }

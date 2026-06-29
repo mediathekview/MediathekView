@@ -18,8 +18,8 @@
 
 package mediathek.gui.actions
 
-import mediathek.config.Daten
 import mediathek.config.Konstanten
+import mediathek.gui.bookmark.BookmarkServices
 import mediathek.mainwindow.FilmBookmarkHost
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF
@@ -28,6 +28,7 @@ import javax.swing.AbstractAction
 import javax.swing.JOptionPane
 
 class DeleteBookmarksAction(
+    private val bookmarks: BookmarkServices,
     private val host: FilmBookmarkHost,
 ) : AbstractAction() {
     init {
@@ -52,7 +53,7 @@ class DeleteBookmarksAction(
             JOptionPane.YES_NO_OPTION,
         )
         if (result == JOptionPane.YES_OPTION) {
-            val bookmarkList = Daten.getInstance().listeBookmarkList
+            val bookmarkList = bookmarks.list
             bookmarkList.clear()
             bookmarkList.saveToFile()
             JOptionPane.showMessageDialog(

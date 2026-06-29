@@ -18,9 +18,10 @@
 
 package mediathek.windows
 
+import mediathek.controller.starter.DownloadServices
 import mediathek.gui.progress.ThreadedDownloadProgressIndicator
 import javax.swing.JFrame
 
-class WindowsDownloadProgressIndicator(parent: JFrame) : ThreadedDownloadProgressIndicator(
-    { TaskbarIndicatorThread(parent) },
+class WindowsDownloadProgressIndicator(parent: JFrame, downloads: DownloadServices) : ThreadedDownloadProgressIndicator(
+    { TaskbarIndicatorThread(parent, downloads) },
 )

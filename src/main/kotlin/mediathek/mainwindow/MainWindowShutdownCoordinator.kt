@@ -19,10 +19,12 @@
 package mediathek.mainwindow
 
 import mediathek.config.CommandLineOptions
-import mediathek.config.Daten
+import mediathek.config.DatenConfigurationPersistence
 import mediathek.config.SettingsResetService
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.starter.DownloadServices
+import mediathek.gui.bookmark.BookmarkServices
 import mediathek.shutdown.ComputerShutdown
 import mediathek.tool.RuntimeStatistics
 import java.awt.Cursor
@@ -30,7 +32,9 @@ import javax.swing.JFrame
 
 class MainWindowShutdownCoordinator(
     private val owner: JFrame,
-    private val daten: Daten,
+    private val downloads: DownloadServices,
+    private val bookmarks: BookmarkServices,
+    private val configurationPersistence: DatenConfigurationPersistence,
     private val dialogCoordinator: MainWindowDialogCoordinator,
     private val tabRegistry: MainWindowTabRegistry,
     private val computerShutdown: ComputerShutdown,
@@ -69,13 +73,13 @@ class MainWindowShutdownCoordinator(
             .edt("Close bandwidth monitor", dialogCoordinator::closeBandwidthMonitor)
             .edt("Close abo dialog", dialogCoordinator::closeAboDialog)
             .background("Perform history maintenance", ::performHistoryMaintenance)
-            .background("Save bookmark list") { daten.listeBookmarkList.saveToFile() }
-            .background("Stop starter thread") { daten.downloadStartCoordinator.shutdown() }
+            .background("Save bookmark list") { bookmarks.saveToFile() }
+            .background("Stop starter thread") { downloads.shutdown() }
             .edt("Close system tray", closeSystemTray)
             .background("Close notification center", closeNotificationCenter)
             .edt("Dispose main window tabs", tabRegistry::disposeTabs)
-            .background("Stop all downloads") { daten.listeDownloads.requestStopForShutdown() }
-            .background("Save app data", daten::allesSpeichern)
+            .background("Stop all downloads") { downloads.requestStopForShutdown() }
+            .background("Save app data") { configurationPersistence.saveAll() }
             .background("Close seen history database", SeenHistoryController::closeSharedStore)
             .edt("Close main window", owner::dispose)
             .background("Write app config") { ApplicationConfiguration.getInstance().writeConfiguration() }

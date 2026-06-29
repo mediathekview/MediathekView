@@ -1,7 +1,7 @@
 package mediathek.gui.tabs.tab_film
 
-import mediathek.config.Daten
 import mediathek.daten.DatenPset
+import mediathek.daten.ProgramSetRepository
 import mediathek.gui.messages.ProgramSetChangedEvent
 import mediathek.tool.MessageBus.messageBus
 import net.engio.mbassy.listener.Handler
@@ -12,7 +12,10 @@ import java.awt.FlowLayout
 import java.util.function.Consumer
 import javax.swing.*
 
-class PsetButtonsPanel(private val startFilmWithPset: Consumer<DatenPset>) : JPanel() {
+class PsetButtonsPanel(
+    private val programSets: ProgramSetRepository,
+    private val startFilmWithPset: Consumer<DatenPset>,
+) : JPanel() {
     private val btnPanel = JPanel()
 
     init {
@@ -44,7 +47,7 @@ class PsetButtonsPanel(private val startFilmWithPset: Consumer<DatenPset>) : JPa
     protected fun setupButtonLayout() {
         btnPanel.removeAll()
 
-        for (pset in Daten.getInstance().listePset.listeButton) {
+        for (pset in programSets.list.listeButton) {
             if (!pset.isFreeLine) {
                 val component: JComponent = if (pset.isLabel) {
                     JLabel(pset.name)
