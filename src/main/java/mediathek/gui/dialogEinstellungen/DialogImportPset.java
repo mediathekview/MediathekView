@@ -11,10 +11,8 @@ import javax.swing.*;
 import java.util.function.BiConsumer;
 
 public class DialogImportPset extends JDialog {
-    public boolean ok = false;
+    public boolean ok;
     private final ListePset liste;
-    private final ProgramSetRepository programSets;
-    private final BiConsumer<DatenPset[], String> programSetExporter;
     private final JFrame parentComponent;
 
     public DialogImportPset(
@@ -27,17 +25,15 @@ public class DialogImportPset extends JDialog {
         super(parent, modal);
         parentComponent = parent;
         initComponents();
-        this.programSets = programSets;
-        this.programSetExporter = programSetExporter;
         this.setTitle("Programmset");
         liste = lliste;
         jScrollPane1.setViewportView(new PanelPsetKurz(parentComponent, liste));
-        jButtonOk.addActionListener(e -> disposeWithCode(true));
-        jButtonAbbrechen.addActionListener(e -> disposeWithCode(false));
+        jButtonOk.addActionListener(_ -> disposeWithCode(true));
+        jButtonAbbrechen.addActionListener(_ -> disposeWithCode(false));
 
         EscapeKeyHandler.installHandler(this, () -> disposeWithCode(false));
 
-        jCheckBoxAlleEinstellungen.addActionListener(e -> {
+        jCheckBoxAlleEinstellungen.addActionListener(_ -> {
             if (jCheckBoxAlleEinstellungen.isSelected()) {
                 jScrollPane1.setViewportView(new PanelPsetLang(parentComponent, programSets, liste, programSetExporter));
             } else {
