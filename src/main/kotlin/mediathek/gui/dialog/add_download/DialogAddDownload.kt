@@ -56,7 +56,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class DialogAddDownload(
     private val ownerFrame: Frame,
-    private val programSets: ProgramSetRepository,
+    programSets: ProgramSetRepository,
     private val downloads: DownloadServices,
     private val film: DatenFilm,
     /**

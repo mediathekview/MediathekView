@@ -280,7 +280,7 @@ class AudiothekPanel(
         statusPanel.setStandVisible(true)
         statusPanel.setStand(formatDatasetStand(result.dataset))
         refreshVisibleResults()
-        triggerPodcastSearch(query, resetState = false)
+        triggerPodcastSearch(query)
         if (isManualReload) {
             showReloadMessage(result)
         }
@@ -403,7 +403,7 @@ class AudiothekPanel(
         table.clearExternalSearchEntries()
         table.applyFilter(query)
         refreshVisibleResults()
-        triggerPodcastSearch(query, resetState = false)
+        triggerPodcastSearch(query)
     }
 
     private fun handleOnlineSearchToggled(enabled: Boolean) {
@@ -420,13 +420,9 @@ class AudiothekPanel(
         applyFilterNow(query)
     }
 
-    private fun triggerPodcastSearch(query: String, resetState: Boolean = true) {
-        if (resetState) {
-            resetExternalSearchState()
-        } else {
-            podcastSearchJob?.cancel()
-            toolBar.setPodcastSearchBusy(false)
-        }
+    private fun triggerPodcastSearch(query: String) {
+        podcastSearchJob?.cancel()
+        toolBar.setPodcastSearchBusy(false)
 
         val normalizedQuery = query.trim()
         if (!toolBar.isOnlineSearchEnabled()) {
@@ -455,12 +451,6 @@ class AudiothekPanel(
                 }
             }
         }
-    }
-
-    private fun resetExternalSearchState() {
-        cancelPodcastSearch()
-        table.clearExternalSearchEntries()
-        refreshResultCount()
     }
 
     private fun cancelPodcastSearch() {

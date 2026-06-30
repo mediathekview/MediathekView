@@ -25,7 +25,6 @@ import mediathek.swing.SwingDispatch
 import org.apache.logging.log4j.LogManager
 import org.sqlite.SQLiteErrorCode
 import org.sqlite.SQLiteException
-import java.awt.Component
 import java.awt.Dialog
 import java.nio.file.Files
 import java.nio.file.Path
@@ -66,13 +65,11 @@ internal object SeenHistoryCorruptionHandler {
             return
         }
         showMessage(
-            null,
             "<html>Die History-Datenbank ist beschädigt:<br/>$dbPath<br/><br/>" +
                 "Für diese Sitzung wird eine leere temporäre History-Datenbank verwendet.<br/>" +
                 "Reparieren Sie die Datenbank mittels dem Menüpunkt:<br/>" +
                 "<i>Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...</i><br/><br/>" +
-                    "<b>Alle gesehenen Filme gehen ab jetzt verloren!</b></html>",
-            JOptionPane.ERROR_MESSAGE
+                    "<b>Alle gesehenen Filme gehen ab jetzt verloren!</b></html>"
         )
     }
 
@@ -94,10 +91,10 @@ internal object SeenHistoryCorruptionHandler {
             }
     }
 
-    private fun showMessage(owner: Component?, message: String, messageType: Int) {
+    private fun showMessage(message: String) {
         SwingDispatch.callAndWait("Show seen history corruption warning") {
-            val optionPane = JOptionPane(message, messageType)
-            val dialog = optionPane.createDialog(owner, Konstanten.PROGRAMMNAME).apply {
+            val optionPane = JOptionPane(message, JOptionPane.ERROR_MESSAGE)
+            val dialog = optionPane.createDialog(null, Konstanten.PROGRAMMNAME).apply {
                 modalityType = Dialog.ModalityType.APPLICATION_MODAL
                 isAlwaysOnTop = true
                 defaultCloseOperation = JDialog.DISPOSE_ON_CLOSE

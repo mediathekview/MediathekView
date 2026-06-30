@@ -60,21 +60,21 @@ class PanelEinstellungenGeo(
     private fun getScaledIconResource(url: String): ScaledImageIcon {
         val icon = ImageIcon(requireNotNull(javaClass.getResource(url)))
         val imageDim = Dimension(icon.iconWidth, icon.iconHeight)
-        val destDim = calculateFittedDimension(imageDim, FLAG_DIMENSIONS)
+        val destDim = calculateFittedDimension(imageDim)
         return ScaledImageIcon(icon, destDim.width, destDim.height)
     }
 
-    private fun calculateFittedDimension(imageSize: Dimension, boundary: Dimension): Dimension {
+    private fun calculateFittedDimension(imageSize: Dimension): Dimension {
         var newWidth = imageSize.width
         var newHeight = imageSize.height
 
-        if (imageSize.width > boundary.width) {
-            newWidth = boundary.width
+        if (imageSize.width > FLAG_DIMENSIONS.width) {
+            newWidth = FLAG_DIMENSIONS.width
             newHeight = newWidth * imageSize.height / imageSize.width
         }
 
-        if (newHeight > boundary.height) {
-            newHeight = boundary.height
+        if (newHeight > FLAG_DIMENSIONS.height) {
+            newHeight = FLAG_DIMENSIONS.height
             newWidth = newHeight * imageSize.width / imageSize.height
         }
 
