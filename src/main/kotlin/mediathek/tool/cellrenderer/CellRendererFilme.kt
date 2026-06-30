@@ -24,6 +24,7 @@ import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.swing.IconUtils
+import mediathek.tool.models.FilmColumn
 import mediathek.tool.table.MVTable
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
@@ -69,53 +70,56 @@ class CellRendererFilme(
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
 
             val rowModelIndex = table.convertRowIndexToModel(row)
-            val columnModelIndex = table.convertColumnIndexToModel(column)
-            val datenFilm = table.model.getValueAt(rowModelIndex, DatenFilm.FILM_REF) as DatenFilm
+            val filmColumn = FilmColumn.fromIndex(table.convertColumnIndexToModel(column))
+            val datenFilm = table.model.getValueAt(rowModelIndex, FilmColumn.REF.index) as DatenFilm
             val mvTable = table as MVTable
 
             if (mvTable.isLineBreak()) {
                 horizontalAlignment = LEFT
                 verticalAlignment = TOP
 
-                when (columnModelIndex) {
-                    DatenFilm.FILM_THEMA,
-                    DatenFilm.FILM_TITEL,
-                    DatenFilm.FILM_URL,
+                when (filmColumn) {
+                    FilmColumn.TOPIC,
+                    FilmColumn.TITLE,
+                    FilmColumn.URL,
                         -> return createWrappedTextArea(valueText(value), useLabelFont = true)
+
+                    else -> Unit
                 }
             } else {
-                applyHorizontalAlignment(columnModelIndex)
+                applyHorizontalAlignment(filmColumn)
             }
 
-            when (columnModelIndex) {
-                DatenFilm.FILM_DAUER -> text = datenFilm.filmLengthAsString
-                DatenFilm.FILM_ABSPIELEN -> {
+            when (filmColumn) {
+                FilmColumn.DURATION -> text = datenFilm.filmLengthAsString
+                FilmColumn.PLAY -> {
                     val datenDownload = downloads.findButtonDownloadByFilmUrl(datenFilm.urlNormalQuality)
                     handleButtonStartColumn(datenDownload, isSelected)
                 }
 
-                DatenFilm.FILM_AUFZEICHNEN -> handleButtonDownloadColumn(isSelected)
-                DatenFilm.FILM_MERKEN -> handleButtonBookmarkColumn(
+                FilmColumn.SAVE -> handleButtonDownloadColumn(isSelected)
+                FilmColumn.BOOKMARK -> handleButtonBookmarkColumn(
                     datenFilm.isBookmarked,
                     isSelected,
                     datenFilm.isLivestream
                 )
 
-                DatenFilm.FILM_SENDER -> {
+                FilmColumn.SENDER -> {
                     if (mvTable.showSenderIcons()) {
                         val targetDim = getSenderCellDimension(table, row, column)
                         setSenderIcon(valueText(value), targetDim, isSelected)
                     }
                 }
 
-                DatenFilm.FILM_TITEL -> {
+                FilmColumn.TITLE -> {
                     text = datenFilm.title
                     setIndicatorIcons(table, datenFilm, isSelected)
                 }
 
-                DatenFilm.FILM_GROESSE -> text = datenFilm.fileSizeAsString
-                DatenFilm.FILM_GEO -> drawGeolocationIcons(datenFilm, isSelected)
-                DatenFilm.FILM_ZEIT -> drawTime(datenFilm)
+                FilmColumn.SIZE -> text = datenFilm.fileSizeAsString
+                FilmColumn.GEO -> drawGeolocationIcons(datenFilm, isSelected)
+                FilmColumn.TIME -> drawTime(datenFilm)
+                else -> Unit
             }
         } catch (ex: Exception) {
             logger.error("Fehler", ex)
@@ -141,18 +145,19 @@ class CellRendererFilme(
         }
     }
 
-    private fun applyHorizontalAlignment(columnModelIndex: Int) {
-        when (columnModelIndex) {
-            DatenFilm.FILM_NR,
-            DatenFilm.FILM_DATUM,
-            DatenFilm.FILM_ZEIT,
-            DatenFilm.FILM_DAUER,
-            DatenFilm.FILM_ABSPIELEN,
-            DatenFilm.FILM_AUFZEICHNEN,
-            DatenFilm.FILM_MERKEN,
+    private fun applyHorizontalAlignment(filmColumn: FilmColumn) {
+        when (filmColumn) {
+            FilmColumn.NUMBER,
+            FilmColumn.DATE,
+            FilmColumn.TIME,
+            FilmColumn.DURATION,
+            FilmColumn.PLAY,
+            FilmColumn.SAVE,
+            FilmColumn.BOOKMARK,
                 -> horizontalAlignment = CENTER
 
-            DatenFilm.FILM_GROESSE -> horizontalAlignment = RIGHT
+            FilmColumn.SIZE -> horizontalAlignment = RIGHT
+            else -> Unit
         }
     }
 

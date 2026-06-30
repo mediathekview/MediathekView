@@ -18,7 +18,7 @@
 
 package mediathek.gui.tabs.tab_downloads
 
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.tool.NoSelectionErrorDialog
@@ -40,12 +40,12 @@ class DownloadsTableSelection(
         val modelRowCount = tableModel.rowCount
 
         for (row in table.selectedRows) {
-            if (row < 0 || row >= viewRowCount) {
+            if (row !in 0..<viewRowCount) {
                 continue
             }
             try {
                 val modelRow = table.convertRowIndexToModel(row)
-                if (modelRow < 0 || modelRow >= modelRowCount) {
+                if (modelRow !in 0..<modelRowCount) {
                     continue
                 }
                 downloadAtModelRow(modelRow)?.let(selectedDownloads::add)
@@ -108,5 +108,5 @@ class DownloadsTableSelection(
         downloadAtModelRow(table.convertRowIndexToModel(row)) as DatenDownload
 
     private fun downloadAtModelRow(row: Int): DatenDownload? =
-        table.model.getValueAt(row, DownloadColumns.REF) as? DatenDownload
+        table.model.getValueAt(row, DownloadColumn.REF.index) as? DatenDownload
 }

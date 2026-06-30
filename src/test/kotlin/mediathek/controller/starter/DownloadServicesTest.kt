@@ -1,7 +1,7 @@
 package mediathek.controller.starter
 
 import mediathek.config.Daten
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.DownloadSource
@@ -222,7 +222,7 @@ internal class DownloadServicesTest {
         daten.downloads.reloadTableModel(model, allDownloadsFilter())
 
         assertEquals(1, model.rowCount)
-        assertSame(download, model.getValueAt(0, DownloadColumns.REF))
+        assertSame(download, model.getValueAt(0, DownloadColumn.REF.index))
     }
 
     @Test

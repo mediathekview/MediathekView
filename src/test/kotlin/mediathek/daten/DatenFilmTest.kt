@@ -1,6 +1,7 @@
 package mediathek.daten
 
 import mediathek.daten.abo.DatenAbo
+import mediathek.filmlisten.reader.FilmListReader
 import mediathek.gui.bookmark.BookmarkData
 import mediathek.tool.FileSize
 import mediathek.tool.datum.DatumFilm
@@ -22,7 +23,7 @@ internal class DatenFilmTest {
     fun testFilmLengthCalculation(input: String?, expected: Long) {
         val film = DatenFilm()
 
-        film.setFilmLengthSeconds(expected.toInt())
+        film.setFilmLengthSeconds(parseDurationSecondsOrZero(input))
         film.init()
 
         assertEquals(expected.toInt(), film.filmLength)
@@ -58,7 +59,7 @@ internal class DatenFilmTest {
         film.websiteUrl = "https://example.org/seite"
 
         assertEquals(
-            legacySha256("ARTE", "München", "https://example.org/äöü-\uD83D\uDE80.mp4", "https://example.org/seite"),
+            legacySha256(film),
             film.sha256,
         )
     }
@@ -328,6 +329,7 @@ internal class DatenFilmTest {
         val storedUrl = film.privateField("normalQualityUrlStorage") as String
         assertTrue(storedUrl.startsWith("~"))
         assertTrue(storedUrl.length < url.length)
+        assertEquals(url, film.privateField("normalQualityUrlCache"))
     }
 
     @Test
@@ -340,6 +342,7 @@ internal class DatenFilmTest {
         val copy = DatenFilm(film)
 
         assertEquals(url, copy.urlNormalQuality)
+        assertEquals(url, copy.privateField("normalQualityUrlCache"))
     }
 
     @Test
@@ -464,9 +467,15 @@ internal class DatenFilmTest {
                 Arguments.of("100:100:100", 366100L),
             )
 
-        private fun legacySha256(vararg parts: String): String {
+        private fun parseDurationSecondsOrZero(input: String?): Int {
+            val method = FilmListReader::class.java.getDeclaredMethod("parseDurationSecondsOrZero", String::class.java)
+            method.isAccessible = true
+            return method.invoke(FilmListReader(), input) as Int
+        }
+
+        private fun legacySha256(film: DatenFilm): String {
             val digest = MessageDigest.getInstance("SHA-256")
-            for (part in parts) {
+            for (part in listOf(film.sender, film.thema, film.urlNormalQuality, film.websiteUrl)) {
                 digest.update(part.toByteArray(StandardCharsets.UTF_16LE))
             }
             return HexFormat.of().formatHex(digest.digest())

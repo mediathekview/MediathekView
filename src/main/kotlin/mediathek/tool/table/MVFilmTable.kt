@@ -22,6 +22,7 @@ import mediathek.config.MVColor
 import mediathek.controller.history.SeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.table.FilmColumnVisibility
+import mediathek.tool.models.FilmColumn
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.Component
@@ -32,7 +33,7 @@ import javax.swing.table.TableModel
 import javax.swing.table.TableRowSorter
 
 class MVFilmTable : PersistentColumnConfigurationTable(
-    DatenFilm.MAX_ELEM,
+    FilmColumn.PERSISTED_COLUMN_COUNT,
     FilmColumnVisibility.store(),
     TableConfigurationStores.FILM,
 ) {
@@ -189,7 +190,8 @@ class MVFilmTable : PersistentColumnConfigurationTable(
         component.foreground = foregroundFor(film)
     }
 
-    private fun filmAtViewRow(viewRow: Int): DatenFilm = model.getValueAt(convertRowIndexToModel(viewRow), DatenFilm.FILM_REF) as DatenFilm
+    private fun filmAtViewRow(viewRow: Int): DatenFilm =
+        model.getValueAt(convertRowIndexToModel(viewRow), FilmColumn.REF.index) as DatenFilm
 
     private fun foregroundFor(film: DatenFilm): Color = if (film.isNew) MVColor.NEW_COLOR.color else foreground
 
@@ -210,7 +212,8 @@ class MVFilmTable : PersistentColumnConfigurationTable(
         return backgrounds.firstOrNull()?.takeIf { backgrounds.size == 1 } ?: blend(backgrounds)
     }
 
-    private fun isTitleColumn(viewColumn: Int): Boolean = viewColumn >= 0 && convertColumnIndexToModel(viewColumn) == DatenFilm.FILM_TITEL
+    private fun isTitleColumn(viewColumn: Int): Boolean =
+        viewColumn >= 0 && convertColumnIndexToModel(viewColumn) == FilmColumn.TITLE.index
 
     private fun isTitleTruncatedAt(viewRow: Int, viewColumn: Int): Boolean {
         val component = prepareRenderer(getCellRenderer(viewRow, viewColumn), viewRow, viewColumn)
@@ -223,22 +226,24 @@ class MVFilmTable : PersistentColumnConfigurationTable(
         breite[column] = defaultColumnWidth(column)
     }
 
-    private fun defaultColumnWidth(column: Int): Int = when (column) {
-        DatenFilm.FILM_NR -> 75
-        DatenFilm.FILM_TITEL -> 300
-        DatenFilm.FILM_DATUM,
-        DatenFilm.FILM_ZEIT,
-        DatenFilm.FILM_SENDER,
-        DatenFilm.FILM_GROESSE,
-        DatenFilm.FILM_DAUER,
-        DatenFilm.FILM_GEO,
+    private fun defaultColumnWidth(column: Int): Int = when (FilmColumn.fromIndex(column)) {
+        FilmColumn.NUMBER -> 75
+        FilmColumn.TITLE -> 300
+        FilmColumn.DATE,
+        FilmColumn.TIME,
+        FilmColumn.SENDER,
+        FilmColumn.SIZE,
+        FilmColumn.DURATION,
+        FilmColumn.GEO,
             -> 100
-        DatenFilm.FILM_URL -> 500
-        DatenFilm.FILM_ABSPIELEN,
-        DatenFilm.FILM_AUFZEICHNEN,
-        DatenFilm.FILM_MERKEN,
+        FilmColumn.URL -> 500
+        FilmColumn.PLAY,
+        FilmColumn.SAVE,
+        FilmColumn.BOOKMARK,
             -> 20
-        DatenFilm.FILM_HD, DatenFilm.FILM_UT -> 50
+        FilmColumn.HIGH_QUALITY,
+        FilmColumn.SUBTITLE,
+            -> 50
         else -> 200
     }
 
@@ -272,18 +277,18 @@ class MVFilmTable : PersistentColumnConfigurationTable(
         }
 
         private fun configureSortableColumns() {
-            setSortable(DatenFilm.FILM_ABSPIELEN, false)
-            setSortable(DatenFilm.FILM_AUFZEICHNEN, false)
-            setSortable(DatenFilm.FILM_GEO, false)
-            setSortable(DatenFilm.FILM_MERKEN, false)
+            setSortable(FilmColumn.PLAY.index, false)
+            setSortable(FilmColumn.SAVE.index, false)
+            setSortable(FilmColumn.GEO.index, false)
+            setSortable(FilmColumn.BOOKMARK.index, false)
         }
 
         private fun configureComparators() {
-            setComparator(DatenFilm.FILM_GROESSE, Comparator<Int> { left, right -> left.compareTo(right) })
-            setComparator(DatenFilm.FILM_SENDER, Comparator<String> { left, right -> left.compareTo(right) })
-            setComparator(DatenFilm.FILM_ZEIT, Comparator<String> { left, right -> left.compareTo(right) })
-            setComparator(DatenFilm.FILM_URL, Comparator<String> { left, right -> left.compareTo(right) })
-            setComparator(DatenFilm.FILM_DAUER, Comparator<Int> { left, right -> left.compareTo(right) })
+            setComparator(FilmColumn.SIZE.index, Comparator<Int> { left, right -> left.compareTo(right) })
+            setComparator(FilmColumn.SENDER.index, Comparator<String> { left, right -> left.compareTo(right) })
+            setComparator(FilmColumn.TIME.index, Comparator<String> { left, right -> left.compareTo(right) })
+            setComparator(FilmColumn.URL.index, Comparator<String> { left, right -> left.compareTo(right) })
+            setComparator(FilmColumn.DURATION.index, Comparator<Int> { left, right -> left.compareTo(right) })
         }
     }
 

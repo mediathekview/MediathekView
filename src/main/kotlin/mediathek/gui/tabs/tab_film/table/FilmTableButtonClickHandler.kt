@@ -19,8 +19,8 @@
 package mediathek.gui.tabs.tab_film.table
 
 import mediathek.controller.starter.DownloadServices
-import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
+import mediathek.tool.models.FilmColumn
 
 class FilmTableButtonClickHandler(
     private val host: TableContextMenuHandler.Host,
@@ -31,10 +31,10 @@ class FilmTableButtonClickHandler(
             return false
         }
 
-        return when (host.table().convertColumnIndexToModel(column)) {
-            DatenFilm.FILM_ABSPIELEN,
-            DatenFilm.FILM_AUFZEICHNEN,
-            DatenFilm.FILM_MERKEN,
+        return when (FilmColumn.fromIndex(host.table().convertColumnIndexToModel(column))) {
+            FilmColumn.PLAY,
+            FilmColumn.SAVE,
+            FilmColumn.BOOKMARK,
                 -> true
 
             else -> false
@@ -46,15 +46,15 @@ class FilmTableButtonClickHandler(
             return
         }
 
-        when (host.table().convertColumnIndexToModel(column)) {
-            DatenFilm.FILM_ABSPIELEN -> host.getCurrentlySelectedFilm().ifPresent { film ->
+        when (FilmColumn.fromIndex(host.table().convertColumnIndexToModel(column))) {
+            FilmColumn.PLAY -> host.getCurrentlySelectedFilm().ifPresent { film ->
                 if (!downloads.cancelRunningButtonDownloadByFilmUrl(film.urlNormalQuality)) {
                     host.playSelectedFilm()
                 }
             }
 
-            DatenFilm.FILM_AUFZEICHNEN -> host.saveSelectedFilm()
-            DatenFilm.FILM_MERKEN -> host.getCurrentlySelectedFilm().ifPresent { film ->
+            FilmColumn.SAVE -> host.saveSelectedFilm()
+            FilmColumn.BOOKMARK -> host.getCurrentlySelectedFilm().ifPresent { film ->
                 if (!film.isLivestream) {
                     if (film.isBookmarked) {
                         host.actions().bookmarkRemoveFilm.actionPerformed(null)
@@ -63,6 +63,7 @@ class FilmTableButtonClickHandler(
                     }
                 }
             }
+            else -> Unit
         }
     }
 }

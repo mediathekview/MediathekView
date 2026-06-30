@@ -19,7 +19,7 @@
 package mediathek.tool.table
 
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DatenDownload
 import mediathek.tool.models.TModelDownload
@@ -33,6 +33,7 @@ import javax.activation.DataHandler
 import javax.swing.DropMode
 import javax.swing.JComponent
 import javax.swing.JTable
+import javax.swing.JTable.DropLocation as TableDropLocation
 import javax.swing.TransferHandler
 import javax.swing.table.TableModel
 
@@ -41,8 +42,8 @@ private val logger = LogManager.getLogger()
 class MVDownloadsTable(
     private val downloads: DownloadServices,
 ) : PersistentColumnConfigurationTable(
-    DownloadColumns.COUNT,
-    DownloadColumns.visibilityStore(),
+    DownloadColumn.COUNT,
+    DownloadColumn.visibilityStore(),
     TableConfigurationStores.DOWNLOAD,
 ) {
     private var sorter: DownloadsRowSorter? = null
@@ -67,9 +68,12 @@ class MVDownloadsTable(
     override fun getToolTipText(event: MouseEvent): String? {
         val point = event.point
         val viewColumn = columnAtPoint(point)
-        val modelColumnIndex = convertColumnIndexToModel(viewColumn)
+        if (viewColumn < 0) {
+            return super.getToolTipText(event)
+        }
+        val modelColumn = DownloadColumn.fromIndex(convertColumnIndexToModel(viewColumn))
 
-        if (modelColumnIndex != DownloadColumns.TITLE) {
+        if (modelColumn != DownloadColumn.TITLE) {
             return super.getToolTipText(event)
         }
 
@@ -80,7 +84,7 @@ class MVDownloadsTable(
         return try {
             if (component.preferredSize.width > bounds.width) {
                 val modelRowIndex = convertRowIndexToModel(viewRow)
-                val download = model.getValueAt(modelRowIndex, DownloadColumns.REF) as DatenDownload
+                val download = model.getValueAt(modelRowIndex, DownloadColumn.REF.index) as DatenDownload
                 download.film?.title.orEmpty()
             } else {
                 null
@@ -112,38 +116,38 @@ class MVDownloadsTable(
 
     private fun resetDownloadsTab(column: Int) {
         reihe[column] = column
-        breite[column] = when (column) {
-            DownloadColumns.NR,
-            DownloadColumns.FILM_NR,
+        breite[column] = when (DownloadColumn.fromIndex(column)) {
+            DownloadColumn.NUMBER,
+            DownloadColumn.FILM_NUMBER,
                 -> 75
 
-            DownloadColumns.BUTTON_START,
-            DownloadColumns.BUTTON_DELETE,
-            DownloadColumns.PROGRAM_RESTART,
-            DownloadColumns.DOWNLOAD_MANAGER,
-            DownloadColumns.INTERRUPTED,
-            DownloadColumns.SPOTLIGHT,
-            DownloadColumns.SUBTITLE,
-            DownloadColumns.INFO_FILE,
-            DownloadColumns.HIGH_QUALITY,
-            DownloadColumns.SUBTITLE_AVAILABLE,
+            DownloadColumn.BUTTON_START,
+            DownloadColumn.BUTTON_DELETE,
+            DownloadColumn.PROGRAM_RESTART,
+            DownloadColumn.DOWNLOAD_MANAGER,
+            DownloadColumn.INTERRUPTED,
+            DownloadColumn.SPOTLIGHT,
+            DownloadColumn.SUBTITLE,
+            DownloadColumn.INFO_FILE,
+            DownloadColumn.HIGH_QUALITY,
+            DownloadColumn.SUBTITLE_AVAILABLE,
                 -> 50
 
-            DownloadColumns.TITLE -> 250
+            DownloadColumn.TITLE -> 250
 
-            DownloadColumns.ABO,
-            DownloadColumns.TOPIC,
+            DownloadColumn.ABO,
+            DownloadColumn.TOPIC,
                 -> 150
 
-            DownloadColumns.DATE,
-            DownloadColumns.TIME,
-            DownloadColumns.SIZE,
-            DownloadColumns.BANDWIDTH,
-            DownloadColumns.SENDER,
-            DownloadColumns.PROGRESS,
-            DownloadColumns.REMAINING_TIME,
-            DownloadColumns.DURATION,
-            DownloadColumns.GEO,
+            DownloadColumn.DATE,
+            DownloadColumn.TIME,
+            DownloadColumn.SIZE,
+            DownloadColumn.BANDWIDTH,
+            DownloadColumn.SENDER,
+            DownloadColumn.PROGRESS,
+            DownloadColumn.REMAINING_TIME,
+            DownloadColumn.DURATION,
+            DownloadColumn.GEO,
                 -> 100
 
             else -> 200
@@ -160,7 +164,7 @@ class MVDownloadsTable(
         val downloadsInTableOrder = ArrayList<DatenDownload>()
 
         for (row in 0 until rowCount) {
-            val download = tableModel.getValueAt(convertRowIndexToModel(row), DownloadColumns.REF) as DatenDownload
+            val download = tableModel.getValueAt(convertRowIndexToModel(row), DownloadColumn.REF.index) as DatenDownload
             downloadsInTableOrder.add(download)
         }
         downloads.reorderQueueToMatch(downloadsInTableOrder)
@@ -168,27 +172,29 @@ class MVDownloadsTable(
 
     override fun spaltenAusschalten() {
         for (column in 0 until maxSpalten) {
-            when (column) {
-                DownloadColumns.FILM_URL,
-                DownloadColumns.RTMP_URL,
-                DownloadColumns.SUBTITLE_URL,
-                DownloadColumns.PROGRAM,
-                DownloadColumns.PROGRAM_INVOCATION,
-                DownloadColumns.PROGRAM_INVOCATION_ARRAY,
-                DownloadColumns.PROGRAM_RESTART,
-                DownloadColumns.DOWNLOAD_MANAGER,
-                DownloadColumns.TARGET_FILE_NAME,
-                DownloadColumns.TARGET_PATH,
-                DownloadColumns.TYPE,
-                DownloadColumns.SOURCE,
-                DownloadColumns.DEFERRED,
-                DownloadColumns.HISTORY_URL,
-                DownloadColumns.REF,
-                DownloadColumns.SPOTLIGHT,
-                DownloadColumns.INFO_FILE,
-                DownloadColumns.SUBTITLE,
-                DownloadColumns.INTERRUPTED,
+            when (DownloadColumn.fromIndex(column)) {
+                DownloadColumn.FILM_URL,
+                DownloadColumn.RTMP_URL,
+                DownloadColumn.SUBTITLE_URL,
+                DownloadColumn.PROGRAM,
+                DownloadColumn.PROGRAM_INVOCATION,
+                DownloadColumn.PROGRAM_INVOCATION_ARRAY,
+                DownloadColumn.PROGRAM_RESTART,
+                DownloadColumn.DOWNLOAD_MANAGER,
+                DownloadColumn.TARGET_FILE_NAME,
+                DownloadColumn.TARGET_PATH,
+                DownloadColumn.TYPE,
+                DownloadColumn.SOURCE,
+                DownloadColumn.DEFERRED,
+                DownloadColumn.HISTORY_URL,
+                DownloadColumn.REF,
+                DownloadColumn.SPOTLIGHT,
+                DownloadColumn.INFO_FILE,
+                DownloadColumn.SUBTITLE,
+                DownloadColumn.INTERRUPTED,
                     -> breite[column] = 0
+
+                else -> Unit
             }
         }
     }
@@ -221,7 +227,7 @@ class MVDownloadsTable(
         override fun importData(info: TransferSupport): Boolean {
             return try {
                 val target = info.component as JTable
-                val dropLocation = info.dropLocation as JTable.DropLocation
+                val dropLocation = info.dropLocation as TableDropLocation
                 var index = dropLocation.row
                 val max = table.model.rowCount
                 if (index !in 0..max) {
@@ -253,7 +259,7 @@ class MVDownloadsTable(
                     --insertionIndex
                 }
 
-                val download = tableModel.getValueAt(convertRowIndexToModel(row), DownloadColumns.REF) as DatenDownload
+                val download = tableModel.getValueAt(convertRowIndexToModel(row), DownloadColumn.REF.index) as DatenDownload
                 downloadsToMove.add(download)
             }
 
@@ -280,8 +286,8 @@ class MVDownloadsTable(
         }
 
         private fun configureSortableColumns() {
-            setSortable(DownloadColumns.BUTTON_START, false)
-            setSortable(DownloadColumns.BUTTON_DELETE, false)
+            setSortable(DownloadColumn.BUTTON_START.index, false)
+            setSortable(DownloadColumn.BUTTON_DELETE.index, false)
         }
     }
 

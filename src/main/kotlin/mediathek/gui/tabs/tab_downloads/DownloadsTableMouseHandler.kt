@@ -18,7 +18,7 @@
 
 package mediathek.gui.tabs.tab_downloads
 
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.controller.starter.DownloadServices
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
@@ -73,7 +73,7 @@ class DownloadsTableMouseHandler(
         }
     }
 
-    fun doWork(event: MouseEvent)  {
+    fun doWork(event: MouseEvent) {
         selectDownloadAt(event.point)
         if (event.isPopupTrigger) {
             showMenu(event)
@@ -97,17 +97,18 @@ class DownloadsTableMouseHandler(
     }
 
     private fun downloadAtViewRow(row: Int): DatenDownload =
-        tabelle.model.getValueAt(tabelle.convertRowIndexToModel(row), DownloadColumns.REF) as DatenDownload
+        tabelle.model.getValueAt(tabelle.convertRowIndexToModel(row), DownloadColumn.REF.index) as DatenDownload
 
     private fun buttonTable(row: Int, column: Int) {
-        if (row == -1) {
+        if (row < 0 || column < 0) {
             return
         }
 
         datenDownload = downloadAtViewRow(row)
-        when (tabelle.convertColumnIndexToModel(column)) {
-            DownloadColumns.BUTTON_START -> handleStartButton()
-            DownloadColumns.BUTTON_DELETE -> handleDeleteButton()
+        when (DownloadColumn.fromIndex(tabelle.convertColumnIndexToModel(column))) {
+            DownloadColumn.BUTTON_START -> handleStartButton()
+            DownloadColumn.BUTTON_DELETE -> handleDeleteButton()
+            else -> Unit
         }
     }
 
@@ -118,10 +119,20 @@ class DownloadsTableMouseHandler(
             if (start.status == StartStatus.FINISHED) {
                 downloadsTab.filmAbspielen()
             } else {
-                downloadsTab.filmStartenWiederholenStoppen(false, start.status == StartStatus.ERROR, true, false)
+                downloadsTab.filmStartenWiederholenStoppen(
+                    processAllDownloads = false,
+                    starten = start.status == StartStatus.ERROR,
+                    restartFinishedDownloads = true,
+                    skipManualDownloads = false,
+                )
             }
         } else {
-            downloadsTab.filmStartenWiederholenStoppen(false, true, true, false)
+            downloadsTab.filmStartenWiederholenStoppen(
+                processAllDownloads = false,
+                starten = true,
+                restartFinishedDownloads = true,
+                skipManualDownloads = false,
+            )
         }
     }
 
@@ -156,13 +167,27 @@ class DownloadsTableMouseHandler(
         val itemStarten = JMenuItem("Download starten").apply {
             icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg")
             isEnabled = !waitingOrRunning
-            addActionListener { downloadsTab.filmStartenWiederholenStoppen(false, true, true, false) }
+            addActionListener {
+                downloadsTab.filmStartenWiederholenStoppen(
+                    processAllDownloads = false,
+                    starten = true,
+                    restartFinishedDownloads = true,
+                    skipManualDownloads = false,
+                )
+            }
         }
         popupMenu.add(itemStarten)
 
         val itemStoppen = JMenuItem("Download stoppen").apply {
             isEnabled = waitingOrRunning
-            addActionListener { downloadsTab.filmStartenWiederholenStoppen(false, false, true, false) }
+            addActionListener {
+                downloadsTab.filmStartenWiederholenStoppen(
+                    processAllDownloads = false,
+                    starten = false,
+                    restartFinishedDownloads = true,
+                    skipManualDownloads = false,
+                )
+            }
         }
         popupMenu.add(itemStoppen)
 
@@ -305,7 +330,7 @@ class DownloadsTableMouseHandler(
             GuiFunktionen.copyToClipboard(
                 tabelle.model.getValueAt(
                     tabelle.convertRowIndexToModel(row),
-                    DownloadColumns.URL
+                    DownloadColumn.URL.index
                 ).toString()
             )
         }

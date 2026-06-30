@@ -18,11 +18,11 @@
 
 package mediathek.gui.tabs.tab_film.table
 
-import mediathek.daten.DatenFilm
+import mediathek.tool.models.FilmColumn
 import mediathek.tool.table.ColumnVisibilityStore
 
 object FilmColumnVisibility {
-    private val columnVisibilityStore = ColumnVisibilityStore.create(DatenFilm.MAX_ELEM)
+    private val columnVisibilityStore = ColumnVisibilityStore.create(FilmColumn.PERSISTED_COLUMN_COUNT)
 
     fun store(): ColumnVisibilityStore = columnVisibilityStore
 }

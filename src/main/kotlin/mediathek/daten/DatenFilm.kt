@@ -88,6 +88,7 @@ class DatenFilm private constructor(
     private var websiteUrlStorage: String? = null
     private var lowQualityUrlStorage: String? = null
     private var normalQualityUrlStorage = ""
+    private var normalQualityUrlCache: String? = null
     private var highQualityUrlStorage: String? = null
     var bookmark: BookmarkData? = null
     var abo: DatenAbo? = null
@@ -121,7 +122,9 @@ class DatenFilm private constructor(
         subtitleUrlStorage = other.subtitleUrlStorage
         websiteUrlStorage = other.websiteUrlStorage
         lowQualityUrlStorage = other.lowQualityUrlStorage
-        normalQualityUrlStorage = UrlHostDictionary.compress(other.urlNormalQuality)
+        val otherNormalQualityUrl = other.urlNormalQuality
+        normalQualityUrlStorage = UrlHostDictionary.compress(otherNormalQualityUrl)
+        normalQualityUrlCache = otherNormalQualityUrl
         highQualityUrlStorage = other.highQualityUrlStorage
         bookmark = other.bookmark
         abo = other.abo
@@ -368,8 +371,6 @@ class DatenFilm private constructor(
             else -> urlNormalQuality
         }
 
-    fun lookupFileSizeForUrl(url: String): FileSize.LookupResult = lookupFileSizeForUrl(url, false, null)
-
     fun lookupFileSizeForUrl(
         url: String,
         forceFetch: Boolean,
@@ -598,20 +599,24 @@ class DatenFilm private constructor(
     val filmLengthAsString: String
         get() {
             if (filmLength == 0) {
-            return ""
-        }
-        if (filmLengthAsStringCache.isEmpty()) {
-            val duration = filmLength.seconds.inWholeMilliseconds
-            filmLengthAsStringCache = DurationFormatUtils.formatDuration(duration, "HH:mm:ss", true)
-        }
-        return filmLengthAsStringCache
+                return ""
+            }
+            if (filmLengthAsStringCache.isEmpty()) {
+                val duration = filmLength.seconds.inWholeMilliseconds
+                filmLengthAsStringCache = DurationFormatUtils.formatDuration(duration, "HH:mm:ss", true)
+            }
+            return filmLengthAsStringCache
         }
 
     var urlNormalQuality: String
-        get() = UrlHostDictionary.expand(normalQualityUrlStorage)
+        get() {
+            normalQualityUrlCache?.let { return it }
+            return UrlHostDictionary.expand(normalQualityUrlStorage).also { normalQualityUrlCache = it }
+        }
         set(urlNormalQuality) {
             val previousUrl = this.urlNormalQuality
             normalQualityUrlStorage = UrlHostDictionary.compress(urlNormalQuality)
+            normalQualityUrlCache = urlNormalQuality
             handleNormalQualityUrlChange(previousUrl, urlNormalQuality)
             invalidateSha256()
         }
@@ -695,24 +700,6 @@ class DatenFilm private constructor(
     companion object {
         val EU_COUNTRIES: EnumSet<Country> = EnumSet.of(Country.DE, Country.AT, Country.FR)
 
-        const val FILM_NR = 0
-        const val FILM_SENDER = 1
-        const val FILM_THEMA = 2
-        const val FILM_TITEL = 3
-        const val FILM_ABSPIELEN = 4
-        const val FILM_AUFZEICHNEN = 5
-        const val FILM_MERKEN = 6
-        const val FILM_DATUM = 7
-        const val FILM_ZEIT = 8
-        const val FILM_DAUER = 9
-        const val FILM_GROESSE = 10
-        const val FILM_HD = 11
-        const val FILM_UT = 12
-        const val FILM_GEO = 13
-        const val FILM_URL = 14
-        const val FILM_DATUM_LONG = 15
-        const val FILM_REF = 16
-        const val MAX_ELEM = 17
         const val COMPRESSION_MARKER = '|'
 
         private const val FLAG_AUDIO_VERSION = 1 shl 0
@@ -750,7 +737,7 @@ class DatenFilm private constructor(
 
             val day = parseTwoDigitPositiveInt(value, 0) ?: return null
             val month = parseTwoDigitPositiveInt(value, 3) ?: return null
-            val year = parseFourDigitPositiveInt(value, 6) ?: return null
+            val year = parseYear(value) ?: return null
             return try {
                 LocalDate.of(year, month, day).toEpochDay().toInt()
             } catch (_: DateTimeException) {
@@ -828,8 +815,8 @@ class DatenFilm private constructor(
         private fun parseTwoDigitPositiveInt(value: String, start: Int): Int? =
             parseFixedWidthPositiveInt(value, start, start + 2)
 
-        private fun parseFourDigitPositiveInt(value: String, start: Int): Int? =
-            parseFixedWidthPositiveInt(value, start, start + 4)
+        private fun parseYear(value: String): Int? =
+            parseFixedWidthPositiveInt(value, 6, 10)
 
         private fun parseFixedWidthPositiveInt(value: String, start: Int, end: Int): Int? {
             var result = 0

@@ -23,7 +23,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.controller.starter.DownloadProgressText
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
@@ -484,114 +484,114 @@ class DialogEditDownload(
 
     private fun buildLayout() {
         jPanelExtra.removeAll()
-        addRow(DownloadColumns.ABO)
-        addRow(DownloadColumns.SENDER)
-        addRow(DownloadColumns.TOPIC)
-        addRow(DownloadColumns.TITLE)
-        addRow(DownloadColumns.SIZE)
-        addRow(DownloadColumns.DATE)
-        addRow(DownloadColumns.TIME)
-        addRow(DownloadColumns.DURATION)
-        addRow(DownloadColumns.HIGH_QUALITY)
-        addRow(DownloadColumns.SUBTITLE_AVAILABLE)
-        addRow(DownloadColumns.GEO)
-        addRow(DownloadColumns.FILM_URL)
-        addRow(DownloadColumns.URL)
-        addRow(DownloadColumns.SUBTITLE_URL)
-        addRow(DownloadColumns.PROGRAM_SET)
-        addRow(DownloadColumns.PROGRAM)
-        addRow(DownloadColumns.PROGRAM_INVOCATION)
-        addRow(DownloadColumns.PROGRAM_INVOCATION_ARRAY)
-        addRow(DownloadColumns.PROGRAM_RESTART)
-        addRow(DownloadColumns.TARGET_FILE_NAME)
-        addRow(DownloadColumns.TARGET_PATH)
-        addRow(DownloadColumns.TARGET_PATH_FILE_NAME)
-        addRow(DownloadColumns.TYPE)
-        addRow(DownloadColumns.SOURCE)
-        addRow(DownloadColumns.INFO_FILE)
-        addRow(DownloadColumns.SPOTLIGHT)
-        addRow(DownloadColumns.SUBTITLE)
+        addRow(DownloadColumn.ABO)
+        addRow(DownloadColumn.SENDER)
+        addRow(DownloadColumn.TOPIC)
+        addRow(DownloadColumn.TITLE)
+        addRow(DownloadColumn.SIZE)
+        addRow(DownloadColumn.DATE)
+        addRow(DownloadColumn.TIME)
+        addRow(DownloadColumn.DURATION)
+        addRow(DownloadColumn.HIGH_QUALITY)
+        addRow(DownloadColumn.SUBTITLE_AVAILABLE)
+        addRow(DownloadColumn.GEO)
+        addRow(DownloadColumn.FILM_URL)
+        addRow(DownloadColumn.URL)
+        addRow(DownloadColumn.SUBTITLE_URL)
+        addRow(DownloadColumn.PROGRAM_SET)
+        addRow(DownloadColumn.PROGRAM)
+        addRow(DownloadColumn.PROGRAM_INVOCATION)
+        addRow(DownloadColumn.PROGRAM_INVOCATION_ARRAY)
+        addRow(DownloadColumn.PROGRAM_RESTART)
+        addRow(DownloadColumn.TARGET_FILE_NAME)
+        addRow(DownloadColumn.TARGET_PATH)
+        addRow(DownloadColumn.TARGET_PATH_FILE_NAME)
+        addRow(DownloadColumn.TYPE)
+        addRow(DownloadColumn.SOURCE)
+        addRow(DownloadColumn.INFO_FILE)
+        addRow(DownloadColumn.SPOTLIGHT)
+        addRow(DownloadColumn.SUBTITLE)
         jPanelExtra.validate()
     }
 
-    private fun addRow(index: Int) {
-        if (isDirectDownloadProgram() && (index == DownloadColumns.PROGRAM_INVOCATION
-                    || index == DownloadColumns.PROGRAM_INVOCATION_ARRAY)
+    private fun addRow(column: DownloadColumn) {
+        if (isDirectDownloadProgram() && (column == DownloadColumn.PROGRAM_INVOCATION
+                    || column == DownloadColumn.PROGRAM_INVOCATION_ARRAY)
         ) {
             return
         }
-        if (isEmptyOptionalRow(index)) {
+        if (isEmptyOptionalRow(column)) {
             return
         }
 
-        val label = createLabel(index)
-        val textField = createTextField(index)
-        addExtraField(index, label, textField)
+        val label = createLabel(column)
+        val textField = createTextField(column)
+        addExtraField(column, label, textField)
     }
 
-    private fun isEmptyOptionalRow(index: Int): Boolean = when (index) {
-        DownloadColumns.ABO -> datenDownload.aboName.isBlank()
-        DownloadColumns.DURATION -> datenDownload.duration.isBlank()
+    private fun isEmptyOptionalRow(column: DownloadColumn): Boolean = when (column) {
+        DownloadColumn.ABO -> datenDownload.aboName.isBlank()
+        DownloadColumn.DURATION -> datenDownload.duration.isBlank()
         else -> false
     }
 
-    private fun createTextField(index: Int): JTextField {
-        val textField = createReadOnlyTextField(textFieldValue(index))
-        when (index) {
-            DownloadColumns.URL -> urlField = textField
-            DownloadColumns.PROGRAM_INVOCATION -> programmAufrufField = textField
-            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> programmAufrufArrayField = textField
+    private fun createTextField(column: DownloadColumn): JTextField {
+        val textField = createReadOnlyTextField(textFieldValue(column))
+        when (column) {
+            DownloadColumn.URL -> urlField = textField
+            DownloadColumn.PROGRAM_INVOCATION -> programmAufrufField = textField
+            DownloadColumn.PROGRAM_INVOCATION_ARRAY -> programmAufrufArrayField = textField
+            else -> Unit
         }
         return textField
     }
 
-    private fun textFieldValue(index: Int): String =
-        when (index) {
-            DownloadColumns.ABO -> datenDownload.aboName
-            DownloadColumns.SENDER -> datenDownload.sender
-            DownloadColumns.TOPIC -> datenDownload.topic
-            DownloadColumns.TITLE -> datenDownload.title
-            DownloadColumns.DATE -> datenDownload.date
-            DownloadColumns.TIME -> datenDownload.time
-            DownloadColumns.DURATION -> datenDownload.duration
-            DownloadColumns.FILM_URL -> datenDownload.filmUrl
-            DownloadColumns.HISTORY_URL -> datenDownload.historyUrl
-            DownloadColumns.URL -> datenDownload.downloadUrl
-            DownloadColumns.RTMP_URL -> datenDownload.rtmpUrl
-            DownloadColumns.SUBTITLE_URL -> datenDownload.subtitleUrl
-            DownloadColumns.PROGRAM_SET -> datenDownload.programSetName
-            DownloadColumns.PROGRAM -> datenDownload.programName
-            DownloadColumns.PROGRAM_INVOCATION -> datenDownload.programInvocation
-            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray
-            DownloadColumns.TARGET_FILE_NAME -> datenDownload.targetFileName
-            DownloadColumns.TARGET_PATH -> datenDownload.targetPath
-            DownloadColumns.TARGET_PATH_FILE_NAME -> datenDownload.targetPathFileName
-            DownloadColumns.NR -> datenDownload.nr.toString()
-            DownloadColumns.FILM_NR -> datenDownload.film?.filmNr?.toString().orEmpty()
-            DownloadColumns.BUTTON_START,
-            DownloadColumns.BUTTON_DELETE,
+    private fun textFieldValue(column: DownloadColumn): String =
+        when (column) {
+            DownloadColumn.ABO -> datenDownload.aboName
+            DownloadColumn.SENDER -> datenDownload.sender
+            DownloadColumn.TOPIC -> datenDownload.topic
+            DownloadColumn.TITLE -> datenDownload.title
+            DownloadColumn.DATE -> datenDownload.date
+            DownloadColumn.TIME -> datenDownload.time
+            DownloadColumn.DURATION -> datenDownload.duration
+            DownloadColumn.FILM_URL -> datenDownload.filmUrl
+            DownloadColumn.HISTORY_URL -> datenDownload.historyUrl
+            DownloadColumn.URL -> datenDownload.downloadUrl
+            DownloadColumn.RTMP_URL -> datenDownload.rtmpUrl
+            DownloadColumn.SUBTITLE_URL -> datenDownload.subtitleUrl
+            DownloadColumn.PROGRAM_SET -> datenDownload.programSetName
+            DownloadColumn.PROGRAM -> datenDownload.programName
+            DownloadColumn.PROGRAM_INVOCATION -> datenDownload.programInvocation
+            DownloadColumn.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray
+            DownloadColumn.TARGET_FILE_NAME -> datenDownload.targetFileName
+            DownloadColumn.TARGET_PATH -> datenDownload.targetPath
+            DownloadColumn.TARGET_PATH_FILE_NAME -> datenDownload.targetPathFileName
+            DownloadColumn.NUMBER -> datenDownload.nr.toString()
+            DownloadColumn.FILM_NUMBER -> datenDownload.film?.filmNr?.toString().orEmpty()
+            DownloadColumn.BUTTON_START,
+            DownloadColumn.BUTTON_DELETE,
             -> ""
 
-            DownloadColumns.PROGRESS ->
+            DownloadColumn.PROGRESS ->
                 DownloadProgressText.getTextProgress(datenDownload.isDownloadManager, datenDownload.runtime.runState)
 
-            DownloadColumns.REMAINING_TIME -> datenDownload.textRestzeit
-            DownloadColumns.BANDWIDTH -> datenDownload.textBandbreite
-            DownloadColumns.SIZE -> datenDownload.runtime.filmSize.toString()
-            DownloadColumns.HIGH_QUALITY -> (datenDownload.film?.isHighQuality == true).toString()
-            DownloadColumns.SUBTITLE_AVAILABLE -> (datenDownload.film?.hasSubtitle() == true).toString()
-            DownloadColumns.INTERRUPTED -> datenDownload.isInterrupted.toString()
-            DownloadColumns.GEO -> datenDownload.geo
-            DownloadColumns.PROGRAM_RESTART -> datenDownload.isRestart.toString()
-            DownloadColumns.TYPE -> datenDownload.art.label
-            DownloadColumns.SOURCE -> datenDownload.quelle.label
-            DownloadColumns.DEFERRED -> datenDownload.isDeferred.toString()
-            DownloadColumns.INFO_FILE -> datenDownload.isInfoFile.toString()
-            DownloadColumns.SPOTLIGHT -> datenDownload.isSpotlight.toString()
-            DownloadColumns.SUBTITLE -> datenDownload.isSubtitle.toString()
-            DownloadColumns.DOWNLOAD_MANAGER -> datenDownload.isDownloadManager.toString()
-            DownloadColumns.REF -> ""
-            else -> ""
+            DownloadColumn.REMAINING_TIME -> datenDownload.textRestzeit
+            DownloadColumn.BANDWIDTH -> datenDownload.textBandbreite
+            DownloadColumn.SIZE -> datenDownload.runtime.filmSize.toString()
+            DownloadColumn.HIGH_QUALITY -> (datenDownload.film?.isHighQuality == true).toString()
+            DownloadColumn.SUBTITLE_AVAILABLE -> (datenDownload.film?.hasSubtitle() == true).toString()
+            DownloadColumn.INTERRUPTED -> datenDownload.isInterrupted.toString()
+            DownloadColumn.GEO -> datenDownload.geo
+            DownloadColumn.PROGRAM_RESTART -> datenDownload.isRestart.toString()
+            DownloadColumn.TYPE -> datenDownload.art.label
+            DownloadColumn.SOURCE -> datenDownload.quelle.label
+            DownloadColumn.DEFERRED -> datenDownload.isDeferred.toString()
+            DownloadColumn.INFO_FILE -> datenDownload.isInfoFile.toString()
+            DownloadColumn.SPOTLIGHT -> datenDownload.isSpotlight.toString()
+            DownloadColumn.SUBTITLE -> datenDownload.isSubtitle.toString()
+            DownloadColumn.DOWNLOAD_MANAGER -> datenDownload.isDownloadManager.toString()
+            DownloadColumn.REF -> ""
         }
 
     private fun createReadOnlyTextField(text: String) = JTextField().apply {
@@ -602,72 +602,72 @@ class DialogEditDownload(
     private fun isDirectDownloadProgram(): Boolean =
         DownloadType.DIRECT.label == datenDownload.programName
 
-    private fun createLabel(index: Int) = JLabel("${labelText(index)}: ").apply {
+    private fun createLabel(column: DownloadColumn) = JLabel("${labelText(column)}: ").apply {
         font = font.deriveFont(java.awt.Font.BOLD)
     }
 
-    private fun labelText(index: Int): String = when (index) {
-        DownloadColumns.ABO -> "Abo"
-        DownloadColumns.SENDER -> "Sender"
-        DownloadColumns.TOPIC -> "Thema"
-        DownloadColumns.TITLE -> "Titel"
-        DownloadColumns.SIZE -> "Größe"
-        DownloadColumns.DATE -> "Datum"
-        DownloadColumns.TIME -> "Zeit"
-        DownloadColumns.DURATION -> "Dauer"
-        DownloadColumns.HIGH_QUALITY -> "HD"
-        DownloadColumns.SUBTITLE_AVAILABLE -> "UT"
-        DownloadColumns.GEO -> "Geo"
-        DownloadColumns.FILM_URL -> "Film-URL"
-        DownloadColumns.URL -> "URL"
-        DownloadColumns.SUBTITLE_URL -> "URL-Untertitel"
-        DownloadColumns.PROGRAM_SET -> "Programmset"
-        DownloadColumns.PROGRAM -> "Programm"
-        DownloadColumns.PROGRAM_INVOCATION -> "Programmaufruf_"
-        DownloadColumns.PROGRAM_INVOCATION_ARRAY -> "Programmaufruf"
-        DownloadColumns.PROGRAM_RESTART -> "Restart"
-        DownloadColumns.TARGET_FILE_NAME -> "Dateiname"
-        DownloadColumns.TARGET_PATH -> "Pfad"
-        DownloadColumns.TARGET_PATH_FILE_NAME -> "Pfad-Dateiname"
-        DownloadColumns.TYPE -> "Art"
-        DownloadColumns.SOURCE -> "Quelle"
-        DownloadColumns.INFO_FILE -> "Infodatei"
-        DownloadColumns.SPOTLIGHT -> "Spotlight"
-        DownloadColumns.SUBTITLE -> "Untertitel"
-        else -> error("Unknown download label index: $index")
+    private fun labelText(column: DownloadColumn): String = when (column) {
+        DownloadColumn.ABO -> "Abo"
+        DownloadColumn.SENDER -> "Sender"
+        DownloadColumn.TOPIC -> "Thema"
+        DownloadColumn.TITLE -> "Titel"
+        DownloadColumn.SIZE -> "Größe"
+        DownloadColumn.DATE -> "Datum"
+        DownloadColumn.TIME -> "Zeit"
+        DownloadColumn.DURATION -> "Dauer"
+        DownloadColumn.HIGH_QUALITY -> "HD"
+        DownloadColumn.SUBTITLE_AVAILABLE -> "UT"
+        DownloadColumn.GEO -> "Geo"
+        DownloadColumn.FILM_URL -> "Film-URL"
+        DownloadColumn.URL -> "URL"
+        DownloadColumn.SUBTITLE_URL -> "URL-Untertitel"
+        DownloadColumn.PROGRAM_SET -> "Programmset"
+        DownloadColumn.PROGRAM -> "Programm"
+        DownloadColumn.PROGRAM_INVOCATION -> "Programmaufruf_"
+        DownloadColumn.PROGRAM_INVOCATION_ARRAY -> "Programmaufruf"
+        DownloadColumn.PROGRAM_RESTART -> "Restart"
+        DownloadColumn.TARGET_FILE_NAME -> "Dateiname"
+        DownloadColumn.TARGET_PATH -> "Pfad"
+        DownloadColumn.TARGET_PATH_FILE_NAME -> "Pfad-Dateiname"
+        DownloadColumn.TYPE -> "Art"
+        DownloadColumn.SOURCE -> "Quelle"
+        DownloadColumn.INFO_FILE -> "Infodatei"
+        DownloadColumn.SPOTLIGHT -> "Spotlight"
+        DownloadColumn.SUBTITLE -> "Untertitel"
+        else -> error("Unknown download label column: $column")
     }
 
-    private fun addExtraField(index: Int, label: JLabel, textField: JTextField) {
-        if (showDownloadTargetEditor(index, label)
-            || addCheckboxField(index, label)
-            || addAvailabilityField(index, label)
-            || addProgramCallField(index, label, textField)
+    private fun addExtraField(column: DownloadColumn, label: JLabel, textField: JTextField) {
+        if (showDownloadTargetEditor(column, label)
+            || addCheckboxField(column, label)
+            || addAvailabilityField(column, label)
+            || addProgramCallField(column, label, textField)
         ) {
             return
         }
 
-        addDefaultField(index, label, textField)
+        addDefaultField(column, label, textField)
     }
 
-    private fun showDownloadTargetEditor(index: Int, label: JLabel): Boolean {
+    private fun showDownloadTargetEditor(column: DownloadColumn, label: JLabel): Boolean {
         if (datenDownload.art != DownloadType.DIRECT || gestartet) {
             return false
         }
-        if (index != DownloadColumns.TARGET_FILE_NAME
-            && index != DownloadColumns.TARGET_PATH_FILE_NAME
-            && index != DownloadColumns.TARGET_PATH
+        if (column != DownloadColumn.TARGET_FILE_NAME
+            && column != DownloadColumn.TARGET_PATH_FILE_NAME
+            && column != DownloadColumn.TARGET_PATH
         ) {
             return false
         }
 
-        if (index == DownloadColumns.TARGET_FILE_NAME) {
+        if (column == DownloadColumn.TARGET_FILE_NAME) {
             addValueComponent(label, mVPanelDownloadZiel)
         }
         return true
     }
 
-    private fun addCheckboxField(index: Int, label: JLabel): Boolean = when (index) {
-        DownloadColumns.PROGRAM_RESTART -> {
+    private fun addCheckboxField(column: DownloadColumn, label: JLabel): Boolean = when (column) {
+        DownloadColumn.PROGRAM_RESTART -> {
             configureCheckbox(
                 label,
                 jCheckBoxRestart,
@@ -677,7 +677,7 @@ class DialogEditDownload(
             true
         }
 
-        DownloadColumns.INFO_FILE -> {
+        DownloadColumn.INFO_FILE -> {
             configureCheckbox(
                 label,
                 jCheckBoxInfodatei,
@@ -687,7 +687,7 @@ class DialogEditDownload(
             true
         }
 
-        DownloadColumns.SUBTITLE -> {
+        DownloadColumn.SUBTITLE -> {
             configureCheckbox(
                 label,
                 jCheckBoxSubtitle,
@@ -697,7 +697,7 @@ class DialogEditDownload(
             true
         }
 
-        DownloadColumns.SPOTLIGHT -> {
+        DownloadColumn.SPOTLIGHT -> {
             configureCheckbox(
                 label,
                 jCheckBoxSpotlight,
@@ -719,13 +719,13 @@ class DialogEditDownload(
         addValueComponent(label, checkBox)
     }
 
-    private fun addAvailabilityField(index: Int, label: JLabel): Boolean = when (index) {
-        DownloadColumns.HIGH_QUALITY -> {
+    private fun addAvailabilityField(column: DownloadColumn, label: JLabel): Boolean = when (column) {
+        DownloadColumn.HIGH_QUALITY -> {
             addAvailabilityComponent(label, cbHighQuality, datenDownload.film?.isHighQuality == true)
             true
         }
 
-        DownloadColumns.SUBTITLE_AVAILABLE -> {
+        DownloadColumn.SUBTITLE_AVAILABLE -> {
             addAvailabilityComponent(label, cbSubtitleAvailable, datenDownload.film?.hasSubtitle() == true)
             true
         }
@@ -739,25 +739,25 @@ class DialogEditDownload(
         addValueComponent(label, checkBox)
     }
 
-    private fun addProgramCallField(index: Int, label: JLabel, textField: JTextField): Boolean {
-        if (index == DownloadColumns.PROGRAM_INVOCATION) {
+    private fun addProgramCallField(column: DownloadColumn, label: JLabel, textField: JTextField): Boolean {
+        if (column == DownloadColumn.PROGRAM_INVOCATION) {
             return true
         }
-        if (index != DownloadColumns.PROGRAM_INVOCATION_ARRAY || datenDownload.art != DownloadType.PROGRAM) {
+        if (column != DownloadColumn.PROGRAM_INVOCATION_ARRAY || datenDownload.art != DownloadType.PROGRAM) {
             return false
         }
 
         if (datenDownload.programInvocationArray.isEmpty()) {
             label.foreground = hyperlinkColor()
             programmAufrufField?.let {
-                makeEditable(it, DownloadColumns.PROGRAM_INVOCATION)
+                makeEditable(it, DownloadColumn.PROGRAM_INVOCATION)
                 addValueComponent(label, it)
             }
             return true
         }
 
         label.foreground = hyperlinkColor()
-        makeEditable(textField, index)
+        makeEditable(textField, column)
         addValueComponent(label, createProgramCallPanel())
         return true
     }
@@ -795,48 +795,49 @@ class DialogEditDownload(
         add(programmArrayField, CC().growX().pushX().minWidth("0").wrap())
     }
 
-    private fun addDefaultField(index: Int, label: JLabel, textField: JTextField) {
-        when (index) {
-            DownloadColumns.ABO -> addValueComponent(label, createValueLabel(datenDownload.aboName))
-            DownloadColumns.SENDER -> addValueComponent(label, createValueLabel(datenDownload.sender))
-            DownloadColumns.PROGRAM_SET -> addValueComponent(label, createValueLabel(datenDownload.programSetName))
-            DownloadColumns.PROGRAM -> addValueComponent(label, createValueLabel(datenDownload.programName))
-            DownloadColumns.SUBTITLE_URL -> addValueComponent(label, createValueLabel(datenDownload.subtitleUrl))
-            DownloadColumns.DATE -> addValueComponent(label, createValueLabel(datenDownload.date))
-            DownloadColumns.TIME -> addValueComponent(label, createValueLabel(datenDownload.time))
-            DownloadColumns.TYPE -> addValueComponent(label, createValueLabel(downloadArtText()))
-            DownloadColumns.SOURCE -> addValueComponent(label, createValueLabel(downloadQuelleText()))
-            DownloadColumns.DURATION -> {
+    private fun addDefaultField(column: DownloadColumn, label: JLabel, textField: JTextField) {
+        when (column) {
+            DownloadColumn.ABO -> addValueComponent(label, createValueLabel(datenDownload.aboName))
+            DownloadColumn.SENDER -> addValueComponent(label, createValueLabel(datenDownload.sender))
+            DownloadColumn.PROGRAM_SET -> addValueComponent(label, createValueLabel(datenDownload.programSetName))
+            DownloadColumn.PROGRAM -> addValueComponent(label, createValueLabel(datenDownload.programName))
+            DownloadColumn.SUBTITLE_URL -> addValueComponent(label, createValueLabel(datenDownload.subtitleUrl))
+            DownloadColumn.DATE -> addValueComponent(label, createValueLabel(datenDownload.date))
+            DownloadColumn.TIME -> addValueComponent(label, createValueLabel(datenDownload.time))
+            DownloadColumn.TYPE -> addValueComponent(label, createValueLabel(downloadArtText()))
+            DownloadColumn.SOURCE -> addValueComponent(label, createValueLabel(downloadQuelleText()))
+            DownloadColumn.DURATION -> {
                 val durationText = DurationFormatter.fromOrNull(datenDownload.duration)?.toDisplayText() ?: ""
                 addValueComponent(label, createValueLabel(durationText))
             }
-            DownloadColumns.GEO -> addValueComponent(label, createGeoLabel())
-            DownloadColumns.SIZE -> addValueComponent(label, createValueLabel("${datenDownload.runtime.filmSize} MB"))
-            DownloadColumns.TOPIC -> addValueComponent(label, createMultilineLabel(datenDownload.topic))
-            DownloadColumns.TITLE -> addValueComponent(label, createMultilineLabel(datenDownload.title))
+            DownloadColumn.GEO -> addValueComponent(label, createGeoLabel())
+            DownloadColumn.SIZE -> addValueComponent(label, createValueLabel("${datenDownload.runtime.filmSize} MB"))
+            DownloadColumn.TOPIC -> addValueComponent(label, createMultilineLabel(datenDownload.topic))
+            DownloadColumn.TITLE -> addValueComponent(label, createMultilineLabel(datenDownload.title))
 
-            else -> addTextFieldValue(index, label, textField)
+            else -> addTextFieldValue(column, label, textField)
         }
     }
 
-    private fun addTextFieldValue(index: Int, label: JLabel, textField: JTextField) {
-        when (index) {
-            DownloadColumns.NR -> textField.text = datenDownload.nr.toString()
-            DownloadColumns.FILM_NR -> datenDownload.film?.let { film ->
+    private fun addTextFieldValue(column: DownloadColumn, label: JLabel, textField: JTextField) {
+        when (column) {
+            DownloadColumn.NUMBER -> textField.text = datenDownload.nr.toString()
+            DownloadColumn.FILM_NUMBER -> datenDownload.film?.let { film ->
                 textField.text = film.filmNr.toString()
             }
 
-            DownloadColumns.URL -> if (datenDownload.art == DownloadType.DIRECT) {
+            DownloadColumn.URL -> if (datenDownload.art == DownloadType.DIRECT) {
                 label.foreground = hyperlinkColor()
-                makeEditable(textField, index)
+                makeEditable(textField, column)
             }
 
-            DownloadColumns.PROGRESS -> textField.text =
+            DownloadColumn.PROGRESS -> textField.text =
                 DownloadProgressText.getTextProgress(datenDownload.isDownloadManager, datenDownload.runtime.runState)
 
-            DownloadColumns.REMAINING_TIME -> textField.text = datenDownload.textRestzeit
+            DownloadColumn.REMAINING_TIME -> textField.text = datenDownload.textRestzeit
+            else -> Unit
         }
-        if (index == DownloadColumns.URL) {
+        if (column == DownloadColumn.URL) {
             addValueComponent(label, createDownloadUrlPanel(textField))
             return
         }
@@ -891,29 +892,29 @@ class DialogEditDownload(
         makeShrinkable(this)
     }
 
-    private fun makeEditable(textField: JTextField, index: Int) {
+    private fun makeEditable(textField: JTextField, column: DownloadColumn) {
         textField.isEditable = !gestartet
-        textField.document.addDocumentListener(createDocumentListener(textField, index))
+        textField.document.addDocumentListener(createDocumentListener(textField, column))
     }
 
-    private fun createDocumentListener(textField: JTextField, index: Int) = object : DocumentListener {
-        override fun insertUpdate(e: DocumentEvent) = updateDownloadValue(textField, index)
-        override fun removeUpdate(e: DocumentEvent) = updateDownloadValue(textField, index)
-        override fun changedUpdate(e: DocumentEvent) = updateDownloadValue(textField, index)
+    private fun createDocumentListener(textField: JTextField, column: DownloadColumn) = object : DocumentListener {
+        override fun insertUpdate(e: DocumentEvent) = updateDownloadValue(textField, column)
+        override fun removeUpdate(e: DocumentEvent) = updateDownloadValue(textField, column)
+        override fun changedUpdate(e: DocumentEvent) = updateDownloadValue(textField, column)
     }
 
-    private fun updateDownloadValue(textField: JTextField, index: Int) {
+    private fun updateDownloadValue(textField: JTextField, column: DownloadColumn) {
         val value = textField.text.trim()
-        when (index) {
-            DownloadColumns.URL -> datenDownload.downloadUrl = value
-            DownloadColumns.PROGRAM_INVOCATION -> datenDownload.programInvocation = value
-            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray = value
+        when (column) {
+            DownloadColumn.URL -> datenDownload.downloadUrl = value
+            DownloadColumn.PROGRAM_INVOCATION -> datenDownload.programInvocation = value
+            DownloadColumn.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray = value
             else -> {
-                logger.warn("Ignoring unsupported editable download column: {}", index)
+                logger.warn("Ignoring unsupported editable download column: {}", column)
                 return
             }
         }
-        if (index == DownloadColumns.PROGRAM_INVOCATION_ARRAY) {
+        if (column == DownloadColumn.PROGRAM_INVOCATION_ARRAY) {
             datenDownload.programInvocation =
                 DatenProg.makeProgAufrufArray(datenDownload.programInvocationArray)
             programmAufrufField?.text = datenDownload.programInvocation

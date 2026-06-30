@@ -22,6 +22,7 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
 import mediathek.tool.NoSelectionErrorDialog
+import mediathek.tool.models.FilmColumn
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
 import java.util.*
@@ -105,6 +106,6 @@ class FilmSelectionController(private val host: Host) {
     }
 
     private fun filmAtModelRow(modelRow: Int): DatenFilm {
-        return host.table().model.getValueAt(modelRow, DatenFilm.FILM_REF) as DatenFilm
+        return host.table().model.getValueAt(modelRow, FilmColumn.REF.index) as DatenFilm
     }
 }

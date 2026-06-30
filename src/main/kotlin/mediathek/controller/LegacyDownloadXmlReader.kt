@@ -78,7 +78,7 @@ internal object LegacyDownloadXmlReader {
             }
             if (event == XMLStreamConstants.START_ELEMENT) {
                 val index = indexByXmlName[parser.localName] ?: -1
-                if (index in 0 until DownloadColumns.COUNT) {
+                if (index in 0 until DownloadColumn.COUNT) {
                     download.applyLegacyColumn(index, parser.elementText)
                 }
             }

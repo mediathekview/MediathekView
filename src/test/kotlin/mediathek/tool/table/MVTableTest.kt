@@ -1,10 +1,10 @@
 package mediathek.tool.table
 
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.daten.DatenDownload
-import mediathek.daten.DatenFilm
 import mediathek.tool.models.TModelDownload
+import mediathek.tool.models.FilmColumn
 import mediathek.tool.models.TModelFilm
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -34,7 +34,7 @@ class MVTableTest {
 
             table.readColumnConfigurationData()
 
-            assertEquals(DatenFilm.FILM_GEO, table.convertColumnIndexToModel(7))
+            assertEquals(FilmColumn.GEO.index, table.convertColumnIndexToModel(7))
         } finally {
             config.filmTableColumnConfiguration = originalConfig
         }
@@ -47,27 +47,35 @@ class MVTableTest {
 
         val sorter = assertInstanceOf(DefaultRowSorter::class.java, table.rowSorter)
         sorter.sortKeys = listOf(
-            javax.swing.RowSorter.SortKey(DatenFilm.FILM_TITEL, SortOrder.ASCENDING),
-            javax.swing.RowSorter.SortKey(DatenFilm.FILM_SENDER, SortOrder.DESCENDING),
+            javax.swing.RowSorter.SortKey(FilmColumn.TITLE.index, SortOrder.ASCENDING),
+            javax.swing.RowSorter.SortKey(FilmColumn.SENDER.index, SortOrder.DESCENDING),
         )
 
         assertEquals(1, sorter.sortKeys.size)
-        assertEquals(DatenFilm.FILM_TITEL, sorter.sortKeys.first().column)
+        assertEquals(FilmColumn.TITLE.index, sorter.sortKeys.first().column)
         assertEquals(SortOrder.ASCENDING, sorter.sortKeys.first().sortOrder)
-        assertTrue(!sorter.isSortable(DatenFilm.FILM_ABSPIELEN))
+        assertTrue(!sorter.isSortable(FilmColumn.PLAY.index))
     }
 
     @Test
     fun downloadModelReturnsLiveValuesForColumnsLoadedWhileHidden() {
         val download = DatenDownload()
         download.aboName = "Daily Abo"
+        download.sender = "ZDF"
 
-        val row = Array<Any>(DownloadColumns.COUNT) { "" }
-        row[DownloadColumns.REF] = download
+        val row = Array<Any>(DownloadColumn.COUNT) { "" }
+        row[DownloadColumn.REF.index] = download
 
         val model = TModelDownload()
         model.addRow(row)
 
-        assertEquals("Daily Abo", model.getValueAt(0, DownloadColumns.ABO))
+        assertEquals(DownloadColumn.COUNT, model.columnCount)
+        assertEquals("Abo", model.getColumnName(DownloadColumn.ABO.index))
+        assertEquals("Größe [MB]", model.getColumnName(DownloadColumn.SIZE.index))
+        assertEquals(String::class.java, model.getColumnClass(DownloadColumn.ABO.index))
+        assertEquals(Boolean::class.javaObjectType, model.getColumnClass(DownloadColumn.DEFERRED.index))
+
+        assertEquals("Daily Abo", model.getValueAt(0, DownloadColumn.ABO.index))
+        assertEquals("ZDF", model.getValueAt(0, DownloadColumn.SENDER.index))
     }
 }

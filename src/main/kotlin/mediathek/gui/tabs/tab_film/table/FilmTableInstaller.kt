@@ -20,7 +20,6 @@ package mediathek.gui.tabs.tab_film.table
 
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.DownloadServices
-import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
 import mediathek.gui.tabs.tab_film.actions.CopyUrlToClipboardAction
 import mediathek.gui.tabs.tab_film.actions.FilmActionHost
@@ -29,6 +28,7 @@ import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
 import mediathek.tool.cellrenderer.CellRendererFilme
 import mediathek.tool.datum.DatumFilm
 import mediathek.tool.listener.BeobTableHeader
+import mediathek.tool.models.FilmColumn
 import mediathek.tool.models.TModelFilm
 import mediathek.tool.table.MVFilmTable
 import java.awt.Component
@@ -145,8 +145,7 @@ class FilmTableInstaller(private val host: Host) {
             HIDDEN_COLUMNS,
             BUTTON_COLUMNS,
             true,
-            { ApplicationConfiguration.getInstance().filmTableLineBreak = it },
-        )
+        ) { ApplicationConfiguration.getInstance().filmTableLineBreak = it }
 
         host.table().tableHeader.addMouseListener(headerListener)
     }
@@ -162,14 +161,14 @@ class FilmTableInstaller(private val host: Host) {
         private const val ACTION_MAP_KEY_MARK_UNSEEN = "unseen"
 
         private val HIDDEN_COLUMNS = intArrayOf(
-            DatenFilm.FILM_ABSPIELEN,
-            DatenFilm.FILM_AUFZEICHNEN,
-            DatenFilm.FILM_MERKEN
+            FilmColumn.PLAY.index,
+            FilmColumn.SAVE.index,
+            FilmColumn.BOOKMARK.index,
         )
         private val BUTTON_COLUMNS = intArrayOf(
-            DatenFilm.FILM_ABSPIELEN,
-            DatenFilm.FILM_AUFZEICHNEN,
-            DatenFilm.FILM_MERKEN
+            FilmColumn.PLAY.index,
+            FilmColumn.SAVE.index,
+            FilmColumn.BOOKMARK.index,
         )
     }
 }

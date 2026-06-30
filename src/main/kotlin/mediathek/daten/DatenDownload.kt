@@ -18,7 +18,7 @@
 
 package mediathek.daten
 
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.controller.DownloadConfig
 import mediathek.controller.LegacyDownloadXmlReader
 import mediathek.controller.starter.*
@@ -115,39 +115,40 @@ class DatenDownload() : Comparable<DatenDownload> {
     }
 
     internal fun applyLegacyColumn(index: Int, value: String) {
-        require(index in 0 until DownloadColumns.COUNT) { "Unknown legacy download column: $index" }
-        when (index) {
-            DownloadColumns.NR -> nr = value.toIntOrNull() ?: nr
-            DownloadColumns.ABO -> aboName = value
-            DownloadColumns.SENDER -> sender = value
-            DownloadColumns.TOPIC -> topic = value
-            DownloadColumns.TITLE -> title = value
-            DownloadColumns.SIZE -> storedSizeInMiB = value.toLongOrNull()
-            DownloadColumns.DATE -> date = value
-            DownloadColumns.TIME -> time = value
-            DownloadColumns.DURATION -> duration = value
-            DownloadColumns.INTERRUPTED -> isInterruptedFlag = value.toBoolean()
-            DownloadColumns.GEO -> geo = value
-            DownloadColumns.FILM_URL -> filmUrl = value
-            DownloadColumns.HISTORY_URL -> historyUrl = value
-            DownloadColumns.URL -> downloadUrl = value
-            DownloadColumns.RTMP_URL -> rtmpUrl = value
-            DownloadColumns.SUBTITLE_URL -> subtitleUrl = value
-            DownloadColumns.PROGRAM_SET -> programSetName = value
-            DownloadColumns.PROGRAM -> programName = value
-            DownloadColumns.PROGRAM_INVOCATION -> programInvocation = value
-            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> programInvocationArray = value
-            DownloadColumns.PROGRAM_RESTART -> isRestart = value.toBoolean()
-            DownloadColumns.TARGET_FILE_NAME -> targetFileName = value
-            DownloadColumns.TARGET_PATH -> targetPath = value
-            DownloadColumns.TARGET_PATH_FILE_NAME -> targetPathFileName = value
-            DownloadColumns.TYPE -> legacyTypeText = value
-            DownloadColumns.SOURCE -> legacySourceText = value
-            DownloadColumns.DEFERRED -> isDeferred = value.toBoolean()
-            DownloadColumns.INFO_FILE -> isInfoFile = value.toBoolean()
-            DownloadColumns.SPOTLIGHT -> isSpotlight = value.toBoolean()
-            DownloadColumns.SUBTITLE -> isSubtitle = value.toBoolean()
-            DownloadColumns.DOWNLOAD_MANAGER -> isDownloadManager = value.toBoolean()
+        require(index in 0 until DownloadColumn.COUNT) { "Unknown legacy download column: $index" }
+        when (DownloadColumn.fromIndex(index)) {
+            DownloadColumn.NUMBER -> nr = value.toIntOrNull() ?: nr
+            DownloadColumn.ABO -> aboName = value
+            DownloadColumn.SENDER -> sender = value
+            DownloadColumn.TOPIC -> topic = value
+            DownloadColumn.TITLE -> title = value
+            DownloadColumn.SIZE -> storedSizeInMiB = value.toLongOrNull()
+            DownloadColumn.DATE -> date = value
+            DownloadColumn.TIME -> time = value
+            DownloadColumn.DURATION -> duration = value
+            DownloadColumn.INTERRUPTED -> isInterruptedFlag = value.toBoolean()
+            DownloadColumn.GEO -> geo = value
+            DownloadColumn.FILM_URL -> filmUrl = value
+            DownloadColumn.HISTORY_URL -> historyUrl = value
+            DownloadColumn.URL -> downloadUrl = value
+            DownloadColumn.RTMP_URL -> rtmpUrl = value
+            DownloadColumn.SUBTITLE_URL -> subtitleUrl = value
+            DownloadColumn.PROGRAM_SET -> programSetName = value
+            DownloadColumn.PROGRAM -> programName = value
+            DownloadColumn.PROGRAM_INVOCATION -> programInvocation = value
+            DownloadColumn.PROGRAM_INVOCATION_ARRAY -> programInvocationArray = value
+            DownloadColumn.PROGRAM_RESTART -> isRestart = value.toBoolean()
+            DownloadColumn.TARGET_FILE_NAME -> targetFileName = value
+            DownloadColumn.TARGET_PATH -> targetPath = value
+            DownloadColumn.TARGET_PATH_FILE_NAME -> targetPathFileName = value
+            DownloadColumn.TYPE -> legacyTypeText = value
+            DownloadColumn.SOURCE -> legacySourceText = value
+            DownloadColumn.DEFERRED -> isDeferred = value.toBoolean()
+            DownloadColumn.INFO_FILE -> isInfoFile = value.toBoolean()
+            DownloadColumn.SPOTLIGHT -> isSpotlight = value.toBoolean()
+            DownloadColumn.SUBTITLE -> isSubtitle = value.toBoolean()
+            DownloadColumn.DOWNLOAD_MANAGER -> isDownloadManager = value.toBoolean()
+            else -> Unit
         }
     }
 

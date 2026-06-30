@@ -18,7 +18,7 @@
 
 package mediathek.controller.starter
 
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.daten.DatenDownload
 import mediathek.tool.models.TModelDownload
 
@@ -35,12 +35,12 @@ internal object DownloadTableModelUpdater {
 
     fun updateProgress(model: TModelDownload) {
         for ((row, item) in model.dataVector.withIndex()) {
-            val download = item[DownloadColumns.REF] as DatenDownload
+            val download = item[DownloadColumn.REF.index] as DatenDownload
             if (download.runtime.runState?.isRunning == true) {
-                model.setValueAt(download.textRestzeit, row, DownloadColumns.REMAINING_TIME)
-                model.setValueAt(download.textBandbreite, row, DownloadColumns.BANDWIDTH)
-                model.setValueAt(progressText(download), row, DownloadColumns.PROGRESS)
-                model.setValueAt(download.runtime.filmSize, row, DownloadColumns.SIZE)
+                model.setValueAt(download.textRestzeit, row, DownloadColumn.REMAINING_TIME.index)
+                model.setValueAt(download.textBandbreite, row, DownloadColumn.BANDWIDTH.index)
+                model.setValueAt(progressText(download), row, DownloadColumn.PROGRESS.index)
+                model.setValueAt(download.runtime.filmSize, row, DownloadColumn.SIZE.index)
             }
         }
     }
@@ -79,58 +79,61 @@ internal object DownloadTableModelUpdater {
     }
 
     private fun createModelRow(download: DatenDownload): Array<Any> =
-        Array(DownloadColumns.COUNT) { index -> modelValue(download, index) }
+        Array(DownloadColumn.COUNT) { index -> modelValue(download, index) }
 
     private fun modelValue(download: DatenDownload, index: Int): Any =
+        modelValue(download, DownloadColumn.fromIndex(index))
+
+    private fun modelValue(download: DatenDownload, column: DownloadColumn): Any =
         when {
-            index == DownloadColumns.NR -> download.nr
-            index == DownloadColumns.FILM_NR -> download.film?.filmNr ?: 0
-            index in hiddenBooleanColumns -> ""
-            index == DownloadColumns.DATE -> download.datumFilm
-            index == DownloadColumns.REMAINING_TIME -> download.textRestzeit
-            index == DownloadColumns.BANDWIDTH -> download.textBandbreite
-            index == DownloadColumns.PROGRESS -> progressText(download)
-            index == DownloadColumns.SIZE -> download.runtime.filmSize
-            index == DownloadColumns.GEO -> download.geo
-            index == DownloadColumns.REF -> download
-            index != DownloadColumns.URL && !DownloadColumns.isVisible(index) -> ""
-            else -> visibleModelValue(download, index)
+            column == DownloadColumn.NUMBER -> download.nr
+            column == DownloadColumn.FILM_NUMBER -> download.film?.filmNr ?: 0
+            column in hiddenBooleanColumns -> ""
+            column == DownloadColumn.DATE -> download.datumFilm
+            column == DownloadColumn.REMAINING_TIME -> download.textRestzeit
+            column == DownloadColumn.BANDWIDTH -> download.textBandbreite
+            column == DownloadColumn.PROGRESS -> progressText(download)
+            column == DownloadColumn.SIZE -> download.runtime.filmSize
+            column == DownloadColumn.GEO -> download.geo
+            column == DownloadColumn.REF -> download
+            column != DownloadColumn.URL && !DownloadColumn.isVisible(column.index) -> ""
+            else -> visibleModelValue(download, column)
         }
 
-    private fun visibleModelValue(download: DatenDownload, index: Int): Any =
-        when (index) {
-            DownloadColumns.ABO -> download.aboName
-            DownloadColumns.SENDER -> download.sender
-            DownloadColumns.TOPIC -> download.topic
-            DownloadColumns.TITLE -> download.title
-            DownloadColumns.BUTTON_START,
-            DownloadColumns.BUTTON_DELETE,
+    private fun visibleModelValue(download: DatenDownload, column: DownloadColumn): Any =
+        when (column) {
+            DownloadColumn.ABO -> download.aboName
+            DownloadColumn.SENDER -> download.sender
+            DownloadColumn.TOPIC -> download.topic
+            DownloadColumn.TITLE -> download.title
+            DownloadColumn.BUTTON_START,
+            DownloadColumn.BUTTON_DELETE,
             -> ""
 
-            DownloadColumns.TIME -> download.time
-            DownloadColumns.DURATION -> download.duration
-            DownloadColumns.HIGH_QUALITY -> download.film?.isHighQuality == true
-            DownloadColumns.SUBTITLE_AVAILABLE -> download.film?.hasSubtitle() == true
-            DownloadColumns.FILM_URL -> download.filmUrl
-            DownloadColumns.HISTORY_URL -> download.historyUrl
-            DownloadColumns.URL -> download.downloadUrl
-            DownloadColumns.RTMP_URL -> download.rtmpUrl
-            DownloadColumns.SUBTITLE_URL -> download.subtitleUrl
-            DownloadColumns.PROGRAM_SET -> download.programSetName
-            DownloadColumns.PROGRAM -> download.programName
-            DownloadColumns.PROGRAM_INVOCATION -> download.programInvocation
-            DownloadColumns.PROGRAM_INVOCATION_ARRAY -> download.programInvocationArray
-            DownloadColumns.PROGRAM_RESTART -> download.isRestart
-            DownloadColumns.TARGET_FILE_NAME -> download.targetFileName
-            DownloadColumns.TARGET_PATH -> download.targetPath
-            DownloadColumns.TARGET_PATH_FILE_NAME -> download.targetPathFileName
-            DownloadColumns.TYPE -> download.art.legacyId.toString()
-            DownloadColumns.SOURCE -> download.quelle.legacyId.toString()
-            DownloadColumns.DEFERRED -> download.isDeferred
-            DownloadColumns.INFO_FILE -> download.isInfoFile
-            DownloadColumns.SPOTLIGHT -> download.isSpotlight
-            DownloadColumns.SUBTITLE -> download.isSubtitle
-            DownloadColumns.DOWNLOAD_MANAGER -> download.isDownloadManager
+            DownloadColumn.TIME -> download.time
+            DownloadColumn.DURATION -> download.duration
+            DownloadColumn.HIGH_QUALITY -> download.film?.isHighQuality == true
+            DownloadColumn.SUBTITLE_AVAILABLE -> download.film?.hasSubtitle() == true
+            DownloadColumn.FILM_URL -> download.filmUrl
+            DownloadColumn.HISTORY_URL -> download.historyUrl
+            DownloadColumn.URL -> download.downloadUrl
+            DownloadColumn.RTMP_URL -> download.rtmpUrl
+            DownloadColumn.SUBTITLE_URL -> download.subtitleUrl
+            DownloadColumn.PROGRAM_SET -> download.programSetName
+            DownloadColumn.PROGRAM -> download.programName
+            DownloadColumn.PROGRAM_INVOCATION -> download.programInvocation
+            DownloadColumn.PROGRAM_INVOCATION_ARRAY -> download.programInvocationArray
+            DownloadColumn.PROGRAM_RESTART -> download.isRestart
+            DownloadColumn.TARGET_FILE_NAME -> download.targetFileName
+            DownloadColumn.TARGET_PATH -> download.targetPath
+            DownloadColumn.TARGET_PATH_FILE_NAME -> download.targetPathFileName
+            DownloadColumn.TYPE -> download.art.legacyId.toString()
+            DownloadColumn.SOURCE -> download.quelle.legacyId.toString()
+            DownloadColumn.DEFERRED -> download.isDeferred
+            DownloadColumn.INFO_FILE -> download.isInfoFile
+            DownloadColumn.SPOTLIGHT -> download.isSpotlight
+            DownloadColumn.SUBTITLE -> download.isSubtitle
+            DownloadColumn.DOWNLOAD_MANAGER -> download.isDownloadManager
             else -> ""
         }
 
@@ -143,12 +146,12 @@ internal object DownloadTableModelUpdater {
     }
 
     private val hiddenBooleanColumns = setOf(
-        DownloadColumns.PROGRAM_RESTART,
-        DownloadColumns.INTERRUPTED,
-        DownloadColumns.SPOTLIGHT,
-        DownloadColumns.INFO_FILE,
-        DownloadColumns.SUBTITLE,
-        DownloadColumns.DEFERRED,
-        DownloadColumns.DOWNLOAD_MANAGER,
+        DownloadColumn.PROGRAM_RESTART,
+        DownloadColumn.INTERRUPTED,
+        DownloadColumn.SPOTLIGHT,
+        DownloadColumn.INFO_FILE,
+        DownloadColumn.SUBTITLE,
+        DownloadColumn.DEFERRED,
+        DownloadColumn.DOWNLOAD_MANAGER,
     )
 }

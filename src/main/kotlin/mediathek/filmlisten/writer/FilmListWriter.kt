@@ -212,13 +212,13 @@ class FilmListWriter(private val readable: Boolean) {
         jg.writeString(film.urlNormalQuality)
         jg.writeString(film.websiteUrl)
         jg.writeString(film.subtitleUrl)
-        skipEntry(jg) // DatenFilm.FILM_URL_RTMP
+        skipEntry(jg) // legacy RTMP URL field
         writeLowQualityUrl(jg, film)
-        skipEntry(jg) // DatenFilm.URL_RTMP_KLEIN
+        skipEntry(jg) // legacy low-quality RTMP URL field
         writeHighQualityUrl(jg, film)
-        skipEntry(jg) // DatenFilm.FILM_URL_RTMP_HD
+        skipEntry(jg) // legacy HD RTMP URL field
         writeDatumLong(film, jg)
-        skipEntry(jg) // DatenFilm.FILM_URL_HISTORY
+        skipEntry(jg) // legacy history URL field
         if (!film.hasCountries()) {
             jg.writeString("")
         } else {

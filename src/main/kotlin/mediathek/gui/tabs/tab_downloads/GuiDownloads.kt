@@ -22,7 +22,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import mediathek.config.DatenConfigurationPersistence
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.controller.history.AboHistoryEntry
 import mediathek.controller.starter.*
 import mediathek.daten.DatenDownload
@@ -349,9 +349,9 @@ class GuiDownloads(
         tabelle.tableHeader.addMouseListener(
             BeobTableHeader(
                 tabelle,
-                DownloadColumns.visibilityStore(),
+                DownloadColumn.visibilityStore(),
                 COLUMNS_DISABLED,
-                intArrayOf(DownloadColumns.BUTTON_START, DownloadColumns.BUTTON_DELETE),
+                intArrayOf(DownloadColumn.BUTTON_START.index, DownloadColumn.BUTTON_DELETE.index),
                 true
             ) {
                 ApplicationConfiguration.getInstance().downloadTableLineBreak = it
@@ -620,7 +620,7 @@ class GuiDownloads(
         OpenPlayerAction.filmAbspielen(ownerFrame, targetFile)
     }
 
-    fun filmLoeschen_() {
+    fun deleteDownloadedFile() {
         val datenDownload = getSelDownload() ?: return
 
         val currentStart = datenDownload.runtime.runState
@@ -724,7 +724,7 @@ class GuiDownloads(
         for (i in 0 until rowCount) {
             val datenDownload = tableModel.getValueAt(
                 tabelle.convertRowIndexToModel(i),
-                DownloadColumns.REF,
+                DownloadColumn.REF.index,
             ) as DatenDownload
             downloads.add(datenDownload)
         }
@@ -873,7 +873,7 @@ class GuiDownloads(
         for (i in 0 until tabelle.rowCount) {
             val datenDownload = tabelle.model.getValueAt(
                 tabelle.convertRowIndexToModel(i),
-                DownloadColumns.REF,
+                DownloadColumn.REF.index,
             ) as DatenDownload
             val start = datenDownload.runtime.runState
             if (start != null && start.status < StartStatus.RUNNING) {
@@ -963,10 +963,10 @@ class GuiDownloads(
         private const val ACTION_MAP_KEY_MARK_AS_UNSEEN = "unseen"
         private const val ACTION_MAP_KEY_START_DOWNLOAD = "dl_start"
         private val COLUMNS_DISABLED = intArrayOf(
-            DownloadColumns.BUTTON_START,
-            DownloadColumns.BUTTON_DELETE,
-            DownloadColumns.REF,
-            DownloadColumns.RTMP_URL,
+            DownloadColumn.BUTTON_START.index,
+            DownloadColumn.BUTTON_DELETE.index,
+            DownloadColumn.REF.index,
+            DownloadColumn.RTMP_URL.index,
         )
         private val logger = LogManager.getLogger(GuiDownloads::class.java)
     }

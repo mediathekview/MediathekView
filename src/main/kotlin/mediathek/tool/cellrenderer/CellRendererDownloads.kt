@@ -2,7 +2,7 @@ package mediathek.tool.cellrenderer
 
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import mediathek.config.MVColor
-import mediathek.controller.DownloadColumns
+import mediathek.controller.DownloadColumn
 import mediathek.controller.starter.DownloadProgressText
 import mediathek.controller.starter.DownloadRunState
 import mediathek.controller.starter.StartStatus
@@ -50,19 +50,20 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
         selected = FontIcon.of(FontAwesomeRegular.TRASH_ALT, IconUtils.DEFAULT_SIZE, Color.WHITE),
     )
 
-    private fun applyHorizontalAlignment(colIndex: Int) {
-        when (colIndex) {
-            DownloadColumns.PROGRESS,
-            DownloadColumns.FILM_NR,
-            DownloadColumns.NR,
-            DownloadColumns.DATE,
-            DownloadColumns.TIME,
-            DownloadColumns.DURATION,
-            DownloadColumns.BANDWIDTH,
-            DownloadColumns.REMAINING_TIME,
+    private fun applyHorizontalAlignment(column: DownloadColumn) {
+        when (column) {
+            DownloadColumn.PROGRESS,
+            DownloadColumn.FILM_NUMBER,
+            DownloadColumn.NUMBER,
+            DownloadColumn.DATE,
+            DownloadColumn.TIME,
+            DownloadColumn.DURATION,
+            DownloadColumn.BANDWIDTH,
+            DownloadColumn.REMAINING_TIME,
                 -> horizontalAlignment = CENTER
 
-            DownloadColumns.SIZE -> horizontalAlignment = RIGHT
+            DownloadColumn.SIZE -> horizontalAlignment = RIGHT
+            else -> Unit
         }
     }
 
@@ -91,51 +92,54 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
 
             val rowModelIndex = table.convertRowIndexToModel(row)
-            val columnModelIndex = table.convertColumnIndexToModel(column)
-            val datenDownload = table.model.getValueAt(rowModelIndex, DownloadColumns.REF) as DatenDownload
+            val downloadColumn = DownloadColumn.fromIndex(table.convertColumnIndexToModel(column))
+            val datenDownload = table.model.getValueAt(rowModelIndex, DownloadColumn.REF.index) as DatenDownload
             val mvTable = table as MVTable
 
             if (mvTable.isLineBreak()) {
                 horizontalAlignment = LEFT
                 verticalAlignment = TOP
 
-                when (columnModelIndex) {
-                    DownloadColumns.TITLE,
-                    DownloadColumns.TOPIC,
-                    DownloadColumns.URL,
-                    DownloadColumns.PROGRAM_INVOCATION,
-                    DownloadColumns.PROGRAM_INVOCATION_ARRAY,
-                    DownloadColumns.FILM_URL,
-                    DownloadColumns.SUBTITLE_URL,
-                    DownloadColumns.TARGET_FILE_NAME,
-                    DownloadColumns.TARGET_PATH,
-                    DownloadColumns.TARGET_PATH_FILE_NAME,
-                    DownloadColumns.ABO,
-                        -> return createTextArea(valueText(value), datenDownload, columnModelIndex, isSelected)
+                when (downloadColumn) {
+                    DownloadColumn.TITLE,
+                    DownloadColumn.TOPIC,
+                    DownloadColumn.URL,
+                    DownloadColumn.PROGRAM_INVOCATION,
+                    DownloadColumn.PROGRAM_INVOCATION_ARRAY,
+                    DownloadColumn.FILM_URL,
+                    DownloadColumn.SUBTITLE_URL,
+                    DownloadColumn.TARGET_FILE_NAME,
+                    DownloadColumn.TARGET_PATH,
+                    DownloadColumn.TARGET_PATH_FILE_NAME,
+                    DownloadColumn.ABO,
+                        -> return createTextArea(valueText(value), datenDownload, downloadColumn, isSelected)
+
+                    else -> Unit
                 }
             } else {
-                applyHorizontalAlignment(columnModelIndex)
+                applyHorizontalAlignment(downloadColumn)
             }
 
-            when (columnModelIndex) {
-                DownloadColumns.PROGRESS -> renderProgressColumn(datenDownload, mvTable, isSelected)?.let { return it }
-                DownloadColumns.FILM_NR -> hideZeroFilmNumber(table, rowModelIndex)
-                DownloadColumns.TYPE -> renderDownloadType(datenDownload)
-                DownloadColumns.SOURCE -> renderDownloadSource(datenDownload)
-                DownloadColumns.BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected)
-                DownloadColumns.BUTTON_DELETE -> handleButtonDeleteColumn(datenDownload, isSelected)
-                DownloadColumns.ABO -> handleAboColumn(datenDownload)
-                DownloadColumns.SENDER -> {
+            when (downloadColumn) {
+                DownloadColumn.PROGRESS -> renderProgressColumn(datenDownload, mvTable, isSelected)?.let { return it }
+                DownloadColumn.FILM_NUMBER -> hideZeroFilmNumber(table, rowModelIndex)
+                DownloadColumn.TYPE -> renderDownloadType(datenDownload)
+                DownloadColumn.SOURCE -> renderDownloadSource(datenDownload)
+                DownloadColumn.BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected)
+                DownloadColumn.BUTTON_DELETE -> handleButtonDeleteColumn(datenDownload, isSelected)
+                DownloadColumn.ABO -> handleAboColumn(datenDownload)
+                DownloadColumn.SENDER -> {
                     if (mvTable.showSenderIcons()) {
                         val targetDim = getSenderCellDimension(table, row, column)
                         setSenderIcon(valueText(value), targetDim, isSelected)
                     }
                 }
 
-                DownloadColumns.GEO -> datenDownload.film?.let { film -> drawGeolocationIcons(film, isSelected) }
+                DownloadColumn.GEO -> datenDownload.film?.let { film -> drawGeolocationIcons(film, isSelected) }
+                else -> Unit
             }
 
-            if (columnModelIndex == DownloadColumns.TITLE) {
+            if (downloadColumn == DownloadColumn.TITLE) {
                 datenDownload.film?.let { film ->
                     setIndicatorIcons(table, film, isSelected)
                 }
@@ -177,7 +181,7 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun hideZeroFilmNumber(table: JTable, rowModelIndex: Int) {
-        if (table.model.getValueAt(rowModelIndex, DownloadColumns.FILM_NR) as Int == 0) {
+        if (table.model.getValueAt(rowModelIndex, DownloadColumn.FILM_NUMBER.index) as Int == 0) {
             text = ""
         }
     }
@@ -193,11 +197,11 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     private fun createTextArea(
         value: String,
         datenDownload: DatenDownload,
-        columnModelIndex: Int,
+        column: DownloadColumn,
         isSelected: Boolean,
     ): JTextArea {
         val textArea = createWrappedTextArea(value)
-        if (columnModelIndex == DownloadColumns.ABO) {
+        if (column == DownloadColumn.ABO) {
             handleAboColumn(textArea, datenDownload)
         }
         setBackgroundColor(textArea, datenDownload.runtime.runState, isSelected)

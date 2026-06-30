@@ -12,6 +12,6 @@ class DeleteDownloadAction(private val guiDownloads: GuiDownloads) : AbstractAct
     }
 
     override fun actionPerformed(e: ActionEvent?) {
-        guiDownloads.filmLoeschen_()
+        guiDownloads.deleteDownloadedFile()
     }
 }
