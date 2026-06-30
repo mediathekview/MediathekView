@@ -151,6 +151,20 @@ jobs:
         env:
           MAC_KEYSTORE_PASSWORD:       ${{ secrets.MAC_KEYSTORE_PASSWORD }}
 
+      - name: Print notarization logs on failure
+        if: failure()
+        run: |
+          echo "Looking for notarization logs..."
+          find target -name '*.notarization.log' -print -exec cat {} \;
+
+      - name: Upload notarization logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notarization-logs-${{ env.MACOS_ARCH }}
+          path: target/**/*.notarization.log
+          if-no-files-found: ignore
+
       - name: Configure AWS CLI for MinIO
         run: |
           mkdir -p ~/.aws
