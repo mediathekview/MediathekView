@@ -23,6 +23,7 @@ import mediathek.config.application.ApplicationConfiguration
 import org.apache.logging.log4j.LogManager
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.store.Directory
+import java.io.IOException
 import java.nio.file.Path
 import kotlin.math.max
 
@@ -30,7 +31,9 @@ class IndexedFilmList : ListeFilme() {
     var luceneDirectory: Directory? = null
         private set
 
+    @Volatile
     var reader: DirectoryReader? = null
+        private set
 
     private var filmNrIndex: Map<Int, DatenFilm>? = null
 
@@ -53,6 +56,14 @@ class IndexedFilmList : ListeFilme() {
 
         logger.info("Using Lucene directory mode '{}' for index path {}", mode.configValue, indexPath)
         return mode.createDirectory(indexPath)
+    }
+
+    @Synchronized
+    @Throws(IOException::class)
+    fun replaceReader(newReader: DirectoryReader) {
+        val previousReader = reader
+        reader = newReader
+        previousReader?.close()
     }
 
     @Synchronized

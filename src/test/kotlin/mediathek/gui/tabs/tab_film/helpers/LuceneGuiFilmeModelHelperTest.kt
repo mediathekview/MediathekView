@@ -72,6 +72,26 @@ internal class LuceneGuiFilmeModelHelperTest {
         }
     }
 
+    @Test
+    fun `near real time reader remains searchable after writer closes without commit`() {
+        ByteBuffersDirectory().use { directory ->
+            val reader = IndexWriter(
+                directory,
+                IndexWriterConfig().apply {
+                    openMode = IndexWriterConfig.OpenMode.CREATE
+                    setCommitOnClose(false)
+                },
+            ).use { writer ->
+                writer.addDocument(filmDocument(filmNr = 1, sender = "ARD"))
+                DirectoryReader.open(writer)
+            }
+
+            reader.use {
+                assertEquals(listOf(1), matchingFilmNrs(IndexSearcher(it)))
+            }
+        }
+    }
+
     private fun writeFilms(directory: Directory, vararg documents: Document) {
         IndexWriter(directory, IndexWriterConfig()).use { writer ->
             documents.forEach(writer::addDocument)

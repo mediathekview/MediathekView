@@ -24,7 +24,7 @@
         <entry>sqlite-jdbc*</entry>
       </macSearchedJars>
     </codeSigning>
-    <jreBundles jdkProviderId="JBR" release="25/25.0.3-b496.62">
+    <jreBundles jdkProviderId="JBR" release="25/latest">
       <modules>
         <defaultModules set="jre" />
         <module name="jdk.incubator.vector" />

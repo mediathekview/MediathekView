@@ -20,11 +20,13 @@ package mediathek.audiothek.ui.table
 
 import mediathek.audiothek.model.AudioEntry
 import org.apache.lucene.document.Document
-import org.apache.lucene.document.StoredField
+import org.apache.lucene.document.NumericDocValuesField
 import org.apache.lucene.document.StringField
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
+import org.apache.lucene.index.LeafReaderContext
+import org.apache.lucene.index.NumericDocValues
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.*
 import org.apache.lucene.store.ByteBuffersDirectory
@@ -50,12 +52,10 @@ class AudiothekLuceneIndex : Closeable {
 
         val searcher = reader?.let(::IndexSearcher) ?: return emptyList()
         val luceneQuery = buildLuceneQuery(normalized, visibleFields)
-        val hits = searcher.search(luceneQuery, entries.size).scoreDocs
-        return hits.mapNotNull { hit ->
-            val document = searcher.storedFields().document(hit.doc)
-            val rowIndex = document.getField(FIELD_ROW_INDEX)?.numericValue()?.toInt() ?: return@mapNotNull null
-            entries.getOrNull(rowIndex)
-        }
+        return searcher.search(luceneQuery, RowIndexCollectorManager())
+            .mapNotNull { rowIndex ->
+                entries.getOrNull(rowIndex)
+            }
     }
 
     override fun close() {
@@ -83,7 +83,7 @@ class AudiothekLuceneIndex : Closeable {
 
     private fun buildDocument(index: Int, entry: AudioEntry): Document {
         return Document().apply {
-            add(StoredField(FIELD_ROW_INDEX, index))
+            add(NumericDocValuesField(FIELD_ROW_INDEX, index.toLong()))
             addSearchField(FIELD_SENDER, entry.channel)
             addSearchField(FIELD_GENRE, entry.genre)
             addSearchField(FIELD_THEME, entry.theme)
@@ -202,5 +202,49 @@ class AudiothekLuceneIndex : Closeable {
 
         fun build(entries: List<AudioEntry>): AudiothekLuceneIndex =
             AudiothekLuceneIndex().apply { replaceEntries(entries) }
+    }
+
+    private data class RowIndexHit(
+        val rowIndex: Int,
+        val docId: Int,
+        val score: Float,
+    )
+
+    private class RowIndexCollector : SimpleCollector() {
+        private val hits = ArrayList<RowIndexHit>()
+        private var rowIndexValues: NumericDocValues? = null
+        private var docBase: Int = 0
+        private var scorer: Scorable? = null
+
+        fun rowIndexHits(): List<RowIndexHit> = hits
+
+        override fun doSetNextReader(context: LeafReaderContext) {
+            rowIndexValues = context.reader().getNumericDocValues(FIELD_ROW_INDEX)
+            docBase = context.docBase
+        }
+
+        override fun setScorer(scorer: Scorable) {
+            this.scorer = scorer
+        }
+
+        override fun collect(doc: Int) {
+            val rowIndex = rowIndexValues?.getRowIndex(doc) ?: return
+            hits.add(RowIndexHit(rowIndex, docBase + doc, scorer?.score() ?: 0.0f))
+        }
+
+        private fun NumericDocValues.getRowIndex(docId: Int): Int? =
+            if (advanceExact(docId)) longValue().toInt() else null
+
+        override fun scoreMode(): ScoreMode = ScoreMode.COMPLETE
+    }
+
+    private class RowIndexCollectorManager : CollectorManager<RowIndexCollector, List<Int>> {
+        override fun newCollector(): RowIndexCollector = RowIndexCollector()
+
+        override fun reduce(collectors: Collection<RowIndexCollector>): List<Int> =
+            collectors
+                .flatMap { it.rowIndexHits() }
+                .sortedWith(compareByDescending<RowIndexHit> { it.score }.thenBy { it.docId })
+                .map { it.rowIndex }
     }
 }

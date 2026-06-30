@@ -36,7 +36,7 @@ class LuceneDirectoryModePanel : JPanel() {
     private val restartWarningTextLabel = JLabel("<html><b>Neustart notwendig</b></html>")
     private val infoLabel = MultilineLabel(
         "Wählen Sie, welche Lucene-Directory-Implementierung verwendet wird.\n" +
-            "Die Einstellung beeinflusst Dateiverhalten und Suchperformance.",
+            "Die Einstellung beeinflusst Indexdateien, Speicherverbrauch und Suchzugriffe.",
     )
     private var initializing = false
 

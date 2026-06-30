@@ -64,7 +64,7 @@
         <kotlin.version>2.4.0</kotlin.version>
         <kotlin.language.version>2.4</kotlin.language.version>
         <kotlin.api.version>2.4</kotlin.api.version>
-        <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <commons-configuration2.version>2.15.1</commons-configuration2.version>
         <commons-io.version>2.22.0</commons-io.version>
@@ -707,7 +707,7 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>validate</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -730,7 +730,7 @@
                     </execution>
                     <execution>
                         <id>copy-install4j-installers</id>
-                        <phase>validate</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -758,10 +758,8 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <!-- configure the plugin here -->
-                            <excludeArtifactIds>
-                                sqlite-jdbc,mockito-core,mockito-junit-jupiter,junit-jupiter-api,junit-jupiter-params,junit-jupiter-engine,kotlin-test-junit,byte-buddy,byte-buddy-agent,junit-platform-commons,junit-platform-engine,kotlin-test
-                            </excludeArtifactIds>
+                            <includeScope>runtime</includeScope>
+                            <excludeArtifactIds>sqlite-jdbc</excludeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -826,7 +824,7 @@
                         <executions>
                             <execution>
                                 <id>copy-install4j-win-amd64-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -895,6 +893,8 @@
                 <sqlite.native.exclude.06>Windows/armv7</sqlite.native.exclude.06>
                 <sqlite.native.exclude.07>Windows/x86</sqlite.native.exclude.07>
                 <sqlite.native.exclude.08>Windows/x86_64</sqlite.native.exclude.08>
+                <!-- Keep the Windows aarch64 workaround scoped to this platform instead of disabling incremental Kotlin compilation globally. -->
+                <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
             </properties>
             <build>
                 <plugins>
@@ -917,7 +917,7 @@
                         <executions>
                             <execution>
                                 <id>copy-install4j-win-aarch64-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -1129,7 +1129,7 @@
                         <executions>
                             <execution>
                                 <id>copy-install4j-mac-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -1186,7 +1186,7 @@
                         <executions>
                             <execution>
                                 <id>copy-install4j-mac-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>

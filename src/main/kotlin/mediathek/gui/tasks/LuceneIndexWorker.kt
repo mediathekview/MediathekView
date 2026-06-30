@@ -64,7 +64,7 @@ class LuceneIndexWorker(
         // store fields for debugging, otherwise they should stay disabled
         doc.add(StringField(LuceneIndexKeys.ID, film.filmNr.toString(), Field.Store.YES))
         doc.add(NumericDocValuesField(LuceneIndexKeys.ID_DOC_VALUE, film.filmNr.toLong()))
-        doc.add(StringField(LuceneIndexKeys.NEW, film.isNew.toString(), Field.Store.NO))
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.NEW, film.isNew)
         doc.add(StringField(LuceneIndexKeys.SENDER, film.sender.lowercase(Locale.ROOT), Field.Store.NO))
         doc.add(TextField(LuceneIndexKeys.TITEL, film.title, Field.Store.NO))
         doc.add(TextField(LuceneIndexKeys.THEMA, film.thema, Field.Store.NO))
@@ -72,19 +72,13 @@ class LuceneIndexWorker(
         doc.add(IntPoint(LuceneIndexKeys.FILM_SIZE, film.fileSizeInMegabytes))
 
         doc.add(TextField(LuceneIndexKeys.BESCHREIBUNG, film.description, Field.Store.NO))
-        doc.add(StringField(LuceneIndexKeys.LIVESTREAM, film.isLivestream.toString(), Field.Store.NO))
-        doc.add(StringField(LuceneIndexKeys.HIGH_QUALITY, film.isHighQuality.toString(), Field.Store.NO))
-        doc.add(
-            StringField(
-                LuceneIndexKeys.SUBTITLE,
-                (film.hasSubtitle() || film.hasBurnedInSubtitles()).toString(),
-                Field.Store.NO
-            )
-        )
-        doc.add(StringField(LuceneIndexKeys.TRAILER_TEASER, film.isTrailerTeaser.toString(), Field.Store.NO))
-        doc.add(StringField(LuceneIndexKeys.AUDIOVERSION, film.isAudioVersion.toString(), Field.Store.NO))
-        doc.add(StringField(LuceneIndexKeys.SIGN_LANGUAGE, film.isSignLanguage.toString(), Field.Store.NO))
-        doc.add(StringField(LuceneIndexKeys.DUPLICATE, film.isDuplicate.toString(), Field.Store.NO))
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.LIVESTREAM, film.isLivestream)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.HIGH_QUALITY, film.isHighQuality)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.SUBTITLE, film.hasSubtitle() || film.hasBurnedInSubtitles())
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.TRAILER_TEASER, film.isTrailerTeaser)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.AUDIOVERSION, film.isAudioVersion)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.SIGN_LANGUAGE, film.isSignLanguage)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.DUPLICATE, film.isDuplicate)
         doc.add(IntPoint(LuceneIndexKeys.SEASON, film.season))
         doc.add(IntPoint(LuceneIndexKeys.EPISODE, film.episode))
 
@@ -93,6 +87,12 @@ class LuceneIndexWorker(
         addWochentag(doc, film)
 
         return doc
+    }
+
+    private fun Document.addBooleanFieldIfTrue(field: String, value: Boolean) {
+        if (value) {
+            add(StringField(field, TRUE_VALUE, Field.Store.NO))
+        }
     }
 
     private fun addSendeZeit(doc: Document, film: DatenFilm) {
@@ -122,6 +122,7 @@ class LuceneIndexWorker(
     private fun createIndexWriter(liste: IndexedFilmList): IndexWriter {
         val indexWriterConfig = IndexWriterConfig(LuceneDefaultAnalyzer.buildPerFieldAnalyzer())
         indexWriterConfig.openMode = OpenMode.CREATE
+        indexWriterConfig.setCommitOnClose(false)
         val ramBufferSizeMb = calculateRamBufferSizeMb()
         indexWriterConfig.ramBufferSizeMB = ramBufferSizeMb
         LOG.trace("Using Lucene RAM buffer size: {} MB", ramBufferSizeMb)
@@ -208,7 +209,7 @@ class LuceneIndexWorker(
         val sourceFilms = filmCatalog.allFilms.snapshot()
         val indexingThreads = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
         val indexingTuning = calculateIndexingTuning(indexingThreads)
-        createIndexWriter(indexList).use { writer ->
+        val newReader = createIndexWriter(indexList).use { writer ->
             val watch = Stopwatch.createStarted()
             val counter = AtomicInteger(0)
             val totalCount = sourceFilms.size
@@ -263,14 +264,15 @@ class LuceneIndexWorker(
             }
             withContext(Dispatchers.Swing) {
                 progressBar.value = 100
-                progLabel.text = "Schreibe Index"
+                progLabel.text = "Öffne Index"
                 progressBar.isIndeterminate = true
             }
+            val reader = DirectoryReader.open(writer)
             watch.stop()
             LOG.trace("Lucene index creation took {}", watch)
+            reader
         }
-        indexList.reader?.close()
-        indexList.reader = DirectoryReader.open(indexList.luceneDirectory)
+        indexList.replaceReader(newReader)
     }
 
     private suspend fun handleDamagedIndex(ex: Exception) {
@@ -304,5 +306,6 @@ class LuceneIndexWorker(
     companion object {
         private val LOG: Logger = LogManager.getLogger()
         private val FORMATTER = DateTimeFormatter.ofPattern("EEEE", Locale.GERMAN)
+        private const val TRUE_VALUE = "true"
     }
 }

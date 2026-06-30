@@ -34,7 +34,7 @@ class AboutDialog(owner: Window?) : AboutDialogBase(owner), CoroutineScope {
     override val coroutineContext = job + Dispatchers.Swing
 
     init {
-        lblVersion.text = baseVersionText()
+        lblVersion.text = versionText()
         installCloseHandler()
         installHyperlinkActions()
         resetFormerContributorsScrollPosition()
@@ -80,13 +80,16 @@ class AboutDialog(owner: Window?) : AboutDialogBase(owner), CoroutineScope {
         }
     }
 
-    private fun versionText(buildInfo: BuildInfo): String =
-        if (buildInfo.hasGitMetadata()) {
-            "<html>${baseVersionText()}<br/>Build: ${buildInfo.formatForDisplay()}</html>"
+    private fun versionText(buildInfo: BuildInfo? = null): String =
+        if (buildInfo?.hasGitMetadata() == true) {
+            "<html>${baseVersionText()}<br/>Build: ${buildInfo.formatForDisplay()}<br/>JDK: ${runtimeJdkText()}</html>"
         } else {
-            baseVersionText()
+            "<html>${baseVersionText()}<br/>JDK: ${runtimeJdkText()}</html>"
         }
 
     private fun baseVersionText(): String =
         "Version ${Konstanten.MVVERSION} (${SystemUtils.OS_ARCH})"
+
+    private fun runtimeJdkText(): String =
+        "${System.getProperty("java.version")} (${System.getProperty("java.vendor")})"
 }
