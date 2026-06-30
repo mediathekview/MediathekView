@@ -10,11 +10,17 @@ new FormModel {
 			name: "this"
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonHilfe"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
 				"toolTipText": "Hilfe anzeigen"
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonPruefen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 				"text": "Prüfen"
 				"toolTipText": "Programmpfade prüfen"
 			} )
@@ -26,6 +32,9 @@ new FormModel {
 				}
 				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 					name: "jTabbedPane"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, comp jPanel7:::::x, space :::p}}"
 						"$verticalGroup": "par l {seq l {space :p::p, comp jPanel7:::::x, space :p:21:p}}"
@@ -53,6 +62,9 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldSetName"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 								"$horizontalGroup": "par l {seq {space :::p, comp jScrollPane2::::567:x, space :::p}}"
@@ -70,6 +82,9 @@ new FormModel {
 									}
 									add( new FormComponent( "javax.swing.JTextArea" ) {
 										name: "jTextAreaSetBeschreibung"
+										auxiliary() {
+											"JavaCodeGenerator.variableModifiers": 4
+										}
 										"columns": 20
 										"rows": 8
 										"preferredSize": new java.awt.Dimension( 160, 130 )
@@ -88,27 +103,45 @@ new FormModel {
 								}
 								add( new FormComponent( "javax.swing.JCheckBox" ) {
 									name: "jCheckBoxSpeichern"
+									auxiliary() {
+										"JavaCodeGenerator.variableModifiers": 4
+									}
 									"text": "Speichern"
 								} )
 								add( new FormComponent( "javax.swing.JCheckBox" ) {
 									name: "jCheckBoxButton"
+									auxiliary() {
+										"JavaCodeGenerator.variableModifiers": 4
+									}
 									"text": "Button"
 								} )
 								add( new FormComponent( "javax.swing.JCheckBox" ) {
 									name: "jCheckBoxAbo"
+									auxiliary() {
+										"JavaCodeGenerator.variableModifiers": 4
+									}
 									"text": "Abo"
 								} )
 								add( new FormComponent( "javax.swing.JButton" ) {
 									name: "jButtonAbspielen"
+									auxiliary() {
+										"JavaCodeGenerator.variableModifiers": 4
+									}
 									"text": "Abspielen via schwarzem Play-Button"
 								} )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabelMeldungAbspielen"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "kein Set zum Abspielen ausgewählt!"
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabelMeldungSeichern"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "kein Set zum Speichern ausgewählt!"
 							} )
 						} )
@@ -134,11 +167,17 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonGruppeFarbe"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Farbe"
 								"toolTipText": "Farbauswahldialog anzeigen"
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonGruppeStandardfarbe"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Standardfarbe"
 								"toolTipText": "Farbe zurücksetzen"
 							} )
@@ -186,14 +225,23 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "tfGruppeZielPfad"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonGruppePfad"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 								"toolTipText": "Pfad auswählen"
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxThema"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Einen Unterordner mit dem Thema / Abo-Zielpfad anlegen"
 								"toolTipText": "im Zielverzeichnis wird ein Unterordner mit dem Namen des Themas zum Speichern der Filme angelegt"
 							} )
@@ -206,14 +254,23 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "tfGruppeZielName"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxLaenge"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Ganzen Dateinamen beschränken auf:"
 								"toolTipText": "die Länge des Dateinamens wird auf die Anzahl Zeichen beschränkt"
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jSpinnerLaenge"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"model": new javax.swing.SpinnerNumberModel( 25, 10, 200, 1 )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
@@ -232,10 +289,16 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxField"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Einzelne Felder beschränken auf:"
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jSpinnerField"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"model": new javax.swing.SpinnerNumberModel( 10, 3, 100, 1 )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
@@ -275,6 +338,9 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "tfGruppeDirektPraefix"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel5"
@@ -285,6 +351,9 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "tfGruppeDirektSuffix"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 						} )
 						add( new FormComponent( "javax.swing.JTextArea" ) {
@@ -310,17 +379,26 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JRadioButton" ) {
 								name: "jRadioButtonAufloesungNormal"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"$buttonGroup": new FormReference( "buttonGroup1" )
 								"selected": true
 								"text": "Mittlere Qualität"
 							} )
 							add( new FormComponent( "javax.swing.JRadioButton" ) {
 								name: "jRadioButtonAufloesungKlein"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"$buttonGroup": new FormReference( "buttonGroup1" )
 								"text": "Niedrige Qualität"
 							} )
 							add( new FormComponent( "javax.swing.JRadioButton" ) {
 								name: "jRadioButtonAufloesungHD"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"$buttonGroup": new FormReference( "buttonGroup1" )
 								"text": "Höchste/Hohe Qualität"
 							} )
@@ -343,14 +421,23 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxInfodatei"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Infodatei anlegen: \"Filmname.txt\""
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxSpotlight"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Filmbeschreibung als Finder-Kommentar für Spotlight speichern (nur OS X)"
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxSubtitle"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Untertitel speichern: \"Filmname.xxx\""
 							} )
 						} )
@@ -367,6 +454,9 @@ new FormModel {
 						}
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "jScrollPane1"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
 							"border": new javax.swing.border.TitledBorder( null, "Titel", 1, 2 )
 							add( new FormComponent( "javax.swing.JTable" ) {
 								name: "jTableProgramme"
@@ -388,26 +478,41 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgPlus"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-add.png" )
 								"toolTipText": "neues Programm anlegen"
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgMinus"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-remove.png" )
 								"toolTipText": "markiertes Programm löschen"
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgDuplizieren"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Duplizieren"
 								"toolTipText": "markierte Zeile duplizieren"
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgAuf"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-up.png" )
 								"toolTipText": "markierte Zeile eins nach oben"
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgAb"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-down.png" )
 								"toolTipText": "markierte Zeile eins nach unten"
 							} )
@@ -430,14 +535,23 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldProgPfad"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgPfad"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
 								"toolTipText": "Programm auswählen"
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldProgSchalter"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel1"
@@ -455,6 +569,9 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldProgName"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel3"
@@ -465,6 +582,9 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldProgPraefix"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel4"
@@ -475,9 +595,15 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldProgSuffix"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxRestart"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Fehlgeschlagene Downloads wieder starten"
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
@@ -489,9 +615,15 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldProgZielDateiName"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxRemoteDownload"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
 								"text": "Externer Downloadmanager"
 							} )
 						} )
@@ -512,6 +644,9 @@ new FormModel {
 					}
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "jScrollPane3"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 						"preferredSize": new java.awt.Dimension( 150, 150 )
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "jTablePset"
@@ -550,6 +685,9 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonGruppeDuplizieren"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 						"text": "Duplizieren"
 						"toolTipText": "Programmgruppe kopieren"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
@@ -557,6 +695,9 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonExport"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 						"text": "Export"
 						"toolTipText": "Programmgruppe in Datei exportieren"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
@@ -564,6 +705,9 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonGruppeNeu"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-add.png" )
 						"toolTipText": "neue Programmgruppe anlegen"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
@@ -571,6 +715,9 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonGruppeLoeschen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-remove.png" )
 						"toolTipText": "Programmgruppe löschen"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
@@ -578,6 +725,9 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonGruppeAuf"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-up.png" )
 						"toolTipText": "Programmgruppe nach oben schieben"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
@@ -593,6 +743,9 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonGruppeAb"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-down.png" )
 						"toolTipText": "Programmgruppe nach unten schieben"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
