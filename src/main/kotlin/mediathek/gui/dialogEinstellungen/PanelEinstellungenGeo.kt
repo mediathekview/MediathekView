@@ -19,7 +19,7 @@ import javax.swing.ImageIcon
 import javax.swing.JFrame
 import kotlin.coroutines.CoroutineContext
 
-class PanelEinstellungenGeo @JvmOverloads constructor(
+class PanelEinstellungenGeo(
     private val parentComponent: JFrame?,
     private val preselectFromPublicIp: Boolean = false,
     private val blacklist: BlacklistServices,

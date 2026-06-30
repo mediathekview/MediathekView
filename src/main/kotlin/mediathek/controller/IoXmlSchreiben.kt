@@ -30,7 +30,7 @@ import java.nio.file.Paths
 import javax.xml.stream.XMLOutputFactory
 import javax.xml.stream.XMLStreamWriter
 
-class IoXmlSchreiben @JvmOverloads constructor(
+class IoXmlSchreiben(
     private val configData: XmlConfigData,
     private val downloadStoragePath: Path = StandardLocations.getDownloadsFilePath(),
 ) {

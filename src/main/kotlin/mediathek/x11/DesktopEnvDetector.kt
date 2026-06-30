@@ -31,7 +31,6 @@ object DesktopEnvDetector {
         UNKNOWN,
     }
 
-    @JvmStatic
     fun trayIconSupported(): Boolean {
         if (!SystemUtils.IS_OS_LINUX) {
             return true

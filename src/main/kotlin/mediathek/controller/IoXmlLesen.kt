@@ -32,7 +32,7 @@ import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamException
 import javax.xml.stream.XMLStreamReader
 
-class IoXmlLesen @JvmOverloads constructor(
+class IoXmlLesen(
     private val configData: XmlConfigData,
     private val downloadStoragePath: Path = StandardLocations.getDownloadsFilePath(),
     private val blacklistRuleStoragePath: Path = StandardLocations.getBlacklistRulesFilePath(),

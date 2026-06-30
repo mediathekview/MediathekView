@@ -102,7 +102,7 @@ internal object SeenHistoryCorruptionHandler {
                 isAlwaysOnTop = true
                 defaultCloseOperation = JDialog.DISPOSE_ON_CLOSE
                 toFront()
-                requestFocus()
+                requestFocusInWindow()
             }
             dialog.isVisible = true
         }

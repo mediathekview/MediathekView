@@ -31,6 +31,7 @@ import mediathek.audiothek.repository.AudioRepository
 import mediathek.audiothek.repository.OnlineSearchProxyRepository
 import mediathek.audiothek.ui.download.AudioDownloadManagerPanel
 import mediathek.audiothek.ui.download.DownloadSummary
+import mediathek.audiothek.ui.table.AudioSeenState
 import mediathek.audiothek.ui.table.AudiothekTable
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
@@ -68,12 +69,15 @@ class AudiothekPanel(
 ) : JPanel(BorderLayout()) {
     private val logger = LogManager.getLogger(AudiothekPanel::class.java)
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    private val audioSeenState = AudioSeenHistoryState()
     private var loadJob: Job? = null
     private var podcastSearchJob: Job? = null
+    private var seenHistoryCacheJob: Job? = null
 
     private val table = AudiothekTable(
         onOpenAudio = ::openAudioEntry,
-        onDownload = ::downloadAudioEntry
+        onDownload = ::downloadAudioEntry,
+        seenState = audioSeenState,
     )
 
     private val statusPanel = AudiothekStatusPanel(ageProvider = ::currentDatasetAge)
@@ -148,12 +152,16 @@ class AudiothekPanel(
         table.dispose()
         table.saveState()
         podcastSearchJob?.cancel()
+        seenHistoryCacheJob?.cancel()
         uiScope.cancel()
+        audioSeenState.close()
     }
 
     fun activeDownloadCount(): Int = activeDownloadCount.get()
 
-    fun loadIfNecessary() = requestInitialLoad()
+    fun loadIfNecessary() {
+        requestInitialLoad()
+    }
 
     fun pauseDownloadsForShutdown() {
         downloadManagerPopup.hidePopupImmediately()
@@ -165,7 +173,7 @@ class AudiothekPanel(
     private fun setupListeners() {
         addComponentListener(object : ComponentAdapter() {
             override fun componentShown(event: ComponentEvent?) {
-                SwingUtilities.invokeLater(::requestInitialLoad)
+                SwingUtilities.invokeLater(::loadIfNecessary)
             }
         })
         toolBar.addReloadListener { triggerLoad(isManualReload = true) }
@@ -202,8 +210,29 @@ class AudiothekPanel(
     }
 
     private fun requestInitialLoad() {
+        prepareSeenHistoryCacheAsync()
         if (shouldLoadWhenShown()) {
             triggerLoad(isManualReload = false)
+        }
+    }
+
+    private fun prepareSeenHistoryCacheAsync() {
+        if (audioSeenState.isPrepared || seenHistoryCacheJob?.isActive == true) {
+            return
+        }
+
+        seenHistoryCacheJob = uiScope.launch {
+            val prepared = withContext(Dispatchers.IO) {
+                runCatching {
+                    audioSeenState.prepareCache()
+                    true
+                }.onFailure {
+                    logger.warn("Failed to prepare Audiothek seen history cache", it)
+                }.getOrDefault(false)
+            }
+            if (prepared) {
+                table.refreshSeenState()
+            }
         }
     }
 
@@ -659,4 +688,32 @@ private fun AudioDownloadTaskSnapshot.toAudioEntry(): AudioEntry {
         isDuplicate = false,
         publishedAt = null
     )
+}
+
+private class AudioSeenHistoryState : AudioSeenState, AutoCloseable {
+    private val controller = SeenHistoryController()
+
+    @Volatile
+    override var isPrepared: Boolean = false
+        private set
+
+    fun prepareCache() {
+        controller.prepareMemoryCache()
+        isPrepared = controller.isMemoryCachePrepared()
+    }
+
+    override fun hasBeenSeen(entry: AudioEntry): Boolean =
+        isPrepared && controller.hasBeenSeen(entry)
+
+    override fun markSeen(entry: AudioEntry) {
+        controller.markSeen(entry)
+    }
+
+    override fun markUnseen(entry: AudioEntry) {
+        controller.markUnseen(entry)
+    }
+
+    override fun close() {
+        controller.close()
+    }
 }

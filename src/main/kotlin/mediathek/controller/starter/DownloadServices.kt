@@ -320,15 +320,12 @@ class DownloadServices(
     }
 
     fun reloadTableModel(model: TModelDownload, filter: DownloadListFilter) {
-        synchronized(queue) {
-            DownloadTableModelUpdater.reload(model, queue, filter)
-        }
+        val downloads = queuedDownloads()
+        DownloadTableModelUpdater.reload(model, downloads, filter)
     }
 
     fun updateTableModelProgress(model: TModelDownload) {
-        synchronized(queue) {
-            DownloadTableModelUpdater.updateProgress(model)
-        }
+        DownloadTableModelUpdater.updateProgress(model)
     }
 
     fun nextStart(): DatenDownload? = synchronized(queue) {

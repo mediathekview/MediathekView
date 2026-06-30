@@ -43,7 +43,6 @@ object GuiFunktionen {
         component.putClientProperty("JComponent.outline", if (hasError) "error" else "")
     }
 
-    @JvmStatic
     fun isUsingExternalUpdater(): Boolean = !isNotUsingExternalUpdater()
 
     fun copyToClipboard(s: String) {

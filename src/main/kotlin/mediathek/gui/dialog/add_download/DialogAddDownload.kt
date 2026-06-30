@@ -171,7 +171,7 @@ class DialogAddDownload(
         initializeDialogSize(ownerFrame)
         registerWindowPositionTracking()
         startCoroutineBindings()
-        btnDownloadImmediately.requestFocus()
+        btnDownloadImmediately.requestFocusInWindow()
     }
 
     override fun dispose() {

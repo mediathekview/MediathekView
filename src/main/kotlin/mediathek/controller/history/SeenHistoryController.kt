@@ -183,6 +183,8 @@ class SeenHistoryController : AutoCloseable {
         logger.trace("cache size: {}", SeenHistoryCache.size())
     }
 
+    fun isMemoryCachePrepared(): Boolean = SeenHistoryCache.isPrepared()
+
     fun performMaintenance() {
         logger.trace("Start maintenance")
 

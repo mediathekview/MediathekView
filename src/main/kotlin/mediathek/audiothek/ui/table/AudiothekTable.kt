@@ -24,7 +24,6 @@ import mediathek.audiothek.model.AudioEntry
 import mediathek.config.Konstanten
 import mediathek.config.MVColor
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.SeenHistoryController
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.swing.FontIcon
@@ -42,13 +41,23 @@ import javax.swing.plaf.UIResource
 import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableColumn
 
+interface AudioSeenState {
+    val isPrepared: Boolean
+
+    fun hasBeenSeen(entry: AudioEntry): Boolean
+
+    fun markSeen(entry: AudioEntry)
+
+    fun markUnseen(entry: AudioEntry)
+}
+
 class AudiothekTable(
     private val onOpenAudio: (AudioEntry) -> Unit,
-    private val onDownload: (AudioEntry) -> Unit
+    private val onDownload: (AudioEntry) -> Unit,
+    private val seenState: AudioSeenState,
 ) : JTable(AudioTableModel()) {
     private val logger = LogManager.getLogger(AudiothekTable::class.java)
     private val audioTableModel = model as AudioTableModel
-    private val seenHistoryController = SeenHistoryController().apply { prepareMemoryCache() }
     private val sorter = TriStateTableRowSorter(audioTableModel)
     private val allColumns = linkedMapOf<Int, TableColumn>()
     private val lastKnownViewIndexes = mutableMapOf<Int, Int>()
@@ -131,7 +140,6 @@ class AudiothekTable(
 
     fun dispose() {
         luceneIndex.close()
-        seenHistoryController.close()
     }
 
     fun addEntrySelectionListener(listener: ListSelectionListener) {
@@ -164,7 +172,7 @@ class AudiothekTable(
         if (!isRowSelected(row)) {
             component.background = defaultRowBackground(row)
             val entry = audioTableModel.getEntry(convertRowIndexToModel(row))
-            if (entry != null && seenHistoryController.hasBeenSeen(entry)) {
+            if (entry != null && seenState.hasBeenSeen(entry)) {
                 component.background = MVColor.FILM_HISTORY.color
             }
         }
@@ -376,15 +384,21 @@ class AudiothekTable(
     }
 
     private fun createSeenHistoryMenuItem(entry: AudioEntry): JMenuItem {
-        val hasBeenSeen = seenHistoryController.hasBeenSeen(entry)
+        if (!seenState.isPrepared) {
+            return JMenuItem("Gesehen-Status wird geladen …").apply {
+                isEnabled = false
+            }
+        }
+
+        val hasBeenSeen = seenState.hasBeenSeen(entry)
         val title = if (hasBeenSeen) "Als ungesehen markieren" else "Als gesehen markieren"
         val icon = if (hasBeenSeen) FontAwesomeSolid.UNDO else FontAwesomeSolid.CHECK
         return JMenuItem(title, FontIcon.of(icon, 14)).apply {
             addActionListener {
                 if (hasBeenSeen) {
-                    seenHistoryController.markUnseen(entry)
+                    seenState.markUnseen(entry)
                 } else {
-                    seenHistoryController.markSeen(entry)
+                    seenState.markSeen(entry)
                 }
                 refreshSeenState()
             }

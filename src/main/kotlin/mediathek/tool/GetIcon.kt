@@ -24,11 +24,9 @@ import javax.swing.ImageIcon
 object GetIcon {
     private const val PFAD_PROGRAMM = "/mediathek/res/programm/"
 
-    @JvmStatic
     fun getProgramIcon(strIcon: String, w: Int, h: Int): ImageIcon =
         getIcon(strIcon, PFAD_PROGRAMM, w, h)
 
-    @JvmStatic
     fun getIcon(strIcon: String, path: String, w: Int, h: Int): ImageIcon {
         val icon = getStandard(strIcon, path)
 
