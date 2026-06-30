@@ -616,7 +616,8 @@ public class PanelPsetLang extends JPanel {
             jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
-            switch (pSet.getAufloesung()) {
+            var aufloesung = Objects.requireNonNullElse(pSet.getAufloesung(), FilmResolution.Enum.NORMAL);
+            switch (aufloesung) {
                 case HIGH_QUALITY -> jRadioButtonAufloesungHD.setSelected(true);
                 case LOW -> jRadioButtonAufloesungKlein.setSelected(true);
                 default -> jRadioButtonAufloesungNormal.setSelected(true);
@@ -848,7 +849,7 @@ public class PanelPsetLang extends JPanel {
     private boolean isEmptyProgramEntry(DatenProg prog) {
         for (int i = 0; i < DatenProg.PROGRAMM_RESTART; ++i) {
             var value = prog.get(i);
-            if (value != null && !value.isBlank()) {
+            if (!value.isBlank()) {
                 return false;
             }
         }
