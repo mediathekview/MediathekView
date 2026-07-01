@@ -90,7 +90,6 @@ object Main {
 
     @JvmStatic
     fun main(args: Array<String>) = runBlocking {
-        val daten = Daten()
         setupEnvironmentProperties()
 
         val parseResult = parseCommandLine(args)
@@ -100,6 +99,8 @@ object Main {
         }
         configureStartup(parseResult, args)
         printDirectoryPaths()
+
+        val daten = Daten()
 
         if (CommandLineOptions.isDownloadAndQuit()) {
             val downloadAndQuitRunner = DownloadAndQuitRunner(
@@ -167,9 +168,8 @@ object Main {
             }
 
             CommandLineOptions.setPortableMode(parseResult.hasMatchedPositional(0))
-            if (CommandLineOptions.isPortableMode()) {
-                StandardLocations.portableBaseDirectory = CommandLineOptions.baseFilePath
-            }
+            StandardLocations.portableBaseDirectory =
+                if (CommandLineOptions.isPortableMode()) CommandLineOptions.baseFilePath else null
 
             return parseResult
         } catch (ex: CommandLine.ParameterException) {
