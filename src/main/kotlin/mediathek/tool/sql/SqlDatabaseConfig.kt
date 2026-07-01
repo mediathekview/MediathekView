@@ -24,9 +24,8 @@ import org.sqlite.SQLiteDataSource
 import java.nio.file.Path
 
 object SqlDatabaseConfig {
-    val dataSource: SQLiteDataSource
-
-    val historyDbPath: Path = StandardLocations.getSettingsDirectory().resolve("history.db")
+    val historyDbPath: Path
+        get() = StandardLocations.getSettingsDirectory().resolve("history.db")
 
     val config: SQLiteConfig
         get() {
@@ -40,10 +39,6 @@ object SqlDatabaseConfig {
             conf.setPageSize(4096)
             return conf
         }
-
-    init {
-        dataSource = createDataSource(historyDbPath)
-    }
 
     fun createDataSource(databasePath: Path): SQLiteDataSource {
         return SQLiteDataSource(config).also {

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
+import mediathek.tool.sql.SqlDatabaseConfig
 import picocli.CommandLine
 import java.nio.file.Files
 import java.nio.file.Path
@@ -60,6 +61,15 @@ internal class StandardLocationsTest {
 
         assertEquals(settingsDirectory.resolve("mediathekview.log"), StandardLocations.getLogFilePath())
         assertTrue(Files.isDirectory(settingsDirectory))
+    }
+
+    @Test
+    fun historyDatabasePathFollowsCurrentSettingsDirectory() {
+        SqlDatabaseConfig.historyDbPath
+        val settingsDirectory = tempDir.resolve("Einstellungen/.mediathek3")
+        configurePortableModeFromCommandLine(settingsDirectory)
+
+        assertEquals(settingsDirectory.resolve("history.db"), SqlDatabaseConfig.historyDbPath)
     }
 
     private fun configurePortableModeFromCommandLine(settingsDirectory: Path) {
