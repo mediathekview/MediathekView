@@ -14,6 +14,19 @@ import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import java.net.UnknownHostException
 
+internal fun Throwable.conciseLogMessage(): String {
+    val rootCause = generateSequence(this) { it.cause }.last()
+    val exceptionMessage = logMessagePart()
+    if (rootCause === this) {
+        return exceptionMessage
+    }
+
+    return "$exceptionMessage; caused by ${rootCause.logMessagePart()}"
+}
+
+private fun Throwable.logMessagePart(): String =
+    message?.let { "${javaClass.simpleName}: $it" } ?: javaClass.simpleName
+
 object FileSize {
     @Serializable
     private data class CachedHlsLookupResponse(
@@ -158,7 +171,8 @@ object FileSize {
             logLookupFailure(url, exception)
             return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         } catch (exception: RuntimeException) {
-            logger.debug("File size lookup failed for {}", url, exception)
+            logger.debug("File size lookup failed for {}: {}", url, exception.conciseLogMessage())
+            logger.trace("File size lookup failure details for {}", url, exception)
             return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         }
 
@@ -184,7 +198,8 @@ object FileSize {
         if (exception is UnknownHostException) {
             logger.debug("File size lookup failed for {}: unknown host ({})", url, exception.message)
         } else {
-            logger.debug("File size lookup failed for {}", url, exception)
+            logger.debug("File size lookup failed for {}: {}", url, exception.conciseLogMessage())
+            logger.trace("File size lookup failure details for {}", url, exception)
         }
     }
 

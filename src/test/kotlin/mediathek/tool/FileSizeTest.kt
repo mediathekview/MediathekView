@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.IOException
+import java.net.SocketTimeoutException
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -149,6 +150,17 @@ internal class FileSizeTest {
 
         assertEquals(FileSize.INVALID_SIZE.toLong(), size)
         assertFalse(Files.exists(tempDir.resolve("hls-stream-info-data.ndjson")))
+    }
+
+    @Test
+    fun conciseLogMessageSummarizesExceptionCauseWithoutStackTrace() {
+        val message = IOException("segment lookup failed", SocketTimeoutException("Read timed out"))
+            .conciseLogMessage()
+
+        assertEquals(
+            "IOException: segment lookup failed; caused by SocketTimeoutException: Read timed out",
+            message,
+        )
     }
 
     @Test

@@ -438,7 +438,8 @@ class HlsPlaylistSizeEstimator(
             if (exception is FileSize.HttpStatusException) {
                 logger.debug("HLS request failed for {} with HTTP {}", request.url, exception.statusCode)
             } else {
-                logger.debug("HLS request failed for {}", request.url, exception)
+                logger.debug("HLS request failed for {}: {}", request.url, exception.conciseLogMessage())
+                logger.trace("HLS request failure details for {}", request.url, exception)
             }
             throw exception
         }
