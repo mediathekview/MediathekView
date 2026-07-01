@@ -1,16 +1,30 @@
 package mediathek.config
 
 import org.apache.commons.lang3.SystemUtils
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
+import org.junit.jupiter.api.io.TempDir
+import picocli.CommandLine
+import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.isDirectory
 import kotlin.io.path.relativeToOrNull
 
 internal class StandardLocationsTest {
+    @TempDir
+    lateinit var tempDir: Path
+
+    @AfterEach
+    fun tearDown() {
+        CommandLineOptions.baseFilePath = null
+        CommandLineOptions.setPortableMode(false)
+        StandardLocations.portableBaseDirectory = null
+    }
 
     @Test
     fun getSettingsDirectory() {
@@ -25,6 +39,34 @@ internal class StandardLocationsTest {
         //tests ONLY non-portable configuration!
         val testPath = Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_EINSTELLUNGEN,Konstanten.CONFIG_FILE)
         assertTrue { testPath == xmlFilePath }
+    }
+
+    @Test
+    fun portablePathsUseParsedSettingsDirectory() {
+        val settingsDirectory = tempDir.resolve("Einstellungen/.mediathek3")
+        configurePortableModeFromCommandLine(settingsDirectory)
+
+        assertEquals(settingsDirectory, StandardLocations.getSettingsDirectory())
+        assertEquals(settingsDirectory.resolve(Konstanten.CONFIG_FILE), StandardLocations.getMediathekXmlFile())
+        assertEquals(settingsDirectory.resolve("MediathekView.lock"), StandardLocations.getLockFilePath())
+        assertEquals(settingsDirectory.resolve(Konstanten.JSON_DATEI_FILME).toString(), StandardLocations.getFilmlistFilePathString())
+        assertEquals(settingsDirectory.resolve("mv_index"), StandardLocations.getFilmIndexPath())
+    }
+
+    @Test
+    fun portableLogFilePathUsesAndCreatesSettingsDirectory() {
+        val settingsDirectory = tempDir.resolve("Einstellungen/.mediathek3")
+        configurePortableModeFromCommandLine(settingsDirectory)
+
+        assertEquals(settingsDirectory.resolve("mediathekview.log"), StandardLocations.getLogFilePath())
+        assertTrue(Files.isDirectory(settingsDirectory))
+    }
+
+    private fun configurePortableModeFromCommandLine(settingsDirectory: Path) {
+        val parseResult = CommandLine(CommandLineOptions).parseArgs(settingsDirectory.toString())
+        CommandLineOptions.setPortableMode(parseResult.hasMatchedPositional(0))
+        StandardLocations.portableBaseDirectory =
+            if (CommandLineOptions.isPortableMode()) CommandLineOptions.baseFilePath else null
     }
 
     @Test

@@ -348,12 +348,7 @@ object Main {
     private fun setupLogging() {
         val loggerContext = LogManager.getContext(false) as LoggerContext
         val config = loggerContext.configuration
-        val fileName = "/mediathekview.log"
-        val path = if (!CommandLineOptions.isPortableMode()) {
-            "${StandardLocations.getSettingsDirectory()}$fileName"
-        } else {
-            "${CommandLineOptions.baseFilePath}$fileName"
-        }
+        val path = StandardLocations.getLogFilePath().toString()
 
         val consolePattern = if (CommandLineOptions.isEnhancedLoggingEnabled() || CommandLineOptions.isDebugModeEnabled()) {
             PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build()

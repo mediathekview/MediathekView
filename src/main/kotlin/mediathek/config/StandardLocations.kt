@@ -147,6 +147,10 @@ object StandardLocations {
 
     private const val OSX_CACHE_DIRECTORY_NAME = "Library/Caches/MediathekView"
     private const val LOCKFILE_NAME = "MediathekView.lock"
+    private const val LOG_FILE_NAME = "mediathekview.log"
+
+    fun getLogFilePath(): Path =
+        getSettingsDirectory().resolve(LOG_FILE_NAME)
 
     /**
      * Return the string path to the filmlist.
