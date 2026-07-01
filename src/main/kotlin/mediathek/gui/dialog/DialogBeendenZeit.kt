@@ -28,14 +28,12 @@ import mediathek.swing.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
 import java.awt.BorderLayout
-import java.awt.Window
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JFrame
-import javax.swing.JOptionPane
 import javax.swing.JPanel
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.seconds
@@ -177,12 +175,7 @@ class DialogBeendenZeit(
 
         jButtonHilfe.addActionListener {
             val msg = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN).trim()
-            JOptionPane.showMessageDialog(
-                parent as? Window ?: this,
-                msg,
-                Konstanten.PROGRAMMNAME,
-                JOptionPane.INFORMATION_MESSAGE,
-            )
+            HelpTextDialog.show(parent ?: this, msg)
         }
         setCbShutdownCoputer()
 

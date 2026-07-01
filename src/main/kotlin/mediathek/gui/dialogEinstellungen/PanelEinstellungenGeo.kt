@@ -7,7 +7,7 @@ import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.daten.blacklist.BlacklistServices
-import mediathek.gui.dialog.DialogHilfe
+import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.messages.GeoStateChangedEvent
 import mediathek.tool.GeoLocationDetector
 import mediathek.tool.GetFile
@@ -100,7 +100,7 @@ class PanelEinstellungenGeo(
     private fun configureHelpButton() {
         jButtonHilfe.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
         jButtonHilfe.addActionListener {
-            DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_GEO)).isVisible = true
+            HelpTextDialog.show(parentComponent, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_GEO))
         }
     }
 

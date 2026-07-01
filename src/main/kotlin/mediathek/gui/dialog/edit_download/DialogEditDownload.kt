@@ -29,7 +29,7 @@ import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
 import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
-import mediathek.gui.dialog.DialogHilfe
+import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.dialog.MVPanelDownloadZiel
 import mediathek.gui.dialog.download.DownloadQualityLiveInfoText
 import mediathek.gui.dialog.download.DownloadQualityResolutionSizes
@@ -480,7 +480,7 @@ class DialogEditDownload(
         }
     }
 
-    private fun currentPathText(): String = mVPanelDownloadZiel.currentPath ?: datenDownload.targetPath
+    private fun currentPathText(): String = mVPanelDownloadZiel.currentPath
 
     private fun buildLayout() {
         jPanelExtra.removeAll()
@@ -781,11 +781,10 @@ class DialogEditDownload(
             icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
             toolTipText = "Hilfe anzeigen"
             addActionListener {
-                DialogHilfe(
+                HelpTextDialog.show(
                     this@DialogEditDownload,
-                    true,
-                    GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)
-                ).isVisible = true
+                    GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG),
+                )
             }
         }
 
@@ -1003,7 +1002,7 @@ class DialogEditDownload(
     }
 
     private fun check(): Boolean {
-        mVPanelDownloadZiel.setPfadName_geaendert()
+        mVPanelDownloadZiel.applyTargetSelection()
         val resolutionChanged = when (resolution) {
             FilmResolution.Enum.HIGH_QUALITY -> !jRadioButtonResHd.isSelected
             FilmResolution.Enum.NORMAL -> !jRadioButtonResHi.isSelected

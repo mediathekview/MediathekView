@@ -1,43 +1,26 @@
-
-Ein Set ist ein Satz von Hilfsprogrammen, an welches eine
-URL eines Films übergeben wird. Je nach Programm
-wird der Film dann aufgezeichnet oder angezeigt.
+Ein Set ist ein Satz von Hilfsprogrammen, an welches eine URL eines Films übergeben wird. Je nach Programm wird der Film dann aufgezeichnet oder angezeigt.
 
 ====================
 Externer Downloadmanager
 ===
-Ist dieser Punkt selektiert, geht das Programm davon aus, dass das eingerichtete
-Hilfsprogramm sich um den Download komplett selbst kümmert. Für MediathekView
-ist mit dem Aufruf des Hilfsprogramms der Download erfolgreich abgeschlossen.
 
-
+Ist dieser Punkt selektiert, geht das Programm davon aus, dass das eingerichtete Hilfsprogramm sich um den Download komplett selbst kümmert. Für MediathekView ist mit dem Aufruf des Hilfsprogramms der Download erfolgreich abgeschlossen.
 
 ====================
 Arten:
 ===
 
-Es muss je ein Set zum Abspielen und eins zum Aufzeichnen angelegt
-sein. Diese werden beim ersten Programmstart mit den "Standardeinstellungen"
-angelegt. Das Set "Abspielen" wird gestartet, wenn ein Film zum
-Abspielen gestartet wird, das Set "Speichern" ist dann für das Speichern
-eines Films zuständig. Sind mehrere Sets zum Speichern angelegt, wird das
-Set zum Speichern für jeden Film in einem Dialog abgefragt.
+Es muss je ein Set zum Abspielen und eins zum Aufzeichnen angelegt sein. Diese werden beim ersten Programmstart mit den "Standardeinstellungen" angelegt. Das Set "Abspielen" wird gestartet, wenn ein Film zum Abspielen gestartet wird, das Set "Speichern" ist dann für das Speichern eines Films zuständig. Sind mehrere Sets zum Speichern angelegt, wird das Set zum Speichern für jeden Film in einem Dialog abgefragt.
 
-Werden Abos genutzt, muss auch dafür ein Set angelegt sein. Meist
-eignet sich dafür das Set "Speichern", bei diesem ist also "Speichern"
-und "Abo" eingeschaltet.
+Werden Abos genutzt, muss auch dafür ein Set angelegt sein. Meist eignet sich dafür das Set "Speichern", bei diesem ist also "Speichern" und "Abo" eingeschaltet.
 
-"Button" ist eine Möglichkeit weitere Programme (Sets) einzurichten und 
-diese dann über das Menü "Ansicht->Buttons anzeigen" anzuzeigen.
-
+"Button" ist eine Möglichkeit weitere Programme (Sets) einzurichten und diese dann über das Menü "Ansicht->Buttons anzeigen" anzuzeigen.
 
 ====================
 Details der Sets:
 ===
 
-Soll ein Film mit einem Set aufgezeichnet werden, ist die Angabe des
-"Zielpfads" und des "Zieldateinamens" wichtig. Beim Namen sind diese Parameter
-möglich:
+Soll ein Film mit einem Set aufgezeichnet werden, ist die Angabe des "Zielpfads" und des "Zieldateinamens" wichtig. Beim Namen sind diese Parameter möglich:
 
 %D Sendedatum des Films oder "heute", wenn Sendedatum leer
 %d Sendezeit des Films oder "jetzt", wenn Sendezeit leer
@@ -70,43 +53,29 @@ Zeit in der Form: SSMMss z.B. 152059 (15:20:59)
 
 Damit kann man einen Namen z.B. so aufbauen:
 %H__%t-%T.mp4 -> 20131206__Doku-Titel_der_Doku.mp4
-%H__%t-%T.%S  -> 20131206__Doku-Titel_der_Doku.xxx (hier wird die Originaldateiendung
-verwendet)
+%H__%t-%T.%S  -> 20131206__Doku-Titel_der_Doku.xxx (hier wird die Originaldateiendung verwendet)
 
-"Direkter Download, Präfix, Suffix": Damit kann man URLs angeben, die nicht
-über ein Programm geladen werden sollen, sondern direkt als Download heruntergeladen
-werden.
+"Direkter Download, Präfix, Suffix": Damit kann man URLs angeben, die nicht über ein Programm geladen werden sollen, sondern direkt als Download heruntergeladen werden.
 
-
-Die Auflösung kann ebenfalls vorgegeben werden. Existiert für den Film die angegebene
-Auflösung nicht, wird die nächstkleinere verwendet.
-
+Die Auflösung kann ebenfalls vorgegeben werden. Existiert für den Film die angegebene Auflösung nicht, wird die nächstkleinere verwendet.
 
 Die Länge eines Dateinamens eines Downloads kann mit:
 "ganzen Dateiname beschränken auf:"
 "einzelne Felder beschränken auf:"
-begrenzt werden. Das erste bezieht sich auf den gesamten Dateinamen. Der wird ermittelt
-und dann evtl. gekürzt. Mit dem zweiten Wert kann man die Länge eins Feldes/Parameters
-eines Namens begrenzen. Das bezieht sich nur auf Felder mit variabler Länge:
+begrenzt werden. Das erste bezieht sich auf den gesamten Dateinamen. Der wird ermittelt und dann evtl. gekürzt. Mit dem zweiten Wert kann man die Länge eins Feldes/Parameters eines Namens begrenzen. Das bezieht sich nur auf Felder mit variabler Länge:
 %t, %T, %s, %N -> Thema, Titel, Sender, Originaldateiname
-
 
 ====================
 Hilfsprogramme:
 ===
 
-Hier werden die Programme zum jeweiligen Set eingetragen. Sind mehrere
-Programme eingetragen, kann man zu jedem Programm über die Felder Präfix und Suffix wählen,
-für welche URL ein Programm zuständig ist.
+Hier werden die Programme zum jeweiligen Set eingetragen. Sind mehrere Programme eingetragen, kann man zu jedem Programm über die Felder Präfix und Suffix wählen, für welche URL ein Programm zuständig ist.
 
-"Zieldateiname": Damit kann ein eigener Zieldateiname für das jeweilige Programm gewählt
-werden. Ist das Feld leer, wird der Zieldateiname des Sets verwendet. Meist muss
-nichts angegeben werden.
+"Zieldateiname": Damit kann ein eigener Zieldateiname für das jeweilige Programm gewählt werden. Ist das Feld leer, wird der Zieldateiname des Sets verwendet. Meist muss nichts angegeben werden.
 
 "Programm": In dem Feld steht NUR!! das Programm: "Pfad/Programmdatei"
 
-"Schalter": In diesem Feld werden die Programmschalter angegeben, die das Programm
-zum Start braucht. Mögliche Parameter sind:
+"Schalter": In diesem Feld werden die Programmschalter angegeben, die das Programm zum Start braucht. Mögliche Parameter sind:
 
 Diese Angaben werden durch die URL ersetzt:
 %f ist die URL des Films (Original-URL)
@@ -125,11 +94,7 @@ Programm: "/usr/bin/vlc"
 Schalter: "%f :sout=#standard{access=file,mux=ts,dst=**} -I dummy --play-and-exit"
 Dateiname: "%t-%T.ts"
 
-Hier wird %f durch die URL des Films ersetzt.
-%t und %T werden durch einen Pfad und Dateinamen 
-ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
-Als Downloaddatei resultiert Volumes/Pfad/Thema-Titel.ts 
-bzw. C:\Pfad\Thema-Titel.ts.
+Hier wird %f durch die URL des Films ersetzt. %t und %T werden durch einen Pfad und Dateinamen ersetzt und in den Programmschalter anstatt der "**" eingesetzt. Als Downloaddatei resultiert Volumes/Pfad/Thema-Titel.ts bzw. C:\Pfad\Thema-Titel.ts.
 
 ==================================================
 Beispiel für den ffmpeg:
@@ -137,13 +102,6 @@ Programm: "bin\ffmpeg.exe"
 Schalter: "-i %f -c copy -bsf:a aac_adtstoasc "**""
 Dateiname: "%t-%T.mp4"
 
-Hier wird %f durch die URL des Films ersetzt.
-%t und %T werden durch einen Pfad und Dateinamen 
-ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
-Als Downloaddatei resultiert Volumes/Pfad/Thema-Titel.mp4 
-bzw. C:\Pfad\Thema-Titel.mp4.
+Hier wird %f durch die URL des Films ersetzt. %t und %T werden durch einen Pfad und Dateinamen ersetzt und in den Programmschalter anstatt der "**" eingesetzt. Als Downloaddatei resultiert Volumes/Pfad/Thema-Titel.mp4 bzw. C:\Pfad\Thema-Titel.mp4.
 
-Der Pfad wird hier relativ zur Programmdatei von MediathekView angegeben.
-Es wird als Programm ffmpeg verwendet, das MediathekView
-im Ordner "bin" mitbringt.
-
+Der Pfad wird hier relativ zur Programmdatei von MediathekView angegeben. Es wird als Programm ffmpeg verwendet, das MediathekView im Ordner "bin" mitbringt.

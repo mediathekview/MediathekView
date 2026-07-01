@@ -87,7 +87,7 @@ class DialogNewSet(
         }
         jButtonSetHelp.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
         jButtonSetHelp.addActionListener {
-            DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET_SET)).isVisible = true
+            HelpTextDialog.show(parent, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET_SET))
         }
 
         EscapeKeyHandler.installHandler(this) {

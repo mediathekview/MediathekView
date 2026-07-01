@@ -49,7 +49,7 @@ class DialogContinueDownload(
             "<html>Der Film \"${datenDownload.title}\" existiert bereits.<br>Wie möchten Sie fortfahren?</html>"
 
         jButtonNeuerName.addActionListener {
-            isNewName = downloadZielPanel.setPfadName_geaendert()
+            isNewName = downloadZielPanel.applyTargetSelection()
             if (!direkterDownload && !isNewName) {
                 JOptionPane.showMessageDialog(
                     parent,

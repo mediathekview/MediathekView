@@ -202,7 +202,7 @@ class DialogBeenden(
 
         jButtonHilfe.addActionListener {
             val msg = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN).trim()
-            JOptionPane.showMessageDialog(this, msg, Konstanten.PROGRAMMNAME, JOptionPane.PLAIN_MESSAGE)
+            HelpTextDialog.show(this, msg)
         }
 
         jButtonHilfe.isEnabled = false

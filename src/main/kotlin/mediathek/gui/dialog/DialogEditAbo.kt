@@ -102,7 +102,7 @@ class DialogEditAbo(
 
         jButtonHelp.addActionListener {
             val msg = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_DIALOG_ADD_ABO).trim()
-            DialogHilfe(this, true, msg).isVisible = true
+            HelpTextDialog.show(this, msg)
         }
     }
 

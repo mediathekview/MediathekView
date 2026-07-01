@@ -7,6 +7,7 @@ import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.RuntimeExec
 import mediathek.daten.*
+import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.messages.ProgramSetChangedEvent
 import mediathek.tool.*
 import mediathek.tool.cellrenderer.PsetNameCellRenderer
@@ -33,9 +34,7 @@ import javax.swing.BorderFactory
 import javax.swing.JColorChooser
 import javax.swing.JFrame
 import javax.swing.JOptionPane
-import javax.swing.JScrollPane
 import javax.swing.JTable
-import javax.swing.JTextArea
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.table.TableModel
@@ -286,13 +285,7 @@ class PanelPsetLang(
     private fun installHelpAndCheckActions() {
         jButtonHilfe.addActionListener {
             val str = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_PRGRAMME).trim()
-            val area = JTextArea(str).apply {
-                rows = 20
-                columns = 60
-                lineWrap = true
-                isEditable = false
-            }
-            JOptionPane.showMessageDialog(this, JScrollPane(area), "Hilfe", JOptionPane.INFORMATION_MESSAGE)
+            HelpTextDialog.show(this, str)
         }
         jRadioButtonAufloesungKlein.addActionListener { setAufloesung() }
         jRadioButtonAufloesungNormal.addActionListener { setAufloesung() }

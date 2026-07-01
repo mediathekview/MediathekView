@@ -30,7 +30,7 @@ import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmeLaden
-import mediathek.gui.dialog.DialogHilfe
+import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.messages.BlacklistAboSettingChangedEvent
 import mediathek.gui.messages.BlacklistChangedEvent
 import mediathek.swing.IconUtils
@@ -316,7 +316,7 @@ class PanelBlacklist(
         jButtonAendern.addActionListener { onChangeBlacklistRule() }
         populateBlacklistActionsButton()
         jButtonHilfe.addActionListener {
-            DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BLACKLIST)).isVisible = true
+            HelpTextDialog.show(parentComponent, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BLACKLIST))
         }
         jComboBoxSender.addActionListener { comboThemaLaden("") }
 

@@ -23,7 +23,7 @@ import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
 import mediathek.daten.ListePsetVorlagen
 import mediathek.daten.ProgramSetRepository
-import mediathek.gui.dialog.DialogHilfe
+import mediathek.gui.dialog.HelpTextDialog
 import mediathek.mainwindow.SettingsResetHost
 import mediathek.tool.GetFile
 import mediathek.tool.GuiFunktionenProgramme
@@ -41,7 +41,7 @@ class ResetSettingsPanel(
     init {
         jButtonHilfeReset.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
         jButtonHilfeReset.addActionListener {
-            DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET)).isVisible = true
+            HelpTextDialog.show(parent, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET))
         }
         jButtonResetSets.addActionListener {
             val listePset = programSets.list

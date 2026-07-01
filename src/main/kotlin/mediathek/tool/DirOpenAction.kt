@@ -77,10 +77,8 @@ object DirOpenAction {
             return configuredProgram
         }
 
-        val text = "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen."
-        val dialog = DialogProgrammOrdnerOeffnen(parent, true, "", "Dateimanager suchen", text)
-        dialog.isVisible = true
-        return if (dialog.ok) dialog.ziel else ""
+        val text = "Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden. Dateimanager selbst auswählen."
+        return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Dateimanager suchen", text).orElse("")
     }
 
     private fun configuredDirectoryOpener(): String =

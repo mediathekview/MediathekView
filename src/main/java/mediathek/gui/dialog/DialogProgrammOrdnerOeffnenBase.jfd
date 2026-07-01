@@ -1,0 +1,75 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel1:::::x, seq t {space :0:0:x, comp jButtonOk:3::p::p, space :::p, comp jButtonAbbrechen:3::p::p}, comp jScrollPane1::l:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p::p, comp jScrollPane1::::126:x, space u:p::p, comp jPanel1:::p::p, space u:p::p, par b {comp jButtonAbbrechen::b:p::p, comp jButtonOk::b:p::p}, space :p::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :p::p, comp jLabel1:::p::p, space :p::p, comp jTextFieldProgramm::::409:x:2, space :p::p, comp jButtonZiel:::p::p, space :p::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par c {comp jLabel1::c:p::p, comp jTextFieldProgramm:1:c:p::p, comp jButtonZiel:1:c:p::p}, space :::x}}"
+			} ) {
+				name: "jPanel1"
+				"border": new javax.swing.border.EtchedBorder( 1, null, null )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonZiel"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+					"toolTipText": "Programm auswählen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldProgramm"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel1"
+					"text": "Programm:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonAbbrechen"
+				"text": "Abbrechen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonOk"
+				"text": "Ok"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "jTextArea1"
+					"editable": false
+					"columns": 20
+					"rows": 4
+					"text": "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen.\n"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) )
+	}
+}

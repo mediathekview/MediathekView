@@ -30,7 +30,7 @@ class UrlHyperlinkAction(
     companion object {
         private val logger = LogManager.getLogger(UrlHyperlinkAction::class.java)
         private const val BROWSER_NOT_FOUND_TEXT =
-            "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen."
+            "Der Browser zum Anzeigen der URL wird nicht gefunden. Browser selbst auswählen."
 
         fun openURI(uri: URI, parent: Frame? = null) {
             openURL(uri.toString(), parent)
@@ -91,9 +91,7 @@ class UrlHyperlinkAction(
                 return configuredProgram
             }
 
-            val dialog = DialogProgrammOrdnerOeffnen(parent, true, "", "Browser suchen", BROWSER_NOT_FOUND_TEXT)
-            dialog.isVisible = true
-            return if (dialog.ok) dialog.ziel else ""
+            return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Browser suchen", BROWSER_NOT_FOUND_TEXT).orElse("")
         }
 
         private fun launchApplication(app: String, url: String) {

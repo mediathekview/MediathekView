@@ -97,10 +97,8 @@ object OpenPlayerAction {
     }
 
     private fun resolvePlayerProgram(parent: Frame): String {
-        val text = "\n Ein Videoplayer zum Abspielen wird nicht gefunden.\n Videoplayer selbst auswählen."
-        val dialog = DialogProgrammOrdnerOeffnen(parent, true, "", "Videoplayer suchen", text)
-        dialog.isVisible = true
-        return if (dialog.ok) dialog.ziel else ""
+        val text = "Ein Videoplayer zum Abspielen wird nicht gefunden. Videoplayer selbst auswählen."
+        return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Videoplayer suchen", text).orElse("")
     }
 
     private fun publishProgramLocationChanged() {

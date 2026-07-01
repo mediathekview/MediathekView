@@ -2,7 +2,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Konstanten;
 import mediathek.config.application.ApplicationConfiguration;
-import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.dialog.HelpTextDialog;
 import mediathek.tool.GetFile;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.SVGIconUtilities;
@@ -66,7 +66,7 @@ public class PanelProgrammPfade extends JPanel {
             ApplicationConfiguration.getInstance().setStandardFFmpegPath("");
             jTextFieldFFmpeg.setText(GuiFunktionenProgramme.getMusterPfadFFmpeg());
         });
-        jButtonHilfe.addActionListener(_ -> new DialogHilfe(parentComponent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_STANDARD_PSET)).setVisible(true));
+        jButtonHilfe.addActionListener(_ -> HelpTextDialog.show(parentComponent, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_STANDARD_PSET)));
     }
 
     private void check() {
