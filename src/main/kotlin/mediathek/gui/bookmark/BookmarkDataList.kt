@@ -21,7 +21,7 @@ package mediathek.gui.bookmark
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
 import mediathek.config.StandardLocations
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
 import mediathek.gui.messages.BookmarkRefreshCompletedEvent
@@ -102,7 +102,7 @@ class BookmarkDataList(
             // Check if history list is known.
             try {
                 bookmarks.withWriteLock {
-                    SeenHistoryController().use { history ->
+                    FilmSeenHistoryController().use { history ->
                         addList.forEach { movie ->
                             val bookmarkData = BookmarkData(movie)
                             movie.bookmark = bookmarkData // Link backwards

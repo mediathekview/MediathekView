@@ -2,7 +2,7 @@ package mediathek.gui.tabs.tab_film
 
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
 import mediathek.tool.SwingErrorDialog
@@ -42,7 +42,7 @@ class JDownloadHelper(
             val client = builder.build()
             client.newCall(request).execute().use {
                 if (it.isSuccessful)
-                    SeenHistoryController().use { historyController ->
+                    FilmSeenHistoryController().use { historyController ->
                         historyController.markSeen(film)
                     }
             }

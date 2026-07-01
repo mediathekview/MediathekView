@@ -28,7 +28,7 @@ import mediathek.controller.ByteRateLimiter
 import mediathek.controller.MVBandwidthCountingInputStream
 import mediathek.controller.ThrottlingInputStream
 import mediathek.controller.history.AboHistoryController
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadSource
 import mediathek.gui.dialog.DialogContinueDownload
@@ -460,7 +460,7 @@ class CdnAwareDirectDownloadThread(
     private fun removeSeenHistoryEntry() {
         datenDownload.film?.let {
             logger.trace("Removing failed download entry from history")
-            SeenHistoryController().use { historyController ->
+            FilmSeenHistoryController().use { historyController ->
                 historyController.markUnseen(it)
             }
         }

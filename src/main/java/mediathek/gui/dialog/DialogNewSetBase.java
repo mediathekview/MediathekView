@@ -1,83 +1,13 @@
 package mediathek.gui.dialog;
 
-import mediathek.config.Konstanten;
-import mediathek.daten.ProgramSetRepository;
-import mediathek.tool.EscapeKeyHandler;
-import mediathek.tool.GetFile;
-import mediathek.tool.SVGIconUtilities;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class DialogNewSet extends JDialog {
-    public boolean ok;
-    public boolean morgen = true;
-    private final ProgramSetRepository programSets;
-    private final JFrame parent;
-
-    public DialogNewSet(JFrame pparent, ProgramSetRepository programSets) {
-        super(pparent, true);
-        this.programSets = programSets;
+public class DialogNewSetBase extends JDialog {
+    public DialogNewSetBase(JFrame parent) {
+        super(parent, true);
         initComponents();
-        parent = pparent;
-        if (parent != null) {
-            setLocationRelativeTo(parent);
-        }
-        setTitle("Das Standardset wurde aktualisiert");
-        jTextArea3.setText("""
-
-                   Es gibt ein neues Standardset der Videoplayer
-                   für den Download und das Abspielen der Filme.
-                """);
-        jCheckBoxMorgen.setSelected(true);
-        jCheckBoxMorgen.addActionListener(_ -> morgen = jCheckBoxMorgen.isSelected());
-
-        jTextArea1.setText("""
-
-                   Die bestehenden Einstellungen werden nicht verändert.
-                   Das neue Set wird nur angefügt und muss dann erst noch in den
-                   "Datei->Einstellungen->Set bearbeiten"
-                   aktiviert werden.
-                """);
-
-        jTextArea2.setText("""
-
-                Es werden alle Programmsets (auch eigene)\s
-                gelöscht und die neuen Standardsets wieder angelegt.
-
-                (Wenn Sie die Einstellungen nicht verändert haben
-                 ist das die Empfehlung)""".indent(3));
-
-        jButtonAdd.addActionListener(_ -> {
-            ok = true;
-            beenden();
-        });
-        jButtonAbbrechen.addActionListener(_ -> {
-            ok = false;
-            beenden();
-        });
-        jButtonReplace.addActionListener(_ -> {
-            int ret = JOptionPane.showConfirmDialog(parent, "Alle Sets zurücksetzen?", "Alle Sets zurücksetzen!", JOptionPane.YES_NO_OPTION);
-            if (ret == JOptionPane.OK_OPTION) {
-                programSets.getList().clear();
-                ok = true;
-                beenden();
-            }
-        });
-        jButtonSetHelp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"));
-        jButtonSetHelp.addActionListener(_ -> new DialogHilfe(parent, true, GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
-
-        EscapeKeyHandler.installHandler(this, () -> {
-            ok = false;
-            dispose();
-        });
-
-        pack();
-    }
-
-    private void beenden() {
-        this.dispose();
     }
 
     /** This method is called from within the constructor to
@@ -250,14 +180,13 @@ public class DialogNewSet extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JButton jButtonAbbrechen;
-    private JCheckBox jCheckBoxMorgen;
-    private JTextArea jTextArea1;
-    private JButton jButtonAdd;
-    private JButton jButtonReplace;
-    private JTextArea jTextArea2;
-    private JTextArea jTextArea3;
-    private JButton jButtonSetHelp;
+    protected JButton jButtonAbbrechen;
+    protected JCheckBox jCheckBoxMorgen;
+    protected JTextArea jTextArea1;
+    protected JButton jButtonAdd;
+    protected JButton jButtonReplace;
+    protected JTextArea jTextArea2;
+    protected JTextArea jTextArea3;
+    protected JButton jButtonSetHelp;
     // End of variables declaration//GEN-END:variables
-
 }

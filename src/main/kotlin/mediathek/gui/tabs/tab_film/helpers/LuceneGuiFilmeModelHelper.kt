@@ -19,7 +19,7 @@
 package mediathek.gui.tabs.tab_film.helpers
 
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
 import mediathek.filmlisten.FilmCatalog
@@ -79,7 +79,7 @@ class LuceneGuiFilmeModelHelper(
                 val state = filterContext.state
 
                 if (state.showUnseenOnly) {
-                    SeenHistoryController.prepareSharedMemoryCache()
+                    FilmSeenHistoryController.prepareSharedMemoryCache()
                 }
 
                 var stream = listeFilme.parallelStream()

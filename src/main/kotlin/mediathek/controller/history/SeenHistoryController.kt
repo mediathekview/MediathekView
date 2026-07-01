@@ -22,11 +22,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import mediathek.audiothek.model.AudioEntry
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.daten.DatenFilm
-import mediathek.gui.messages.history.DownloadHistoryChangedEvent
-import mediathek.gui.messages.history.FilmSeenStateChangedEvent
+import mediathek.gui.messages.history.SeenHistoryChangedEvent
 import mediathek.sqlite.SeenHistoryCorruptionHandler
 import mediathek.tool.MessageBus
 import mediathek.tool.sql.SqlDatabaseConfig
@@ -58,66 +55,22 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
-    fun markUnseen(film: DatenFilm) {
-        val success = runStoreCatching("markUnseen", false) {
-            removeSeenUrl(film.urlNormalQuality)
-            true
-        }
-        if (success) {
-            SeenHistoryCache.remove(film.urlNormalQuality)
-            sendFilmSeenStateChanged(false, listOf(film))
-            sendChangeMessage()
-        }
-    }
-
-    fun markUnseen(list: List<DatenFilm>) {
-        val urls = list.asSequence()
-            .map { it.urlNormalQuality }
-            .filter(String::isNotBlank)
-            .distinct()
-            .toList()
-
-        val success = runStoreCatching("markUnseen", false) {
-            if (urls.isNotEmpty()) {
-                removeSeenUrls(urls)
-            }
-            true
-        }
-        if (success) {
-            SeenHistoryCache.remove(urls)
-            sendFilmSeenStateChanged(false, list)
-            sendChangeMessage()
-        }
-    }
-
-    fun markSeen(film: DatenFilm?) {
-        if (film == null) {
-            logger.warn("markSeen: no film found")
-            return
-        }
-
-        val entry = film.toSeenHistoryEntry() ?: return
-        if (SeenHistoryCache.contains(entry.url)) {
-            return
+    internal fun markSeen(entry: SeenHistoryEntry): Boolean {
+        if (SeenHistoryCache.contains(entry.source, entry.url)) {
+            return false
         }
 
         val inserted = runStoreCatching("markSeen single", false) {
             insertSeenEntry(entry)
         }
         if (inserted) {
-            SeenHistoryCache.add(entry.url)
-            sendFilmSeenStateChanged(true, listOf(film))
+            SeenHistoryCache.add(entry.source, entry.url)
             sendChangeMessage()
         }
+        return inserted
     }
 
-    fun markSeen(list: List<DatenFilm>) {
-        val candidates = list
-            .asSequence()
-            .mapNotNull { film -> film.toSeenHistoryEntry() }
-            .distinctBy(SeenHistoryEntry::url)
-            .toList()
-
+    internal fun markSeen(candidates: List<SeenHistoryEntry>): Boolean {
         val success = runStoreCatching("markSeen", false) {
             if (candidates.isNotEmpty()) {
                 insertSeenEntries(candidates)
@@ -125,65 +78,58 @@ class SeenHistoryController : AutoCloseable {
             true
         }
         if (success) {
-            SeenHistoryCache.add(candidates.asSequence().map(SeenHistoryEntry::url).toList())
-            sendFilmSeenStateChanged(true, list)
+            candidates
+                .groupBy(SeenHistoryEntry::source, SeenHistoryEntry::url)
+                .forEach { (source, urls) -> SeenHistoryCache.add(source, urls) }
             sendChangeMessage()
         }
+        return success
     }
 
-    fun markSeen(entry: AudioEntry?) {
-        if (entry == null) {
-            logger.warn("markSeen: no audio entry found")
-            return
-        }
-
-        val historyEntry = entry.toSeenHistoryEntry() ?: return
-        if (SeenHistoryCache.contains(historyEntry.url)) {
-            return
-        }
-
-        val inserted = runStoreCatching("markSeen audio", false) {
-            insertSeenEntry(historyEntry)
-        }
-        if (inserted) {
-            SeenHistoryCache.add(historyEntry.url)
-            sendChangeMessage()
-        }
-    }
-
-    fun markUnseen(entry: AudioEntry) {
-        val url = entry.audioUrl?.toString().orEmpty()
-        if (url.isBlank()) {
-            return
-        }
-
-        val success = runStoreCatching("markUnseen audio", false) {
-            removeSeenUrl(url)
+    internal fun markUnseen(source: SeenHistorySource, url: String): Boolean {
+        val success = runStoreCatching("markUnseen", false) {
+            removeSeenUrl(source, url)
             true
         }
         if (success) {
-            SeenHistoryCache.remove(url)
+            SeenHistoryCache.remove(source, url)
             sendChangeMessage()
         }
+        return success
+    }
+
+    internal fun markUnseen(source: SeenHistorySource, urls: Collection<String>): Boolean {
+        val success = runStoreCatching("markUnseen", false) {
+            if (urls.isNotEmpty()) {
+                removeSeenUrls(source, urls)
+            }
+            true
+        }
+        if (success) {
+            SeenHistoryCache.remove(source, urls)
+            sendChangeMessage()
+        }
+        return success
     }
 
     /**
-     * Load all URLs from database and store them in the process-wide memory cache.
+     * Load source-specific URLs from database and store them in the process-wide memory cache.
      */
-    fun prepareMemoryCache() {
-        if (SeenHistoryCache.isPrepared()) {
+    fun prepareMemoryCache(source: SeenHistorySource = SeenHistorySource.FILM) {
+        if (SeenHistoryCache.isPrepared(source)) {
             return
         }
 
         val urls = runStoreCatching("prepareMemoryCache", null as Set<String>?) {
-            loadAllUrls()
+            loadUrls(source)
         } ?: return
 
-        SeenHistoryCache.load(urls)
-        logger.trace("cache size: {}", SeenHistoryCache.size())
+        SeenHistoryCache.load(source, urls)
+        logger.trace("cache size: {}", SeenHistoryCache.size(source))
     }
 
-    fun isMemoryCachePrepared(): Boolean = SeenHistoryCache.isPrepared()
+    fun isMemoryCachePrepared(source: SeenHistorySource = SeenHistorySource.FILM): Boolean =
+        SeenHistoryCache.isPrepared(source)
 
     fun performMaintenance() {
         logger.trace("Start maintenance")
@@ -214,28 +160,13 @@ class SeenHistoryController : AutoCloseable {
         }
     }
 
-    fun hasBeenSeen(film: DatenFilm): Boolean {
-        if (SeenHistoryCache.isPrepared()) {
-            return SeenHistoryCache.contains(film.urlNormalQuality)
+    internal fun hasBeenSeen(source: SeenHistorySource, url: String): Boolean {
+        if (SeenHistoryCache.isPrepared(source)) {
+            return SeenHistoryCache.contains(source, url)
         }
 
         return runStoreCatching("hasBeenSeen", false) {
-            containsUrl(film.urlNormalQuality)
-        }
-    }
-
-    fun hasBeenSeen(entry: AudioEntry): Boolean {
-        val url = entry.audioUrl?.toString().orEmpty()
-        if (url.isBlank()) {
-            return false
-        }
-
-        if (SeenHistoryCache.isPrepared()) {
-            return SeenHistoryCache.contains(url)
-        }
-
-        return runStoreCatching("hasBeenSeen", false) {
-            containsUrl(url)
+            containsUrl(source, url)
         }
     }
 
@@ -264,14 +195,9 @@ class SeenHistoryController : AutoCloseable {
     }
 
     private fun sendChangeMessage() {
-        MessageBus.messageBus.publishAsync(DownloadHistoryChangedEvent())
+        MessageBus.messageBus.publishAsync(SeenHistoryChangedEvent())
     }
 
-    private fun sendFilmSeenStateChanged(seen: Boolean, films: List<DatenFilm>) {
-        if (films.isNotEmpty()) {
-            MessageBus.messageBus.publishAsync(FilmSeenStateChangedEvent(seen, films))
-        }
-    }
 
     companion object {
         private val logger = LogManager.getLogger()
@@ -329,111 +255,84 @@ class SeenHistoryController : AutoCloseable {
             }
         }
 
-        fun prepareSharedMemoryCache() {
-            SeenHistoryController().use { it.prepareMemoryCache() }
-        }
-
-        fun hasBeenSeenFromSharedCache(film: DatenFilm): Boolean {
-            if (!SeenHistoryCache.isPrepared()) {
-                prepareSharedMemoryCache()
-            }
-            return SeenHistoryCache.contains(film.urlNormalQuality)
-        }
-
     }
 }
 
 internal data class SeenHistoryEntry(
+    val source: SeenHistorySource,
     val theme: String,
     val title: String,
     val url: String
 )
 
-private fun DatenFilm.toSeenHistoryEntry(): SeenHistoryEntry? {
-    if (isLivestream) {
-        return null
-    }
-
-    val url = urlNormalQuality.takeIf(String::isNotBlank) ?: return null
-    return SeenHistoryEntry(
-        theme = thema,
-        title = title,
-        url = url
-    )
-}
-
-private fun AudioEntry.toSeenHistoryEntry(): SeenHistoryEntry? {
-    val url = audioUrl?.toString()?.takeIf(String::isNotBlank) ?: return null
-    return SeenHistoryEntry(
-        theme = theme,
-        title = title,
-        url = url
-    )
-}
-
-private object SeenHistoryCache {
+internal object SeenHistoryCache {
     private val lock = Any()
-    private val urlCache = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
-    @Volatile
-    private var prepared = false
+    private val urlCaches = SeenHistorySource.entries.associateWith {
+        java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
+    }
+    private val preparedSources = java.util.concurrent.ConcurrentHashMap.newKeySet<SeenHistorySource>()
 
-    fun isPrepared(): Boolean = prepared
+    fun isPrepared(source: SeenHistorySource): Boolean = preparedSources.contains(source)
 
-    fun size(): Int = urlCache.size
+    fun size(source: SeenHistorySource): Int = cacheFor(source).size
 
-    fun contains(url: String): Boolean = prepared && url.isNotBlank() && urlCache.contains(url)
+    fun contains(source: SeenHistorySource, url: String): Boolean =
+        isPrepared(source) && url.isNotBlank() && cacheFor(source).contains(url)
 
-    fun load(urls: Set<String>) {
+    fun load(source: SeenHistorySource, urls: Set<String>) {
         synchronized(lock) {
-            if (prepared) {
+            if (isPrepared(source)) {
                 return
             }
-            urlCache.clear()
-            urlCache.addAll(urls)
-            prepared = true
+            cacheFor(source).clear()
+            cacheFor(source).addAll(urls)
+            preparedSources.add(source)
         }
     }
 
-    fun add(url: String) {
+    fun add(source: SeenHistorySource, url: String) {
         if (url.isBlank()) {
             return
         }
-        add(listOf(url))
+        add(source, listOf(url))
     }
 
-    fun add(urls: Collection<String>) {
-        if (!prepared || urls.isEmpty()) {
+    fun add(source: SeenHistorySource, urls: Collection<String>) {
+        if (!isPrepared(source) || urls.isEmpty()) {
             return
         }
         synchronized(lock) {
-            if (prepared) {
-                urls.asSequence().filter(String::isNotBlank).forEach(urlCache::add)
+            if (isPrepared(source)) {
+                urls.asSequence().filter(String::isNotBlank).forEach(cacheFor(source)::add)
             }
         }
     }
 
-    fun remove(url: String) {
+    fun remove(source: SeenHistorySource, url: String) {
         if (url.isBlank()) {
             return
         }
-        remove(listOf(url))
+        remove(source, listOf(url))
     }
 
-    fun remove(urls: Collection<String>) {
-        if (!prepared || urls.isEmpty()) {
+    fun remove(source: SeenHistorySource, urls: Collection<String>) {
+        if (!isPrepared(source) || urls.isEmpty()) {
             return
         }
         synchronized(lock) {
-            if (prepared) {
-                urls.asSequence().filter(String::isNotBlank).forEach(urlCache::remove)
+            if (isPrepared(source)) {
+                urls.asSequence().filter(String::isNotBlank).forEach(cacheFor(source)::remove)
             }
         }
     }
 
     fun clear() {
         synchronized(lock) {
-            urlCache.clear()
-            prepared = false
+            urlCaches.values.forEach(MutableSet<String>::clear)
+            preparedSources.clear()
         }
     }
+
+    private fun cacheFor(source: SeenHistorySource): MutableSet<String> =
+        urlCaches.getValue(source)
 }

@@ -81,6 +81,11 @@ internal class SeenHistoryMigratorTest {
                     assertEquals(9, resultSet.getInt(1))
                 }
 
+                statement.executeQuery("SELECT COUNT(*) FROM seen_history WHERE source = 'FILM'").use { resultSet ->
+                    resultSet.next()
+                    assertEquals(9, resultSet.getInt(1))
+                }
+
                 statement.executeQuery("SELECT COUNT(*) FROM seen_history WHERE url LIKE '%.m3u8%'").use { resultSet ->
                     resultSet.next()
                     assertEquals(1, resultSet.getInt(1))
@@ -144,9 +149,10 @@ internal class SeenHistoryMigratorTest {
                     assertEquals(1, resultSet.getInt(1))
                 }
 
-                statement.executeQuery("SELECT datum, url FROM seen_history").use { resultSet ->
+                statement.executeQuery("SELECT datum, source, url FROM seen_history").use { resultSet ->
                     resultSet.next()
                     assertEquals("2020-11-02", resultSet.getString("datum"))
+                    assertEquals("FILM", resultSet.getString("source"))
                     assertEquals("https://example.org/valid.mp4", resultSet.getString("url"))
                 }
             }
@@ -175,9 +181,10 @@ internal class SeenHistoryMigratorTest {
                     assertEquals(1, resultSet.getInt(1))
                 }
 
-                statement.executeQuery("SELECT datum, thema, titel FROM seen_history").use { resultSet ->
+                statement.executeQuery("SELECT datum, source, thema, titel FROM seen_history").use { resultSet ->
                     resultSet.next()
                     assertEquals("2020-11-04", resultSet.getString("datum"))
+                    assertEquals("FILM", resultSet.getString("source"))
                     assertEquals("Thema B", resultSet.getString("thema"))
                     assertEquals("Newest", resultSet.getString("titel"))
                 }

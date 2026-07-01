@@ -36,7 +36,7 @@ import mediathek.gui.bookmark.BookmarkServices
 import mediathek.gui.dialog.DialogFilmBeschreibung
 import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.messages.*
-import mediathek.gui.messages.history.DownloadHistoryChangedEvent
+import mediathek.gui.messages.history.SeenHistoryChangedEvent
 import mediathek.gui.tabs.DescriptionTabController
 import mediathek.gui.tabs.actions.MarkFilmAsSeenAction
 import mediathek.gui.tabs.actions.MarkFilmAsUnseenAction
@@ -674,8 +674,8 @@ class GuiFilme(
         get() = selectionController.getTableRowCount()
 
     @Handler
-    private fun handleDownloadHistoryChangedEvent(event: DownloadHistoryChangedEvent) {
-        lifecycleController.handleDownloadHistoryChangedEvent(event)
+    private fun handleSeenHistoryChangedEvent(event: SeenHistoryChangedEvent) {
+        lifecycleController.handleSeenHistoryChangedEvent(event)
     }
 
     @Handler

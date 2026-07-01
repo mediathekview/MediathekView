@@ -31,7 +31,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DatenFilm
 import mediathek.daten.ProgramSetRepository
@@ -419,7 +419,7 @@ class BookmarkDialog(
                 selectionModel.selected
                     .mapNotNull { it.datenFilm }
 
-            SeenHistoryController().use { controller ->
+            FilmSeenHistoryController().use { controller ->
                 controller.markSeen(selectedFilms)
             }
         }
@@ -437,7 +437,7 @@ class BookmarkDialog(
                 selectionModel.selected
                     .mapNotNull { it.datenFilm }
 
-            SeenHistoryController().use { controller ->
+            FilmSeenHistoryController().use { controller ->
                 controller.markUnseen(selectedFilms)
             }
         }

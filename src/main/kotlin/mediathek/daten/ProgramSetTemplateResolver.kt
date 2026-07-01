@@ -2,9 +2,9 @@ package mediathek.daten
 
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.gui.dialog.DialogOk
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade
 import javax.swing.JFrame
+import javax.swing.JOptionPane
 
 object ProgramSetTemplateResolver {
     const val MUSTER_PFAD_ZIEL = "ZIELPFAD"
@@ -49,7 +49,7 @@ object ProgramSetTemplateResolver {
     private fun getPfadVlc(parent: JFrame?): String {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (ApplicationConfiguration.getInstance().standardVlcPath.isEmpty()) {
-            DialogOk(null, true, PanelProgrammPfade(parent, true, false), "Pfade Standardprogramme").isVisible = true
+            showProgramPathDialog(parent, PanelProgrammPfade(parent, true, false))
         }
         return ApplicationConfiguration.getInstance().standardVlcPath
     }
@@ -57,8 +57,12 @@ object ProgramSetTemplateResolver {
     private fun getPfadFFmpeg(parent: JFrame?): String {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (ApplicationConfiguration.getInstance().standardFFmpegPath.isEmpty()) {
-            DialogOk(null, true, PanelProgrammPfade(parent, false, true), "Pfade Standardprogramme").isVisible = true
+            showProgramPathDialog(parent, PanelProgrammPfade(parent, false, true))
         }
         return ApplicationConfiguration.getInstance().standardFFmpegPath
+    }
+
+    private fun showProgramPathDialog(parent: JFrame?, panel: PanelProgrammPfade) {
+        JOptionPane.showMessageDialog(parent, panel, "Pfade Standardprogramme", JOptionPane.PLAIN_MESSAGE)
     }
 }

@@ -1,41 +1,16 @@
 package mediathek.update;
 
-import mediathek.config.Konstanten;
 import net.miginfocom.swing.MigLayout;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.util.Objects;
 
-public class UpdateNotificationPanel extends JPanel {
-    private static final Logger logger = LogManager.getLogger();
-
-    public UpdateNotificationPanel() {
-        initComponents();
+public class UpdateNotificationPanelBase extends JPanel {
+    protected void createUIComponents() {
+        webView = new JEditorPane();
     }
 
-    public JLabel getReleaseInfoLabel() {
-        return lblReleaseInfo;
-    }
-
-    /**
-     * custom initialization for JEditorPane and GUI designer.
-     */
-    private void createUIComponents() {
-        try {
-            webView = new JEditorPane(Objects.requireNonNull(Konstanten.WEBSITE_BASE_URL.resolve("changelogs")).toString());
-        }
-        catch (IOException e) {
-            logger.error("Failed to load changelog from web");
-            webView = new JEditorPane();
-            webView.setText("<html><body>Load failed!</body></html>");
-        }
-    }
-
-    private void initComponents() {
+    protected void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         createUIComponents();
@@ -92,7 +67,7 @@ public class UpdateNotificationPanel extends JPanel {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JLabel lblReleaseInfo;
-    private JEditorPane webView;
+    protected JLabel lblReleaseInfo;
+    protected JEditorPane webView;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

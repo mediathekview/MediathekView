@@ -16,26 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.update
 
-import mediathek.controller.history.FilmSeenHistoryController
-import mediathek.daten.DatenDownload
-import mediathek.gui.messages.StartEvent
-import mediathek.tool.MessageBus
+import mediathek.config.Konstanten
+import org.apache.logging.log4j.LogManager
+import java.io.IOException
+import javax.swing.JEditorPane
+import javax.swing.JLabel
 
-object DownloadStartActions {
-    fun start(download: DatenDownload) {
-        startAll(listOf(download))
+class UpdateNotificationPanel : UpdateNotificationPanelBase() {
+    val releaseInfoLabel: JLabel
+        get() = lblReleaseInfo
+
+    init {
+        initComponents()
     }
 
-    fun startAll(downloads: Iterable<DatenDownload>) {
-        FilmSeenHistoryController().use { historyController ->
-            for (download in downloads) {
-                download.runtime.startRun()
-                historyController.markSeen(download.film)
+    override fun createUIComponents() {
+        try {
+            webView = JEditorPane(requireNotNull(Konstanten.WEBSITE_BASE_URL.resolve("changelogs")).toString())
+        } catch (e: IOException) {
+            logger.error("Failed to load changelog from web")
+            webView = JEditorPane().apply {
+                text = "<html><body>Load failed!</body></html>"
             }
         }
+    }
 
-        MessageBus.messageBus.publishAsync(StartEvent())
+    private companion object {
+        private val logger = LogManager.getLogger()
     }
 }

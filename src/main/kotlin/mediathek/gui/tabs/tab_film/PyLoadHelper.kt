@@ -2,7 +2,7 @@ package mediathek.gui.tabs.tab_film
 
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
 import mediathek.tool.SwingErrorDialog
@@ -25,7 +25,7 @@ import kotlin.time.toJavaDuration
 class PyLoadHelper(
     private val owner: Component,
 ) {
-    private val historyController = SeenHistoryController()
+    private val historyController = FilmSeenHistoryController()
 
     private fun downloadUrl(url: HttpUrl, film: DatenFilm) {
         val config = ApplicationConfiguration.getInstance()

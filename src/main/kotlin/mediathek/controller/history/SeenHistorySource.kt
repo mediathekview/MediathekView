@@ -16,26 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.controller.history
 
-import mediathek.controller.history.FilmSeenHistoryController
-import mediathek.daten.DatenDownload
-import mediathek.gui.messages.StartEvent
-import mediathek.tool.MessageBus
-
-object DownloadStartActions {
-    fun start(download: DatenDownload) {
-        startAll(listOf(download))
-    }
-
-    fun startAll(downloads: Iterable<DatenDownload>) {
-        FilmSeenHistoryController().use { historyController ->
-            for (download in downloads) {
-                download.runtime.startRun()
-                historyController.markSeen(download.film)
-            }
-        }
-
-        MessageBus.messageBus.publishAsync(StartEvent())
-    }
+enum class SeenHistorySource {
+    FILM,
+    AUDIOTHEK,
 }

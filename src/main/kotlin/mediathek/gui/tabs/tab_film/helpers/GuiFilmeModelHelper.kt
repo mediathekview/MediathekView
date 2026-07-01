@@ -19,7 +19,7 @@
 package mediathek.gui.tabs.tab_film.helpers
 
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
@@ -50,7 +50,7 @@ class GuiFilmeModelHelper(
     ): Collection<DatenFilm> {
         val state = filterContext.state
         if (state.showUnseenOnly) {
-            SeenHistoryController.prepareSharedMemoryCache()
+            FilmSeenHistoryController.prepareSharedMemoryCache()
         }
 
         var stream = allFilms.parallelStream()

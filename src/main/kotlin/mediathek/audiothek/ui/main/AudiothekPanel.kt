@@ -35,18 +35,21 @@ import mediathek.audiothek.ui.table.AudioSeenState
 import mediathek.audiothek.ui.table.AudiothekTable
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.AudioSeenHistoryController
 import mediathek.gui.actions.ShowAudiothekSearchHelpAction
 import mediathek.gui.actions.UrlHyperlinkAction
+import mediathek.gui.messages.history.AudioSeenStateChangedEvent
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
 import mediathek.mac.MacMultimediaPlayerLocator
 import mediathek.mac.SingleIinaPlayer
 import mediathek.swing.OverlayPanel
 import mediathek.tool.FileDialogs
 import mediathek.tool.GuiFunktionenProgramme
+import mediathek.tool.MessageBus
 import mediathek.tool.notification.MessageType
 import mediathek.tool.notification.NotificationMessage
 import mediathek.tool.notification.NotificationService
+import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.VerticalLayout
@@ -142,11 +145,13 @@ class AudiothekPanel(
         errorOverlay.isVisible = false
         syncErrorOverlayBounds()
         Toolkit.getDefaultToolkit().addAWTEventListener(downloadPopupOutsideClickListener, AWTEvent.MOUSE_EVENT_MASK)
+        MessageBus.messageBus.subscribe(this)
         setupListeners()
     }
 
     fun disposePanel() {
         downloadManagerPopup.hidePopupImmediately()
+        MessageBus.messageBus.unsubscribe(this)
         Toolkit.getDefaultToolkit().removeAWTEventListener(downloadPopupOutsideClickListener)
         pauseDownloadsForShutdown()
         table.dispose()
@@ -601,13 +606,18 @@ class AudiothekPanel(
 
     private fun markAudioAsSeen(snapshot: AudioDownloadTaskSnapshot) {
         try {
-            SeenHistoryController().use {
+            AudioSeenHistoryController().use {
                 it.markSeen(snapshot.toAudioEntry())
             }
-            SwingUtilities.invokeLater { table.refreshSeenState() }
         } catch (ex: Exception) {
             logger.warn("Failed to mark downloaded audio as seen: {}", snapshot.audioUrl, ex)
         }
+    }
+
+    @Handler
+    @Suppress("UNUSED_PARAMETER")
+    private fun handleAudioSeenStateChangedEvent(event: AudioSeenStateChangedEvent) {
+        SwingUtilities.invokeLater { table.refreshSeenState() }
     }
 
     private fun openExternal(url: URI) {
@@ -681,7 +691,7 @@ private fun AudioDownloadTaskSnapshot.toAudioEntry(): AudioEntry {
 }
 
 private class AudioSeenHistoryState : AudioSeenState, AutoCloseable {
-    private val controller = SeenHistoryController()
+    private val controller = AudioSeenHistoryController()
 
     @Volatile
     override var isPrepared: Boolean = false

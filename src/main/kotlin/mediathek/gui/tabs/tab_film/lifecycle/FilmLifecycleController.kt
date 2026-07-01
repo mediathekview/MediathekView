@@ -25,7 +25,7 @@ import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmeLaden
 import mediathek.gui.messages.*
-import mediathek.gui.messages.history.DownloadHistoryChangedEvent
+import mediathek.gui.messages.history.SeenHistoryChangedEvent
 import mediathek.gui.tabs.tab_film.FilmToolBar
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.filter.SwingFilterDialog
@@ -82,7 +82,7 @@ class FilmLifecycleController(private val host: Host) {
         host.swingFilterDialog()?.onTableModelChangeEvent(event)
     }
 
-    fun handleDownloadHistoryChangedEvent(@Suppress("UNUSED_PARAMETER") event: DownloadHistoryChangedEvent) {
+    fun handleSeenHistoryChangedEvent(@Suppress("UNUSED_PARAMETER") event: SeenHistoryChangedEvent) {
         launchOnSwing {
             if (host.filterConfiguration().isShowUnseenOnly) {
                 host.requestTableReload()

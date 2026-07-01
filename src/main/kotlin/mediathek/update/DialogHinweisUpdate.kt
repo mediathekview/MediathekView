@@ -16,26 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package mediathek.controller.starter
+package mediathek.update
 
-import mediathek.controller.history.FilmSeenHistoryController
-import mediathek.daten.DatenDownload
-import mediathek.gui.messages.StartEvent
-import mediathek.tool.MessageBus
+import mediathek.config.Konstanten
+import mediathek.gui.actions.UrlHyperlinkAction
+import mediathek.tool.EscapeKeyHandler
+import javax.swing.JFrame
 
-object DownloadStartActions {
-    fun start(download: DatenDownload) {
-        startAll(listOf(download))
-    }
-
-    fun startAll(downloads: Iterable<DatenDownload>) {
-        FilmSeenHistoryController().use { historyController ->
-            for (download in downloads) {
-                download.runtime.startRun()
-                historyController.markSeen(download.film)
-            }
-        }
-
-        MessageBus.messageBus.publishAsync(StartEvent())
+class DialogHinweisUpdate(
+    parent: JFrame?,
+    text: String,
+) : DialogHinweisUpdateBase(parent) {
+    init {
+        EscapeKeyHandler.installHandler(this, this::dispose)
+        jButtonOk.addActionListener { dispose() }
+        jTextArea1.text = text
+        hyperLink.addActionListener { UrlHyperlinkAction.openURL(Konstanten.ADRESSE_DOWNLOAD) }
+        pack()
     }
 }

@@ -62,9 +62,10 @@ class SeenHistoryMigrator(
                 prepareStatement(INSERT_STMT).use { insertStatement ->
                     historyEntries.forEach { entry ->
                         insertStatement.setObject(1, entry.date)
-                        insertStatement.setString(2, entry.theme)
-                        insertStatement.setString(3, entry.title)
-                        insertStatement.setString(4, entry.url)
+                        insertStatement.setString(2, SeenHistorySource.FILM.name)
+                        insertStatement.setString(3, entry.theme)
+                        insertStatement.setString(4, entry.title)
+                        insertStatement.setString(5, entry.url)
                         insertStatement.executeUpdate()
                     }
                 }
@@ -171,11 +172,18 @@ class SeenHistoryMigrator(
         const val PRAGMA_ENCODING_STMT = "PRAGMA encoding='UTF-8'"
         const val PRAGMA_PAGE_SIZE = "PRAGMA page_size = 4096"
         const val CREATE_TABLE_STMT =
-            "CREATE TABLE IF NOT EXISTS seen_history (id INTEGER PRIMARY KEY ASC, datum DATE NOT NULL DEFAULT (date('now')), thema TEXT, titel TEXT, url TEXT NOT NULL)"
+            "CREATE TABLE IF NOT EXISTS seen_history (" +
+                "id INTEGER PRIMARY KEY ASC, " +
+                "datum DATE NOT NULL DEFAULT (date('now')), " +
+                "source TEXT NOT NULL DEFAULT 'FILM', " +
+                "thema TEXT, " +
+                "titel TEXT, " +
+                "url TEXT NOT NULL)"
         const val DROP_TABLE_STMT = "DROP TABLE IF EXISTS seen_history"
-        const val INSERT_STMT = "INSERT OR IGNORE INTO seen_history(datum,thema,titel,url) values (?,?,?,?)"
-        const val CREATE_INDEX_STMT = "CREATE UNIQUE INDEX IF NOT EXISTS IDX_SEEN_HISTORY_URL ON seen_history(url)"
-        const val DROP_INDEX_STMT = "DROP INDEX IF EXISTS IDX_SEEN_HISTORY_URL"
+        const val INSERT_STMT = "INSERT OR IGNORE INTO seen_history(datum,source,thema,titel,url) values (?,?,?,?,?)"
+        const val CREATE_INDEX_STMT = "CREATE UNIQUE INDEX IF NOT EXISTS IDX_SEEN_HISTORY_SOURCE_URL ON seen_history(source, url)"
+        const val DROP_INDEX_STMT = "DROP INDEX IF EXISTS IDX_SEEN_HISTORY_SOURCE_URL"
+        const val DROP_LEGACY_URL_INDEX_STMT = "DROP INDEX IF EXISTS IDX_SEEN_HISTORY_URL"
 
         private val logger = LogManager.getLogger()
         private const val LEGACY_ENTRY_SEPARATOR = "  |###|  "

@@ -18,7 +18,7 @@
 
 package mediathek.gui.tabs.actions
 
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
@@ -35,7 +35,7 @@ class MarkFilmAsSeenAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        SeenHistoryController().use { controller ->
+        FilmSeenHistoryController().use { controller ->
             controller.markSeen(selectedFilms.get())
         }
     }
@@ -49,7 +49,7 @@ class MarkFilmAsUnseenAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        SeenHistoryController().use { controller ->
+        FilmSeenHistoryController().use { controller ->
             controller.markUnseen(selectedFilms.get())
         }
     }
@@ -60,7 +60,7 @@ class MarkSingleFilmAsSeenAction(
 ) : AbstractAction("Film als gesehen markieren") {
     override fun actionPerformed(event: ActionEvent?) {
         val film = selectedFilm.get() ?: return
-        SeenHistoryController().use { controller ->
+        FilmSeenHistoryController().use { controller ->
             controller.markSeen(film)
         }
     }
@@ -71,13 +71,13 @@ class MarkSingleFilmAsUnseenAction(
 ) : AbstractAction("Film als ungesehen markieren") {
     override fun actionPerformed(event: ActionEvent?) {
         val film = selectedFilm.get() ?: return
-        SeenHistoryController().use { controller ->
+        FilmSeenHistoryController().use { controller ->
             controller.markUnseen(film)
         }
     }
 }
 
 fun hasBeenSeenInHistory(film: DatenFilm): Boolean =
-    SeenHistoryController().use { controller ->
+    FilmSeenHistoryController().use { controller ->
         controller.hasBeenSeen(film)
     }

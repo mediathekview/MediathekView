@@ -33,6 +33,7 @@ internal class SeenHistoryStore(
     private val insertStatement: PreparedStatement
     private val deleteStatement: PreparedStatement
     private val seenStatement: PreparedStatement
+    private val loadUrlsStatement: PreparedStatement
 
     init {
         if (shouldInitializeDatabase(dbPath)) {
@@ -41,11 +42,13 @@ internal class SeenHistoryStore(
 
         connection = dataSource.connection
         performSqliteSetup()
+        ensureSourceColumn()
         ensureUniqueUrlIndex()
 
         insertStatement = connection.prepareStatement(INSERT_SQL)
         deleteStatement = connection.prepareStatement(DELETE_SQL)
         seenStatement = connection.prepareStatement(SEEN_SQL)
+        loadUrlsStatement = connection.prepareStatement(SELECT_URLS_SQL)
     }
 
     fun removeAllEntries() {
@@ -54,15 +57,17 @@ internal class SeenHistoryStore(
         }
     }
 
-    fun removeSeenUrl(url: String) {
-        deleteStatement.setString(1, url)
+    fun removeSeenUrl(source: SeenHistorySource, url: String) {
+        deleteStatement.setString(1, source.name)
+        deleteStatement.setString(2, url)
         deleteStatement.executeUpdate()
     }
 
-    fun removeSeenUrls(urls: Collection<String>) {
+    fun removeSeenUrls(source: SeenHistorySource, urls: Collection<String>) {
         connection.inTransaction {
             urls.forEach { url ->
-                deleteStatement.setString(1, url)
+                deleteStatement.setString(1, source.name)
+                deleteStatement.setString(2, url)
                 deleteStatement.addBatch()
             }
             deleteStatement.executeBatch()
@@ -71,18 +76,20 @@ internal class SeenHistoryStore(
     }
 
     fun insertSeenEntry(entry: SeenHistoryEntry): Boolean {
-        insertStatement.setString(1, entry.theme)
-        insertStatement.setString(2, entry.title)
-        insertStatement.setString(3, entry.url)
+        insertStatement.setString(1, entry.source.name)
+        insertStatement.setString(2, entry.theme)
+        insertStatement.setString(3, entry.title)
+        insertStatement.setString(4, entry.url)
         return insertStatement.executeUpdate() > 0
     }
 
     fun insertSeenEntries(entries: List<SeenHistoryEntry>) {
         connection.inTransaction {
             entries.forEach { entry ->
-                insertStatement.setString(1, entry.theme)
-                insertStatement.setString(2, entry.title)
-                insertStatement.setString(3, entry.url)
+                insertStatement.setString(1, entry.source.name)
+                insertStatement.setString(2, entry.theme)
+                insertStatement.setString(3, entry.title)
+                insertStatement.setString(4, entry.url)
                 insertStatement.addBatch()
             }
             insertStatement.executeBatch()
@@ -90,24 +97,24 @@ internal class SeenHistoryStore(
         }
     }
 
-    fun loadAllUrls(): Set<String> {
-        connection.createStatement().use { statement ->
-            statement.executeQuery(SELECT_URLS_SQL).use { resultSet ->
-                return buildSet {
-                    while (resultSet.next()) {
-                        add(resultSet.getString(1))
-                    }
+    fun loadUrls(source: SeenHistorySource): Set<String> {
+        loadUrlsStatement.setString(1, source.name)
+        loadUrlsStatement.executeQuery().use { resultSet ->
+            return buildSet {
+                while (resultSet.next()) {
+                    add(resultSet.getString(1))
                 }
             }
         }
     }
 
-    fun containsUrl(url: String): Boolean {
+    fun containsUrl(source: SeenHistorySource, url: String): Boolean {
         if (url.isBlank()) {
             return false
         }
 
-        seenStatement.setString(1, url)
+        seenStatement.setString(1, source.name)
+        seenStatement.setString(2, url)
         seenStatement.executeQuery().use { resultSet ->
             resultSet.next()
             return resultSet.getInt(1) != 0
@@ -167,6 +174,7 @@ internal class SeenHistoryStore(
         insertStatement.close()
         deleteStatement.close()
         seenStatement.close()
+        loadUrlsStatement.close()
         connection.close()
     }
 
@@ -178,6 +186,7 @@ internal class SeenHistoryStore(
             connection.createStatement().use { statement ->
                 basicSqliteSettings(statement)
                 statement.executeUpdate(SeenHistoryMigrator.DROP_INDEX_STMT)
+                statement.executeUpdate(SeenHistoryMigrator.DROP_LEGACY_URL_INDEX_STMT)
                 statement.executeUpdate(SeenHistoryMigrator.DROP_TABLE_STMT)
                 statement.executeUpdate(SeenHistoryMigrator.CREATE_TABLE_STMT)
                 statement.executeUpdate(SeenHistoryMigrator.CREATE_INDEX_STMT)
@@ -211,6 +220,31 @@ internal class SeenHistoryStore(
     }
 
     @Throws(SQLException::class)
+    private fun ensureSourceColumn() {
+        if (hasSourceColumn()) {
+            return
+        }
+
+        connection.createStatement().use { statement ->
+            statement.executeUpdate(ADD_SOURCE_COLUMN_SQL)
+        }
+    }
+
+    @Throws(SQLException::class)
+    private fun hasSourceColumn(): Boolean {
+        connection.createStatement().use { statement ->
+            statement.executeQuery("PRAGMA table_info('seen_history')").use { resultSet ->
+                while (resultSet.next()) {
+                    if (resultSet.getString("name") == SOURCE_COLUMN_NAME) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    @Throws(SQLException::class)
     private fun ensureUniqueUrlIndex() {
         if (hasRequiredUniqueUrlIndex()) {
             return
@@ -218,6 +252,7 @@ internal class SeenHistoryStore(
 
         connection.createStatement().use { statement ->
             statement.executeUpdate(SeenHistoryMigrator.DROP_INDEX_STMT)
+            statement.executeUpdate(SeenHistoryMigrator.DROP_LEGACY_URL_INDEX_STMT)
         }
 
         try {
@@ -225,10 +260,11 @@ internal class SeenHistoryStore(
                 statement.executeUpdate(SeenHistoryMigrator.CREATE_INDEX_STMT)
             }
         } catch (_: SQLException) {
-            logger.info("Removing duplicate seen history entries before creating unique URL index")
+            logger.info("Removing duplicate seen history entries before creating unique source URL index")
             removeDuplicates()
             connection.createStatement().use { statement ->
                 statement.executeUpdate(SeenHistoryMigrator.DROP_INDEX_STMT)
+                statement.executeUpdate(SeenHistoryMigrator.DROP_LEGACY_URL_INDEX_STMT)
                 statement.executeUpdate(SeenHistoryMigrator.CREATE_INDEX_STMT)
             }
         }
@@ -266,29 +302,34 @@ internal class SeenHistoryStore(
 
     private companion object {
         private val logger = LogManager.getLogger()
-        private const val INSERT_SQL = "INSERT OR IGNORE INTO seen_history(thema,titel,url) values (?,?,?)"
-        private const val DELETE_SQL = "DELETE FROM seen_history WHERE url = ?"
-        private const val SELECT_URLS_SQL = "SELECT DISTINCT(url) AS url FROM seen_history"
-        private const val SEEN_SQL = "SELECT COUNT(url) AS total FROM seen_history WHERE url = ?"
+        private const val INSERT_SQL = "INSERT OR IGNORE INTO seen_history(source,thema,titel,url) values (?,?,?,?)"
+        private const val DELETE_SQL = "DELETE FROM seen_history WHERE source = ? AND url = ?"
+        private const val SELECT_URLS_SQL = "SELECT DISTINCT(url) AS url FROM seen_history WHERE source = ?"
+        private const val SEEN_SQL = "SELECT COUNT(url) AS total FROM seen_history WHERE source = ? AND url = ?"
         private const val DELETE_ALL_SQL = "DELETE FROM seen_history"
         private const val DELETE_LIVESTREAMS_SQL = "DELETE FROM seen_history WHERE thema = 'Livestream'"
         private const val REINDEX_SQL = "REINDEX seen_history"
         private const val VACUUM_SQL = "VACUUM"
-        private const val UNIQUE_URL_INDEX_NAME = "IDX_SEEN_HISTORY_URL"
+        private const val SOURCE_COLUMN_NAME = "source"
+        private const val ADD_SOURCE_COLUMN_SQL =
+            "ALTER TABLE seen_history ADD COLUMN source TEXT NOT NULL DEFAULT 'FILM'"
+        private const val UNIQUE_URL_INDEX_NAME = "IDX_SEEN_HISTORY_SOURCE_URL"
         private const val CREATE_TEMP_HISTORY_SQL = """
             CREATE TABLE temp_history AS
             SELECT
                 datum,
+                source,
                 thema,
                 titel,
                 url
             FROM (
                 SELECT
                     datum,
+                    source,
                     thema,
                     titel,
                     url,
-                    ROW_NUMBER() OVER (PARTITION BY url ORDER BY datum DESC) as rn
+                    ROW_NUMBER() OVER (PARTITION BY source, url ORDER BY datum DESC) as rn
                 FROM
                     seen_history
             ) AS ranked_seen_history
@@ -298,15 +339,15 @@ internal class SeenHistoryStore(
                 datum
         """
         private const val RESTORE_UNIQUE_HISTORY_SQL = """
-            INSERT INTO seen_history(datum,thema,titel,url)
-            SELECT datum,thema,titel,url FROM temp_history
+            INSERT INTO seen_history(datum,source,thema,titel,url)
+            SELECT datum,source,thema,titel,url FROM temp_history
         """
         private const val DROP_TEMP_HISTORY_SQL = "DROP TABLE temp_history"
         private const val COUNT_DUPLICATES_SQL = """
             SELECT COUNT(*) FROM (
-                SELECT url
+                SELECT source, url
                 FROM seen_history
-                GROUP BY url
+                GROUP BY source, url
                 HAVING COUNT(*) > 1
             )
         """

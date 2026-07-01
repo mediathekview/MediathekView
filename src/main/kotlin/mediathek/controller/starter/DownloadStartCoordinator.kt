@@ -20,7 +20,7 @@ package mediathek.controller.starter
 
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.AboHistoryController
-import mediathek.controller.history.SeenHistoryController
+import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.*
 import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.CdnDetector
@@ -79,7 +79,7 @@ class DownloadStartCoordinator(
             download.runtime.startRun()
             launchDownloadThread(download)
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            SeenHistoryController().use { historyController ->
+            FilmSeenHistoryController().use { historyController ->
                 historyController.markSeen(film)
             }
 

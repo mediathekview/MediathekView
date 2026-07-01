@@ -140,12 +140,13 @@ class ProgramUpdateCheck(
     private fun confirmStandardPsetUpdate(parent: JFrame, standardPset: ListePset): Boolean {
         val dialogNewSet = DialogNewSet(parent, programSets)
         dialogNewSet.isVisible = true
-        if (dialogNewSet.ok) {
+        val decision = dialogNewSet.decision
+        if (decision.accepted) {
             return true
         }
 
         logger.info("Setanlegen: Abbruch")
-        if (!dialogNewSet.morgen) {
+        if (!decision.askAgainTomorrow) {
             logger.info("Setanlegen: Nicht wieder nachfragen")
             updateInstalledStandardPsetVersion(standardPset)
         }

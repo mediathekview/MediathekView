@@ -19,9 +19,6 @@
  */
 package mediathek.update;
 
-import mediathek.config.Konstanten;
-import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.EscapeKeyHandler;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -31,20 +28,11 @@ import org.jdesktop.swingx.JXHyperlink;
 import javax.swing.*;
 import java.awt.*;
 
-public class DialogHinweisUpdate extends JDialog {
+public class DialogHinweisUpdateBase extends JDialog {
 
-    public DialogHinweisUpdate(JFrame parent, String ttext) {
+    public DialogHinweisUpdateBase(JFrame parent) {
         super(parent, true);
-
         initComponents();
-
-        EscapeKeyHandler.installHandler(this, this::dispose);
-
-        jButtonOk.addActionListener(_ -> dispose());
-        jTextArea1.setText(ttext);
-
-        hyperLink.addActionListener(_ -> UrlHyperlinkAction.openURL(Konstanten.ADRESSE_DOWNLOAD));
-        pack();
     }
 
     /** This method is called from within the constructor to
@@ -103,8 +91,8 @@ public class DialogHinweisUpdate extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JTextArea jTextArea1;
-    private JButton jButtonOk;
-    private JXHyperlink hyperLink;
+    protected JTextArea jTextArea1;
+    protected JButton jButtonOk;
+    protected JXHyperlink hyperLink;
     // End of variables declaration//GEN-END:variables
 }
