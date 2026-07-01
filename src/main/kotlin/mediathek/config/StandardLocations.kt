@@ -33,8 +33,26 @@ object StandardLocations {
     /**
      * The base directory when app is run in portable mode.
      */
-    var portableBaseDirectory: String? = null
+    var portableBaseDirectory: String?
+        get() = portableSettingsDirectory?.toString()
+        set(value) {
+            portableSettingsDirectory = value
+                ?.takeIf(String::isNotEmpty)
+                ?.let(Paths::get)
+        }
+    private var portableSettingsDirectory: Path? = null
     private val logger = LogManager.getLogger()
+
+    fun configureDefault() {
+        portableSettingsDirectory = null
+    }
+
+    fun configurePortable(baseDirectory: String?) {
+        require(!baseDirectory.isNullOrBlank()) { "Portable settings directory must not be blank." }
+        portableSettingsDirectory = Paths.get(baseDirectory)
+    }
+
+    fun isPortableMode(): Boolean = portableSettingsDirectory != null
 
     /**
      * Return the location of the settings directory.
@@ -45,11 +63,8 @@ object StandardLocations {
      */
     @Throws(IllegalStateException::class)
     fun getSettingsDirectory(): Path {
-        val baseDirectoryPath: Path = if (portableBaseDirectory == null || portableBaseDirectory!!.isEmpty()) {
-            Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_EINSTELLUNGEN)
-        } else {
-            Paths.get(portableBaseDirectory!!)
-        }
+        val baseDirectoryPath: Path = portableSettingsDirectory
+            ?: Paths.get(SystemUtils.USER_HOME, Konstanten.VERZEICHNIS_EINSTELLUNGEN)
         if (Files.notExists(baseDirectoryPath)) {
             try {
                 Files.createDirectories(baseDirectoryPath)
@@ -164,7 +179,7 @@ object StandardLocations {
         filmlistBaseDirectory().resolve(Konstanten.JSON_DATEI_FILME)
 
     private fun filmlistBaseDirectory(): Path =
-        if (!CommandLineOptions.isPortableMode() && SystemUtils.IS_OS_MAC_OSX) {
+        if (!isPortableMode() && SystemUtils.IS_OS_MAC_OSX) {
             // place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
             getOsxCacheDirectory()
         } else {
@@ -184,7 +199,7 @@ object StandardLocations {
     fun getFilmIndexPath(): Path {
         val indexDirectory = "mv_index"
 
-        return if (CommandLineOptions.isPortableMode())
+        return if (isPortableMode())
             getSettingsDirectory().resolve(indexDirectory)
         else {
             if (SystemUtils.IS_OS_MAC_OSX) {

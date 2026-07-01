@@ -1,5 +1,6 @@
 package mediathek.config
 
+import mediathek.tool.sql.SqlDatabaseConfig
 import org.apache.commons.lang3.SystemUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledOnOs
 import org.junit.jupiter.api.condition.OS
 import org.junit.jupiter.api.io.TempDir
-import mediathek.tool.sql.SqlDatabaseConfig
 import picocli.CommandLine
 import java.nio.file.Files
 import java.nio.file.Path
@@ -24,7 +24,7 @@ internal class StandardLocationsTest {
     fun tearDown() {
         CommandLineOptions.baseFilePath = null
         CommandLineOptions.setPortableMode(false)
-        StandardLocations.portableBaseDirectory = null
+        StandardLocations.configureDefault()
     }
 
     @Test
@@ -47,6 +47,7 @@ internal class StandardLocationsTest {
         val settingsDirectory = tempDir.resolve("Einstellungen/.mediathek3")
         configurePortableModeFromCommandLine(settingsDirectory)
 
+        assertTrue(StandardLocations.isPortableMode())
         assertEquals(settingsDirectory, StandardLocations.getSettingsDirectory())
         assertEquals(settingsDirectory.resolve(Konstanten.CONFIG_FILE), StandardLocations.getMediathekXmlFile())
         assertEquals(settingsDirectory.resolve("MediathekView.lock"), StandardLocations.getLockFilePath())
@@ -72,11 +73,23 @@ internal class StandardLocationsTest {
         assertEquals(settingsDirectory.resolve("history.db"), SqlDatabaseConfig.historyDbPath)
     }
 
+    @Test
+    fun defaultConfigurationDisablesPortableModeEvenWhenCommandLineFlagWasPreviouslySet() {
+        CommandLineOptions.setPortableMode(true)
+
+        StandardLocations.configureDefault()
+
+        assertEquals(false, StandardLocations.isPortableMode())
+    }
+
     private fun configurePortableModeFromCommandLine(settingsDirectory: Path) {
         val parseResult = CommandLine(CommandLineOptions).parseArgs(settingsDirectory.toString())
         CommandLineOptions.setPortableMode(parseResult.hasMatchedPositional(0))
-        StandardLocations.portableBaseDirectory =
-            if (CommandLineOptions.isPortableMode()) CommandLineOptions.baseFilePath else null
+        if (parseResult.hasMatchedPositional(0)) {
+            StandardLocations.configurePortable(CommandLineOptions.baseFilePath)
+        } else {
+            StandardLocations.configureDefault()
+        }
     }
 
     @Test

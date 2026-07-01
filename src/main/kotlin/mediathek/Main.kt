@@ -167,9 +167,13 @@ object Main {
                 exitProcess(cmd.commandSpec.exitCodeOnUsageHelp())
             }
 
-            CommandLineOptions.setPortableMode(parseResult.hasMatchedPositional(0))
-            StandardLocations.portableBaseDirectory =
-                if (CommandLineOptions.isPortableMode()) CommandLineOptions.baseFilePath else null
+            val portableMode = parseResult.hasMatchedPositional(0)
+            CommandLineOptions.setPortableMode(portableMode)
+            if (portableMode) {
+                StandardLocations.configurePortable(CommandLineOptions.baseFilePath)
+            } else {
+                StandardLocations.configureDefault()
+            }
 
             return parseResult
         } catch (ex: CommandLine.ParameterException) {
@@ -287,7 +291,7 @@ object Main {
      * In portable mode we MUST NOT delete the files.
      */
     private fun cleanupOsxFiles() {
-        if (!CommandLineOptions.isPortableMode()) {
+        if (!StandardLocations.isPortableMode()) {
             try {
                 val oldFilmList = StandardLocations.getSettingsDirectory().resolve(Konstanten.JSON_DATEI_FILME)
                 Files.deleteIfExists(oldFilmList)
@@ -460,8 +464,8 @@ object Main {
     }
 
     private fun printPortableModeInfo() {
-        if (CommandLineOptions.isPortableMode()) {
-            logger.info("Configuring baseFilePath {} for portable mode", CommandLineOptions.baseFilePath)
+        if (StandardLocations.isPortableMode()) {
+            logger.info("Configuring baseFilePath {} for portable mode", StandardLocations.portableBaseDirectory)
         } else {
             logger.info("Configuring for non-portable mode")
         }
