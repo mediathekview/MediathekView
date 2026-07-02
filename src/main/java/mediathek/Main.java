@@ -798,7 +798,7 @@ public class Main {
         final var maxMem = Runtime.getRuntime().maxMemory();
         if (maxMem < Konstanten.MINIMUM_MEMORY_THRESHOLD) {
             JOptionPane.showMessageDialog(null,
-                    "Es werden mindestens 768MB RAM zum Betrieb benötigt.\n" +
+                    "Es werden mindestens 1280MB RAM zum Betrieb benötigt.\n" +
                             "Das Programm wird nun beendet.",
                     Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE);
 
