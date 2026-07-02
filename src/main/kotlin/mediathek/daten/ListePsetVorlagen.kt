@@ -81,13 +81,12 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
     }
 
     companion object {
-        private const val BS_WIN_32 = "Windows-32Bit"
         private const val BS_WIN_64 = "Windows-64Bit"
         private const val BS_LINUX = "Linux"
         private const val BS_MAC = "Mac"
 
         @JvmField
-        val BS: Array<String> = arrayOf("", BS_WIN_32, BS_WIN_64, BS_LINUX, BS_MAC)
+        val BS: Array<String> = arrayOf("", BS_WIN_64, BS_LINUX, BS_MAC)
 
         const val PGR = "Vorlage"
         const val PGR_NAME = "Name"
