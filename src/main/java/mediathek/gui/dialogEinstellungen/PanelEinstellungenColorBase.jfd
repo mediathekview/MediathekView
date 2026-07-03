@@ -11,6 +11,9 @@ new FormModel {
 			name: "this"
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "jTabbedPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "insets 0,hidemode 3"
 					"$columnConstraints": "[grow,fill]"
@@ -27,6 +30,9 @@ new FormModel {
 						}
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "jTableLight"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0"
@@ -50,6 +56,9 @@ new FormModel {
 						}
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "jTableDark"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0"
@@ -71,6 +80,9 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonReset"
 				"text": "Helle Farben zurücksetzen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 2 1"
 			} )
