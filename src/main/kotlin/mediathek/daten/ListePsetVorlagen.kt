@@ -85,7 +85,6 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
         private const val BS_LINUX = "Linux"
         private const val BS_MAC = "Mac"
 
-        @JvmField
         val BS: Array<String> = arrayOf("", BS_WIN_64, BS_LINUX, BS_MAC)
 
         const val PGR = "Vorlage"
@@ -103,12 +102,10 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
         const val PGR_INFO_NR = 5
         const val PGR_MAX_ELEM = 6
 
-        @JvmField
         val PGR_COLUMN_NAMES: Array<String> = arrayOf(PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO)
 
         private val logger = LogManager.getLogger(ListePsetVorlagen::class.java)
 
-        @JvmStatic
         fun getStandarset(parent: JFrame?, replaceMuster: Boolean): ListePset? {
             var listePset: ListePset? = null
             var vorlage: Array<String>? = null
@@ -141,7 +138,6 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
             return listePset
         }
 
-        @JvmStatic
         fun importPsetFile(dateiUrl: String, log: Boolean): ListePset? =
             try {
                 if (NetUtils.isUrl(dateiUrl)) {
@@ -173,7 +169,6 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
                 null
             }
 
-        @JvmStatic
         fun importPsetText(text: String, log: Boolean): ListePset? =
             try {
                 importPset(StringReader(text), log)

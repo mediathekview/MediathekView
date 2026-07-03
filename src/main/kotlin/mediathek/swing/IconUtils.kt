@@ -47,7 +47,6 @@ object IconUtils {
         }
     }
 
-    @JvmStatic
     fun of(ikon: Ikon): FontIcon = of(ikon, DEFAULT_SIZE)
 
     fun generateDisabledIcon(action: Action): ImageIcon? {

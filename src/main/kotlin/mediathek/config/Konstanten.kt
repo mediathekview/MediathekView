@@ -60,7 +60,6 @@ object Konstanten {
     // MediathekView URLs
     val ROUTER_BASE_URL: HttpUrl = "https://liste.mediathekview.de".toHttpUrl()
 
-    @JvmField
     val WEBSITE_BASE_URL: HttpUrl = "https://mediathekview.de".toHttpUrl()
 
     val URL_MEDIATHEKVIEW_RESOURCES: HttpUrl = "https://res.mediathekview.de".toHttpUrl()

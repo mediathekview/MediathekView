@@ -57,7 +57,6 @@ object GuiFunktionen {
         return result
     }
 
-    @JvmStatic
     fun concatPaths(pfad1: String?, pfad2: String?): String {
         if (pfad1 == null || pfad2 == null) {
             return ""

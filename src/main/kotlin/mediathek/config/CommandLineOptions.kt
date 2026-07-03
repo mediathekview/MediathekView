@@ -148,7 +148,6 @@ object CommandLineOptions {
 
     fun isEnhancedLoggingEnabled(): Boolean = enhancedLogging
 
-    @JvmStatic
     fun isDebugModeEnabled(): Boolean = debug
 
     fun isFileLoggingDisabled(): Boolean = fileLoggingDisabled

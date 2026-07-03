@@ -11,7 +11,6 @@ object ProgramSetTemplateResolver {
     const val MUSTER_PFAD_VLC = "PFAD_VLC"
     const val MUSTER_PFAD_FFMPEG = "PFAD_FFMPEG"
 
-    @JvmStatic
     fun replaceTemplates(parent: JFrame?, programSets: ListePset) {
         for (programSet in programSets) {
             replaceTemplates(parent, programSet)

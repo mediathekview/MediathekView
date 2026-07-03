@@ -43,7 +43,6 @@ class FilenameUtils private constructor() {
         const val REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH: String = "[:\\\\*|<>]"
         private val logger = LogManager.getLogger()
 
-        @JvmStatic
         fun checkFilenameForIllegalCharacters(name: String, isPath: Boolean): String {
             // dient nur zur Anzeige für Probleme (Textfeld wird rot)
             var ret = name
@@ -277,7 +276,6 @@ class FilenameUtils private constructor() {
          * @param name Dateiname
          * @return Bereinigte Fassung
          */
-        @JvmStatic
         fun replaceLeerDateiname(name: String, isPath: Boolean, userReplace: Boolean, onlyAscii: Boolean): String {
             var ret = name
             var isWindowsPath = false

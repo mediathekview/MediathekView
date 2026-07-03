@@ -166,7 +166,6 @@ object GuiFunktionenProgramme {
     private fun findExecutableOnPathOrFallback(name: String, fallbackPath: String): String =
         runCatching { findExecutableOnPath(name).toString() }.getOrDefault(fallbackPath)
 
-    @JvmStatic
     fun addSetVorlagen(
         parent: JFrame?,
         programSets: ProgramSetRepository,
@@ -470,7 +469,6 @@ object GuiFunktionenProgramme {
      * @param path path to the directory
      * @return true if we can write a file there, false if not.
      */
-    @JvmStatic
     fun checkPathWriteable(path: String): Boolean {
         if (path.isEmpty()) {
             return false

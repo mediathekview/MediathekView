@@ -36,8 +36,6 @@ class UrlHyperlinkAction(
             openURL(uri.toString(), parent)
         }
 
-        @JvmOverloads
-        @JvmStatic
         fun openURL(url: String, parent: Frame? = null) {
             var launchFailed = false
 

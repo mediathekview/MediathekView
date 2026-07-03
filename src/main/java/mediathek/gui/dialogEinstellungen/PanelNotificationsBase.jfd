@@ -13,6 +13,9 @@ new FormModel {
 				name: "cbShowNotifications"
 				"text": "Benachrichtigungen anzeigen"
 				"toolTipText": "Zeige Programminformationen als Benachrichtigungen in einem Popup-Fenster an."
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 0"
 			} )

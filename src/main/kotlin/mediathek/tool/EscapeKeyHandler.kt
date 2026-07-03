@@ -27,12 +27,10 @@ import javax.swing.*
 object EscapeKeyHandler {
     private const val CANCEL_KEY_HANDLER = "key_cancel"
 
-    @JvmStatic
     fun installHandler(dialog: JDialog, action: Runnable) {
         installHandler(dialog.rootPane, action)
     }
 
-    @JvmStatic
     fun installHandler(frame: JFrame, action: Runnable) {
         installHandler(frame.rootPane, action)
     }

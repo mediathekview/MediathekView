@@ -149,7 +149,6 @@ class DialogProgrammOrdnerOeffnen private constructor(
     companion object {
         private val logger = LogManager.getLogger()
 
-        @JvmStatic
         fun showDialog(
             parent: Frame?,
             initialProgram: String,

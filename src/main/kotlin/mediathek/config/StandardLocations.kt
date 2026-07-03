@@ -134,7 +134,6 @@ object StandardLocations {
      *
      * @return Standard path to the download directory.
      */
-    @JvmStatic
     @Throws(InvalidPathException::class)
     fun getStandardDownloadPath(): String {
         val userHome = SystemUtils.USER_HOME

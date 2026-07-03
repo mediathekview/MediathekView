@@ -37,7 +37,6 @@ object FileDialogs {
     private val FileDialog.selectedFileOrNull: File?
         get() = files.firstOrNull()
 
-    @JvmStatic
     fun chooseDirectoryLocation(parent: Frame, title: String, initialFile: String): File? =
         if (SystemUtils.IS_OS_MAC_OSX) {
             withTemporarySystemProperty(MAC_DIRECTORY_DIALOG_PROPERTY, "true") {
@@ -81,7 +80,6 @@ object FileDialogs {
             )
         }
 
-    @JvmStatic
     fun chooseLoadFileLocation(parent: Frame, title: String, initialFile: String): File? =
         if (prefersNativeFileDialogs) {
             showNativeDialog(parent, title, mode = FileDialog.LOAD, initialDirectory = initialFile)
@@ -102,7 +100,6 @@ object FileDialogs {
      * @param initialFile path info for initial directory/file display.
      * @return the selected file or null if action was cancelled.
      */
-    @JvmStatic
     fun chooseSaveFileLocation(parent: Frame, title: String, initialFile: String): File? =
         if (prefersNativeFileDialogs) {
             showNativeDialog(parent, title, mode = FileDialog.SAVE, initialFile = initialFile)

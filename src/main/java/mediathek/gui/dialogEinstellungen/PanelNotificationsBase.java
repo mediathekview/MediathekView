@@ -4,9 +4,6 @@
 
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.application.ApplicationConfiguration;
-import mediathek.gui.messages.NotificationCenterChangeEvent;
-import mediathek.tool.MessageBus;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -14,17 +11,9 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
-public class PanelNotifications extends JPanel {
-    public PanelNotifications() {
+public class PanelNotificationsBase extends JPanel {
+    public PanelNotificationsBase() {
         initComponents();
-
-        final var config = ApplicationConfiguration.getInstance();
-        final boolean showNotification = config.getShowNotifications();
-        cbShowNotifications.setSelected(showNotification);
-        cbShowNotifications.addActionListener(_ -> {
-            config.setShowNotifications(cbShowNotifications.isSelected());
-            MessageBus.getMessageBus().publishAsync(new NotificationCenterChangeEvent());
-        });
     }
 
     private void initComponents() {
@@ -52,6 +41,6 @@ public class PanelNotifications extends JPanel {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JCheckBox cbShowNotifications;
+    protected JCheckBox cbShowNotifications;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

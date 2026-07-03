@@ -77,15 +77,12 @@ object MVColor {
 
         val DOWNLOAD_FERTIG_SEL = color("download_finished_selected", rgb(115, 206, 92), rgb(60, 123, 67), "Download, fertig, selektiert")
 
-        @JvmField
         val DOWNLOAD_FEHLER = color("download_error", rgb(241, 188, 221), rgb(102, 53, 82), "Download, fehlerhaft")
 
         val DOWNLOAD_FEHLER_SEL = color("download_error_selected", rgb(206, 92, 128), rgb(143, 67, 95), "Download, fehlerhaft, selektiert")
 
-        @JvmField
         val DOWNLOAD_DATEINAME_NEU = color("download_filename_new", rgb(0, 140, 0), rgb(114, 212, 117), "Download, Dateiname ist neu")
 
-        @JvmField
         val DOWNLOAD_DATEINAME_ALT = color("download_filename_old", rgb(0, 0, 200), darkBlue, "Download, Dateiname ist der alte")
 
         private val colors = listOf(
