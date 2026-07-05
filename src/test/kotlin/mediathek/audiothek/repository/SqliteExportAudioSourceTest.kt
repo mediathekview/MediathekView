@@ -194,7 +194,7 @@ class SqliteExportAudioSourceTest {
         object : SqliteExportAudioSource(client) {
             override fun exportDatabasePath(): Path = tempDir.resolve("mv-audiothek.db")
             override fun metadataFilePath(): Path = tempDir.resolve("download.properties")
-            override fun publicDatabaseUrl(): String = "https://hlssi.crystalpalace.info/audio-db"
+            override fun publicDatabaseUrl(): String = "https://hlssi.mediathekview.de/audio-db"
         }
 
     private fun createCompressedDatabaseArchive(
