@@ -66,7 +66,7 @@ object Konstanten {
 
     const val HLS_STREAM_INFO_TOKEN_HEADER = "X-HLS-Stream-Info-Token"
     const val HLS_STREAM_INFO_TOKEN = "mv-hls-stream-info-test-2026-04-14"
-    val HLS_STREAM_INFO_BASE_URL: HttpUrl = "https://hlssi.crystalpalace.info".toHttpUrl()
+    val HLS_STREAM_INFO_BASE_URL: HttpUrl = "https://hlssi.mediathekview.de".toHttpUrl()
     val HLS_STREAM_INFO_UPLOAD_URL: HttpUrl = requireNotNull(
         HLS_STREAM_INFO_BASE_URL.resolve("/v1/hls-stream-info")
     )
