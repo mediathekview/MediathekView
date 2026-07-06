@@ -35,7 +35,7 @@ object Konstanten {
 
     val MVVERSION = Version(15, 0, 0)
 
-    val APPLICATION_TYPE = ApplicationType.NIGHTLY
+    val APPLICATION_TYPE = ApplicationType.PRODUCTION
 
     const val AUDIOTHEK_SEARCH_TIMEOUT_SECONDS = 45L
     const val ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60L
