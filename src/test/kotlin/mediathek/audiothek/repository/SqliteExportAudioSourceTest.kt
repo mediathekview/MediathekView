@@ -1,5 +1,6 @@
 package mediathek.audiothek.repository
 
+import mediathek.config.Konstanten
 import mediathek.tool.sql.SqlDatabaseConfig
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
@@ -194,7 +195,7 @@ class SqliteExportAudioSourceTest {
         object : SqliteExportAudioSource(client) {
             override fun exportDatabasePath(): Path = tempDir.resolve("mv-audiothek.db")
             override fun metadataFilePath(): Path = tempDir.resolve("download.properties")
-            override fun publicDatabaseUrl(): String = "https://hlssi.mediathekview.de/audio-db"
+            override fun publicDatabaseUrl(): String = Konstanten.AUDIOTHEK_DB_DOWNLOAD_URL.toString()
         }
 
     private fun createCompressedDatabaseArchive(

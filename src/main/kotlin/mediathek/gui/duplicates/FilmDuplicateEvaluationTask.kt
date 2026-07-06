@@ -18,6 +18,7 @@
 
 package mediathek.gui.duplicates
 
+import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
 import mediathek.filmlisten.FilmCatalog
 import org.apache.logging.log4j.LogManager
@@ -26,11 +27,15 @@ class FilmDuplicateEvaluationTask(
     private val filmCatalog: FilmCatalog,
 ) : Runnable {
     private val listeFilme: ListeFilme = filmCatalog.allFilms
+    private val duplicateComparator = BigSenderPenaltyComparator()
 
-    private fun printDuplicateStatistics() {
-        val statisticsMap = listeFilme.parallelStream()
-            .filter { film -> film.isDuplicate }
-            .countFilmsBySender()
+    private data class DuplicateUrlKey(
+        val normalQualityUrl: String,
+        val highQualityUrl: String,
+        val lowQualityUrl: String,
+    )
+
+    private fun printDuplicateStatistics(statisticsMap: Map<String, Long>) {
         val duplicateCount = statisticsMap.values.sum()
 
         replaceFilmStatistics(filmCatalog.duplicateStatistics, statisticsMap)
@@ -38,27 +43,46 @@ class FilmDuplicateEvaluationTask(
         logger.trace("Number of duplicates: {}", duplicateCount)
     }
 
-    private fun checkDuplicates() {
+    private fun checkDuplicates(): Map<String, Long> {
         logger.trace("Start Duplicate URL search")
-        val urlCache = HashMap<String, MutableMap<String, MutableSet<String>>>()
-        listeFilme.stream()
-            .filter { film -> !film.isLivestream }
-            .sorted(BigSenderPenaltyComparator())
-            .forEach { film ->
-                val normalUrl = film.urlNormalQuality
-                val highQualityUrl = if (film.isHighQuality) film.highQualityUrl else ""
-                val lowQualityUrl = if (film.hasLowQuality()) film.lowQualityUrl else ""
+        val winnersByUrl = HashMap<DuplicateUrlKey, DatenFilm>()
+        val duplicateStatistics = HashMap<String, Long>()
 
-                val byHighQualityUrl = urlCache.getOrPut(normalUrl) { HashMap() }
-                val seenLowQualityUrls = byHighQualityUrl.getOrPut(highQualityUrl) { HashSet() }
-
-                film.isDuplicate = !seenLowQualityUrls.add(lowQualityUrl)
+        for (film in listeFilme) {
+            if (film.isLivestream) {
+                continue
             }
+
+            film.isDuplicate = false
+            val key = duplicateKey(film)
+            val winner = winnersByUrl[key]
+            if (winner == null) {
+                winnersByUrl[key] = film
+            } else if (duplicateComparator.compare(film, winner) < 0) {
+                markDuplicate(winner, duplicateStatistics)
+                winnersByUrl[key] = film
+            } else {
+                markDuplicate(film, duplicateStatistics)
+            }
+        }
+
+        return duplicateStatistics
+    }
+
+    private fun duplicateKey(film: DatenFilm): DuplicateUrlKey =
+        DuplicateUrlKey(
+            normalQualityUrl = film.urlNormalQuality,
+            highQualityUrl = if (film.isHighQuality) film.highQualityUrl else "",
+            lowQualityUrl = if (film.hasLowQuality()) film.lowQualityUrl else "",
+        )
+
+    private fun markDuplicate(film: DatenFilm, duplicateStatistics: MutableMap<String, Long>) {
+        film.isDuplicate = true
+        duplicateStatistics.merge(film.sender, 1L, Long::plus)
     }
 
     override fun run() {
-        checkDuplicates()
-        printDuplicateStatistics()
+        printDuplicateStatistics(checkDuplicates())
     }
 
     private companion object {
