@@ -172,7 +172,6 @@ object MVColor {
         }
     }
 
-    @JvmStatic
     fun save() {
         val storagePath = storagePath()
         try {
@@ -185,7 +184,6 @@ object MVColor {
 
     fun get(index: Int): MVC = colors[index]
 
-    @JvmStatic
     fun getColors(): List<MVC> = colors
 
     fun reset() {
