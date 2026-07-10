@@ -480,16 +480,6 @@ jobs:
             [int]$versionParts[1], `
             [int]$versionParts[2]
 
-          $downloadPage = Invoke-WebRequest -Uri "https://sqlite.org/download.html"
-          $relativeAmalgamationUrl = [regex]::Match(
-            $downloadPage.Content,
-            "(?<path>\d{4}/sqlite-amalgamation-$sqliteEncodedVersion\.zip)"
-          ).Groups["path"].Value
-          if (-not $relativeAmalgamationUrl) {
-            throw "Could not find sqlite-amalgamation-$sqliteEncodedVersion.zip on sqlite.org/download.html"
-          }
-
-          $sqliteAmalgamationUrl = "https://sqlite.org/$relativeAmalgamationUrl"
           $sqliteRoot = Join-Path $env:GITHUB_WORKSPACE "download\sqlite-arm64"
           $sqliteAmalgamationZip = Join-Path $sqliteRoot "sqlite-amalgamation.zip"
           $sqliteOutDir = Join-Path $env:GITHUB_WORKSPACE "target\res\bin"
@@ -497,8 +487,24 @@ jobs:
           New-Item -ItemType Directory -Path $sqliteRoot -Force | Out-Null
           New-Item -ItemType Directory -Path $sqliteOutDir -Force | Out-Null
 
-          Write-Host "→ Downloading $sqliteAmalgamationUrl"
-          curl.exe -L $sqliteAmalgamationUrl -o $sqliteAmalgamationZip --progress-bar
+          $sqliteAmalgamationUrl = $null
+          foreach ($year in ((Get-Date).Year)..2004) {
+            $candidateUrl = "https://sqlite.org/$year/sqlite-amalgamation-$sqliteEncodedVersion.zip"
+            Write-Host "→ Trying $candidateUrl"
+            curl.exe --fail --location --silent --show-error $candidateUrl -o $sqliteAmalgamationZip
+            if ($LASTEXITCODE -eq 0) {
+              $sqliteAmalgamationUrl = $candidateUrl
+              break
+            }
+
+            Remove-Item $sqliteAmalgamationZip -Force -ErrorAction SilentlyContinue
+          }
+
+          if (-not $sqliteAmalgamationUrl) {
+            throw "Could not download sqlite-amalgamation-$sqliteEncodedVersion.zip from the SQLite release archives"
+          }
+
+          Write-Host "✔︎ Downloaded $sqliteAmalgamationUrl"
 
           $sqliteAmalgamationDir = Join-Path $sqliteRoot "amalgamation"
           Expand-Archive -Path $sqliteAmalgamationZip -DestinationPath $sqliteAmalgamationDir -Force
@@ -712,16 +718,6 @@ jobs:
             [int]$versionParts[1], `
             [int]$versionParts[2]
 
-          $downloadPage = Invoke-WebRequest -Uri "https://sqlite.org/download.html"
-          $relativeAmalgamationUrl = [regex]::Match(
-            $downloadPage.Content,
-            "(?<path>\d{4}/sqlite-amalgamation-$sqliteEncodedVersion\.zip)"
-          ).Groups["path"].Value
-          if (-not $relativeAmalgamationUrl) {
-            throw "Could not find sqlite-amalgamation-$sqliteEncodedVersion.zip on sqlite.org/download.html"
-          }
-
-          $sqliteAmalgamationUrl = "https://sqlite.org/$relativeAmalgamationUrl"
           $sqliteRoot = Join-Path $env:GITHUB_WORKSPACE "download\sqlite-amd64"
           $sqliteAmalgamationZip = Join-Path $sqliteRoot "sqlite-amalgamation.zip"
           $sqliteOutDir = Join-Path $env:GITHUB_WORKSPACE "target\res\bin"
@@ -729,8 +725,24 @@ jobs:
           New-Item -ItemType Directory -Path $sqliteRoot -Force | Out-Null
           New-Item -ItemType Directory -Path $sqliteOutDir -Force | Out-Null
 
-          Write-Host "→ Downloading $sqliteAmalgamationUrl"
-          curl.exe -L $sqliteAmalgamationUrl -o $sqliteAmalgamationZip --progress-bar
+          $sqliteAmalgamationUrl = $null
+          foreach ($year in ((Get-Date).Year)..2004) {
+            $candidateUrl = "https://sqlite.org/$year/sqlite-amalgamation-$sqliteEncodedVersion.zip"
+            Write-Host "→ Trying $candidateUrl"
+            curl.exe --fail --location --silent --show-error $candidateUrl -o $sqliteAmalgamationZip
+            if ($LASTEXITCODE -eq 0) {
+              $sqliteAmalgamationUrl = $candidateUrl
+              break
+            }
+
+            Remove-Item $sqliteAmalgamationZip -Force -ErrorAction SilentlyContinue
+          }
+
+          if (-not $sqliteAmalgamationUrl) {
+            throw "Could not download sqlite-amalgamation-$sqliteEncodedVersion.zip from the SQLite release archives"
+          }
+
+          Write-Host "✔︎ Downloaded $sqliteAmalgamationUrl"
 
           $sqliteAmalgamationDir = Join-Path $sqliteRoot "amalgamation"
           Expand-Archive -Path $sqliteAmalgamationZip -DestinationPath $sqliteAmalgamationDir -Force
