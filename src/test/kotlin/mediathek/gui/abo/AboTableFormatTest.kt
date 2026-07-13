@@ -86,6 +86,37 @@ class AboTableFormatTest {
     }
 
     @Test
+    fun clearingSenderFilterKeepsOnlyTheSelectedAboSelected() {
+        val selectedAbo = createAbo("3Sat", "Iss besser!")
+        val abos = ListeAbo().apply {
+            addAboWithoutNotification(createAbo("ARD", "Alpha"))
+            addAboWithoutNotification(selectedAbo)
+            addAboWithoutNotification(createAbo("ZDF", "Zulu"))
+        }
+
+        SwingUtilities.invokeAndWait {
+            val table = AboTable()
+            val binding = AboTableBinding(table, abos)
+            try {
+                binding.clearSorting()
+                binding.setSenderFilter("3Sat")
+                table.selectionModel.setSelectionInterval(0, 0)
+
+                binding.setSenderFilter(null)
+
+                assertEquals(1, binding.selectedAboCount)
+                assertSame(selectedAbo, binding.selectedAbos.single())
+                assertSame(selectedAbo, binding.aboAtViewRow(table.selectedRow))
+            } finally {
+                binding.dispose()
+            }
+        }
+    }
+
+    private fun AboTable.senders(binding: AboTableBinding): Set<String> =
+        (0 until rowCount).mapNotNull(binding::aboAtViewRow).mapTo(mutableSetOf(), DatenAbo::sender)
+
+    @Test
     fun aboTableKeepsSortingOutOfSwingRowSorter() {
         SwingUtilities.invokeAndWait {
             val table = AboTable()

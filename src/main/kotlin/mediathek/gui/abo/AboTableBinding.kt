@@ -79,7 +79,26 @@ class AboTableBinding(
     }
 
     fun setSenderFilter(sender: String?) {
-        senderMatcherEditor.sender = sender.orEmpty()
+        val selectedBeforeFilter = selectedAbos
+        val selectedSender = sender.orEmpty()
+        selectionModel.valueIsAdjusting = true
+        try {
+            senderMatcherEditor.setMatchSet(
+                if (selectedSender.isEmpty()) emptySet() else setOf(selectedSender),
+            )
+            restoreSelection(selectedBeforeFilter)
+        } finally {
+            selectionModel.valueIsAdjusting = false
+        }
+    }
+
+    private fun restoreSelection(previouslySelected: List<DatenAbo>) {
+        selectionModel.clearSelection()
+        for ((index, abo) in swingAbos.withIndex()) {
+            if (previouslySelected.any { selectedAbo -> selectedAbo === abo }) {
+                selectionModel.addSelectionInterval(index, index)
+            }
+        }
     }
 
     fun aboAtViewRow(viewRow: Int): DatenAbo? {
