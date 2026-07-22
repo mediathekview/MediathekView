@@ -19,7 +19,11 @@ class ArdOnlineSearchService(
         val total = root["pagination"]?.jsonObject?.get("totalElements")?.jsonPrimitive?.longOrNull
         val ids = root["teasers"]?.jsonArray.orEmpty()
             .mapNotNull { element -> element.jsonObject["id"]?.jsonPrimitive?.contentOrNull }
-        val results = ids.mapConcurrently { loadById(it) }.filterNotNull()
+        val loadedItems = ids.mapConcurrently { loadSearchItem(it) }
+        if (loadedItems.isNotEmpty() && loadedItems.all { it.isFailure }) {
+            throw checkNotNull(loadedItems.first().exceptionOrNull())
+        }
+        val results = loadedItems.mapNotNull { it.getOrNull() }
         val nextToken = if (total != null && (pageNumber + 1L) * PAGE_SIZE < total) {
             (pageNumber + 1).toString()
         } else {
@@ -31,8 +35,19 @@ class ArdOnlineSearchService(
     override suspend fun loadByUrl(request: OnlineUrlRequest): OnlineSearchResult? {
         require(request.provider == OnlineSearchProvider.ARD)
         val id = request.url.toOnlineSearchUrlLastSegment()
-        return loadById(id)
+        return loadSearchItem(id).getOrNull()
     }
+
+    private suspend fun loadSearchItem(id: String): Result<OnlineSearchResult?> =
+        try {
+            Result.success(loadById(id))
+        } catch (ex: OnlineSearchHttpException) {
+            when {
+                ex.statusCode == 500 -> Result.failure(ex)
+                ex.isUnavailableItem -> Result.success(null)
+                else -> throw ex
+            }
+        }
 
     private suspend fun loadById(id: String): OnlineSearchResult? {
         val root = httpClient.get("$ITEM_URL$id").parseJsonObject(json)
