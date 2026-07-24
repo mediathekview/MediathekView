@@ -28,4 +28,4 @@ class FinalStageFilterNoPattern(searchStr: Array<String>) : Predicate<DatenFilm>
 }
 
 internal fun DatenFilm.matchesTopicOrTitle(searchText: String): Boolean =
-    thema.lowercase().contains(searchText) || title.lowercase().contains(searchText)
+    thema.contains(searchText, ignoreCase = true) || title.contains(searchText, ignoreCase = true)

@@ -29,4 +29,4 @@ class FinalStageFilterNoPatternWithDescription(searchStr: Array<String>) : Predi
 }
 
 private fun DatenFilm.matchesDescription(searchText: String): Boolean =
-    description.let { it.isNotEmpty() && it.lowercase().contains(searchText) }
+    description.let { it.isNotEmpty() && it.contains(searchText, ignoreCase = true) }

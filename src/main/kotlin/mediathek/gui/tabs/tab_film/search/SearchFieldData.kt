@@ -16,9 +16,12 @@ data class SearchFieldData(val searchFieldText: String, val searchMode: SearchCo
         return if (Filter.isPattern(searchFieldText)) {
             arrayOf(searchFieldText)
         } else {
-            Pattern.compile(",")
-                .splitAsStream(searchFieldText).map { s: String -> s.lowercase() }
+            COMMA_SPLIT.splitAsStream(searchFieldText).map { s: String -> s.lowercase() }
                 .toArray { size -> arrayOfNulls<String>(size) }
         }
+    }
+
+    private companion object {
+        private val COMMA_SPLIT = Pattern.compile(",")
     }
 }
