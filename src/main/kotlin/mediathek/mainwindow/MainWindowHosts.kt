@@ -66,9 +66,5 @@ interface SettingsResetHost : MainWindowQuitHost {
 }
 
 interface TrayHost : MainWindowQuitHost {
-    fun showMainWindow()
-
     fun toggleMainWindowVisibility()
-
-    fun refreshSystemTray()
 }

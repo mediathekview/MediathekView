@@ -22,12 +22,7 @@ import mediathek.audiothek.model.AudioEntry
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.NumericDocValuesField
 import org.apache.lucene.document.StringField
-import org.apache.lucene.index.DirectoryReader
-import org.apache.lucene.index.IndexWriter
-import org.apache.lucene.index.IndexWriterConfig
-import org.apache.lucene.index.LeafReaderContext
-import org.apache.lucene.index.NumericDocValues
-import org.apache.lucene.index.Term
+import org.apache.lucene.index.*
 import org.apache.lucene.search.*
 import org.apache.lucene.store.ByteBuffersDirectory
 import org.apache.lucene.store.Directory
@@ -196,7 +191,7 @@ class AudiothekLuceneIndex : Closeable {
             "größe" to FIELD_SIZE,
             "size" to FIELD_SIZE
         )
-        private val TOKEN_REGEX = """[^\s:]+:"[^"]*"|[^\s]+""".toRegex()
+        private val TOKEN_REGEX = """[^\s:]+:"[^"]*"|\S+""".toRegex()
         private val DATE_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         private val TIME_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 

@@ -18,85 +18,46 @@
 
 package mediathek.mainwindow
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.swing.Swing
 import mediathek.filmlisten.FilmCatalog
-import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent
-import mediathek.tool.MessageBus
-import net.engio.mbassy.listener.Handler
-import java.util.function.IntSupplier
+import java.beans.PropertyChangeListener
 import javax.swing.JLabel
-import kotlin.time.Duration.Companion.seconds
+import javax.swing.SwingUtilities
 
 class FilmSizeInfoLabel(
     private val filmCatalog: FilmCatalog,
-    private val filmTableRowCount: IntSupplier,
+    private val filmTableRowCount: FilmTableRowCountProperty,
 ) : JLabel() {
     private var oldGesamt = 0
     private var oldRowCount = 0
-    private var uiScope: CoroutineScope? = null
-    private var updateJob: Job? = null
-    private var subscribedToMessageBus = false
+    private val rowCountListener = PropertyChangeListener { event ->
+        dispatchUpdate(event.newValue as Int)
+    }
 
     override fun addNotify() {
         super.addNotify()
-        subscribeToMessageBus()
-        startUpdating()
+        filmTableRowCount.addListener(rowCountListener)
+        updateValues(filmTableRowCount.rowCount)
     }
 
     override fun removeNotify() {
-        stopUpdating()
-        unsubscribeFromMessageBus()
+        filmTableRowCount.removeListener(rowCountListener)
         super.removeNotify()
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    @Handler
-    private fun handleLeftDisplayUpdate(event: UpdateStatusBarLeftDisplayEvent) {
-        uiScope?.launch {
-            updateValues()
+    internal fun updateDisplayedFilmCount(rowCount: Int) {
+        updateValues(rowCount)
+    }
+
+    private fun dispatchUpdate(rowCount: Int) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            updateValues(rowCount)
+        } else {
+            SwingUtilities.invokeLater { updateValues(rowCount) }
         }
     }
 
-    private fun startUpdating() {
-        if (updateJob?.isActive == true) {
-            return
-        }
-
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
-        uiScope = scope
-        updateJob = scope.launch {
-            while (isActive) {
-                updateValues()
-                delay(1.seconds)
-            }
-        }
-    }
-
-    private fun stopUpdating() {
-        updateJob?.cancel()
-        updateJob = null
-        uiScope?.cancel()
-        uiScope = null
-    }
-
-    private fun subscribeToMessageBus() {
-        if (!subscribedToMessageBus) {
-            MessageBus.messageBus.subscribe(this)
-            subscribedToMessageBus = true
-        }
-    }
-
-    private fun unsubscribeFromMessageBus() {
-        if (subscribedToMessageBus) {
-            MessageBus.messageBus.unsubscribe(this)
-            subscribedToMessageBus = false
-        }
-    }
-
-    private fun updateValues() {
+    private fun updateValues(rowCount: Int) {
         val gesamt = filmCatalog.allFilms.size
-        val rowCount = filmTableRowCount.asInt
 
         if (gesamt == oldGesamt && rowCount == oldRowCount) {
             return

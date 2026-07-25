@@ -30,24 +30,26 @@ import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
-import mediathek.tool.table.MVFilmTable
+import mediathek.tool.ReplacementRules
 import java.awt.Component
 import java.util.*
 import java.util.function.BiConsumer
 import javax.swing.JFrame
 import javax.swing.JScrollPane
+import javax.swing.JTable
 
 class FilmTableReloadHostAdapter(
     private val filmCatalog: FilmCatalog,
     private val owner: Component,
-    private val tableProvider: () -> MVFilmTable,
+    private val tableBindingProvider: () -> FilmTableModelBinding,
     private val searchFieldDataProvider: () -> SearchFieldData,
     private val filterController: FilmFilterController,
+    private val applyBlacklistAction: () -> Unit,
     private val setSelectionUpdatesSuspendedAction: (Boolean) -> Unit,
-    private val updateStartInfoPropertyAction: () -> Unit,
     private val updateFilmDataAction: () -> Unit,
+    private val reloadCompletedAction: (Boolean) -> Unit,
 ) : FilmTableReloader.Host {
-    override fun table(): MVFilmTable = tableProvider()
+    override fun tableBinding(): FilmTableModelBinding = tableBindingProvider()
 
     override fun filmCatalog(): FilmCatalog = filmCatalog
 
@@ -57,16 +59,20 @@ class FilmTableReloadHostAdapter(
 
     override fun filterController(): FilmFilterController = filterController
 
+    override fun applyBlacklist() {
+        applyBlacklistAction()
+    }
+
     override fun setSelectionUpdatesSuspended(suspended: Boolean) {
         setSelectionUpdatesSuspendedAction(suspended)
     }
 
-    override fun updateStartInfoProperty() {
-        updateStartInfoPropertyAction()
-    }
-
     override fun updateFilmData() {
         updateFilmDataAction()
+    }
+
+    override fun onReloadCompleted(fromSearchField: Boolean) {
+        reloadCompletedAction(fromSearchField)
     }
 }
 
@@ -75,9 +81,10 @@ class TableContextMenuHostAdapter(
     private val programSets: ProgramSetRepository,
     private val filmCatalog: FilmCatalog,
     private val abos: AboServices,
+    private val replacementRules: ReplacementRules,
     private val blacklist: BlacklistServices,
     private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
-    private val tableProvider: () -> MVFilmTable,
+    private val tableProvider: () -> JTable,
     private val currentlySelectedFilmProvider: () -> Optional<DatenFilm>,
     private val filmAtRowProvider: (Int) -> Optional<DatenFilm>,
     private val playSelectedFilmAction: () -> Unit,
@@ -88,7 +95,7 @@ class TableContextMenuHostAdapter(
     private val ownerFrame: JFrame,
     private val actionsProvider: () -> FilmUiActions,
 ) : TableContextMenuHandler.Host {
-    override fun table(): MVFilmTable = tableProvider()
+    override fun table(): JTable = tableProvider()
 
     override fun downloads(): DownloadServices = downloads
 
@@ -97,6 +104,8 @@ class TableContextMenuHostAdapter(
     override fun filmCatalog(): FilmCatalog = filmCatalog
 
     override fun abos(): AboServices = abos
+
+    override fun replacementRules(): ReplacementRules = replacementRules
 
     override fun blacklist(): BlacklistServices = blacklist
 
@@ -133,7 +142,7 @@ class TableContextMenuHostAdapter(
 
 class FilmTableInstallerHostAdapter(
     private val downloads: DownloadServices,
-    private val tableProvider: () -> MVFilmTable,
+    private val tableProvider: () -> JTable,
     private val filmListScrollPane: JScrollPane,
     private val ownerComponent: Component,
     private val tableContextMenuHostProvider: () -> TableContextMenuHandler.Host,
@@ -143,8 +152,10 @@ class FilmTableInstallerHostAdapter(
     private val onComponentShownAction: () -> Unit,
     private val updateFilmDataAction: () -> Unit,
     private val selectionUpdatesSuspendedProvider: () -> Boolean,
+    private val saveTableConfigurationAction: () -> Unit,
+    private val appearance: FilmTableAppearance,
 ) : FilmTableInstaller.Host {
-    override fun table(): MVFilmTable = tableProvider()
+    override fun table(): JTable = tableProvider()
 
     override fun downloads(): DownloadServices = downloads
 
@@ -171,4 +182,10 @@ class FilmTableInstallerHostAdapter(
     }
 
     override fun selectionUpdatesSuspended(): Boolean = selectionUpdatesSuspendedProvider()
+
+    override fun saveTableConfiguration() {
+        saveTableConfigurationAction()
+    }
+
+    override fun appearance(): FilmTableAppearance = appearance
 }

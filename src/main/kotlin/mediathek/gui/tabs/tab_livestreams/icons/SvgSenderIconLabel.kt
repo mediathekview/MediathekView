@@ -68,7 +68,7 @@ class SvgSenderIconLabel : JLabel() {
         return REGION_LABELS.maxOf { metrics.stringWidth(it) }
     }
 
-    private fun regionLabelFont(): Font = super.getFont().deriveFont(regionLabelFontSizePt)
+    private fun regionLabelFont(): Font = super.font.deriveFont(regionLabelFontSizePt)
 
     companion object {
         var regionLabelFontSizePt: Float = 10f

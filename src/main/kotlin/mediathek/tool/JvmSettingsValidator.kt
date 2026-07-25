@@ -36,7 +36,7 @@ object JvmSettingsValidator {
         }
 
         return !SystemUtils.IS_OS_LINUX ||
-            hasJvmOption(paramList, "--add-opens", "java.desktop/sun.awt.X11=ALL-UNNAMED")
+            hasLinuxAddOpensOption(paramList)
     }
 
     fun getErrorMessageString(): String {
@@ -68,7 +68,9 @@ object JvmSettingsValidator {
     private fun hasJvmOptionStartingWith(paramList: List<String>, optionPrefix: String): Boolean =
         paramList.any { argument -> argument.startsWith(optionPrefix) }
 
-    private fun hasJvmOption(paramList: List<String>, optionName: String, optionValue: String): Boolean {
+    private fun hasLinuxAddOpensOption(paramList: List<String>): Boolean {
+        val optionName = "--add-opens"
+        val optionValue = "java.desktop/sun.awt.X11=ALL-UNNAMED"
         val inlineOption = "$optionName=$optionValue"
 
         for (index in paramList.indices) {

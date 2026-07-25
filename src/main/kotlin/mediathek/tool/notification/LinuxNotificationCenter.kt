@@ -2,61 +2,64 @@ package mediathek.tool.notification
 
 import es.blackleg.jlibnotify.JLibnotify
 import es.blackleg.jlibnotify.core.DefaultJLibnotifyLoader
-import es.blackleg.jlibnotify.exception.JLibnotifyInitException
-import es.blackleg.jlibnotify.exception.JLibnotifyLoadException
 import mediathek.config.CommandLineOptions
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import java.io.Closeable
 
-class LinuxNotificationCenter : INotificationCenter, Closeable {
-    private var libNotify: JLibnotify? = null
-    var nativeSupport: Boolean = false
-        private set
+class LinuxNotificationCenter private constructor(
+    private val libNotify: JLibnotify,
+) : NotificationBackend {
+    private val lifecycleLock = Any()
+    private var closed = false
 
     init {
-        try {
-            val loader = DefaultJLibnotifyLoader()
-            libNotify = loader.load()
-            libNotify!!.init("MediathekView")
-            nativeSupport = true
+        logger.info(libNotify.serverInfo)
 
-            val serverInfo = libNotify!!.serverInfo
-            logger.info(serverInfo)
-
-            if (CommandLineOptions.isDebugModeEnabled()) {
-                logger.debug("Server capabilities:")
-                val caps = libNotify!!.serverCapabilities
-                for (cap in caps) {
-                    logger.debug("\t {}", cap)
-                }
+        if (CommandLineOptions.isDebugModeEnabled()) {
+            logger.debug("Server capabilities:")
+            for (capability in libNotify.serverCapabilities) {
+                logger.debug("\t {}", capability)
             }
-        } catch (e: UnsatisfiedLinkError) {
-            nativeSupport = false
-            logger.error(MSG_INIT_FAILED, e)
-        } catch (e: RuntimeException) {
-            nativeSupport = false
-            logger.error(MSG_INIT_FAILED, e)
-        } catch (e: JLibnotifyLoadException) {
-            nativeSupport = false
-            logger.error(MSG_INIT_FAILED, e)
-        } catch (e: JLibnotifyInitException) {
-            nativeSupport = false
-            logger.error(MSG_INIT_FAILED, e)
         }
     }
 
-    override fun displayNotification(msg: NotificationMessage) {
-        val notification = libNotify!!.createNotification(msg.title, msg.message, "dialog-information")
-        notification.show()
+    override fun publish(notification: NotificationMessage) {
+        synchronized(lifecycleLock) {
+            if (closed) {
+                return
+            }
+            val nativeNotification =
+                libNotify.createNotification(notification.title, notification.message, "dialog-information")
+            nativeNotification.show()
+        }
     }
 
     override fun close() {
-        libNotify!!.unInit()
+        synchronized(lifecycleLock) {
+            if (closed) {
+                return
+            }
+            closed = true
+            libNotify.unInit()
+        }
     }
 
     companion object {
         private val logger: Logger = LogManager.getLogger()
-        private const val MSG_INIT_FAILED = "Failed to initialize libNotify"
+
+        fun create(): LinuxNotificationCenter {
+            val libNotify = DefaultJLibnotifyLoader().load()
+            libNotify.init("MediathekView")
+            return try {
+                LinuxNotificationCenter(libNotify)
+            } catch (error: Throwable) {
+                try {
+                    libNotify.unInit()
+                } catch (closeError: RuntimeException) {
+                    error.addSuppressed(closeError)
+                }
+                throw error
+            }
+        }
     }
 }

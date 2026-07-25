@@ -14,11 +14,9 @@ import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.search.MatchAllDocsQuery
 import org.apache.lucene.store.ByteBuffersDirectory
 import org.apache.lucene.store.Directory
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotSame
-import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import java.util.Locale
+import java.util.*
 
 internal class LuceneGuiFilmeModelHelperTest {
 

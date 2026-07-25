@@ -57,6 +57,19 @@ class FilmListWriterTest {
         assertTrue(Files.readString(target).contains("\"$compressedHighQualityUrl\""))
     }
 
+    @Test
+    fun `prepareFilmEntriesForCompressedWrite reuses already sorted entries`() {
+        val sortedEntries = listOf(
+            film("ARD", "A Thema"),
+            film("ARD", "B Thema"),
+            film("ZDF", "A Thema"),
+        )
+
+        val preparedEntries = FilmListWriter.prepareFilmEntriesForCompressedWrite(sortedEntries)
+
+        assertSame(sortedEntries, preparedEntries)
+    }
+
     private fun filmList(vararg films: DatenFilm) = ListeFilme().apply {
         metaData.datum = "15.05.2026, 12:00"
         metaData.id = "test-list"

@@ -282,6 +282,18 @@ internal class DatenFilmTest {
     }
 
     @Test
+    fun seenHistoryStateUsesFilmFlagsAndSeparateAnnotationEpoch() {
+        val film = DatenFilm()
+
+        film.isSeenInHistory = true
+        film.seenHistoryAnnotationEpoch = 3
+        val copy = DatenFilm(film)
+
+        assertTrue(copy.isSeenInHistory)
+        assertEquals(0, copy.seenHistoryAnnotationEpoch)
+    }
+
+    @Test
     fun optionalUrlPresenceUsesNullableState() {
         val film = DatenFilm()
 

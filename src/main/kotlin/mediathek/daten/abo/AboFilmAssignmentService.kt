@@ -85,7 +85,7 @@ class AboFilmAssignmentService {
         when {
             value.isEmpty() -> LEER
             Filter.isPattern(value) -> arrayOf(value)
-            else -> value.lowercase(Locale.getDefault()).split(",").toTypedArray()
+            else -> value.lowercase(Locale.ROOT).split(",").toTypedArray()
         }
 
     private fun assignAboToFilm(film: DatenFilm, aboMatchers: IndexedAboMatchers) {

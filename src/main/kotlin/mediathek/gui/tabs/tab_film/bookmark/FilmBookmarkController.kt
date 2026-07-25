@@ -23,6 +23,8 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.ProgramSetRepository
 import mediathek.gui.bookmark.BookmarkDialog
 import mediathek.gui.bookmark.BookmarkServices
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import javax.swing.JFrame
 
 class FilmBookmarkController(private val host: Host) {
@@ -46,7 +48,7 @@ class FilmBookmarkController(private val host: Host) {
     }
 
     fun showManageBookmarkWindow() {
-        val dialog = bookmarkDialog ?: BookmarkDialog(
+        val dialog = bookmarkDialog?.takeIf { !it.isDisposed && it.isDisplayable } ?: BookmarkDialog(
             host.ownerFrame(),
             host.bookmarks(),
             host.programSets(),
@@ -54,9 +56,18 @@ class FilmBookmarkController(private val host: Host) {
             host::addDownloads,
             host::editFilmDescription,
             host::repaintOwner,
-        ).also { bookmarkDialog = it }
+        ).also { createdDialog ->
+            bookmarkDialog = createdDialog
+            createdDialog.addWindowListener(
+                object : WindowAdapter() {
+                    override fun windowClosed(event: WindowEvent) {
+                        if (bookmarkDialog === createdDialog) bookmarkDialog = null
+                    }
+                },
+            )
+        }
         dialog.isVisible = true
     }
 
-    fun getBookmarkDialog(): BookmarkDialog? = bookmarkDialog
+    fun getBookmarkDialog(): BookmarkDialog? = bookmarkDialog?.takeIf { !it.isDisposed && it.isDisplayable }
 }

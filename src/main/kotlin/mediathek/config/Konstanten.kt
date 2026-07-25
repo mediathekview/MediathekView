@@ -33,7 +33,7 @@ object Konstanten {
     const val JSOUP_USER_AGENT = "Mozilla/5.0"
     const val ZAPP_API_URL = "https://api.zapp.mediathekview.de/"
 
-    val MVVERSION = Version(15, 0, 0)
+    val MVVERSION = Version(15, 0, 1)
 
     val APPLICATION_TYPE = ApplicationType.PRODUCTION
 

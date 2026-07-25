@@ -30,7 +30,6 @@ import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.*
 import javax.swing.AbstractAction
-import javax.swing.Action
 import javax.swing.KeyStroke
 
 interface FilmActionHost {
@@ -43,10 +42,10 @@ interface FilmActionHost {
 
 class ToggleFilterDialogVisibilityAction(private val host: FilmActionHost) : AbstractAction() {
     init {
-        putValue(Action.NAME, "Filterdialog anzeigen")
-        putValue(Action.SHORT_DESCRIPTION, "Filter anzeigen")
-        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.FILTER))
-        putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0))
+        putValue(NAME, "Filterdialog anzeigen")
+        putValue(SHORT_DESCRIPTION, "Filter anzeigen")
+        putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.FILTER))
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0))
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -56,15 +55,15 @@ class ToggleFilterDialogVisibilityAction(private val host: FilmActionHost) : Abs
 
 class SaveFilmAction(private val host: FilmActionHost) : AbstractAction() {
     init {
-        putValue(Action.SHORT_DESCRIPTION, "Film downloaden")
-        putValue(Action.NAME, "Film downloaden")
-        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD))
+        putValue(SHORT_DESCRIPTION, "Film downloaden")
+        putValue(NAME, "Film downloaden")
+        putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD))
         val keyStroke = if (SystemUtils.IS_OS_MAC_OSX) {
             KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey())
         } else {
             KeyStroke.getKeyStroke(KeyEvent.VK_D, GuiFunktionen.getPlatformControlKey())
         }
-        putValue(Action.ACCELERATOR_KEY, keyStroke)
+        putValue(ACCELERATOR_KEY, keyStroke)
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -79,10 +78,10 @@ class BookmarkAddFilmAction(private val host: FilmActionHost) : AbstractAction()
         } else {
             KeyStroke.getKeyStroke(KeyEvent.VK_B, GuiFunktionen.getPlatformControlKey())
         }
-        putValue(Action.ACCELERATOR_KEY, keyStroke)
-        putValue(Action.SHORT_DESCRIPTION, "Ausgewählte Filme in der Merkliste speichern")
-        putValue(Action.NAME, "Ausgewählte Filme merken")
-        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_PLUS))
+        putValue(ACCELERATOR_KEY, keyStroke)
+        putValue(SHORT_DESCRIPTION, "Ausgewählte Filme in der Merkliste speichern")
+        putValue(NAME, "Ausgewählte Filme merken")
+        putValue(SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_PLUS))
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -101,9 +100,9 @@ class BookmarkAddFilmAction(private val host: FilmActionHost) : AbstractAction()
 
 class BookmarkRemoveFilmAction(private val host: FilmActionHost) : AbstractAction() {
     init {
-        putValue(Action.SHORT_DESCRIPTION, "Ausgewählte Filme aus der Merkliste löschen")
-        putValue(Action.NAME, "Ausgewählte Filme aus der Merkliste löschen")
-        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_MINUS))
+        putValue(SHORT_DESCRIPTION, "Ausgewählte Filme aus der Merkliste löschen")
+        putValue(NAME, "Ausgewählte Filme aus der Merkliste löschen")
+        putValue(SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_MINUS))
     }
 
     override fun actionPerformed(e: ActionEvent?) {

@@ -67,12 +67,57 @@ class ListeAboTest {
     @Test
     fun addAboKeepsListSortedByName() {
         val abos = ListeAbo().apply {
-            addAboWithoutNotification(DatenAbo().apply { name = "Zebra" })
-            addAboWithoutNotification(DatenAbo().apply { name = "Alpha" })
+            addAboWithoutNotification(DatenAbo().apply {
+                name = "Zebra"
+                sender = "ARD"
+            })
+            addAboWithoutNotification(DatenAbo().apply {
+                name = "Alpha"
+                sender = "ZDF"
+            })
         }
 
         assertEquals("Alpha", abos[0].name)
         assertEquals("Zebra", abos[1].name)
+        assertEquals(listOf("Alpha", "Zebra"), abos.assignmentSnapshot().map(DatenAbo::name))
+    }
+
+    @Test
+    fun addAboPublishesOneIncrementalInsertionWithoutReordering() {
+        val abos = ListeAbo().apply {
+            addAboWithoutNotification(DatenAbo().apply { name = "Zebra" })
+        }
+        var publishedEvents = 0
+        var insertedEntries = 0
+        var reorderEvents = 0
+        abos.addListEventListener { event ->
+            publishedEvents++
+            if (event.isReordering) {
+                reorderEvents++
+            } else {
+                while (event.next()) {
+                    if (event.type == ListEvent.INSERT) {
+                        insertedEntries++
+                    }
+                }
+            }
+        }
+
+        abos.addAboWithoutNotification(DatenAbo().apply { name = "Alpha" })
+
+        assertEquals(listOf("Alpha", "Zebra"), abos.map(DatenAbo::name))
+        assertEquals(1, publishedEvents)
+        assertEquals(1, insertedEntries)
+        assertEquals(0, reorderEvents)
+    }
+
+    @Test
+    fun rawEventListMutationsCannotBypassAboOperations() {
+        val abos = ListeAbo()
+
+        assertThrows(UnsupportedOperationException::class.java) {
+            abos.add(DatenAbo().apply { name = "Untracked" })
+        }
     }
 
     @Test

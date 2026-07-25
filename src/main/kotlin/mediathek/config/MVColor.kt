@@ -153,12 +153,12 @@ object MVColor {
                 return ALTERNATE_ROW_COLOR.color
             }
 
-            return brightenColor(UIManager.getColor("Table.background"), 0.25f)
+            return brightenColor(UIManager.getColor("Table.background"))
         }
 
-        private fun brightenColor(originalColor: Color, factor: Float): Color {
+        private fun brightenColor(originalColor: Color): Color {
             val hsb = Color.RGBtoHSB(originalColor.red, originalColor.green, originalColor.blue, null)
-            return Color.getHSBColor(hsb[0], hsb[1], min(1f, hsb[2] + factor))
+            return Color.getHSBColor(hsb[0], hsb[1], min(1f, hsb[2] + 0.25f))
         }
 
     private fun storagePath() = StandardLocations.getSettingsDirectory().resolve(STORAGE_FILENAME)

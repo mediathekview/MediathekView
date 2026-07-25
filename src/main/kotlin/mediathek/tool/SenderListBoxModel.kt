@@ -18,47 +18,40 @@
 
 package mediathek.tool
 
-import ca.odell.glazedlists.BasicEventList
-import ca.odell.glazedlists.EventList
-
 /**
- * The base model object for all available senders that the client can process.
+ * The read-only list of all senders that the client can process.
  */
 object SenderListBoxModel {
-    val providedSenderList: EventList<String> = BasicEventList()
-
-    init {
-        providedSenderList.add("3Sat")
-        providedSenderList.add("ARD")
-        providedSenderList.add("ARD-alpha")
-        providedSenderList.add("ARTE.DE")
-        providedSenderList.add("ARTE.EN")
-        providedSenderList.add("ARTE.ES")
-        providedSenderList.add("ARTE.FR")
-        providedSenderList.add("ARTE.IT")
-        providedSenderList.add("ARTE.PL")
-        providedSenderList.add("BR")
-        providedSenderList.add("DW")
-        providedSenderList.add("Funk.net")
-        providedSenderList.add("HR")
-        providedSenderList.add("KiKA")
-        providedSenderList.add("MDR")
-        providedSenderList.add("NDR")
-        providedSenderList.add("ONE")
-        providedSenderList.add("ORF")
-        providedSenderList.add("PHOENIX")
-        providedSenderList.add("Radio Bremen TV")
-        providedSenderList.add("RBB")
-        providedSenderList.add("SR")
-        providedSenderList.add("SRF")
-        //providedSenderList.add("SRF.Podcast")
-        providedSenderList.add("tagesschau24")
-        providedSenderList.add("SWR")
-        providedSenderList.add("WDR")
-        providedSenderList.add("ZDF")
-        providedSenderList.add("ZDFinfo")
-        providedSenderList.add("ZDFneo")
-        providedSenderList.add("ZDF-tivi")
-        providedSenderList.sortWith(GermanStringSorter)
-    }
+    val providedSenders: List<String> = listOf(
+        "3Sat",
+        "ARD",
+        "ARD-alpha",
+        "ARTE.DE",
+        "ARTE.EN",
+        "ARTE.ES",
+        "ARTE.FR",
+        "ARTE.IT",
+        "ARTE.PL",
+        "BR",
+        "DW",
+        "Funk.net",
+        "HR",
+        "KiKA",
+        "MDR",
+        "NDR",
+        "ONE",
+        "ORF",
+        "PHOENIX",
+        "Radio Bremen TV",
+        "RBB",
+        "SR",
+        "SRF",
+        "tagesschau24",
+        "SWR",
+        "WDR",
+        "ZDF",
+        "ZDFinfo",
+        "ZDFneo",
+        "ZDF-tivi",
+    ).sortedWith(GermanStringSorter)
 }

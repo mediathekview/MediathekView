@@ -17,10 +17,10 @@
  */
 package mediathek.gui.tabs.tab_film.filter;
 
-import com.jidesoft.swing.CheckBoxList;
 import com.jidesoft.swing.JideSplitButton;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox;
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel;
+import mediathek.swing.CheckBoxList;
 import mediathek.swing.StrictSearchComboBox;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;

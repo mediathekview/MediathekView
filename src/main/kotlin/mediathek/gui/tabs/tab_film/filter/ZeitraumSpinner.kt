@@ -86,6 +86,7 @@ class ZeitraumSpinner : JSpinner(SpinnerNumberModel(INFINITE_VALUE, INFINITE_VAL
     }
 
     private object ZeitraumSpinnerFormatter : JFormattedTextField.AbstractFormatter() {
+        @Suppress("unused")
         private fun readResolve(): Any = ZeitraumSpinnerFormatter
         override fun stringToValue(text: String): Any {
             return try {

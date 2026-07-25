@@ -9,5 +9,6 @@ object DatenXmlConfigDataFactory {
             downloads = daten.downloads,
             blacklistRules = daten.blacklist.rules,
             abos = daten.abos.list,
+            replacementRules = daten.replacementRules,
         )
 }

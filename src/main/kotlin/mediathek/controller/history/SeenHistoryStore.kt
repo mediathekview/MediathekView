@@ -304,7 +304,7 @@ internal class SeenHistoryStore(
         private val logger = LogManager.getLogger()
         private const val INSERT_SQL = "INSERT OR IGNORE INTO seen_history(source,thema,titel,url) values (?,?,?,?)"
         private const val DELETE_SQL = "DELETE FROM seen_history WHERE source = ? AND url = ?"
-        private const val SELECT_URLS_SQL = "SELECT DISTINCT(url) AS url FROM seen_history WHERE source = ?"
+        private const val SELECT_URLS_SQL = "SELECT url FROM seen_history WHERE source = ?"
         private const val SEEN_SQL = "SELECT COUNT(url) AS total FROM seen_history WHERE source = ? AND url = ?"
         private const val DELETE_ALL_SQL = "DELETE FROM seen_history"
         private const val DELETE_LIVESTREAMS_SQL = "DELETE FROM seen_history WHERE thema = 'Livestream'"

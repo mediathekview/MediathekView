@@ -34,9 +34,10 @@ import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 class DialogFilmBeschreibung(
-    private val parent: JFrame?,
+    parent: JFrame?,
     private val programSets: ProgramSetRepository,
     private val datenFilm: DatenFilm,
+    private val replacementRules: ReplacementRules,
 ) : DialogFilmBeschreibungBase(parent) {
     private val dialogScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
 
@@ -108,15 +109,17 @@ class DialogFilmBeschreibung(
     }
 
     private suspend fun writeInfoFile(path: Path) = withContext(Dispatchers.IO) {
-        MVInfoFile().writeInfoFile(datenFilm, path, datenFilm.urlNormalQuality.toHttpUrlOrNull())
+        val url = datenFilm.urlNormalQuality.toHttpUrlOrNull()
+            ?: throw IOException("Cannot write info file for invalid download URL: ${datenFilm.urlNormalQuality}")
+        MVInfoFile().writeInfoFile(datenFilm, path, url)
     }
 
     private fun buildDestinationPath(): String {
         val applicationConfiguration = ApplicationConfiguration.getInstance()
-        val title = FilenameUtils.replaceLeerDateiname(
+        val title = FilenameUtils.replaceEmptyFilename(
             datenFilm.title,
             false,
-            applicationConfiguration.useFilenameReplaceTable,
+            replacementRules.takeIf { applicationConfiguration.useFilenameReplaceTable },
             applicationConfiguration.onlyAsciiFilenames,
         )
         val saveProgramSets = programSets.list.listeSpeichern

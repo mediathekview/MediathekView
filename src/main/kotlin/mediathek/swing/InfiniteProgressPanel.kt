@@ -63,7 +63,6 @@ open class InfiniteProgressPanel(
         repaint()
     }
 
-    fun getText(): String? = messageText
 
     fun start() {
         animationJob?.cancel()

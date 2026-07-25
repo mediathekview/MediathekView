@@ -4,8 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,48 +21,53 @@ class FilmListLoadEventDispatcherTest {
     }
 
     @Test
-    fun `notifyFinished calls fertig for every completion but fertigOnlyOne once`() {
+    fun `notifyFinished calls loadFinished for every completion but firstLoadFinished only for the first`() {
         val dispatcher = FilmListLoadEventDispatcher(scope)
-        val fertigCount = AtomicInteger(0)
-        val fertigOnlyOneCount = AtomicInteger(0)
+        val finishedProgress = mutableListOf<FilmListLoadProgress>()
+        val firstFinishedProgress = mutableListOf<FilmListLoadProgress>()
         val completionsDelivered = CountDownLatch(3)
         dispatcher.addListener(
-            object : ListenerFilmeLaden() {
-                override fun fertig(event: ListenerFilmeLadenEvent) {
-                    fertigCount.incrementAndGet()
+            object : FilmListLoadListener {
+                override fun loadFinished(progress: FilmListLoadProgress) {
+                    finishedProgress += progress
                     completionsDelivered.countDown()
                 }
 
-                override fun fertigOnlyOne(event: ListenerFilmeLadenEvent) {
-                    fertigOnlyOneCount.incrementAndGet()
+                override fun firstLoadFinished(progress: FilmListLoadProgress) {
+                    firstFinishedProgress += progress
                     completionsDelivered.countDown()
                 }
             },
         )
+        val firstProgress = progress(progress = 75)
+        val secondProgress = progress(progress = 100)
 
-        dispatcher.notifyFinished(ListenerFilmeLadenEvent("", "", 100, 100, false))
-        dispatcher.notifyFinished(ListenerFilmeLadenEvent("", "", 100, 100, false))
+        dispatcher.notifyFinished(firstProgress)
+        dispatcher.notifyFinished(secondProgress)
 
         assertTrue(completionsDelivered.await(5, TimeUnit.SECONDS))
-        assertEquals(2, fertigCount.get())
-        assertEquals(1, fertigOnlyOneCount.get())
+        assertEquals(listOf(firstProgress, secondProgress), finishedProgress)
+        assertEquals(listOf(firstProgress), firstFinishedProgress)
     }
 
     @Test
     fun `removeListener stops later notifications`() {
         val dispatcher = FilmListLoadEventDispatcher(scope)
         val startCount = AtomicInteger(0)
-        val listener = object : ListenerFilmeLaden() {
-            override fun start(event: ListenerFilmeLadenEvent) {
+        val listener = object : FilmListLoadListener {
+            override fun loadStarted(progress: FilmListLoadProgress) {
                 startCount.incrementAndGet()
             }
         }
 
         dispatcher.addListener(listener)
         dispatcher.removeListener(listener)
-        dispatcher.notifyStart(ListenerFilmeLadenEvent("", "", 100, 0, false))
+        dispatcher.notifyStart(progress(progress = 0))
 
         Thread.sleep(200)
         assertEquals(0, startCount.get())
     }
+
+    private fun progress(progress: Int = 100): FilmListLoadProgress =
+        FilmListLoadProgress("", "", 100, progress, failed = false)
 }

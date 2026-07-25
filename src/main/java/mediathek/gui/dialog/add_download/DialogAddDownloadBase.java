@@ -60,6 +60,7 @@ public class DialogAddDownloadBase extends JDialog {
         jCheckBoxInfodatei = new JCheckBox();
         jCheckBoxPfadSpeichern = new JCheckBox();
         jCheckBoxSubtitle = new JCheckBox();
+        jCheckBoxMp4Metadata = new JCheckBox();
         jPanelSize = new JPanel();
         var jPanel6 = new JPanel();
         jRadioButtonAufloesungHd = new JRadioButton();
@@ -195,6 +196,7 @@ public class DialogAddDownloadBase extends JDialog {
                 // rows
                 new AC()
                     .gap()
+                    .gap()
                     ));
 
             //---- jCheckBoxInfodatei ----
@@ -206,6 +208,11 @@ public class DialogAddDownloadBase extends JDialog {
             jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
             jPanel2.add(jCheckBoxPfadSpeichern, new CC().cell(1, 0).alignX("left"));
             jPanel2.add(jCheckBoxSubtitle, new CC().cell(0, 1).alignX("left"));
+
+            //---- jCheckBoxMp4Metadata ----
+            jCheckBoxMp4Metadata.setText("MP4-Metadaten schreiben");
+            jCheckBoxMp4Metadata.setToolTipText("Schreibt Standard-MP4-Metadaten nach dem Download in die fertige MP4-Datei");
+            jPanel2.add(jCheckBoxMp4Metadata, new CC().cell(1, 1).alignX("left"));
         }
         contentPane.add(jPanel2, new CC().cell(0, 2).growX());
 
@@ -353,6 +360,7 @@ public class DialogAddDownloadBase extends JDialog {
     protected JCheckBox jCheckBoxInfodatei;
     protected JCheckBox jCheckBoxPfadSpeichern;
     protected JCheckBox jCheckBoxSubtitle;
+    protected JCheckBox jCheckBoxMp4Metadata;
     protected JPanel jPanelSize;
     protected JRadioButton jRadioButtonAufloesungHd;
     protected JRadioButton jRadioButtonAufloesungHoch;

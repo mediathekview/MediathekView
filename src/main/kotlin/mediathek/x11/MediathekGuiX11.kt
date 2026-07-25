@@ -24,30 +24,28 @@ import mediathek.mainwindow.MainWindowDarkModeActionPlacement
 import mediathek.mainwindow.MediathekGui
 import mediathek.shutdown.X11ComputerShutdown
 import mediathek.tool.notification.GenericNotificationCenter
-import mediathek.tool.notification.INotificationCenter
 import mediathek.tool.notification.LinuxNotificationCenter
+import mediathek.tool.notification.NotificationBackend
 import org.apache.logging.log4j.LogManager
 import java.awt.Toolkit
 
 private val logger = LogManager.getLogger(MediathekGuiX11::class.java)
 
-private fun createNotificationCenter(): INotificationCenter {
-    val notificationCenter = LinuxNotificationCenter()
-    if (notificationCenter.nativeSupport) {
-        return notificationCenter
+private fun createNotificationBackend(): NotificationBackend {
+    return try {
+        LinuxNotificationCenter.create()
+    } catch (exception: LinkageError) {
+        logger.error("Failed to initialize native Linux notification center", exception)
+        GenericNotificationCenter()
+    } catch (exception: Exception) {
+        logger.error("Failed to initialize native Linux notification center", exception)
+        GenericNotificationCenter()
     }
-
-    try {
-        notificationCenter.close()
-    } catch (e: Exception) {
-        logger.error("Failed to close unsupported Linux notification center", e)
-    }
-    return GenericNotificationCenter()
 }
 
 class MediathekGuiX11(daten: Daten) : MediathekGui(
     daten,
-    ::createNotificationCenter,
+    ::createNotificationBackend,
     X11ComputerShutdown(),
     MainWindowDarkModeActionPlacement.MENU_BAR,
     X11MainWindowSystemTrayController,

@@ -182,7 +182,7 @@ class FilmListWriter(private val readable: Boolean) {
         if (!compressSenderTag) {
             return filmEntries
         }
-        return filmEntries.sortedWith(compareBy(DatenFilm::sender).thenBy(DatenFilm::thema))
+        return prepareFilmEntriesForCompressedWrite(filmEntries)
     }
 
     private fun writeDatumLong(datenFilm: DatenFilm, jg: JsonGenerator) {
@@ -305,10 +305,29 @@ class FilmListWriter(private val readable: Boolean) {
     }
 
     companion object {
+        internal fun prepareFilmEntriesForCompressedWrite(filmEntries: List<DatenFilm>): List<DatenFilm> =
+            if (isSortedForCompressedWrite(filmEntries)) {
+                filmEntries
+            } else {
+                filmEntries.sortedWith(COMPRESSED_WRITE_ORDER)
+            }
+
+        private fun isSortedForCompressedWrite(filmEntries: List<DatenFilm>): Boolean {
+            var index = 1
+            while (index < filmEntries.size) {
+                if (COMPRESSED_WRITE_ORDER.compare(filmEntries[index - 1], filmEntries[index]) > 0) {
+                    return false
+                }
+                index++
+            }
+            return true
+        }
+
         private const val FILMLISTE = "Filmliste"
         private const val TAG_JSON_LIST = "X"
         private const val BUFFER_SIZE = 64 * 1024
         private const val PROGRESS_UPDATES = 500L
+        private val COMPRESSED_WRITE_ORDER = compareBy(DatenFilm::sender).thenBy(DatenFilm::thema)
         private val logger = LogManager.getLogger()
     }
 }

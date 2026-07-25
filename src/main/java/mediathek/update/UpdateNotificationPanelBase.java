@@ -5,6 +5,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
+@SuppressWarnings("DataFlowIssue")
 public class UpdateNotificationPanelBase extends JPanel {
     protected void createUIComponents() {
         webView = new JEditorPane();

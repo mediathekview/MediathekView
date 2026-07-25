@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager
 import java.awt.Component
 import java.util.function.BooleanSupplier
 import javax.swing.JTable
-import javax.swing.SwingConstants
+
 import javax.swing.table.DefaultTableCellRenderer
 
 class CellRendererColor(
@@ -41,7 +41,7 @@ class CellRendererColor(
 
         try {
             val color = value as MVC
-            horizontalAlignment = SwingConstants.CENTER
+            horizontalAlignment = CENTER
             background = color.getColor(darkMode.asBoolean)
             text = ""
         } catch (ex: ClassCastException) {

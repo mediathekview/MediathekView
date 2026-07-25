@@ -54,6 +54,7 @@ internal class SubtitleExportServiceTest {
         assertTrue(result is SubtitleExportResult.Failure)
     }
 
+    @Suppress("HttpUrlsUsage")
     private fun serve(content: String, status: Int = 200): String {
         val bytes = content.toByteArray(StandardCharsets.UTF_8)
         val server = HttpServer.create(InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0)

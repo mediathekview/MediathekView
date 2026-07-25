@@ -16,7 +16,7 @@ object SenderFilmlistLoadApprover {
         val storedSenderList = applicationConfiguration.approvedFilmlistLoadSenders
         if (storedSenderList.isEmpty()) {
             //manually approve all of them and store in config :(
-            senderSet.addAll(SenderListBoxModel.providedSenderList)
+            senderSet.addAll(SenderListBoxModel.providedSenders)
             applicationConfiguration.setApprovedFilmlistLoadSenders(senderSet)
         } else {
             senderSet.addAll(storedSenderList)
@@ -46,7 +46,7 @@ object SenderFilmlistLoadApprover {
      */
     fun approveAll() {
         senderSet.clear()
-        senderSet.addAll(SenderListBoxModel.providedSenderList)
+        senderSet.addAll(SenderListBoxModel.providedSenders)
         applicationConfiguration.setApprovedFilmlistLoadSenders(senderSet)
     }
 

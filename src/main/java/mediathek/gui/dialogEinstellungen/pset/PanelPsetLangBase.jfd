@@ -411,8 +411,8 @@ new FormModel {
 							} )
 						} )
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-							"$horizontalGroup": "par l {seq {space :::p, par l {comp jCheckBoxSpotlight:::p::p, comp jCheckBoxInfodatei::l:p::p, comp jCheckBoxSubtitle::l:p::p}, space :::x}}"
-							"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxInfodatei:::p::p, space u:::p, comp jCheckBoxSubtitle:::p::p, space u:::x, comp jCheckBoxSpotlight:::p::p}}"
+							"$horizontalGroup": "par l {seq {space :::p, par l {comp jCheckBoxSpotlight:::p::p, comp jCheckBoxInfodatei::l:p::p, comp jCheckBoxSubtitle::l:p::p, comp jCheckBoxMp4Metadata::l:p::p}, space :::x}}"
+							"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxInfodatei:::p::p, space u:::p, comp jCheckBoxSubtitle:::p::p, space u:::x, comp jCheckBoxMp4Metadata:::p::p, space u:::p, comp jCheckBoxSpotlight:::p::p}}"
 						} ) {
 							name: "jPanel13"
 							"border": new javax.swing.border.TitledBorder( "Nach dem Speichern" )
@@ -439,6 +439,14 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"text": "Untertitel speichern: \"Filmname.xxx\""
+							} )
+							add( new FormComponent( "javax.swing.JCheckBox" ) {
+								name: "jCheckBoxMp4Metadata"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
+								"text": "MP4-Metadaten schreiben"
+								"toolTipText": "Schreibt Standard-MP4-Metadaten nach dem Download in die fertige MP4-Datei"
 							} )
 						} )
 					}, new FormLayoutConstraints( null ) {

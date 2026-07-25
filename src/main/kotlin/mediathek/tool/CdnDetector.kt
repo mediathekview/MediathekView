@@ -148,7 +148,7 @@ object CdnDetector {
         var context: DirContext? = null
         try {
             context = InitialDirContext(environment)
-            collectAttributes(context, host, evidence, "CNAME", "A", "AAAA")
+            collectAttributes(context, host, evidence)
         } catch (_: NamingException) {
             return evidence.toList()
         } finally {
@@ -162,7 +162,8 @@ object CdnDetector {
         return evidence.toList()
     }
 
-    private fun collectAttributes(context: DirContext, host: String, evidence: MutableList<String>, vararg types: String) {
+    private fun collectAttributes(context: DirContext, host: String, evidence: MutableList<String>) {
+        val types = arrayOf("CNAME", "A", "AAAA")
         try {
             val attributes = context.getAttributes(host, types)
             for (type in types) {

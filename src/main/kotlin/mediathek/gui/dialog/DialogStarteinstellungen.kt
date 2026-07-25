@@ -149,7 +149,7 @@ class DialogStarteinstellungen(
     }
 
     private fun statusPfade() {
-        setAdjustmentControlsVisible(false)
+        hideAdjustmentControls()
         val searchFfmpeg = !SystemUtils.IS_OS_MAC_OSX && !SystemUtils.IS_OS_WINDOWS
         setMainContent(PanelProgrammPfade(parentComponent, true, searchFfmpeg))
 
@@ -205,9 +205,9 @@ class DialogStarteinstellungen(
         jButtonStandard.text = CONTINUE_TEXT
     }
 
-    private fun setAdjustmentControlsVisible(visible: Boolean) {
-        jButtonAnpassen.isVisible = visible
-        jCheckBoxAlleEinstellungen.isVisible = visible
+    private fun hideAdjustmentControls() {
+        jButtonAnpassen.isVisible = false
+        jCheckBoxAlleEinstellungen.isVisible = false
     }
 
     private fun setMainContent(component: Component) {

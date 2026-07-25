@@ -18,6 +18,7 @@
 
 package mediathek.swing.table
 
+import ca.odell.glazedlists.gui.AbstractTableComparatorChooser.SortKey
 import ca.odell.glazedlists.swing.TableComparatorChooser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -29,18 +30,19 @@ import org.apache.logging.log4j.LogManager
 /**
  * Persist and restore the sort-keys from a GlazedLists TableComparatorChooser.
  */
-class GlazedSortKeysPersister<E>(
+class GlazedSortKeysPersister<E : Any>(
     private val configPrefix: String,
     private val chooser: TableComparatorChooser<E>
 ) {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
 
     fun saveSortState() {
-        val sortedCols = chooser.sortingColumns
-        val infos = ArrayList<SortKeyInfo>(sortedCols.size)
-        for (col in sortedCols) {
-            val desc = chooser.isColumnReverse(col)
-            infos.add(SortKeyInfo(column = col, comparatorIndex = 0, descending = desc))
+        val infos = chooser.sortKeys.map { key ->
+            SortKeyInfo(
+                column = key.column,
+                comparatorIndex = key.comparatorIndex,
+                descending = key.reverse,
+            )
         }
         try {
             val json = serializer.encodeToString(ListSerializer(SortKeyInfo.serializer()), infos)
@@ -56,9 +58,7 @@ class GlazedSortKeysPersister<E>(
             if (json.isBlank()) return
 
             val infos = serializer.decodeFromString(ListSerializer(SortKeyInfo.serializer()), json)
-            for (info in infos) {
-                chooser.appendComparator(info.column, info.comparatorIndex, info.descending)
-            }
+            chooser.setSortKeys(infos.map { info -> SortKey(info.column, info.comparatorIndex, info.descending) })
         } catch (_: NoSuchElementException) {
         } catch (ex: Exception) {
             LOG.error("Failed to restore sort keys", ex)

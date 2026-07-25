@@ -18,13 +18,12 @@
 
 package mediathek.gui.abo
 
+import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.FilterList
 import ca.odell.glazedlists.SortedList
-import ca.odell.glazedlists.matchers.AbstractMatcherEditor
-import ca.odell.glazedlists.swing.AdvancedTableModel
-import ca.odell.glazedlists.swing.DefaultEventSelectionModel
-import ca.odell.glazedlists.swing.GlazedListsSwing
-import ca.odell.glazedlists.swing.TableComparatorChooser
+import ca.odell.glazedlists.gui.AbstractTableComparatorChooser
+import ca.odell.glazedlists.matchers.SetMatcherEditor
+import ca.odell.glazedlists.swing.*
 import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import mediathek.swing.table.GlazedSortKeysPersister
@@ -41,12 +40,15 @@ class AboTableBinding(
     filmCountProvider: (DatenAbo) -> Int? = { 0 },
 ) {
     private val tableFormat = AboTableFormat(filmCountProvider)
-    private val senderMatcherEditor = SenderAboMatcherEditor()
+    private val senderMatcherEditor = SetMatcherEditor.create<DatenAbo, String>(
+        SetMatcherEditor.Mode.WHITELIST_EMPTY_MATCH_ALL,
+    ) { abo -> abo.sender }
     private val filteredAbos = FilterList(sourceList, senderMatcherEditor)
     private val sortedAbos = SortedList(filteredAbos)
+    private val swingAbos: EventList<DatenAbo> = sortedAbos.swingThreadProxyList()
     private val tableModel: AdvancedTableModel<DatenAbo> =
-        GlazedListsSwing.eventTableModelWithThreadProxyList(sortedAbos, tableFormat)
-    private val selectionModel = DefaultEventSelectionModel(sortedAbos)
+        swingAbos.eventTableModel(tableFormat)
+    private val selectionModel = DefaultEventSelectionModel(swingAbos)
     private val comparatorChooser: TableComparatorChooser<DatenAbo>
     private val sortPersister: GlazedSortKeysPersister<DatenAbo>
     private var disposed = false
@@ -58,7 +60,12 @@ class AboTableBinding(
         selectionModel.selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
         table.selectionModel = selectionModel
 
-        comparatorChooser = TableComparatorChooser.install(table, sortedAbos, TableComparatorChooser.SINGLE_COLUMN, tableFormat)
+        comparatorChooser = TableComparatorChooser.install(
+            table,
+            sortedAbos,
+            AbstractTableComparatorChooser.SINGLE_COLUMN,
+            tableFormat,
+        )
         sortPersister = GlazedSortKeysPersister(SORT_CONFIG_PREFIX, comparatorChooser)
         sortPersister.restoreSortState()
         comparatorChooser.addSortActionListener { sortPersister.saveSortState() }
@@ -148,26 +155,12 @@ class AboTableBinding(
             .onFailure { logger.debug("Ignoring already disposed abo table selection model", it) }
         runCatching { tableModel.dispose() }
             .onFailure { logger.debug("Ignoring already disposed abo table model", it) }
+        runCatching { swingAbos.dispose() }
+            .onFailure { logger.debug("Ignoring already disposed abo Swing proxy list", it) }
         runCatching { sortedAbos.dispose() }
             .onFailure { logger.debug("Ignoring already disposed abo sorted list", it) }
         runCatching { filteredAbos.dispose() }
             .onFailure { logger.debug("Ignoring already disposed abo filtered list", it) }
-    }
-
-    private class SenderAboMatcherEditor : AbstractMatcherEditor<DatenAbo>() {
-        var sender: String = ""
-            set(value) {
-                if (field == value) {
-                    return
-                }
-
-                field = value
-                if (value.isEmpty()) {
-                    fireMatchAll()
-                } else {
-                    fireChanged { abo -> abo.sender == value }
-                }
-            }
     }
 
     private companion object {

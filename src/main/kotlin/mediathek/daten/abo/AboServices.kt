@@ -21,7 +21,9 @@ class AboServices(
     val list: ListeAbo = ListeAbo(::handleListChanged)
 
     val historyController: AboHistoryController
-        get() = completedAboHistory!!
+        get() = checkNotNull(completedAboHistory) {
+            "AboHistoryController accessed before launchHistoryDataLoading() completed"
+        }
 
     fun findAboForFilm(film: DatenFilm, checkLength: Boolean): DatenAbo? =
         filmAssignmentService.findAboForFilm(film, checkLength)

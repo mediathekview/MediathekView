@@ -21,10 +21,11 @@ package mediathek.x11
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.DownloadServices
 import mediathek.filmlisten.FilmCatalog
-import mediathek.gui.MVTray
+import mediathek.gui.tray.SystemTraySession
 import mediathek.mainwindow.DefaultMainWindowSystemTrayController
 import mediathek.mainwindow.MainWindowSystemTrayController
 import mediathek.mainwindow.TrayHost
+import mediathek.tool.notification.NotificationPublisher
 import org.apache.logging.log4j.LogManager
 
 object X11MainWindowSystemTrayController : MainWindowSystemTrayController {
@@ -38,6 +39,15 @@ object X11MainWindowSystemTrayController : MainWindowSystemTrayController {
         }
     }
 
-    override fun initialize(filmCatalog: FilmCatalog, downloads: DownloadServices, owner: TrayHost): MVTray? =
-        DefaultMainWindowSystemTrayController.initialize(filmCatalog, downloads, owner)
+    override fun initialize(
+        filmCatalog: FilmCatalog,
+        downloads: DownloadServices,
+        owner: TrayHost,
+        notificationPublisher: NotificationPublisher,
+    ): SystemTraySession? = DefaultMainWindowSystemTrayController.initialize(
+        filmCatalog,
+        downloads,
+        owner,
+        notificationPublisher,
+    )
 }

@@ -32,7 +32,6 @@ object FileUtils {
 
     const val ONE_KB: Long = 1024
     const val ONE_MB: Long = ONE_KB * ONE_KB
-    const val ONE_GB: Long = ONE_KB * ONE_MB
 
     fun removeExtension(fileName: String): String {
         return File(fileName).nameWithoutExtension

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="12.0.3" transformSequenceNumber="12">
   <directoryPresets config="./res" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="MediathekView-latest-windows-amd64" compression="9" createChecksums="false" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="15.0.0" allPathsRelative="true" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="25">
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="MediathekView-latest-windows-amd64" compression="9" createChecksums="false" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="15.0.1" allPathsRelative="true" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="25">
     <languages>
       <principalLanguage id="de" />
     </languages>

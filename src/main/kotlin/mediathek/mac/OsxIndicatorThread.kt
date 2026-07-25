@@ -42,7 +42,7 @@ internal class OsxIndicatorThread(downloads: DownloadServices) : IndicatorThread
                     taskbar.setProgressValue(percentage)
                 }
                 oldPercentage = percentage
-                Thread.sleep(500.milliseconds.toJavaDuration())
+                sleep(500.milliseconds.toJavaDuration())
             }
         } catch (_: Exception) {
         } finally {

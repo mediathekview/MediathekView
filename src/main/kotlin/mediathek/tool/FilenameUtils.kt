@@ -62,7 +62,7 @@ class FilenameUtils private constructor() {
             ret = if (isPath) {
                 convertPathToNativeEncoding(ret)
             } else {
-                convertToNativeEncoding(ret, false)
+                convertToNativeEncoding(ret)
             }
 
             if (isWindowsPath) {
@@ -107,8 +107,8 @@ class FilenameUtils private constructor() {
          * @param fileName The UTF-16 filename string.
          * @return Natively encoded string for the OS.
          */
-        private fun convertToNativeEncoding(fileName: String, isPath: Boolean): String {
-            var ret = removeIllegalCharacters(fileName, isPath)
+        private fun convertToNativeEncoding(fileName: String): String {
+            var ret = removeIllegalCharacters(fileName, false)
 
             // convert our filename to OS encoding...
             try {
@@ -193,7 +193,7 @@ class FilenameUtils private constructor() {
                 if (onlyAscii) {
                     convertToASCIIEncoding(segment, false)
                 } else {
-                    convertToNativeEncoding(segment, false)
+                    convertToNativeEncoding(segment)
                 },
             )
         }
@@ -276,7 +276,12 @@ class FilenameUtils private constructor() {
          * @param name Dateiname
          * @return Bereinigte Fassung
          */
-        fun replaceLeerDateiname(name: String, isPath: Boolean, userReplace: Boolean, onlyAscii: Boolean): String {
+        fun replaceEmptyFilename(
+            name: String,
+            isPath: Boolean,
+            replacementRules: ReplacementRules?,
+            onlyAscii: Boolean,
+        ): String {
             var ret = name
             var isWindowsPath = false
             if (SystemUtils.IS_OS_WINDOWS && isPath && ret.length > 1 && ret[1] == ':') {
@@ -286,15 +291,15 @@ class FilenameUtils private constructor() {
             }
 
             // zuerst die Ersetzungstabelle mit den Wünschen des Users
-            if (userReplace) {
-                ret = ReplaceList.replace(ret, isPath)
+            if (replacementRules != null) {
+                ret = replacementRules.replace(ret, isPath)
             }
 
             // und wenn gewünscht: "NUR Ascii-Zeichen"
             ret = if (onlyAscii) {
                 if (isPath) convertPathToASCIIEncoding(ret) else convertToASCIIEncoding(ret, false)
             } else {
-                if (isPath) convertPathToNativeEncoding(ret) else convertToNativeEncoding(ret, false)
+                if (isPath) convertPathToNativeEncoding(ret) else convertToNativeEncoding(ret)
             }
 
             if (isWindowsPath) {

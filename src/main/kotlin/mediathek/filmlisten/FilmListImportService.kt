@@ -20,7 +20,6 @@ package mediathek.filmlisten
 
 import mediathek.config.StandardLocations
 import mediathek.daten.ListeFilme
-import mediathek.filmeSuchen.ListenerFilmeLaden
 import mediathek.filmlisten.reader.FilmListReader
 import mediathek.tool.FilmListUpdateType
 import mediathek.tool.http.MVHttpClient
@@ -38,7 +37,7 @@ internal enum class FilmListImportResult {
 
 internal data class FilmListImportOutcome(
     val result: FilmListImportResult,
-    val oldFilmUrls: Set<String> = emptySet(),
+    val oldFilmUrlKeys: Set<String> = emptySet(),
     val importedDiffList: ListeFilme = ListeFilme(),
 )
 
@@ -48,17 +47,42 @@ internal interface FilmListImportFeedback {
     fun showExceptionMessage(message: String, ex: Exception, showDialogs: Boolean)
 }
 
+internal interface FilmListImporter {
+    fun importFromUrl(
+        dateiUrl: String,
+        listeFilme: ListeFilme,
+        days: Int,
+        immerNeuLaden: Boolean,
+        prepareImport: () -> Set<String>,
+    ): FilmListImportOutcome
+
+    fun importFromFile(
+        pfad: String,
+        listeFilme: ListeFilme,
+        days: Int,
+        prepareImport: () -> Set<String>,
+    ): FilmListImportOutcome
+
+    fun importAdditionalFromFile(
+        pfad: String,
+        days: Int,
+        oldFilmUrlKeys: Set<String>,
+    ): FilmListImportOutcome
+
+    fun reloadSavedFilmList(listeFilme: ListeFilme, days: Int)
+}
+
 internal class FilmListImportService(
     private val feedback: FilmListImportFeedback,
-    progressListener: ListenerFilmeLaden,
-) {
+    progressListener: FilmListLoadListener,
+) : FilmListImporter {
     private val filmListReader = FilmListReader()
 
     init {
-        filmListReader.addAdListener(progressListener)
+        filmListReader.addProgressListener(progressListener)
     }
 
-    fun importFromUrl(
+    override fun importFromUrl(
         dateiUrl: String,
         listeFilme: ListeFilme,
         days: Int,
@@ -69,21 +93,21 @@ internal class FilmListImportService(
             return FilmListImportOutcome(FilmListImportResult.NO_UPDATE)
         }
 
-        val oldFilmUrls = prepareImport()
+        val oldFilmUrlKeys = prepareImport()
         if (immerNeuLaden) {
-            // Preserve existing behavior: clear only after capturing old URLs for new-film marking.
+            // Preserve existing behavior: clear only after capturing old URL keys for new-film marking.
             listeFilme.clear()
         }
 
         val diffList = ListeFilme()
         return FilmListImportOutcome(
             result = importFromUrlSynchronously(listeFilme, diffList, days).toImportResult(),
-            oldFilmUrls = oldFilmUrls,
+            oldFilmUrlKeys = oldFilmUrlKeys,
             importedDiffList = diffList,
         )
     }
 
-    fun importFromFile(
+    override fun importFromFile(
         pfad: String,
         listeFilme: ListeFilme,
         days: Int,
@@ -93,28 +117,28 @@ internal class FilmListImportService(
             return FilmListImportOutcome(FilmListImportResult.NO_UPDATE)
         }
 
-        val oldFilmUrls = prepareImport()
+        val oldFilmUrlKeys = prepareImport()
         listeFilme.clear()
         return FilmListImportOutcome(
             result = urlLaden(pfad, listeFilme, days).toImportResult(),
-            oldFilmUrls = oldFilmUrls,
+            oldFilmUrlKeys = oldFilmUrlKeys,
         )
     }
 
-    fun importAdditionalFromFile(
+    override fun importAdditionalFromFile(
         pfad: String,
         days: Int,
-        oldFilmUrls: Set<String>,
+        oldFilmUrlKeys: Set<String>,
     ): FilmListImportOutcome {
         val importedList = ListeFilme()
         return FilmListImportOutcome(
             result = urlLaden(pfad, importedList, days).toImportResult(),
-            oldFilmUrls = oldFilmUrls,
+            oldFilmUrlKeys = oldFilmUrlKeys,
             importedDiffList = importedList,
         )
     }
 
-    fun reloadSavedFilmList(listeFilme: ListeFilme, days: Int) {
+    override fun reloadSavedFilmList(listeFilme: ListeFilme, days: Int) {
         listeFilme.clear()
         FilmListReader().use { reader ->
             reader.readFilmListe(StandardLocations.getFilmlistFilePathString(), listeFilme, days)
@@ -224,7 +248,7 @@ internal class FilmListImportService(
 
     private fun ladeDiffListe(listeFilmeDiff: ListeFilme, days: Int): Boolean =
         urlLaden(StandardLocations.getFilmListUrl(FilmListDownloadType.DIFF_ONLY), listeFilmeDiff, days) &&
-            !listeFilmeDiff.isEmpty()
+            listeFilmeDiff.isNotEmpty()
 
     private fun urlLaden(dateiUrl: String, listeFilme: ListeFilme, days: Int): Boolean {
         var ret = false

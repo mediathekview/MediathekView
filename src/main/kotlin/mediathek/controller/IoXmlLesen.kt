@@ -21,7 +21,7 @@ import mediathek.config.StandardLocations
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenProg
 import mediathek.daten.DatenPset
-import mediathek.tool.ReplaceList
+import mediathek.tool.ReplacementRules
 import org.apache.logging.log4j.LogManager
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
@@ -74,7 +74,7 @@ class IoXmlLesen(
                                             readProgramEntry(parser, datenPset)
                                         }
 
-                                        ReplaceList.REPLACELIST -> readReplacementList(parser)
+                                        ReplacementRules.REPLACELIST -> readReplacementList(parser)
                                         LegacyAboRuleXml.TAG -> {
                                             legacyAboRulesRead =
                                                 readAboEntry(parser, readLegacyAboRule = !readAboRulesFromJson) ||
@@ -182,9 +182,10 @@ class IoXmlLesen(
     }
 
     private fun readReplacementList(parser: XMLStreamReader) {
-        val values = Array(ReplaceList.MAX_ELEM) { "" }
-        if (get(parser, ReplaceList.REPLACELIST, ReplaceList.columnNames(), values)) {
-            ReplaceList.add(values)
+        val replacementRules = configData.replacementRules
+        val values = Array(ReplacementRules.MAX_ELEM) { "" }
+        if (get(parser, ReplacementRules.REPLACELIST, replacementRules.columnNames(), values)) {
+            replacementRules.add(values)
         }
     }
 

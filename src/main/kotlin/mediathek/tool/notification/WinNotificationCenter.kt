@@ -1,46 +1,34 @@
 package mediathek.tool.notification
 
-import mediathek.config.Konstanten
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import mediathek.tool.tray.SharedSystemTrayIcon
 import java.awt.SystemTray
 import java.awt.TrayIcon
-import java.io.IOException
 
-class WinNotificationCenter : INotificationCenter {
+class WinNotificationCenter : NotificationBackend {
+    private val lifecycleLock = Any()
     private var trayIcon: TrayIcon? = null
 
-    override fun displayNotification(msg: NotificationMessage) {
-        if (trayIcon != null) {
-            val type = when (msg.type) {
+    override fun publish(notification: NotificationMessage) {
+        synchronized(lifecycleLock) {
+            val currentTrayIcon = trayIcon ?: return
+            val type = when (notification.type) {
                 MessageType.INFO -> TrayIcon.MessageType.INFO
                 MessageType.ERROR -> TrayIcon.MessageType.ERROR
             }
-            trayIcon!!.displayMessage(msg.title, msg.message, type)
+            currentTrayIcon.displayMessage(notification.title, notification.message, type)
         }
-        else
-            logger.error("TrayIcon is null, not displaying notification")
     }
 
-    @Throws(IOException::class)
     override fun close() {
-        if (trayIcon != null)
-            SystemTray.getSystemTray().remove(trayIcon)
-    }
-
-    companion object {
-        val logger: Logger = LogManager.getLogger()
+        synchronized(lifecycleLock) {
+            trayIcon ?: return
+            trayIcon = null
+            SharedSystemTrayIcon.release(this)
+        }
     }
 
     init {
-        if (!SystemTray.isSupported()) {
-            logger.error("System Tray is not supported!")
-        } else {
-            val tray = SystemTray.getSystemTray()
-            trayIcon = TrayIcon(Konstanten.ICON_TRAY, "MediathekView ${Konstanten.MVVERSION}")
-            trayIcon!!.isImageAutoSize = true
-
-            tray.add(trayIcon)
-        }
+        check(SystemTray.isSupported()) { "System Tray is not supported" }
+        trayIcon = SharedSystemTrayIcon.acquire(this)
     }
 }

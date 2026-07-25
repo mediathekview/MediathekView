@@ -19,11 +19,13 @@
 package mediathek.gui.dialog.subripmerge
 
 import com.github.kokorin.jaffree.ffmpeg.FFmpeg
+import com.github.kokorin.jaffree.ffmpeg.FFmpegResult
 import com.github.kokorin.jaffree.ffmpeg.UrlInput
 import com.github.kokorin.jaffree.ffmpeg.UrlOutput
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mediathek.tool.GuiFunktionenProgramme
+import java.nio.file.Path
 
 object SubripVideoMergeService {
     suspend fun merge(
@@ -31,8 +33,8 @@ object SubripVideoMergeService {
         videoFilePath: String,
         videoOutputPath: String,
         languageCode: String,
-    ) = withContext(Dispatchers.IO) {
-        val ffmpegPath = GuiFunktionenProgramme.findExecutableOnPath("ffmpeg").parent
+    ): FFmpegResult = withContext(Dispatchers.IO) {
+        val ffmpegPath: Path = GuiFunktionenProgramme.findExecutableOnPath("ffmpeg").parent
         FFmpeg.atPath(ffmpegPath)
             .setOverwriteOutput(true)
             .addArgument("-xerror")

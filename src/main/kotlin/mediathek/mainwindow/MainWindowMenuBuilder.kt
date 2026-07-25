@@ -41,6 +41,7 @@ import mediathek.logging.LogDialog
 import mediathek.sqlite.RecoverHistoryDbAction
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.GuiFunktionenProgramme
+import mediathek.tool.ReplacementRules
 import java.util.function.BiConsumer
 import java.util.function.Supplier
 import javax.swing.*
@@ -54,6 +55,7 @@ class MainWindowMenuBuilder(
     private val filmCatalog: FilmCatalog,
     private val abos: AboServices,
     private val blacklist: BlacklistServices,
+    private val replacementRules: ReplacementRules,
     private val bookmarks: BookmarkServices,
     private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
     private val menuBar: JMenuBar,
@@ -134,9 +136,9 @@ class MainWindowMenuBuilder(
         exportMenu.add(ExportDecompressedFilmlistAction(filmCatalog.allFilms, ownerFrame))
 
         val importMenu = JMenu("Import")
-        importMenu.add(ImportOldAbosAction(ownerFrame, abos, blacklist))
-        importMenu.add(ImportOldBlacklistAction(ownerFrame, abos, blacklist))
-        importMenu.add(ImportOldReplacementListAction(ownerFrame, abos, blacklist))
+        importMenu.add(ImportOldAbosAction(ownerFrame, abos, blacklist, replacementRules))
+        importMenu.add(ImportOldBlacklistAction(ownerFrame, abos, blacklist, replacementRules))
+        importMenu.add(ImportOldReplacementListAction(ownerFrame, abos, blacklist, replacementRules))
 
         fileMenu.add(exportMenu)
         fileMenu.add(importMenu)
@@ -227,6 +229,7 @@ class MainWindowMenuBuilder(
                 programSets,
                 filmCatalog,
                 abos,
+                replacementRules,
                 { ownerFrame },
                 { parent ->
                     MissingProgramSetDialog.ensureAboProgramSetAvailable(parent, programSets) { importParent, standardSets ->

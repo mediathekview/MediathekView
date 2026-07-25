@@ -25,7 +25,7 @@ class ApplicationTableConfiguration(
     private val config: XMLConfiguration,
 ) {
     fun getGlazedTableSortKeys(configPrefix: String): String? =
-        config.getString(tableSortKeysKey(configPrefix))
+        config.getString(tableSortKeysKey(configPrefix), "")
 
     fun setGlazedTableSortKeys(configPrefix: String, json: String) {
         config.setProperty(tableSortKeysKey(configPrefix), json)
@@ -151,7 +151,7 @@ class ApplicationTableConfiguration(
         private const val APPLICATION_UI_BLACKLIST_TABLE_COLUMN_CONFIGURATION =
             "application.ui.blacklist_table.column_configuration"
         @field:ApplicationConfigKeyPattern(
-            pattern = """^(ui\.bookmark-dialog|abo|abo-v3|online-search)\.(sortKeys|colummn-settings)$""",
+            pattern = """^(ui\.bookmark-dialog|abo|abo-v3|online-search|film)\.(sortKeys|colummn-settings)$""",
             description = "Persisted table sorting and column settings keyed by known table prefixes.",
         )
         private const val TABLE_SORT_KEYS_SUFFIX = ".sortKeys"

@@ -61,7 +61,7 @@ class MainWindowShutdownCoordinator(
         }
 
         if (shutdownComputer) {
-            runInBackground("Request computer shutdown", computerShutdown::requestShutdown)
+            runInBackground(computerShutdown::requestShutdown)
         }
     }
 
@@ -123,9 +123,9 @@ class MainWindowShutdownCoordinator(
             .shutdown()
     }
 
-    private fun runInBackground(description: String, action: Runnable) {
+    private fun runInBackground(action: Runnable) {
         ShutdownCoordinator(edtRunner)
-            .background(description, action)
+            .background("Request computer shutdown", action)
             .shutdown()
     }
 }

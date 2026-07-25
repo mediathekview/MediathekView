@@ -39,7 +39,7 @@ object FileDialogs {
 
     fun chooseDirectoryLocation(parent: Frame, title: String, initialFile: String): File? =
         if (SystemUtils.IS_OS_MAC_OSX) {
-            withTemporarySystemProperty(MAC_DIRECTORY_DIALOG_PROPERTY, "true") {
+            withMacDirectoryDialogEnabled {
                 showNativeDialog(parent, title, mode = FileDialog.LOAD, initialDirectory = initialFile)
             }
         } else {
@@ -54,7 +54,7 @@ object FileDialogs {
 
     fun chooseDirectoryLocation(parent: Component, title: String, initialFile: String): File? =
         if (SystemUtils.IS_OS_MAC_OSX) {
-            withTemporarySystemProperty(MAC_DIRECTORY_DIALOG_PROPERTY, "true") {
+            withMacDirectoryDialogEnabled {
                 showNativeDialog(parent, title, mode = FileDialog.LOAD, initialDirectory = initialFile)
             }
         } else {
@@ -184,16 +184,16 @@ object FileDialogs {
         isFileHidingEnabled = true
     }.takeIf { it.showDialog(parent) == JFileChooser.APPROVE_OPTION }?.selectedFile
 
-    private inline fun <T> withTemporarySystemProperty(name: String, value: String, block: () -> T): T {
-        val previousValue = System.getProperty(name)
-        System.setProperty(name, value)
+    private inline fun <T> withMacDirectoryDialogEnabled(block: () -> T): T {
+        val previousValue = System.getProperty(MAC_DIRECTORY_DIALOG_PROPERTY)
+        System.setProperty(MAC_DIRECTORY_DIALOG_PROPERTY, "true")
         return try {
             block()
         } finally {
             if (previousValue == null) {
-                System.clearProperty(name)
+                System.clearProperty(MAC_DIRECTORY_DIALOG_PROPERTY)
             } else {
-                System.setProperty(name, previousValue)
+                System.setProperty(MAC_DIRECTORY_DIALOG_PROPERTY, previousValue)
             }
         }
     }

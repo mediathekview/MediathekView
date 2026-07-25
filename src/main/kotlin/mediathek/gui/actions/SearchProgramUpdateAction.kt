@@ -13,6 +13,11 @@ class SearchProgramUpdateAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        ProgrammUpdateSuchen(ownerProvider = { parent }).checkVersion(true, false, false, false)
+        ProgrammUpdateSuchen(ownerProvider = { parent }).checkVersion(
+            showAlert = true,
+            showProgramInformation = false,
+            showAllInformation = false,
+            silent = false,
+        )
     }
 }

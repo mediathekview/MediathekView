@@ -83,7 +83,7 @@ class FilmContextMenuBuilder(
             }
 
             val item = JMenuItem(pset.name)
-            pset.foregroundColor.ifPresent(item::setForeground)
+            pset.foregroundColor?.let(item::setForeground)
             if (pset.listeProg.isNotEmpty()) {
                 item.addActionListener { host.startFilmWithPset(pset) }
             }

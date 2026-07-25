@@ -27,7 +27,7 @@ import java.awt.Window
 import java.net.URISyntaxException
 import javax.swing.JDialog
 import javax.swing.JScrollPane
-import javax.swing.WindowConstants
+
 import javax.swing.event.HyperlinkEvent
 
 class LuceneTutorialDialog(
@@ -70,8 +70,8 @@ class LuceneTutorialDialog(
     }
 
     private fun initComponents() {
-        defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
-        type = Window.Type.UTILITY
+        defaultCloseOperation = DISPOSE_ON_CLOSE
+        type = Type.UTILITY
         minimumSize = Dimension(840, 700)
 
         tutorialPane.addHyperlinkListener { event ->

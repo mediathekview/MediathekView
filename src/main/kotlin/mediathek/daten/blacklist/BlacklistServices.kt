@@ -62,11 +62,7 @@ class BlacklistServices(
         val predicate = createPredicate(blacklistSnapshot)
 
         val filteredSnapshot = filterFilmSnapshot(filmSnapshot, filterDuplicates, predicate)
-        var index = 0
-        while (index < filteredSnapshot.size) {
-            filteredList.add(filteredSnapshot[index])
-            index++
-        }
+        filteredList.addAll(filteredSnapshot)
     }
 
     fun applyToFilmListAndNotifyListeners() {

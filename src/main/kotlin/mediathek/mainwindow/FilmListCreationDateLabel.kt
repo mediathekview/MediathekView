@@ -41,7 +41,7 @@ class FilmListCreationDateLabel(
 
     private fun setText(metaData: FilmListMetaData) {
         val text = "Filmliste erstellt: ${metaData.generationDateTimeAsString} Uhr"
-        SwingUtilities.invokeLater { setText(text) }
+        SwingUtilities.invokeLater { this@FilmListCreationDateLabel.text = text }
     }
 
     @Suppress("UNUSED_PARAMETER")

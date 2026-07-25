@@ -27,6 +27,7 @@ import mediathek.daten.ListeFilme
 import mediathek.gui.messages.BookmarkRefreshCompletedEvent
 import mediathek.gui.messages.history.FilmSeenStateChangedEvent
 import mediathek.tool.MessageBus
+import mediathek.tool.snapshot
 import mediathek.tool.withReadLock
 import mediathek.tool.withWriteLock
 import net.engio.mbassy.listener.Handler
@@ -101,16 +102,17 @@ class BookmarkDataList(
         if (add) {
             // Check if history list is known.
             try {
+                val seenStates = FilmSeenHistoryController().use { history ->
+                    addList.map { movie -> movie to history.hasBeenSeen(movie) }
+                }
                 bookmarks.withWriteLock {
-                    FilmSeenHistoryController().use { history ->
-                        addList.forEach { movie ->
-                            val bookmarkData = BookmarkData(movie)
-                            movie.bookmark = bookmarkData // Link backwards
-                            bookmarkData.seen = history.hasBeenSeen(movie)
-                            bookmarkData.filmHashCode = movie.sha256
-                            bookmarkData.bookmarkAdded = LocalDate.now()
-                            bookmarks.add(bookmarkData)
-                        }
+                    seenStates.forEach { (movie, seen) ->
+                        val bookmarkData = BookmarkData(movie)
+                        movie.bookmark = bookmarkData // Link backwards
+                        bookmarkData.seen = seen
+                        bookmarkData.filmHashCode = movie.sha256
+                        bookmarkData.bookmarkAdded = LocalDate.now()
+                        bookmarks.add(bookmarkData)
                     }
                 }
             } catch (ex: Exception) {
@@ -146,9 +148,7 @@ class BookmarkDataList(
         val filePath = StandardLocations.getBookmarkFilePath()
 
         try {
-            bookmarks.withReadLock {
-                BookmarkJsonStore.write(filePath, bookmarks)
-            }
+            BookmarkJsonStore.write(filePath, bookmarks.snapshot())
             logger.trace("Bookmarks written")
         } catch (e: Exception) {
             logger.error("Could not save bookmarks to {}", filePath, e)
@@ -182,11 +182,6 @@ class BookmarkDataList(
             }
     }
 
-    fun updateSeen(seen: Boolean, film: DatenFilm) {
-        if (film.isBookmarked) {
-            film.bookmark?.seen = seen
-        }
-    }
 
     @Handler
     private fun handleFilmSeenStateChanged(event: FilmSeenStateChangedEvent) {

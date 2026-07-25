@@ -217,7 +217,7 @@ new FormModel {
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
-						add( new FormComponent( "com.jidesoft.swing.CheckBoxList" ) {
+						add( new FormComponent( "mediathek.swing.CheckBoxList" ) {
 							name: "senderCheckBoxList"
 							"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 							"minimumSize": new java.awt.Dimension( 100, 50 )

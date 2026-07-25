@@ -22,7 +22,7 @@ package mediathek.cli
 
 import org.apache.logging.log4j.LogManager
 import sun.misc.Signal
-import sun.misc.SignalHandler
+
 import java.util.concurrent.atomic.AtomicBoolean
 
 object CliShutdownSignal {
@@ -32,14 +32,14 @@ object CliShutdownSignal {
         try {
             val signal = Signal("INT")
             val firstSignal = AtomicBoolean(true)
-            val previousHandler = Signal.handle(signal, SignalHandler {
+            val previousHandler = Signal.handle(signal) {
                 if (firstSignal.compareAndSet(true, false)) {
                     onShutdownRequested()
                 } else {
                     logger.warn("Second Ctrl-C received. Forcing shutdown.")
                     Runtime.getRuntime().halt(DownloadAndQuitRunner.INTERRUPTED_EXIT_CODE)
                 }
-            })
+            }
             AutoCloseable {
                 Signal.handle(signal, previousHandler)
             }

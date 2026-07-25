@@ -9,6 +9,8 @@ import java.awt.event.MouseEvent
 import java.util.concurrent.atomic.AtomicInteger
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class OnlineSearchPanelTest {
     @Test
@@ -49,11 +51,11 @@ class OnlineSearchPanelTest {
         searchPanel.queryText = "tatort"
 
         SwingUtilities.invokeAndWait { searchPanel.searchButton.doClick() }
-        withTimeout(2_000) { service.started.await() }
+        withTimeout(2.seconds) { service.started.await() }
 
         SwingUtilities.invokeAndWait { searchPanel.cancelButton.doClick() }
 
-        withTimeout(2_000) { service.cancelled.await() }
+        withTimeout(2.seconds) { service.cancelled.await() }
     }
 
     @Test
@@ -69,11 +71,11 @@ class OnlineSearchPanelTest {
         searchPanel.queryText = "erste suche"
 
         SwingUtilities.invokeAndWait { searchPanel.searchButton.doClick() }
-        withTimeout(2_000) { service.firstSearchStarted.await() }
+        withTimeout(2.seconds) { service.firstSearchStarted.await() }
 
         SwingUtilities.invokeAndWait { searchPanel.queryField.selectHistoryEntry("zweite suche") }
-        withTimeout(2_000) { service.firstSearchCancellationStarted.await() }
-        withTimeout(2_000) { service.secondSearchStarted.await() }
+        withTimeout(2.seconds) { service.firstSearchCancellationStarted.await() }
+        withTimeout(2.seconds) { service.secondSearchStarted.await() }
 
         service.allowFirstSearchCancellationToComplete.complete(Unit)
         SwingUtilities.invokeAndWait { }
@@ -231,7 +233,7 @@ class OnlineSearchPanelTest {
             panel.searchPanel.queryText = "tatort"
             panel.searchPanel.searchButton.doClick()
         }
-        withTimeout(2_000) { service.secondPageRequested.await() }
+        withTimeout(2.seconds) { service.secondPageRequested.await() }
         SwingUtilities.invokeAndWait { }
 
         assertEquals(1, panel.table.rowCount)
@@ -394,7 +396,7 @@ class OnlineSearchPanelTest {
 
         SwingUtilities.invokeAndWait {
             panel.table.setRowSelectionInterval(0, 1)
-            triggerPopupOnRow(panel, 1)
+            triggerPopupOnSecondRow(panel)
         }
 
         assertEquals(listOf(0, 1), panel.table.selectedRows.toList())
@@ -441,7 +443,7 @@ class OnlineSearchPanelTest {
 
         SwingUtilities.invokeAndWait {
             panel.table.setRowSelectionInterval(0, 1)
-            triggerDoubleClickOnRow(panel, 1)
+            triggerDoubleClickOnSecondRow(panel)
         }
 
         assertEquals("Tatort 2", host.filmInfoResult?.title)
@@ -454,30 +456,28 @@ private fun Container.doLayoutRecursively() {
 }
 
 private fun Container.findLabel(text: String): JLabel = components.asSequence()
-    .mapNotNull { component ->
-        when {
-            component is JLabel && component.text == text -> component
-            component is Container -> component.findLabelOrNull(text)
+    .firstNotNullOfOrNull { component ->
+        when (component) {
+            is JLabel -> component.takeIf { it.text == text }
+            is Container -> component.findLabelOrNull(text)
             else -> null
         }
     }
-    .firstOrNull()
     ?: error("Label not found: $text")
 
 private fun Container.findLabelOrNull(text: String): JLabel? = components.asSequence()
-    .mapNotNull { component ->
-        when {
-            component is JLabel && component.text == text -> component
-            component is Container -> component.findLabelOrNull(text)
+    .firstNotNullOfOrNull { component ->
+        when (component) {
+            is JLabel -> component.takeIf { it.text == text }
+            is Container -> component.findLabelOrNull(text)
             else -> null
         }
     }
-    .firstOrNull()
 
 private fun JLabel.xIn(container: Container): Int = SwingUtilities.convertPoint(parent, x, y, container).x
 
-private fun triggerPopupOnRow(panel: OnlineSearchPanel, row: Int) {
-    val bounds = panel.table.getCellRect(row, 0, true)
+private fun triggerPopupOnSecondRow(panel: OnlineSearchPanel) {
+    val bounds = panel.table.getCellRect(1, 0, true)
     val event = MouseEvent(
         panel.table,
         MouseEvent.MOUSE_RELEASED,
@@ -512,8 +512,8 @@ private fun triggerDoubleClickBelowRows(panel: OnlineSearchPanel) {
     panel.table.mouseListeners.forEach { it.mouseClicked(event) }
 }
 
-private fun triggerDoubleClickOnRow(panel: OnlineSearchPanel, row: Int) {
-    val bounds = panel.table.getCellRect(row, 0, true)
+private fun triggerDoubleClickOnSecondRow(panel: OnlineSearchPanel) {
+    val bounds = panel.table.getCellRect(1, 0, true)
     val event = MouseEvent(
         panel.table,
         MouseEvent.MOUSE_CLICKED,
@@ -529,10 +529,10 @@ private fun triggerDoubleClickOnRow(panel: OnlineSearchPanel, row: Int) {
 }
 
 private suspend fun waitForTableRows(panel: OnlineSearchPanel, rows: Int) {
-    withTimeout(2_000) {
+    withTimeout(2.seconds) {
         while (panel.table.rowCount != rows) {
             SwingUtilities.invokeAndWait { }
-            delay(10)
+            delay(10.milliseconds)
         }
     }
 }

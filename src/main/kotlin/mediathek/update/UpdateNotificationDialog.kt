@@ -32,7 +32,7 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
             }
         }
         val btn = JButton(DisposeDialogAction(this, "Schließen", "Dialog schließen"))
-        getRootPane().defaultButton = btn
+        rootPane.defaultButton = btn
         pnl.add(dlBtn)
         pnl.add(btn)
         return pnl

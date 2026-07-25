@@ -10,8 +10,7 @@ internal class BigSenderPenaltyComparatorTest {
 
     @Test
     fun sortProvidedSenderList_movesArdAndZdfToEnd() {
-        val inputFilms = SenderListBoxModel.providedSenderList
-            .toList()
+        val inputFilms = SenderListBoxModel.providedSenders
             .map(::createFilmWithSender)
             .sortedWith(BigSenderPenaltyComparator())
 
@@ -23,8 +22,7 @@ internal class BigSenderPenaltyComparatorTest {
         assertTrue(senderSet.contains(sortedSenders[senderCount - 2]))
         assertNotEquals(sortedSenders[senderCount - 1], sortedSenders[senderCount - 2])
 
-        val expectedWithoutPenalty = SenderListBoxModel.providedSenderList
-            .toList()
+        val expectedWithoutPenalty = SenderListBoxModel.providedSenders
             .filter { sender -> sender != "ARD" && sender != "ZDF" }
             .sortedWith(GermanStringSorter)
         val actualWithoutPenalty = sortedSenders.subList(0, senderCount - 2)

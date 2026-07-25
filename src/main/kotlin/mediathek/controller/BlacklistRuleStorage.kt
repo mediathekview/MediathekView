@@ -77,7 +77,7 @@ private data class BlacklistRuleDto(
             sender = sender,
             thema = topic,
             titel = title,
-            thema_titel = topicTitle,
+            topicTitle = topicTitle,
             active = active,
         )
 
@@ -87,7 +87,7 @@ private data class BlacklistRuleDto(
                 sender = rule.sender,
                 topic = rule.thema,
                 title = rule.titel,
-                topicTitle = rule.thema_titel,
+                topicTitle = rule.topicTitle,
                 active = rule.active,
             )
     }

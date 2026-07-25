@@ -43,7 +43,7 @@ class AustrianVlcCheck(val owner: JFrame) {
 
         val ep = JEditorPane("text/html", msg)
         ep.isEditable = false
-        ep.setBackground(UIManager.getColor("Label.background"))
+        ep.background = UIManager.getColor("Label.background")
         ep.addHyperlinkListener { e: HyperlinkEvent ->
             if (e.eventType == HyperlinkEvent.EventType.ACTIVATED) {
                 try {

@@ -20,7 +20,7 @@ package mediathek.controller
 import mediathek.config.StandardLocations
 import mediathek.daten.DatenProg
 import mediathek.daten.DatenPset
-import mediathek.tool.ReplaceList
+import mediathek.tool.ReplacementRules
 import org.apache.logging.log4j.LogManager
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
@@ -96,8 +96,9 @@ class IoXmlSchreiben(
         // writer.writeComment("Ersetzungstabelle");
         writeNewLine(writer)
 
-        for (values in ReplaceList.valuesForXml()) {
-            xmlSchreibenDaten(writer, ReplaceList.REPLACELIST, ReplaceList.columnNames(), values, false)
+        val replacementRules = configData.replacementRules
+        for (values in replacementRules.valuesForXml()) {
+            xmlSchreibenDaten(writer, ReplacementRules.REPLACELIST, replacementRules.columnNames(), values, false)
         }
     }
 

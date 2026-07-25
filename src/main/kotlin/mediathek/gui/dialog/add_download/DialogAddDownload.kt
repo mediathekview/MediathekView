@@ -374,6 +374,7 @@ class DialogAddDownload(
             setGroesse(getFilmSize())
             isInfoFile = jCheckBoxInfodatei.isSelected
             isSubtitle = jCheckBoxSubtitle.isSelected
+            isMp4Metadata = jCheckBoxMp4Metadata.isSelected
         }
 
         addDownloadToQueue(startAutomatically)
@@ -384,10 +385,11 @@ class DialogAddDownload(
      * Setup the resolution radio buttons based on available download URLs.
      */
     private fun applySelectedProgramSet() {
-        activeProgramSet = listeSpeichern[jComboBoxPset.getSelectedIndex()]
+        activeProgramSet = listeSpeichern[jComboBoxPset.selectedIndex]
         selectResolution()
         updateSubtitleCheckbox()
         updateInfoFileCreationCheckBox()
+        updateMp4MetadataCheckBox()
         setNameFilm()
     }
 
@@ -437,10 +439,14 @@ class DialogAddDownload(
 
     private fun updateSubtitleCheckbox() {
         if (!film.hasSubtitle()) {
-            jCheckBoxSubtitle.setEnabled(false)
+            jCheckBoxSubtitle.isEnabled = false
         } else {
-            jCheckBoxSubtitle.setSelected(activeProgramSet.shouldDownloadSubtitle())
+            jCheckBoxSubtitle.isSelected = activeProgramSet.shouldDownloadSubtitle()
         }
+    }
+
+    private fun updateMp4MetadataCheckBox() {
+        jCheckBoxMp4Metadata.isSelected = activeProgramSet.shouldWriteMp4Metadata()
     }
 
     private fun setNameFilm() {
@@ -556,9 +562,9 @@ class DialogAddDownload(
         val model = DefaultComboBoxModel(listeSpeichern.objectDataCombo)
         jComboBoxPset.apply {
             // disable when only one entry...
-            setEnabled(listeSpeichern.size > 1)
-            setModel(model)
-            setSelectedItem(activeProgramSet.name)
+            isEnabled = listeSpeichern.size > 1
+            this.model = model
+            selectedItem = activeProgramSet.name
             addActionListener { applySelectedProgramSet() }
         }
     }
@@ -600,18 +606,18 @@ class DialogAddDownload(
 
     private fun setupDeleteHistoryButton() {
         jButtonDelHistory.apply {
-            setText("")
-            setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg"))
+            text = ""
+            icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/trash-can.svg")
             addActionListener {
                 ApplicationConfiguration.getInstance().savedDownloadTargetPaths = ""
-                jComboBoxPfad.setModel(DefaultComboBoxModel(arrayOf<String?>(orgPfad)))
+                jComboBoxPfad.model = DefaultComboBoxModel(arrayOf<String?>(orgPfad))
             }
         }
     }
 
     private fun setupPfadSpeichernCheckBox() {
         jCheckBoxPfadSpeichern.apply {
-            setSelected(ApplicationConfiguration.getInstance().showLastUsedDownloadPath)
+            isSelected = ApplicationConfiguration.getInstance().showLastUsedDownloadPath
             addActionListener {
                 ApplicationConfiguration.getInstance().showLastUsedDownloadPath = jCheckBoxPfadSpeichern.isSelected
             }
@@ -624,10 +630,10 @@ class DialogAddDownload(
             lblBusyIndicator.apply {
                 isVisible = true
                 isBusy = false
-                setText("Hilfsprogramm nicht gefunden!")
-                setForeground(Color.RED)
+                text = "Hilfsprogramm nicht gefunden!"
+                foreground = Color.RED
             }
-            btnRequestLiveInfo.setEnabled(false)
+            btnRequestLiveInfo.isEnabled = false
         }
     }
 

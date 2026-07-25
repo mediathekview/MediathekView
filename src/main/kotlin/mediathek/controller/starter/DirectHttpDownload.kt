@@ -39,6 +39,7 @@ import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
 import mediathek.tool.http.MVHttpClient
+import mediathek.tool.notification.NotificationPublisher
 import net.engio.mbassy.bus.MBassador
 import net.engio.mbassy.listener.Handler
 import okhttp3.*
@@ -62,6 +63,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class DirectHttpDownload(
     private val aboHistoryControllerProvider: () -> AboHistoryController,
     private val datenDownload: DatenDownload,
+    private val notificationPublisher: NotificationPublisher,
     private val dialogOwnerProvider: () -> JFrame? = { null },
 ) : Thread() {
 
@@ -422,7 +424,7 @@ class DirectHttpDownload(
             } finally {
                 awaitAncillaryDownloads()
 
-                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
+                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state, notificationPublisher)
 
                 messageBus.publishAsync(DownloadFinishedEvent(datenDownload))
                 messageBus.unsubscribe(this@DirectHttpDownload)

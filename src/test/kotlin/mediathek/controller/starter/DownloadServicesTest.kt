@@ -324,10 +324,10 @@ internal class DownloadServicesTest {
 
         val info = daten.downloads.startInfo()
 
-        assertEquals(4, info.total_num_download_list_entries)
-        assertEquals(3, info.total_starts)
-        assertEquals(1, info.num_abos)
-        assertEquals(3, info.num_downloads)
+        assertEquals(4, info.totalDownloadListEntries)
+        assertEquals(3, info.totalStarts)
+        assertEquals(1, info.aboCount)
+        assertEquals(3, info.downloadCount)
         assertEquals(1, info.initialized)
         assertEquals(1, info.running)
         assertEquals(1, info.finished)

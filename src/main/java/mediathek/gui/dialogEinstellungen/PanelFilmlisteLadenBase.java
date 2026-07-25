@@ -1,6 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.swing.CheckBoxList;
+import mediathek.swing.CheckBoxList;
 import mediathek.swing.MultilineLabel;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;

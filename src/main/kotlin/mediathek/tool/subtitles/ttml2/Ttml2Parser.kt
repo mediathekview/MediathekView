@@ -109,7 +109,7 @@ class Ttml2Parser {
                 "div", "body" -> {
                     if (scope.timeContainer.equals("seq", ignoreCase = true)) {
                         val childBegin =
-                            if (hasAttr(element, "begin")) {
+                            if (hasBeginAttribute(element)) {
                                 TtmlTime.parseTimeExpression(XmlUtil.attr(element, null, "begin"), timeCtx)
                                     ?: seqCursor
                             } else {
@@ -156,7 +156,7 @@ class Ttml2Parser {
         seqCursor: Duration,
     ): Cue? {
         val begin =
-            if (scope.timeContainer.equals("seq", ignoreCase = true) && !hasAttr(paragraph, "begin")) {
+            if (scope.timeContainer.equals("seq", ignoreCase = true) && !hasBeginAttribute(paragraph)) {
                 seqCursor
             } else {
                 resolveBegin(paragraph, scope.begin, timeCtx)
@@ -304,7 +304,8 @@ class Ttml2Parser {
         }
     }
 
-    private fun hasAttr(el: Element, name: String): Boolean = el.hasAttribute(name) && el.getAttribute(name).isNotBlank()
+    private fun hasBeginAttribute(element: Element): Boolean =
+        element.hasAttribute("begin") && element.getAttribute("begin").isNotBlank()
 
     private fun parseXml(inputStream: InputStream): Document {
         val documentBuilderFactory = DocumentBuilderFactory.newInstance()

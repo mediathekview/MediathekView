@@ -54,7 +54,7 @@ internal class TaskbarIndicatorThread(parent: JFrame, downloads: DownloadService
                 taskbar.setWindowProgressValue(parent, percentage)
                 taskbar.setWindowProgressState(parent, Taskbar.State.NORMAL)
                 disableStandby()
-                Thread.sleep(500.milliseconds.toJavaDuration())
+                sleep(500.milliseconds.toJavaDuration())
             }
         } catch (_: InterruptedException) {
         } finally {

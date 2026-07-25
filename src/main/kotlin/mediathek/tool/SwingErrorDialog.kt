@@ -40,7 +40,7 @@ object SwingErrorDialog {
         val text = JTextArea().apply {
             isEditable = false
             font = UIManager.getFont("Label.font")
-            setText(stringWriter.toString())
+            text = stringWriter.toString()
             caretPosition = 0
         }
 

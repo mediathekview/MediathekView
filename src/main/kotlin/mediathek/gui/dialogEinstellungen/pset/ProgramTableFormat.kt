@@ -50,7 +50,7 @@ class ProgramTableFormat : AdvancedTableFormat<DatenProg> {
     override fun getColumnValue(
         baseObject: DatenProg,
         column: Int,
-    ): Any? =
+    ): Any =
         when (column) {
             DatenProg.PROGRAMM_RESTART -> baseObject.isRestart
             DatenProg.PROGRAMM_DOWNLOADMANAGER -> baseObject.isDownloadManager

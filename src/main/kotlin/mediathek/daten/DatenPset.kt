@@ -1,22 +1,21 @@
 /*
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package mediathek.daten
 
 import mediathek.tool.GuiFunktionenProgramme
@@ -24,10 +23,9 @@ import mediathek.tool.MVMessageDialog
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
-import java.util.*
 import javax.swing.JOptionPane
 
-class DatenPset() : Comparable<DatenPset> {
+class DatenPset() {
     val listeProg = ListeProg()
     private var praefixDirekt = ""
     private var suffixDirekt = ""
@@ -44,13 +42,12 @@ class DatenPset() : Comparable<DatenPset> {
     private var infodatei: Boolean? = null
     private var spotlight: Boolean? = null
     private var subtitle: Boolean? = null
+    private var mp4Metadata: Boolean? = null
 
-    @set:JvmName("setNameValue")
     var name: String = ""
 
     var farbe: Color? = null
 
-    @set:JvmName("setZielPfadValue")
     var zielPfad: String = ""
 
     var zielDateiname: String = ""
@@ -100,10 +97,10 @@ class DatenPset() : Comparable<DatenPset> {
 
     /**
      * Return the specified foreground color if present.
-     * @return the requested foreground color for the PSet.
+     * @return the requested foreground color for the PSet, or null if none is set.
      */
-    val foregroundColor: Optional<Color>
-        get() = Optional.ofNullable(farbe)
+    val foregroundColor: Color?
+        get() = farbe
 
     init {
         initialize()
@@ -111,7 +108,7 @@ class DatenPset() : Comparable<DatenPset> {
 
     constructor(name: String?) : this() {
         // neue Pset sind immer gleich Button
-        setName(name)
+        this.name = name.orEmpty()
         this[PROGRAMMSET_IST_BUTTON] = true.toString()
     }
 
@@ -127,6 +124,8 @@ class DatenPset() : Comparable<DatenPset> {
      */
     fun shouldCreateInfofile(): Boolean = infodatei == true
 
+    fun shouldWriteMp4Metadata(): Boolean = mp4Metadata == true
+
     fun getPraefixDirekt(): String = praefixDirekt
 
     fun getSuffixDirekt(): String = suffixDirekt
@@ -141,8 +140,8 @@ class DatenPset() : Comparable<DatenPset> {
         this.subtitle = subtitle
     }
 
-    fun setName(name: String?) {
-        this.name = name.orEmpty()
+    fun setMp4Metadata(mp4Metadata: Boolean) {
+        this.mp4Metadata = mp4Metadata
     }
 
     fun clearFarbe() {
@@ -173,6 +172,7 @@ class DatenPset() : Comparable<DatenPset> {
             PROGRAMMSET_INFODATEI -> boolToString(infodatei)
             PROGRAMMSET_SPOTLIGHT -> boolToString(spotlight)
             PROGRAMMSET_SUBTITLE -> boolToString(subtitle)
+            PROGRAMMSET_MP4_METADATA -> boolToString(mp4Metadata)
             else -> throw ArrayIndexOutOfBoundsException(index)
         }
 
@@ -202,6 +202,7 @@ class DatenPset() : Comparable<DatenPset> {
             PROGRAMMSET_INFODATEI -> infodatei = parseBoolean(normalizedValue)
             PROGRAMMSET_SPOTLIGHT -> spotlight = parseBoolean(normalizedValue)
             PROGRAMMSET_SUBTITLE -> subtitle = parseBoolean(normalizedValue)
+            PROGRAMMSET_MP4_METADATA -> mp4Metadata = parseBoolean(normalizedValue)
             else -> throw ArrayIndexOutOfBoundsException(index)
         }
     }
@@ -230,6 +231,7 @@ class DatenPset() : Comparable<DatenPset> {
             boolToString(infodatei),
             boolToString(spotlight),
             boolToString(subtitle),
+            boolToString(mp4Metadata),
         )
 
     fun copyFrom(values: Array<out String?>?) {
@@ -307,15 +309,11 @@ class DatenPset() : Comparable<DatenPset> {
         return ret
     }
 
-    fun setZielPfad(zielPfad: String?) {
-        this.zielPfad = zielPfad.orEmpty()
-    }
-
     fun copy(): DatenPset {
         val ret = DatenPset()
         ret.copyFrom(toArray())
         // es darf nur einen geben!
-        ret.setName("Kopie-$name")
+        ret.name = "Kopie-$name"
         ret[PROGRAMMSET_IST_ABSPIELEN] = false.toString()
         for (prog in listeProg) {
             ret.addProg(prog.copy())
@@ -378,6 +376,7 @@ class DatenPset() : Comparable<DatenPset> {
         infodatei = null
         spotlight = null
         subtitle = null
+        mp4Metadata = null
     }
 
     private fun initializeDefaults() {
@@ -411,6 +410,9 @@ class DatenPset() : Comparable<DatenPset> {
         if (this[PROGRAMMSET_SUBTITLE].isEmpty()) {
             subtitle = false
         }
+        if (this[PROGRAMMSET_MP4_METADATA].isEmpty()) {
+            mp4Metadata = false
+        }
         if (this[PROGRAMMSET_AUFLOESUNG].isEmpty()) {
             aufloesungValue = FilmResolution.Enum.NORMAL
         }
@@ -429,8 +431,6 @@ class DatenPset() : Comparable<DatenPset> {
             null
         }
     }
-
-    override fun compareTo(other: DatenPset): Int = 0
 
     companion object {
         const val PROGRAMMSET_NAME = 0
@@ -455,9 +455,10 @@ class DatenPset() : Comparable<DatenPset> {
         const val PROGRAMMSET_INFODATEI = 19
         const val PROGRAMMSET_SPOTLIGHT = 20
         const val PROGRAMMSET_SUBTITLE = 21
+        const val PROGRAMMSET_MP4_METADATA = 22
 
         const val TAG = "Programmset"
-        const val MAX_ELEM = 22
+        const val MAX_ELEM = 23
 
         val COLUMN_NAMES: Array<String> = arrayOf(
             "Setname",
@@ -482,6 +483,7 @@ class DatenPset() : Comparable<DatenPset> {
             "Infodatei",
             "Spotlight",
             "Untertitel",
+            "MP4-Metadaten",
         )
 
         val XML_NAMES: Array<String> = arrayOf(
@@ -507,6 +509,7 @@ class DatenPset() : Comparable<DatenPset> {
             "Infodatei",
             "Spotlight",
             "Untertitel",
+            "MP4-Metadaten",
         )
 
         private val logger = LogManager.getLogger(DatenPset::class.java)

@@ -113,25 +113,16 @@ class BookmarkData() {
     val normalQualityUrl: String?
         get() = datenFilm?.urlNormalQuality
 
-    val noteOptional: Optional<String>
-        get() = Optional.ofNullable(note)
-
-    val notSeen: Boolean
-        get() = !seen
-
-    fun isNotInFilmList(): Boolean = datenFilm == null
-
-    val webUrl: String?
-        get() = datenFilm?.websiteUrl
 
     val datenFilmOptional: Optional<DatenFilm>
         get() = Optional.ofNullable(datenFilm)
 
-    fun addPropertyChangeListener(listener: PropertyChangeListener) {
+    internal fun addPropertyChangeListener(listener: PropertyChangeListener) {
         support.addPropertyChangeListener(listener)
     }
 
-    fun removePropertyChangeListener(listener: PropertyChangeListener) {
+    internal fun removePropertyChangeListener(listener: PropertyChangeListener) {
         support.removePropertyChangeListener(listener)
     }
+
 }

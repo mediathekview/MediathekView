@@ -24,6 +24,7 @@ import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.*
 import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.CdnDetector
+import mediathek.tool.notification.NotificationPublisher
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDateTime
 import java.util.concurrent.Executors
@@ -40,6 +41,7 @@ private const val NEW_START_PAUSE_SECONDS = 5L
 class DownloadStartCoordinator(
     private val downloads: DownloadServices,
     private val aboHistoryControllerProvider: () -> AboHistoryController,
+    private val notificationPublisher: NotificationPublisher,
 ) {
     private val starterScheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor { runnable ->
         Thread.ofPlatform().name("StarterScheduler").daemon(true).unstarted(runnable)
@@ -75,7 +77,7 @@ class DownloadStartCoordinator(
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         val url = film.urlNormalQuality
         if (url.isNotEmpty()) {
-            val download = DatenDownload(pSet, film, DownloadSource.BUTTON, null, "", "", aufloesung)
+            val download = DatenDownload(pSet, film, DownloadSource.BUTTON, null, "", "", aufloesung, downloads.replacementRules)
             download.runtime.startRun()
             launchDownloadThread(download)
             // gestartete Filme (originalURL des Films) auch in die History eintragen
@@ -156,14 +158,19 @@ class DownloadStartCoordinator(
         val result = CdnDetector.detect(datenDownload.downloadUrl)
         return if (useCdnAwareDirectDownload && CdnDetector.isCdn(result)) {
             logger.trace("CDN detected: {}", result)
-            CdnAwareDirectDownloadThread(aboHistoryControllerProvider, datenDownload, ::dialogOwnerFrame)
+            CdnAwareDirectDownloadThread(
+                aboHistoryControllerProvider,
+                datenDownload,
+                notificationPublisher,
+                ::dialogOwnerFrame,
+            )
         } else {
             if (!useCdnAwareDirectDownload) {
                 logger.info("CDN detection is disabled")
             } else {
                 logger.trace("Not a CDN detected: {}", result)
             }
-            DirectHttpDownload(aboHistoryControllerProvider, datenDownload, ::dialogOwnerFrame)
+            DirectHttpDownload(aboHistoryControllerProvider, datenDownload, notificationPublisher, ::dialogOwnerFrame)
         }
     }
 
@@ -179,7 +186,13 @@ class DownloadStartCoordinator(
         DownloadProgressEventPublisher.publishThrottled()
 
         val downloadThread = when (datenDownload.art) {
-            DownloadType.PROGRAM -> ExternalProgramDownload(aboHistoryControllerProvider, datenDownload, ::dialogOwnerFrame)
+            DownloadType.PROGRAM ->
+                ExternalProgramDownload(
+                    aboHistoryControllerProvider,
+                    datenDownload,
+                    notificationPublisher,
+                    ::dialogOwnerFrame,
+                )
             DownloadType.DIRECT -> selectDirectDownload(datenDownload)
         }
         downloadThread.start()

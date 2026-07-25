@@ -294,7 +294,7 @@ internal class IoXmlLesenTest {
         val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
-            abos.clear()
+            abos.clearWithoutNotification()
             val configFile = tempDir.resolve("mediathek.xml")
             val aboRulesFile = tempDir.resolve("abo-rules.json")
             Files.writeString(
@@ -346,8 +346,8 @@ internal class IoXmlLesenTest {
             assertTrue(loaded.isDoNotStartAutomatically)
             assertEquals("Legacy Abo", AboRuleStorage.read(aboRulesFile).single().name)
         } finally {
-            abos.clear()
-            abos.addAll(originalAbos)
+            abos.clearWithoutNotification()
+            originalAbos.forEach(abos::addAboWithoutNotification)
         }
     }
 
@@ -356,7 +356,7 @@ internal class IoXmlLesenTest {
         val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
-            abos.clear()
+            abos.clearWithoutNotification()
             val configFile = tempDir.resolve("mediathek.xml")
             val aboRulesFile = tempDir.resolve("abo-rules.json")
             Files.writeString(
@@ -394,8 +394,8 @@ internal class IoXmlLesenTest {
             assertEquals("JSON Abo", abos.single().name)
             assertEquals("ZDF", abos.single().sender)
         } finally {
-            abos.clear()
-            abos.addAll(originalAbos)
+            abos.clearWithoutNotification()
+            originalAbos.forEach(abos::addAboWithoutNotification)
         }
     }
 

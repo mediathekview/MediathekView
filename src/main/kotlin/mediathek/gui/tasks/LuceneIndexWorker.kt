@@ -24,7 +24,7 @@ import mediathek.config.StandardLocations.getFilmIndexPath
 import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
 import mediathek.filmlisten.FilmCatalog
-import mediathek.mainwindow.FilmListLoadHost
+import mediathek.filmlisten.FilmListIndexingHost
 import mediathek.tool.FileUtils.deletePathRecursively
 import mediathek.tool.LuceneDefaultAnalyzer
 import mediathek.tool.SwingErrorDialog
@@ -53,7 +53,7 @@ class LuceneIndexWorker(
     private val filmCatalog: FilmCatalog,
     private val progLabel: JLabel,
     private val progressBar: JProgressBar,
-    private val host: FilmListLoadHost? = null,
+    private val host: FilmListIndexingHost? = null,
 ) : Runnable {
 
     private data class IndexingTuning(val queueCapacity: Int, val writeBatchSize: Int)

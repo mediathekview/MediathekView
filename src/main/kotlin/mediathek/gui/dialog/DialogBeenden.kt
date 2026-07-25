@@ -229,7 +229,7 @@ class DialogBeenden(
         btnCancel.addActionListener { escapeHandler() }
 
         pack()
-        getRootPane().defaultButton = btnContinue
+        rootPane.defaultButton = btnContinue
         restoreSelectedAction()
         updateActionControls()
     }

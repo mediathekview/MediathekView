@@ -1,7 +1,5 @@
 package mediathek.gui.tabs.tab_film.helpers
 
-import ca.odell.glazedlists.BasicEventList
-import ca.odell.glazedlists.EventList
 import mediathek.config.application.FilterConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
@@ -30,7 +28,7 @@ internal class GuiModelHelperSupportTest {
             filterConfiguration,
             dataProvider =
                 object : FilmFilterController.DataProvider {
-                    override fun senderList(): EventList<String> = BasicEventList()
+                    override fun senderList(): List<String> = emptyList()
 
                     override fun getThemen(senders: Collection<String>): List<String> = emptyList()
                 },
@@ -118,7 +116,7 @@ internal class GuiModelHelperSupportTest {
                 filterConfiguration,
                 dataProvider =
                     object : FilmFilterController.DataProvider {
-                        override fun senderList(): EventList<String> = BasicEventList()
+                        override fun senderList(): List<String> = emptyList()
 
                         override fun getThemen(senders: Collection<String>): List<String> = emptyList()
                     },

@@ -98,7 +98,7 @@ class ListeBlacklist(
         rule.sender = updatedRule.sender
         rule.thema = updatedRule.thema
         rule.titel = updatedRule.titel
-        rule.thema_titel = updatedRule.thema_titel
+        rule.topicTitle = updatedRule.topicTitle
         rule.active = updatedRule.active
         notifyChanged()
         return true
@@ -115,7 +115,7 @@ class ListeBlacklist(
         rule.sender = updatedRule.sender
         rule.thema = updatedRule.thema
         rule.titel = updatedRule.titel
-        rule.thema_titel = updatedRule.thema_titel
+        rule.topicTitle = updatedRule.topicTitle
         rule.active = updatedRule.active
         return true
     }

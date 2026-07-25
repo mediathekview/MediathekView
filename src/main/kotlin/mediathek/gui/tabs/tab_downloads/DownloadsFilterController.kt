@@ -18,9 +18,8 @@
 
 package mediathek.gui.tabs.tab_downloads
 
-import ca.odell.glazedlists.GlazedLists
-import ca.odell.glazedlists.swing.GlazedListsSwing
 import mediathek.config.application.ApplicationConfiguration
+import javax.swing.DefaultComboBoxModel
 
 class DownloadsFilterController(
     private val toolBar: DownloadsDisplayFilterToolBar,
@@ -38,13 +37,14 @@ class DownloadsFilterController(
     }
 
     private fun setupDisplayCategories() {
-        val displaySelectionList = GlazedLists.eventListOf(
-            DisplayFilter.ALL,
-            DisplayFilter.DOWNLOADS_ONLY,
-            DisplayFilter.ABOS_ONLY
-        )
         val comboBox = toolBar.displayCategoriesComboBox
-        comboBox.model = GlazedListsSwing.eventComboBoxModelWithThreadProxyList(displaySelectionList)
+        comboBox.model = DefaultComboBoxModel(
+            arrayOf(
+                DisplayFilter.ALL,
+                DisplayFilter.DOWNLOADS_ONLY,
+                DisplayFilter.ABOS_ONLY,
+            ),
+        )
         displayFilter = DisplayFilter.from(applicationConfiguration.getDownloadDisplayFilter(DisplayFilter.ALL))
         comboBox.model.selectedItem = displayFilter.selectedItem()
         comboBox.addActionListener {
@@ -55,16 +55,17 @@ class DownloadsFilterController(
     }
 
     private fun setupViewCategories() {
-        val viewSelectionList = GlazedLists.eventListOf(
-            ViewFilter.ALL,
-            ViewFilter.NOT_STARTED,
-            ViewFilter.STARTED,
-            ViewFilter.WAITING,
-            ViewFilter.RUN_ONLY,
-            ViewFilter.FINISHED_ONLY
-        )
         val comboBox = toolBar.viewComboBox
-        comboBox.model = GlazedListsSwing.eventComboBoxModelWithThreadProxyList(viewSelectionList)
+        comboBox.model = DefaultComboBoxModel(
+            arrayOf(
+                ViewFilter.ALL,
+                ViewFilter.NOT_STARTED,
+                ViewFilter.STARTED,
+                ViewFilter.WAITING,
+                ViewFilter.RUN_ONLY,
+                ViewFilter.FINISHED_ONLY,
+            ),
+        )
         viewFilter = ViewFilter.from(applicationConfiguration.getDownloadViewFilter(ViewFilter.ALL))
         comboBox.model.selectedItem = viewFilter.selectedItem()
         comboBox.addActionListener {

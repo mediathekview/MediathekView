@@ -4,9 +4,7 @@ import mediathek.controller.LegacyAboRuleXml
 import mediathek.controller.LegacyBlacklistRuleXml
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
-import mediathek.gui.messages.ReplaceListChangedEvent
-import mediathek.tool.MessageBus
-import mediathek.tool.ReplaceList
+import mediathek.tool.ReplacementRules
 import org.apache.logging.log4j.LogManager
 import java.io.FileInputStream
 import java.io.IOException
@@ -20,6 +18,7 @@ import javax.xml.stream.XMLStreamReader
 class OldConfigFileImporter(
     private val abos: AboServices,
     private val blacklist: BlacklistServices,
+    private val replacementRules: ReplacementRules,
 ) {
     private val inFactory: XMLInputFactory = XMLInputFactory.newInstance()
 
@@ -52,7 +51,7 @@ class OldConfigFileImporter(
                                 catch (e: Exception) {
                                     logger.error("Failed to read blacklist rule", e)
                                 }
-                            } else if (importReplaceList && parser.localName == ReplaceList.REPLACELIST) {
+                            } else if (importReplaceList && parser.localName == ReplacementRules.REPLACELIST) {
                                 if (importReplaceList(parser))
                                     foundReplaceListEntries++
                             }
@@ -77,9 +76,6 @@ class OldConfigFileImporter(
         }
         if (foundBlacklistEntries > 0)
             blacklist.applyToFilmListAndNotifyListeners()
-        if (foundReplaceListEntries > 0)
-            MessageBus.messageBus.publishAsync(ReplaceListChangedEvent())
-
         return ImportResult(foundAbos, foundBlacklistEntries, foundReplaceListEntries)
     }
 
@@ -98,24 +94,19 @@ class OldConfigFileImporter(
     }
 
     private fun importReplaceList(parser: XMLStreamReader): Boolean {
-        val sa = Array(ReplaceList.MAX_ELEM) { "" }
-        val success = get(parser, sa)
-        return if (success) {
-            ReplaceList.add(sa)
-            true
-        } else
-            false
+        val sa = Array(ReplacementRules.MAX_ELEM) { "" }
+        return get(parser, sa) && replacementRules.add(sa)
     }
 
     private fun get(parser: XMLStreamReader, strRet: Array<String>): Boolean {
         val maxElem = strRet.size
-        val columnNames = ReplaceList.columnNames()
+        val columnNames = replacementRules.columnNames()
 
         return try {
             while (parser.hasNext()) {
                 val event = parser.next()
                 if (event == XMLStreamConstants.END_ELEMENT) {
-                    if (parser.localName == ReplaceList.REPLACELIST) {
+                    if (parser.localName == ReplacementRules.REPLACELIST) {
                         break
                     }
                 }

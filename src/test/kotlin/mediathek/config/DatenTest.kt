@@ -65,8 +65,8 @@ internal class DatenTest {
         val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
-            abos.clear()
-            abos.add(
+            abos.clearWithoutNotification()
+            abos.addAboWithoutNotification(
                 DatenAbo().apply {
                     name = "JSON Abo"
                     sender = "ARD"
@@ -88,8 +88,8 @@ internal class DatenTest {
             assertEquals("tagesschau", restored.title)
             assertEquals(LocalDate.of(2026, 6, 25), restored.downloadDate)
         } finally {
-            abos.clear()
-            abos.addAll(originalAbos)
+            abos.clearWithoutNotification()
+            originalAbos.forEach(abos::addAboWithoutNotification)
         }
     }
 }

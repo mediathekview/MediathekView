@@ -36,7 +36,7 @@ class FilterSelectionComboBox() : JComboBox<FilterDTO>() {
     }
 
     constructor(model: DefaultComboBoxModel<FilterDTO>) : this() {
-        setModel(model)
+        this.model = model
     }
 
     private fun setup() {

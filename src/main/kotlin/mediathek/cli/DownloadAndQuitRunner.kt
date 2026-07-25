@@ -31,16 +31,15 @@ import mediathek.controller.starter.DownloadStartActions
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
 import mediathek.daten.abo.AboServices
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
+import mediathek.filmlisten.FilmListLoadListener
+import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.filmlisten.reader.FilmListReader
 import mediathek.gui.bookmark.BookmarkServices
 import mediathek.tool.BandwidthFormatter
 import mediathek.tool.FileSize
 import org.apache.logging.log4j.LogManager
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
@@ -48,7 +47,7 @@ import kotlin.time.Duration.Companion.seconds
 class DownloadAndQuitRunner(
     private val downloads: DownloadServices,
     private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
+    private val filmListLoader: FilmListLoadCoordinator,
     private val abos: AboServices,
     private val bookmarks: BookmarkServices,
     private val configurationPersistence: DatenConfigurationPersistence,
@@ -139,30 +138,27 @@ class DownloadAndQuitRunner(
     private suspend fun updateFilmlistWithProgress(): Boolean = withContext(Dispatchers.IO) {
         loadLocalFilmlist()
 
-        val completion = CompletableFuture<Boolean>()
-        val listener = object : ListenerFilmeLaden() {
+        val listener = object : FilmListLoadListener {
             private var lastProgress = -1
 
-            override fun start(event: ListenerFilmeLadenEvent) {
+            override fun loadStarted(progress: FilmListLoadProgress) {
                 logger.info("Updating filmlist...")
-                emitFilmlistProgress(event)
+                emitFilmlistProgress(progress)
             }
 
-            override fun progress(event: ListenerFilmeLadenEvent) {
-                emitFilmlistProgress(event)
+            override fun loadProgress(progress: FilmListLoadProgress) {
+                emitFilmlistProgress(progress)
             }
 
-            override fun fertig(event: ListenerFilmeLadenEvent) {
-                filmListLoader.removeFilmLoadListener(this)
-                if (event.fehler) {
+            override fun loadFinished(progress: FilmListLoadProgress) {
+                if (progress.failed) {
                     logger.error("Filmlist update failed.")
                 } else {
                     logger.info("Filmlist update finished.")
                 }
-                completion.complete(!event.fehler)
             }
 
-            private fun emitFilmlistProgress(event: ListenerFilmeLadenEvent) {
+            private fun emitFilmlistProgress(event: FilmListLoadProgress) {
                 if (event.max <= 0) {
                     return
                 }
@@ -175,14 +171,18 @@ class DownloadAndQuitRunner(
             }
         }
 
-        filmListLoader.addFilmLoadListener(listener)
-        val loadStarted = filmListLoader.loadFilmlist("", false)
-        if (!loadStarted) {
-            filmListLoader.removeFilmLoadListener(listener)
+        filmListLoader.addLoadListener(listener)
+        val load = filmListLoader.startFilmlistLoad("", false)
+        if (!load.started) {
+            filmListLoader.removeLoadListener(listener)
             logger.info("Filmlist update skipped because another filmlist load is already running.")
             return@withContext true
         }
-        completion.get()
+        try {
+            !load.completion.await().failed
+        } finally {
+            filmListLoader.removeLoadListener(listener)
+        }
     }
 
     private suspend fun prepareAboSearch() = withContext(Dispatchers.Default) {

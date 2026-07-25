@@ -20,6 +20,9 @@
 
 package mediathek.config
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import mediathek.SplashScreenLifecycle
 import mediathek.controller.*
 import mediathek.controller.starter.DownloadServices
@@ -27,29 +30,48 @@ import mediathek.daten.ProgramSetRepository
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.bookmark.BookmarkServices
-import mediathek.tool.ReplaceList
+import mediathek.tool.ReplacementRules
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Files
 import java.nio.file.Path
 import javax.swing.JOptionPane
 
+@Suppress("LoggingSimilarMessage")
 class DatenConfigurationPersistence(
     private val programSets: ProgramSetRepository,
     private val downloads: DownloadServices,
     private val blacklist: BlacklistServices,
     private val abos: AboServices,
     private val bookmarks: BookmarkServices,
+    private val replacementRules: ReplacementRules,
 ) {
     private var backupAlreadyHandled = false
 
     fun loadAll(): Boolean {
-        if (!load()) {
+        if (!load(::askForBackupRestore)) {
             logger.info("Weder Konfig noch Backup konnte geladen werden!")
             clearConfiguration()
             return false
         }
         logger.info("Konfig wurde gelesen!")
         MVColor.load()
+
+        return true
+    }
+
+    suspend fun loadAllForGui(): Boolean {
+        if (!loadForGui()) {
+            logger.info("Weder Konfig noch Backup konnte geladen werden!")
+            withIoContext {
+                clearConfiguration()
+            }
+            return false
+        }
+
+        logger.info("Konfig wurde gelesen!")
+        withIoContext {
+            MVColor.load()
+        }
 
         return true
     }
@@ -67,19 +89,18 @@ class DatenConfigurationPersistence(
 
     private fun clearConfiguration() {
         programSets.clear()
-        ReplaceList.clear()
-        abos.list.clear()
+        replacementRules.clear()
+        abos.list.clearWithoutNotification()
         downloads.clearQueuedDownloads()
         blacklist.rules.clear()
         bookmarks.list.clear()
     }
 
-    private fun load(): Boolean {
+    private fun load(askForBackupRestore: () -> Boolean): Boolean {
         val xmlFilePath = StandardLocations.getMediathekXmlFile()
 
         if (Files.exists(xmlFilePath)) {
-            val configReader = IoXmlLesen(configData())
-            if (configReader.datenLesen(xmlFilePath)) {
+            if (readConfiguration(xmlFilePath)) {
                 return true
             }
             logger.info("Konfig konnte nicht gelesen werden!")
@@ -87,7 +108,22 @@ class DatenConfigurationPersistence(
             logger.info("Konfig existiert nicht!")
         }
 
-        return loadBackup()
+        return loadBackup(askForBackupRestore)
+    }
+
+    private suspend fun loadForGui(): Boolean {
+        val xmlFilePath = StandardLocations.getMediathekXmlFile()
+
+        if (withIoContext { Files.exists(xmlFilePath) }) {
+            if (withIoContext { readConfiguration(xmlFilePath) }) {
+                return true
+            }
+            logger.info("Konfig konnte nicht gelesen werden!")
+        } else {
+            logger.info("Konfig existiert nicht!")
+        }
+
+        return loadBackupForGui()
     }
 
     private fun askForBackupRestore(): Boolean {
@@ -113,7 +149,7 @@ class DatenConfigurationPersistence(
         }
     }
 
-    private fun loadBackup(): Boolean {
+    private fun loadBackup(askForBackupRestore: () -> Boolean): Boolean {
         val backupPaths = mediathekXmlCopyFilePath
         if (backupPaths.isEmpty()) {
             logger.info("Es gibt kein Backup")
@@ -125,11 +161,7 @@ class DatenConfigurationPersistence(
 
         if (askForBackupRestore()) {
             for (path in backupPaths) {
-                clearConfiguration()
-                logger.info("Versuch Backup zu laden: {}", path.toString())
-                val configReader = IoXmlLesen(configData())
-                if (configReader.datenLesen(path)) {
-                    logger.info("Backup hat geklappt: {}", path.toString())
+                if (loadBackupFile(path)) {
                     return true
                 }
             }
@@ -137,6 +169,48 @@ class DatenConfigurationPersistence(
 
         return false
     }
+
+    private suspend fun loadBackupForGui(): Boolean {
+        val backupPaths = withIoContext { mediathekXmlCopyFilePath }
+        if (backupPaths.isEmpty()) {
+            logger.info("Es gibt kein Backup")
+            return false
+        }
+
+        withContext(Dispatchers.Swing) {
+            SplashScreenLifecycle.close()
+        }
+        logger.info("Es gibt ein Backup")
+
+        val shouldRestoreBackup = withContext(Dispatchers.Swing) {
+            askForBackupRestore()
+        }
+        if (shouldRestoreBackup) {
+            for (path in backupPaths) {
+                if (withIoContext { loadBackupFile(path) }) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun readConfiguration(path: Path): Boolean =
+        IoXmlLesen(configData()).datenLesen(path)
+
+    private fun loadBackupFile(path: Path): Boolean {
+        clearConfiguration()
+        logger.info("Versuch Backup zu laden: {}", path.toString())
+        if (readConfiguration(path)) {
+            logger.info("Backup hat geklappt: {}", path.toString())
+            return true
+        }
+        return false
+    }
+
+    private suspend fun <T> withIoContext(block: () -> T): T =
+        withContext(Dispatchers.IO) { block() }
 
     private fun writeBlacklistRules() {
         try {
@@ -160,6 +234,7 @@ class DatenConfigurationPersistence(
             downloads = downloads,
             blacklistRules = blacklist.rules,
             abos = abos.list,
+            replacementRules = replacementRules,
         )
 
     private companion object {

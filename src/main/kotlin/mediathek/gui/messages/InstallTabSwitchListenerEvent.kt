@@ -1,7 +1,7 @@
 package mediathek.gui.messages
 
-class InstallTabSwitchListenerEvent(val event: INSTALL_TYPE) : BaseEvent() {
-    enum class INSTALL_TYPE {
+class InstallTabSwitchListenerEvent(val event: InstallType) : BaseEvent() {
+    enum class InstallType {
         INSTALL,
         REMOVE,
     }

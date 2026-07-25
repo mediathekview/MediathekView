@@ -19,38 +19,36 @@
 package mediathek.gui.tabs.tab_film.helpers
 
 import mediathek.controller.SenderFilmlistLoadApprover
-import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 import mediathek.gui.tabs.tab_film.filter.FilmFilterState
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider
 import mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner
 import mediathek.gui.tabs.tab_film.search.SearchFieldData
-import mediathek.tool.models.TModelFilm
 import java.util.stream.Stream
-import javax.swing.table.TableModel
 import kotlin.time.Duration.Companion.minutes
 
-sealed interface GuiModelHelper {
-    val filteredTableModel: TableModel
+fun interface FilmQueryEngine {
+    fun query(): List<DatenFilm>
 }
 
 internal class GuiModelHelperSupport(
     private val searchFieldData: SearchFieldData,
     private val filterController: FilmFilterController,
 ) {
-    fun getFilteredTableModel(
+    fun getFilteredFilms(
         allFilms: Collection<DatenFilm>,
         filteredFilmSupplier: (FilterExecutionContext) -> Collection<DatenFilm>,
-    ): TableModel {
+    ): List<DatenFilm> {
         if (allFilms.isEmpty()) {
-            return createEmptyFilmTableModel()
+            return emptyList()
         }
         val filterContext = createFilterExecutionContext()
         if (filterContext.noFiltersAreSet) {
-            return createFilmTableModel(allFilms)
+            return allFilms as? List<DatenFilm> ?: allFilms.toList()
         }
-        return createFilmTableModel(filteredFilmSupplier(filterContext))
+        val filteredFilms = filteredFilmSupplier(filterContext)
+        return filteredFilms as? List<DatenFilm> ?: filteredFilms.toList()
     }
 
     fun applyCommonFilters(
@@ -59,9 +57,9 @@ internal class GuiModelHelperSupport(
     ): Stream<DatenFilm> =
         source.filter { film ->
             matchesThemaFilter(film, filterContext) &&
-                matchesMaxLengthFilter(film, filterContext.lengthFilterRange) &&
-                matchesSeenFilter(film, filterContext) &&
-                minLengthCheck(film, filterContext.lengthFilterRange)
+                    matchesMaxLengthFilter(film, filterContext.lengthFilterRange) &&
+                    matchesSeenFilter(film, filterContext) &&
+                    minLengthCheck(film, filterContext.lengthFilterRange)
         }
 
     fun createFilterExecutionContext(): FilterExecutionContext {
@@ -94,22 +92,22 @@ internal class GuiModelHelperSupport(
 
     private fun noFiltersAreSet(state: FilmFilterState): Boolean =
         state.checkedChannels.isEmpty() &&
-            state.thema.isEmpty() &&
-            state.filmLengthMin == 0 &&
-            state.filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE &&
-            !state.dontShowAbos &&
-            !state.showUnseenOnly &&
-            !state.showHighQualityOnly &&
-            !state.showSubtitlesOnly &&
-            !state.showLivestreamsOnly &&
-            !state.showNewOnly &&
-            !state.showBookMarkedOnly &&
-            !state.dontShowTrailers &&
-            !state.dontShowSignLanguage &&
-            !state.dontShowGeoblocked &&
-            !state.dontShowAudioVersions &&
-            !state.dontShowDuplicates &&
-            state.zeitraum.equals(ZeitraumSpinner.INFINITE_TEXT, ignoreCase = true)
+                state.thema.isEmpty() &&
+                state.filmLengthMin == 0 &&
+                state.filmLengthMax == FilmLengthSlider.UNLIMITED_VALUE &&
+                !state.dontShowAbos &&
+                !state.showUnseenOnly &&
+                !state.showHighQualityOnly &&
+                !state.showSubtitlesOnly &&
+                !state.showLivestreamsOnly &&
+                !state.showNewOnly &&
+                !state.showBookMarkedOnly &&
+                !state.dontShowTrailers &&
+                !state.dontShowSignLanguage &&
+                !state.dontShowGeoblocked &&
+                !state.dontShowAudioVersions &&
+                !state.dontShowDuplicates &&
+                state.zeitraum.equals(ZeitraumSpinner.INFINITE_TEXT, ignoreCase = true)
 
     private fun minLengthCheck(film: DatenFilm, lengthFilterRange: LengthFilterRange): Boolean {
         val filmLength = film.filmLength
@@ -133,21 +131,13 @@ internal class GuiModelHelperSupport(
             .filter(SenderFilmlistLoadApprover::isApproved)
             .toSet()
 
-    private fun seenCheck(film: DatenFilm): Boolean = !FilmSeenHistoryController.hasBeenSeenFromSharedCache(film)
+    private fun seenCheck(film: DatenFilm): Boolean = !film.isSeenInHistory
 
     private fun createLengthFilterRange(state: FilmFilterState): LengthFilterRange =
         LengthFilterRange(
             minLengthInSeconds = state.filmLengthMin.minutes.inWholeSeconds,
             maxLengthInSeconds = state.filmLengthMax.minutes.inWholeSeconds,
         )
-
-    private fun createFilmTableModel(films: Collection<DatenFilm>): TModelFilm {
-        val filmModel = TModelFilm(films.size)
-        filmModel.addAll(films as? List<DatenFilm> ?: films.toList())
-        return filmModel
-    }
-
-    private fun createEmptyFilmTableModel(): TModelFilm = TModelFilm()
 
     data class LengthFilterRange(
         val minLengthInSeconds: Long,

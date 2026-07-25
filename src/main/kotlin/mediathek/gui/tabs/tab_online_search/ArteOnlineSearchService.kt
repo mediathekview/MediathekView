@@ -121,8 +121,7 @@ class ArteOnlineSearchService(
             language = DEFAULT_STREAM_LANGUAGE,
         ),
     ): OnlineSearchResult? {
-        val attributes = get(configUrl).parseJsonObject(json)
-            .get("data")?.jsonObjectOrNull()
+        val attributes = get(configUrl).parseJsonObject(json)["data"]?.jsonObjectOrNull()
             ?.get("attributes")?.jsonObjectOrNull()
             ?: return null
         val metadata = attributes["metadata"]?.jsonObjectOrNull() ?: return null
@@ -288,7 +287,7 @@ class ArteOnlineSearchService(
         private const val MAX_RATE_LIMIT_ATTEMPTS = 3
         private const val MIN_REQUEST_DELAY_MILLIS = 250L
         private const val MAX_REQUEST_DELAY_MILLIS = 10_000L
-        private val ARTE_PROGRAM_ID_PATTERN = Regex("""(?:[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6})""")
+        private val ARTE_PROGRAM_ID_PATTERN = Regex("""[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6}""")
         private val ARTE_DEFAULT_AUDIO_CODES = setOf("VA", "VA-STA", "VOA", "VOA-STA")
         private val ARTE_STREAM_HEADERS = mapOf("Authorization" to ARTE_STREAM_API_TOKEN)
         private val SUBCOLLECTION_ID_PATTERN = Regex("""subCollectionId(?:=|\\u003d)(RC-[0-9]{6})""")

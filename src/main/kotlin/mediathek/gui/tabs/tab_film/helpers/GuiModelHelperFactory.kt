@@ -30,7 +30,7 @@ object GuiModelHelperFactory {
         owner: Component,
         searchFieldData: SearchFieldData,
         filterController: FilmFilterController
-    ): GuiModelHelper = if (filmCatalog.filteredFilms is IndexedFilmList) {
+    ): FilmQueryEngine = if (filmCatalog.filteredFilms is IndexedFilmList) {
         LuceneGuiFilmeModelHelper(filmCatalog, owner, searchFieldData, filterController)
     } else {
         GuiFilmeModelHelper(filmCatalog, searchFieldData, filterController)

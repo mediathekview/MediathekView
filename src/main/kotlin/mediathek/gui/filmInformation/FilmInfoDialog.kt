@@ -44,6 +44,7 @@ import java.net.URI
 import java.util.*
 import javax.swing.*
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.math.roundToInt
 
 class FilmInfoDialog(owner: Window) : JDialog(owner) {
     private val form = FilmInfoFormPanel()
@@ -402,6 +403,6 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
             }
         }
 
-        private fun Double.toIntRounded(): Int = Math.round(this).toInt()
+        private fun Double.toIntRounded(): Int = roundToInt()
     }
 }

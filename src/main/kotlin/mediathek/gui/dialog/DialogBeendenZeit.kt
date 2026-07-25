@@ -97,7 +97,7 @@ class DialogBeendenZeit(
     }
 
     private fun setTextWait() {
-        val dateTime = dateTimePicker.getDateTimePermissive()
+        val dateTime = dateTimePicker.dateTimePermissive
         val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
         val date = dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
         progressPanel?.setMessage("Downloads werden am $date um $time gestartet.")
@@ -113,7 +113,7 @@ class DialogBeendenZeit(
         downloadMonitorJob = scope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    while (LocalDateTime.now().isBefore(dateTimePicker.getDateTimePermissive())) {
+                    while (LocalDateTime.now().isBefore(dateTimePicker.dateTimePermissive)) {
                         ensureActive()
                         delay(1.seconds)
                     }

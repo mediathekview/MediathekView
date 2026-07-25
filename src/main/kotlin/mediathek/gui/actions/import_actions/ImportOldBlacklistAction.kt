@@ -4,6 +4,7 @@ import mediathek.config.Konstanten
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
 import mediathek.tool.FileDialogs.chooseLoadFileLocation
+import mediathek.tool.ReplacementRules
 import mediathek.tool.SwingErrorDialog
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
@@ -14,6 +15,7 @@ class ImportOldBlacklistAction(
     private val parent: JFrame,
     private val abos: AboServices,
     private val blacklist: BlacklistServices,
+    private val replacementRules: ReplacementRules,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Alte Blacklist...")
@@ -24,7 +26,7 @@ class ImportOldBlacklistAction(
         val selectedFile = chooseLoadFileLocation(parent, " Konfigurationsdatei öffnen", "")
         if (selectedFile != null) {
             try {
-                val configReader = OldConfigFileImporter(abos, blacklist)
+                val configReader = OldConfigFileImporter(abos, blacklist, replacementRules)
                 val (_, foundBlacklistEntries) = configReader.importAboBlacklist(selectedFile.absolutePath,
                                                                                  importAbo = false,
                                                                                  importBlacklist = true,

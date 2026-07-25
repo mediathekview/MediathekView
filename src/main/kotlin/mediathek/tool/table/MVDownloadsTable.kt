@@ -33,9 +33,9 @@ import javax.activation.DataHandler
 import javax.swing.DropMode
 import javax.swing.JComponent
 import javax.swing.JTable
-import javax.swing.JTable.DropLocation as TableDropLocation
 import javax.swing.TransferHandler
 import javax.swing.table.TableModel
+import javax.swing.JTable.DropLocation as TableDropLocation
 
 private val logger = LogManager.getLogger()
 

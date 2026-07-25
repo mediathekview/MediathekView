@@ -33,6 +33,6 @@ class AboLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     }
 
     private fun process(info: DownloadStartInfo) {
-        text = if (info.num_abos == 1) "1 Abo" else "${info.num_abos} Abos"
+        text = if (info.aboCount == 1) "1 Abo" else "${info.aboCount} Abos"
     }
 }

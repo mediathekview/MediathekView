@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mediathek.daten
 
 import mediathek.config.Konstanten
@@ -99,7 +117,6 @@ class ListePsetVorlagen : ArrayList<Array<String>>() {
         const val PGR_URL = "URL"
         const val PGR_URL_NR = 4
         const val PGR_INFO = "Info"
-        const val PGR_INFO_NR = 5
         const val PGR_MAX_ELEM = 6
 
         val PGR_COLUMN_NAMES: Array<String> = arrayOf(PGR_NAME, PGR_BESCHREIBUNG, PGR_VERSION, PGR_BS, PGR_URL, PGR_INFO)

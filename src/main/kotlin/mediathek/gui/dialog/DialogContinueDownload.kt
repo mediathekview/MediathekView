@@ -35,7 +35,7 @@ class DialogContinueDownload(
     init {
         if (!direkterDownload) {
             jButtonWeiter.text = "Überschreiben"
-            if (!datenDownload.checkAufrufBauen()) {
+            if (!datenDownload.canBuildInvocation()) {
                 jPanelNewName.isVisible = false
             }
         }

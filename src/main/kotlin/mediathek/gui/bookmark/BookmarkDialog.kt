@@ -18,24 +18,21 @@
 
 package mediathek.gui.bookmark
 
-import ca.odell.glazedlists.GlazedLists
+import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.ObservableElementList
 import ca.odell.glazedlists.SortedList
-import ca.odell.glazedlists.gui.TableFormat
-import ca.odell.glazedlists.impl.beans.BeanTableFormat
-import ca.odell.glazedlists.swing.DefaultEventSelectionModel
-import ca.odell.glazedlists.swing.GlazedListsSwing
-import ca.odell.glazedlists.swing.TableComparatorChooser
+import ca.odell.glazedlists.gui.AbstractTableComparatorChooser
+import ca.odell.glazedlists.swing.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.controller.starter.DownloadServices
 import mediathek.daten.DatenFilm
 import mediathek.daten.ProgramSetRepository
 import mediathek.gui.bookmark.renderer.*
+import mediathek.gui.tabs.actions.FilmSeenHistoryActionRunner
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconUtils
@@ -44,7 +41,7 @@ import mediathek.swing.table.GlazedSortKeysPersister
 import mediathek.swing.table.IconHeaderCellRenderer
 import mediathek.swing.table.TableUtils
 import mediathek.tool.EscapeKeyHandler
-import mediathek.tool.withReadLock
+import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignE
@@ -55,6 +52,12 @@ import java.awt.event.MouseEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.*
+import javax.swing.table.DefaultTableModel
+
+internal class BookmarkTablePipeline(sourceEventList: EventList<BookmarkData>) {
+    val observedBookmarks = ObservableElementList(sourceEventList, BookmarkObservableConnector())
+    val sortedBookmarks = SortedList(observedBookmarks, BookmarkAddedAtComparator())
+}
 
 class BookmarkDialog(
     owner: JFrame,
@@ -81,8 +84,17 @@ class BookmarkDialog(
     private val uiScope = CoroutineScope(dialogJob + Dispatchers.Swing)
 
     private lateinit var selectionModel: DefaultEventSelectionModel<BookmarkData>
+    private lateinit var observedBookmarks: ObservableElementList<BookmarkData>
+    private lateinit var sortedBookmarks: SortedList<BookmarkData>
+    private lateinit var swingBookmarks: EventList<BookmarkData>
+    private lateinit var tableModel: AdvancedTableModel<BookmarkData>
+    private lateinit var comparatorChooser: TableComparatorChooser<BookmarkData>
     private lateinit var tableColumnSettingsManager: BookmarkTableColumnSettingsManager<BookmarkData>
     private lateinit var sortPersister: GlazedSortKeysPersister<BookmarkData>
+    private var disposed = false
+
+    internal val isDisposed: Boolean
+        get() = disposed
 
     init {
         title = "Merkliste verwalten"
@@ -107,8 +119,30 @@ class BookmarkDialog(
     }
 
     override fun dispose() {
+        if (disposed) {
+            super.dispose()
+            return
+        }
+        disposed = true
         dialogJob.cancel()
-        super.dispose()
+        table.selectionModel = DefaultListSelectionModel()
+        table.rowSorter = null
+        table.model = DefaultTableModel()
+        try {
+            disposeResource("table comparator chooser", comparatorChooser::dispose)
+            disposeResource("selection model", selectionModel::dispose)
+            disposeResource("table model", tableModel::dispose)
+            disposeResource("Swing bookmark proxy list", swingBookmarks::dispose)
+            disposeResource("sorted bookmark list", sortedBookmarks::dispose)
+            disposeResource("observable bookmark list", observedBookmarks::dispose)
+        } finally {
+            super.dispose()
+        }
+    }
+
+    private fun disposeResource(name: String, dispose: () -> Unit) {
+        runCatching(dispose)
+            .onFailure { failure -> logger.warn("Failed to dispose bookmark dialog {}", name, failure) }
     }
 
     private fun installTableContextMenu() {
@@ -206,54 +240,23 @@ class BookmarkDialog(
             )
         }
 
-    private fun getTableFormat(): TableFormat<BookmarkData> {
-        val propertyNames = arrayOf(
-            "seen",
-            "sender",
-            "thema",
-            "title",
-            "dauer",
-            "sendedatum",
-            "AvailableUntil",
-            "NormalQualityUrl",
-            "note",
-            "filmHashCode",
-            "BookmarkAdded",
-        )
-        val columnLabels = arrayOf(
-            "Gesehen",
-            "Sender",
-            "Thema",
-            "Titel",
-            "Dauer",
-            "Sendedatum",
-            "Verfügbar bis",
-            "URL",
-            "Notiz",
-            "Hash Code",
-            "hinzugefügt am",
-        )
-        return BeanTableFormat(BookmarkData::class.java, propertyNames, columnLabels)
-    }
-
     private fun disableSortableColumns(comparatorChooser: TableComparatorChooser<BookmarkData>) {
-        comparatorChooser.getComparatorsForColumn(COLUMN_NORMAL_QUALITY_URL).clear()
-        comparatorChooser.getComparatorsForColumn(COLUMN_HASHCODE).clear()
-        comparatorChooser.getComparatorsForColumn(COLUMN_NOTIZ).clear()
-        comparatorChooser.getComparatorsForColumn(COLUMN_SEEN).clear()
+        comparatorChooser.disableSortingForColumn(COLUMN_NORMAL_QUALITY_URL)
+        comparatorChooser.disableSortingForColumn(COLUMN_HASHCODE)
+        comparatorChooser.disableSortingForColumn(COLUMN_NOTIZ)
+        comparatorChooser.disableSortingForColumn(COLUMN_SEEN)
     }
 
     private fun setupTable() {
-        val bookmarkConnector = GlazedLists.beanConnector(BookmarkData::class.java) as ObservableElementList.Connector<BookmarkData>
         val sourceEventList = bookmarks.list.getEventList()
 
-        val sortedList = sourceEventList.withReadLock {
-            val observedBookmarks = ObservableElementList(sourceEventList, bookmarkConnector)
-            SortedList(observedBookmarks, BookmarkAddedAtComparator())
-        }
+        val pipeline = BookmarkTablePipeline(sourceEventList)
+        observedBookmarks = pipeline.observedBookmarks
+        sortedBookmarks = pipeline.sortedBookmarks
 
-        val model = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, getTableFormat())
-        selectionModel = DefaultEventSelectionModel(sortedList)
+        swingBookmarks = sortedBookmarks.swingThreadProxyList()
+        tableModel = swingBookmarks.eventTableModel(BookmarkTableFormat)
+        selectionModel = DefaultEventSelectionModel(swingBookmarks)
         selectionModel.addListSelectionListener { event ->
             if (!event.valueIsAdjusting) {
                 updateActionStates()
@@ -262,10 +265,14 @@ class BookmarkDialog(
         }
 
         table.autoResizeMode = JTable.AUTO_RESIZE_OFF
-        table.model = model
+        table.model = tableModel
         table.selectionModel = selectionModel
 
-        val comparatorChooser = TableComparatorChooser.install(table, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE)
+        comparatorChooser = TableComparatorChooser.install(
+            table,
+            sortedBookmarks,
+            AbstractTableComparatorChooser.MULTIPLE_COLUMN_MOUSE,
+        )
         disableSortableColumns(comparatorChooser)
 
         sortPersister = GlazedSortKeysPersister(CONFIG_PREFIX, comparatorChooser)
@@ -274,7 +281,6 @@ class BookmarkDialog(
         setupCellRenderers()
 
         tableColumnSettingsManager = BookmarkTableColumnSettingsManager(table, CONFIG_PREFIX, comparatorChooser)
-        tableColumnSettingsManager.load()
         tableColumnSettingsManager.installContextMenu()
 
         installTableContextMenu()
@@ -419,9 +425,7 @@ class BookmarkDialog(
                 selectionModel.selected
                     .mapNotNull { it.datenFilm }
 
-            FilmSeenHistoryController().use { controller ->
-                controller.markSeen(selectedFilms)
-            }
+            FilmSeenHistoryActionRunner.markSeen(selectedFilms)
         }
     }
 
@@ -437,9 +441,7 @@ class BookmarkDialog(
                 selectionModel.selected
                     .mapNotNull { it.datenFilm }
 
-            FilmSeenHistoryController().use { controller ->
-                controller.markUnseen(selectedFilms)
-            }
+            FilmSeenHistoryActionRunner.markUnseen(selectedFilms)
         }
     }
 
@@ -519,5 +521,6 @@ class BookmarkDialog(
         const val COLUM_BOOKMARK_ADDED_AT = 10
 
         const val CONFIG_PREFIX = "ui.bookmark-dialog"
+        private val logger = LogManager.getLogger()
     }
 }

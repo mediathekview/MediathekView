@@ -192,7 +192,7 @@ private object NullableIsoLocalDateSerializer : KSerializer<LocalDate?> {
         val value = (element as? JsonPrimitive)?.content?.takeIf { it.isNotBlank() } ?: return null
         return try {
             LocalDate.parse(value)
-        } catch (ex: DateTimeParseException) {
+        } catch (_: DateTimeParseException) {
             null
         }
     }

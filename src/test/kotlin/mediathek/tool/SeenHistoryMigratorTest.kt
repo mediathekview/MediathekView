@@ -12,6 +12,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.Connection
 
+@Suppress("HttpUrlsUsage")
 internal class SeenHistoryMigratorTest {
     private lateinit var dirPath: Path
     private lateinit var histTxtPath: Path

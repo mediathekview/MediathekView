@@ -38,7 +38,7 @@ class CompiledBlacklistMatcher(rules: List<BlacklistRule>) {
                     rule.sender,
                     rule.thema,
                     FieldMatcher.from(rule.titel),
-                    FieldMatcher.from(rule.thema_titel)
+                    FieldMatcher.from(rule.topicTitle)
                 )
         }
     }

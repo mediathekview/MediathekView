@@ -18,8 +18,6 @@
 
 package mediathek.gui.tabs.tab_film
 
-import ca.odell.glazedlists.EventList
-import ca.odell.glazedlists.FilterList
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.tabs.tab_film.filter.FilmFilterController
@@ -27,9 +25,11 @@ import mediathek.gui.tabs.tab_film.filter.FilmFilterController
 class FilmFilterDataProviderAdapter(
     private val filmCatalog: FilmCatalog,
 ) : FilmFilterController.DataProvider {
-    override fun senderList(): EventList<String> =
-        FilterList(filmCatalog.allSendersList, SenderFilmlistLoadApprover::isApproved)
+    override fun senderList(): List<String> =
+        filmCatalog.allSenders.filter(SenderFilmlistLoadApprover::isApproved)
 
     override fun getThemen(senders: Collection<String>): List<String> =
         filmCatalog.filteredFilms.getThemen(senders)
+
+    override fun hasFilmData(): Boolean = filmCatalog.filteredFilms.isNotEmpty()
 }

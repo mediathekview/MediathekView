@@ -44,7 +44,7 @@ class PsetButtonsPanel(
         SwingUtilities.invokeLater(this::setupButtonLayout)
     }
 
-    protected fun setupButtonLayout() {
+    private fun setupButtonLayout() {
         btnPanel.removeAll()
 
         for (pset in programSets.list.listeButton) {
@@ -57,7 +57,7 @@ class PsetButtonsPanel(
                     }
                 }
 
-                pset.foregroundColor.ifPresent(component::setForeground)
+                pset.foregroundColor?.let(component::setForeground)
                 btnPanel.add(component)
             } else {
                 btnPanel.add(JLabel(""))

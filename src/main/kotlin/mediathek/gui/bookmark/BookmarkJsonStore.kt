@@ -18,7 +18,6 @@
 
 package mediathek.gui.bookmark
 
-import ca.odell.glazedlists.EventList
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -47,7 +46,7 @@ object BookmarkJsonStore {
         return wrapper.bookmarks.map { it.toBookmarkData() }.toMutableList()
     }
 
-    fun write(path: Path, bookmarks: EventList<BookmarkData>) {
+    fun write(path: Path, bookmarks: List<BookmarkData>) {
         val wrapper = BookmarksWrapper(bookmarks = bookmarks.map { BookmarkDto.fromBookmarkData(it) })
         val content = json.encodeToString(BookmarksWrapper.serializer(), wrapper)
         val parent = path.parent

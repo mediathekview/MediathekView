@@ -1,26 +1,24 @@
 /*
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
+ * Copyright (c) 2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
  *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package mediathek.daten
 
-import ca.odell.glazedlists.BasicEventList
-import ca.odell.glazedlists.EventList
+import ca.odell.glazedlists.*
 import mediathek.daten.abo.AboFilmAssignmentService
 import mediathek.daten.abo.DatenAbo
 import mediathek.tool.Filter
@@ -28,10 +26,20 @@ import mediathek.tool.withReadLock
 import mediathek.tool.withWriteLock
 import java.util.*
 
-class ListeAbo(
-    private val onChanged: (() -> Unit)? = null,
-    private val entries: BasicEventList<DatenAbo> = BasicEventList(),
-) : EventList<DatenAbo> by entries {
+private class AboListStorage {
+    val source = TransactionList(BasicEventList<DatenAbo>())
+    val naturalComparator: Comparator<DatenAbo> = naturalOrder()
+    val sorted = SortedList(source, naturalComparator)
+    val readOnly: EventList<DatenAbo> = sorted.asReadOnly()
+}
+
+class ListeAbo private constructor(
+    private val onChanged: (() -> Unit)?,
+    private val storage: AboListStorage,
+) : EventList<DatenAbo> by storage.readOnly {
+    constructor(onChanged: (() -> Unit)? = null) : this(onChanged, AboListStorage())
+
+    private val entries = storage.source
     private val filmAssignmentService = AboFilmAssignmentService()
 
     fun addAbo(datenAbo: DatenAbo) {
@@ -45,6 +53,10 @@ class ListeAbo(
 
     internal fun addAboFromConfig(datenAbo: DatenAbo) {
         entries.withWriteLock {
+            if (storage.sorted.comparator != null) {
+                entries.sort()
+                storage.sorted.comparator = null
+            }
             prepareAboForAdd(datenAbo)
             add(datenAbo)
         }
@@ -52,9 +64,9 @@ class ListeAbo(
 
     private fun addAboSortedWithoutNotification(datenAbo: DatenAbo): Boolean =
         entries.withWriteLock {
+            ensureSorted()
             prepareAboForAdd(datenAbo)
             add(datenAbo)
-            sort()
             true
         }
 
@@ -71,12 +83,28 @@ class ListeAbo(
 
     internal fun removeAbosWithoutNotification(abos: Collection<DatenAbo>): Boolean =
         entries.withWriteLock {
-            removeAll(abos.toSet())
+            entries.withTransaction {
+                removeAll(abos.toSet())
+            }
         }
+
+    internal fun clearWithoutNotification() {
+        entries.withWriteLock {
+            entries.withTransaction {
+                clear()
+            }
+        }
+    }
 
     internal fun finishLoading() {
         entries.withWriteLock {
-            sort()
+            ensureSorted()
+        }
+    }
+
+    private fun ensureSorted() {
+        if (storage.sorted.comparator !== storage.naturalComparator) {
+            storage.sorted.comparator = storage.naturalComparator
         }
     }
 
@@ -108,10 +136,12 @@ class ListeAbo(
 
     internal fun fireAbosChanged(abos: Collection<DatenAbo>) {
         entries.withWriteLock {
-            for (abo in abos) {
-                val index = indexOf(abo)
-                if (index != -1) {
-                    this[index] = abo
+            entries.withTransaction {
+                for (abo in abos) {
+                    val index = indexOf(abo)
+                    if (index != -1) {
+                        this[index] = abo
+                    }
                 }
             }
         }
@@ -146,7 +176,7 @@ class ListeAbo(
         existingValue.isEmpty() || valueToCheck.equals(existingValue, ignoreCase = true)
 
     private fun filterCoversAny(existingFilter: String, vararg valuesToCheck: String): Boolean {
-        val filter = existingFilter.lowercase(Locale.getDefault()).split(",").toTypedArray()
+        val filter = existingFilter.lowercase(Locale.ROOT).split(",").toTypedArray()
         if (filter.isEmpty()) {
             return true
         }
@@ -172,7 +202,9 @@ class ListeAbo(
     internal fun assignmentSnapshot(): List<DatenAbo> =
         entries.withWriteLock {
             // leere Abos löschen, die sind Fehler
-            removeIf { datenAbo -> datenAbo.isInvalid }
-            toList()
+            entries.withTransaction {
+                removeIf { datenAbo -> datenAbo.isInvalid }
+            }
+            storage.sorted.toList()
         }
 }

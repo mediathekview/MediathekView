@@ -169,7 +169,7 @@ class BandwidthDialog(
         }
 
         val chart = JFreeChart(plot).apply {
-            setAntiAlias(true)
+            antiAlias = true
             removeLegend()
         }
 
@@ -195,7 +195,7 @@ class BandwidthDialog(
 
     private fun createRenderer(): XYSplineRenderer =
         XYSplineRenderer().apply {
-            setDefaultShapesVisible(false)
+            defaultShapesVisible = false
             setSeriesPaint(0, Color.RED)
             setSeriesStroke(0, CHART_STROKE)
         }

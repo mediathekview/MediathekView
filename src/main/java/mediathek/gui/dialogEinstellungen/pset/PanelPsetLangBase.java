@@ -81,6 +81,7 @@ public class PanelPsetLangBase extends JPanel {
         jCheckBoxInfodatei = new JCheckBox();
         jCheckBoxSpotlight = new JCheckBox();
         jCheckBoxSubtitle = new JCheckBox();
+        jCheckBoxMp4Metadata = new JCheckBox();
         var jPanelProgramme = new JPanel();
         jScrollPane1 = new JScrollPane();
         var jTableProgramme = new JTable();
@@ -601,6 +602,10 @@ public class PanelPsetLangBase extends JPanel {
                         //---- jCheckBoxSubtitle ----
                         jCheckBoxSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
 
+                        //---- jCheckBoxMp4Metadata ----
+                        jCheckBoxMp4Metadata.setText("MP4-Metadaten schreiben");
+                        jCheckBoxMp4Metadata.setToolTipText("Schreibt Standard-MP4-Metadaten nach dem Download in die fertige MP4-Datei");
+
                         GroupLayout jPanel13Layout = new GroupLayout(jPanel13);
                         jPanel13.setLayout(jPanel13Layout);
                         jPanel13Layout.setHorizontalGroup(
@@ -610,7 +615,8 @@ public class PanelPsetLangBase extends JPanel {
                                     .addGroup(jPanel13Layout.createParallelGroup()
                                         .addComponent(jCheckBoxSpotlight)
                                         .addComponent(jCheckBoxInfodatei)
-                                        .addComponent(jCheckBoxSubtitle))
+                                        .addComponent(jCheckBoxSubtitle)
+                                        .addComponent(jCheckBoxMp4Metadata))
                                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         );
                         jPanel13Layout.setVerticalGroup(
@@ -620,6 +626,8 @@ public class PanelPsetLangBase extends JPanel {
                                     .addComponent(jCheckBoxInfodatei)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(jCheckBoxSubtitle)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jCheckBoxMp4Metadata)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jCheckBoxSpotlight))
                         );
@@ -992,6 +1000,7 @@ public class PanelPsetLangBase extends JPanel {
     protected JCheckBox jCheckBoxInfodatei;
     protected JCheckBox jCheckBoxSpotlight;
     protected JCheckBox jCheckBoxSubtitle;
+    protected JCheckBox jCheckBoxMp4Metadata;
     protected JScrollPane jScrollPane1;
     protected JButton jButtonProgPlus;
     protected JButton jButtonProgMinus;

@@ -1237,10 +1237,8 @@ class ApplicationConfiguration private constructor() {
         val y: Int,
         val orientation: Int,
     ) {
-        fun floating(): Boolean = floating
         fun x(): Int = x
         fun y(): Int = y
-        fun orientation(): Int = orientation
     }
 
     data class DefaultFontState(val family: String?, val size: Int) {

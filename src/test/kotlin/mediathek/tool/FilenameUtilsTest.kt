@@ -66,7 +66,7 @@ internal class FilenameUtilsTest {
         val expected = "folder/hidden/file"
 
         assertEquals(expected, FilenameUtils.checkFilenameForIllegalCharacters(input, true))
-        assertEquals(expected, FilenameUtils.replaceLeerDateiname(input, true, false, false))
+        assertEquals(expected, FilenameUtils.replaceEmptyFilename(input, true, null, false))
     }
 
     @Test

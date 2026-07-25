@@ -6,7 +6,8 @@ package mediathek.gui.duplicates.statistics
 
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.SortedList
-import ca.odell.glazedlists.swing.GlazedListsSwing
+import ca.odell.glazedlists.swing.AdvancedTableModel
+import ca.odell.glazedlists.swing.eventTableModelWithThreadProxyList
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.duplicates.FilmStatistics
@@ -17,6 +18,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.AbstractAction
 import javax.swing.JTable
+import javax.swing.table.DefaultTableModel
 
 class DuplicateStatisticsDialog(
     owner: Window,
@@ -25,6 +27,11 @@ class DuplicateStatisticsDialog(
 ) : DuplicateStatisticsDialogBase(owner) {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val tableFormat = DuplicateStatisticsTableFormat()
+    private val commonStats = SortedList(filmCatalog.commonStatistics, compareBy(FilmStatistics::sender))
+    private val duplicateStats = SortedList(filmCatalog.duplicateStatistics, compareBy(FilmStatistics::sender))
+    private lateinit var commonModel: AdvancedTableModel<FilmStatistics>
+    private lateinit var duplicateModel: AdvancedTableModel<FilmStatistics>
+    private var disposed = false
 
     init {
         setupCommonTable()
@@ -49,24 +56,39 @@ class DuplicateStatisticsDialog(
     }
 
     override fun dispose() {
+        if (disposed) {
+            super.dispose()
+            return
+        }
+        disposed = true
         action.isEnabled = true
-        super.dispose()
+        tblCommon.model = DefaultTableModel()
+        tblDuplicates.model = DefaultTableModel()
+        try {
+            disposeResource("common statistics table model", commonModel::dispose)
+            disposeResource("duplicate statistics table model", duplicateModel::dispose)
+            disposeResource("common statistics list", commonStats::dispose)
+            disposeResource("duplicate statistics list", duplicateStats::dispose)
+        } finally {
+            super.dispose()
+        }
+    }
+
+    private fun disposeResource(name: String, dispose: () -> Unit) {
+        runCatching(dispose)
+            .onFailure { failure -> logger.warn("Failed to dispose {}", name, failure) }
     }
 
     private fun setupCommonTable() {
-        val commonStats = filmCatalog.commonStatistics
-        val sortedList = SortedList(commonStats, compareBy(FilmStatistics::sender))
-        val model = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, tableFormat)
-        model.addTableModelListener { updateTotalCommonStats() }
-        tblCommon.model = model
+        commonModel = commonStats.eventTableModelWithThreadProxyList(tableFormat)
+        commonModel.addTableModelListener { updateTotalCommonStats() }
+        tblCommon.model = commonModel
     }
 
     private fun setupDuplicatesTable() {
-        val duplicateStats = filmCatalog.duplicateStatistics
-        val sortedList = SortedList(duplicateStats, compareBy(FilmStatistics::sender))
-        val model = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, tableFormat)
-        model.addTableModelListener { updateTotalDuplicatesStats() }
-        tblDuplicates.model = model
+        duplicateModel = duplicateStats.eventTableModelWithThreadProxyList(tableFormat)
+        duplicateModel.addTableModelListener { updateTotalDuplicatesStats() }
+        tblDuplicates.model = duplicateModel
     }
 
     private fun resizeSenderColumnWidth(table: JTable) {

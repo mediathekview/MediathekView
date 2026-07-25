@@ -3,7 +3,7 @@ package mediathek.gui.dialog
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden
 import mediathek.swing.centerOnScreen
@@ -22,8 +22,8 @@ import javax.swing.JScrollPane
 
 class LoadFilmListDialog(
     owner: Frame?,
-    private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
+    filmCatalog: FilmCatalog,
+    private val filmListLoader: FilmListLoadCoordinator,
 ) : JDialog(owner, "Filmliste laden", true) {
     private val contentPanel: PanelFilmlisteLaden
     private val logger: Logger = LogManager.getLogger()
@@ -35,7 +35,7 @@ class LoadFilmListDialog(
 
         val closeBtn = JButton(DisposeDialogAction(this, "Schließen", "Dialog schließen"))
         buttonFlowPanel.add(closeBtn)
-        getRootPane().defaultButton = closeBtn
+        rootPane.defaultButton = closeBtn
 
         val btn = JButton("Filmliste laden")
         btn.addActionListener {
@@ -46,7 +46,7 @@ class LoadFilmListDialog(
 
             if (FilmListUpdateType.fromConfig() == FilmListUpdateType.AUTOMATIC) {
                 //easy, just load
-                filmListLoader.loadFilmlist("", immerNeuLaden)
+                filmListLoader.startFilmlistLoad("", immerNeuLaden)
             } else {
                 //manual or extend
                 val strUrl = contentPanel.urlTextField.text
@@ -64,9 +64,9 @@ class LoadFilmListDialog(
                     )
                 }
                 if (contentPanel.updateCheckBox.isSelected)
-                    filmListLoader.updateFilmlist(strUrl)
+                    filmListLoader.startFilmlistUpdate(strUrl)
                 else
-                    filmListLoader.loadFilmlist(strUrl, immerNeuLaden)
+                    filmListLoader.startFilmlistLoad(strUrl, immerNeuLaden)
             }
             dispose()
         }

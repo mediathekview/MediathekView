@@ -18,8 +18,6 @@
 
 package mediathek.gui.tabs.tab_film.filter
 
-import ca.odell.glazedlists.BasicEventList
-import ca.odell.glazedlists.EventList
 import mediathek.config.application.FilterConfiguration
 import mediathek.tool.FilterDTO
 import org.apache.logging.log4j.LogManager
@@ -60,8 +58,9 @@ class FilmFilterController(
     }
 
     interface DataProvider {
-        fun senderList(): EventList<String>
+        fun senderList(): List<String>
         fun getThemen(senders: Collection<String>): List<String>
+        fun hasFilmData(): Boolean = false
     }
 
     sealed interface FilmDataState {
@@ -87,7 +86,7 @@ class FilmFilterController(
     }
 
     private object NoOpDataProvider : DataProvider {
-        override fun senderList(): EventList<String> = BasicEventList()
+        override fun senderList(): List<String> = emptyList()
         override fun getThemen(senders: Collection<String>): List<String> = emptyList()
     }
 
@@ -127,14 +126,17 @@ class FilmFilterController(
 
     fun availableFilters(): List<FilterDTO> = filterConfig.availableFilters
 
-    fun senderList(): EventList<String> = dataProvider.senderList()
+    fun senderList(): List<String> = dataProvider.senderList()
 
     fun canDeleteCurrentFilter(): Boolean = filterConfig.availableFilterCount > 1
 
     fun selectionObserverRegistry(): SelectionObserverRegistry = selectionObserverRegistry
 
-    fun renderModel(): RenderModel {
-        val availableThemen = dataProvider.getThemen(currentState.checkedChannels)
+    fun loadAvailableThemen(senders: Collection<String>): List<String> = dataProvider.getThemen(senders)
+
+    fun hasFilmData(): Boolean = dataProvider.hasFilmData()
+
+    fun renderModel(availableThemen: List<String>): RenderModel {
         val reconciledState = reconcileThema(availableThemen)
         return RenderModel(
             state = reconciledState,
@@ -218,10 +220,6 @@ class FilmFilterController(
         filmDataState = if (hasAvailableThemen) FilmDataState.Ready else FilmDataState.Loading
     }
 
-    fun initializeFilmData() {
-        initializeFilmData(dataProvider.getThemen(emptySet()).isNotEmpty())
-    }
-
     fun onFilmDataLoaded() {
         filmDataState = FilmDataState.Ready
     }
@@ -260,7 +258,11 @@ class FilmFilterController(
 
     fun restoreCurrentFilterSelection(filter: FilterDTO): Boolean {
         if (filterConfig.currentFilter != filter) {
-            logger.trace("Updating filter lifecycle for reason=selectFilter: from={} to={}", currentState.currentFilter, filter)
+            logger.trace(
+                "Updating filter lifecycle for reason=selectFilter: from={} to={}",
+                currentState.currentFilter,
+                filter
+            )
             filterConfig.currentFilter = filter
             syncStateFromConfig("selectFilter")
             return true

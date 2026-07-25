@@ -19,35 +19,75 @@
 package mediathek.tool.notification
 
 import org.apache.logging.log4j.LogManager
-import java.io.Closeable
-import java.util.function.Supplier
 
 /**
- * Owns the active notification center and hides platform-specific lifecycle management from application data.
+ * Owns the active notification backend and serializes publication, replacement, and shutdown.
  */
-object NotificationService : Closeable {
+class NotificationService : NotificationPublisher, AutoCloseable {
     private val logger = LogManager.getLogger()
-    private var notificationCenter: INotificationCenter = NullNotificationCenter()
+    private val lifecycleLock = Any()
+    private var notificationBackend: NotificationBackend = DisabledNotificationBackend
+    private var closed = false
 
-    fun configure(notificationCenterFactory: Supplier<INotificationCenter>, enabled: Boolean) {
-        closeCurrentNotificationCenter()
-        notificationCenter = if (enabled) notificationCenterFactory.get() else NullNotificationCenter()
+    fun configure(notificationBackendFactory: () -> NotificationBackend, enabled: Boolean) {
+        synchronized(lifecycleLock) {
+            if (closed) {
+                return
+            }
+            val previousBackend = notificationBackend
+            notificationBackend = DisabledNotificationBackend
+            closeNotificationBackend(previousBackend)
+            notificationBackend =
+                if (enabled) createNotificationBackend(notificationBackendFactory) else DisabledNotificationBackend
+        }
     }
 
-    fun displayNotification(msg: NotificationMessage) {
-        notificationCenter.displayNotification(msg)
+    override fun publish(notification: NotificationMessage) {
+        synchronized(lifecycleLock) {
+            if (closed) {
+                return
+            }
+            try {
+                notificationBackend.publish(notification)
+            } catch (exception: Exception) {
+                logger.error("Failed to display notification", exception)
+            } catch (error: LinkageError) {
+                logger.error("Failed to load notification backend", error)
+            }
+        }
     }
 
     override fun close() {
-        closeCurrentNotificationCenter()
-        notificationCenter = NullNotificationCenter()
+        synchronized(lifecycleLock) {
+            if (closed) {
+                return
+            }
+            closed = true
+            val previousBackend = notificationBackend
+            notificationBackend = DisabledNotificationBackend
+            closeNotificationBackend(previousBackend)
+        }
     }
 
-    private fun closeCurrentNotificationCenter() {
+    private fun closeNotificationBackend(notificationBackend: NotificationBackend) {
         try {
-            notificationCenter.close()
-        } catch (e: Exception) {
-            logger.error("Failed to close notification center", e)
+            notificationBackend.close()
+        } catch (exception: Exception) {
+            logger.error("Failed to close notification backend", exception)
+        } catch (error: LinkageError) {
+            logger.error("Failed to unload notification backend", error)
+        }
+    }
+
+    private fun createNotificationBackend(notificationBackendFactory: () -> NotificationBackend): NotificationBackend {
+        return try {
+            notificationBackendFactory()
+        } catch (exception: Exception) {
+            logger.error("Failed to create notification backend", exception)
+            DisabledNotificationBackend
+        } catch (error: LinkageError) {
+            logger.error("Failed to load notification backend", error)
+            DisabledNotificationBackend
         }
     }
 }

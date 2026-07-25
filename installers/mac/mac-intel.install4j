@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="12.0.5" transformSequenceNumber="12">
   <directoryPresets config="./MediathekView.jar" />
-  <application name="MediathekView" applicationId="2884-1958-5872-3865" mediaDir="." mediaFilePattern="MediathekView-latest-mac-intel" compression="9" createChecksums="false" shortName="mediathekview" publisher="MediathekView" publisherWeb="https://www.mediathekview.de" version="15.0.0" allPathsRelative="true" macVolumeId="5e5adc4d4aaebc38" javaMinVersion="25">
+  <application name="MediathekView" applicationId="2884-1958-5872-3865" mediaDir="." mediaFilePattern="MediathekView-latest-mac-intel" compression="9" createChecksums="false" shortName="mediathekview" publisher="MediathekView" publisherWeb="https://www.mediathekview.de" version="15.0.1" allPathsRelative="true" macVolumeId="5e5adc4d4aaebc38" javaMinVersion="25">
     <languages>
       <principalLanguage id="de" />
     </languages>

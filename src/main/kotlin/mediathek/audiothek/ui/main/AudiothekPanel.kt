@@ -48,7 +48,7 @@ import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.MessageType
 import mediathek.tool.notification.NotificationMessage
-import mediathek.tool.notification.NotificationService
+import mediathek.tool.notification.NotificationPublisher
 import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
@@ -69,6 +69,7 @@ import kotlin.time.toKotlinDuration
 class AudiothekPanel(
     private val repository: AudioRepository,
     private val owner: Frame,
+    private val notificationPublisher: NotificationPublisher,
 ) : JPanel(BorderLayout()) {
     private val logger = LogManager.getLogger(AudiothekPanel::class.java)
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -595,13 +596,7 @@ class AudiothekPanel(
     }
 
     private fun showDownloadNotification(title: String, message: String, type: MessageType) {
-        NotificationService.displayNotification(
-            NotificationMessage().apply {
-                this.title = title
-                this.message = message
-                this.type = type
-            }
-        )
+        notificationPublisher.publish(NotificationMessage(title, message, type))
     }
 
     private fun markAudioAsSeen(snapshot: AudioDownloadTaskSnapshot) {

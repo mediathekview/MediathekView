@@ -596,7 +596,7 @@ class DialogEditDownload(
 
     private fun createReadOnlyTextField(text: String) = JTextField().apply {
         isEditable = false
-        setText(text)
+        this.text = text
     }
 
     private fun isDirectDownloadProgram(): Boolean =

@@ -47,7 +47,7 @@ class DownloadInformationLabel(
     private fun buildDownloadInfoText(downloads: DownloadServices): String {
         val info = downloads.startInfo()
         return buildString {
-            append(totalDownloadsText(info.total_num_download_list_entries))
+            append(totalDownloadsText(info.totalDownloadListEntries))
 
             if (info.hasValues()) {
                 append(": ")

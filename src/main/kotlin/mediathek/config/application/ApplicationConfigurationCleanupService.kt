@@ -33,7 +33,7 @@ class ApplicationConfigurationCleanupService(
         dryRun: Boolean,
     ): ApplicationConfigurationCleanupStatistics {
         val allKeysBefore = config.withLock(LockMode.READ) {
-            getKeys().asSequence().toList()
+            keys.asSequence().toList()
         }
         val removableKeys = allKeysBefore
             .filterNot(keyRegistry::isValidKey)
@@ -53,7 +53,7 @@ class ApplicationConfigurationCleanupService(
         }
 
         val totalKeysAfter = config.withLock(LockMode.READ) {
-            getKeys().asSequence().count()
+            keys.asSequence().count()
         }
 
         return ApplicationConfigurationCleanupStatistics(

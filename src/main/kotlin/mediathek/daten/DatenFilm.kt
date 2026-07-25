@@ -43,11 +43,11 @@ class DatenFilm private constructor(
     val filmNr: Int,
 ) : Comparable<DatenFilm> {
 
-    data class FilmIdentity(
+    internal data class FilmIdentity(
         val sender: String,
         val thema: String,
-        val normalQualityUrl: String,
-        val websiteUrl: String,
+        val storedNormalQualityUrl: String,
+        val storedWebsiteUrl: String?,
     )
 
     private var countrySet: EnumSet<Country>? = null
@@ -171,6 +171,12 @@ class DatenFilm private constructor(
     internal val storedHighQualityUrl: String
         get() = highQualityUrlStorage ?: ""
 
+    internal val storedNormalQualityUrl: String
+        get() = normalQualityUrlStorage
+
+    internal val storedWebsiteUrl: String?
+        get() = websiteUrlStorage
+
     fun setDatumLongSeconds(datumLongSeconds: Long) {
         this.datumLongSeconds = datumLongSeconds
     }
@@ -249,6 +255,12 @@ class DatenFilm private constructor(
     var isDuplicate: Boolean
         get() = hasFlag(FLAG_DUPLICATE)
         set(value) = setFlag(FLAG_DUPLICATE, value)
+
+    var isSeenInHistory: Boolean
+        get() = hasFlag(FLAG_SEEN_HISTORY)
+        set(value) = setFlag(FLAG_SEEN_HISTORY, value)
+
+    var seenHistoryAnnotationEpoch: Int = 0
 
     var isAudioVersion: Boolean
         get() = hasFlag(FLAG_AUDIO_VERSION)
@@ -481,11 +493,11 @@ class DatenFilm private constructor(
         return HexFormat.of().formatHex(digest.digest())
     }
 
-    val filmIdentity: FilmIdentity
+    internal val filmIdentity: FilmIdentity
         get() {
             filmIdentityCache?.let { return it }
 
-            val identity = FilmIdentity(sender, thema, urlNormalQuality, websiteUrl)
+            val identity = FilmIdentity(sender, thema, normalQualityUrlStorage, websiteUrlStorage)
             filmIdentityCache = identity
             return identity
         }
@@ -698,7 +710,7 @@ class DatenFilm private constructor(
     }
 
     companion object {
-        val EU_COUNTRIES: EnumSet<Country> = EnumSet.of(Country.DE, Country.AT, Country.FR)
+        val EU_COUNTRIES: Set<Country> = Collections.unmodifiableSet(EnumSet.of(Country.DE, Country.AT, Country.FR))
 
         const val COMPRESSION_MARKER = '|'
 
@@ -710,6 +722,7 @@ class DatenFilm private constructor(
         private const val FLAG_BURNED_IN_SUBTITLES = 1 shl 5
         private const val FLAG_PLAYLIST = 1 shl 6
         private const val FLAG_DUPLICATE = 1 shl 7
+        private const val FLAG_SEEN_HISTORY = 1 shl 8
         private val sorter = GermanStringSorter
         private val logger = LogManager.getLogger(DatenFilm::class.java)
         private val USE_SHA256_FAST_PATH = RuntimeArchitecture.isIntelOrAmd64Bit

@@ -18,26 +18,31 @@
 
 package mediathek.gui.tabs.actions
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
+import mediathek.gui.messages.history.FilmSeenStateChangedEvent
+import mediathek.tool.MessageBus
+import org.apache.logging.log4j.LogManager
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.function.Supplier
 import javax.swing.AbstractAction
-import javax.swing.Action
+
 import javax.swing.KeyStroke
 
 class MarkFilmAsSeenAction(
     private val selectedFilms: Supplier<List<DatenFilm>>,
 ) : AbstractAction("Filme als gesehen markieren") {
     init {
-        putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK))
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK))
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        FilmSeenHistoryController().use { controller ->
-            controller.markSeen(selectedFilms.get())
-        }
+        FilmSeenHistoryActionRunner.markSeen(selectedFilms.get())
     }
 }
 
@@ -45,13 +50,11 @@ class MarkFilmAsUnseenAction(
     private val selectedFilms: Supplier<List<DatenFilm>>,
 ) : AbstractAction("Filme als ungesehen markieren") {
     init {
-        putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK))
+        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK))
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        FilmSeenHistoryController().use { controller ->
-            controller.markUnseen(selectedFilms.get())
-        }
+        FilmSeenHistoryActionRunner.markUnseen(selectedFilms.get())
     }
 }
 
@@ -60,9 +63,7 @@ class MarkSingleFilmAsSeenAction(
 ) : AbstractAction("Film als gesehen markieren") {
     override fun actionPerformed(event: ActionEvent?) {
         val film = selectedFilm.get() ?: return
-        FilmSeenHistoryController().use { controller ->
-            controller.markSeen(film)
-        }
+        FilmSeenHistoryActionRunner.markSeen(listOf(film))
     }
 }
 
@@ -71,13 +72,58 @@ class MarkSingleFilmAsUnseenAction(
 ) : AbstractAction("Film als ungesehen markieren") {
     override fun actionPerformed(event: ActionEvent?) {
         val film = selectedFilm.get() ?: return
-        FilmSeenHistoryController().use { controller ->
-            controller.markUnseen(film)
-        }
+        FilmSeenHistoryActionRunner.markUnseen(listOf(film))
     }
 }
 
 fun hasBeenSeenInHistory(film: DatenFilm): Boolean =
-    FilmSeenHistoryController().use { controller ->
-        controller.hasBeenSeen(film)
+    film.isSeenInHistory
+
+internal object FilmSeenHistoryActionRunner {
+    private val logger = LogManager.getLogger()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    fun markSeen(films: List<DatenFilm>) {
+        submit(films, seen = true)
     }
+
+    fun markUnseen(films: List<DatenFilm>) {
+        submit(films, seen = false)
+    }
+
+    private fun submit(films: List<DatenFilm>, seen: Boolean) {
+        val selectedFilms = films.toList()
+        if (selectedFilms.isEmpty()) {
+            return
+        }
+
+        publishSeenState(seen, selectedFilms)
+        scope.launch {
+            runCatching {
+                FilmSeenHistoryController().use { controller ->
+                    if (seen) {
+                        controller.markSeen(
+                            selectedFilms,
+                            updatePreparedState = false,
+                            publishEvent = false,
+                        )
+                    } else {
+                        controller.markUnseen(
+                            selectedFilms,
+                            updatePreparedState = false,
+                            publishEvent = false,
+                        )
+                    }
+                }
+            }.onFailure { ex ->
+                logger.error("Failed to update film seen history", ex)
+                publishSeenState(!seen, selectedFilms)
+            }
+        }
+    }
+
+    private fun publishSeenState(seen: Boolean, films: List<DatenFilm>) {
+        FilmSeenHistoryController.updatePreparedSeenState(seen, films)
+        MessageBus.messageBus.publishAsync(FilmSeenStateChangedEvent(seen, films))
+    }
+}

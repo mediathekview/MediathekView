@@ -7,8 +7,9 @@ package mediathek.gui.duplicates.details
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.SortedList
 import ca.odell.glazedlists.gui.AbstractTableComparatorChooser
-import ca.odell.glazedlists.swing.GlazedListsSwing
+import ca.odell.glazedlists.swing.AdvancedTableModel
 import ca.odell.glazedlists.swing.TableComparatorChooser
+import ca.odell.glazedlists.swing.eventTableModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.application.ApplicationConfiguration
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.LogManager
 import java.awt.Window
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import javax.swing.table.DefaultTableModel
 
 class DuplicateFilmDetailsDialog(
     owner: Window,
@@ -28,6 +30,9 @@ class DuplicateFilmDetailsDialog(
     private val dialogScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val duplicateList = BasicEventList<DatenFilm>()
     private val sortedList = SortedList(duplicateList)
+    private lateinit var tableModel: AdvancedTableModel<DatenFilm>
+    private lateinit var comparatorChooser: TableComparatorChooser<DatenFilm>
+    private var disposed = false
 
     init {
         okButton.addActionListener { dispose() }
@@ -42,16 +47,26 @@ class DuplicateFilmDetailsDialog(
     }
 
     override fun dispose() {
+        if (disposed) return
+        disposed = true
         dialogScope.cancel()
-        super.dispose()
+        table1.model = DefaultTableModel()
+        try {
+            disposeResource("duplicate details comparator chooser", comparatorChooser::dispose)
+            disposeResource("duplicate details table model", tableModel::dispose)
+            disposeResource("duplicate details sorted list", sortedList::close)
+            disposeResource("duplicate details source list", duplicateList::close)
+        } finally {
+            super.dispose()
+        }
     }
 
     private fun setupTable() {
-        table1.model = GlazedListsSwing.eventTableModelWithThreadProxyList(
-            sortedList,
+        tableModel = sortedList.eventTableModel(
             DuplicateFilmDetailsTableFormat(),
         )
-        TableComparatorChooser.install(
+        table1.model = tableModel
+        comparatorChooser = TableComparatorChooser.install(
             table1,
             sortedList,
             AbstractTableComparatorChooser.SINGLE_COLUMN,
@@ -62,6 +77,11 @@ class DuplicateFilmDetailsDialog(
         table1.columnModel.getColumn(2).preferredWidth = 200
         table1.columnModel.getColumn(5).preferredWidth = 400
         table1.columnModel.getColumn(6).preferredWidth = 400
+    }
+
+    private fun disposeResource(name: String, dispose: () -> Unit) {
+        runCatching(dispose)
+            .onFailure { failure -> logger.warn("Failed to dispose {}", name, failure) }
     }
 
     private fun loadDuplicates() {

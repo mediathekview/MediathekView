@@ -98,8 +98,5 @@ class Stopwatch private constructor() {
             return Stopwatch().start()
         }
 
-        fun createUnstarted(): Stopwatch {
-            return Stopwatch()
-        }
     }
 }

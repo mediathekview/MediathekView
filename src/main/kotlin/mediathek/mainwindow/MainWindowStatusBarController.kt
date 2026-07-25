@@ -24,7 +24,6 @@ import java.awt.BorderLayout
 import java.awt.Container
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.BiConsumer
-import java.util.function.IntSupplier
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 import javax.swing.SwingUtilities
@@ -34,7 +33,7 @@ class MainWindowStatusBarController(
     private val downloads: DownloadServices,
     private val contentPane: Container,
     private val selectedListItemsProperty: ListSelectedItemsProperty,
-    private val filmTableRowCount: IntSupplier,
+    private val filmTableRowCount: FilmTableRowCountProperty,
     private val runOnEventDispatchThreadAndWait: BiConsumer<String, Runnable>,
 ) {
     val startupProgressLabel: JLabel = JLabel()

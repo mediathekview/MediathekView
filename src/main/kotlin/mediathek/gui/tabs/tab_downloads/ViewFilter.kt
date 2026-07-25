@@ -52,14 +52,20 @@ data class ViewFilter(
         const val RUN_ONLY = "nur laufende"
         const val FINISHED_ONLY = "nur abgeschlossene"
 
-        fun all(): ViewFilter = ViewFilter(false, false, false, false, false)
+        fun all(): ViewFilter = ViewFilter(
+            onlyNotStarted = false,
+            onlyStarted = false,
+            onlyWaiting = false,
+            onlyFinished = false,
+            onlyRun = false,
+        )
 
         fun from(selectedItem: Any?): ViewFilter = when (selectedItem?.toString() ?: ALL) {
-            NOT_STARTED -> ViewFilter(true, false, false, false, false)
-            STARTED -> ViewFilter(false, true, false, false, false)
-            WAITING -> ViewFilter(false, false, true, false, false)
-            FINISHED_ONLY -> ViewFilter(false, false, false, true, false)
-            RUN_ONLY -> ViewFilter(false, false, false, false, true)
+            NOT_STARTED -> all().copy(onlyNotStarted = true)
+            STARTED -> all().copy(onlyStarted = true)
+            WAITING -> all().copy(onlyWaiting = true)
+            FINISHED_ONLY -> all().copy(onlyFinished = true)
+            RUN_ONLY -> all().copy(onlyRun = true)
             else -> all()
         }
     }

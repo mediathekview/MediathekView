@@ -58,12 +58,6 @@ object TimerPool {
     fun schedule(command: Runnable, delay: Duration): ScheduledFuture<*> =
         executor.schedule(command, delay.inWholeNanoseconds, TimeUnit.NANOSECONDS)
 
-    fun scheduleAtFixedRate(
-        command: Runnable,
-        initialDelay: Long,
-        period: Long,
-        unit: TimeUnit
-    ): ScheduledFuture<*> = executor.scheduleAtFixedRate(command, initialDelay, period, unit)
 
     fun scheduleAtFixedRate(
         command: Runnable,
@@ -77,12 +71,6 @@ object TimerPool {
             TimeUnit.NANOSECONDS,
         )
 
-    fun scheduleWithFixedDelay(
-        command: Runnable,
-        initialDelay: Long,
-        delay: Long,
-        unit: TimeUnit
-    ): ScheduledFuture<*> = executor.scheduleWithFixedDelay(command, initialDelay, delay, unit)
 
     fun scheduleWithFixedDelay(
         command: Runnable,

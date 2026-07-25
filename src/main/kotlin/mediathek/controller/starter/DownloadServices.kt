@@ -13,8 +13,10 @@ import mediathek.gui.messages.DownloadQueueRankChangedEvent
 import mediathek.gui.messages.StartEvent
 import mediathek.mainwindow.MainWindowHandle
 import mediathek.tool.MessageBus
+import mediathek.tool.ReplacementRules
 import mediathek.tool.datum.DateUtil
 import mediathek.tool.models.TModelDownload
+import mediathek.tool.notification.NotificationPublisher
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDate
 import java.util.*
@@ -32,12 +34,15 @@ class DownloadServices(
     private val programSets: ProgramSetRepository,
     private val abos: AboServices,
     private val blacklist: BlacklistServices,
+    internal val replacementRules: ReplacementRules,
+    notificationPublisher: NotificationPublisher,
     private val showMissingAboProgramSet: (JFrame?) -> Unit,
 ) {
     private val queue: LinkedList<DatenDownload> = LinkedList()
     private val buttonQueue: LinkedList<DatenDownload> = LinkedList()
     private val info: DownloadInfos = DownloadInfos(::unfinishedDownloads)
-    private val starter: DownloadStartCoordinator = DownloadStartCoordinator(this, abos::historyController)
+    private val starter: DownloadStartCoordinator =
+        DownloadStartCoordinator(this, abos::historyController, notificationPublisher)
 
     fun refreshAboDownloads() {
         synchronized(queue) {
@@ -72,7 +77,7 @@ class DownloadServices(
             val films = filmCatalog.allFilms
             queue.filter { download -> download.film == null }
                 .forEach { download ->
-                    download.film = films.getFilmByUrl_klein_hoch_hd(download.downloadUrl)
+                    download.film = films.getFilmByAnyUrl(download.downloadUrl)
                     download.setGroesse("")
                 }
         }
@@ -389,16 +394,16 @@ class DownloadServices(
 
     fun startInfo(): DownloadStartInfo = synchronized(queue) {
         val info = DownloadStartInfo()
-        info.total_num_download_list_entries = queue.size
+        info.totalDownloadListEntries = queue.size
 
         for (download in queue) {
             if (!download.isDeferred) {
-                info.total_starts++
+                info.totalStarts++
             }
             if (download.isFromAbo) {
-                info.num_abos++
+                info.aboCount++
             } else {
-                info.num_downloads++
+                info.downloadCount++
             }
             val state = download.runtime.runState
             if (
@@ -468,7 +473,7 @@ class DownloadServices(
                 }
 
                 // dann in die Liste schreiben
-                val download = DatenDownload(pset, film, DownloadSource.ABO, abo, "", "", "")
+                val download = DatenDownload(pset, film, DownloadSource.ABO, abo, "", "", "", replacementRules)
                 queue.add(download)
                 addedDownloads.add(download)
             } else {

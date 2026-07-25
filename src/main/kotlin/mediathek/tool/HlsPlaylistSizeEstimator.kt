@@ -323,15 +323,17 @@ class HlsPlaylistSizeEstimator(
         var insideQuotes = false
 
         for (char in line) {
-            when {
-                char == '"' -> {
+            when (char) {
+                '"' -> {
                     insideQuotes = !insideQuotes
                     current.append(char)
                 }
 
-                char == ',' && !insideQuotes -> {
+                ',' -> if (!insideQuotes) {
                     parts += current.toString()
                     current.setLength(0)
+                } else {
+                    current.append(char)
                 }
 
                 else -> current.append(char)
