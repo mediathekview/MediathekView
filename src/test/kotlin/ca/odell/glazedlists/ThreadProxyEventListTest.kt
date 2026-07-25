@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import java.awt.EventQueue
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 internal class ThreadProxyEventListTest {
     @Test
@@ -34,9 +35,9 @@ internal class ThreadProxyEventListTest {
         val source = BasicEventList<String>()
         val proxy = SwingThreadProxyEventList(source)
         val delivered = CountDownLatch(1)
-        var deliveredOnEdt = false
+        val deliveredOnEdt = AtomicBoolean(false)
         proxy.addListEventListener {
-            deliveredOnEdt = EventQueue.isDispatchThread()
+            deliveredOnEdt.set(EventQueue.isDispatchThread())
             delivered.countDown()
         }
 
@@ -44,7 +45,7 @@ internal class ThreadProxyEventListTest {
         source += "A"
 
         assertTrue(delivered.await(2, TimeUnit.SECONDS))
-        assertTrue(deliveredOnEdt)
+        assertTrue(deliveredOnEdt.get())
         EventQueue.invokeAndWait { assertEquals(listOf("A"), proxy) }
     }
 
