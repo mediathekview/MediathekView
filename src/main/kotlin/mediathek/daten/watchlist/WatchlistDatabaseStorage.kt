@@ -51,6 +51,26 @@ internal object WatchlistDatabaseStorage : WatchlistPersistence {
         }
     }
 
+    override fun applyChange(storagePath: Path, snapshot: WatchlistSnapshot, change: WatchlistChange) {
+        if (!storagePath.exists()) {
+            installNewDatabase(storagePath, snapshot)
+            return
+        }
+
+        rejectNewerSchemaWithoutWriting(storagePath)
+        dataSource(storagePath).connection.use { connection ->
+            bootstrapSchema(connection, storagePath)
+            connection.inTransaction {
+                when (change) {
+                    WatchlistChange.BadgeAcknowledged -> Unit
+                    is WatchlistChange.EntriesRemoved -> removeEntries(connection, change.entryIds)
+                    is WatchlistChange.NotificationRemoved -> removeNotification(connection, change)
+                }
+                updateUnseenState(connection, snapshot.hasUnseenNotifications)
+            }
+        }
+    }
+
     private fun installNewDatabase(databasePath: Path, snapshot: WatchlistSnapshot): WatchlistSnapshot {
         val directory = databasePath.toAbsolutePath().parent
         directory.createDirectories()
@@ -194,6 +214,40 @@ internal object WatchlistDatabaseStorage : WatchlistPersistence {
                 statement.addBatch()
             }
             statement.executeBatch()
+        }
+    }
+
+    private fun removeEntries(connection: Connection, entryIds: Set<String>) {
+        connection.prepareStatement("DELETE FROM watchlist_notifications WHERE entry_id = ?").use { statement ->
+            entryIds.forEach { entryId ->
+                statement.setString(1, entryId)
+                statement.addBatch()
+            }
+            statement.executeBatch()
+        }
+        connection.prepareStatement("DELETE FROM watchlist_entries WHERE id = ?").use { statement ->
+            entryIds.forEach { entryId ->
+                statement.setString(1, entryId)
+                statement.addBatch()
+            }
+            statement.executeBatch()
+        }
+    }
+
+    private fun removeNotification(connection: Connection, change: WatchlistChange.NotificationRemoved) {
+        connection.prepareStatement(
+            "DELETE FROM watchlist_notifications WHERE entry_id = ? AND film_id = ?"
+        ).use { statement ->
+            statement.setString(1, change.entryId)
+            statement.setString(2, change.filmId)
+            statement.executeUpdate()
+        }
+    }
+
+    private fun updateUnseenState(connection: Connection, hasUnseenNotifications: Boolean) {
+        connection.prepareStatement(UPSERT_STATE_SQL).use { statement ->
+            statement.setBoolean(1, hasUnseenNotifications)
+            statement.executeUpdate()
         }
     }
 
@@ -364,6 +418,10 @@ internal object WatchlistDatabaseStorage : WatchlistPersistence {
     """
     private const val INSERT_STATE_SQL =
         "INSERT INTO watchlist_state(singleton, has_unseen_notifications) VALUES (1, ?)"
+    private const val UPSERT_STATE_SQL = """
+        INSERT INTO watchlist_state(singleton, has_unseen_notifications) VALUES (1, ?)
+        ON CONFLICT(singleton) DO UPDATE SET has_unseen_notifications = excluded.has_unseen_notifications
+    """
     private const val INSERT_ENTRY_SQL =
         "INSERT INTO watchlist_entries(id, position, name, sender, thema, title) VALUES (?, ?, ?, ?, ?, ?)"
     private const val INSERT_SEEN_FILM_ID_SQL =

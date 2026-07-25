@@ -87,7 +87,7 @@ class ManageWatchlistDialog(
             .map { viewRow -> tableModel.entryAt(table.convertRowIndexToModel(viewRow)) }
         deleteButton.isEnabled = false
         // Removal is asynchronous; the table refreshes through WatchlistChangedEvent.
-        selectedEntries.forEach { entry -> watchlist.removeEntry(entry.id) }
+        watchlist.removeEntries(selectedEntries.mapTo(linkedSetOf(), DatenWatchlistEntry::id))
     }
 }
 

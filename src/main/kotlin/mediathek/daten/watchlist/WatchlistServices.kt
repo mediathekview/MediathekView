@@ -36,6 +36,12 @@ import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
 
+data class WatchlistState(
+    val entries: List<DatenWatchlistEntry>,
+    val notifications: List<WatchlistNotification>,
+    val hasUnseenNotifications: Boolean,
+)
+
 /**
  * Owns the watchlist entries and the pending "new episode" notifications.
  *
@@ -68,11 +74,12 @@ class WatchlistServices internal constructor(
 
     /** Set whenever in-memory state diverges from persistence; a failed write keeps it set for retry. */
     private var dirty = false
+    private var fullWriteRequired = false
 
     /** Disabled when persisted state must not be overwritten, e.g. for a newer schema version. */
     private var writesEnabled = true
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val operationMutex = Mutex()
     private val acceptingOperations = AtomicBoolean(true)
     private val operationLifecycleLock = Any()
@@ -84,14 +91,18 @@ class WatchlistServices internal constructor(
     val hasUnseenNotifications: Boolean
         get() = synchronized(stateLock) { unseenNotifications }
 
+    fun stateSnapshot(): WatchlistState = synchronized(stateLock) {
+        WatchlistState(entries.toList(), pendingNotifications.toList(), unseenNotifications)
+    }
+
     fun entriesSnapshot(): List<DatenWatchlistEntry> = synchronized(stateLock) { entries.toList() }
 
     fun notificationsSnapshot(): List<WatchlistNotification> =
         synchronized(stateLock) { pendingNotifications.toList() }
 
-    fun load() {
+    suspend fun load() {
         val snapshot = try {
-            persistence.read(storagePath)
+            withContext(Dispatchers.IO) { persistence.read(storagePath) }
         } catch (exception: UnsupportedWatchlistVersionException) {
             synchronized(stateLock) { writesEnabled = false }
             logger.error(
@@ -122,6 +133,7 @@ class WatchlistServices internal constructor(
             // Never restore a badge without anything to show.
             unseenNotifications = snapshot.hasUnseenNotifications && snapshot.notifications.isNotEmpty()
             dirty = false
+            fullWriteRequired = false
         }
     }
 
@@ -138,13 +150,17 @@ class WatchlistServices internal constructor(
             entries.firstOrNull { entry ->
                 entry.sender.equals(film.sender, ignoreCase = true) &&
                     entry.thema.equals(film.thema, ignoreCase = true) &&
-                    if (withTitle) entry.title.equals(film.title, ignoreCase = true) else entry.title.isEmpty()
+                    (if (withTitle) entry.title.equals(film.title, ignoreCase = true) else entry.title.isEmpty())
             }
         }
 
     /** Removes the entry and all notifications belonging to it. Safe to call from the EDT. */
     fun removeEntry(entryId: String): Job =
-        launchOperation("remove watchlist entry") { performRemoveEntry(entryId) }
+        removeEntries(setOf(entryId))
+
+    /** Removes entries and their notifications as one persisted operation. Safe to call from the EDT. */
+    fun removeEntries(entryIds: Set<String>): Job =
+        launchOperation("remove watchlist entries") { performRemoveEntries(entryIds) }
 
     /** Removes a single notification. Safe to call from the EDT. */
     fun removeNotification(notification: WatchlistNotification): Job =
@@ -156,20 +172,7 @@ class WatchlistServices internal constructor(
      * Pending notifications stay until the user removes them.
      */
     suspend fun acknowledgeNotifications(): List<WatchlistNotification> =
-        withContext(Dispatchers.IO) {
-            operationMutex.withLock {
-                val acknowledged = synchronized(stateLock) {
-                    if (unseenNotifications) {
-                        unseenNotifications = false
-                        dirty = true
-                    }
-                    pendingNotifications.toList()
-                }
-                publishChanged()
-                persistIfDirty()
-                acknowledged
-            }
-        }
+        launchResultOperation { performAcknowledgeNotifications() }.await()
 
     @Handler
     @Suppress("UNUSED_PARAMETER")
@@ -198,9 +201,7 @@ class WatchlistServices internal constructor(
         try {
             runBlocking {
                 awaitIdle()
-                withContext(Dispatchers.IO) {
-                    operationMutex.withLock { persistIfDirty() }
-                }
+                operationMutex.withLock { persistIfDirty() }
             }
         } catch (exception: Exception) {
             logger.error("Failed to flush watchlist during shutdown", exception)
@@ -213,7 +214,10 @@ class WatchlistServices internal constructor(
         runOperationAndWait { performAddEntry(film, withTitle) }
 
     internal suspend fun removeEntryAndWait(entryId: String) =
-        runOperationAndWait { performRemoveEntry(entryId) }
+        runOperationAndWait { performRemoveEntries(setOf(entryId)) }
+
+    internal suspend fun removeEntriesAndWait(entryIds: Set<String>) =
+        runOperationAndWait { performRemoveEntries(entryIds) }
 
     internal suspend fun removeNotificationAndWait(notification: WatchlistNotification) =
         runOperationAndWait { performRemoveNotification(notification) }
@@ -232,12 +236,12 @@ class WatchlistServices internal constructor(
     }
 
     private suspend fun runOperationAndWait(operation: suspend () -> Unit) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             operationMutex.withLock { operation() }
         }
     }
 
-    private fun performAddEntry(film: DatenFilm, withTitle: Boolean) {
+    private suspend fun performAddEntry(film: DatenFilm, withTitle: Boolean) {
         val titleFilter = if (withTitle) film.title else ""
         val draft = DatenWatchlistEntry(
             name = film.thema,
@@ -266,23 +270,29 @@ class WatchlistServices internal constructor(
         }
     }
 
-    private fun performRemoveEntry(entryId: String) {
-        val removed = synchronized(stateLock) {
-            val entryRemoved = entries.removeIf { entry -> entry.id == entryId }
-            if (entryRemoved) {
-                pendingNotifications.removeIf { notification -> notification.entryId == entryId }
+    private suspend fun performRemoveEntries(entryIds: Set<String>) {
+        if (entryIds.isEmpty()) {
+            return
+        }
+        val removedEntryIds = synchronized(stateLock) {
+            val removedIds = entries.asSequence()
+                .map(DatenWatchlistEntry::id)
+                .filterTo(linkedSetOf()) { entryId -> entryId in entryIds }
+            if (removedIds.isNotEmpty()) {
+                entries.removeIf { entry -> entry.id in removedIds }
+                pendingNotifications.removeIf { notification -> notification.entryId in removedIds }
                 clearBadgeWithoutNotifications()
                 dirty = true
             }
-            entryRemoved
+            removedIds
         }
-        if (removed) {
+        if (removedEntryIds.isNotEmpty()) {
             publishChanged()
-            persistIfDirty()
+            persistIfDirty(WatchlistChange.EntriesRemoved(removedEntryIds))
         }
     }
 
-    private fun performRemoveNotification(notification: WatchlistNotification) {
+    private suspend fun performRemoveNotification(notification: WatchlistNotification) {
         val removed = synchronized(stateLock) {
             val notificationRemoved = pendingNotifications.remove(notification)
             if (notificationRemoved) {
@@ -293,11 +303,11 @@ class WatchlistServices internal constructor(
         }
         if (removed) {
             publishChanged()
-            persistIfDirty()
+            persistIfDirty(WatchlistChange.NotificationRemoved(notification.entryId, notification.filmId))
         }
     }
 
-    private fun performMarkFilmsSeenByDownload(films: Collection<DatenFilm>) {
+    private suspend fun performMarkFilmsSeenByDownload(films: Collection<DatenFilm>) {
         val downloadedFilmsById = films.associateBy(DatenFilm::sha256)
         val filmIds = downloadedFilmsById.keys
         var changed = false
@@ -323,16 +333,18 @@ class WatchlistServices internal constructor(
                 changed = true
                 clearBadgeWithoutNotifications()
             }
+            if (changed) {
+                dirty = true
+            }
         }
 
         if (changed) {
-            dirty = true
             publishChanged()
             persistIfDirty()
         }
     }
 
-    private fun performMatchNewEpisodes() {
+    private suspend fun performMatchNewEpisodes() {
         val scanEntries = entriesSnapshot()
         if (scanEntries.isEmpty()) {
             return
@@ -395,6 +407,23 @@ class WatchlistServices internal constructor(
         }
     }
 
+    private suspend fun performAcknowledgeNotifications(): List<WatchlistNotification> {
+        var changed = false
+        val acknowledged = synchronized(stateLock) {
+            if (unseenNotifications) {
+                unseenNotifications = false
+                dirty = true
+                changed = true
+            }
+            pendingNotifications.toList()
+        }
+        if (changed) {
+            publishChanged()
+            persistIfDirty(WatchlistChange.BadgeAcknowledged)
+        }
+        return acknowledged
+    }
+
     private fun clearBadgeWithoutNotifications() {
         if (pendingNotifications.isEmpty()) {
             unseenNotifications = false
@@ -420,6 +449,14 @@ class WatchlistServices internal constructor(
             }
         }
 
+    private fun <T> launchResultOperation(operation: suspend () -> T): Deferred<T> =
+        synchronized(operationLifecycleLock) {
+            check(acceptingOperations.get()) { "Watchlist service is closed" }
+            scope.async {
+                operationMutex.withLock { operation() }
+            }
+        }
+
     private fun publishOsSummary(newNotifications: List<WatchlistNotification>) {
         val names = newNotifications.mapTo(LinkedHashSet()) { notification -> notification.entryName }
         val message = if (newNotifications.size == 1) {
@@ -434,7 +471,7 @@ class WatchlistServices internal constructor(
         MessageBus.messageBus.publishAsync(WatchlistChangedEvent())
     }
 
-    private fun persistIfDirty() {
+    private suspend fun persistIfDirty(change: WatchlistChange? = null) {
         val snapshot = synchronized(stateLock) {
             if (!dirty || !writesEnabled) {
                 return
@@ -447,10 +484,20 @@ class WatchlistServices internal constructor(
         }
 
         try {
-            persistence.write(storagePath, snapshot)
-            synchronized(stateLock) { dirty = false }
+            withContext(Dispatchers.IO) {
+                if (change == null || synchronized(stateLock) { fullWriteRequired }) {
+                    persistence.write(storagePath, snapshot)
+                } else {
+                    persistence.applyChange(storagePath, snapshot, change)
+                }
+            }
+            synchronized(stateLock) {
+                dirty = false
+                fullWriteRequired = false
+            }
         } catch (exception: Exception) {
             // Keep the dirty flag so the next operation or the shutdown flush retries.
+            synchronized(stateLock) { fullWriteRequired = true }
             logger.error("Failed to write watchlist to {}; will retry later", storagePath, exception)
         }
     }

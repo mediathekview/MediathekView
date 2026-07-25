@@ -2,6 +2,8 @@ package mediathek.daten.watchlist
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
@@ -17,7 +19,10 @@ import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.DriverManager
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import kotlin.io.path.exists
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class WatchlistServicesTest {
     @TempDir
@@ -260,6 +265,24 @@ internal class WatchlistServicesTest {
     }
 
     @Test
+    fun removingEntriesIsPersistedAsOneBatchChange() = runBlocking {
+        val recordingPersistence = RecordingPersistence()
+        val batchingServices = createServices(persistence = recordingPersistence)
+        val films = (1..3).map { index ->
+            film("ARD", "Show $index", "Episode", "https://example.org/$index.mp4", isNew = false)
+        }
+        films.forEach(allFilms::add)
+        films.forEach { film -> batchingServices.addEntryFromFilmAndWait(film, withTitle = false) }
+        recordingPersistence.changes.clear()
+        val idsToRemove = batchingServices.entriesSnapshot().take(2).mapTo(linkedSetOf(), DatenWatchlistEntry::id)
+
+        batchingServices.removeEntriesAndWait(idsToRemove)
+
+        assertEquals(listOf(WatchlistChange.EntriesRemoved(idsToRemove)), recordingPersistence.changes)
+        assertEquals(1, WatchlistDatabaseStorage.read(storageFile).entries.size)
+    }
+
+    @Test
     fun findEntryForDistinguishesTitleVariants() = runBlocking {
         val existing = tagesschau("https://example.org/old.mp4", isNew = false)
         services.addEntryFromFilmAndWait(existing, withTitle = false)
@@ -347,6 +370,29 @@ internal class WatchlistServicesTest {
         MessageBus.messageBus.publish(FilmListReadStopEvent())
 
         assertTrue(services.notificationsSnapshot().isEmpty())
+    }
+
+    @Test
+    fun closeWaitsForAcknowledgementOwnedByTheServiceScope() = runBlocking {
+        val blockingPersistence = BlockingChangePersistence()
+        val closingServices = createServices(persistence = blockingPersistence)
+        val existing = tagesschau("https://example.org/old.mp4", isNew = false)
+        allFilms.add(existing)
+        closingServices.addEntryFromFilmAndWait(existing, withTitle = false)
+        allFilms.add(tagesschau("https://example.org/new.mp4", isNew = true))
+        closingServices.matchNewEpisodesAndWait()
+
+        val acknowledgement = async(Dispatchers.Default) { closingServices.acknowledgeNotifications() }
+        assertTrue(blockingPersistence.changeStarted.await(5, TimeUnit.SECONDS))
+        val closing = async(Dispatchers.Default) { closingServices.close() }
+        delay(50.milliseconds)
+        assertFalse(closing.isCompleted)
+
+        blockingPersistence.allowChange.countDown()
+        acknowledgement.await()
+        closing.await()
+
+        assertFalse(WatchlistDatabaseStorage.read(storageFile).hasUnseenNotifications)
     }
 
     @Test
@@ -487,6 +533,17 @@ internal class WatchlistServicesTest {
         assertFalse(services.hasUnseenNotifications)
     }
 
+    @Test
+    fun stateSnapshotReturnsCoherentWatchlistState() = runBlocking {
+        givenPendingNotification()
+
+        val state = services.stateSnapshot()
+
+        assertTrue(state.hasUnseenNotifications)
+        assertEquals(services.entriesSnapshot(), state.entries)
+        assertEquals(services.notificationsSnapshot(), state.notifications)
+    }
+
     private suspend fun givenPendingNotification() {
         val existing = tagesschau("https://example.org/old.mp4", isNew = false)
         allFilms.add(existing)
@@ -506,6 +563,40 @@ internal class WatchlistServicesTest {
                 throw java.io.IOException("write failure for test")
             }
             WatchlistDatabaseStorage.write(storagePath, snapshot)
+        }
+    }
+
+    private class RecordingPersistence : WatchlistPersistence {
+        val changes = mutableListOf<WatchlistChange>()
+
+        override fun read(storagePath: Path): WatchlistSnapshot = WatchlistDatabaseStorage.read(storagePath)
+
+        override fun write(storagePath: Path, snapshot: WatchlistSnapshot) {
+            WatchlistDatabaseStorage.write(storagePath, snapshot)
+        }
+
+        override fun applyChange(storagePath: Path, snapshot: WatchlistSnapshot, change: WatchlistChange) {
+            changes.add(change)
+            WatchlistDatabaseStorage.applyChange(storagePath, snapshot, change)
+        }
+    }
+
+    private class BlockingChangePersistence : WatchlistPersistence {
+        val changeStarted = CountDownLatch(1)
+        val allowChange = CountDownLatch(1)
+
+        override fun read(storagePath: Path): WatchlistSnapshot = WatchlistDatabaseStorage.read(storagePath)
+
+        override fun write(storagePath: Path, snapshot: WatchlistSnapshot) {
+            WatchlistDatabaseStorage.write(storagePath, snapshot)
+        }
+
+        override fun applyChange(storagePath: Path, snapshot: WatchlistSnapshot, change: WatchlistChange) {
+            if (change == WatchlistChange.BadgeAcknowledged) {
+                changeStarted.countDown()
+                check(allowChange.await(5, TimeUnit.SECONDS)) { "Timed out waiting to complete targeted change" }
+            }
+            WatchlistDatabaseStorage.applyChange(storagePath, snapshot, change)
         }
     }
 }

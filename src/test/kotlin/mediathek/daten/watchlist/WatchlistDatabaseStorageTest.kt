@@ -91,6 +91,41 @@ internal class WatchlistDatabaseStorageTest {
         assertTrue(databasePath.exists())
     }
 
+    @Test
+    fun targetedChangesPreserveUnrelatedSnapshotData() {
+        val original = completeSnapshot()
+        WatchlistDatabaseStorage.write(databasePath, original)
+
+        val acknowledged = original.copy(hasUnseenNotifications = false)
+        WatchlistDatabaseStorage.applyChange(
+            databasePath,
+            acknowledged,
+            WatchlistChange.BadgeAcknowledged,
+        )
+        assertEquals(acknowledged, WatchlistDatabaseStorage.read(databasePath))
+
+        val notificationToRemove = acknowledged.notifications.first()
+        val withoutNotification = acknowledged.copy(notifications = acknowledged.notifications.drop(1))
+        WatchlistDatabaseStorage.applyChange(
+            databasePath,
+            withoutNotification,
+            WatchlistChange.NotificationRemoved(notificationToRemove.entryId, notificationToRemove.filmId),
+        )
+        assertEquals(withoutNotification, WatchlistDatabaseStorage.read(databasePath))
+
+        val entryToRemove = original.entries.last()
+        val withoutEntry = withoutNotification.copy(
+            entries = withoutNotification.entries.dropLast(1),
+            notifications = withoutNotification.notifications.filterNot { it.entryId == entryToRemove.id },
+        )
+        WatchlistDatabaseStorage.applyChange(
+            databasePath,
+            withoutEntry,
+            WatchlistChange.EntriesRemoved(setOf(entryToRemove.id)),
+        )
+        assertEquals(withoutEntry, WatchlistDatabaseStorage.read(databasePath))
+    }
+
     private fun completeSnapshot(): WatchlistSnapshot {
         val firstEntry = DatenWatchlistEntry(
             id = "entry-1",

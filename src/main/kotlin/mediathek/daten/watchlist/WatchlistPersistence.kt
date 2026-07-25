@@ -35,6 +35,18 @@ internal interface WatchlistPersistence {
     fun read(storagePath: Path): WatchlistSnapshot
 
     fun write(storagePath: Path, snapshot: WatchlistSnapshot)
+
+    fun applyChange(storagePath: Path, snapshot: WatchlistSnapshot, change: WatchlistChange) {
+        write(storagePath, snapshot)
+    }
+}
+
+internal sealed interface WatchlistChange {
+    data object BadgeAcknowledged : WatchlistChange
+
+    data class EntriesRemoved(val entryIds: Set<String>) : WatchlistChange
+
+    data class NotificationRemoved(val entryId: String, val filmId: String) : WatchlistChange
 }
 
 internal data class WatchlistSnapshot(

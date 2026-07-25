@@ -764,9 +764,10 @@ class GuiFilme(
     }
 
     private fun updateWatchlistBellState() {
+        val state = watchlist.stateSnapshot()
         watchlistBellButton.setNotificationState(
-            watchlist.hasUnseenNotifications,
-            watchlist.notificationsSnapshot().size,
+            state.hasUnseenNotifications,
+            state.notifications.size,
         )
     }
 
@@ -894,7 +895,7 @@ class GuiFilme(
 
     /** The catalog lookup is a linear scan over all films and must not run on the EDT. */
     private suspend fun findNotificationFilm(notification: WatchlistNotification): DatenFilm? =
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             filmCatalog.allFilms.getFilmByAnyUrl(notification.urlNormalQuality)
         }
 
