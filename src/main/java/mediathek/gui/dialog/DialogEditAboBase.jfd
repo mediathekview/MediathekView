@@ -19,6 +19,9 @@ new FormModel {
 					"$rowConstraints": ""
 				} ) {
 					name: "jPanelExtra"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelMultiEditHeader"
 						"text": "<html><style type=\"text/css\"> p { text-align: center; }</style><p>bei allen<br />ändern</p></html>"
@@ -144,6 +147,9 @@ new FormModel {
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 						name: "panelDauer"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
 						add( new FormComponent( "javax.swing.JSlider" ) {
 							name: "sliderDauer"
 							"value": 0
@@ -175,6 +181,9 @@ new FormModel {
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 						name: "panelMinMax"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "rbMin"
 							"text": "Mindestdauer"

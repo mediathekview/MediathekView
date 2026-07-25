@@ -145,7 +145,7 @@ public class DialogEditAboBase extends JDialog {
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
         jScrollPane1 = new JScrollPane();
-        jPanelExtra = new JPanel();
+        var jPanelExtra = new JPanel();
         labelMultiEditHeader = new JLabel();
         var labelEingeschaltet = new JLabel();
         checkBoxEingeschaltet = new JCheckBox();
@@ -166,12 +166,12 @@ public class DialogEditAboBase extends JDialog {
         labelIrgendwo = new JLabel();
         textFieldIrgendwo = new JTextField();
         var labelMindestdauer = new JLabel();
-        panelDauer = new JPanel();
+        var panelDauer = new JPanel();
         sliderDauer = new JSlider();
         labelDauer = new JLabel();
         checkBoxMultiEditMindestdauer = new JCheckBox();
         var labelMin = new JLabel();
-        panelMinMax = new JPanel();
+        var panelMinMax = new JPanel();
         rbMin = new JRadioButton();
         rbMax = new JRadioButton();
         checkBoxMultiEditMin = new JCheckBox();
@@ -221,6 +221,7 @@ public class DialogEditAboBase extends JDialog {
                 //---- labelMultiEditHeader ----
                 labelMultiEditHeader.setText("<html><style type=\"text/css\"> p { text-align: center; }</style><p>bei allen<br />\u00e4ndern</p></html>");
                 jPanelExtra.add(labelMultiEditHeader, new CC().cell(2, 0));
+
                 //---- labelEingeschaltet ----
                 labelEingeschaltet.setText("Aktiv:");
                 jPanelExtra.add(labelEingeschaltet, new CC().cell(0, 1));
@@ -349,7 +350,6 @@ public class DialogEditAboBase extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JScrollPane jScrollPane1;
-    private JPanel jPanelExtra;
     private JLabel labelMultiEditHeader;
     private JCheckBox checkBoxEingeschaltet;
     private JCheckBox checkBoxMultiEditEingeschaltet;
@@ -366,11 +366,9 @@ public class DialogEditAboBase extends JDialog {
     private JTextField textFieldThemaTitel;
     private JLabel labelIrgendwo;
     private JTextField textFieldIrgendwo;
-    private JPanel panelDauer;
     private JSlider sliderDauer;
     private JLabel labelDauer;
     private JCheckBox checkBoxMultiEditMindestdauer;
-    private JPanel panelMinMax;
     private JRadioButton rbMin;
     private JRadioButton rbMax;
     private JCheckBox checkBoxMultiEditMin;

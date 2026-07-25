@@ -192,7 +192,7 @@ open class MediathekGui private constructor(
     private val menuPolicy = menuPolicy
     private val menuBuilder by lazy(LazyThreadSafetyMode.NONE) { createMenuBuilder() }
     private val scrollBarConfigurator = scrollBarConfigurator
-    private val downloadProgressIndicator: DownloadProgressIndicator = requireNotNull(downloadProgressIndicatorFactory(this))
+    private val downloadProgressIndicator: DownloadProgressIndicator = downloadProgressIndicatorFactory(this)
     private val startupOrchestrator: MainWindowStartupOrchestrator
     private val platformIntegration: MainWindowPlatformIntegration
     private val programUpdateCoordinator = MainWindowProgramUpdateCoordinator(daten.programSets, programSetExporter(), this)

@@ -7,9 +7,9 @@ import java.awt.image.WritableRaster;
 
 public class ShadowRenderer {
 
-    private int size = 5;
-    private float opacity = 0.5f;
-    private Color color = Color.BLACK;
+    private final int size;
+    private final float opacity;
+    private final Color color;
 
     public ShadowRenderer() {
         this(5, 0.5f, Color.BLACK);

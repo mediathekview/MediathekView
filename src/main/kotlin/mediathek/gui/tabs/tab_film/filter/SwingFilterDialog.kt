@@ -225,7 +225,7 @@ class SwingFilterDialog internal constructor(
         uiScope.cancel()
         filterSelectionComboBoxModel.removeListDataListener(filterSelectionDataListener)
         senderCheckBoxList.model = DefaultListModel<String>()
-        jcbThema.model = DefaultComboBoxModel<String>()
+        jcbThema.model = DefaultComboBoxModel()
         try {
             disposeResource("theme combo box model", themaComboBoxModel::dispose)
             disposeResource("theme list adapter", themaList::close)

@@ -17,7 +17,10 @@
  */
 package mediathek.controller
 
-import kotlinx.serialization.*
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -85,7 +88,6 @@ object AboRuleStorage {
 
 @Serializable
 private data class AboRulesFileDto(
-    @OptIn(ExperimentalSerializationApi::class)
     @EncodeDefault
     val version: Int = 1,
     val rules: List<JsonObject> = emptyList(),
@@ -93,7 +95,6 @@ private data class AboRulesFileDto(
 
 @Serializable
 private data class ClassicAboRuleDto(
-    @OptIn(ExperimentalSerializationApi::class)
     @EncodeDefault
     val type: String = "classic",
     val active: Boolean = true,

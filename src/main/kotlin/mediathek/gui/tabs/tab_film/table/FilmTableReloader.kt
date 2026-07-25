@@ -31,7 +31,6 @@ import java.awt.Component
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class FilmTableReloader(
     private val host: Host,
     private val queryEngineFactory: (Host) -> FilmQueryEngine = { queryHost ->

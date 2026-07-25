@@ -688,7 +688,7 @@ private class AutoCompleteSupportState<E>(
     private fun findAutoCompleteTerm(value: String): Any? {
         val prefixIsEmpty = value.isEmpty()
         val valueMatcher =
-            TextMatcher<String>(
+            TextMatcher(
                 singleSearchTerm<String>(value),
                 GlazedLists.toStringTextFilterator(),
                 filterMode,
@@ -1018,7 +1018,7 @@ private class AutoCompleteSupportState<E>(
             filterMode == TextMatcherEditor.CONTAINS
         ) {
             val matcher =
-                TextMatcher<String>(
+                TextMatcher(
                     singleSearchTerm<String>(filterMatcher.input),
                     GlazedLists.toStringTextFilterator(),
                     TextMatcherEditor.STARTS_WITH,
