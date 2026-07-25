@@ -252,11 +252,25 @@
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-jide-oss</artifactId>
             <version>${flatlaf.version}</version>
+            <!-- TODO: Remove exclusion once jide-oss PR is merged -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.formdev</groupId>
+                    <artifactId>jide-oss</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- TODO: Switch back to upstream once https://github.com/JFormDesigner/jide-oss/pull is merged:
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>jide-oss</artifactId>
             <version>${jide-oss.version}</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.github.derreisende77</groupId>
+            <artifactId>jide-oss</artifactId>
+            <version>master-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -752,6 +766,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <!-- TODO: Remove jitpack repo once jide-oss PR is merged -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <profiles>
         <profile>
