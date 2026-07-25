@@ -123,6 +123,7 @@ object Main {
                 daten.abos.waitForHistoryDataLoadingToComplete()
                 withContext(Dispatchers.IO) {
                     daten.bookmarks.loadFromFile()
+                    daten.watchlist.loadFromFile()
                 }
                 val exitCode = try {
                     downloadAndQuitRunner.run()
@@ -148,6 +149,7 @@ object Main {
         daten.abos.launchHistoryDataLoading()
         withContext(Dispatchers.IO) {
             daten.bookmarks.loadFromFile()
+            daten.watchlist.loadFromFile()
             removeLuceneIndexDirectory()
         }
 

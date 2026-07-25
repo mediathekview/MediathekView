@@ -804,6 +804,7 @@ open class MediathekGui private constructor(
             daten.filmCatalog,
             daten.abos,
             daten.blacklist,
+            daten.watchlist,
             daten.bookmarks,
             daten.downloads,
             daten.replacementRules,

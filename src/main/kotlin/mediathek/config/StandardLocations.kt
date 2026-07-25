@@ -101,6 +101,15 @@ object StandardLocations {
         return getSettingsDirectory().resolve("abo-rules.json")
     }
 
+    /**
+     * Return the path to "watchlist.json"
+     *
+     * @return Path object of watchlist file
+     */
+    fun getWatchlistFilePath(): Path {
+        return getSettingsDirectory().resolve("watchlist.json")
+    }
+
     fun getApplicationSettingsFile(): Path {
         return getSettingsDirectory().resolve("settings.xml")
     }

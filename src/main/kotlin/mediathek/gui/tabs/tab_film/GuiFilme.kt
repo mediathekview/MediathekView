@@ -18,12 +18,15 @@
 
 package mediathek.gui.tabs.tab_film
 
+import com.jidesoft.popup.JidePopup
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.config.application.FilterConfiguration
 import mediathek.controller.starter.DownloadServices
 import mediathek.daten.*
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
+import mediathek.daten.watchlist.WatchlistNotification
+import mediathek.daten.watchlist.WatchlistServices
 import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.actions.DeleteBookmarksAction
@@ -36,6 +39,7 @@ import mediathek.gui.dialog.add_download.DialogAddDownload
 import mediathek.gui.messages.BookmarkRefreshCompletedEvent
 import mediathek.gui.messages.ButtonStartEvent
 import mediathek.gui.messages.ReloadTableDataEvent
+import mediathek.gui.messages.WatchlistChangedEvent
 import mediathek.gui.messages.history.FilmSeenStateChangedEvent
 import mediathek.gui.messages.history.SeenHistoryChangedEvent
 import mediathek.gui.tabs.DescriptionTabController
@@ -58,11 +62,19 @@ import mediathek.gui.tabs.tab_film.selection.FilmSelectionController
 import mediathek.gui.tabs.tab_film.selection.FilmSelectionHostAdapter
 import mediathek.gui.tabs.tab_film.table.*
 import mediathek.gui.tabs.tab_film.view.FilmViewController
+import mediathek.gui.watchlist.ManageWatchlistDialog
+import mediathek.gui.watchlist.WatchlistBellButton
+import mediathek.gui.watchlist.WatchlistNotificationPanel
 import mediathek.mainwindow.FilmBookmarkHost
+import mediathek.swing.SwingDispatch
 import mediathek.tool.ReplacementRules
 import net.engio.mbassy.listener.Handler
 import org.jdesktop.swingx.VerticalLayout
+import java.awt.AWTEvent
 import java.awt.BorderLayout
+import java.awt.Toolkit
+import java.awt.event.AWTEventListener
+import java.awt.event.MouseEvent
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
@@ -76,6 +88,7 @@ class GuiFilme(
     private val filmCatalog: FilmCatalog,
     private val abos: AboServices,
     private val blacklist: BlacklistServices,
+    private val watchlist: WatchlistServices,
     private val bookmarks: BookmarkServices,
     private val downloads: DownloadServices,
     private val replacementRules: ReplacementRules,
@@ -114,6 +127,23 @@ class GuiFilme(
     private val selectionController: FilmSelectionController
     private val tableReloader: FilmTableReloader
     private val tableInstaller: FilmTableInstaller
+    private val watchlistBellButton = WatchlistBellButton { toggleWatchlistPopup() }
+    private var watchlistPopup: JidePopup? = null
+    private var watchlistNotificationPanel: WatchlistNotificationPanel? = null
+    private var searchField: SearchField? = null
+    private val watchlistOutsideClickListener = AWTEventListener { event ->
+        if (event !is MouseEvent || event.id != MouseEvent.MOUSE_PRESSED) {
+            return@AWTEventListener
+        }
+        val popup = watchlistPopup ?: return@AWTEventListener
+        if (!popup.isPopupVisible) {
+            return@AWTEventListener
+        }
+        if (isInsideWatchlistPopup(event) || SwingUtilities.isDescendingFrom(event.component, watchlistBellButton)) {
+            return@AWTEventListener
+        }
+        SwingUtilities.invokeLater { popup.hidePopup() }
+    }
 
     private data class SelectionComponents(
         val selectionController: FilmSelectionController,
@@ -195,6 +225,7 @@ class GuiFilme(
             searchFieldHost,
         )
         swingFilterDialogFactory = installedUi.swingFilterDialogFactory
+        searchField = installedUi.searchField
 
         tableInstaller.setupTable()
         tableReloader = createTableReloader(installedUi.searchField, filterComponents.filterController)
@@ -205,6 +236,9 @@ class GuiFilme(
             filterComponents,
         )
         lifecycleController.start()
+
+        Toolkit.getDefaultToolkit().addAWTEventListener(watchlistOutsideClickListener, AWTEvent.MOUSE_EVENT_MASK)
+        updateWatchlistBellState()
     }
 
     private fun createSelectionComponents(filterConfiguration: FilterConfiguration): SelectionComponents {
@@ -452,6 +486,7 @@ class GuiFilme(
             programSets,
             filmCatalog,
             abos,
+            watchlist,
             replacementRules,
             blacklist,
             programSetExporter,
@@ -533,6 +568,7 @@ class GuiFilme(
             filmActions.saveFilmAction,
             searchField,
             filmActions.toggleFilterDialogVisibilityAction,
+            watchlistBellButton,
         )
         add(filmToolBar, BorderLayout.NORTH)
 
@@ -629,6 +665,8 @@ class GuiFilme(
     }
 
     fun disposePanel() {
+        watchlistPopup?.hidePopupImmediately()
+        Toolkit.getDefaultToolkit().removeAWTEventListener(watchlistOutsideClickListener)
         tableReloader.dispose()
         lifecycleController.disposePanel()
         tableSettingsController.dispose()
@@ -649,6 +687,16 @@ class GuiFilme(
 
     fun installMenuEntries(menu: JMenu) {
         viewController.installMenuEntries(menu)
+        menu.addSeparator()
+        menu.add(manageWatchlistMenuItem)
+    }
+
+    private val manageWatchlistMenuItem = JMenuItem("Watchlist verwalten...").apply {
+        addActionListener { showManageWatchlistDialog() }
+    }
+
+    private fun showManageWatchlistDialog() {
+        ManageWatchlistDialog(ownerFrame, watchlist).isVisible = true
     }
 
     private fun onComponentShown() {
@@ -691,6 +739,99 @@ class GuiFilme(
     @Handler
     private fun handleBookmarkRefreshCompletedEvent(event: BookmarkRefreshCompletedEvent) {
         lifecycleController.handleBookmarkRefreshCompletedEvent(event)
+    }
+
+    @Handler
+    @Suppress("UNUSED_PARAMETER")
+    private fun handleWatchlistChangedEvent(event: WatchlistChangedEvent) {
+        SwingDispatch.dispatch {
+            updateWatchlistBellState()
+            if (watchlistPopup?.isPopupVisible == true) {
+                refreshWatchlistNotificationPanel()
+            }
+        }
+    }
+
+    private fun updateWatchlistBellState() {
+        watchlistBellButton.setNotificationState(
+            watchlist.hasUnseenNotifications,
+            watchlist.notificationsSnapshot().size,
+        )
+    }
+
+    private fun toggleWatchlistPopup() {
+        val popup = getOrCreateWatchlistPopup()
+        if (popup.isPopupVisible) {
+            popup.hidePopup()
+            return
+        }
+
+        refreshWatchlistNotificationPanel()
+        popup.owner = watchlistBellButton
+        popup.showPopup(watchlistBellButton)
+        watchlist.markAllSeen()
+    }
+
+    private fun getOrCreateWatchlistPopup(): JidePopup =
+        watchlistPopup ?: createWatchlistPopup().also { watchlistPopup = it }
+
+    private fun createWatchlistPopup(): JidePopup {
+        val panel = WatchlistNotificationPanel()
+        panel.addShowInFilmTableListener(::showWatchlistNotificationInFilmTable)
+        panel.addRecordFilmListener(::recordWatchlistNotificationFilm)
+        panel.addRemoveEntryListener(::removeWatchlistEntryForNotification)
+        panel.addRemoveNotificationListener(watchlist::removeNotification)
+        panel.setFilmAvailableProvider { notification ->
+            filmCatalog.allFilms.getFilmByAnyUrl(notification.urlNormalQuality) != null
+        }
+        panel.addEmptyListener { watchlistPopup?.hidePopup() }
+        watchlistNotificationPanel = panel
+
+        return JidePopup().apply {
+            contentPane.layout = BorderLayout()
+            contentPane.add(panel, BorderLayout.CENTER)
+            owner = watchlistBellButton
+            isMovable = false
+            isResizable = true
+            isAttachable = false
+            isTransient = false
+            isFocusable = true
+            isKeepPreviousSize = false
+            defaultMoveOperation = JidePopup.HIDE_ON_MOVED
+        }
+    }
+
+    private fun refreshWatchlistNotificationPanel() {
+        watchlistNotificationPanel?.setNotifications(watchlist.notificationsSnapshot())
+    }
+
+    private fun isInsideWatchlistPopup(event: MouseEvent): Boolean {
+        val panel = watchlistNotificationPanel ?: return false
+        val component = event.component ?: return false
+        if (SwingUtilities.isDescendingFrom(component, panel)) {
+            return true
+        }
+        val popupWindow = SwingUtilities.getWindowAncestor(panel) ?: return false
+        return SwingUtilities.isDescendingFrom(component, popupWindow)
+    }
+
+    private fun showWatchlistNotificationInFilmTable(notification: WatchlistNotification) {
+        watchlistPopup?.hidePopup()
+        val field = searchField ?: return
+        field.text = notification.thema
+        field.postActionEvent()
+    }
+
+    private fun recordWatchlistNotificationFilm(notification: WatchlistNotification) {
+        val film = filmCatalog.allFilms.getFilmByAnyUrl(notification.urlNormalQuality) ?: return
+        watchlistPopup?.hidePopup()
+        startFilmDownloads(listOf(film), null, null)
+    }
+
+    private fun removeWatchlistEntryForNotification(notification: WatchlistNotification) {
+        watchlist.entriesSnapshot()
+            .firstOrNull { it.id == notification.entryId }
+            ?.let(watchlist::removeEntry)
     }
 
     private fun loadTable() {

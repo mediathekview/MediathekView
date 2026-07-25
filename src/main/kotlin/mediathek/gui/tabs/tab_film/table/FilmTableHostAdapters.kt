@@ -24,6 +24,7 @@ import mediathek.daten.DatenPset
 import mediathek.daten.ProgramSetRepository
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
+import mediathek.daten.watchlist.WatchlistServices
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.tabs.tab_film.actions.FilmActionHost
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
@@ -81,6 +82,7 @@ class TableContextMenuHostAdapter(
     private val programSets: ProgramSetRepository,
     private val filmCatalog: FilmCatalog,
     private val abos: AboServices,
+    private val watchlist: WatchlistServices,
     private val replacementRules: ReplacementRules,
     private val blacklist: BlacklistServices,
     private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
@@ -104,6 +106,8 @@ class TableContextMenuHostAdapter(
     override fun filmCatalog(): FilmCatalog = filmCatalog
 
     override fun abos(): AboServices = abos
+
+    override fun watchlist(): WatchlistServices = watchlist
 
     override fun replacementRules(): ReplacementRules = replacementRules
 

@@ -28,6 +28,7 @@ import mediathek.daten.DatenPset
 import mediathek.daten.ProgramSetRepository
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
+import mediathek.daten.watchlist.WatchlistServices
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.dialog.MissingProgramSetDialog
@@ -57,6 +58,7 @@ class TableContextMenuHandler(
         fun programSets(): ProgramSetRepository
         fun filmCatalog(): FilmCatalog
         fun abos(): AboServices
+        fun watchlist(): WatchlistServices
         fun replacementRules(): ReplacementRules
         fun blacklist(): BlacklistServices
         fun programSetExporter(): BiConsumer<Array<DatenPset>, String>
@@ -105,6 +107,10 @@ class TableContextMenuHandler(
         },
         this::selectedFilmAtPopupPoint,
     )
+    private val filmWatchlistContextActions = FilmWatchlistContextActions(
+        host.watchlist(),
+        this::selectedFilmAtPopupPoint,
+    )
     private val jDownloadHelper = JDownloadHelper(host.ownerFrame())
     private val pyLoadHelper = PyLoadHelper(host.ownerFrame())
     private val filmSpecificContextMenuBuilder = FilmSpecificContextMenuBuilder(host, jDownloadHelper, pyLoadHelper)
@@ -116,6 +122,7 @@ class TableContextMenuHandler(
         host,
         host.programSets(),
         filmAboAndBlacklistContextActions,
+        filmWatchlistContextActions,
         filmSpecificContextMenuBuilder,
         filmPrintAndHistoryContextActions::addActions,
         filmFileAndDuplicateContextActions::addActions,

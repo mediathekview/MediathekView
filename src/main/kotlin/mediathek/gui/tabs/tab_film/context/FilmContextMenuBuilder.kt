@@ -29,6 +29,7 @@ class FilmContextMenuBuilder(
     private val host: TableContextMenuHandler.Host,
     private val programSets: ProgramSetRepository,
     private val aboAndBlacklistContextActions: FilmAboAndBlacklistContextActions,
+    private val watchlistContextActions: FilmWatchlistContextActions,
     private val filmSpecificContextMenuBuilder: FilmSpecificContextMenuBuilder,
     private val addPrintAndInfoActions: (JPopupMenu, Optional<DatenFilm>) -> Unit,
     private val addFileAndDuplicateActions: (JPopupMenu, DatenFilm) -> Unit,
@@ -52,6 +53,7 @@ class FilmContextMenuBuilder(
         popupMenu.add(bookmarkMenuItem)
         popupMenu.addSeparator()
         aboAndBlacklistContextActions.addAboMenu(popupMenu, selectedFilm)
+        watchlistContextActions.addWatchlistMenu(popupMenu, selectedFilm)
         updateBookmarkMenuItem(popupMenu, bookmarkMenuItem, selectedFilm)
     }
 

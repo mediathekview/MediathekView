@@ -29,6 +29,7 @@ import mediathek.gui.tabs.tab_film.actions.ToggleFilterDialogVisibilityAction
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.search.SearchField
+import mediathek.gui.watchlist.WatchlistBellButton
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconOnlyToggleButton
 import javax.swing.Action
@@ -44,7 +45,8 @@ class FilmToolBar(
     playFilmAction: PlayFilmAction,
     saveFilmAction: SaveFilmAction,
     private val searchField: SearchField,
-    private val toggleFilterDialogVisibilityAction: ToggleFilterDialogVisibilityAction
+    private val toggleFilterDialogVisibilityAction: ToggleFilterDialogVisibilityAction,
+    watchlistBellButton: WatchlistBellButton,
 ) : JToolBar() {
     private val lblSearch = JLabel("Suche:")
     private val filterSelectionComboBox = FilterSelectionComboBox(filterModel)
@@ -71,6 +73,9 @@ class FilmToolBar(
         add(IconOnlyButton(bookmarkClearListAction))
         addSeparator()
         add(IconOnlyButton(manageBookmarkAction))
+
+        addSeparator()
+        add(watchlistBellButton)
     }
 
     override fun setEnabled(enabled: Boolean) {
