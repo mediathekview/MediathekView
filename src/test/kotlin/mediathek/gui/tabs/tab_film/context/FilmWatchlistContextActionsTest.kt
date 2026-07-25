@@ -3,8 +3,8 @@ package mediathek.gui.tabs.tab_film.context
 import kotlinx.coroutines.runBlocking
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
+import mediathek.daten.watchlist.WatchlistDatabaseStorage
 import mediathek.daten.watchlist.WatchlistServices
-import mediathek.daten.watchlist.WatchlistStorage
 import mediathek.tool.notification.NotificationPublisher
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -31,8 +31,8 @@ internal class FilmWatchlistContextActionsTest {
         watchlist = WatchlistServices(
             allFilms,
             NotificationPublisher { },
-            tempDir.resolve("watchlist.json"),
-            WatchlistStorage,
+            tempDir.resolve("watchlist.db"),
+            WatchlistDatabaseStorage,
         )
         contextActions = FilmWatchlistContextActions(watchlist)
     }

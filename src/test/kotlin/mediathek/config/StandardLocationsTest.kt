@@ -53,6 +53,7 @@ internal class StandardLocationsTest {
         assertEquals(settingsDirectory.resolve("MediathekView.lock"), StandardLocations.getLockFilePath())
         assertEquals(settingsDirectory.resolve(Konstanten.JSON_DATEI_FILME).toString(), StandardLocations.getFilmlistFilePathString())
         assertEquals(settingsDirectory.resolve("mv_index"), StandardLocations.getFilmIndexPath())
+        assertEquals(settingsDirectory.resolve("watchlist.db"), StandardLocations.getWatchlistDatabasePath())
     }
 
     @Test

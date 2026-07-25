@@ -35,12 +35,11 @@ import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.io.path.exists
 
 /**
  * Owns the watchlist entries and the pending "new episode" notifications.
  *
- * All mutations and all disk writes are serialized through a single operation mutex and
+ * All mutations and persistence writes are serialized through a single operation mutex and
  * always run off the EDT. Matching happens after each film list read stop: films flagged
  * [DatenFilm.isNew] are matched against every entry and deduplicated via the stable film
  * identity. The red badge state ([hasUnseenNotifications]) is tracked separately from the
@@ -49,23 +48,28 @@ import kotlin.io.path.exists
 class WatchlistServices internal constructor(
     private val allFilms: ListeFilme,
     private val notificationPublisher: NotificationPublisher,
-    private val storagePath: Path = StandardLocations.getWatchlistFilePath(),
-    private val persistence: WatchlistPersistence = WatchlistStorage,
+    private val storagePath: Path = StandardLocations.getWatchlistDatabasePath(),
+    private val persistence: WatchlistPersistence = WatchlistDatabaseStorage,
 ) : AutoCloseable {
     constructor(
         allFilms: ListeFilme,
         notificationPublisher: NotificationPublisher,
-    ) : this(allFilms, notificationPublisher, StandardLocations.getWatchlistFilePath(), WatchlistStorage)
+    ) : this(
+        allFilms,
+        notificationPublisher,
+        StandardLocations.getWatchlistDatabasePath(),
+        WatchlistDatabaseStorage,
+    )
 
     private val stateLock = Any()
     private val entries = mutableListOf<DatenWatchlistEntry>()
     private val pendingNotifications = mutableListOf<WatchlistNotification>()
     private var unseenNotifications = false
 
-    /** Set whenever in-memory state diverges from disk; a failed write keeps it set for retry. */
+    /** Set whenever in-memory state diverges from persistence; a failed write keeps it set for retry. */
     private var dirty = false
 
-    /** Disabled when the on-disk file must not be overwritten, e.g. a newer file version. */
+    /** Disabled when persisted state must not be overwritten, e.g. for a newer schema version. */
     private var writesEnabled = true
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -85,19 +89,29 @@ class WatchlistServices internal constructor(
     fun notificationsSnapshot(): List<WatchlistNotification> =
         synchronized(stateLock) { pendingNotifications.toList() }
 
-    fun loadFromFile() {
+    fun load() {
         val snapshot = try {
             persistence.read(storagePath)
         } catch (exception: UnsupportedWatchlistVersionException) {
             synchronized(stateLock) { writesEnabled = false }
-            logger.error("Watchlist file {} has an unsupported version; keeping it untouched", storagePath, exception)
+            logger.error(
+                "Watchlist storage {} has an unsupported version; keeping it untouched",
+                exception.protectedPath,
+                exception,
+            )
+            return
+        } catch (exception: ProtectedWatchlistLoadException) {
+            synchronized(stateLock) { writesEnabled = false }
+            logger.error(
+                "Cannot safely load watchlist storage {}; disabling writes",
+                exception.protectedPath,
+                exception
+            )
             return
         } catch (exception: Exception) {
-            if (!quarantineUnreadableFile(exception)) {
-                synchronized(stateLock) { writesEnabled = false }
-                return
-            }
-            WatchlistSnapshot()
+            synchronized(stateLock) { writesEnabled = false }
+            logger.error("Cannot load watchlist storage {}; disabling writes", storagePath, exception)
+            return
         }
 
         synchronized(stateLock) {
@@ -438,23 +452,6 @@ class WatchlistServices internal constructor(
         } catch (exception: Exception) {
             // Keep the dirty flag so the next operation or the shutdown flush retries.
             logger.error("Failed to write watchlist to {}; will retry later", storagePath, exception)
-        }
-    }
-
-    private fun quarantineUnreadableFile(readFailure: Exception): Boolean {
-        if (!storagePath.exists()) {
-            logger.error("Failed to read watchlist from {}", storagePath, readFailure)
-            return false
-        }
-
-        return try {
-            val quarantinedPath = persistence.quarantine(storagePath)
-            logger.error("Moved unreadable watchlist {} aside to {}", storagePath, quarantinedPath, readFailure)
-            true
-        } catch (quarantineFailure: Exception) {
-            quarantineFailure.addSuppressed(readFailure)
-            logger.error("Cannot read or preserve watchlist {}; disabling writes", storagePath, quarantineFailure)
-            false
         }
     }
 

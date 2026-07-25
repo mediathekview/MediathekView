@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
+import java.sql.DriverManager
 import kotlin.io.path.exists
-import kotlin.io.path.readText
 
 internal class WatchlistServicesTest {
     @TempDir
@@ -31,7 +31,7 @@ internal class WatchlistServicesTest {
 
     @BeforeEach
     fun setUp() {
-        storageFile = tempDir.resolve("watchlist.json")
+        storageFile = tempDir.resolve("watchlist.db")
         allFilms = ListeFilme()
         publishedMessages = mutableListOf()
         services = createServices()
@@ -45,7 +45,7 @@ internal class WatchlistServicesTest {
 
     private fun createServices(
         films: ListeFilme = allFilms,
-        persistence: WatchlistPersistence = WatchlistStorage,
+        persistence: WatchlistPersistence = WatchlistDatabaseStorage,
     ): WatchlistServices =
         WatchlistServices(
             films,
@@ -134,7 +134,7 @@ internal class WatchlistServicesTest {
             add(tagesschau("https://example.org/new.mp4", isNew = true))
         }
         val restarted = createServices(films = restartedFilms)
-        restarted.loadFromFile()
+        restarted.load()
         publishedMessages.clear()
 
         restarted.matchNewEpisodesAndWait()
@@ -150,7 +150,7 @@ internal class WatchlistServicesTest {
 
         services.addEntryFromFilmAndWait(existing, withTitle = false)
 
-        val persistedId = WatchlistStorage.read(storageFile).entries.single().seenFilmIds.single()
+        val persistedId = WatchlistDatabaseStorage.read(storageFile).entries.single().seenFilmIds.single()
         // A compressed URL key such as "~0/old.mp4" depends on process-local dictionary state.
         assertTrue(persistedId.matches(Regex("[0-9a-f]{64}")), "expected content hash, got $persistedId")
         assertEquals(existing.sha256, persistedId)
@@ -309,7 +309,7 @@ internal class WatchlistServicesTest {
         assertEquals(shows.size, services.entriesSnapshot().size)
 
         val reloaded = createServices()
-        reloaded.loadFromFile()
+        reloaded.load()
         assertEquals(shows.size, reloaded.entriesSnapshot().size)
         assertEquals(
             services.entriesSnapshot().map(DatenWatchlistEntry::id).toSet(),
@@ -332,7 +332,7 @@ internal class WatchlistServicesTest {
         flushingServices.close()
 
         val reloaded = createServices()
-        reloaded.loadFromFile()
+        reloaded.load()
         assertEquals(1, reloaded.entriesSnapshot().size)
     }
 
@@ -350,37 +350,17 @@ internal class WatchlistServicesTest {
     }
 
     @Test
-    fun unreadableFileIsQuarantinedAndStateStartsEmpty() = runBlocking {
-        Files.writeString(storageFile, "{ broken")
-        val recovering = createServices()
-
-        recovering.loadFromFile()
-
-        assertTrue(recovering.entriesSnapshot().isEmpty())
-        val quarantined = tempDir.resolve("watchlist.json.corrupt")
-        assertTrue(quarantined.exists())
-        assertEquals("{ broken", quarantined.readText())
-
-        val existing = tagesschau("https://example.org/old.mp4", isNew = false)
-        recovering.addEntryFromFilmAndWait(existing, withTitle = false)
-        assertEquals(1, WatchlistStorage.read(storageFile).entries.size)
-    }
-
-    @Test
-    fun unsupportedFileVersionIsPreservedAndWritesAreDisabled() = runBlocking {
-        val futureContent = """
-            {
-              "version": 99,
-              "entries": [ { "id": "future", "sender": "ZDF", "thema": "heute" } ]
-            }
-        """.trimIndent()
-        Files.writeString(storageFile, futureContent)
+    fun unsupportedDatabaseSchemaIsPreservedAndWritesAreDisabled() = runBlocking {
+        DriverManager.getConnection("jdbc:sqlite:${storageFile.toAbsolutePath()}").use { connection ->
+            connection.createStatement().use { statement -> statement.executeUpdate("PRAGMA user_version=99") }
+        }
+        val originalBytes = Files.readAllBytes(storageFile)
         val guarded = createServices()
 
-        guarded.loadFromFile()
+        guarded.load()
         guarded.addEntryFromFilmAndWait(tagesschau("https://example.org/old.mp4", isNew = false), withTitle = false)
 
-        assertEquals(futureContent, storageFile.readText(), "a newer file must never be overwritten")
+        assertArrayEquals(originalBytes, Files.readAllBytes(storageFile))
     }
 
     @Test
@@ -480,7 +460,7 @@ internal class WatchlistServicesTest {
         services.markFilmsSeenByDownloadAndWait(listOf(downloadedFilm))
 
         val reloaded = createServices()
-        reloaded.loadFromFile()
+        reloaded.load()
         assertTrue(reloaded.notificationsSnapshot().isEmpty())
         assertTrue(notification.filmId in reloaded.entriesSnapshot().single().seenFilmIds)
     }
@@ -519,15 +499,13 @@ internal class WatchlistServicesTest {
     private class FailingWritePersistence : WatchlistPersistence {
         var failWrites = false
 
-        override fun read(storagePath: Path): WatchlistSnapshot = WatchlistStorage.read(storagePath)
+        override fun read(storagePath: Path): WatchlistSnapshot = WatchlistDatabaseStorage.read(storagePath)
 
         override fun write(storagePath: Path, snapshot: WatchlistSnapshot) {
             if (failWrites) {
                 throw java.io.IOException("write failure for test")
             }
-            WatchlistStorage.write(storagePath, snapshot)
+            WatchlistDatabaseStorage.write(storagePath, snapshot)
         }
-
-        override fun quarantine(storagePath: Path): Path = WatchlistStorage.quarantine(storagePath)
     }
 }
