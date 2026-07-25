@@ -18,14 +18,17 @@
 
 package mediathek.gui.watchlist
 
+import mediathek.config.Konstanten
 import mediathek.daten.watchlist.DatenWatchlistEntry
 import mediathek.daten.watchlist.WatchlistServices
 import mediathek.gui.messages.WatchlistChangedEvent
 import mediathek.swing.SwingDispatch
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.MessageBus
+import mediathek.tool.cellrenderer.CellRendererBase
 import net.engio.mbassy.listener.Handler
 import java.awt.BorderLayout
+import java.awt.Component
 import java.awt.Dimension
 import java.awt.FlowLayout
 import javax.swing.*
@@ -53,6 +56,8 @@ class ManageWatchlistDialog(
         table.selectionModel.addListSelectionListener {
             deleteButton.isEnabled = table.selectedRowCount > 0
         }
+        table.rowHeight = maxOf(Konstanten.TABLE_DEFAULT_LARGE_ICON_ROW_HEIGHT, table.rowHeight)
+        table.columnModel.getColumn(0).cellRenderer = WatchlistSenderCellRenderer()
 
         val buttonPanel = JPanel(FlowLayout(FlowLayout.RIGHT)).apply {
             add(deleteButton)
@@ -88,6 +93,22 @@ class ManageWatchlistDialog(
         deleteButton.isEnabled = false
         // Removal is asynchronous; the table refreshes through WatchlistChangedEvent.
         watchlist.removeEntries(selectedEntries.mapTo(linkedSetOf(), DatenWatchlistEntry::id))
+    }
+}
+
+internal class WatchlistSenderCellRenderer : CellRendererBase() {
+    override fun getTableCellRendererComponent(
+        table: JTable,
+        value: Any?,
+        isSelected: Boolean,
+        hasFocus: Boolean,
+        row: Int,
+        column: Int,
+    ): Component {
+        icon = null
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column)
+        setSenderIcon(value?.toString().orEmpty(), getSenderCellDimension(table, row, column), isSelected)
+        return this
     }
 }
 
