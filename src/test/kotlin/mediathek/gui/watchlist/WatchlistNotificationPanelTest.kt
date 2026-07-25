@@ -3,6 +3,8 @@ package mediathek.gui.watchlist
 import mediathek.daten.watchlist.WatchlistNotification
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.awt.Insets
+import java.awt.Rectangle
 import javax.swing.JLabel
 import javax.swing.JMenuItem
 
@@ -101,6 +103,54 @@ internal class WatchlistNotificationPanelTest {
 
         assertEquals(1, emptyCallbacks)
         assertTrue(hintLabels(panel).any { text -> text == "Keine neuen Folgen" })
+    }
+
+    @Test
+    fun `popup is shifted left to retain its width and screen margin`() {
+        val panel = WatchlistNotificationPanel()
+
+        val bounds = panel.calculatePopupBounds(
+            ownerBounds = Rectangle(1880, 100, 30, 30),
+            screenBounds = Rectangle(0, 0, 1920, 1080),
+            screenInsets = Insets(0, 0, 0, 0),
+        )
+
+        assertEquals(Rectangle(1300, 130, 610, 320), bounds)
+    }
+
+    @Test
+    fun `popup opens above the owner when more space is available there`() {
+        val panel = WatchlistNotificationPanel()
+
+        val bounds = panel.calculatePopupBounds(
+            ownerBounds = Rectangle(100, 900, 30, 30),
+            screenBounds = Rectangle(0, 0, 1920, 1080),
+            screenInsets = Insets(0, 0, 0, 0),
+        )
+
+        assertEquals(Rectangle(100, 580, 610, 320), bounds)
+    }
+
+    @Test
+    fun `popup size is recalculated from its target size for every screen`() {
+        val panel = WatchlistNotificationPanel()
+        val ownerBounds = Rectangle(100, 100, 30, 30)
+
+        val constrained = panel.calculatePopupBounds(
+            ownerBounds,
+            Rectangle(0, 0, 400, 300),
+            Insets(0, 0, 0, 0),
+        )
+        val unconstrained = panel.calculatePopupBounds(
+            ownerBounds,
+            Rectangle(0, 0, 1920, 1080),
+            Insets(0, 0, 0, 0),
+        )
+
+        assertEquals(380, constrained.width)
+        assertEquals(160, constrained.height)
+        assertEquals(610, unconstrained.width)
+        assertEquals(320, unconstrained.height)
     }
 
     private fun hintLabels(panel: WatchlistNotificationPanel): List<String> =

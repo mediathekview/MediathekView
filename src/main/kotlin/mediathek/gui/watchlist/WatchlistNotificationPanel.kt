@@ -27,6 +27,8 @@ import javax.swing.*
 private const val NOTIFICATION_ROW_PREFERRED_WIDTH = 600
 private const val NOTIFICATION_PANEL_INSET = 5
 private const val NOTIFICATION_PANEL_PREFERRED_WIDTH = NOTIFICATION_ROW_PREFERRED_WIDTH + (NOTIFICATION_PANEL_INSET * 2)
+private const val NOTIFICATION_PANEL_PREFERRED_HEIGHT = 320
+private const val SCREEN_EDGE_MARGIN = 10
 
 /**
  * Shows pending watchlist "new episode" notifications as stacked row cards, modelled
@@ -55,8 +57,8 @@ class WatchlistNotificationPanel : JPanel(BorderLayout()) {
     private val rowPanels = LinkedHashMap<WatchlistNotification, WatchlistNotificationRowPanel>()
 
     init {
-        preferredSize = Dimension(NOTIFICATION_PANEL_PREFERRED_WIDTH, 320)
-        minimumSize = Dimension(NOTIFICATION_PANEL_PREFERRED_WIDTH, 120)
+        preferredSize = Dimension(NOTIFICATION_PANEL_PREFERRED_WIDTH, NOTIFICATION_PANEL_PREFERRED_HEIGHT)
+        minimumSize = Dimension(NOTIFICATION_PANEL_INSET * 2, 120)
         val popoverBackground = UIManager.getColor("Panel.background") ?: background
         background = popoverBackground
         isOpaque = true
@@ -67,6 +69,48 @@ class WatchlistNotificationPanel : JPanel(BorderLayout()) {
         scrollPane.horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
 
         add(scrollPane, BorderLayout.CENTER)
+    }
+
+    /**
+     * Fits the popup into the owner's screen and returns its screen location. Must be
+     * called before the popup is shown with the returned coordinates.
+     */
+    fun fitToScreen(owner: Component): Point {
+        val graphicsConfiguration = owner.graphicsConfiguration
+        val ownerBounds = Rectangle(owner.locationOnScreen, owner.size)
+        if (graphicsConfiguration == null) {
+            preferredSize = Dimension(NOTIFICATION_PANEL_PREFERRED_WIDTH, NOTIFICATION_PANEL_PREFERRED_HEIGHT)
+            return ownerBounds.location
+        }
+
+        val popupBounds = calculatePopupBounds(
+            ownerBounds,
+            graphicsConfiguration.bounds,
+            Toolkit.getDefaultToolkit().getScreenInsets(graphicsConfiguration),
+        )
+        preferredSize = popupBounds.size
+        return popupBounds.location
+    }
+
+    internal fun calculatePopupBounds(
+        ownerBounds: Rectangle,
+        screenBounds: Rectangle,
+        screenInsets: Insets
+    ): Rectangle {
+        val usableLeft = screenBounds.x + screenInsets.left + SCREEN_EDGE_MARGIN
+        val usableTop = screenBounds.y + screenInsets.top + SCREEN_EDGE_MARGIN
+        val usableRight = screenBounds.x + screenBounds.width - screenInsets.right - SCREEN_EDGE_MARGIN
+        val usableBottom = screenBounds.y + screenBounds.height - screenInsets.bottom - SCREEN_EDGE_MARGIN
+        val usableWidth = (usableRight - usableLeft).coerceAtLeast(1)
+        val spaceAbove = (ownerBounds.y - usableTop).coerceAtLeast(0)
+        val spaceBelow = (usableBottom - ownerBounds.y - ownerBounds.height).coerceAtLeast(0)
+        val showBelow = NOTIFICATION_PANEL_PREFERRED_HEIGHT <= spaceBelow || spaceBelow >= spaceAbove
+        val availableHeight = if (showBelow) spaceBelow else spaceAbove
+        val width = NOTIFICATION_PANEL_PREFERRED_WIDTH.coerceAtMost(usableWidth)
+        val height = NOTIFICATION_PANEL_PREFERRED_HEIGHT.coerceAtMost(availableHeight.coerceAtLeast(1))
+        val x = ownerBounds.x.coerceIn(usableLeft, usableRight - width)
+        val y = if (showBelow) ownerBounds.y + ownerBounds.height else ownerBounds.y - height
+        return Rectangle(x, y, width, height)
     }
 
     fun setNotifications(notifications: List<WatchlistNotification>) {

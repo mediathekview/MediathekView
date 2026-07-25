@@ -786,8 +786,10 @@ class GuiFilme(
                 // Acknowledge and display exactly the same set, so nothing is silently marked seen.
                 val acknowledged = watchlist.acknowledgeNotifications()
                 refreshWatchlistNotificationPanel(acknowledged)
+                val popupLocation = watchlistNotificationPanel?.fitToScreen(watchlistBellButton)
+                    ?: watchlistBellButton.locationOnScreen
                 popup.owner = watchlistBellButton
-                popup.showPopup(watchlistBellButton)
+                popup.showPopup(popupLocation.x, popupLocation.y, watchlistBellButton)
             } finally {
                 watchlistPopupOpening = false
             }

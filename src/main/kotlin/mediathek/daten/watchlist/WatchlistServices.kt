@@ -25,6 +25,7 @@ import mediathek.config.StandardLocations
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
 import mediathek.gui.messages.FilmListReadStopEvent
+import mediathek.gui.messages.FilmsDownloadStartedEvent
 import mediathek.gui.messages.WatchlistChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.MessageType
@@ -70,6 +71,7 @@ class WatchlistServices internal constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val operationMutex = Mutex()
     private val acceptingOperations = AtomicBoolean(true)
+    private val operationLifecycleLock = Any()
 
     init {
         MessageBus.messageBus.subscribe(this)
@@ -161,8 +163,21 @@ class WatchlistServices internal constructor(
         launchOperation("match new watchlist episodes") { performMatchNewEpisodes() }
     }
 
+    @Handler
+    fun handleFilmsDownloadStartedEvent(event: FilmsDownloadStartedEvent) {
+        val films = event.films
+        if (films.isEmpty()) return
+        launchOperation("mark films seen by download") { performMarkFilmsSeenByDownload(films) }
+    }
+
+    internal suspend fun markFilmsSeenByDownloadAndWait(films: Collection<DatenFilm>) =
+        runOperationAndWait { performMarkFilmsSeenByDownload(films) }
+
     override fun close() {
-        if (!acceptingOperations.compareAndSet(true, false)) {
+        val shouldClose = synchronized(operationLifecycleLock) {
+            acceptingOperations.compareAndSet(true, false)
+        }
+        if (!shouldClose) {
             return
         }
         MessageBus.messageBus.unsubscribe(this)
@@ -268,6 +283,41 @@ class WatchlistServices internal constructor(
         }
     }
 
+    private fun performMarkFilmsSeenByDownload(films: Collection<DatenFilm>) {
+        val downloadedFilmsById = films.associateBy(DatenFilm::sha256)
+        val filmIds = downloadedFilmsById.keys
+        var changed = false
+
+        synchronized(stateLock) {
+            entries.replaceAll { entry ->
+                val additions = downloadedFilmsById.asSequence()
+                    .filter { (_, film) -> entry.matches(film) }
+                    .mapTo(mutableSetOf()) { (filmId, _) -> filmId }
+                    .apply { removeAll(entry.seenFilmIds) }
+                if (additions.isEmpty()) {
+                    entry
+                } else {
+                    changed = true
+                    entry.copy(seenFilmIds = entry.seenFilmIds + additions)
+                }
+            }
+
+            val notificationsRemoved = pendingNotifications.removeAll { notification ->
+                notification.filmId in filmIds
+            }
+            if (notificationsRemoved) {
+                changed = true
+                clearBadgeWithoutNotifications()
+            }
+        }
+
+        if (changed) {
+            dirty = true
+            publishChanged()
+            persistIfDirty()
+        }
+    }
+
     private fun performMatchNewEpisodes() {
         val scanEntries = entriesSnapshot()
         if (scanEntries.isEmpty()) {
@@ -337,23 +387,24 @@ class WatchlistServices internal constructor(
         }
     }
 
-    private fun launchOperation(description: String, operation: suspend () -> Unit): Job {
-        if (!acceptingOperations.get()) {
-            return Job().apply { complete() }
-        }
+    private fun launchOperation(description: String, operation: suspend () -> Unit): Job =
+        synchronized(operationLifecycleLock) {
+            if (!acceptingOperations.get()) {
+                return@synchronized Job().apply { complete() }
+            }
 
-        return scope.launch {
-            operationMutex.withLock {
-                try {
-                    operation()
-                } catch (exception: CancellationException) {
-                    throw exception
-                } catch (exception: Exception) {
-                    logger.error("Failed to {}", description, exception)
+            scope.launch {
+                operationMutex.withLock {
+                    try {
+                        operation()
+                    } catch (exception: CancellationException) {
+                        throw exception
+                    } catch (exception: Exception) {
+                        logger.error("Failed to {}", description, exception)
+                    }
                 }
             }
         }
-    }
 
     private fun publishOsSummary(newNotifications: List<WatchlistNotification>) {
         val names = newNotifications.mapTo(LinkedHashSet()) { notification -> notification.entryName }

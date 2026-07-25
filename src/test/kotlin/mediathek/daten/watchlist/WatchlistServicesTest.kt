@@ -6,9 +6,9 @@ import kotlinx.coroutines.runBlocking
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
 import mediathek.gui.messages.FilmListReadStopEvent
+import mediathek.gui.messages.FilmsDownloadStartedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.NotificationMessage
-import mediathek.tool.notification.NotificationPublisher
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -49,7 +49,7 @@ internal class WatchlistServicesTest {
     ): WatchlistServices =
         WatchlistServices(
             films,
-            NotificationPublisher { message -> publishedMessages.add(message) },
+            publishedMessages::add,
             storageFile,
             persistence,
         ).also(createdServices::add)
@@ -381,6 +381,130 @@ internal class WatchlistServicesTest {
         guarded.addEntryFromFilmAndWait(tagesschau("https://example.org/old.mp4", isNew = false), withTitle = false)
 
         assertEquals(futureContent, storageFile.readText(), "a newer file must never be overwritten")
+    }
+
+    @Test
+    fun markFilmsSeenByDownloadRemovesNotification() = runBlocking {
+        givenPendingNotification()
+        val notification = services.notificationsSnapshot().single()
+        val downloadedFilm = allFilms.snapshot().single { film -> film.sha256 == notification.filmId }
+
+        services.markFilmsSeenByDownloadAndWait(listOf(downloadedFilm))
+
+        assertTrue(services.notificationsSnapshot().isEmpty())
+        assertFalse(services.hasUnseenNotifications)
+    }
+
+    @Test
+    fun markFilmsSeenByDownloadDoesNotAffectUnrelatedEntries() = runBlocking {
+        val ardFilm = tagesschau("https://example.org/ard-old.mp4", isNew = false)
+        val zdfFilm = film("ZDF", "heute", "heute 19:00 Uhr", "https://example.org/zdf-old.mp4", isNew = false)
+        allFilms.add(ardFilm)
+        allFilms.add(zdfFilm)
+        services.addEntryFromFilmAndWait(ardFilm, withTitle = false)
+        services.addEntryFromFilmAndWait(zdfFilm, withTitle = false)
+        allFilms.add(tagesschau("https://example.org/ard-new.mp4", isNew = true))
+        allFilms.add(film("ZDF", "heute", "heute 19:00 Uhr", "https://example.org/zdf-new.mp4", isNew = true))
+        services.matchNewEpisodesAndWait()
+        assertEquals(2, services.notificationsSnapshot().size)
+
+        val ardNotification = services.notificationsSnapshot().single { it.sender == "ARD" }
+        val ardDownload = allFilms.snapshot().single { film -> film.sha256 == ardNotification.filmId }
+        val zdfEntryBefore = services.entriesSnapshot().single { entry -> entry.sender == "ZDF" }
+        assertFalse(ardNotification.filmId in zdfEntryBefore.seenFilmIds)
+
+        services.markFilmsSeenByDownloadAndWait(listOf(ardDownload))
+
+        assertEquals(1, services.notificationsSnapshot().size)
+        assertEquals("ZDF", services.notificationsSnapshot().single().sender)
+        val zdfEntryAfter = services.entriesSnapshot().single { entry -> entry.sender == "ZDF" }
+        assertFalse(ardNotification.filmId in zdfEntryAfter.seenFilmIds)
+    }
+
+    @Test
+    fun downloadedFilmIsAddedOnlyToMatchingEntriesBeforeNewEpisodeScan() = runBlocking {
+        val ardFilm = tagesschau("https://example.org/ard-old.mp4", isNew = false)
+        val zdfFilm = film("ZDF", "heute", "heute 19:00 Uhr", "https://example.org/zdf-old.mp4", isNew = false)
+        allFilms.add(ardFilm)
+        allFilms.add(zdfFilm)
+        services.addEntryFromFilmAndWait(ardFilm, withTitle = false)
+        services.addEntryFromFilmAndWait(zdfFilm, withTitle = false)
+        val ardDownload = tagesschau("https://example.org/ard-new.mp4", isNew = true)
+        val zdfNewFilm = film("ZDF", "heute", "heute 19:00 Uhr", "https://example.org/zdf-new.mp4", isNew = true)
+        allFilms.add(ardDownload)
+        allFilms.add(zdfNewFilm)
+
+        services.markFilmsSeenByDownloadAndWait(listOf(ardDownload))
+
+        val entries = services.entriesSnapshot()
+        assertTrue(ardDownload.sha256 in entries.single { entry -> entry.sender == "ARD" }.seenFilmIds)
+        assertFalse(ardDownload.sha256 in entries.single { entry -> entry.sender == "ZDF" }.seenFilmIds)
+
+        services.matchNewEpisodesAndWait()
+        assertEquals(listOf("ZDF"), services.notificationsSnapshot().map(WatchlistNotification::sender))
+    }
+
+    @Test
+    fun markFilmsSeenByDownloadIsIdempotent() = runBlocking {
+        givenPendingNotification()
+        val notification = services.notificationsSnapshot().single()
+        val downloadedFilm = allFilms.snapshot().single { film -> film.sha256 == notification.filmId }
+
+        services.markFilmsSeenByDownloadAndWait(listOf(downloadedFilm))
+        val sizeAfterFirst = services.entriesSnapshot().single().seenFilmIds.size
+        services.markFilmsSeenByDownloadAndWait(listOf(downloadedFilm))
+
+        assertTrue(services.notificationsSnapshot().isEmpty())
+        assertEquals(sizeAfterFirst, services.entriesSnapshot().single().seenFilmIds.size)
+    }
+
+    @Test
+    fun filmsDownloadStartedEventTriggersMarkSeenByDownload() = runBlocking {
+        givenPendingNotification()
+        val notification = services.notificationsSnapshot().single()
+        val downloadedFilm = allFilms.snapshot().single { film -> film.sha256 == notification.filmId }
+
+        MessageBus.messageBus.publish(FilmsDownloadStartedEvent(listOf(downloadedFilm)))
+        services.awaitIdle()
+
+        assertTrue(services.notificationsSnapshot().isEmpty())
+        assertFalse(services.hasUnseenNotifications)
+    }
+
+    @Test
+    fun markFilmsSeenByDownloadIsPersisted() = runBlocking {
+        givenPendingNotification()
+        val notification = services.notificationsSnapshot().single()
+        val downloadedFilm = allFilms.snapshot().single { film -> film.sha256 == notification.filmId }
+
+        services.markFilmsSeenByDownloadAndWait(listOf(downloadedFilm))
+
+        val reloaded = createServices()
+        reloaded.loadFromFile()
+        assertTrue(reloaded.notificationsSnapshot().isEmpty())
+        assertTrue(notification.filmId in reloaded.entriesSnapshot().single().seenFilmIds)
+    }
+
+    @Test
+    fun markFilmsSeenByDownloadWithEmptyFilmsDoesNothing() = runBlocking {
+        givenPendingNotification()
+
+        services.markFilmsSeenByDownloadAndWait(emptyList())
+
+        assertEquals(1, services.notificationsSnapshot().size)
+        assertTrue(services.hasUnseenNotifications)
+    }
+
+    @Test
+    fun markFilmsSeenByDownloadClearsBadgeWhenAllNotificationsRemoved() = runBlocking {
+        givenPendingNotification()
+        val notification = services.notificationsSnapshot().single()
+        val downloadedFilm = allFilms.snapshot().single { film -> film.sha256 == notification.filmId }
+        assertTrue(services.hasUnseenNotifications)
+
+        services.markFilmsSeenByDownloadAndWait(listOf(downloadedFilm))
+
+        assertFalse(services.hasUnseenNotifications)
     }
 
     private suspend fun givenPendingNotification() {

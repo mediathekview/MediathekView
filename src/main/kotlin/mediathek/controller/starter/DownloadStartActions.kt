@@ -20,6 +20,7 @@ package mediathek.controller.starter
 
 import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenDownload
+import mediathek.gui.messages.FilmsDownloadStartedEvent
 import mediathek.gui.messages.StartEvent
 import mediathek.tool.MessageBus
 
@@ -29,13 +30,20 @@ object DownloadStartActions {
     }
 
     fun startAll(downloads: Iterable<DatenDownload>) {
+        val downloadsToStart = downloads.toList()
         FilmSeenHistoryController().use { historyController ->
-            for (download in downloads) {
+            for (download in downloadsToStart) {
                 download.runtime.startRun()
                 historyController.markSeen(download.film)
             }
         }
 
         MessageBus.messageBus.publishAsync(StartEvent())
+
+        val films = downloadsToStart.mapNotNull(DatenDownload::film).distinctBy { film -> film.sha256 }
+        if (films.isNotEmpty()) {
+            // Dispatch synchronously so subscribers enqueue their durable work before shutdown can begin.
+            MessageBus.messageBus.publish(FilmsDownloadStartedEvent(films))
+        }
     }
 }
