@@ -636,6 +636,7 @@ open class MediathekGui private constructor(
     }
 
     private fun closeNotificationCenter() {
+        daten.watchlist.close()
         daten.notifications.close()
     }
 

@@ -44,7 +44,7 @@ class WatchlistBellButton(showNotificationsAction: () -> Unit) : JButton() {
         this.hasUnseen = hasUnseen
         toolTipText = when {
             hasUnseen -> "Neue Folgen auf der Watchlist eingetroffen"
-            pendingCount > 0 -> "Watchlist: $pendingCount ungelesene Benachrichtigungen"
+            pendingCount > 0 -> "Watchlist: $pendingCount gespeicherte Benachrichtigungen"
             else -> "Watchlist: keine neuen Folgen"
         }
         repaint()

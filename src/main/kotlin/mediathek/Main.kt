@@ -128,6 +128,7 @@ object Main {
                 val exitCode = try {
                     downloadAndQuitRunner.run()
                 } finally {
+                    daten.watchlist.close()
                     daten.downloads.shutdown()
                     SeenHistoryController.closeSharedStore()
                     ApplicationConfiguration.getInstance().writeConfiguration()

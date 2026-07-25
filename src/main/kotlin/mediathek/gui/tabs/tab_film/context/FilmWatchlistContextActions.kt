@@ -27,7 +27,6 @@ import javax.swing.JPopupMenu
 
 class FilmWatchlistContextActions(
     private val watchlist: WatchlistServices,
-    private val selectedFilmAtPopupPoint: () -> DatenFilm?,
 ) {
     fun addWatchlistMenu(popupMenu: JPopupMenu, selectedFilm: Optional<DatenFilm>) {
         val submenu = JMenu("Watchlist")
@@ -57,14 +56,11 @@ class FilmWatchlistContextActions(
         val existingEntry = watchlist.findEntryFor(film, withTitle)
         if (existingEntry != null) {
             item.text = if (withTitle) REMOVE_WITH_TITLE_LABEL else REMOVE_WITHOUT_TITLE_LABEL
-            item.addActionListener { watchlist.removeEntry(existingEntry) }
+            item.addActionListener { watchlist.removeEntry(existingEntry.id) }
         } else {
             item.text = if (withTitle) ADD_WITH_TITLE_LABEL else ADD_WITHOUT_TITLE_LABEL
-            item.addActionListener {
-                selectedFilmAtPopupPoint()?.let { popupFilm ->
-                    watchlist.addEntryFromFilm(popupFilm, withTitle)
-                }
-            }
+            // Use the film the menu was built for; re-resolving by table coordinate can hit another row.
+            item.addActionListener { watchlist.addEntryFromFilm(film, withTitle) }
         }
     }
 

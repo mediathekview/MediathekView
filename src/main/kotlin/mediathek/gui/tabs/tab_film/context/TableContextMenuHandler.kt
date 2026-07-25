@@ -107,10 +107,7 @@ class TableContextMenuHandler(
         },
         this::selectedFilmAtPopupPoint,
     )
-    private val filmWatchlistContextActions = FilmWatchlistContextActions(
-        host.watchlist(),
-        this::selectedFilmAtPopupPoint,
-    )
+    private val filmWatchlistContextActions = FilmWatchlistContextActions(host.watchlist())
     private val jDownloadHelper = JDownloadHelper(host.ownerFrame())
     private val pyLoadHelper = PyLoadHelper(host.ownerFrame())
     private val filmSpecificContextMenuBuilder = FilmSpecificContextMenuBuilder(host, jDownloadHelper, pyLoadHelper)

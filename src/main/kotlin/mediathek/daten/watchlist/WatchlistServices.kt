@@ -33,102 +33,92 @@ import mediathek.tool.notification.NotificationPublisher
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.io.path.exists
 
 /**
- * Owns the watchlist entries and pending "new episode" notifications.
+ * Owns the watchlist entries and the pending "new episode" notifications.
  *
- * Entries and notifications are persisted immediately on every mutation. Matching runs
- * off the EDT after each film list read stop: films flagged [DatenFilm.isNew] are matched
- * against all entries, deduplicated via each entry's seen URL keys, and turned into
- * notifications. The red-badge state ([hasUnseenNotifications]) is tracked separately
- * from the pending notification list and is cleared when the user opens the
- * notification window.
+ * All mutations and all disk writes are serialized through a single operation mutex and
+ * always run off the EDT. Matching happens after each film list read stop: films flagged
+ * [DatenFilm.isNew] are matched against every entry and deduplicated via the stable film
+ * identity. The red badge state ([hasUnseenNotifications]) is tracked separately from the
+ * pending notification list and is cleared by [acknowledgeNotifications].
  */
-class WatchlistServices(
+class WatchlistServices internal constructor(
     private val allFilms: ListeFilme,
     private val notificationPublisher: NotificationPublisher,
     private val storagePath: Path = StandardLocations.getWatchlistFilePath(),
-) {
-    private val lock = Any()
+    private val persistence: WatchlistPersistence = WatchlistStorage,
+) : AutoCloseable {
+    constructor(
+        allFilms: ListeFilme,
+        notificationPublisher: NotificationPublisher,
+    ) : this(allFilms, notificationPublisher, StandardLocations.getWatchlistFilePath(), WatchlistStorage)
+
+    private val stateLock = Any()
     private val entries = mutableListOf<DatenWatchlistEntry>()
     private val pendingNotifications = mutableListOf<WatchlistNotification>()
     private var unseenNotifications = false
+
+    /** Set whenever in-memory state diverges from disk; a failed write keeps it set for retry. */
+    private var dirty = false
+
+    /** Disabled when the on-disk file must not be overwritten, e.g. a newer file version. */
+    private var writesEnabled = true
+
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val matchMutex = Mutex()
+    private val operationMutex = Mutex()
+    private val acceptingOperations = AtomicBoolean(true)
 
     init {
         MessageBus.messageBus.subscribe(this)
     }
 
     val hasUnseenNotifications: Boolean
-        get() = synchronized(lock) { unseenNotifications }
+        get() = synchronized(stateLock) { unseenNotifications }
 
-    fun entriesSnapshot(): List<DatenWatchlistEntry> =
-        synchronized(lock) { entries.toList() }
+    fun entriesSnapshot(): List<DatenWatchlistEntry> = synchronized(stateLock) { entries.toList() }
 
     fun notificationsSnapshot(): List<WatchlistNotification> =
-        synchronized(lock) { pendingNotifications.toList() }
+        synchronized(stateLock) { pendingNotifications.toList() }
 
     fun loadFromFile() {
-        val snapshot = WatchlistStorage.read(storagePath)
-        synchronized(lock) {
+        val snapshot = try {
+            persistence.read(storagePath)
+        } catch (exception: UnsupportedWatchlistVersionException) {
+            synchronized(stateLock) { writesEnabled = false }
+            logger.error("Watchlist file {} has an unsupported version; keeping it untouched", storagePath, exception)
+            return
+        } catch (exception: Exception) {
+            if (!quarantineUnreadableFile(exception)) {
+                synchronized(stateLock) { writesEnabled = false }
+                return
+            }
+            WatchlistSnapshot()
+        }
+
+        synchronized(stateLock) {
             entries.clear()
             entries.addAll(snapshot.entries)
             pendingNotifications.clear()
             pendingNotifications.addAll(snapshot.notifications)
-            unseenNotifications = snapshot.hasUnseenNotifications
+            // Never restore a badge without anything to show.
+            unseenNotifications = snapshot.hasUnseenNotifications && snapshot.notifications.isNotEmpty()
+            dirty = false
         }
     }
 
     /**
      * Adds an entry for the show of the given film. All currently matching episodes are
-     * recorded as seen so only future episodes trigger notifications. Runs asynchronously
-     * off the EDT; the result is signalled via [WatchlistChangedEvent].
+     * recorded as seen so only future episodes are reported. Safe to call from the EDT;
+     * completion is signalled via [WatchlistChangedEvent].
      */
-    fun addEntryFromFilm(film: DatenFilm, withTitle: Boolean) {
-        scope.launch {
-            try {
-                addEntryFromFilmInternal(film, withTitle)
-            } catch (ex: Exception) {
-                logger.error("Failed to add watchlist entry", ex)
-            }
-        }
-    }
-
-    internal suspend fun addEntryFromFilmInternal(film: DatenFilm, withTitle: Boolean) {
-        val draft = DatenWatchlistEntry().apply {
-            name = film.thema
-            sender = film.sender
-            thema = film.thema
-            title = if (withTitle) film.title else ""
-        }
-
-        val matchingUrlKeys = mutableSetOf<String>()
-        for (candidate in allFilms.snapshot()) {
-            val urlKey = candidate.storedNormalQualityUrl
-            if (urlKey.isNotEmpty() && draft.matches(candidate)) {
-                matchingUrlKeys.add(urlKey)
-            }
-        }
-
-        val added = synchronized(lock) {
-            if (entries.any { entry -> sameCriteria(entry, draft) }) {
-                false
-            } else {
-                draft.seenUrlKeys.addAll(matchingUrlKeys)
-                entries.add(draft)
-                true
-            }
-        }
-
-        if (added) {
-            saveToFile()
-            publishChanged()
-        }
-    }
+    fun addEntryFromFilm(film: DatenFilm, withTitle: Boolean): Job =
+        launchOperation("add watchlist entry") { performAddEntry(film, withTitle) }
 
     fun findEntryFor(film: DatenFilm, withTitle: Boolean): DatenWatchlistEntry? =
-        synchronized(lock) {
+        synchronized(stateLock) {
             entries.firstOrNull { entry ->
                 entry.sender.equals(film.sender, ignoreCase = true) &&
                     entry.thema.equals(film.thema, ignoreCase = true) &&
@@ -136,166 +126,286 @@ class WatchlistServices(
             }
         }
 
-    fun removeEntry(entry: DatenWatchlistEntry) {
-        val removed = synchronized(lock) {
-            if (entries.remove(entry)) {
-                pendingNotifications.removeIf { notification -> notification.entryId == entry.id }
-                true
-            } else {
-                false
-            }
-        }
+    /** Removes the entry and all notifications belonging to it. Safe to call from the EDT. */
+    fun removeEntry(entryId: String): Job =
+        launchOperation("remove watchlist entry") { performRemoveEntry(entryId) }
 
-        if (removed) {
-            saveToFile()
-            publishChanged()
-        }
-    }
-
-    fun removeNotification(notification: WatchlistNotification) {
-        val removed = synchronized(lock) { pendingNotifications.remove(notification) }
-        if (removed) {
-            saveToFile()
-            publishChanged()
-        }
-    }
+    /** Removes a single notification. Safe to call from the EDT. */
+    fun removeNotification(notification: WatchlistNotification): Job =
+        launchOperation("remove watchlist notification") { performRemoveNotification(notification) }
 
     /**
-     * Clears the red-badge state. Pending notifications stay untouched until the user
-     * explicitly removes them.
+     * Clears the badge and returns exactly the notifications covered by that
+     * acknowledgement, so callers can never acknowledge something they did not display.
+     * Pending notifications stay until the user removes them.
      */
-    fun markAllSeen() {
-        val changed = synchronized(lock) {
-            if (unseenNotifications) {
-                unseenNotifications = false
-                true
-            } else {
-                false
+    suspend fun acknowledgeNotifications(): List<WatchlistNotification> =
+        withContext(Dispatchers.IO) {
+            operationMutex.withLock {
+                val acknowledged = synchronized(stateLock) {
+                    if (unseenNotifications) {
+                        unseenNotifications = false
+                        dirty = true
+                    }
+                    pendingNotifications.toList()
+                }
+                publishChanged()
+                persistIfDirty()
+                acknowledged
             }
         }
-
-        if (changed) {
-            saveToFile()
-            publishChanged()
-        }
-    }
 
     @Handler
     @Suppress("UNUSED_PARAMETER")
     fun handleFilmListReadStopEvent(event: FilmListReadStopEvent) {
-        scope.launch {
-            try {
-                matchNewEpisodes()
-            } catch (ex: CancellationException) {
-                throw ex
-            } catch (ex: Exception) {
-                logger.error("Watchlist matching failed", ex)
+        launchOperation("match new watchlist episodes") { performMatchNewEpisodes() }
+    }
+
+    override fun close() {
+        if (!acceptingOperations.compareAndSet(true, false)) {
+            return
+        }
+        MessageBus.messageBus.unsubscribe(this)
+        try {
+            runBlocking {
+                awaitIdle()
+                withContext(Dispatchers.IO) {
+                    operationMutex.withLock { persistIfDirty() }
+                }
             }
+        } catch (exception: Exception) {
+            logger.error("Failed to flush watchlist during shutdown", exception)
+        } finally {
+            scope.cancel()
         }
     }
 
-    internal suspend fun matchNewEpisodes() {
-        if (entriesSnapshot().isEmpty()) {
+    internal suspend fun addEntryFromFilmAndWait(film: DatenFilm, withTitle: Boolean) =
+        runOperationAndWait { performAddEntry(film, withTitle) }
+
+    internal suspend fun removeEntryAndWait(entryId: String) =
+        runOperationAndWait { performRemoveEntry(entryId) }
+
+    internal suspend fun removeNotificationAndWait(notification: WatchlistNotification) =
+        runOperationAndWait { performRemoveNotification(notification) }
+
+    internal suspend fun matchNewEpisodesAndWait() = runOperationAndWait { performMatchNewEpisodes() }
+
+    /** Waits until all asynchronous watchlist operations have finished. */
+    internal suspend fun awaitIdle() {
+        while (true) {
+            val children = scope.coroutineContext[Job]?.children?.toList().orEmpty()
+            if (children.isEmpty()) {
+                return
+            }
+            children.joinAll()
+        }
+    }
+
+    private suspend fun runOperationAndWait(operation: suspend () -> Unit) {
+        withContext(Dispatchers.IO) {
+            operationMutex.withLock { operation() }
+        }
+    }
+
+    private fun performAddEntry(film: DatenFilm, withTitle: Boolean) {
+        val titleFilter = if (withTitle) film.title else ""
+        val draft = DatenWatchlistEntry(
+            name = film.thema,
+            sender = film.sender,
+            thema = film.thema,
+            title = titleFilter,
+        )
+        val seenFilmIds = allFilms.snapshot()
+            .asSequence()
+            .filter(draft::matches)
+            .map(DatenFilm::sha256)
+            .toSet()
+
+        val added = synchronized(stateLock) {
+            if (entries.any { entry -> entry.hasSameCriteriaAs(draft) }) {
+                false
+            } else {
+                entries.add(draft.copy(seenFilmIds = seenFilmIds))
+                dirty = true
+                true
+            }
+        }
+        if (added) {
+            publishChanged()
+            persistIfDirty()
+        }
+    }
+
+    private fun performRemoveEntry(entryId: String) {
+        val removed = synchronized(stateLock) {
+            val entryRemoved = entries.removeIf { entry -> entry.id == entryId }
+            if (entryRemoved) {
+                pendingNotifications.removeIf { notification -> notification.entryId == entryId }
+                clearBadgeWithoutNotifications()
+                dirty = true
+            }
+            entryRemoved
+        }
+        if (removed) {
+            publishChanged()
+            persistIfDirty()
+        }
+    }
+
+    private fun performRemoveNotification(notification: WatchlistNotification) {
+        val removed = synchronized(stateLock) {
+            val notificationRemoved = pendingNotifications.remove(notification)
+            if (notificationRemoved) {
+                clearBadgeWithoutNotifications()
+                dirty = true
+            }
+            notificationRemoved
+        }
+        if (removed) {
+            publishChanged()
+            persistIfDirty()
+        }
+    }
+
+    private fun performMatchNewEpisodes() {
+        val scanEntries = entriesSnapshot()
+        if (scanEntries.isEmpty()) {
             return
         }
 
-        matchMutex.withLock {
-            val scanEntries = synchronized(lock) { entries.map { it.copy() } }
-            if (scanEntries.isEmpty()) {
-                return@withLock
+        val knownFilmIds = notificationsSnapshot().mapTo(HashSet()) { notification -> notification.filmId }
+        val seenAdditions = mutableMapOf<String, MutableSet<String>>()
+        val newNotifications = mutableListOf<WatchlistNotification>()
+
+        for (film in allFilms.snapshot()) {
+            if (!film.isNew) {
+                continue
+            }
+            val filmId = film.sha256
+            val matchingEntries = scanEntries.filter { entry ->
+                filmId !in entry.seenFilmIds && entry.matches(film)
+            }
+            if (matchingEntries.isEmpty()) {
+                continue
             }
 
-            val candidates = mutableListOf<Pair<DatenWatchlistEntry, DatenFilm>>()
-            for (film in allFilms.snapshot()) {
-                if (!film.isNew) {
-                    continue
-                }
-                val urlKey = film.storedNormalQualityUrl
-                if (urlKey.isEmpty()) {
-                    continue
-                }
-                for (entry in scanEntries) {
-                    if (urlKey !in entry.seenUrlKeys && entry.matches(film)) {
-                        candidates.add(entry to film)
-                    }
-                }
+            matchingEntries.forEach { entry -> seenAdditions.getOrPut(entry.id) { mutableSetOf() }.add(filmId) }
+            // Overlapping entries must not produce duplicate rows for the same episode.
+            if (knownFilmIds.add(filmId)) {
+                val owningEntry = matchingEntries.firstOrNull { entry -> entry.title.isNotEmpty() }
+                    ?: matchingEntries.first()
+                newNotifications.add(
+                    WatchlistNotification(
+                        entryId = owningEntry.id,
+                        entryName = owningEntry.name,
+                        filmId = filmId,
+                        sender = film.sender,
+                        thema = film.thema,
+                        title = film.title,
+                        sendeDatum = film.sendeDatum,
+                        urlNormalQuality = film.urlNormalQuality,
+                    )
+                )
             }
-            if (candidates.isEmpty()) {
-                return@withLock
-            }
+        }
+        if (seenAdditions.isEmpty()) {
+            return
+        }
 
-            val newNotifications = synchronized(lock) {
-                buildList {
-                    for ((scanEntry, film) in candidates) {
-                        val liveEntry = entries.firstOrNull { it.id == scanEntry.id } ?: continue
-                        if (!liveEntry.seenUrlKeys.add(film.storedNormalQualityUrl)) {
-                            continue
-                        }
-                        add(
-                            WatchlistNotification(
-                                entryId = liveEntry.id,
-                                entryName = liveEntry.name,
-                                sender = film.sender,
-                                thema = film.thema,
-                                title = film.title,
-                                sendeDatum = film.sendeDatum,
-                                urlNormalQuality = film.urlNormalQuality,
-                            )
-                        )
-                    }
-                }.also { list ->
-                    if (list.isNotEmpty()) {
-                        pendingNotifications.addAll(list)
-                        unseenNotifications = true
-                    }
-                }
+        synchronized(stateLock) {
+            entries.replaceAll { entry ->
+                val additions = seenAdditions[entry.id]
+                if (additions == null) entry else entry.copy(seenFilmIds = entry.seenFilmIds + additions)
             }
-
-            if (newNotifications.isEmpty()) {
-                return@withLock
+            if (newNotifications.isNotEmpty()) {
+                pendingNotifications.addAll(newNotifications)
+                unseenNotifications = true
             }
-
-            saveToFile()
-            publishChanged()
+            dirty = true
+        }
+        publishChanged()
+        persistIfDirty()
+        if (newNotifications.isNotEmpty()) {
             publishOsSummary(newNotifications)
         }
     }
 
-    private fun publishOsSummary(newNotifications: List<WatchlistNotification>) {
-        val names = newNotifications.mapTo(LinkedHashSet()) { it.entryName }
-        val message = if (names.size == 1) {
-            "Neue Folge eingetroffen für „${names.first()}“."
-        } else {
-            "Neue Folgen eingetroffen für: ${names.joinToString(", ")}"
+    private fun clearBadgeWithoutNotifications() {
+        if (pendingNotifications.isEmpty()) {
+            unseenNotifications = false
         }
-        notificationPublisher.publish(
-            NotificationMessage(OS_NOTIFICATION_TITLE, message, MessageType.INFO)
-        )
     }
 
-    private fun saveToFile() {
-        val snapshot = synchronized(lock) {
-            WatchlistStorage.Snapshot(
-                entries = entries.map { it.copy() },
-                notifications = pendingNotifications.toList(),
-                hasUnseenNotifications = unseenNotifications,
-            )
+    private fun launchOperation(description: String, operation: suspend () -> Unit): Job {
+        if (!acceptingOperations.get()) {
+            return Job().apply { complete() }
         }
-        try {
-            WatchlistStorage.write(storagePath, snapshot)
-        } catch (ex: Exception) {
-            logger.error("Failed to write watchlist to {}", storagePath, ex)
+
+        return scope.launch {
+            operationMutex.withLock {
+                try {
+                    operation()
+                } catch (exception: CancellationException) {
+                    throw exception
+                } catch (exception: Exception) {
+                    logger.error("Failed to {}", description, exception)
+                }
+            }
         }
+    }
+
+    private fun publishOsSummary(newNotifications: List<WatchlistNotification>) {
+        val names = newNotifications.mapTo(LinkedHashSet()) { notification -> notification.entryName }
+        val message = if (newNotifications.size == 1) {
+            "Neue Folge eingetroffen für „${names.first()}“."
+        } else {
+            "${newNotifications.size} neue Folgen eingetroffen für: ${names.joinToString(", ")}"
+        }
+        notificationPublisher.publish(NotificationMessage(OS_NOTIFICATION_TITLE, message, MessageType.INFO))
     }
 
     private fun publishChanged() {
         MessageBus.messageBus.publishAsync(WatchlistChangedEvent())
     }
 
-    private fun sameCriteria(a: DatenWatchlistEntry, b: DatenWatchlistEntry): Boolean =
-        a.sender.equals(b.sender, ignoreCase = true) &&
-            a.thema.equals(b.thema, ignoreCase = true) &&
-            a.title.equals(b.title, ignoreCase = true)
+    private fun persistIfDirty() {
+        val snapshot = synchronized(stateLock) {
+            if (!dirty || !writesEnabled) {
+                return
+            }
+            WatchlistSnapshot(
+                entries = entries.toList(),
+                notifications = pendingNotifications.toList(),
+                hasUnseenNotifications = unseenNotifications,
+            )
+        }
+
+        try {
+            persistence.write(storagePath, snapshot)
+            synchronized(stateLock) { dirty = false }
+        } catch (exception: Exception) {
+            // Keep the dirty flag so the next operation or the shutdown flush retries.
+            logger.error("Failed to write watchlist to {}; will retry later", storagePath, exception)
+        }
+    }
+
+    private fun quarantineUnreadableFile(readFailure: Exception): Boolean {
+        if (!storagePath.exists()) {
+            logger.error("Failed to read watchlist from {}", storagePath, readFailure)
+            return false
+        }
+
+        return try {
+            val quarantinedPath = persistence.quarantine(storagePath)
+            logger.error("Moved unreadable watchlist {} aside to {}", storagePath, quarantinedPath, readFailure)
+            true
+        } catch (quarantineFailure: Exception) {
+            quarantineFailure.addSuppressed(readFailure)
+            logger.error("Cannot read or preserve watchlist {}; disabling writes", storagePath, quarantineFailure)
+            false
+        }
+    }
 
     private companion object {
         private const val OS_NOTIFICATION_TITLE = "MediathekView Watchlist"

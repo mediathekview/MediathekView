@@ -19,13 +19,16 @@
 package mediathek.daten.watchlist
 
 /**
- * A single "new episode available" notification for a watchlist entry.
- * Notifications stay pending until the user explicitly removes them; the red badge state
- * is tracked separately (see watchlist storage snapshot).
+ * A pending "new episode available" notification of a watchlist entry.
+ *
+ * Notifications stay pending until the user removes them; the red badge state is tracked
+ * separately by the service.
  */
 data class WatchlistNotification(
     val entryId: String,
     val entryName: String,
+    /** Stable film identity, used to deduplicate notifications across matching runs. */
+    val filmId: String,
     val sender: String,
     val thema: String,
     val title: String,

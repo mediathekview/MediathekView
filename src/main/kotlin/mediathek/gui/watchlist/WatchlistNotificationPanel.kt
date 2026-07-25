@@ -22,8 +22,6 @@ import mediathek.daten.watchlist.WatchlistNotification
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC
 import java.awt.*
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
 import javax.swing.*
 
 private const val NOTIFICATION_ROW_PREFERRED_WIDTH = 600
@@ -32,8 +30,8 @@ private const val NOTIFICATION_PANEL_PREFERRED_WIDTH = NOTIFICATION_ROW_PREFERRE
 
 /**
  * Shows pending watchlist "new episode" notifications as stacked row cards, modelled
- * after the audiothek download manager panel. Each row offers a context menu for the
- * available actions and an 'x' button to remove the notification immediately.
+ * after the audiothek download manager panel. Every row offers a context menu with the
+ * available actions and an 'x' button that removes the notification immediately.
  */
 class WatchlistNotificationPanel : JPanel(BorderLayout()) {
     private val contentPanel = JPanel().apply {
@@ -52,7 +50,6 @@ class WatchlistNotificationPanel : JPanel(BorderLayout()) {
     private var removeEntryListener: ((WatchlistNotification) -> Unit)? = null
     private var removeNotificationListener: ((WatchlistNotification) -> Unit)? = null
     private var emptyListener: (() -> Unit)? = null
-    private var filmAvailableProvider: ((WatchlistNotification) -> Boolean)? = null
     private var previousNotificationCount = 0
     private var currentNotifications: List<WatchlistNotification> = emptyList()
     private val rowPanels = LinkedHashMap<WatchlistNotification, WatchlistNotificationRowPanel>()
@@ -85,7 +82,6 @@ class WatchlistNotificationPanel : JPanel(BorderLayout()) {
             if (!rowPanels.containsKey(notification)) {
                 rowPanels[notification] = WatchlistNotificationRowPanel(
                     notification,
-                    ::isFilmAvailable,
                     showInFilmTableListener,
                     recordFilmListener,
                     removeEntryListener,
@@ -119,15 +115,15 @@ class WatchlistNotificationPanel : JPanel(BorderLayout()) {
         }
     }
 
+    internal fun rowPanelFor(notification: WatchlistNotification): WatchlistNotificationRowPanel? =
+        rowPanels[notification]
+
     private fun createEmptyHint(): JComponent {
         val hintLabel = JLabel("Keine neuen Folgen", SwingConstants.CENTER)
         hintLabel.alignmentX = CENTER_ALIGNMENT
         hintLabel.foreground = UIManager.getColor("Label.disabledForeground") ?: hintLabel.foreground
         return hintLabel
     }
-
-    private fun isFilmAvailable(notification: WatchlistNotification): Boolean =
-        filmAvailableProvider?.invoke(notification) == true
 
     fun addShowInFilmTableListener(listener: (WatchlistNotification) -> Unit) {
         showInFilmTableListener = listener
@@ -148,15 +144,10 @@ class WatchlistNotificationPanel : JPanel(BorderLayout()) {
     fun addEmptyListener(listener: () -> Unit) {
         emptyListener = listener
     }
-
-    fun setFilmAvailableProvider(provider: (WatchlistNotification) -> Boolean) {
-        filmAvailableProvider = provider
-    }
 }
 
-private class WatchlistNotificationRowPanel(
+internal class WatchlistNotificationRowPanel(
     private val notification: WatchlistNotification,
-    private val filmAvailable: (WatchlistNotification) -> Boolean,
     private val showInFilmTableListener: ((WatchlistNotification) -> Unit)?,
     private val recordFilmListener: ((WatchlistNotification) -> Unit)?,
     private val removeEntryListener: ((WatchlistNotification) -> Unit)?,
@@ -164,17 +155,14 @@ private class WatchlistNotificationRowPanel(
 ) : JPanel(GridBagLayout()) {
     private val titleLabel = JLabel()
     private val subtitleLabel = JLabel()
-    private val removeButton = JLabel().apply {
-        icon = IconUtils.of(MaterialDesignC.CLOSE_CIRCLE_OUTLINE, 18)
+
+    val removeButton: JButton = JButton(IconUtils.of(MaterialDesignC.CLOSE_CIRCLE_OUTLINE, 18)).apply {
         toolTipText = "Benachrichtigung entfernen"
         cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
-        addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
-                if (isEnabled && e.button == MouseEvent.BUTTON1) {
-                    removeNotificationListener?.invoke(notification)
-                }
-            }
-        })
+        isBorderPainted = false
+        isContentAreaFilled = false
+        isFocusPainted = false
+        addActionListener { removeNotificationListener?.invoke(notification) }
     }
 
     init {
@@ -187,6 +175,7 @@ private class WatchlistNotificationRowPanel(
         preferredSize = Dimension(NOTIFICATION_ROW_PREFERRED_WIDTH, 64)
         maximumSize = Dimension(Int.MAX_VALUE, 64)
         alignmentX = LEFT_ALIGNMENT
+        isFocusable = true
 
         titleLabel.text = ellipsize(notification.title, 90)
         titleLabel.toolTipText = notification.title
@@ -223,21 +212,19 @@ private class WatchlistNotificationRowPanel(
 
     private fun subtitle(): String =
         listOf(notification.sender, notification.thema, notification.sendeDatum)
-            .filter { it.isNotEmpty() }
+            .filter { part -> part.isNotEmpty() }
             .joinToString(" · ")
 
+    /**
+     * Uses [setComponentPopupMenu] instead of a mouse listener: the labels register mouse
+     * listeners through their tooltips, so a plain listener on this panel would never see
+     * a right click on the row text. Inheriting the menu also enables the keyboard menu key.
+     */
     private fun installContextMenu() {
-        addMouseListener(object : MouseAdapter() {
-            override fun mousePressed(e: MouseEvent) = maybeShowContextMenu(e)
-
-            override fun mouseReleased(e: MouseEvent) = maybeShowContextMenu(e)
-
-            private fun maybeShowContextMenu(e: MouseEvent) {
-                if (e.isPopupTrigger) {
-                    createContextMenu().show(e.component, e.x, e.y)
-                }
-            }
-        })
+        componentPopupMenu = createContextMenu()
+        titleLabel.inheritsPopupMenu = true
+        subtitleLabel.inheritsPopupMenu = true
+        removeButton.inheritsPopupMenu = true
     }
 
     private fun createContextMenu(): JPopupMenu {
@@ -248,7 +235,6 @@ private class WatchlistNotificationRowPanel(
         popupMenu.add(showItem)
 
         val recordItem = JMenuItem("Film aufzeichnen...")
-        recordItem.isEnabled = filmAvailable(notification)
         recordItem.addActionListener { recordFilmListener?.invoke(notification) }
         popupMenu.add(recordItem)
 

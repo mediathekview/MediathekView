@@ -83,9 +83,11 @@ class ManageWatchlistDialog(
     }
 
     private fun deleteSelectedEntries() {
-        val selectedEntries = table.selectedRows.map { row -> tableModel.entryAt(row) }
-        selectedEntries.forEach(watchlist::removeEntry)
-        tableModel.refresh()
+        val selectedEntries = table.selectedRows
+            .map { viewRow -> tableModel.entryAt(table.convertRowIndexToModel(viewRow)) }
+        deleteButton.isEnabled = false
+        // Removal is asynchronous; the table refreshes through WatchlistChangedEvent.
+        selectedEntries.forEach { entry -> watchlist.removeEntry(entry.id) }
     }
 }
 

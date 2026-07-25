@@ -22,40 +22,33 @@ import mediathek.daten.DatenFilm
 import java.util.*
 
 /**
- * A show (sender + thema, optionally restricted to a title filter) the user wants to be
+ * A show (sender + thema, optionally narrowed by a title filter) the user wants to be
  * notified about when new episodes appear in the film list.
+ *
+ * Instances are immutable so snapshots handed to the UI can never mutate service state.
  */
-class DatenWatchlistEntry {
+data class DatenWatchlistEntry(
+    /** Stable identity linking notifications to this entry; persisted across restarts. */
+    val id: String = UUID.randomUUID().toString(),
+    val name: String = "",
+    val sender: String = "",
+    val thema: String = "",
+    val title: String = "",
     /**
-     * Stable identity used to link notifications to this entry. Generated on creation;
-     * persisted so the link survives restarts.
+     * Identities ([DatenFilm.sha256]) of episodes that must not trigger a notification
+     * anymore. Prefilled with all matching episodes when the entry is created so only
+     * genuinely new episodes are reported. Unlike the compressed URL storage of
+     * [DatenFilm], this identity is stable across application runs.
      */
-    var id: String = UUID.randomUUID().toString()
-    var name: String = ""
-    var sender: String = ""
-    var thema: String = ""
-    var title: String = ""
-
-    /**
-     * Compressed URL keys ([DatenFilm.storedNormalQualityUrl]) of episodes that must not
-     * trigger a notification anymore. Prefilled with all matching episodes when the entry
-     * is created so only genuinely new episodes are reported.
-     */
-    val seenUrlKeys: MutableSet<String> = LinkedHashSet()
-
-    fun copy(): DatenWatchlistEntry {
-        val duplicate = DatenWatchlistEntry()
-        duplicate.id = id
-        duplicate.name = name
-        duplicate.sender = sender
-        duplicate.thema = thema
-        duplicate.title = title
-        duplicate.seenUrlKeys.addAll(seenUrlKeys)
-        return duplicate
-    }
-
+    val seenFilmIds: Set<String> = emptySet(),
+) {
     fun matches(film: DatenFilm): Boolean =
         film.sender.equals(sender, ignoreCase = true) &&
             film.thema.equals(thema, ignoreCase = true) &&
             (title.isEmpty() || film.title.contains(title, ignoreCase = true))
+
+    fun hasSameCriteriaAs(other: DatenWatchlistEntry): Boolean =
+        sender.equals(other.sender, ignoreCase = true) &&
+            thema.equals(other.thema, ignoreCase = true) &&
+            title.equals(other.title, ignoreCase = true)
 }

@@ -22,7 +22,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.tool.FileUtils
-import org.apache.logging.log4j.LogManager
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
@@ -30,9 +30,33 @@ import kotlin.io.path.exists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
-object WatchlistStorage {
-    private const val FILE_VERSION = 1
-    private val logger = LogManager.getLogger(WatchlistStorage::class.java)
+internal const val WATCHLIST_FILE_VERSION: Int = 1
+
+/** Thrown when a watchlist file was written by an incompatible, newer version. */
+internal class UnsupportedWatchlistVersionException(version: Int) :
+    IllegalArgumentException("Unsupported watchlist file version $version")
+
+/** Storage boundary of the watchlist; kept narrow so failure modes can be tested. */
+internal interface WatchlistPersistence {
+    /**
+     * @throws UnsupportedWatchlistVersionException if the file version is not supported.
+     * @throws Exception if the file exists but cannot be read or parsed.
+     */
+    fun read(storagePath: Path): WatchlistSnapshot
+
+    fun write(storagePath: Path, snapshot: WatchlistSnapshot)
+
+    /** Moves an unreadable file aside and returns the new location. */
+    fun quarantine(storagePath: Path): Path
+}
+
+internal data class WatchlistSnapshot(
+    val entries: List<DatenWatchlistEntry> = emptyList(),
+    val notifications: List<WatchlistNotification> = emptyList(),
+    val hasUnseenNotifications: Boolean = false,
+)
+
+internal object WatchlistStorage : WatchlistPersistence {
     private val json = Json {
         ignoreUnknownKeys = true
         prettyPrint = true
@@ -40,84 +64,90 @@ object WatchlistStorage {
         explicitNulls = false
     }
 
-    fun read(storagePath: Path): Snapshot {
+    override fun read(storagePath: Path): WatchlistSnapshot {
         if (!storagePath.exists()) {
-            return Snapshot()
+            return WatchlistSnapshot()
         }
 
-        return try {
-            json.decodeFromString<WatchlistFileDto>(storagePath.readText()).toSnapshot()
-        } catch (ex: Exception) {
-            logger.error("Failed to read watchlist from {}", storagePath, ex)
-            Snapshot()
+        val file = json.decodeFromString<WatchlistFileDto>(storagePath.readText())
+        if (file.version != WATCHLIST_FILE_VERSION) {
+            throw UnsupportedWatchlistVersionException(file.version)
         }
+        return file.toSnapshot()
     }
 
-    fun write(storagePath: Path, snapshot: Snapshot) {
-        storagePath.parent?.createDirectories()
-        val temporaryPath = storagePath.resolveSibling(storagePath.fileName.toString() + ".tmp")
+    override fun write(storagePath: Path, snapshot: WatchlistSnapshot) {
+        val directory = storagePath.toAbsolutePath().parent
+        directory.createDirectories()
+        // A unique temporary file keeps concurrent writers from clobbering each other.
+        val temporaryPath = Files.createTempFile(directory, storagePath.fileName.toString() + ".", ".tmp")
         try {
-            val file = WatchlistFileDto.fromSnapshot(snapshot)
-            temporaryPath.writeText(json.encodeToString(file))
+            temporaryPath.writeText(json.encodeToString(WatchlistFileDto.fromSnapshot(snapshot)))
             FileUtils.moveAtomicallyWithFallback(temporaryPath, storagePath)
         } finally {
             temporaryPath.deleteIfExists()
         }
     }
 
-    data class Snapshot(
-        val entries: List<DatenWatchlistEntry> = emptyList(),
-        val notifications: List<WatchlistNotification> = emptyList(),
-        val hasUnseenNotifications: Boolean = false,
-    )
+    override fun quarantine(storagePath: Path): Path {
+        val baseName = storagePath.fileName.toString() + ".corrupt"
+        var target = storagePath.resolveSibling(baseName)
+        var suffix = 1
+        while (target.exists()) {
+            target = storagePath.resolveSibling("$baseName.$suffix")
+            suffix++
+        }
+        FileUtils.moveAtomicallyWithFallback(storagePath, target)
+        return target
+    }
 }
 
 @Serializable
 private data class WatchlistFileDto(
     @OptIn(ExperimentalSerializationApi::class)
     @EncodeDefault
-    val version: Int = 1,
+    val version: Int = WATCHLIST_FILE_VERSION,
     val hasUnseenNotifications: Boolean = false,
     val entries: List<WatchlistEntryDto> = emptyList(),
     val notifications: List<WatchlistNotificationDto> = emptyList(),
 ) {
-    fun toSnapshot(): WatchlistStorage.Snapshot =
-        WatchlistStorage.Snapshot(
+    fun toSnapshot(): WatchlistSnapshot =
+        WatchlistSnapshot(
             entries = entries.map { dto -> dto.toEntry() },
             notifications = notifications.map { dto -> dto.toNotification() },
             hasUnseenNotifications = hasUnseenNotifications,
         )
 
     companion object {
-        fun fromSnapshot(snapshot: WatchlistStorage.Snapshot): WatchlistFileDto =
+        fun fromSnapshot(snapshot: WatchlistSnapshot): WatchlistFileDto =
             WatchlistFileDto(
                 hasUnseenNotifications = snapshot.hasUnseenNotifications,
                 entries = snapshot.entries.map { entry -> WatchlistEntryDto.fromEntry(entry) },
-                notifications = snapshot.notifications.map { n -> WatchlistNotificationDto.fromNotification(n) },
+                notifications = snapshot.notifications.map { notification ->
+                    WatchlistNotificationDto.fromNotification(notification)
+                },
             )
     }
 }
 
 @Serializable
 private data class WatchlistEntryDto(
-    val id: String = "",
+    val id: String,
     val name: String = "",
     val sender: String = "",
     val thema: String = "",
     val title: String = "",
-    val seenUrlKeys: Set<String> = emptySet(),
+    val seenFilmIds: Set<String> = emptySet(),
 ) {
     fun toEntry(): DatenWatchlistEntry =
-        DatenWatchlistEntry().apply {
-            if (this@WatchlistEntryDto.id.isNotEmpty()) {
-                id = this@WatchlistEntryDto.id
-            }
-            name = this@WatchlistEntryDto.name
-            sender = this@WatchlistEntryDto.sender
-            thema = this@WatchlistEntryDto.thema
-            title = this@WatchlistEntryDto.title
-            seenUrlKeys.addAll(this@WatchlistEntryDto.seenUrlKeys)
-        }
+        DatenWatchlistEntry(
+            id = id,
+            name = name,
+            sender = sender,
+            thema = thema,
+            title = title,
+            seenFilmIds = seenFilmIds,
+        )
 
     companion object {
         fun fromEntry(entry: DatenWatchlistEntry): WatchlistEntryDto =
@@ -127,15 +157,16 @@ private data class WatchlistEntryDto(
                 sender = entry.sender,
                 thema = entry.thema,
                 title = entry.title,
-                seenUrlKeys = entry.seenUrlKeys.toSet(),
+                seenFilmIds = entry.seenFilmIds,
             )
     }
 }
 
 @Serializable
 private data class WatchlistNotificationDto(
-    val entryId: String = "",
+    val entryId: String,
     val entryName: String = "",
+    val filmId: String = "",
     val sender: String = "",
     val thema: String = "",
     val title: String = "",
@@ -146,6 +177,7 @@ private data class WatchlistNotificationDto(
         WatchlistNotification(
             entryId = entryId,
             entryName = entryName,
+            filmId = filmId,
             sender = sender,
             thema = thema,
             title = title,
@@ -158,6 +190,7 @@ private data class WatchlistNotificationDto(
             WatchlistNotificationDto(
                 entryId = notification.entryId,
                 entryName = notification.entryName,
+                filmId = notification.filmId,
                 sender = notification.sender,
                 thema = notification.thema,
                 title = notification.title,
