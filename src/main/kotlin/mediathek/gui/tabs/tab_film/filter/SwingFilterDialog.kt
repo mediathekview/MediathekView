@@ -21,12 +21,12 @@ package mediathek.gui.tabs.tab_film.filter
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.swing.eventComboBoxModel
+import com.jidesoft.swing.CheckBoxList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
-import mediathek.swing.CheckBoxList
 import mediathek.swing.IconUtils
 import mediathek.tool.EventListWithEmptyFirstEntry
 import mediathek.tool.SVGIconUtilities

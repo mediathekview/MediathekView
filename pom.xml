@@ -260,17 +260,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- TODO: Switch back to upstream once https://github.com/JFormDesigner/jide-oss/pull is merged:
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>jide-oss</artifactId>
-            <version>${jide-oss.version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>com.github.derreisende77</groupId>
             <artifactId>jide-oss</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>8f59180210cfe19af2335d81d20a03e1a593b046</version>
         </dependency>
 
         <dependency>

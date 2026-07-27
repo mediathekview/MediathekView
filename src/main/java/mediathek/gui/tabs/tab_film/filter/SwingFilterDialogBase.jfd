@@ -202,7 +202,7 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
-					add( new FormComponent( "mediathek.swing.CheckBoxList" ) {
+					add( new FormComponent( "com.jidesoft.swing.CheckBoxList" ) {
 						name: "senderList"
 						"selectionMode": 0
 						"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
