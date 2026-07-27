@@ -133,9 +133,9 @@
         <install4j.jdk.min-version>25</install4j.jdk.min-version>
         <!-- @formatter:off -->
         <!-- VM Parameters Windows x64 and aarch64 -->
-        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
         <!-- VM Parameters Linux 64bit Intel and ARM -->
-        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
         <!-- @formatter:on -->
     </properties>
 
@@ -518,7 +518,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-exports=java.desktop/com.apple.laf=ALL-UNNAMED</argLine>
+                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED --add-exports=java.desktop/com.apple.laf=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
             <plugin>

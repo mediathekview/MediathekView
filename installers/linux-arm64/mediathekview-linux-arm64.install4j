@@ -35,7 +35,7 @@
   <launchers>
     <launcher name="mediathekview_arm" id="323" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck">
+      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
           <scanDirectory location="dependency" failOnError="false" />
@@ -51,7 +51,7 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck" arguments="Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck" arguments="Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
           <scanDirectory location="dependency" failOnError="false" />
