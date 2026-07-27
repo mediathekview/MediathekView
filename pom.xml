@@ -263,7 +263,7 @@
         <dependency>
             <groupId>com.github.derreisende77</groupId>
             <artifactId>jide-oss</artifactId>
-            <version>8f59180210cfe19af2335d81d20a03e1a593b046</version>
+            <version>d4210815fc792b547045ba5e89b5e4e067203d20</version>
         </dependency>
 
         <dependency>

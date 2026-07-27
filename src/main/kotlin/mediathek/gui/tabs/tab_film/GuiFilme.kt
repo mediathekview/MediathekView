@@ -83,6 +83,7 @@ import java.awt.Toolkit
 import java.awt.Window
 import java.awt.event.AWTEventListener
 import java.awt.event.MouseEvent
+import java.beans.PropertyChangeListener
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
@@ -140,6 +141,13 @@ class GuiFilme(
     private var watchlistPopup: JidePopup? = null
     private var watchlistNotificationPanel: WatchlistNotificationPanel? = null
     private var watchlistPopupOpening = false
+    private val watchlistLookAndFeelListener = PropertyChangeListener { event ->
+        if (event.propertyName == "lookAndFeel") {
+            SwingUtilities.invokeLater {
+                watchlistPopup?.let(SwingUtilities::updateComponentTreeUI)
+            }
+        }
+    }
     private var searchField: SearchField? = null
     private val watchlistOutsideClickListener = AWTEventListener { event ->
         if (event !is MouseEvent || event.id != MouseEvent.MOUSE_PRESSED) {
@@ -248,6 +256,7 @@ class GuiFilme(
         lifecycleController.start()
 
         Toolkit.getDefaultToolkit().addAWTEventListener(watchlistOutsideClickListener, AWTEvent.MOUSE_EVENT_MASK)
+        UIManager.addPropertyChangeListener(watchlistLookAndFeelListener)
         updateWatchlistBellState()
     }
 
@@ -677,6 +686,7 @@ class GuiFilme(
     fun disposePanel() {
         watchlistPopup?.hidePopupImmediately()
         Toolkit.getDefaultToolkit().removeAWTEventListener(watchlistOutsideClickListener)
+        UIManager.removePropertyChangeListener(watchlistLookAndFeelListener)
         watchlistUiScope.cancel()
         tableReloader.dispose()
         lifecycleController.disposePanel()
