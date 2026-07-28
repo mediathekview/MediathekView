@@ -44,9 +44,9 @@ import org.jfree.data.time.Millisecond
 import org.jfree.data.time.TimeSeries
 import org.jfree.data.time.TimeSeriesCollection
 import org.jfree.data.time.TimeSeriesDataItem
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.*
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.text.*
 import java.util.*
 import javax.swing.*
@@ -73,8 +73,8 @@ class BandwidthDialog(
         buildUi()
         configureChart()
         restoreSizeFromConfig()
-        addComponentListener(createBoundsListener())
-        addWindowListener(createWindowListener())
+        attachBoundsListener()
+        attachWindowListener()
 
         applyTheme()
         MessageBus.messageBus.subscribe(this)
@@ -251,20 +251,20 @@ class BandwidthDialog(
         return totalBitsPerSecond / itemCount
     }
 
-    private fun createWindowListener() =
-        object : java.awt.event.WindowAdapter() {
-            override fun windowOpened(event: java.awt.event.WindowEvent) {
+    private fun attachWindowListener() {
+        addDelayedWindowListener(
+            onWindowOpened = {
                 storeVisibilityState(true)
                 menuAction.dialogOptional = Optional.of(this@BandwidthDialog)
                 menuAction.isEnabled = false
-            }
-
-            override fun windowClosed(event: java.awt.event.WindowEvent) {
+            },
+            onWindowClosed = {
                 storeVisibilityState(preserveVisibilityOnClose)
                 menuAction.dialogOptional = Optional.empty()
                 menuAction.isEnabled = true
             }
-        }
+            )
+    }
 
     private fun restoreSizeFromConfig() {
         try {
@@ -282,16 +282,12 @@ class BandwidthDialog(
         }
     }
 
-    private fun createBoundsListener() =
-        object : ComponentAdapter() {
-            override fun componentResized(event: ComponentEvent) {
-                storeBounds()
-            }
-
-            override fun componentMoved(event: ComponentEvent) {
-                storeBounds()
-            }
-        }
+    private fun attachBoundsListener() {
+        addDelayedComponentListener(
+            onComponentResized = { storeBounds() },
+            onComponentMoved = { storeBounds() }
+        )
+    }
 
     private fun storeBounds() {
         val bounds = bounds

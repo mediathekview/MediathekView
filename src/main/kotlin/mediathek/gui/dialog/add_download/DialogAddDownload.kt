@@ -39,10 +39,9 @@ import mediathek.tool.*
 import mediathek.tool.MessageBus.messageBus
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.*
 import java.awt.event.ActionListener
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -226,7 +225,14 @@ class DialogAddDownload(
     }
 
     private fun registerWindowPositionTracking() {
-        addComponentListener(DialogPositionComponentListener())
+        addDelayedComponentListener(
+            onComponentMoved = { e ->
+                if (e == null) return@addDelayedComponentListener
+
+                val location = e.component.location
+                ApplicationConfiguration.getInstance().setAddDownloadDialogPosition(location.x, location.y)
+            }
+        )
     }
 
     private fun startCoroutineBindings() {
@@ -1001,13 +1007,5 @@ class DialogAddDownload(
     ) {
         button.isEnabled = enabled
         button.addActionListener(listener)
-    }
-}
-
-private class DialogPositionComponentListener : ComponentAdapter() {
-    override fun componentMoved(e: ComponentEvent) {
-        val location = e.component.location
-        ApplicationConfiguration.getInstance()
-            .setAddDownloadDialogPosition(location.x, location.y)
     }
 }

@@ -20,10 +20,9 @@ package mediathek.gui.actions
 
 import mediathek.gui.dialog.lucene_tutorial.LuceneTutorialDialog
 import mediathek.tool.SVGIconUtilities
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Window
 import java.awt.event.ActionEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.AbstractAction
 
 class ShowLuceneTutorialAction(
@@ -37,12 +36,8 @@ class ShowLuceneTutorialAction(
 
     override fun actionPerformed(event: ActionEvent?) {
         val dialog = LuceneTutorialDialog(owner)
-        dialog.addWindowListener(
-            object : WindowAdapter() {
-                override fun windowClosed(event: WindowEvent?) {
-                    isEnabled = true
-                }
-            },
+        dialog.addDelayedWindowListener(
+            onWindowClosed = { isEnabled = true }
         )
         isEnabled = false
         dialog.isVisible = true

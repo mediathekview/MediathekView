@@ -10,11 +10,10 @@ import ca.odell.glazedlists.swing.eventListModelWithThreadProxyList
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Window
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.DefaultListModel
 import javax.swing.JMenuItem
 
@@ -32,12 +31,12 @@ class EditHistoryDialog(
 
     init {
         menuItem.isEnabled = false
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosed(event: WindowEvent) {
+        addDelayedWindowListener(
+            onWindowClosed = {
                 menuItem.isEnabled = true
                 savePosition()
             }
-        })
+        )
 
         list.model = eventListModel
         list.selectionModel.addListSelectionListener { event ->

@@ -7,9 +7,8 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.gui.actions.UrlHyperlinkAction
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Font
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.JEditorPane
 import javax.swing.JFrame
 import javax.swing.JOptionPane
@@ -23,11 +22,7 @@ class AustrianVlcCheck(val owner: JFrame) {
     private var pendingDialogJob: Job? = null
 
     init {
-        owner.addWindowListener(object : WindowAdapter() {
-            override fun windowClosed(e: WindowEvent) {
-                job.cancel()
-            }
-        })
+        owner.addDelayedWindowListener(onWindowClosed = { job.cancel() })
     }
 
     private fun getFontWeight(font: Font): String {

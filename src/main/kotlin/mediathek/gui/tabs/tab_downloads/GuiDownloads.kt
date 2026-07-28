@@ -53,10 +53,9 @@ import mediathek.tool.models.TModelDownload
 import mediathek.tool.table.MVDownloadsTable
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.*
 import java.awt.event.ActionEvent
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
 import java.io.File
 import java.util.*
@@ -206,12 +205,12 @@ class GuiDownloads(
                 updateSelectedListItemsCount(tabelle)
             }
         }
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(event: ComponentEvent) {
+        addDelayedComponentListener(
+            onComponentShown = {
                 updateSelectedListItemsCount(tabelle)
                 onComponentShown()
             }
-        })
+        )
     }
 
     private fun setupDownloadListTable() {

@@ -32,8 +32,7 @@ import net.miginfocom.layout.AC
 import net.miginfocom.layout.CC
 import net.miginfocom.layout.LC
 import net.miginfocom.swing.MigLayout
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import javax.swing.*
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -194,11 +193,7 @@ class DialogBeenden(
 
         initComponents()
         EscapeKeyHandler.installHandler(this) { escapeHandler() }
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e: WindowEvent) {
-                escapeHandler()
-            }
-        })
+        addDelayedWindowListener(onWindowClosing = { escapeHandler() })
 
         jButtonHilfe.addActionListener {
             val msg = GetFile.getHilfeSuchen(Konstanten.PFAD_HILFETEXT_BEENDEN).trim()

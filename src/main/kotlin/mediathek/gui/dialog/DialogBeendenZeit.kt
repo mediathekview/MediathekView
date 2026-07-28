@@ -27,9 +27,8 @@ import mediathek.daten.DatenDownload
 import mediathek.swing.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.swing.DefaultComboBoxModel
@@ -164,11 +163,7 @@ class DialogBeendenZeit(
         setLocationRelativeTo(parent)
 
         EscapeKeyHandler.installHandler(this) { escapeHandler() }
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(event: WindowEvent) {
-                escapeHandler()
-            }
-        })
+        addDelayedWindowListener(onWindowClosing = { escapeHandler()})
 
         comboActions.model = comboBoxModel
         comboActions.addActionListener { setCbShutdownCoputer() }

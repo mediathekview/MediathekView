@@ -16,9 +16,8 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.filmlisten.FilmCatalog
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Window
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.table.DefaultTableModel
 
 class DuplicateFilmDetailsDialog(
@@ -38,11 +37,7 @@ class DuplicateFilmDetailsDialog(
         okButton.addActionListener { dispose() }
         setupTable()
         restorePosition()
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosed(event: WindowEvent) {
-                savePosition()
-            }
-        })
+        addDelayedWindowListener(onWindowClosed = { savePosition()})
         loadDuplicates()
     }
 

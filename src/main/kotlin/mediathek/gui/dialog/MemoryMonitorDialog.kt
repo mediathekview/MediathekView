@@ -20,12 +20,10 @@ package mediathek.gui.dialog
 
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.mainwindow.MemoryUsagePanel
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.Dimension
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.time.Duration
 import javax.swing.JDialog
 import javax.swing.JFrame
@@ -47,25 +45,21 @@ class MemoryMonitorDialog(
         pack()
         restoreBounds()
 
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(event: ComponentEvent) {
-                storeBounds()
-            }
+        installListeners()
+    }
 
-            override fun componentMoved(event: ComponentEvent) {
-                storeBounds()
-            }
-        })
-        addWindowListener(object : WindowAdapter() {
-            override fun windowOpened(event: WindowEvent) {
-                storeVisibility(true)
-            }
-
-            override fun windowClosed(event: WindowEvent) {
+    private fun installListeners() {
+        addDelayedComponentListener(
+            onComponentResized = { storeBounds() },
+            onComponentMoved = { storeBounds() }
+        )
+        addDelayedWindowListener(
+            onWindowOpened = { storeVisibility(true) },
+            onWindowClosed = {
                 storeVisibility(preserveVisibilityOnClose)
                 notifyClosed()
             }
-        })
+        )
     }
 
     override fun dispose() {

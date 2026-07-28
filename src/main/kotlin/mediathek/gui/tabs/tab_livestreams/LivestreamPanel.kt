@@ -36,11 +36,14 @@ import mediathek.tool.GuiFunktionenProgramme
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
+import org.pushingpixels.radiance.swing.ktx.addDelayedMouseListener
+import org.pushingpixels.radiance.swing.ktx.addDelayedMouseMotionListener
 import java.awt.BorderLayout
 import java.awt.Desktop
 import java.awt.Frame
 import java.awt.Rectangle
-import java.awt.event.*
+import java.awt.event.MouseEvent
 import java.net.URI
 import java.time.Instant
 import javax.swing.*
@@ -76,15 +79,15 @@ class LivestreamPanel(
         setupList()
 
         // load livestreams when list is empty and panel becomes visible
-        this.addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(e: ComponentEvent?) {
+        addDelayedComponentListener(
+            onComponentShown = {
                 if (listModel.size == 0) {
                     SwingUtilities.invokeLater {
                         loadLivestreams()
                     }
                 }
             }
-        })
+        )
 
         val json = LivestreamJson.json
 
@@ -121,44 +124,33 @@ class LivestreamPanel(
         panelJob.cancel()
     }
 
-    private fun setupList() {
-        list.cellRenderer = LivestreamRenderer()
-        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
-        list.addMouseListener(object : MouseAdapter() {
-            override fun mouseClicked(e: MouseEvent) {
+    private fun installListListeners() {
+        list.addDelayedMouseListener(
+            onMouseClicked = { e ->
+                if (e == null) return@addDelayedMouseListener
                 if (SwingUtilities.isLeftMouseButton(e) && e.clickCount == 2) {
                     playSelectedStream()
                 }
-            }
+            },
+            onMousePressed = { e -> showPopupMenu(e) },
+            onMouseReleased = { e -> showPopupMenu(e) }
+        )
 
-            override fun mousePressed(e: MouseEvent) {
-                showPopupMenu(e)
-            }
+        list.addDelayedComponentListener(onComponentResized = { overlay.setSize(list.width, list.height) })
+        list.addDelayedMouseMotionListener(
+            onMouseMoved = { e ->
+                if (e == null) return@addDelayedMouseMotionListener
 
-            override fun mouseReleased(e: MouseEvent) {
-                showPopupMenu(e)
-            }
-        })
-        list.addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(e: ComponentEvent?) {
-                overlay.setSize(list.width, list.height)
-            }
-        })
-
-        // Enable tooltip system
-        list.toolTipText = ""
-        list.addMouseMotionListener(object : MouseMotionAdapter() {
-            override fun mouseMoved(e: MouseEvent) {
                 val index = list.locationToIndex(e.point)
                 if (index < 0) {
                     list.toolTipText = null
-                    return
+                    return@addDelayedMouseMotionListener
                 }
 
                 val bounds = list.getCellBounds(index, index)
                 if (bounds == null || !bounds.contains(e.point)) {
                     list.toolTipText = null
-                    return
+                    return@addDelayedMouseMotionListener
                 }
 
                 val entry = list.model.getElementAt(index)
@@ -176,11 +168,22 @@ class LivestreamPanel(
                     list.toolTipText = null
                 }
             }
-        })
-
+        )
     }
 
-    private fun showPopupMenu(e: MouseEvent) {
+    private fun setupList() {
+        list.cellRenderer = LivestreamRenderer()
+        list.selectionMode = ListSelectionModel.SINGLE_SELECTION
+
+        // Enable tooltip system
+        list.toolTipText = ""
+
+        installListListeners()
+    }
+
+    private fun showPopupMenu(e: MouseEvent?) {
+        if (e == null) return
+
         if (!e.isPopupTrigger) {
             return
         }

@@ -44,12 +44,11 @@ import net.miginfocom.swing.MigLayout
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignM
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.Color
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Point
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.io.File
 import java.nio.file.Path
 import javax.swing.*
@@ -98,7 +97,12 @@ class DialogEditDownload(
         EscapeKeyHandler.installHandler(this) { dispose() }
         buildLayout()
         restoreLocation()
-        setupComponentListeners()
+
+        addDelayedComponentListener(
+            onComponentResized = { saveLocation() },
+            onComponentMoved = { saveLocation() }
+        )
+
         loadQualityPanelData()
     }
 
@@ -942,13 +946,6 @@ class DialogEditDownload(
         datenDownload.isInfoFile = jCheckBoxInfodatei.isSelected
         datenDownload.isSubtitle = jCheckBoxSubtitle.isSelected
         datenDownload.isSpotlight = jCheckBoxSpotlight.isSelected
-    }
-
-    private fun setupComponentListeners() {
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(e: ComponentEvent) = saveLocation()
-            override fun componentMoved(e: ComponentEvent) = saveLocation()
-        })
     }
 
     private fun restoreLocation() {

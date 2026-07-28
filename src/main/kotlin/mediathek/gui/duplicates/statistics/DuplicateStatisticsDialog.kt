@@ -13,9 +13,8 @@ import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.duplicates.FilmStatistics
 import mediathek.tool.withReadLock
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Window
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.AbstractAction
 import javax.swing.JTable
 import javax.swing.table.DefaultTableModel
@@ -48,11 +47,7 @@ class DuplicateStatisticsDialog(
         action.isEnabled = false
 
         restorePosition()
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosed(event: WindowEvent) {
-                savePosition()
-            }
-        })
+        addDelayedWindowListener(onWindowClosed = { savePosition() })
     }
 
     override fun dispose() {

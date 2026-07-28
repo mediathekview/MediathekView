@@ -27,9 +27,8 @@ import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
 import mediathek.tool.cellrenderer.*
 import mediathek.tool.datum.DatumFilm
 import mediathek.tool.models.FilmColumn
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.Component
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
 import javax.swing.JScrollPane
 import javax.swing.JTable
@@ -70,12 +69,12 @@ class FilmTableInstaller(private val host: Host) {
             }
         }
 
-        host.ownerComponent().addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(event: ComponentEvent) {
+        host.ownerComponent().addDelayedComponentListener(
+            onComponentShown = {
                 host.updateSelectedListItemsCount()
                 host.onComponentShown()
             }
-        })
+        )
     }
 
     fun setupTable() {

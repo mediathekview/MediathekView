@@ -3,8 +3,11 @@ package mediathek.gui.dialog
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
 import mediathek.tool.EscapeKeyHandler
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
-import java.awt.event.*
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 import javax.swing.JFrame
 import javax.swing.JOptionPane
 import javax.swing.Timer
@@ -67,11 +70,7 @@ class DialogContinueDownload(
 
         EscapeKeyHandler.installHandler(this) { cancel() }
 
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(event: WindowEvent) {
-                cancel()
-            }
-        })
+        addDelayedWindowListener(onWindowClosing = { cancel() })
 
         jButtonWeiter.addActionListener {
             result = DownloadResult.CONTINUE
@@ -84,13 +83,13 @@ class DialogContinueDownload(
 
         rootPane.defaultButton = jButtonWeiter
 
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(event: ComponentEvent) {
+        addDelayedComponentListener(
+            onComponentShown = {
                 // Display dialog slightly lower than normal to prevent inadvertent presses from other dialogs (#686).
                 val location = locationOnScreen
                 setLocation(location.x, location.y + 70)
-            }
-        })
+        }
+        )
     }
 
     private fun cancel() {

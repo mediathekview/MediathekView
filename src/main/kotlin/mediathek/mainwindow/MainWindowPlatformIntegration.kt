@@ -23,11 +23,10 @@ import mediathek.controller.starter.DownloadServices
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.tray.SystemTraySession
 import mediathek.tool.notification.NotificationPublisher
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import raven.toast.Notifications
 import java.awt.PopupMenu
 import java.awt.Taskbar
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.Action
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
@@ -61,14 +60,11 @@ class MainWindowPlatformIntegration(
         SwingUtilities.invokeLater {
             initializeSystemTray()
 
-            ownerFrame.addWindowListener(object : WindowAdapter() {
-                override fun windowClosing(evt: WindowEvent) {
-                    if (tray != null && ApplicationConfiguration.getInstance().useTray) {
-                        ownerFrame.isVisible = false
-                    } else {
-                        trayHost.quitApplication()
-                    }
-                }
+            ownerFrame.addDelayedWindowListener(onWindowClosing = {
+                if (tray != null && ApplicationConfiguration.getInstance().useTray)
+                    ownerFrame.isVisible = false
+                else
+                    trayHost.quitApplication()
             })
         }
     }

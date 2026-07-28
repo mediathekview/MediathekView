@@ -14,10 +14,9 @@ import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang
 import mediathek.tool.GuiFunktionenProgramme
 import org.apache.commons.lang3.SystemUtils
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.Component
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.util.function.BiConsumer
 import javax.swing.JFrame
 import kotlin.coroutines.CoroutineContext
@@ -63,7 +62,7 @@ class DialogStarteinstellungen(
         installDefaultProgramPaths()
         createLayout()
         updateInitialAvailability()
-        installWindowBehavior()
+        addDelayedWindowListener(onWindowOpened = { toFront() })
     }
 
     private fun installActions() {
@@ -99,14 +98,6 @@ class DialogStarteinstellungen(
             jButtonStandard.isEnabled = false
             anpassen = true
         }
-    }
-
-    private fun installWindowBehavior() {
-        addWindowListener(object : WindowAdapter() {
-            override fun windowOpened(e: WindowEvent) {
-                toFront()
-            }
-        })
     }
 
     private fun launchAdvance() {

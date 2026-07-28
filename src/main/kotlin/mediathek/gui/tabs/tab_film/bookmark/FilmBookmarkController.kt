@@ -23,8 +23,7 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.ProgramSetRepository
 import mediathek.gui.bookmark.BookmarkDialog
 import mediathek.gui.bookmark.BookmarkServices
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import javax.swing.JFrame
 
 class FilmBookmarkController(private val host: Host) {
@@ -58,12 +57,11 @@ class FilmBookmarkController(private val host: Host) {
             host::repaintOwner,
         ).also { createdDialog ->
             bookmarkDialog = createdDialog
-            createdDialog.addWindowListener(
-                object : WindowAdapter() {
-                    override fun windowClosed(event: WindowEvent) {
-                        if (bookmarkDialog === createdDialog) bookmarkDialog = null
-                    }
-                },
+            createdDialog.addDelayedWindowListener(
+                onWindowClosed = {
+                    if (bookmarkDialog === createdDialog)
+                        bookmarkDialog = null
+                }
             )
         }
         dialog.isVisible = true

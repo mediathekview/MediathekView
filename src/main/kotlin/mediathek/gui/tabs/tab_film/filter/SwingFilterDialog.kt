@@ -34,11 +34,11 @@ import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Window
 import java.awt.event.ActionEvent
-import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
 import javax.swing.*
@@ -286,9 +286,32 @@ class SwingFilterDialog internal constructor(
         restoreDialogVisibility()
     }
 
+    private fun storeWindowPosition(event: ComponentEvent?) {
+        if (event == null) return
+
+        val component: Component = event.component
+        val dims = component.size
+        val loc = component.location
+        ApplicationConfiguration.getInstance()
+            .setFilterDialogBounds(loc.x, loc.y, dims.width, dims.height)
+    }
+
+    private fun setFilterToggleButtonState(selected: Boolean) {
+        ApplicationConfiguration.getInstance().filterDialogVisible = isVisible
+        filterToggleButton.isSelected = selected
+    }
+
     private fun registerLocalListeners() {
         filterSelectionComboBoxModel.addListDataListener(filterSelectionDataListener)
-        addComponentListener(FilterDialogComponentListener())
+        addDelayedComponentListener(
+            onComponentResized = { event -> storeWindowPosition(event)},
+            onComponentMoved = { event -> storeWindowPosition(event)},
+            onComponentShown = { setFilterToggleButtonState(true) },
+            onComponentHidden = { event ->
+                storeWindowPosition(event)
+                setFilterToggleButtonState(false)
+            }
+        )
     }
 
     private fun setupRoundControls() {
@@ -842,39 +865,6 @@ class SwingFilterDialog internal constructor(
             }
         }
 
-    }
-
-    inner class FilterDialogComponentListener : ComponentAdapter() {
-        override fun componentResized(event: ComponentEvent) {
-            storeWindowPosition(event)
-        }
-
-        override fun componentMoved(event: ComponentEvent) {
-            storeWindowPosition(event)
-        }
-
-        override fun componentShown(event: ComponentEvent) {
-            storeDialogVisibility()
-            filterToggleButton.isSelected = true
-        }
-
-        override fun componentHidden(event: ComponentEvent) {
-            storeWindowPosition(event)
-            storeDialogVisibility()
-            filterToggleButton.isSelected = false
-        }
-
-        private fun storeDialogVisibility() {
-            ApplicationConfiguration.getInstance().filterDialogVisible = isVisible
-        }
-
-        private fun storeWindowPosition(event: ComponentEvent) {
-            val component: Component = event.component
-            val dims = component.size
-            val loc = component.location
-            ApplicationConfiguration.getInstance()
-                .setFilterDialogBounds(loc.x, loc.y, dims.width, dims.height)
-        }
     }
 
     private inner class FilterSelectionDataListener : ListDataListener {

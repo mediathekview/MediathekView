@@ -53,9 +53,8 @@ import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.VerticalLayout
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.*
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.awt.event.MouseEvent
 import java.io.File
 import java.net.URI
@@ -177,10 +176,8 @@ class AudiothekPanel(
     }
 
     private fun setupListeners() {
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(event: ComponentEvent?) {
-                SwingUtilities.invokeLater(::loadIfNecessary)
-            }
+        addDelayedComponentListener(onComponentShown = {
+            SwingUtilities.invokeLater(::loadIfNecessary)
         })
         toolBar.addReloadListener { triggerLoad(isManualReload = true) }
         table.addEntrySelectionListener {
@@ -204,11 +201,7 @@ class AudiothekPanel(
                 downloadManagerPanel.setTasks(snapshots)
             }
         }
-        tableScrollPane.addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(event: ComponentEvent?) {
-                syncErrorOverlayBounds()
-            }
-        })
+        tableScrollPane.addDelayedComponentListener(onComponentResized = { syncErrorOverlayBounds() })
     }
 
     private fun shouldLoadWhenShown(): Boolean {

@@ -46,11 +46,10 @@ import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignE
 import org.kordamp.ikonli.materialdesign2.MaterialDesignN
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
@@ -112,7 +111,14 @@ class BookmarkDialog(
         setupTable()
         TableUtils.fitColumnHeaders(table, 5)
 
-        installListener()
+        addDelayedWindowListener(
+            onWindowClosing = {
+                saveBounds()
+                tableColumnSettingsManager.save()
+                dispose()
+            },
+            onWindowClosed = { saveBounds() }
+        )
         restoreBounds()
 
         updateActionStates()
@@ -186,22 +192,6 @@ class BookmarkDialog(
 
                 override fun mouseReleased(event: MouseEvent) {
                     showPopup(event)
-                }
-            },
-        )
-    }
-
-    private fun installListener() {
-        addWindowListener(
-            object : WindowAdapter() {
-                override fun windowClosing(event: WindowEvent) {
-                    saveBounds()
-                    tableColumnSettingsManager.save()
-                    dispose()
-                }
-
-                override fun windowClosed(event: WindowEvent) {
-                    saveBounds()
                 }
             },
         )

@@ -15,10 +15,9 @@ import mediathek.mainwindow.SettingsDialogHost
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetIcon
 import mediathek.tool.ReplacementRules
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.Component
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.util.*
 import java.util.function.BiConsumer
 import javax.swing.JPanel
@@ -43,11 +42,7 @@ class DialogEinstellungen(
 
         iconImage = GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).image
         jButtonBeenden.addActionListener { beenden() }
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e: WindowEvent) {
-                beenden()
-            }
-        })
+        addDelayedWindowListener(onWindowClosing = { beenden() })
 
         EscapeKeyHandler.installHandler(this, this::beenden)
     }
