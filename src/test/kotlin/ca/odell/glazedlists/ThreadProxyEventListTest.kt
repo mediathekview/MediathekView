@@ -8,6 +8,7 @@ import java.awt.EventQueue
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.withLock
 
 internal class ThreadProxyEventListTest {
     @Test
@@ -42,7 +43,9 @@ internal class ThreadProxyEventListTest {
         }
 
         assertFalse(EventQueue.isDispatchThread())
-        source += "A"
+        source.readWriteLock.writeLock().withLock {
+            source += "A"
+        }
 
         assertTrue(delivered.await(2, TimeUnit.SECONDS))
         assertTrue(deliveredOnEdt.get())
