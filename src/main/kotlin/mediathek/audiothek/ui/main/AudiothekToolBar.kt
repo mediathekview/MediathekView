@@ -24,11 +24,11 @@ import mediathek.audiothek.ui.download.CircularProgressIcon
 import mediathek.audiothek.ui.download.DownloadSummary
 import mediathek.gui.search.SearchHistoryModel
 import mediathek.gui.tabs.tab_film.EditHistoryDialog
+import mediathek.swing.IconUtils
 import mediathek.tool.withReadLock
 import org.jdesktop.swingx.JXBusyLabel
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT
-import org.kordamp.ikonli.swing.FontIcon
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
@@ -39,7 +39,6 @@ import javax.swing.text.JTextComponent
 class AudiothekToolBar : JToolBar() {
     companion object {
         private const val SEARCH_FIELD_COLUMNS = 28
-        private const val ICON_SIZE = 18
         private const val MAX_SEARCH_FIELD_WIDTH = 500
         private const val PODCAST_SEARCH_TOOLTIP = "Podcastindex-Suche läuft"
     }
@@ -53,7 +52,7 @@ class AudiothekToolBar : JToolBar() {
         isFocusable = false
     }
     private val reloadButton = JButton().apply {
-        icon = FontIcon.of(FontAwesomeSolid.RECYCLE, ICON_SIZE)
+        icon = IconUtils.toolbarIcon(FontAwesomeSolid.RECYCLE)
         toolTipText = "Lokale Podcast-Daten aktualisieren"
         isFocusable = false
     }
@@ -67,7 +66,7 @@ class AudiothekToolBar : JToolBar() {
         isVisible = false
     }
     private val downloadManagerButton = JButton()
-    private val downloadManagerIdleIcon = FontIcon.of(MaterialDesignT.TRAY_ARROW_DOWN, ICON_SIZE)
+    private val downloadManagerIdleIcon = IconUtils.toolbarIcon(MaterialDesignT.TRAY_ARROW_DOWN)
     private val downloadProgressIcon = CircularProgressIcon()
 
     init {
