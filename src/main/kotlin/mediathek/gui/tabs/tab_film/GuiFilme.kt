@@ -79,6 +79,8 @@ import net.engio.mbassy.listener.Handler
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.AWTEvent
 import java.awt.BorderLayout
+import java.awt.KeyEventDispatcher
+import java.awt.KeyboardFocusManager
 import java.awt.Toolkit
 import java.awt.Window
 import java.awt.event.AWTEventListener
@@ -112,11 +114,10 @@ class GuiFilme(
     private val filmTableRowCount: IntConsumer,
     private val currentFilm: Consumer<DatenFilm?>,
 ) : JPanel() {
-    private val copyHqUrlToClipboardActionValue: CopyUrlToClipboardAction
-    private val copyNormalUrlToClipboardActionValue: CopyUrlToClipboardAction
     private var swingFilterDialog: SwingFilterDialog? = null
     private var swingFilterDialogFactory: () -> SwingFilterDialog
     private val toggleFilterDialogVisibilityActionValue: ToggleFilterDialogVisibilityAction
+    private val filterDialogVisibilityKeyDispatcher: KeyEventDispatcher
     private val filterController: FilmFilterController
     private val bookmarkController: FilmBookmarkController
     private var stopBeob = false
@@ -210,9 +211,12 @@ class GuiFilme(
         val bookmarkActionHost = createBookmarkActionHost()
         val deleteBookmarksAction = DeleteBookmarksAction(bookmarks, bookmarkActionHost)
         val filmActions = createFilmActions(deleteBookmarksAction, selectionComponents)
-        copyHqUrlToClipboardActionValue = filmActions.copyHqUrlToClipboardAction
-        copyNormalUrlToClipboardActionValue = filmActions.copyNormalUrlToClipboardAction
         toggleFilterDialogVisibilityActionValue = filmActions.toggleFilterDialogVisibilityAction
+        filterDialogVisibilityKeyDispatcher =
+            ActionAcceleratorDispatcher(toggleFilterDialogVisibilityActionValue) {
+                val activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
+                activeWindow === ownerFrame || activeWindow === existingSwingFilterDialog()
+            }
         val bookmarkStartupReloadCoordinator = BookmarkStartupReloadCoordinator()
         val filmListScrollPane = JScrollPane()
         val cbkShowDescription = JCheckBoxMenuItem("Beschreibung anzeigen")
@@ -256,6 +260,8 @@ class GuiFilme(
         lifecycleController.start()
 
         Toolkit.getDefaultToolkit().addAWTEventListener(watchlistOutsideClickListener, AWTEvent.MOUSE_EVENT_MASK)
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            .addKeyEventDispatcher(filterDialogVisibilityKeyDispatcher)
         UIManager.addPropertyChangeListener(watchlistLookAndFeelListener)
         updateWatchlistBellState()
     }
@@ -673,10 +679,6 @@ class GuiFilme(
         tableReloader.requestZeitraumReload()
     }
 
-    fun copyHqUrlToClipboardAction(): Action = copyHqUrlToClipboardActionValue
-
-    fun copyNormalUrlToClipboardAction(): Action = copyNormalUrlToClipboardActionValue
-
     fun toggleFilterDialogVisibilityAction(): Action = toggleFilterDialogVisibilityActionValue
 
     fun resetFilterDialogPosition() {
@@ -686,6 +688,8 @@ class GuiFilme(
     fun disposePanel() {
         watchlistPopup?.hidePopupImmediately()
         Toolkit.getDefaultToolkit().removeAWTEventListener(watchlistOutsideClickListener)
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            .removeKeyEventDispatcher(filterDialogVisibilityKeyDispatcher)
         UIManager.removePropertyChangeListener(watchlistLookAndFeelListener)
         watchlistUiScope.cancel()
         tableReloader.dispose()
@@ -727,9 +731,6 @@ class GuiFilme(
     private fun updateSelectedListItemsCount(table: JTable) {
         selectedListItemsCount.accept(table.selectedRowCount.toLong())
     }
-
-    val tableRowCount: Int
-        get() = selectionController.getTableRowCount()
 
     @Handler
     private fun handleSeenHistoryChangedEvent(event: SeenHistoryChangedEvent) {

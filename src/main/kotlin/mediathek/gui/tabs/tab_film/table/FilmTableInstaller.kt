@@ -24,12 +24,14 @@ import mediathek.gui.tabs.tab_film.actions.CopyUrlToClipboardAction
 import mediathek.gui.tabs.tab_film.actions.FilmActionHost
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
+import mediathek.tool.GuiFunktionen
 import mediathek.tool.cellrenderer.*
 import mediathek.tool.datum.DatumFilm
 import mediathek.tool.models.FilmColumn
 import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.Component
 import java.awt.event.KeyEvent
+import javax.swing.InputMap
 import javax.swing.JScrollPane
 import javax.swing.JTable
 import javax.swing.KeyStroke
@@ -96,17 +98,18 @@ class FilmTableInstaller(private val host: Host) {
     }
 
     private fun setupKeyMapping() {
-        val focusedWindowMap = host.table().inputMap
+        val focusedInputMap = host.table().inputMap
 
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), ACTION_MAP_KEY_PLAY_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_PLAY_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_SAVE_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0), ACTION_MAP_KEY_BOOKMARK_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_SEEN)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), ACTION_MAP_KEY_PLAY_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_PLAY_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_SAVE_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0), ACTION_MAP_KEY_BOOKMARK_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_SEEN)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN)
+        installFilmUrlCopyAccelerators(focusedInputMap, GuiFunktionen.getPlatformControlKey())
 
         val actionMap = host.table().actionMap
         val actions = host.actions()
@@ -155,10 +158,17 @@ class FilmTableInstaller(private val host: Host) {
         private const val ACTION_MAP_KEY_PLAY_FILM = "film_abspielen"
         private const val ACTION_MAP_KEY_SAVE_FILM = "download_film"
         private const val ACTION_MAP_KEY_BOOKMARK_FILM = "bookmark_film"
-        private const val ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url"
-        private const val ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd"
         private const val ACTION_MAP_KEY_COPY_KLEIN_URL = "copy_url_klein"
         private const val ACTION_MAP_KEY_MARK_SEEN = "seen"
         private const val ACTION_MAP_KEY_MARK_UNSEEN = "unseen"
     }
+}
+
+private const val ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url"
+private const val ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd"
+
+internal fun installFilmUrlCopyAccelerators(inputMap: InputMap, platformControlKey: Int) {
+    val modifiers = platformControlKey or KeyEvent.SHIFT_DOWN_MASK or KeyEvent.ALT_DOWN_MASK
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, modifiers), ACTION_MAP_KEY_COPY_HD_URL)
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, modifiers), ACTION_MAP_KEY_COPY_NORMAL_URL)
 }

@@ -40,7 +40,6 @@ import java.awt.Dimension
 import java.awt.Window
 import java.awt.event.ActionEvent
 import java.awt.event.ComponentEvent
-import java.awt.event.KeyEvent
 import javax.swing.*
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
@@ -244,7 +243,6 @@ class SwingFilterDialog internal constructor(
         setupRoundControls()
         btnSplit.icon = IconUtils.of(MaterialDesignD.DOTS_VERTICAL)
         populateSplitButton()
-        ToggleVisibilityKeyHandler(this).installHandler(filterToggleButton.action)
         setupButtons()
     }
 
@@ -615,20 +613,6 @@ class SwingFilterDialog internal constructor(
         val state = ApplicationConfiguration.getInstance().filterDialogState
         if (state.hasStoredBounds()) {
             setBounds(state.x, state.y, state.width, state.height)
-        }
-    }
-
-    class ToggleVisibilityKeyHandler(dlg: JDialog) {
-        companion object {
-            private const val TOGGLE_FILTER_VISIBILITY = "toggle_dialog_visibility"
-        }
-
-        private val rootPane: JRootPane = dlg.rootPane
-
-        fun installHandler(action: Action?) {
-            rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0), TOGGLE_FILTER_VISIBILITY)
-            rootPane.actionMap.put(TOGGLE_FILTER_VISIBILITY, action)
         }
     }
 

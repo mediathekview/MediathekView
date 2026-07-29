@@ -398,7 +398,6 @@ open class MediathekGui private constructor(
 
         createCommonToolBar()
         installToolBar()
-        mapFilmUrlCopyCommands()
 
         SplashScreenLifecycle.update(UIProgressState.FINISHED)
     }
@@ -510,28 +509,6 @@ open class MediathekGui private constructor(
 
     private fun performGeoCountryStartupCheck() {
         GeoCountryStartupCheck(daten.blacklist, this, { performAustrianVlcCheck() }).perform()
-    }
-
-    private fun mapFilmUrlCopyCommands() {
-        val inputMap = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        inputMap.put(
-            KeyStroke.getKeyStroke(
-                KeyEvent.VK_H,
-                GuiFunktionen.getPlatformControlKey() or KeyEvent.SHIFT_DOWN_MASK or KeyEvent.ALT_DOWN_MASK,
-            ),
-            ACTION_MAP_KEY_COPY_HQ_URL,
-        )
-        inputMap.put(
-            KeyStroke.getKeyStroke(
-                KeyEvent.VK_N,
-                GuiFunktionen.getPlatformControlKey() or KeyEvent.SHIFT_DOWN_MASK or KeyEvent.ALT_DOWN_MASK,
-            ),
-            ACTION_MAP_KEY_COPY_NORMAL_URL,
-        )
-
-        val actionMap = jMenuBar.actionMap
-        actionMap.put(ACTION_MAP_KEY_COPY_HQ_URL, tabs().films.copyHqUrlToClipboardAction())
-        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabs().films.copyNormalUrlToClipboardAction())
     }
 
     private fun setupScrollBarWidth() {
@@ -1004,8 +981,6 @@ open class MediathekGui private constructor(
         private const val DISABLED_ACTION_KEY = "none"
         private const val MIN_WINDOW_WIDTH = 800
         private const val MIN_WINDOW_HEIGHT = 600
-        private const val ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL"
-        private const val ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL"
         private val NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY: (JFrame) -> DownloadProgressIndicator =
             { NoDownloadProgressIndicator }
         private val DEFAULT_TOOLBAR_INSTALLER = object : MainWindowToolbarInstaller {

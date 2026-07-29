@@ -5,6 +5,7 @@
 - **BUGFIX:** `HQ`-, `UT`- und `Geo`-Spalten-Icons wurden nicht vollständig aus der `Titel`-Spalte ausgeblendet, wenn diese sichtbar waren.
 - **BUGFIX:** Sender-Checkboxliste reagiert nun weniger sensibel auf die Position der Mausklicks.
 - **BUGFIX:** Die App stürzt nicht mehr unter JDK 26 aufgrund der JIde-Bibliothek ab.
+- **BUGFIX:** Film-Shortcuts wie `g`, `u` und die URL-Kopierbefehle werden nicht mehr fälschlicherweise in anderen Tabs angewendet.
 - viele interne Änderungen
 
 # **15.0.0**

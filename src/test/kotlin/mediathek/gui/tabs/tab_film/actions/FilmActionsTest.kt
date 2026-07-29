@@ -22,9 +22,12 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.gui.bookmark.BookmarkData
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.awt.event.KeyEvent
 import java.util.*
+import javax.swing.JPanel
 
 internal class FilmActionsTest {
     @Test
@@ -68,10 +71,57 @@ internal class FilmActionsTest {
         assertTrue(host.updatedFilms.isEmpty())
     }
 
+    @Test
+    fun filterDialogF12DispatcherInvokesActionAndConsumesKeyPress() {
+        val host = TestFilmActionHost(emptyList())
+        val dispatcher = ActionAcceleratorDispatcher(ToggleFilterDialogVisibilityAction(host))
+
+        val consumed = dispatcher.dispatchKeyEvent(keyEvent())
+
+        assertTrue(consumed)
+        assertEquals(1, host.filterDialogVisibilityToggleCount)
+    }
+
+    @Test
+    fun filterDialogF12DispatcherIgnoresOtherKeyEvents() {
+        val host = TestFilmActionHost(emptyList())
+        val dispatcher = ActionAcceleratorDispatcher(ToggleFilterDialogVisibilityAction(host))
+
+        assertFalse(dispatcher.dispatchKeyEvent(keyEvent(keyCode = KeyEvent.VK_F11)))
+        assertFalse(dispatcher.dispatchKeyEvent(keyEvent(modifiers = KeyEvent.SHIFT_DOWN_MASK)))
+        assertFalse(dispatcher.dispatchKeyEvent(keyEvent(id = KeyEvent.KEY_RELEASED)))
+        assertEquals(0, host.filterDialogVisibilityToggleCount)
+    }
+
+    @Test
+    fun filterDialogF12DispatcherIgnoresDisabledAction() {
+        val host = TestFilmActionHost(emptyList())
+        val action = ToggleFilterDialogVisibilityAction(host).apply { isEnabled = false }
+        val dispatcher = ActionAcceleratorDispatcher(action)
+
+        assertFalse(dispatcher.dispatchKeyEvent(keyEvent()))
+        assertEquals(0, host.filterDialogVisibilityToggleCount)
+    }
+
+    @Test
+    fun filterDialogF12DispatcherOnlyRunsInsideShortcutWindowScope() {
+        val host = TestFilmActionHost(emptyList())
+        var shortcutWindowActive = false
+        val dispatcher = ActionAcceleratorDispatcher(ToggleFilterDialogVisibilityAction(host)) {
+            shortcutWindowActive
+        }
+
+        assertFalse(dispatcher.dispatchKeyEvent(keyEvent()))
+        shortcutWindowActive = true
+        assertTrue(dispatcher.dispatchKeyEvent(keyEvent()))
+        assertEquals(1, host.filterDialogVisibilityToggleCount)
+    }
+
     private class TestFilmActionHost(
         private val selectedFilms: List<DatenFilm>,
     ) : FilmActionHost {
         val updatedFilms = mutableListOf<DatenFilm>()
+        var filterDialogVisibilityToggleCount = 0
 
         override fun saveFilm(pSet: DatenPset?) = Unit
 
@@ -83,10 +133,25 @@ internal class FilmActionsTest {
 
         override fun currentlySelectedFilm(): Optional<DatenFilm> = Optional.empty()
 
-        override fun toggleFilterDialogVisibility() = Unit
+        override fun toggleFilterDialogVisibility() {
+            filterDialogVisibilityToggleCount++
+        }
     }
 
     private companion object {
+        fun keyEvent(
+            id: Int = KeyEvent.KEY_PRESSED,
+            keyCode: Int = KeyEvent.VK_F12,
+            modifiers: Int = 0,
+        ) = KeyEvent(
+            JPanel(),
+            id,
+            0L,
+            modifiers,
+            keyCode,
+            KeyEvent.CHAR_UNDEFINED,
+        )
+
         fun film(bookmarked: Boolean = false, livestream: Boolean = false): DatenFilm =
             DatenFilm().apply {
                 sender = "sender"

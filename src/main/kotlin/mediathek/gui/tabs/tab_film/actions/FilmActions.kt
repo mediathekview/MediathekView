@@ -26,9 +26,11 @@ import mediathek.tool.GuiFunktionen
 import org.apache.commons.lang3.SystemUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF
+import java.awt.KeyEventDispatcher
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.*
+import javax.swing.Action
 import javax.swing.AbstractAction
 import javax.swing.KeyStroke
 
@@ -50,6 +52,31 @@ class ToggleFilterDialogVisibilityAction(private val host: FilmActionHost) : Abs
 
     override fun actionPerformed(e: ActionEvent?) {
         host.toggleFilterDialogVisibility()
+    }
+}
+
+internal class ActionAcceleratorDispatcher(
+    private val action: Action,
+    private val isShortcutScopeActive: () -> Boolean = { true },
+) : KeyEventDispatcher {
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        val accelerator = action.getValue(Action.ACCELERATOR_KEY) as? KeyStroke ?: return false
+        if (!isShortcutScopeActive() ||
+            !action.isEnabled ||
+            event.id != KeyEvent.KEY_PRESSED ||
+            KeyStroke.getKeyStrokeForEvent(event) != accelerator
+        ) {
+            return false
+        }
+
+        action.actionPerformed(
+            ActionEvent(
+                event.source,
+                ActionEvent.ACTION_PERFORMED,
+                action.getValue(Action.ACTION_COMMAND_KEY) as? String,
+            )
+        )
+        return true
     }
 }
 
