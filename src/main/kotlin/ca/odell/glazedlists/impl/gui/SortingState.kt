@@ -23,7 +23,6 @@ import ca.odell.glazedlists.gui.TableFormat
 import ca.odell.glazedlists.impl.sort.ComparatorChain
 import ca.odell.glazedlists.impl.sort.ReverseComparator
 import ca.odell.glazedlists.impl.sort.TableColumnComparator
-import org.jspecify.annotations.Nullable
 import java.beans.PropertyChangeListener
 import java.beans.PropertyChangeSupport
 
@@ -48,7 +47,7 @@ class SortingState<E : Any> {
         changeSupport.removePropertyChangeListener(listener)
     }
 
-    fun buildComparator(): @Nullable Comparator<E>? {
+    fun buildComparator(): Comparator<E>? {
         if (recentlyClickedColumns.isEmpty()) return null
 
         val comparators = ArrayList<Comparator<E>>(recentlyClickedColumns.size)
@@ -98,7 +97,7 @@ class SortingState<E : Any> {
         return sortingColumns[column]
     }
 
-    fun detectStateFromComparator(foreignComparator: @Nullable Comparator<*>?): Boolean {
+    fun detectStateFromComparator(foreignComparator: Comparator<*>?): Boolean {
         clearComparators()
 
         val comparators = when (foreignComparator) {
@@ -184,7 +183,7 @@ class SortingState<E : Any> {
             comparatorIndex = -1
         }
 
-        open val comparator: @Nullable Comparator<E>?
+        open val comparator: Comparator<E>?
             get() {
                 if (comparatorIndex == -1) return null
                 val selectedComparator = comparators[comparatorIndex]

@@ -31,11 +31,7 @@ import mediathek.tool.models.FilmColumn
 import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.Component
 import java.awt.event.KeyEvent
-import javax.swing.InputMap
-import javax.swing.JScrollPane
-import javax.swing.JTable
-import javax.swing.KeyStroke
-import javax.swing.ListSelectionModel
+import javax.swing.*
 
 class FilmTableInstaller(private val host: Host) {
     interface Host {

@@ -19,13 +19,8 @@
 package mediathek.gui.tabs.tab_film
 
 import com.jidesoft.popup.JidePopup
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.config.application.FilterConfiguration
 import mediathek.controller.starter.DownloadServices
@@ -77,12 +72,7 @@ import mediathek.swing.SwingDispatch
 import mediathek.tool.ReplacementRules
 import net.engio.mbassy.listener.Handler
 import org.jdesktop.swingx.VerticalLayout
-import java.awt.AWTEvent
-import java.awt.BorderLayout
-import java.awt.KeyEventDispatcher
-import java.awt.KeyboardFocusManager
-import java.awt.Toolkit
-import java.awt.Window
+import java.awt.*
 import java.awt.event.AWTEventListener
 import java.awt.event.MouseEvent
 import java.beans.PropertyChangeListener

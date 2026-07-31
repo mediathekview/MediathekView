@@ -20,7 +20,6 @@ package ca.odell.glazedlists
 import ca.odell.glazedlists.event.ListEvent
 import ca.odell.glazedlists.event.ListEventListener
 import ca.odell.glazedlists.event.ListEventPublisher
-import org.jspecify.annotations.NonNull
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.Condition
@@ -209,7 +208,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun toArray(): @NonNull Array<Any?> {
+    override fun toArray(): Array<Any?> {
         beforeReadOperation()
         try {
             return (delegate!! as AbstractEventList<E>).toArray()
@@ -218,7 +217,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun <T> toArray(array: @NonNull Array<T>): @NonNull Array<T> {
+    override fun <T> toArray(array: Array<T>): Array<T> {
         beforeReadOperation()
         try {
             return (delegate!! as AbstractEventList<E>).toArray(array)
@@ -254,7 +253,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun removeIf(filter: @NonNull Predicate<in E>): Boolean {
+    override fun removeIf(filter: Predicate<in E>): Boolean {
         beforeWriteOperation()
         try {
             return delegate!!.removeIf(filter)
@@ -263,7 +262,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun addAll(elements: @NonNull Collection<E>): Boolean {
+    override fun addAll(elements: Collection<E>): Boolean {
         beforeWriteOperation()
         try {
             return delegate!!.addAll(elements)
@@ -272,7 +271,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun addAll(index: Int, elements: @NonNull Collection<E>): Boolean {
+    override fun addAll(index: Int, elements: Collection<E>): Boolean {
         beforeWriteOperation()
         try {
             return delegate!!.addAll(index, elements)
@@ -281,7 +280,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun removeAll(elements: @NonNull Collection<E>): Boolean {
+    override fun removeAll(elements: Collection<E>): Boolean {
         beforeWriteOperation()
         try {
             return delegate!!.removeAll(elements)
@@ -290,7 +289,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun retainAll(elements: @NonNull Collection<E>): Boolean {
+    override fun retainAll(elements: Collection<E>): Boolean {
         beforeWriteOperation()
         try {
             return delegate!!.retainAll(elements)
@@ -299,7 +298,7 @@ open class DebugList<E> private constructor(
         }
     }
 
-    override fun replaceAll(operator: @NonNull UnaryOperator<E>) {
+    override fun replaceAll(operator: UnaryOperator<E>) {
         beforeWriteOperation()
         try {
             delegate!!.replaceAll(operator)
@@ -369,9 +368,9 @@ open class DebugList<E> private constructor(
             writeLock = DebugLock(decorated.writeLock(), readLock)
         }
 
-        override fun readLock(): @NonNull Lock = readLock
+        override fun readLock(): Lock = readLock
 
-        override fun writeLock(): @NonNull Lock = writeLock
+        override fun writeLock(): Lock = writeLock
 
         open fun isThreadHoldingWriteLock(): Boolean =
             writeLock.threadsHoldingLock.contains(Thread.currentThread())
@@ -419,7 +418,7 @@ open class DebugList<E> private constructor(
                 threadsHoldingLock.remove(Thread.currentThread())
             }
 
-            override fun newCondition(): @NonNull Condition = delegate.newCondition()
+            override fun newCondition(): Condition = delegate.newCondition()
 
             private fun checkForReadToWriteUpgrade() {
                 if (

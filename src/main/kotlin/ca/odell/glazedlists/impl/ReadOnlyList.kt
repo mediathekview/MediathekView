@@ -20,7 +20,6 @@ package ca.odell.glazedlists.impl
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.TransformedList
 import ca.odell.glazedlists.event.ListEvent
-import org.jspecify.annotations.NonNull
 import java.util.function.Predicate
 import java.util.function.UnaryOperator
 import java.lang.reflect.Array as ReflectArray
@@ -42,10 +41,10 @@ internal class ReadOnlyList<E>(source: EventList<E>) : TransformedList<E, E>(sou
 
     override fun contains(element: E): Boolean = currentSource.contains(element)
 
-    override fun toArray(): @NonNull Array<Any?> = Array(currentSource.size) { currentSource[it] }
+    override fun toArray(): Array<Any?> = Array(currentSource.size) { currentSource[it] }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> toArray(array: @NonNull Array<T>): @NonNull Array<T> {
+    override fun <T> toArray(array: Array<T>): Array<T> {
         val sourceSize = currentSource.size
         val result =
             if (array.size >= sourceSize) {
@@ -79,9 +78,9 @@ internal class ReadOnlyList<E>(source: EventList<E>) : TransformedList<E, E>(sou
         cannotModify()
     }
 
-    override fun addAll(elements: @NonNull Collection<E>): Boolean = cannotModify()
+    override fun addAll(elements: Collection<E>): Boolean = cannotModify()
 
-    override fun addAll(index: Int, elements: @NonNull Collection<E>): Boolean = cannotModify()
+    override fun addAll(index: Int, elements: Collection<E>): Boolean = cannotModify()
 
     override fun clear() {
         cannotModify()
@@ -91,17 +90,17 @@ internal class ReadOnlyList<E>(source: EventList<E>) : TransformedList<E, E>(sou
 
     override fun removeAt(index: Int): E = cannotModify()
 
-    override fun removeAll(elements: @NonNull Collection<E>): Boolean = cannotModify()
+    override fun removeAll(elements: Collection<E>): Boolean = cannotModify()
 
-    override fun retainAll(elements: @NonNull Collection<E>): Boolean = cannotModify()
+    override fun retainAll(elements: Collection<E>): Boolean = cannotModify()
 
     override fun set(index: Int, element: E): E = cannotModify()
 
-    override fun replaceAll(operator: @NonNull UnaryOperator<E>) {
+    override fun replaceAll(operator: UnaryOperator<E>) {
         cannotModify()
     }
 
-    override fun removeIf(filter: @NonNull Predicate<in E>): Boolean = cannotModify()
+    override fun removeIf(filter: Predicate<in E>): Boolean = cannotModify()
 
     override fun sort(comparator: Comparator<in E>?) {
         cannotModify()

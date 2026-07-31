@@ -19,7 +19,6 @@ package ca.odell.glazedlists
 
 import ca.odell.glazedlists.event.ListEvent
 import ca.odell.glazedlists.event.ListEventPublisher
-import org.jspecify.annotations.NonNull
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.lang.reflect.Method
@@ -27,9 +26,6 @@ import java.lang.reflect.Modifier
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
-import java.util.function.Consumer
-import java.util.function.Predicate
-import java.util.function.UnaryOperator
 
 internal class DebugListBehaviorTest {
     @Test
@@ -515,34 +511,6 @@ internal class DebugListBehaviorTest {
         assertEquals(java.util.stream.Stream::class.java, type.getMethod("stream").returnType)
         assertEquals(java.util.stream.Stream::class.java, type.getMethod("parallelStream").returnType)
         assertEquals(Void.TYPE, type.getMethod("close").returnType)
-    }
-
-    @Test
-    fun jspecifyTypeUseAnnotationsRemainOnArraysCollectionsAndFunctions() {
-        val type = DebugList::class.java
-        val noArgArray = type.getDeclaredMethod("toArray")
-        assertEquals(listOf(NonNull::class.java), noArgArray.annotatedReturnType.annotations.map { it.annotationClass.java })
-
-        val typedArray = type.getDeclaredMethod("toArray", Array<Any>::class.java)
-        assertEquals(listOf(NonNull::class.java), typedArray.annotatedReturnType.annotations.map { it.annotationClass.java })
-        assertEquals(
-            listOf(NonNull::class.java),
-            typedArray.annotatedParameterTypes.single().annotations.map { it.annotationClass.java },
-        )
-
-        listOf(
-            type.getDeclaredMethod("removeIf", Predicate::class.java),
-            type.getDeclaredMethod("addAll", Collection::class.java),
-            type.getDeclaredMethod("addAll", Int::class.javaPrimitiveType, Collection::class.java),
-            type.getDeclaredMethod("removeAll", Collection::class.java),
-            type.getDeclaredMethod("retainAll", Collection::class.java),
-            type.getDeclaredMethod("replaceAll", UnaryOperator::class.java),
-        ).forEach { method ->
-            val annotated = method.annotatedParameterTypes.last().annotations.map { it.annotationClass.java }
-            assertEquals(listOf(NonNull::class.java), annotated, method.toString())
-        }
-        assertTrue(type.getDeclaredMethod("forEach", Consumer::class.java).annotatedParameterTypes.single().annotations.isEmpty())
-        assertTrue(type.getDeclaredMethod("sort", Comparator::class.java).annotatedParameterTypes.single().annotations.isEmpty())
     }
 
     @Test

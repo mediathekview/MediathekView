@@ -21,9 +21,7 @@ package mediathek.gui.tabs.tab_film.actions
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.gui.bookmark.BookmarkData
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.awt.event.KeyEvent
 import java.util.*

@@ -1,7 +1,8 @@
 package mediathek.gui.watchlist
 
 import mediathek.daten.watchlist.WatchlistNotification
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.awt.Insets
 import java.awt.Rectangle

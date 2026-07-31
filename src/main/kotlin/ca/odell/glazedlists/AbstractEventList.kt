@@ -23,7 +23,6 @@ import ca.odell.glazedlists.event.ListEventPublisher
 import ca.odell.glazedlists.impl.EventListIterator
 import ca.odell.glazedlists.impl.SimpleIterator
 import ca.odell.glazedlists.impl.SubEventList
-import org.jspecify.annotations.NonNull
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.function.Predicate
 import java.util.function.UnaryOperator
@@ -77,10 +76,10 @@ abstract class AbstractEventList<E> protected constructor(
     }
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun iterator(): @NonNull MutableIterator<E> = SimpleIterator(this) as MutableIterator<E>
+    override fun iterator(): MutableIterator<E> = SimpleIterator(this) as MutableIterator<E>
 
     @Suppress("UseWithIndex")
-    open fun toArray(): @NonNull Array<Any?> {
+    open fun toArray(): Array<Any?> {
         val array = Array<Any?>(size) { null }
         var index = 0
         for (value in this) {
@@ -91,7 +90,7 @@ abstract class AbstractEventList<E> protected constructor(
     }
 
     @Suppress("UseWithIndex")
-    open fun <T> toArray(array: @NonNull Array<T>): @NonNull Array<T> {
+    open fun <T> toArray(array: Array<T>): Array<T> {
         var target = array
         if (target.size < size) {
             target = ReflectArray.newInstance(target.javaClass.componentType, size) as Array<T>
@@ -127,10 +126,10 @@ abstract class AbstractEventList<E> protected constructor(
         return true
     }
 
-    override fun addAll(elements: @NonNull Collection<E>): Boolean = addAll(size, elements)
+    override fun addAll(elements: Collection<E>): Boolean = addAll(size, elements)
 
     @Suppress("ConvertTwoComparisonsToRangeCheck")
-    override fun addAll(index: Int, elements: @NonNull Collection<E>): Boolean {
+    override fun addAll(index: Int, elements: Collection<E>): Boolean {
         if (index < 0 || index > size) {
             throw IndexOutOfBoundsException("Cannot add at $index on list of size $size")
         }
@@ -157,12 +156,12 @@ abstract class AbstractEventList<E> protected constructor(
     }
 
     @Suppress("RedundantIf")
-    override fun removeAll(elements: @NonNull Collection<E>): Boolean {
+    override fun removeAll(elements: Collection<E>): Boolean {
         if (isEmpty()) return false
         return removeIf(elements::contains)
     }
 
-    override fun retainAll(elements: @NonNull Collection<E>): Boolean {
+    override fun retainAll(elements: Collection<E>): Boolean {
         return removeIf(Predicate { value -> !elements.contains(value) })
     }
 
@@ -171,7 +170,7 @@ abstract class AbstractEventList<E> protected constructor(
         removeIf(Predicate { true })
     }
 
-    override fun removeIf(filter: @NonNull Predicate<in E>): Boolean {
+    override fun removeIf(filter: Predicate<in E>): Boolean {
         if (isEmpty()) return false
 
         updates.beginEvent(true)
@@ -187,7 +186,7 @@ abstract class AbstractEventList<E> protected constructor(
         return removed
     }
 
-    override fun replaceAll(operator: @NonNull UnaryOperator<E>) {
+    override fun replaceAll(operator: UnaryOperator<E>) {
         updates.beginEvent(true)
         for (index in size - 1 downTo 0) {
             val oldValue = get(index)
@@ -262,13 +261,13 @@ abstract class AbstractEventList<E> protected constructor(
         return -1
     }
 
-    override fun listIterator(): @NonNull MutableListIterator<E> = listIterator(0)
+    override fun listIterator(): MutableListIterator<E> = listIterator(0)
 
     @Suppress("CAST_NEVER_SUCCEEDS")
-    override fun listIterator(index: Int): @NonNull MutableListIterator<E> =
+    override fun listIterator(index: Int): MutableListIterator<E> =
         EventListIterator(this, index) as MutableListIterator<E>
 
-    override fun subList(fromIndex: Int, toIndex: Int): @NonNull MutableList<E> =
+    override fun subList(fromIndex: Int, toIndex: Int): MutableList<E> =
         SubEventList(this, fromIndex, toIndex, true)
 
     override fun toString(): String {

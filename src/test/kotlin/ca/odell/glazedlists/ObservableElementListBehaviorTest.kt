@@ -19,7 +19,6 @@ package ca.odell.glazedlists
 
 import ca.odell.glazedlists.event.ListEvent
 import ca.odell.glazedlists.event.ListEventListener
-import org.jspecify.annotations.Nullable
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.lang.reflect.Modifier
@@ -400,7 +399,6 @@ internal class ObservableElementListBehaviorTest {
             "ca.odell.glazedlists.ObservableElementChangeHandler<? extends E>",
             setList.genericParameterTypes.single().typeName,
         )
-        assertTrue(setList.annotatedParameterTypes.single().isAnnotationPresent(Nullable::class.java))
     }
 
     private fun assertMethod(method: java.lang.reflect.Method, visibility: Int) {

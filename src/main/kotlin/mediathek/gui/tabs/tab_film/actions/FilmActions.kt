@@ -30,8 +30,8 @@ import java.awt.KeyEventDispatcher
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.*
-import javax.swing.Action
 import javax.swing.AbstractAction
+import javax.swing.Action
 import javax.swing.KeyStroke
 
 interface FilmActionHost {

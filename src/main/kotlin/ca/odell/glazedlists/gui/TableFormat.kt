@@ -17,8 +17,6 @@
  */
 package ca.odell.glazedlists.gui
 
-import org.jspecify.annotations.Nullable
-
 /** Defines how values are presented as table columns. */
 interface TableFormat<E> {
     /** The number of columns to display. */
@@ -28,5 +26,5 @@ interface TableFormat<E> {
     fun getColumnName(column: Int): String
 
     /** Gets the possibly-null cell value for [baseObject] in [column]. */
-    fun getColumnValue(baseObject: E, column: Int): @Nullable Any?
+    fun getColumnValue(baseObject: E, column: Int): Any?
 }

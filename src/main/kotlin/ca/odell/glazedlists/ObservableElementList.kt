@@ -21,7 +21,6 @@ package ca.odell.glazedlists
 
 import ca.odell.glazedlists.event.ListEvent
 import ca.odell.glazedlists.impl.adt.Barcode
-import org.jspecify.annotations.Nullable
 import java.util.*
 
 /**
@@ -421,7 +420,7 @@ open class ObservableElementList<E>(
 
         fun uninstallListener(element: E, listener: EventListener)
 
-        fun setObservableElementList(list: @Nullable ObservableElementChangeHandler<out E>?)
+        fun setObservableElementList(list: ObservableElementChangeHandler<out E>?)
     }
 
     private class ElementCleanup<E>(

@@ -17,12 +17,10 @@
  */
 package ca.odell.glazedlists.gui
 
-import org.jspecify.annotations.Nullable
-
 interface AdvancedTableFormat<E> : TableFormat<E> {
     /** Returns the most specific superclass for the values in [column]. */
     fun getColumnClass(column: Int): Class<*>
 
     /** Returns the default comparator for [column], or `null` when it is unsortable. */
-    fun getColumnComparator(column: Int): @Nullable Comparator<*>?
+    fun getColumnComparator(column: Int): Comparator<*>?
 }

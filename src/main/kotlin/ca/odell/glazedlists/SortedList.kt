@@ -21,8 +21,6 @@ import ca.odell.glazedlists.event.ListEvent
 import ca.odell.glazedlists.impl.adt.barcode2.Element
 import ca.odell.glazedlists.impl.adt.barcode2.SimpleTree
 import ca.odell.glazedlists.impl.adt.barcode2.SimpleTreeIterator
-import org.jspecify.annotations.NonNull
-import org.jspecify.annotations.Nullable
 import java.util.*
 
 /** An [EventList] that shows its source [EventList] in sorted order. */
@@ -33,7 +31,7 @@ import java.util.*
 )
 class SortedList<E>(
     source: EventList<E>,
-    comparator: @Nullable Comparator<in E>?,
+    comparator: Comparator<in E>?,
 ) : TransformedList<E, E>(source) {
     private var unsorted: SimpleTree<Element<*>?>? = null
     private var sorted: SimpleTree<Element<*>?>? = null
@@ -53,7 +51,7 @@ class SortedList<E>(
         }
 
     /** The comparator in use, or `null` when this list follows source order. */
-    var comparator: @Nullable Comparator<in E>? = null
+    var comparator: Comparator<in E>? = null
         set(value) {
             val treeComparator: Comparator<Any?> =
                 if (value != null) ElementComparator(value) else ElementRawOrderComparator()
@@ -410,7 +408,7 @@ class SortedList<E>(
     private fun indexOfValue(element: Any?, first: Boolean, simulated: Boolean): Int =
         (sorted!! as SimpleTree<Any?>).indexOfValue(element, first, simulated, ALL_COLORS)
 
-    override fun iterator(): @NonNull MutableIterator<E> = SortedListIterator()
+    override fun iterator(): MutableIterator<E> = SortedListIterator()
 
     private fun compareElements(
         comparator: Comparator<in E>,

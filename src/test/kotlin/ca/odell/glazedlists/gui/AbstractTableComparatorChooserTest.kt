@@ -22,7 +22,6 @@ import ca.odell.glazedlists.GlazedLists
 import ca.odell.glazedlists.SortedList
 import ca.odell.glazedlists.impl.gui.SortingStrategy
 import ca.odell.glazedlists.swing.TableComparatorChooser
-import org.jspecify.annotations.Nullable
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import javax.swing.JTable
@@ -274,28 +273,6 @@ internal class AbstractTableComparatorChooserTest {
         val sortKey = AbstractTableComparatorChooser.SortKey(1, 2, true)
 
         assertEquals("SortKey[column=1, comparatorIndex=2, reverse=true]", sortKey.toString())
-    }
-
-    @Test
-    fun nullableJavaApiContractsKeepJSpecifyTypeAnnotations() {
-        val columnValueReturn = TableFormat::class.java
-            .getMethod("getColumnValue", Any::class.java, Int::class.javaPrimitiveType!!)
-            .annotatedReturnType
-        val columnComparatorReturn = AdvancedTableFormat::class.java
-            .getMethod("getColumnComparator", Int::class.javaPrimitiveType!!)
-            .annotatedReturnType
-        val comparatorField = AbstractTableComparatorChooser::class.java
-            .getDeclaredField("sortedListComparator")
-            .annotatedType
-        val comparatorParameter = AbstractTableComparatorChooser::class.java
-            .getDeclaredMethod("redetectComparator", Comparator::class.java)
-            .annotatedParameterTypes
-            .single()
-
-        assertTrue(columnValueReturn.isAnnotationPresent(Nullable::class.java))
-        assertTrue(columnComparatorReturn.isAnnotationPresent(Nullable::class.java))
-        assertTrue(comparatorField.isAnnotationPresent(Nullable::class.java))
-        assertTrue(comparatorParameter.isAnnotationPresent(Nullable::class.java))
     }
 
     private class TestChooser(

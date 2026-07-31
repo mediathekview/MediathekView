@@ -20,7 +20,6 @@ package ca.odell.glazedlists.impl
 import ca.odell.glazedlists.*
 import ca.odell.glazedlists.event.ListEvent
 import ca.odell.glazedlists.event.ListEventListener
-import org.jspecify.annotations.NonNull
 import java.lang.reflect.Array as ReflectArray
 
 /** A mutable map from calculated keys to live groups in an observable source list. */
@@ -130,11 +129,11 @@ internal class GroupingListMultiMap<K, V> : DisposableMap<K, List<V>>,
     }
 
     @get:JvmName("values")
-    override val values: @NonNull MutableCollection<List<V>>
+    override val values: MutableCollection<List<V>>
         field: GroupingList<V>
 
     @get:JvmName("keySet")
-    override val keys: @NonNull MutableSet<K>
+    override val keys: MutableSet<K>
         get() {
             var current = cachedKeySet
             if (current == null) {
@@ -145,7 +144,7 @@ internal class GroupingListMultiMap<K, V> : DisposableMap<K, List<V>>,
         }
 
     @get:JvmName("entrySet")
-    override val entries: @NonNull MutableSet<MutableMap.MutableEntry<K, List<V>>>
+    override val entries: MutableSet<MutableMap.MutableEntry<K, List<V>>>
         get() {
             var current = cachedEntrySet
             if (current == null) {

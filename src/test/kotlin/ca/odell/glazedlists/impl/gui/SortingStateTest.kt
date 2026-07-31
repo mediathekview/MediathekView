@@ -19,7 +19,6 @@ package ca.odell.glazedlists.impl.gui
 
 import ca.odell.glazedlists.GlazedLists
 import ca.odell.glazedlists.gui.TableFormat
-import org.jspecify.annotations.Nullable
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -108,20 +107,6 @@ internal class SortingStateTest {
             state.validateComparator(0, 1)
         }
         assertEquals("invalid comparator index 1, must be in range [0, 1)", comparatorFailure.message)
-    }
-
-    @Test
-    fun nullableComparatorContractsKeepJSpecifyTypeAnnotations() {
-        val comparatorReturn = SortingState::class.java
-            .getMethod("buildComparator")
-            .annotatedReturnType
-        val comparatorParameter = SortingState::class.java
-            .getMethod("detectStateFromComparator", Comparator::class.java)
-            .annotatedParameterTypes
-            .single()
-
-        assertTrue(comparatorReturn.isAnnotationPresent(Nullable::class.java))
-        assertTrue(comparatorParameter.isAnnotationPresent(Nullable::class.java))
     }
 
     private fun sortingState() = SortingState<Row>().apply { rebuildColumns(tableFormat) }

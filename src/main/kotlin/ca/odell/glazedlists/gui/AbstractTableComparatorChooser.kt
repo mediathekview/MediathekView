@@ -21,7 +21,6 @@ import ca.odell.glazedlists.SortedList
 import ca.odell.glazedlists.impl.gui.MouseOnlySortingStrategy
 import ca.odell.glazedlists.impl.gui.SortingState
 import ca.odell.glazedlists.impl.gui.SortingStrategy
-import org.jspecify.annotations.Nullable
 import java.util.*
 
 /**
@@ -47,7 +46,7 @@ abstract class AbstractTableComparatorChooser<E : Any> protected constructor(
 
     /** The potentially foreign comparator currently associated with the sorted list. */
     @JvmField
-    protected var sortedListComparator: @Nullable Comparator<in E>? = null
+    protected var sortedListComparator: Comparator<in E>? = null
 
     private var sortedListComparatorFullyRepresented = false
 
@@ -83,7 +82,7 @@ abstract class AbstractTableComparatorChooser<E : Any> protected constructor(
         return sortedList
     }
 
-    private fun readSortedListComparator(): @Nullable Comparator<in E>? {
+    private fun readSortedListComparator(): Comparator<in E>? {
         val currentSortedList = getSortedList()
         currentSortedList.readWriteLock.readLock().lock()
         return try {
@@ -176,7 +175,7 @@ abstract class AbstractTableComparatorChooser<E : Any> protected constructor(
     }
 
     /** Redetects sorting state from the current list comparator. */
-    protected open fun redetectComparator(currentComparator: @Nullable Comparator<in E>?) {
+    protected open fun redetectComparator(currentComparator: Comparator<in E>?) {
         sortedListComparator = currentComparator
         sortedListComparatorFullyRepresented = sortingState.detectStateFromComparator(currentComparator)
     }
