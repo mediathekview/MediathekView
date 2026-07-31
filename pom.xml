@@ -78,7 +78,7 @@
         <javax-activation.version>1.2.0</javax-activation.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jfreechart.version>1.5.6</jfreechart.version>
-        <jide-oss.version>d22f741518f0d3bb9dbc1a225eda10d353c20b2e</jide-oss.version>
+        <jide-oss.version>ba570db7da9afe78ff72820ae0dedeeb807687eb</jide-oss.version>
         <jiconfont-font-awesome.version>4.7.0.1</jiconfont-font-awesome.version>
         <jlibnotify.version>1.3.0</jlibnotify.version>
         <jna.version>5.19.1</jna.version>
