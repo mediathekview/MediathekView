@@ -109,7 +109,7 @@
         <jide-oss.version>3.7.15</jide-oss.version>
         <jlibnotify.version>1.2.3</jlibnotify.version>
         <jna.version>5.18.1</jna.version>
-        <jsoup.version>1.22.1</jsoup.version>
+        <jsoup.version>1.23.1</jsoup.version>
         <junit.jupiter.version>6.0.3</junit.jupiter.version>
         <lucene.version>10.4.0</lucene.version>
         <flexmark.version>0.64.8</flexmark.version>
