@@ -26,6 +26,7 @@ import mediathek.tool.subtitles.SubtitleExportService
 import org.apache.logging.log4j.Logger
 import java.io.IOException
 import java.nio.file.Paths
+import java.time.Duration
 
 internal class DirectDownloadAncillaryFiles private constructor(
     private val jobs: List<Deferred<Unit>>,
@@ -80,7 +81,11 @@ internal class DirectDownloadAncillaryFiles private constructor(
             }
 
             val destinationPath = Paths.get(datenDownload.fileNameWithoutSuffix)
-            when (val result = SubtitleExportService.downloadAndExport(subtitleUrl, destinationPath)) {
+            val filmDuration = datenDownload.film?.filmLength
+                ?.takeIf { it > 0 }
+                ?.let { Duration.ofSeconds(it.toLong()) }
+                ?: parseDuration(datenDownload.duration)
+            when (val result = SubtitleExportService.downloadAndExport(subtitleUrl, destinationPath, filmDuration)) {
                 SubtitleExportResult.InvalidFormat -> logger.error("Invalid subtitle format.")
                 SubtitleExportResult.UnsupportedFormat -> logger.error("Unsupported subtitle format.")
                 is SubtitleExportResult.Failure -> logger.error("Failed to write subtitle file", result.exception)
@@ -93,6 +98,20 @@ internal class DirectDownloadAncillaryFiles private constructor(
                     }
                 }
             }
+        }
+
+        private fun parseDuration(value: String): Duration? {
+            val parts = value.split(':')
+            if (parts.size != 3) {
+                return null
+            }
+            val hours = parts[0].toLongOrNull() ?: return null
+            val minutes = parts[1].toLongOrNull() ?: return null
+            val seconds = parts[2].toLongOrNull() ?: return null
+            if (hours < 0 || minutes !in 0..59 || seconds !in 0..59) {
+                return null
+            }
+            return Duration.ofHours(hours).plusMinutes(minutes).plusSeconds(seconds)
         }
     }
 }
