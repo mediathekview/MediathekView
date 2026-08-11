@@ -30,13 +30,18 @@ import mediathek.tool.subtitles.vtt.WebVttToTtml2Converter
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.Duration
 import kotlin.coroutines.cancellation.CancellationException
 
 object SubtitleExportService {
-    suspend fun downloadAndExport(subtitleUrl: String, selectedFilePath: Path): SubtitleExportResult =
+    suspend fun downloadAndExport(
+        subtitleUrl: String,
+        selectedFilePath: Path,
+        filmDuration: Duration? = null,
+    ): SubtitleExportResult =
         withContext(Dispatchers.IO) {
             try {
-                doDownloadAndExport(subtitleUrl, selectedFilePath)
+                doDownloadAndExport(subtitleUrl, selectedFilePath, filmDuration)
             } catch (ex: CancellationException) {
                 throw ex
             } catch (ex: Exception) {
@@ -44,7 +49,11 @@ object SubtitleExportService {
             }
         }
 
-    private fun doDownloadAndExport(subtitleUrl: String, selectedFilePath: Path): SubtitleExportResult {
+    private fun doDownloadAndExport(
+        subtitleUrl: String,
+        selectedFilePath: Path,
+        filmDuration: Duration?,
+    ): SubtitleExportResult {
         var downloadedSubtitlePath: Path? = null
         val temporaryArtifacts = mutableListOf<Path>()
         val successes = mutableListOf<String>()
@@ -81,6 +90,7 @@ object SubtitleExportService {
             val subtitleDocument = parseSubtitleDocument(
                 generatedTtmlArtifact = generatedTtmlTempPath,
                 originalTempPath = originalTempPath,
+                filmDuration = filmDuration,
                 failures = failures,
             )
 
@@ -152,10 +162,13 @@ object SubtitleExportService {
     private fun parseSubtitleDocument(
         generatedTtmlArtifact: GeneratedTtmlArtifact?,
         originalTempPath: Path,
+        filmDuration: Duration?,
         failures: MutableMap<String, Throwable>,
     ): SubtitleDocument? =
         runCatching {
-            generatedTtmlArtifact?.content?.let { Ttml2Parser().parse(it) }
+            generatedTtmlArtifact?.content?.let { content ->
+                filmDuration?.let { Ttml2Parser().parse(content, it) } ?: Ttml2Parser().parse(content)
+            } ?: filmDuration?.let { Ttml2Parser().parseAndCorrect(originalTempPath, it) }
                 ?: Ttml2Parser().parse(originalTempPath)
         }.getOrElse { parseError ->
             failures.recordDerivedArtifactFailures(parseError)

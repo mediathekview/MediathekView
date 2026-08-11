@@ -20,10 +20,12 @@ package mediathek.tool.subtitles.ttml2
 
 import mediathek.tool.subtitles.SubtitleDocument
 import mediathek.tool.subtitles.SubtitleDocument.*
+import org.apache.logging.log4j.LogManager
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -33,11 +35,16 @@ import java.util.*
 import java.util.regex.Pattern
 import javax.xml.XMLConstants
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
 
 /**
  * TTML2 parser focused on subtitle conversion.
  * Features:
  *  - Time parsing (clock-time + offset-time)
+ *  - Conservative whole-hour offset correction against a known media duration
  *  - Basic timeContainer support on body/div (par/seq; default par)
  *  - Mixed span styling into runs (bold/italic/underline/color/backgroundColor)
  *  - Region parsing (origin/extent) for ASS placement
@@ -48,7 +55,22 @@ import javax.xml.parsers.DocumentBuilderFactory
 class Ttml2Parser {
     fun parse(path: Path): SubtitleDocument {
         val doc = Files.newInputStream(path).use(::parseXml)
-        return parse(doc)
+        return parse(doc, null).document
+    }
+
+    fun parse(path: Path, mediaDuration: Duration): SubtitleDocument {
+        val doc = Files.newInputStream(path).use(::parseXml)
+        return parse(doc, mediaDuration).document
+    }
+
+    fun parseAndCorrect(path: Path, mediaDuration: Duration): SubtitleDocument {
+        val xml = Files.newInputStream(path).use(::parseXml)
+        val parsed = parse(xml, mediaDuration)
+        if (!parsed.appliedOffset.isZero) {
+            applyOffset(xml, parsed.timeContext, parsed.appliedOffset)
+            Files.write(path, serialize(xml))
+        }
+        return parsed.document
     }
 
     fun parse(content: String): SubtitleDocument =
@@ -56,12 +78,22 @@ class Ttml2Parser {
             parse(inputStream)
         }
 
+    fun parse(content: String, mediaDuration: Duration): SubtitleDocument =
+        ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8)).use { inputStream ->
+            parse(inputStream, mediaDuration)
+        }
+
     fun parse(inputStream: InputStream): SubtitleDocument {
         val doc = parseXml(inputStream)
-        return parse(doc)
+        return parse(doc, null).document
     }
 
-    private fun parse(doc: Document): SubtitleDocument {
+    fun parse(inputStream: InputStream, mediaDuration: Duration): SubtitleDocument {
+        val doc = parseXml(inputStream)
+        return parse(doc, mediaDuration).document
+    }
+
+    private fun parse(doc: Document, mediaDuration: Duration?): ParsedDocument {
         val tt = requireNotNull(doc.documentElement) { "Not a TTML document (missing <tt>)" }
         require(tt.localName == "tt") { "Not a TTML document (missing <tt>)" }
 
@@ -69,7 +101,8 @@ class Ttml2Parser {
         val styleIndex = StyleIndex.build(tt)
         val regions = RegionIndex.parseRegions(tt, styleIndex)
 
-        val body = XmlUtil.firstChild(tt, "body") ?: return SubtitleDocument(regions, emptyList())
+        val body = XmlUtil.firstChild(tt, "body")
+            ?: return ParsedDocument(SubtitleDocument(regions, emptyList()), Duration.ZERO, timeCtx)
 
         val cues = ArrayList<Cue>()
         val root = TimingScope(Duration.ZERO, null, "par", null, CueStyle.EMPTY)
@@ -77,7 +110,104 @@ class Ttml2Parser {
         walkContainer(body, timeCtx, styleIndex, regions, root, cues)
 
         cues.sortWith(compareBy(Cue::start).thenBy(Cue::end))
-        return SubtitleDocument(regions, cues)
+        val offset = detectOffset(cues, mediaDuration, timeCtx)
+        if (!offset.isZero) {
+            logger.warn(
+                "TTML subtitle timestamps exceed the film duration; applying offset {} (film duration: {}, first cue: {}, last cue: {}).",
+                offset,
+                mediaDuration,
+                cues.first().start,
+                cues.maxOf(Cue::end),
+            )
+        }
+        val normalizedCues = if (offset.isZero) {
+            cues
+        } else {
+            cues.map { cue ->
+                cue.copy(start = cue.start.minus(offset), end = cue.end.minus(offset))
+            }
+        }
+        return ParsedDocument(SubtitleDocument(regions, normalizedCues), offset, timeCtx)
+    }
+
+    private fun detectOffset(
+        cues: List<Cue>,
+        mediaDuration: Duration?,
+        timeContext: TtmlTime.TimeContext,
+    ): Duration {
+        if (
+            !timeContext.timeBase.equals("media", ignoreCase = true) ||
+            mediaDuration == null ||
+            mediaDuration <= Duration.ZERO ||
+            cues.isEmpty()
+        ) {
+            return Duration.ZERO
+        }
+
+        val firstCue = cues.first().start
+        val lastCue = cues.maxOf(Cue::end)
+        if (lastCue <= mediaDuration.plus(FILM_DURATION_TOLERANCE)) {
+            return Duration.ZERO
+        }
+
+        val wholeHours = firstCue.toHours()
+        if (wholeHours < 1) {
+            return Duration.ZERO
+        }
+
+        val candidate = Duration.ofHours(wholeHours)
+        val normalizedFirstCue = firstCue.minus(candidate)
+        val normalizedLastCue = lastCue.minus(candidate)
+        return if (
+            normalizedFirstCue <= EARLY_FIRST_CUE_LIMIT &&
+            normalizedLastCue <= mediaDuration.plus(FILM_DURATION_TOLERANCE)
+        ) {
+            candidate
+        } else {
+            Duration.ZERO
+        }
+    }
+
+    private fun applyOffset(doc: Document, timeContext: TtmlTime.TimeContext, offset: Duration) {
+        val elements = doc.getElementsByTagName("*")
+        for (index in 0 until elements.length) {
+            val element = elements.item(index) as? Element ?: continue
+            for (attribute in TIMING_ATTRIBUTES) {
+                val value = XmlUtil.attr(element, null, attribute) ?: continue
+                val parsed = TtmlTime.parseTimeExpression(value, timeContext) ?: continue
+                if (parsed >= offset) {
+                    element.setAttribute(attribute, formatClockTime(parsed.minus(offset)))
+                }
+            }
+        }
+    }
+
+    private fun formatClockTime(duration: Duration): String {
+        val totalSeconds = duration.seconds
+        val hours = totalSeconds / SECONDS_PER_HOUR
+        val minutes = totalSeconds % SECONDS_PER_HOUR / SECONDS_PER_MINUTE
+        val seconds = totalSeconds % SECONDS_PER_MINUTE
+        val fraction = if (duration.nano == 0) {
+            ""
+        } else {
+            ".${duration.nano.toString().padStart(9, '0').trimEnd('0')}"
+        }
+        return "%02d:%02d:%02d%s".format(Locale.ROOT, hours, minutes, seconds, fraction)
+    }
+
+    private fun serialize(doc: Document): ByteArray {
+        val transformerFactory = TransformerFactory.newInstance()
+        transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "")
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "")
+        val transformer = transformerFactory.newTransformer().apply {
+            setOutputProperty(OutputKeys.ENCODING, StandardCharsets.UTF_8.name())
+            setOutputProperty(OutputKeys.INDENT, "yes")
+        }
+        return ByteArrayOutputStream().use { output ->
+            transformer.transform(DOMSource(doc), StreamResult(output))
+            output.toByteArray()
+        }
     }
 
     private fun walkContainer(
@@ -324,7 +454,19 @@ class Ttml2Parser {
         val cueStyle: CueStyle,
     )
 
+    private data class ParsedDocument(
+        val document: SubtitleDocument,
+        val appliedOffset: Duration,
+        val timeContext: TtmlTime.TimeContext,
+    )
+
     private companion object {
+        const val SECONDS_PER_MINUTE = 60L
+        const val SECONDS_PER_HOUR = 60L * SECONDS_PER_MINUTE
+        val FILM_DURATION_TOLERANCE: Duration = Duration.ofMinutes(5)
+        val EARLY_FIRST_CUE_LIMIT: Duration = Duration.ofMinutes(10)
+        val TIMING_ATTRIBUTES = listOf("begin", "end")
         val BR_TEXT: Pattern = Pattern.compile("(?i)<br\\s*/?>")
+        val logger = LogManager.getLogger(Ttml2Parser::class.java)
     }
 }

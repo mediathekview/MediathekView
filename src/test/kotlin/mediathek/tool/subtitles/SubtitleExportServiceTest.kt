@@ -11,6 +11,7 @@ import java.net.InetSocketAddress
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.Duration
 
 internal class SubtitleExportServiceTest {
     @TempDir
@@ -36,6 +37,28 @@ internal class SubtitleExportServiceTest {
         assertTrue(Files.readString(tmp.resolve("subtitle.ttml")).contains("tts:textAlign=\"center\""))
         assertTrue(Files.readString(tmp.resolve("subtitle.srt")).contains("00:00:01,000 --> 00:00:02,500"))
         assertTrue(Files.readString(tmp.resolve("subtitle.ass")).contains("Dialogue: 0,0:00:01.00,0:00:02.50"))
+    }
+
+    @Test
+    fun correctsTtmlOffsetInAllPublishedArtifacts() = runBlocking {
+        val url = serve(
+            """
+            <tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" ttp:timeBase="media">
+              <body><div>
+                <p begin="10:00:08.040" end="10:00:10.080">Hello</p>
+                <p begin="10:42:43.440" end="10:42:47.360">Bye</p>
+              </div></body>
+            </tt>
+            """.trimIndent(),
+        )
+
+        val result = SubtitleExportService.downloadAndExport(url, tmp.resolve("subtitle"), Duration.ofMinutes(44))
+
+        require(result is SubtitleExportResult.Success)
+        assertEquals(listOf("SRT", "ASS", "TTML"), result.successes)
+        assertTrue(Files.readString(tmp.resolve("subtitle.ttml")).contains("begin=\"00:00:08.04\""))
+        assertTrue(Files.readString(tmp.resolve("subtitle.srt")).contains("00:00:08,040 --> 00:00:10,080"))
+        assertTrue(Files.readString(tmp.resolve("subtitle.ass")).contains("Dialogue: 0,0:00:08.04,0:00:10.08"))
     }
 
     @Test

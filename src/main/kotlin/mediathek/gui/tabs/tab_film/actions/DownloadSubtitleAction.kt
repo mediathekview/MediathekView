@@ -31,6 +31,7 @@ import mediathek.tool.subtitles.SubtitleExportResult
 import mediathek.tool.subtitles.SubtitleExportService
 import java.awt.Frame
 import java.awt.event.ActionEvent
+import java.time.Duration
 import java.util.*
 import java.util.function.Supplier
 import javax.swing.AbstractAction
@@ -64,7 +65,12 @@ class DownloadSubtitleAction(
         isEnabled = false
         uiScope.launch {
             try {
-                val result = SubtitleExportService.downloadAndExport(film.subtitleUrl, selectedFile.toPath())
+                val filmDuration = film.filmLength.takeIf { it > 0 }?.let { Duration.ofSeconds(it.toLong()) }
+                val result = SubtitleExportService.downloadAndExport(
+                    film.subtitleUrl,
+                    selectedFile.toPath(),
+                    filmDuration,
+                )
 
                 when (result) {
                     SubtitleExportResult.InvalidFormat -> {
