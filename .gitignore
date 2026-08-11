@@ -16,4 +16,5 @@ deploy.key
 /res/macOS/bin
 `/.vs/
 /AGENTS.md
+/opencode.json
 /.codebase-memory/
