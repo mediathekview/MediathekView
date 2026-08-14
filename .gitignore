@@ -15,6 +15,7 @@ res/Icons/Sender
 deploy.key
 RepoZugang.properties
 /target/
+/headless/target/
 /dependency-reduced-pom.xml
 *.iml
 /install4j*/

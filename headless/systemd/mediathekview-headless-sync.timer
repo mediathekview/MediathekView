@@ -1,0 +1,11 @@
+[Unit]
+Description=Run MediathekView Headless subscriptions hourly
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5m
+Persistent=true
+Unit=mediathekview-headless-sync.service
+
+[Install]
+WantedBy=timers.target

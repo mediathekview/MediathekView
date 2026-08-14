@@ -1,0 +1,24 @@
+{
+  "outputDirectory": "/mnt/nas-china-01/Kinder/Video/MediathekView-Downloads",
+  "subscriptions": [
+    {
+      "name": "Die Sendung mit der Maus",
+      "queries": [
+        {
+          "fields": ["channel"],
+          "query": "WDR"
+        },
+        {
+          "fields": ["topic", "title"],
+          "query": "Die Sendung mit der Maus"
+        }
+      ],
+      "subdirectory": "Die Sendung mit der Maus",
+      "quality": "HD",
+      "maxResults": 1,
+      "minDuration": 300,
+      "includeFuture": false,
+      "subtitles": true
+    }
+  ]
+}

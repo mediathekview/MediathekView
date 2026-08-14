@@ -48,6 +48,12 @@ sudo rpm --import https://download.mediathekview.de/stabil/MediathekView-rpm-sig
 # Bedienung
 Siehe [Anleitung](https://mediathekview.de/anleitung/)
 
+## Headless / Kommandozeile
+
+Der eigenständige Java-17-Client unter [`headless/`](headless/) bietet Suche,
+Downloads, Abonnements und eine lokale HTTP-API ohne grafische Sitzung. Die
+Desktop-Anwendung bleibt davon unabhängig.
+
 # Support
 Bei Fragen, Hilfe, gesuchten Sendungen oder sonstigen bitte das [Forum](https://forum.mediathekview.de/) verwenden.
 

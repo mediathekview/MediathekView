@@ -1,0 +1,28 @@
+[Unit]
+Description=MediathekView Headless API
+Documentation=https://github.com/mediathekview/MediathekView/tree/master/headless
+Wants=network-online.target
+After=network-online.target remote-fs.target
+RequiresMountsFor=/mnt/nas-china-01/Kinder
+ConditionPathIsMountPoint=/mnt/nas-china-01/Kinder
+
+[Service]
+Type=simple
+User=admin
+Group=admin
+StateDirectory=mediathekview-headless
+ExecStart=/usr/bin/java --enable-native-access=ALL-UNNAMED -jar /opt/mediathekview-headless/mediathekview-headless.jar --state /var/lib/mediathekview-headless/history.db serve --bind 127.0.0.1 --port 7070 --config /etc/mediathekview-headless/subscriptions.json
+Restart=on-failure
+RestartSec=10s
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/mnt/nas-china-01/Kinder/Video/MediathekView-Downloads
+
+[Install]
+WantedBy=multi-user.target

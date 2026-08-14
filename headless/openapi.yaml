@@ -1,0 +1,134 @@
+openapi: 3.1.0
+info:
+  title: MediathekView Headless API
+  version: 0.1.0
+  description: Local search and download API. It has no built-in authentication.
+servers:
+  - url: http://127.0.0.1:7070
+paths:
+  /health:
+    get:
+      operationId: health
+      responses:
+        '200':
+          description: Service is ready.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: {type: string, const: ok}
+  /api/search:
+    post:
+      operationId: search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/SearchRequest'}
+      responses:
+        '200':
+          description: Search result.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/SearchResult'}
+  /api/entries:
+    post:
+      operationId: entries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items: {type: string}
+      responses:
+        '200':
+          description: Exact entries that still exist in the current film list.
+  /api/downloads:
+    get:
+      operationId: downloadHistory
+      responses:
+        '200': {description: Up to 100 recent download-history rows.}
+    post:
+      operationId: queueDownload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/DownloadRequest'}
+      responses:
+        '202': {description: Download queued.}
+        '409': {description: Server has no configured output directory.}
+  /api/sync:
+    post:
+      operationId: queueSubscriptionSync
+      responses:
+        '202': {description: Subscription sync queued.}
+        '409': {description: Server was started without a subscription config.}
+components:
+  schemas:
+    QueryClause:
+      type: object
+      required: [fields, query]
+      properties:
+        fields:
+          type: array
+          items:
+            type: string
+            enum: [channel, topic, title, description]
+        query: {type: string}
+    SearchRequest:
+      type: object
+      properties:
+        queries:
+          type: array
+          items: {$ref: '#/components/schemas/QueryClause'}
+        sortBy:
+          type: string
+          enum: [timestamp, duration, channel, topic, title]
+          default: timestamp
+        sortOrder:
+          type: string
+          enum: [asc, desc]
+          default: desc
+        future: {type: boolean, default: false}
+        offset: {type: integer, minimum: 0, default: 0}
+        size: {type: integer, minimum: 1, maximum: 1000, default: 15}
+        duration_min: {type: integer, minimum: 0}
+        duration_max: {type: integer, minimum: 0}
+    Film:
+      type: object
+      required: [id, channel, topic, title, timestamp]
+      properties:
+        id: {type: string}
+        channel: {type: string}
+        topic: {type: string}
+        title: {type: string}
+        description: {type: string}
+        timestamp: {type: integer, format: int64}
+        duration: {type: integer}
+        size: {type: integer, format: int64}
+        url_website: {type: string}
+        url_subtitle: {type: string}
+        url_video: {type: string}
+        url_video_low: {type: string}
+        url_video_hd: {type: string}
+    SearchResult:
+      type: object
+      properties:
+        results:
+          type: array
+          items: {$ref: '#/components/schemas/Film'}
+        queryInfo: {type: object, additionalProperties: true}
+    DownloadRequest:
+      type: object
+      required: [id]
+      properties:
+        id: {type: string}
+        subdirectory: {type: string}
+        quality:
+          type: string
+          enum: [HD, SD, LOW]
+          default: HD
+        subtitles: {type: boolean, default: true}
