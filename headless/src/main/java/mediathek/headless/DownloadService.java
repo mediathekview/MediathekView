@@ -23,6 +23,8 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.HexFormat;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static mediathek.headless.Model.Film;
 import static mediathek.headless.Model.Quality;
@@ -31,10 +33,14 @@ final class DownloadService {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             .withZone(ZoneOffset.UTC);
     private static final int MAX_FILENAME_LENGTH = 180;
+    private static final Duration MEDIA_TRANSFER_TIMEOUT = Duration.ofHours(6);
+    private static final Duration PROCESS_TERMINATION_GRACE = Duration.ofSeconds(2);
 
     private final HistoryStore history;
     private final HttpClient httpClient;
     private final Duration timeout;
+    private final Duration mediaTransferTimeout;
+    private final ProcessLauncher processLauncher;
 
     DownloadService(HistoryStore history, Duration timeout) {
         this(history, timeout, HttpClient.newBuilder()
@@ -44,9 +50,16 @@ final class DownloadService {
     }
 
     DownloadService(HistoryStore history, Duration timeout, HttpClient httpClient) {
+        this(history, timeout, httpClient, MEDIA_TRANSFER_TIMEOUT, ProcessBuilder::start);
+    }
+
+    DownloadService(HistoryStore history, Duration timeout, HttpClient httpClient,
+                    Duration mediaTransferTimeout, ProcessLauncher processLauncher) {
         this.history = history;
         this.timeout = timeout;
         this.httpClient = httpClient;
+        this.mediaTransferTimeout = mediaTransferTimeout;
+        this.processLauncher = processLauncher;
     }
 
     Path download(Film film, Path outputRoot, String requestedSubdirectory, Quality quality,
@@ -84,7 +97,8 @@ final class DownloadService {
 
         String extension = chooseExtension(sourceUrl);
         String date = DATE_FORMAT.format(Instant.ofEpochSecond(film.timestamp()));
-        String baseName = sanitizePathSegment(date + " - " + film.title());
+        String baseName = sanitizePathSegment(date + " - " + film.title())
+                + " [src-" + EpisodeIdentity.sourceFingerprint(sourceUrl) + "]";
         Path destination = uniqueDestination(destinationDirectory, baseName, extension, film.id());
         Path partial = destination.resolveSibling(destination.getFileName() + ".part" + extension);
 
@@ -155,7 +169,7 @@ final class DownloadService {
 
     private void downloadHttp(String sourceUrl, Path partial) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create(sourceUrl))
-                .timeout(Duration.ofHours(6))
+                .timeout(mediaTransferTimeout)
                 .header("User-Agent", "MediathekView-Headless/0.1")
                 .GET()
                 .build();
@@ -166,22 +180,69 @@ final class DownloadService {
     }
 
     private void downloadHls(String sourceUrl, Path partial) throws IOException, InterruptedException {
-        Process process;
+        Path log = Files.createTempFile(partial.getParent(), ".ffmpeg-", ".log");
+        Process process = null;
         try {
-            process = new ProcessBuilder(
+            long ioTimeoutMicros = Math.max(1, timeout.toNanos() / 1_000);
+            List<String> command = List.of(
                     "ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y",
-                    "-i", sourceUrl, "-c", "copy", partial.toString())
+                    "-rw_timeout", Long.toString(ioTimeoutMicros),
+                    "-i", sourceUrl, "-c", "copy", partial.toString());
+            ProcessBuilder builder = new ProcessBuilder(command)
                     .redirectErrorStream(true)
-                    .start();
+                    .redirectOutput(ProcessBuilder.Redirect.to(log.toFile()));
+            try {
+                process = processLauncher.start(builder);
+            }
+            catch (IOException exception) {
+                throw new IOException("ffmpeg is required for HLS downloads", exception);
+            }
+
+            boolean finished;
+            try {
+                finished = process.waitFor(Math.max(1, mediaTransferTimeout.toMillis()), TimeUnit.MILLISECONDS);
+            }
+            catch (InterruptedException exception) {
+                process.destroyForcibly();
+                Thread.currentThread().interrupt();
+                throw exception;
+            }
+            if (!finished) {
+                terminate(process);
+                String output = Files.readString(log, StandardCharsets.UTF_8).trim();
+                throw new IOException("ffmpeg timed out after " + mediaTransferTimeout
+                        + formatProcessOutput(output));
+            }
+
+            String output = Files.readString(log, StandardCharsets.UTF_8);
+            int exitCode = process.exitValue();
+            if (exitCode != 0) {
+                throw new IOException("ffmpeg failed with exit code " + exitCode + ": " + output.trim());
+            }
         }
-        catch (IOException exception) {
-            throw new IOException("ffmpeg is required for HLS downloads", exception);
+        finally {
+            if (process != null && process.isAlive()) {
+                process.destroyForcibly();
+            }
+            try {
+                Files.deleteIfExists(log);
+            }
+            catch (IOException exception) {
+                System.err.println("Could not remove ffmpeg log " + log + ": " + exception.getMessage());
+            }
         }
-        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        int exitCode = process.waitFor();
-        if (exitCode != 0) {
-            throw new IOException("ffmpeg failed with exit code " + exitCode + ": " + output.trim());
+    }
+
+    private static void terminate(Process process) throws InterruptedException {
+        process.destroy();
+        if (!process.waitFor(PROCESS_TERMINATION_GRACE.toMillis(), TimeUnit.MILLISECONDS)) {
+            process.destroyForcibly();
+            process.waitFor(PROCESS_TERMINATION_GRACE.toMillis(), TimeUnit.MILLISECONDS);
         }
+    }
+
+    private static String formatProcessOutput(String output) {
+        return output.isBlank() ? "" : ": " + output;
     }
 
     private void downloadSubtitle(String sourceUrl, Path videoPath) throws IOException, InterruptedException {
@@ -266,5 +327,10 @@ final class DownloadService {
         catch (IOException exception) {
             Files.move(source, destination);
         }
+    }
+
+    @FunctionalInterface
+    interface ProcessLauncher {
+        Process start(ProcessBuilder builder) throws IOException;
     }
 }

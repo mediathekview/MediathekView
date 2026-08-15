@@ -88,6 +88,13 @@ final class SubscriptionService {
     }
 
     private SyncPlan plan(SubscriptionConfig config, LibraryIndex library) throws Exception {
+        List<String> duplicateNameErrors = duplicateNameErrors(config.subscriptions());
+        if (!duplicateNameErrors.isEmpty()) {
+            return new SyncPlan(
+                    config.subscriptions().size(), 0, 0,
+                    List.of(), duplicateNameErrors);
+        }
+
         int matched = 0;
         int skipped = 0;
         List<SyncSelection> selections = new ArrayList<>();
@@ -186,6 +193,19 @@ final class SubscriptionService {
         }
         return "metadata:" + film.topic() + '\n' + film.title() + '\n'
                 + film.timestamp() + '\n' + film.duration();
+    }
+
+    private static List<String> duplicateNameErrors(List<Subscription> subscriptions) {
+        Set<String> names = new HashSet<>();
+        Set<String> duplicates = new HashSet<>();
+        List<String> errors = new ArrayList<>();
+        for (Subscription subscription : subscriptions) {
+            String name = subscription.name();
+            if (name != null && !name.isBlank() && !names.add(name) && duplicates.add(name)) {
+                errors.add("Duplicate subscription name: " + name);
+            }
+        }
+        return List.copyOf(errors);
     }
 
     private static Path outputRoot(SubscriptionConfig config) {

@@ -28,6 +28,8 @@ The fat JAR is `headless/target/mediathekview-headless.jar`.
 ## CLI
 
 Global options such as `--state` and `--base-url` go before the subcommand.
+`--timeout` controls catalog and subtitle requests and the ffmpeg network I/O
+stall timeout. Complete media transfers have a separate six-hour safety cap.
 
 Search and return human-readable rows:
 
@@ -51,10 +53,13 @@ java -jar headless/target/mediathekview-headless.jar \
 
 The output root must already exist and be writable. Downloads are written to
 a partial file in the destination directory and renamed only after success.
-The SQLite history prevents downloading the same entry ID twice. Before a
-download, the output tree is also indexed by normalized episode title so an
-entry already present under an older filename is not downloaded again.
-`--force` overrides both checks for a one-off download.
+The SQLite history prevents downloading the same entry ID twice. New filenames
+carry a fingerprint of the selected media URL. Before a download, the output
+tree is indexed by normalized episode title plus that source identity; legacy
+MediathekView filenames carrying a ten-digit URL hash are recognized too.
+Files without recoverable source identity are not used for deduplication,
+because title-only matching can suppress distinct recurring episodes.
+`--force` overrides the history and library checks for a one-off download.
 
 Other commands:
 
@@ -82,7 +87,8 @@ can search `channel`, `topic`, `title`, and/or `description`.
 
 `maxResults` limits the newest matches considered in one run and defaults to
 10. Matching entries are downloaded oldest-first within that window. The
-history database makes later runs idempotent.
+history database makes later runs idempotent. Subscription names must be
+unique within a config file.
 
 Optional case-insensitive regular-expression filters are applied after the
 catalog query and before `maxResults`:
@@ -97,9 +103,9 @@ share the same timestamp. Invalid regular expressions are reported as
 subscription errors. Catalog entries that resolve to the same selected media
 URL are treated as one item within a subscription, avoiding duplicate ARD/BR
 copies of the same episode. The configured output tree is scanned recursively
-before planning a sync. Existing videos are reported as
-`already-in-library`; dated headless filenames and legacy names ending in a
-ten-digit ID are both recognized.
+before planning a sync. Identity-bearing existing videos are reported as
+`already-in-library`; source-fingerprinted headless filenames and legacy names
+ending in a ten-digit URL hash are both recognized.
 
 Run `sync --dry-run` first, then run one ordinary `sync` before enabling a
 timer. A dry run queries the live catalog and checks history without creating

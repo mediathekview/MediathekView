@@ -61,7 +61,9 @@ class SubscriptionServiceTest {
         Path output = Files.createDirectory(tempDirectory.resolve("output"));
         Path existingDirectory = Files.createDirectory(output.resolve("Die Sendung mit der Maus"));
         Files.writeString(existingDirectory.resolve(
-                "2026-08-02 - Die Sendung mit der Maus vom 02.08.2026.mp4"), "existing");
+                "2026-08-02 - Die Sendung mit der Maus vom 02.08.2026 [src-"
+                        + EpisodeIdentity.sourceFingerprint("https://example.test/older.mp4") + "].mp4"),
+                "existing");
         HistoryStore history = new HistoryStore(tempDirectory.resolve("state/history.db"));
         MediathekViewWebClient client = new MediathekViewWebClient(
                 URI.create("http://127.0.0.1:" + server.getAddress().getPort()), Duration.ofSeconds(5));
@@ -115,6 +117,41 @@ class SubscriptionServiceTest {
         assertTrue(plan.selections().isEmpty());
         assertEquals(1, plan.errors().size());
         assertTrue(plan.errors().get(0).contains("includeTitleRegex is invalid"));
+    }
+
+    @Test
+    void rejectsDuplicateSubscriptionNamesBeforeQueryingOrDownloading() throws Exception {
+        Path output = Files.createDirectory(tempDirectory.resolve("output"));
+        HistoryStore history = new HistoryStore(tempDirectory.resolve("state/history.db"));
+        MediathekViewWebClient client = new MediathekViewWebClient(
+                URI.create("http://127.0.0.1:1"), Duration.ofMillis(100));
+        SubscriptionService service = new SubscriptionService(
+                client, new DownloadService(history, Duration.ofSeconds(1)), history);
+        Subscription first = new Subscription(
+                "Duplicate",
+                List.of(new QueryClause(List.of("topic"), "First")),
+                "first", "HD", 1, null, null, false, true,
+                null, null, null, null);
+        Subscription second = new Subscription(
+                "Duplicate",
+                List.of(new QueryClause(List.of("topic"), "Second")),
+                "second", "LOW", 1, null, null, false, false,
+                null, null, null, null);
+        SubscriptionConfig config = new SubscriptionConfig(output.toString(), List.of(first, second));
+
+        var plan = service.plan(config);
+        var result = service.sync(config);
+
+        assertEquals(List.of("Duplicate subscription name: Duplicate"), plan.errors());
+        assertTrue(plan.selections().isEmpty());
+        assertEquals(0, plan.matched());
+        assertEquals(List.of("Duplicate subscription name: Duplicate"), result.errors());
+        assertEquals(0, result.downloaded());
+        assertEquals(0, result.matched());
+        assertTrue(history.list(10).isEmpty());
+        try (var files = Files.walk(output)) {
+            assertEquals(0, files.filter(Files::isRegularFile).count());
+        }
     }
 
     private static void send(HttpExchange exchange, String json) throws IOException {

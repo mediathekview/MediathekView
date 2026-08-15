@@ -59,7 +59,7 @@ public final class HeadlessMain implements Runnable {
     @CommandLine.Option(
             names = "--timeout",
             defaultValue = "30",
-            description = "HTTP connection/request timeout in seconds (default: ${DEFAULT-VALUE}).")
+            description = "Network connection/I/O timeout in seconds (default: ${DEFAULT-VALUE}).")
     int timeoutSeconds;
 
     public static void main(String[] args) {

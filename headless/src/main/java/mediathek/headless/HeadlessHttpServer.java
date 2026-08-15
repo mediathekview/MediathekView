@@ -51,7 +51,9 @@ final class HeadlessHttpServer implements AutoCloseable {
         this.history = history;
         this.subscriptions = subscriptions;
         this.config = config;
-        this.outputRoot = config == null || config.outputDirectory() == null
+        this.outputRoot = config == null
+                || config.outputDirectory() == null
+                || config.outputDirectory().isBlank()
                 ? null
                 : Path.of(config.outputDirectory()).toAbsolutePath().normalize();
         server = HttpServer.create(new InetSocketAddress(bindAddress, port), 32);
@@ -65,6 +67,10 @@ final class HeadlessHttpServer implements AutoCloseable {
 
     void start() {
         server.start();
+    }
+
+    int port() {
+        return server.getAddress().getPort();
     }
 
     void await() throws InterruptedException {
