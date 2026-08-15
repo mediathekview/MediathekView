@@ -9,13 +9,125 @@
           "query": "WDR"
         },
         {
-          "fields": ["topic", "title"],
+          "fields": ["topic"],
           "query": "Die Sendung mit der Maus"
+        },
+        {
+          "fields": ["title"],
+          "query": "Die Sendung mit der Maus vom"
         }
       ],
+      "includeTitleRegex": "^Die Sendung mit der Maus vom [0-9]{2}\\.[0-9]{2}\\.[0-9]{4}",
+      "excludeTitleRegex": "\\((Audiodeskription|Gebärdensprache)\\)",
       "subdirectory": "Die Sendung mit der Maus",
       "quality": "HD",
-      "maxResults": 1,
+      "maxResults": 3,
+      "minDuration": 1200,
+      "includeFuture": false,
+      "subtitles": true
+    },
+    {
+      "name": "Anna und die wilden Tiere",
+      "queries": [
+        {
+          "fields": ["topic"],
+          "query": "Anna wilden Tiere"
+        }
+      ],
+      "subdirectory": "Anna und die wilden Tiere",
+      "quality": "HD",
+      "maxResults": 3,
+      "minDuration": 300,
+      "includeFuture": false,
+      "subtitles": true
+    },
+    {
+      "name": "Anna und die Haustiere",
+      "queries": [
+        {
+          "fields": ["topic"],
+          "query": "Anna Haustiere"
+        }
+      ],
+      "subdirectory": "Anna und die Haustiere",
+      "quality": "HD",
+      "maxResults": 3,
+      "minDuration": 300,
+      "includeFuture": false,
+      "subtitles": true
+    },
+    {
+      "name": "Pia und die wilde Natur",
+      "queries": [
+        {
+          "fields": ["topic"],
+          "query": "wilde Natur"
+        }
+      ],
+      "includeTopicRegex": "^(Pia und die wilde Natur|Die wilde Natur|Anna, Paula, Pia und die wilden Tiere / wilde Natur)$",
+      "subdirectory": "Pia und die wilde Natur",
+      "quality": "HD",
+      "maxResults": 3,
+      "minDuration": 300,
+      "includeFuture": false,
+      "subtitles": true
+    },
+    {
+      "name": "Anna und das wilde Wissen",
+      "queries": [
+        {
+          "fields": ["topic"],
+          "query": "Anna, Pia und das wilde Wissen"
+        }
+      ],
+      "subdirectory": "Anna und das wilde Wissen",
+      "quality": "HD",
+      "maxResults": 3,
+      "minDuration": 300,
+      "includeFuture": false,
+      "subtitles": true
+    },
+    {
+      "name": "Frag Anna",
+      "queries": [
+        {
+          "fields": ["topic"],
+          "query": "Frag Anna"
+        }
+      ],
+      "includeTopicRegex": "^Frag Anna!$",
+      "subdirectory": "Frag Anna",
+      "quality": "HD",
+      "maxResults": 3,
+      "includeFuture": false,
+      "subtitles": true
+    },
+    {
+      "name": "Anna und die wilden Lieder",
+      "queries": [
+        {
+          "fields": ["topic"],
+          "query": "Anna wilden Lieder"
+        }
+      ],
+      "subdirectory": "Anna und die wilden Lieder",
+      "quality": "HD",
+      "maxResults": 3,
+      "includeFuture": false,
+      "subtitles": true
+    },
+    {
+      "name": "Anna Spezialserien",
+      "queries": [
+        {
+          "fields": ["topic"],
+          "query": "Anna"
+        }
+      ],
+      "includeTopicRegex": "^Anna (auf dem Bauernhof|auf der Alm|im Land der tausend Seen|lernt reiten|und der wilde Wald|und die wilde (Herde|Hilde))$",
+      "subdirectory": "Anna Spezialserien",
+      "quality": "HD",
+      "maxResults": 3,
       "minDuration": 300,
       "includeFuture": false,
       "subtitles": true

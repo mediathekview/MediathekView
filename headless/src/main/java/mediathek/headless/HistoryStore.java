@@ -49,6 +49,20 @@ final class HistoryStore {
         }
     }
 
+    boolean isCompletedSource(String sourceUrl) throws SQLException {
+        if (sourceUrl == null || sourceUrl.isBlank()) {
+            return false;
+        }
+        String sql = "SELECT 1 FROM downloads WHERE source_url = ? AND status = 'completed'";
+        try (Connection connection = connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, sourceUrl);
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next();
+            }
+        }
+    }
+
     void begin(Film film, Quality quality, Path outputPath, String sourceUrl) throws SQLException {
         String sql = """
                 INSERT INTO downloads (
@@ -150,6 +164,7 @@ final class HistoryStore {
                     )
                     """);
             statement.execute("CREATE INDEX IF NOT EXISTS downloads_status_idx ON downloads(status)");
+            statement.execute("CREATE INDEX IF NOT EXISTS downloads_source_url_idx ON downloads(source_url)");
         }
     }
 

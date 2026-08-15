@@ -27,6 +27,7 @@ import static mediathek.headless.Model.QueryClause;
 import static mediathek.headless.Model.SearchRequest;
 import static mediathek.headless.Model.SearchResult;
 import static mediathek.headless.Model.SubscriptionConfig;
+import static mediathek.headless.Model.SyncPlan;
 import static mediathek.headless.Model.SyncResult;
 
 @CommandLine.Command(
@@ -235,12 +236,34 @@ public final class HeadlessMain implements Runnable {
         @CommandLine.Option(names = "--json", description = "Print machine-readable JSON.")
         boolean json;
 
+        @CommandLine.Option(names = "--dry-run", description = "Show selected entries without downloading them.")
+        boolean dryRun;
+
         @Override
         public Integer call() throws Exception {
             SubscriptionConfig config = SubscriptionService.readConfig(configPath);
             HistoryStore history = parent.history();
             DownloadService downloads = new DownloadService(history, parent.timeout());
             SubscriptionService subscriptions = new SubscriptionService(parent.client(), downloads, history);
+            if (dryRun) {
+                SyncPlan plan = subscriptions.plan(config);
+                if (json) {
+                    System.out.println(JsonSupport.writePretty(plan));
+                }
+                else {
+                    plan.selections().forEach(selection -> System.out.printf(
+                            "%-18s  %-28s  %-52s  %s%n",
+                            selection.status(),
+                            abbreviate(selection.subscription(), 28),
+                            abbreviate(selection.title(), 52),
+                            selection.id()));
+                    System.out.printf("subscriptions=%d matched=%d skipped=%d errors=%d%n",
+                            plan.subscriptions(), plan.matched(), plan.skipped(), plan.errors().size());
+                    plan.errors().forEach(error -> System.err.println("ERROR: " + error));
+                }
+                return plan.errors().isEmpty() ? 0 : 2;
+            }
+
             SyncResult result = subscriptions.sync(config);
             if (json) {
                 System.out.println(JsonSupport.writePretty(result));

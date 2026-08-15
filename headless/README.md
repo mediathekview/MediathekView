@@ -63,21 +63,44 @@ java -jar headless/target/mediathekview-headless.jar \
 java -jar headless/target/mediathekview-headless.jar \
   --state /var/lib/mediathekview-headless/history.db \
   sync --config /etc/mediathekview-headless/subscriptions.json
+
+java -jar headless/target/mediathekview-headless.jar \
+  --state /var/lib/mediathekview-headless/history.db \
+  sync --config /etc/mediathekview-headless/subscriptions.json --dry-run
 ```
 
 ## Subscriptions
 
 Copy [`subscriptions.example.json`](subscriptions.example.json), set an
 existing `outputDirectory`, and add one or more rules. Query clauses inside a
-subscription are combined with AND. A clause can search `channel`, `topic`,
-`title`, and/or `description`.
+subscription use MediathekViewWeb's field-grouping behavior. Put words that
+must all occur in the same field into one clause, such as `Anna Haustiere`.
+Separate clauses targeting the same field can behave as alternatives. A clause
+can search `channel`, `topic`, `title`, and/or `description`.
 
 `maxResults` limits the newest matches considered in one run and defaults to
 10. Matching entries are downloaded oldest-first within that window. The
 history database makes later runs idempotent.
 
-Run the file once with `sync` before enabling a timer. An empty history means
-the first run downloads all matching entries in the configured result window.
+Optional case-insensitive regular-expression filters are applied after the
+catalog query and before `maxResults`:
+
+- `includeTitleRegex` and `excludeTitleRegex`
+- `includeTopicRegex` and `excludeTopicRegex`
+
+The client pages through catalog results until it has found `maxResults`
+entries that pass the filters. This matters for programs such as *Die Sendung
+mit der Maus*, where standard, audio-description, and sign-language editions
+share the same timestamp. Invalid regular expressions are reported as
+subscription errors. Catalog entries that resolve to the same selected media
+URL are treated as one item within a subscription, avoiding duplicate ARD/BR
+copies of the same episode.
+
+Run `sync --dry-run` first, then run one ordinary `sync` before enabling a
+timer. A dry run queries the live catalog and checks history without creating
+output directories, downloading media, or writing history rows. An empty
+history means the first ordinary run downloads all matching entries in the
+configured result window.
 
 ## HTTP API
 

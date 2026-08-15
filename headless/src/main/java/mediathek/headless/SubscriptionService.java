@@ -11,14 +11,20 @@ package mediathek.headless;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static mediathek.headless.Model.Film;
 import static mediathek.headless.Model.SearchRequest;
 import static mediathek.headless.Model.SearchResult;
 import static mediathek.headless.Model.Subscription;
 import static mediathek.headless.Model.SubscriptionConfig;
+import static mediathek.headless.Model.SyncPlan;
 import static mediathek.headless.Model.SyncResult;
+import static mediathek.headless.Model.SyncSelection;
 
 final class SubscriptionService {
     private final MediathekViewWebClient client;
@@ -32,13 +38,54 @@ final class SubscriptionService {
     }
 
     SyncResult sync(SubscriptionConfig config) throws Exception {
-        if (config.outputDirectory() == null || config.outputDirectory().isBlank()) {
-            throw new IllegalArgumentException("Subscription config requires outputDirectory");
+        SyncPlan plan = plan(config);
+        if (!plan.errors().isEmpty()) {
+            return new SyncResult(plan.subscriptions(), plan.matched(), 0, plan.skipped(), plan.errors());
         }
-        Path outputRoot = Path.of(config.outputDirectory()).toAbsolutePath().normalize();
-        int matched = 0;
+
+        Path outputRoot = outputRoot(config);
         int downloaded = 0;
+        int skipped = plan.skipped();
+        List<String> errors = new ArrayList<>();
+
+        for (SyncSelection selection : plan.selections()) {
+            if (selection.status().equals("already-downloaded")) {
+                continue;
+            }
+            Subscription subscription = config.subscriptions().stream()
+                    .filter(candidate -> candidate.name().equals(selection.subscription()))
+                    .findFirst()
+                    .orElseThrow();
+            try {
+                Film film = client.entry(selection.id());
+                Path path = downloads.download(
+                        film,
+                        outputRoot,
+                        subscription.subdirectory(),
+                        subscription.parsedQuality(),
+                        subscription.wantsSubtitles(),
+                        false);
+                if (path == null) {
+                    skipped++;
+                }
+                else {
+                    downloaded++;
+                }
+            }
+            catch (Exception exception) {
+                errors.add(subscription.name() + " / " + selection.title() + ": " + compactError(exception));
+            }
+        }
+
+        return new SyncResult(plan.subscriptions(), plan.matched(), downloaded, skipped, List.copyOf(errors));
+    }
+
+    SyncPlan plan(SubscriptionConfig config) throws Exception {
+        outputRoot(config);
+
+        int matched = 0;
         int skipped = 0;
+        List<SyncSelection> selections = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
         for (Subscription subscription : config.subscriptions()) {
@@ -51,55 +98,95 @@ final class SubscriptionService {
                 continue;
             }
 
-            SearchRequest request = new SearchRequest(
-                    subscription.queries(),
-                    "timestamp",
-                    "desc",
-                    subscription.includeFuture() != null && subscription.includeFuture(),
-                    0,
-                    subscription.resultLimit(),
-                    subscription.minDuration(),
-                    subscription.maxDuration());
-
-            SearchResult result;
+            List<Film> films;
             try {
-                result = client.search(request);
+                films = findMatches(subscription);
             }
             catch (Exception exception) {
                 errors.add(subscription.name() + ": search failed: " + compactError(exception));
                 continue;
             }
-            matched += result.results().size();
-            List<Film> films = new ArrayList<>(result.results());
+            matched += films.size();
             Collections.reverse(films);
 
             for (Film film : films) {
-                try {
-                    if (history.isCompleted(film.id())) {
-                        skipped++;
-                        continue;
-                    }
-                    Path path = downloads.download(
-                            film,
-                            outputRoot,
-                            subscription.subdirectory(),
-                            subscription.parsedQuality(),
-                            subscription.wantsSubtitles(),
-                            false);
-                    if (path == null) {
-                        skipped++;
-                    }
-                    else {
-                        downloaded++;
-                    }
+                String sourceUrl = subscription.parsedQuality().selectUrl(film);
+                boolean completed = history.isCompleted(film.id()) || history.isCompletedSource(sourceUrl);
+                if (completed) {
+                    skipped++;
                 }
-                catch (Exception exception) {
-                    errors.add(subscription.name() + " / " + film.title() + ": " + compactError(exception));
-                }
+                selections.add(new SyncSelection(
+                        subscription.name(),
+                        completed ? "already-downloaded" : "would-download",
+                        film.id(),
+                        film.channel(),
+                        film.topic(),
+                        film.title(),
+                        film.timestamp(),
+                        film.duration()));
             }
         }
 
-        return new SyncResult(config.subscriptions().size(), matched, downloaded, skipped, List.copyOf(errors));
+        return new SyncPlan(
+                config.subscriptions().size(), matched, skipped,
+                List.copyOf(selections), List.copyOf(errors));
+    }
+
+    private List<Film> findMatches(Subscription subscription) throws Exception {
+        FilmFilter filter = FilmFilter.compile(subscription);
+        int resultLimit = subscription.resultLimit();
+        int pageSize = Math.min(1000, Math.max(50, resultLimit * 5));
+        int offset = 0;
+        List<Film> matches = new ArrayList<>();
+        Set<String> sources = new HashSet<>();
+
+        while (matches.size() < resultLimit) {
+            SearchRequest request = new SearchRequest(
+                    subscription.queries(),
+                    "timestamp",
+                    "desc",
+                    subscription.includeFuture() != null && subscription.includeFuture(),
+                    offset,
+                    pageSize,
+                    subscription.minDuration(),
+                    subscription.maxDuration());
+            SearchResult result = client.search(request);
+            for (Film film : result.results()) {
+                if (filter.matches(film) && sources.add(contentKey(subscription, film))) {
+                    matches.add(film);
+                    if (matches.size() == resultLimit) {
+                        break;
+                    }
+                }
+            }
+
+            int received = result.results().size();
+            if (received == 0) {
+                break;
+            }
+            offset += received;
+            if (received < pageSize
+                    || result.queryInfo() != null && offset >= result.queryInfo().totalResults()) {
+                break;
+            }
+        }
+        return matches;
+    }
+
+    private static String contentKey(Subscription subscription, Film film) {
+        String sourceUrl = subscription.parsedQuality().selectUrl(film);
+        if (sourceUrl != null && !sourceUrl.isBlank()) {
+            return "url:" + sourceUrl;
+        }
+        return "metadata:" + film.topic() + '\n' + film.title() + '\n'
+                + film.timestamp() + '\n' + film.duration();
+    }
+
+    private static Path outputRoot(SubscriptionConfig config) {
+        if (config.outputDirectory() == null || config.outputDirectory().isBlank()) {
+            throw new IllegalArgumentException("Subscription config requires outputDirectory");
+        }
+        return Path.of(config.outputDirectory()).toAbsolutePath().normalize();
     }
 
     static SubscriptionConfig readConfig(Path path) throws Exception {
@@ -112,5 +199,47 @@ final class SubscriptionService {
             return error.getClass().getSimpleName();
         }
         return message.length() > 500 ? message.substring(0, 500) : message;
+    }
+
+    private record FilmFilter(
+            Pattern includeTitle,
+            Pattern excludeTitle,
+            Pattern includeTopic,
+            Pattern excludeTopic) {
+
+        static FilmFilter compile(Subscription subscription) {
+            return new FilmFilter(
+                    compile("includeTitleRegex", subscription.includeTitleRegex()),
+                    compile("excludeTitleRegex", subscription.excludeTitleRegex()),
+                    compile("includeTopicRegex", subscription.includeTopicRegex()),
+                    compile("excludeTopicRegex", subscription.excludeTopicRegex()));
+        }
+
+        boolean matches(Film film) {
+            return included(includeTitle, film.title())
+                    && excluded(excludeTitle, film.title())
+                    && included(includeTopic, film.topic())
+                    && excluded(excludeTopic, film.topic());
+        }
+
+        private static boolean included(Pattern pattern, String value) {
+            return pattern == null || pattern.matcher(value == null ? "" : value).find();
+        }
+
+        private static boolean excluded(Pattern pattern, String value) {
+            return pattern == null || !pattern.matcher(value == null ? "" : value).find();
+        }
+
+        private static Pattern compile(String field, String value) {
+            if (value == null || value.isBlank()) {
+                return null;
+            }
+            try {
+                return Pattern.compile(value, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+            }
+            catch (PatternSyntaxException exception) {
+                throw new IllegalArgumentException(field + " is invalid: " + exception.getDescription(), exception);
+            }
+        }
     }
 }

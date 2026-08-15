@@ -60,6 +60,7 @@ class DownloadServiceTest {
         assertTrue(downloaded.startsWith(tempDirectory.resolve("Maus")));
         assertArrayEquals(video, Files.readAllBytes(downloaded));
         assertTrue(history.isCompleted("stable-id"));
+        assertTrue(history.isCompletedSource(videoUrl));
         assertEquals("completed", history.list(10).get(0).status());
         assertNull(service.download(film, tempDirectory, "Maus", Quality.HD, false, false));
         try (var files = Files.walk(tempDirectory)) {

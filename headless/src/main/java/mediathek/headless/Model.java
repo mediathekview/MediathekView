@@ -133,7 +133,11 @@ final class Model {
             Integer minDuration,
             Integer maxDuration,
             Boolean includeFuture,
-            Boolean subtitles) {
+            Boolean subtitles,
+            String includeTitleRegex,
+            String excludeTitleRegex,
+            String includeTopicRegex,
+            String excludeTopicRegex) {
 
         Subscription {
             queries = queries == null ? List.of() : List.copyOf(queries);
@@ -167,6 +171,28 @@ final class Model {
     }
 
     record SyncResult(int subscriptions, int matched, int downloaded, int skipped, List<String> errors) {
+        SyncResult {
+            errors = errors == null ? List.of() : List.copyOf(errors);
+        }
+    }
+
+    record SyncSelection(
+            String subscription,
+            String status,
+            String id,
+            String channel,
+            String topic,
+            String title,
+            long timestamp,
+            int duration) {
+    }
+
+    record SyncPlan(int subscriptions, int matched, int skipped,
+                    List<SyncSelection> selections, List<String> errors) {
+        SyncPlan {
+            selections = selections == null ? List.of() : List.copyOf(selections);
+            errors = errors == null ? List.of() : List.copyOf(errors);
+        }
     }
 
     record ApiDownloadRequest(String id, String subdirectory, String quality, Boolean subtitles) {
