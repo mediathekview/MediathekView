@@ -163,7 +163,8 @@ final class HeadlessHttpServer implements AutoCloseable {
         }
         workExecutor.submit(() -> {
             try {
-                subscriptions.sync(config);
+                var result = subscriptions.sync(config);
+                result.errors().forEach(error -> System.err.println("Subscription sync error: " + error));
             }
             catch (Exception exception) {
                 System.err.println("Subscription sync failed: " + exception.getMessage());

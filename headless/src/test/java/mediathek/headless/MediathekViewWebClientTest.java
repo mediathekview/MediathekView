@@ -44,7 +44,7 @@ class MediathekViewWebClientTest {
                 """));
         server.createContext("/api/entries", exchange -> send(exchange, """
                 {"result":{"results":[{
-                  "id":"film-id","channel":"WDR","topic":"Die Maus","title":"Folge 1",
+                  "id":null,"channel":"WDR","topic":"Die Maus","title":"Folge 1",
                   "description":"Test","timestamp":1700000000,"duration":1800,"size":123,
                   "url_website":"https://example.test/page","url_subtitle":"",
                   "url_video":"https://example.test/video.mp4","url_video_low":"","url_video_hd":""
@@ -78,6 +78,7 @@ class MediathekViewWebClientTest {
     void resolvesExactEntryId() throws Exception {
         var film = client.entry("film-id");
 
+        assertEquals("film-id", film.id());
         assertEquals("Folge 1", film.title());
     }
 

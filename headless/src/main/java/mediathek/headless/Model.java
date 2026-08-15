@@ -63,6 +63,23 @@ final class Model {
             @JsonProperty("url_video") String videoUrl,
             @JsonProperty("url_video_low") String lowQualityUrl,
             @JsonProperty("url_video_hd") String highQualityUrl) {
+
+        Film withId(String requestedId) {
+            return new Film(
+                    requestedId,
+                    channel,
+                    topic,
+                    title,
+                    description,
+                    timestamp,
+                    duration,
+                    size,
+                    websiteUrl,
+                    subtitleUrl,
+                    videoUrl,
+                    lowQualityUrl,
+                    highQualityUrl);
+        }
     }
 
     record QueryInfo(

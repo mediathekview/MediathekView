@@ -55,10 +55,29 @@ final class MediathekViewWebClient {
         if (ids == null || ids.isEmpty()) {
             return List.of();
         }
+        List<Film> films = requestEntries(ids);
+        if (films.size() == ids.size()) {
+            for (int index = 0; index < films.size(); index++) {
+                films.set(index, films.get(index).withId(ids.get(index)));
+            }
+            return List.copyOf(films);
+        }
+
+        films.clear();
+        for (String id : ids) {
+            List<Film> match = requestEntries(List.of(id));
+            if (!match.isEmpty()) {
+                films.add(match.get(0).withId(id));
+            }
+        }
+        return List.copyOf(films);
+    }
+
+    private List<Film> requestEntries(List<String> ids) throws IOException, InterruptedException {
         HttpRequest httpRequest = jsonPost("/api/entries", JsonSupport.write(ids));
         ApiEnvelope<SearchResult> response = send(httpRequest, new TypeReference<>() {
         });
-        return requireResult(response).results();
+        return new java.util.ArrayList<>(requireResult(response).results());
     }
 
     Film entry(String id) throws IOException, InterruptedException {
