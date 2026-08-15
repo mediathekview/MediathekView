@@ -14,6 +14,7 @@ StateDirectory=mediathekview-headless
 ExecStart=/usr/bin/java --enable-native-access=ALL-UNNAMED -jar /opt/mediathekview-headless/mediathekview-headless.jar --state /var/lib/mediathekview-headless/history.db serve --bind 127.0.0.1 --port 7070 --config /etc/mediathekview-headless/subscriptions.json
 Restart=on-failure
 RestartSec=10s
+SuccessExitStatus=143
 NoNewPrivileges=true
 PrivateTmp=true
 PrivateDevices=true
