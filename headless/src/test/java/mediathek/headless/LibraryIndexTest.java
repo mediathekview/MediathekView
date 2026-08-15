@@ -54,14 +54,14 @@ class LibraryIndexTest {
         Path directory = Files.createDirectories(tempDirectory.resolve("Die Sendung mit der Maus"));
         Files.writeString(directory.resolve("2026-08-09 - Neue Folge.mp4.part.mp4"), "partial");
         Files.writeString(directory.resolve(
-                "Die Sendung mit der Maus-MausSpezial_ Frankreich-Maus - Hörfassung-0096140127.mp4"),
+                "Die Sendung mit der Maus-MausSpezial_ Frankreich-Maus - Audiodeskription-0096140127.mp4"),
                 "video");
 
         LibraryIndex index = LibraryIndex.scan(tempDirectory);
 
         assertTrue(index.find(film("Neue Folge")).isEmpty());
         assertTrue(index.find(film("Frankreich-Maus")).isEmpty());
-        assertTrue(index.find(film("Frankreich-Maus - Hörfassung")).isPresent());
+        assertTrue(index.find(film("Frankreich-Maus - Audiodeskription")).isPresent());
     }
 
     private static Model.Film film(String title) {
