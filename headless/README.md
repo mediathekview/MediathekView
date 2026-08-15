@@ -51,8 +51,10 @@ java -jar headless/target/mediathekview-headless.jar \
 
 The output root must already exist and be writable. Downloads are written to
 a partial file in the destination directory and renamed only after success.
-The SQLite history prevents downloading the same entry ID twice. `--force`
-overrides history for a one-off download.
+The SQLite history prevents downloading the same entry ID twice. Before a
+download, the output tree is also indexed by normalized episode title so an
+entry already present under an older filename is not downloaded again.
+`--force` overrides both checks for a one-off download.
 
 Other commands:
 
@@ -94,7 +96,10 @@ mit der Maus*, where standard, audio-description, and sign-language editions
 share the same timestamp. Invalid regular expressions are reported as
 subscription errors. Catalog entries that resolve to the same selected media
 URL are treated as one item within a subscription, avoiding duplicate ARD/BR
-copies of the same episode.
+copies of the same episode. The configured output tree is scanned recursively
+before planning a sync. Existing videos are reported as
+`already-in-library`; dated headless filenames and legacy names ending in a
+ten-digit ID are both recognized.
 
 Run `sync --dry-run` first, then run one ordinary `sync` before enabling a
 timer. A dry run queries the live catalog and checks history without creating
@@ -152,6 +157,6 @@ Example units are in [`systemd/`](systemd/). They assume:
 - NAS mount: `/mnt/nas-china-01/Kinder`
 
 The API service requires the NAS mount and is sandboxed with write access only
-to its state directory and the dedicated download directory. The timer calls
+to its state directory and the configured media library. The timer calls
 the loopback API hourly, so subscription work stays serialized by the API's
 single download worker.

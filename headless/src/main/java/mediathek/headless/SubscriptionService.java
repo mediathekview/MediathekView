@@ -38,18 +38,19 @@ final class SubscriptionService {
     }
 
     SyncResult sync(SubscriptionConfig config) throws Exception {
-        SyncPlan plan = plan(config);
+        Path outputRoot = outputRoot(config);
+        LibraryIndex library = LibraryIndex.scan(outputRoot);
+        SyncPlan plan = plan(config, library);
         if (!plan.errors().isEmpty()) {
             return new SyncResult(plan.subscriptions(), plan.matched(), 0, plan.skipped(), plan.errors());
         }
 
-        Path outputRoot = outputRoot(config);
         int downloaded = 0;
         int skipped = plan.skipped();
         List<String> errors = new ArrayList<>();
 
         for (SyncSelection selection : plan.selections()) {
-            if (selection.status().equals("already-downloaded")) {
+            if (!selection.status().equals("would-download")) {
                 continue;
             }
             Subscription subscription = config.subscriptions().stream()
@@ -64,7 +65,8 @@ final class SubscriptionService {
                         subscription.subdirectory(),
                         subscription.parsedQuality(),
                         subscription.wantsSubtitles(),
-                        false);
+                        false,
+                        library);
                 if (path == null) {
                     skipped++;
                 }
@@ -81,8 +83,11 @@ final class SubscriptionService {
     }
 
     SyncPlan plan(SubscriptionConfig config) throws Exception {
-        outputRoot(config);
+        Path outputRoot = outputRoot(config);
+        return plan(config, LibraryIndex.scan(outputRoot));
+    }
 
+    private SyncPlan plan(SubscriptionConfig config, LibraryIndex library) throws Exception {
         int matched = 0;
         int skipped = 0;
         List<SyncSelection> selections = new ArrayList<>();
@@ -111,13 +116,14 @@ final class SubscriptionService {
 
             for (Film film : films) {
                 String sourceUrl = subscription.parsedQuality().selectUrl(film);
-                boolean completed = history.isCompleted(film.id()) || history.isCompletedSource(sourceUrl);
-                if (completed) {
+                boolean downloaded = history.isCompleted(film.id()) || history.isCompletedSource(sourceUrl);
+                boolean inLibrary = !downloaded && library.find(film).isPresent();
+                if (downloaded || inLibrary) {
                     skipped++;
                 }
                 selections.add(new SyncSelection(
                         subscription.name(),
-                        completed ? "already-downloaded" : "would-download",
+                        downloaded ? "already-downloaded" : inLibrary ? "already-in-library" : "would-download",
                         film.id(),
                         film.channel(),
                         film.topic(),

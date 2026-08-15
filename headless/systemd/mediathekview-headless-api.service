@@ -22,7 +22,7 @@ ProtectSystem=strict
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
-ReadWritePaths=/mnt/nas-china-01/Kinder/Video/MediathekView-Downloads
+ReadWritePaths=/mnt/nas-china-01/Kinder/Video/Mediathek
 
 [Install]
 WantedBy=multi-user.target

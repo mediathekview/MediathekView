@@ -51,11 +51,22 @@ final class DownloadService {
 
     Path download(Film film, Path outputRoot, String requestedSubdirectory, Quality quality,
                   boolean subtitles, boolean force) throws Exception {
+        Path normalizedOutputRoot = outputRoot.toAbsolutePath().normalize();
+        requireOutputRoot(normalizedOutputRoot);
+        LibraryIndex library = force ? null : LibraryIndex.scan(normalizedOutputRoot);
+        return download(film, normalizedOutputRoot, requestedSubdirectory, quality, subtitles, force, library);
+    }
+
+    Path download(Film film, Path outputRoot, String requestedSubdirectory, Quality quality,
+                  boolean subtitles, boolean force, LibraryIndex library) throws Exception {
         if (!force && history.isCompleted(film.id())) {
             return null;
         }
         Path normalizedOutputRoot = outputRoot.toAbsolutePath().normalize();
         requireOutputRoot(normalizedOutputRoot);
+        if (!force && library != null && library.find(film).isPresent()) {
+            return null;
+        }
 
         String sourceUrl = quality.selectUrl(film);
         if (sourceUrl.isBlank()) {
@@ -100,6 +111,9 @@ final class DownloadService {
                 }
             }
             history.complete(film.id(), destination);
+            if (library != null) {
+                library.add(destination);
+            }
             return destination;
         }
         catch (Exception exception) {

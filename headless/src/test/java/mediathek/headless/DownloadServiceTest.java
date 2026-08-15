@@ -74,6 +74,26 @@ class DownloadServiceTest {
         assertEquals("download", DownloadService.sanitizePathSegment(".."));
     }
 
+    @Test
+    void skipsAnEntryAlreadyPresentUnderALegacyFilename() throws Exception {
+        Path directory = Files.createDirectories(
+                tempDirectory.resolve("Anna, Nina, Pia und die wilden Tiere"));
+        Path existing = Files.writeString(directory.resolve(
+                "Anna, Nina, Pia und die wilden Tiere-Die Raubkatzen von Brasilien-1011316568.mp4"),
+                "existing-video");
+        HistoryStore history = new HistoryStore(tempDirectory.resolve("state/history.db"));
+        DownloadService service = new DownloadService(history, Duration.ofSeconds(1));
+        Film film = new Film(
+                "new-catalog-id", "BR", "Anna, Nina, Pia und die wilden Tiere",
+                "Die Raubkatzen von Brasilien", "", 1700000000, 1400, 1,
+                "", "", "https://example.test/unreachable.mp4", "", "");
+
+        assertNull(service.download(film, tempDirectory, "Anna und die wilden Tiere",
+                Quality.HD, false, false));
+        assertEquals("existing-video", Files.readString(existing));
+        assertTrue(history.list(10).isEmpty());
+    }
+
     private static Film film(String id, String videoUrl) {
         return new Film(
                 id, "WDR", "Die Maus", "Eine Folge: Test?", "Description",

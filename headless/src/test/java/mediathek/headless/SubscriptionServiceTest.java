@@ -59,6 +59,9 @@ class SubscriptionServiceTest {
         server.start();
 
         Path output = Files.createDirectory(tempDirectory.resolve("output"));
+        Path existingDirectory = Files.createDirectory(output.resolve("Die Sendung mit der Maus"));
+        Files.writeString(existingDirectory.resolve(
+                "2026-08-02 - Die Sendung mit der Maus vom 02.08.2026.mp4"), "existing");
         HistoryStore history = new HistoryStore(tempDirectory.resolve("state/history.db"));
         MediathekViewWebClient client = new MediathekViewWebClient(
                 URI.create("http://127.0.0.1:" + server.getAddress().getPort()), Duration.ofSeconds(5));
@@ -84,10 +87,12 @@ class SubscriptionServiceTest {
         assertEquals(2, plan.matched());
         assertEquals(List.of("older-standard", "latest-standard"),
                 plan.selections().stream().map(Model.SyncSelection::id).toList());
-        assertTrue(plan.selections().stream().allMatch(item -> item.status().equals("would-download")));
+        assertEquals(List.of("already-in-library", "would-download"),
+                plan.selections().stream().map(Model.SyncSelection::status).toList());
+        assertEquals(1, plan.skipped());
         assertTrue(history.list(10).isEmpty());
-        try (var children = Files.list(output)) {
-            assertTrue(children.findAny().isEmpty());
+        try (var files = Files.walk(output)) {
+            assertEquals(1, files.filter(Files::isRegularFile).count());
         }
     }
 
