@@ -87,6 +87,31 @@ class DownloadServiceTest {
     }
 
     @Test
+    void resolvesSchemeRelativeMediaUrlsAgainstHttps() throws Exception {
+        assertEquals("https://cdn-storage.br.de/abc/def.mp4",
+                DownloadService.normalizeMediaUrl("//cdn-storage.br.de/abc/def.mp4", "entry-id"));
+        assertEquals("https://example.test/video.mp4",
+                DownloadService.normalizeMediaUrl(" https://example.test/video.mp4 ", "entry-id"));
+        assertEquals("http://example.test/video.mp4",
+                DownloadService.normalizeMediaUrl("http://example.test/video.mp4", "entry-id"));
+    }
+
+    @Test
+    void rejectsMediaUrlsTheDownloaderCannotFetch() {
+        var unsupported = assertThrows(IOException.class,
+                () -> DownloadService.normalizeMediaUrl("ftp://example.test/video.mp4", "entry-id"));
+        assertTrue(unsupported.getMessage().contains("unsupported video URL scheme"));
+        assertTrue(unsupported.getMessage().contains("entry-id"));
+
+        var schemeless = assertThrows(IOException.class,
+                () -> DownloadService.normalizeMediaUrl("cdn-storage.br.de/abc/def.mp4", "entry-id"));
+        assertTrue(schemeless.getMessage().contains("unsupported video URL scheme"));
+
+        assertThrows(IOException.class,
+                () -> DownloadService.normalizeMediaUrl("https://exa mple.test/video.mp4", "entry-id"));
+    }
+
+    @Test
     void skipsAnEntryAlreadyPresentUnderALegacyFilename() throws Exception {
         String sourceUrl = "https://example.test/unreachable.mp4";
         Path directory = Files.createDirectories(

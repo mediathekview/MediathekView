@@ -10,6 +10,7 @@ package mediathek.headless;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -81,10 +82,11 @@ final class DownloadService {
             return null;
         }
 
-        String sourceUrl = quality.selectUrl(film);
-        if (sourceUrl.isBlank()) {
+        String selectedUrl = quality.selectUrl(film);
+        if (selectedUrl.isBlank()) {
             throw new IOException("Entry has no downloadable video URL: " + film.id());
         }
+        String sourceUrl = normalizeMediaUrl(selectedUrl, film.id());
 
         String subdirectory = requestedSubdirectory == null || requestedSubdirectory.isBlank()
                 ? film.topic()
@@ -245,7 +247,8 @@ final class DownloadService {
         return output.isBlank() ? "" : ": " + output;
     }
 
-    private void downloadSubtitle(String sourceUrl, Path videoPath) throws IOException, InterruptedException {
+    private void downloadSubtitle(String rawUrl, Path videoPath) throws IOException, InterruptedException {
+        String sourceUrl = normalizeMediaUrl(rawUrl, "subtitle");
         String extension = subtitleExtension(sourceUrl);
         Path destination = replaceExtension(videoPath, extension);
         Path partial = destination.resolveSibling(destination.getFileName() + ".part");
@@ -282,8 +285,38 @@ final class DownloadService {
         throw new FileAlreadyExistsException(withId.toString());
     }
 
+    /**
+     * MediathekViewWeb occasionally serves scheme-relative URLs ({@code //host/path}), which
+     * {@link HttpRequest.Builder#uri} rejects with "URI with undefined scheme". Resolve those
+     * against HTTPS and reject anything the downloader cannot fetch, so a bad entry fails with a
+     * message that names the offending URL.
+     */
+    static String normalizeMediaUrl(String url, String context) throws IOException {
+        String candidate = url.trim();
+        if (candidate.startsWith("//")) {
+            candidate = "https:" + candidate;
+        }
+        URI parsed;
+        try {
+            parsed = new URI(candidate);
+        }
+        catch (URISyntaxException exception) {
+            throw new IOException("Entry has a malformed video URL (" + context + "): " + url, exception);
+        }
+        String scheme = parsed.getScheme();
+        if (scheme == null || !(scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
+            throw new IOException("Entry has an unsupported video URL scheme (" + context + "): " + url);
+        }
+        return candidate;
+    }
+
+    private static String urlPath(String url) {
+        String path = URI.create(url).getPath();
+        return path == null ? "" : path.toLowerCase();
+    }
+
     private static String chooseExtension(String url) {
-        String path = URI.create(url).getPath().toLowerCase();
+        String path = urlPath(url);
         if (path.endsWith(".webm")) {
             return ".webm";
         }
@@ -294,7 +327,7 @@ final class DownloadService {
     }
 
     private static String subtitleExtension(String url) {
-        String path = URI.create(url).getPath().toLowerCase();
+        String path = urlPath(url);
         if (path.endsWith(".vtt")) {
             return ".vtt";
         }
@@ -312,7 +345,7 @@ final class DownloadService {
     }
 
     private static boolean isHls(String url) {
-        return URI.create(url).getPath().toLowerCase().endsWith(".m3u8");
+        return urlPath(url).endsWith(".m3u8");
     }
 
     private static String shortId(String id) {
