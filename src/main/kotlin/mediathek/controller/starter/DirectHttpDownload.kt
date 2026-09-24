@@ -52,7 +52,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.time.Duration
 import java.time.LocalDateTime
@@ -385,7 +384,7 @@ class DirectHttpDownload(
 
         runBlocking {
             try {
-                createDirectory()
+                createDownloadTargetDirectory(datenDownload.targetPath)
                 finalFile = File(datenDownload.targetPathFileName)
                 file = DirectDownloadPartFiles.partFileFor(finalFile)
 
@@ -414,7 +413,7 @@ class DirectHttpDownload(
                     }
                 }
             } catch (ex: IOException) {
-                logger.error("run()", ex)
+                logger.error("Direct download failed for {}", datenDownload.targetPathFileName, ex)
                 start.markError()
                 state = HttpDownloadState.ERROR
 
@@ -458,13 +457,6 @@ class DirectHttpDownload(
         return SwingDispatch.call(::abbrechen)
     }
 
-    private fun createDirectory() {
-        try {
-            Files.createDirectories(Paths.get(datenDownload.targetPath))
-        } catch (_: IOException) {
-        }
-    }
-
     private fun abbrechen(): Boolean {
         var result = false
         if (file.exists() || finalFile.exists()) {
@@ -491,7 +483,7 @@ class DirectHttpDownload(
                 DialogContinueDownload.DownloadResult.RESTART_WITH_NEW_NAME -> {
                     if (dialogContinueDownload.isNewName) {
                         MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
-                        createDirectory()
+                        createDownloadTargetDirectory(datenDownload.targetPath)
                         finalFile = File(datenDownload.targetPathFileName)
                         file = DirectDownloadPartFiles.partFileFor(finalFile)
                     }

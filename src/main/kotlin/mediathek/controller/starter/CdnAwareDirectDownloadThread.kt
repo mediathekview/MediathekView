@@ -51,7 +51,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.time.Duration
 import java.time.LocalDateTime
@@ -108,7 +107,7 @@ class CdnAwareDirectDownloadThread(
 
         runBlocking {
             try {
-                createDirectory()
+                createDownloadTargetDirectory(datenDownload.targetPath)
                 finalFile = File(datenDownload.targetPathFileName)
                 file = DirectDownloadPartFiles.partFileFor(finalFile)
 
@@ -451,7 +450,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private fun handleDownloadFailure(ex: IOException) {
-        logger.error("run()", ex)
+        logger.error("CDN-aware direct download failed for {}", datenDownload.targetPathFileName, ex)
         start.markError()
         state = HttpDownloadState.ERROR
         removeSeenHistoryEntry()
@@ -478,13 +477,6 @@ class CdnAwareDirectDownloadThread(
         }
 
         return SwingDispatch.call(::abortOrResume)
-    }
-
-    private fun createDirectory() {
-        try {
-            Files.createDirectories(Paths.get(datenDownload.targetPath))
-        } catch (_: IOException) {
-        }
     }
 
     private fun abortOrResume(): Boolean {
@@ -515,7 +507,7 @@ class CdnAwareDirectDownloadThread(
             DialogContinueDownload.DownloadResult.RESTART_WITH_NEW_NAME -> {
                 if (dialog.isNewName) {
                     MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
-                    createDirectory()
+                    createDownloadTargetDirectory(datenDownload.targetPath)
                     finalFile = File(datenDownload.targetPathFileName)
                     file = DirectDownloadPartFiles.partFileFor(finalFile)
                 }

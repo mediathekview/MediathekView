@@ -40,6 +40,28 @@ internal class SubtitleExportServiceTest {
     }
 
     @Test
+    fun downloadsAndExportsIntoDirectoriesWithHashCharacters() = runBlocking {
+        val url = serve(
+            """
+            WEBVTT
+
+            00:00:01.000 --> 00:00:02.500
+            Hello
+            """.trimIndent(),
+        )
+        val targetDirectory = tmp.resolve("#test").resolve("test#2")
+        Files.createDirectories(targetDirectory)
+        val target = targetDirectory.resolve("subtitle#3")
+
+        val result = SubtitleExportService.downloadAndExport(url, target)
+
+        require(result is SubtitleExportResult.Success)
+        assertTrue(result.failures.isEmpty())
+        assertTrue(Files.isRegularFile(targetDirectory.resolve("subtitle#3.vtt")))
+        assertTrue(Files.isRegularFile(targetDirectory.resolve("subtitle#3.srt")))
+    }
+
+    @Test
     fun correctsTtmlOffsetInAllPublishedArtifacts() = runBlocking {
         val url = serve(
             """

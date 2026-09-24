@@ -17,9 +17,7 @@ import mediathek.tool.MessageBus
 import mediathek.tool.notification.NotificationPublisher
 import org.apache.logging.log4j.LogManager
 import java.io.File
-import java.io.IOException
 import java.nio.file.Files
-import java.nio.file.Paths
 import javax.swing.JFrame
 
 /**
@@ -48,7 +46,6 @@ class ExternalProgramDownload(
 
         file = File(fileName)
         DownloadStartEventPublisher.publish(datenDownload)
-        createDirectory()
     }
 
     override fun run() {
@@ -56,13 +53,16 @@ class ExternalProgramDownload(
 
         runBlocking {
             try {
-                startAncillaryDownloads()
+                createDownloadTargetDirectory(datenDownload.targetPath)
 
                 if (!cancelDownload()) {
+                    startAncillaryDownloads()
                     processDownload()
                 }
             } catch (ex: Exception) {
-                logger.error("run()", ex)
+                logger.error("External-program download failed for {}", datenDownload.targetPathFileName, ex)
+                start.markError()
+                state = HttpDownloadState.ERROR
                 showDownloadError(ex.localizedMessage)
             } finally {
                 DownloadCompletionHandler.finalizeDownload(datenDownload, start, state, notificationPublisher)
@@ -240,7 +240,7 @@ class ExternalProgramDownload(
                         // jetzt den Programmaufruf nochmal mit dem geaenderten Dateinamen nochmal bauen
                         datenDownload.rebuildInvocation()
                         MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
-                        createDirectory(logFailure = false)
+                        createDownloadTargetDirectory(datenDownload.targetPath)
                         file = File(datenDownload.targetPathFileName)
                     }
                 }
@@ -270,16 +270,6 @@ class ExternalProgramDownload(
         }
         SwingDispatch.dispatch {
             MeldungDownloadfehler(dialogOwnerProvider(), message, datenDownload).isVisible = true
-        }
-    }
-
-    private fun createDirectory(logFailure: Boolean = true) {
-        try {
-            Files.createDirectories(Paths.get(datenDownload.targetPath))
-        } catch (ex: IOException) {
-            if (logFailure) {
-                logger.error("Failed to create directories", ex)
-            }
         }
     }
 

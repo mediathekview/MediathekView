@@ -102,6 +102,18 @@ internal class DatenDownloadTest {
     }
 
     @Test
+    fun fileNameWithoutSuffixKeepsHashCharactersInPathAndFileName() {
+        val download = DatenDownload().apply {
+            targetPathFileName = "/Users/derreisende/Downloads/#test/test#2/video#3.mp4"
+        }
+
+        assertEquals(
+            "/Users/derreisende/Downloads/#test/test#2/video#3",
+            download.fileNameWithoutSuffix,
+        )
+    }
+
+    @Test
     fun buildsProgramInvocationFromDownloadContext() {
         val program = DatenProg(
             "Program",
