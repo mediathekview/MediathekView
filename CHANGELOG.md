@@ -1,4 +1,4 @@
-# **15.0.1**
+# **16.0.0**
 - **FEATURE:** Optionales Schreiben von MP4-Metadaten nach dem Download hinzugefügt. Die Funktion kann pro Download oder über ein Programmset aktiviert werden und schreibt Standard-MP4-Tags wieTitel, Sender, Thema, Sendedatum und Beschreibung in fertige MP4-Dateien.
 - **FEATURE:** verringerter Speicherverbrauch der intern genutzten Caches.
 - **FEATURE:** Lokalisierte ARTE-Senderlogos im Tab *Filme* zeigen nun zusätzlich die jeweilige Sprachkennung an.
