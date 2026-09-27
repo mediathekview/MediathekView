@@ -7,6 +7,7 @@
 - **BUGFIX:** Sender-Checkboxliste reagiert nun weniger sensibel auf die Position der Mausklicks.
 - **BUGFIX:** Die App stürzt nicht mehr unter JDK 26 aufgrund der JIde-Bibliothek ab.
 - **BUGFIX:** Film-Shortcuts wie `g`, `u` und die URL-Kopierbefehle werden nicht mehr fälschlicherweise in anderen Tabs angewendet.
+- **BUGFIX:** Onlinesuche erkennt nun auch die höchste Qualitätsstufe und Untertitel.
 - viele interne Änderungen
 
 # **15.0.0**

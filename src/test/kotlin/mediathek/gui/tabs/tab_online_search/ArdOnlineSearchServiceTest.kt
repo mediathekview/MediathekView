@@ -51,6 +51,28 @@ class ArdOnlineSearchServiceTest {
     }
 
     @Test
+    fun `ARD search exposes German WebVTT subtitles`() = runBlocking {
+        val searchUrl = "https://api.ardmediathek.de/search-system/search/vods/ard?query=subtitle&pageNumber=0&pageSize=20&audioDes=false&signLang=false&subtitle=false&childCont=false&sortingCriteria=SCORE_DESC&platform=MEDIA_THEK"
+        val detailUrl = "https://api.ardmediathek.de/page-gateway/pages/ard/item/subtitle-id"
+        val http = FakeOnlineSearchHttpClient(
+            mapOf(
+                searchUrl to """{"pagination":{"totalElements":1},"teasers":[{"id":"subtitle-id"}]}""",
+                detailUrl to ArdFixtures.detailJson(
+                    id = "subtitle-id",
+                    title = "Film mit Untertiteln",
+                    streamUrl = "https://cdn.example/ard.mp4",
+                    subtitleUrl = "https://cdn.example/ard.vtt",
+                ),
+            )
+        )
+        val service = ArdOnlineSearchService(http)
+
+        val result = service.search(OnlineSearchRequest(OnlineSearchProvider.ARD, "subtitle")).results.single()
+
+        assertEquals("https://cdn.example/ard.vtt", result.subtitleUrl)
+    }
+
+    @Test
     fun `ARD search skips stale detail returning server error when another item succeeds`() = runBlocking {
         val searchUrl = "https://api.ardmediathek.de/search-system/search/vods/ard?query=stale&pageNumber=0&pageSize=20&audioDes=false&signLang=false&subtitle=false&childCont=false&sortingCriteria=SCORE_DESC&platform=MEDIA_THEK"
         val staleDetailUrl = "https://api.ardmediathek.de/page-gateway/pages/ard/item/stale-id"
@@ -167,7 +189,22 @@ class ArdOnlineSearchServiceTest {
 }
 
 private object ArdFixtures {
-    fun detailJson(id: String, title: String, streamUrl: String): String = """
+    fun detailJson(id: String, title: String, streamUrl: String, subtitleUrl: String? = null): String {
+        val subtitles = subtitleUrl?.let {
+            """,
+                  "subtitles": [
+                    {
+                      "kind": "normal",
+                      "languageCode": "deu",
+                      "sources": [
+                        {"kind": "ebutt", "url": "https://cdn.example/ard.xml"},
+                        {"kind": "webvtt", "url": "$it"}
+                      ]
+                    }
+                  ]
+            """.trimIndent()
+        }.orEmpty()
+        return """
         {
           "widgets": [
             {
@@ -189,13 +226,14 @@ private object ArdFixtures {
                         {"url": "$streamUrl", "maxHResolutionPx": 1920}
                       ]
                     }
-                  ]
+                  ]$subtitles
                 }
               }
             }
           ]
         }
     """.trimIndent()
+    }
 
     fun detailJsonWithQualities(normalUrl: String, highUrl: String): String = """
         {

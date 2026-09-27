@@ -69,6 +69,7 @@ class ArdOnlineSearchService(
             websiteUrl = "https://www.ardmediathek.de/video/$id",
             normalQualityUrl = qualityUrls.normalUrl,
             highQualityUrl = qualityUrls.highUrl,
+            subtitleUrl = media.subtitleUrl(),
             broadcastTime = broadcast,
             duration = duration,
         )
@@ -108,6 +109,22 @@ class ArdOnlineSearchService(
         return ArdQualityUrls(normalUrl, highUrl)
     }
 
+    private fun JsonObject.subtitleUrl(): String {
+        val subtitles = this["subtitles"]?.jsonArrayOrNull().orEmpty()
+            .mapNotNull { it.jsonObjectOrNull() }
+        val subtitle = subtitles.firstOrNull {
+            it.string("languageCode") in GERMAN_LANGUAGE_CODES && it.string("kind") == "normal"
+        } ?: subtitles.firstOrNull { it.string("languageCode") in GERMAN_LANGUAGE_CODES }
+            ?: subtitles.firstOrNull { it.string("kind") == "normal" }
+            ?: subtitles.firstOrNull()
+            ?: return ""
+        val sources = subtitle["sources"]?.jsonArrayOrNull().orEmpty()
+            .mapNotNull { it.jsonObjectOrNull() }
+        return sources.firstOrNull { it.string("kind") == "webvtt" }?.string("url")
+            ?: sources.firstNotNullOfOrNull { it.string("url") }
+            ?: ""
+    }
+
     private fun JsonObject.durationSeconds(): Long? =
         this["meta"]?.jsonObjectOrNull()?.get("durationSeconds")?.jsonPrimitive?.longOrNull
             ?: this["_duration"]?.jsonPrimitive?.longOrNull
@@ -123,6 +140,7 @@ class ArdOnlineSearchService(
     private companion object {
         private const val PAGE_SIZE = 20
         private const val ITEM_URL = "https://api.ardmediathek.de/page-gateway/pages/ard/item/"
+        private val GERMAN_LANGUAGE_CODES = setOf("de", "deu")
         private val BERLIN: ZoneId = ZoneId.of("Europe/Berlin")
     }
 }

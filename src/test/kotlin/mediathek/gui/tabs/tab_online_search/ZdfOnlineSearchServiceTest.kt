@@ -18,7 +18,10 @@ class ZdfOnlineSearchServiceTest {
             mapOf(
                 indexUrl to ZdfFixtures.indexHtml("token-123"),
                 detailUrl to ZdfFixtures.detailJson("Testfilm", ptmdUrl),
-                ptmdUrl to ZdfFixtures.downloadJson("https://cdn.example/zdf.mp4"),
+                ptmdUrl to ZdfFixtures.downloadJson(
+                    downloadUrl = "https://cdn.example/zdf.mp4",
+                    subtitleUrl = "https://cdn.example/zdf.xml",
+                ),
             )
         )
         val service = ZdfOnlineSearchService(http) { _, _, _ ->
@@ -35,6 +38,7 @@ class ZdfOnlineSearchServiceTest {
         assertEquals(OnlineSearchProvider.ZDF, page.results.single().provider)
         assertEquals("Testfilm - Folgentitel", page.results.single().title)
         assertEquals("https://cdn.example/zdf.mp4", page.results.single().normalQualityUrl)
+        assertEquals("https://cdn.example/zdf.xml", page.results.single().subtitleUrl)
         assertEquals("Bearer token-123", http.requestedHeaders.first { it["api-auth"] != null }["api-auth"])
     }
 
@@ -543,7 +547,13 @@ private object ZdfFixtures {
         }
     """.trimIndent()
 
-    fun downloadJson(downloadUrl: String) = """
+    fun downloadJson(downloadUrl: String, subtitleUrl: String? = null): String {
+        val captions = subtitleUrl?.let {
+            """,
+          "captions":[{"uri":"$it","language":"deu"}]
+            """.trimIndent()
+        }.orEmpty()
+        return """
         {
           "priorityList":[
             {
@@ -560,9 +570,10 @@ private object ZdfFixtures {
                 }
               ]
             }
-          ]
+          ]$captions
         }
     """.trimIndent()
+    }
 
     fun downloadJsonWithAudioDescription(mainUrl: String, audioDescriptionUrl: String) = """
         {
