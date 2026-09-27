@@ -30,6 +30,27 @@ class ArdOnlineSearchServiceTest {
     }
 
     @Test
+    fun `ARD search exposes highest resolution as high quality`() = runBlocking {
+        val searchUrl = "https://api.ardmediathek.de/search-system/search/vods/ard?query=quality&pageNumber=0&pageSize=20&audioDes=false&signLang=false&subtitle=false&childCont=false&sortingCriteria=SCORE_DESC&platform=MEDIA_THEK"
+        val detailUrl = "https://api.ardmediathek.de/page-gateway/pages/ard/item/quality-id"
+        val http = FakeOnlineSearchHttpClient(
+            mapOf(
+                searchUrl to """{"pagination":{"totalElements":1},"teasers":[{"id":"quality-id"}]}""",
+                detailUrl to ArdFixtures.detailJsonWithQualities(
+                    normalUrl = "https://cdn.example/960.mp4",
+                    highUrl = "https://cdn.example/1920.mp4",
+                ),
+            )
+        )
+        val service = ArdOnlineSearchService(http)
+
+        val result = service.search(OnlineSearchRequest(OnlineSearchProvider.ARD, "quality")).results.single()
+
+        assertEquals("https://cdn.example/960.mp4", result.normalQualityUrl)
+        assertEquals("https://cdn.example/1920.mp4", result.highQualityUrl)
+    }
+
+    @Test
     fun `ARD search skips stale detail returning server error when another item succeeds`() = runBlocking {
         val searchUrl = "https://api.ardmediathek.de/search-system/search/vods/ard?query=stale&pageNumber=0&pageSize=20&audioDes=false&signLang=false&subtitle=false&childCont=false&sortingCriteria=SCORE_DESC&platform=MEDIA_THEK"
         val staleDetailUrl = "https://api.ardmediathek.de/page-gateway/pages/ard/item/stale-id"
@@ -166,6 +187,31 @@ private object ArdFixtures {
                       "kind": "main",
                       "media": [
                         {"url": "$streamUrl", "maxHResolutionPx": 1920}
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+    """.trimIndent()
+
+    fun detailJsonWithQualities(normalUrl: String, highUrl: String): String = """
+        {
+          "widgets": [
+            {
+              "id": "quality-id",
+              "title": "Qualitätsfilm",
+              "mediaCollection": {
+                "embedded": {
+                  "streams": [
+                    {
+                      "kind": "main",
+                      "media": [
+                        {"url": "$normalUrl", "maxHResolutionPx": 960},
+                        {"url": "$highUrl", "maxHResolutionPx": 1920},
+                        {"url": "https://cdn.example/1280.mp4", "maxHResolutionPx": 1280}
                       ]
                     }
                   ]
