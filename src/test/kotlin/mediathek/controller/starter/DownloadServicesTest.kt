@@ -1,17 +1,29 @@
 package mediathek.controller.starter
 
 import mediathek.config.Daten
+import mediathek.controller.history.AboHistoryController
 import mediathek.controller.DownloadColumn
+import mediathek.daten.DatenPset
+import mediathek.daten.ProgramSetRepository
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
 import mediathek.daten.DownloadSource
 import mediathek.daten.DownloadType
+import mediathek.daten.abo.AboServices
 import mediathek.daten.abo.DatenAbo
+import mediathek.daten.blacklist.BlacklistServices
+import mediathek.filmlisten.FilmCatalog
+import mediathek.tool.ReplacementRules
 import mediathek.tool.models.TModelDownload
+import mediathek.tool.notification.NotificationPublisher
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import javax.swing.JFrame
 
 internal class DownloadServicesTest {
     private lateinit var daten: Daten
@@ -385,6 +397,212 @@ internal class DownloadServicesTest {
         assertFalse(runningAbo.isDeferred)
         assertTrue(interruptedAbo.isInterrupted)
         assertFalse(manualDownload.isDeferred)
+    }
+
+    @Test
+    fun subscriptionScanAndMissingProgramSetPromptDoNotHoldDownloadQueueLock() {
+        val filmCatalog = FilmCatalog()
+        val film = DatenFilm().apply { urlNormalQuality = "https://example.invalid/abo.mp4" }
+        filmCatalog.allFilms.add(film)
+        val abos = Mockito.mock(AboServices::class.java)
+        val history = Mockito.mock(AboHistoryController::class.java)
+        Mockito.`when`(abos.historyController).thenReturn(history)
+        val executor = Executors.newSingleThreadExecutor()
+        var promptShown = false
+        lateinit var downloads: DownloadServices
+        downloads = DownloadServices(
+            filmCatalog,
+            ProgramSetRepository(),
+            abos,
+            BlacklistServices(filmCatalog),
+            ReplacementRules(),
+            Mockito.mock(NotificationPublisher::class.java),
+        ) {
+            assertEquals(emptyList<DatenDownload>(), executor.submit<List<DatenDownload>> { downloads.queuedDownloads() }.get(1, TimeUnit.SECONDS))
+            promptShown = true
+        }
+        Mockito.`when`(abos.findAboForFilm(film, true)).thenAnswer {
+            assertEquals(emptyList<DatenDownload>(), executor.submit<List<DatenDownload>> { downloads.queuedDownloads() }.get(1, TimeUnit.SECONDS))
+            DatenAbo()
+        }
+
+        try {
+            assertTrue(downloads.searchAboDownloads(Mockito.mock(JFrame::class.java)).isEmpty())
+            assertTrue(promptShown)
+        } finally {
+            executor.shutdownNow()
+            downloads.shutdown()
+        }
+    }
+
+    @Test
+    fun subscriptionScanRejectsConcurrentDownloadUsingStoredUrl() {
+        val filmCatalog = FilmCatalog()
+        val film = DatenFilm().apply { urlNormalQuality = "https://example.invalid/abo.mp4?token=abc" }
+        filmCatalog.allFilms.add(film)
+        val abos = Mockito.mock(AboServices::class.java)
+        Mockito.`when`(abos.historyController).thenReturn(Mockito.mock(AboHistoryController::class.java))
+        val programSets = ProgramSetRepository().apply { list.add(DatenPset()) }
+        val downloads = DownloadServices(
+            filmCatalog, programSets, abos, BlacklistServices(filmCatalog), ReplacementRules(),
+            Mockito.mock(NotificationPublisher::class.java),
+        ) { fail("No missing program set expected") }
+        val concurrentDownload = DatenDownload().apply { downloadUrl = "https://example.invalid/abo.mp4" }
+        Mockito.`when`(abos.findAboForFilm(film, true)).thenAnswer {
+            downloads.addDownload(concurrentDownload)
+            DatenAbo()
+        }
+
+        try {
+            assertTrue(downloads.searchAboDownloads(null).isEmpty())
+            assertEquals(listOf(concurrentDownload), downloads.queuedDownloads())
+        } finally {
+            downloads.shutdown()
+        }
+    }
+
+    @Test
+    fun subscriptionMergeReadsExistingQueueUrlsOnlyOnceAfterSnapshot() {
+        val filmCatalog = FilmCatalog()
+        val films = List(12) { index ->
+            DatenFilm().apply { urlNormalQuality = "https://example.invalid/$index.mp4" }
+        }
+        filmCatalog.allFilms.addAll(films)
+        val abos = Mockito.mock(AboServices::class.java)
+        Mockito.`when`(abos.historyController).thenReturn(Mockito.mock(AboHistoryController::class.java))
+        val programSets = ProgramSetRepository().apply { list.add(DatenPset()) }
+        val downloads = DownloadServices(
+            filmCatalog, programSets, abos, BlacklistServices(filmCatalog), ReplacementRules(),
+            Mockito.mock(NotificationPublisher::class.java),
+        ) { fail("No missing program set expected") }
+        val existingDownload = Mockito.spy(DatenDownload().apply { downloadUrl = "https://example.invalid/existing.mp4" })
+        downloads.addDownload(existingDownload)
+        films.forEach { film -> Mockito.`when`(abos.findAboForFilm(film, true)).thenReturn(DatenAbo()) }
+        Mockito.clearInvocations(existingDownload)
+
+        try {
+            val added = downloads.searchAboDownloads(null)
+            assertEquals(films, added.map { it.film })
+            assertEquals(listOf(existingDownload) + added, downloads.queuedDownloads())
+            assertEquals((1..13).toList(), downloads.queuedDownloads().map { it.nr })
+            Mockito.verify(existingDownload, Mockito.atMost(2)).downloadUrl
+        } finally {
+            downloads.shutdown()
+        }
+    }
+
+    @Test
+    fun subscriptionScanKeepsPartialResultsWhenMissingProgramSetThrows() {
+        withSubscriptionScan { downloads, abos, programSets, films ->
+            Mockito.`when`(abos.findAboForFilm(films[0], true)).thenReturn(DatenAbo())
+            Mockito.`when`(abos.findAboForFilm(films[1], true)).thenAnswer {
+                programSets.clear()
+                DatenAbo().apply { psetName = "missing" }
+            }
+
+            assertThrows(IllegalStateException::class.java) { downloads.searchAboDownloads(null) }
+            assertEquals(listOf(films[0]), downloads.queuedDownloads().map { it.film })
+        }
+    }
+
+    @Test
+    fun subscriptionScanKeepsPartialResultsWhenMatchingThrows() {
+        withSubscriptionScan { downloads, abos, _, films ->
+            Mockito.`when`(abos.findAboForFilm(films[0], true)).thenReturn(DatenAbo())
+            val failure = IllegalArgumentException("matching failed")
+            Mockito.`when`(abos.findAboForFilm(films[1], true)).thenThrow(failure)
+
+            assertSame(failure, assertThrows(IllegalArgumentException::class.java) { downloads.searchAboDownloads(null) })
+            assertEquals(listOf(films[0]), downloads.queuedDownloads().map { it.film })
+        }
+    }
+
+    @Test
+    fun subscriptionScanMergesPartialResultsBeforeMissingProgramSetPrompt() {
+        var promptShown = false
+        withSubscriptionScan(prompt = { downloads ->
+            val queued = downloads.queuedDownloads()
+            assertEquals(1, queued.size)
+            assertEquals(1, queued.single().nr)
+            val executor = Executors.newSingleThreadExecutor()
+            try {
+                assertEquals(queued, executor.submit<List<DatenDownload>> { downloads.queuedDownloads() }.get(1, TimeUnit.SECONDS))
+            } finally {
+                executor.shutdownNow()
+            }
+            promptShown = true
+        }) { downloads, abos, programSets, films ->
+            Mockito.`when`(abos.findAboForFilm(films[0], true)).thenReturn(DatenAbo())
+            Mockito.`when`(abos.findAboForFilm(films[1], true)).thenAnswer {
+                programSets.clear()
+                DatenAbo().apply { psetName = "missing" }
+            }
+
+            assertEquals(listOf(films[0]), downloads.searchAboDownloads(Mockito.mock(JFrame::class.java)).map { it.film })
+            assertTrue(promptShown)
+        }
+    }
+
+    @Test
+    fun subscriptionMergeDeduplicatesNormalizedUrlsWithinPreparedBatch() {
+        withSubscriptionScan { downloads, abos, _, films ->
+            films[0].urlNormalQuality = "https://example.invalid/shared.mp4?token=first"
+            films[1].urlNormalQuality = "https://example.invalid/shared.mp4?token=second"
+            films.forEach { film -> Mockito.`when`(abos.findAboForFilm(film, true)).thenReturn(DatenAbo()) }
+
+            val added = downloads.searchAboDownloads(null)
+            assertEquals(listOf(films[0]), added.map { it.film })
+            assertEquals(added, downloads.queuedDownloads())
+            assertEquals("https://example.invalid/shared.mp4", added.single().downloadUrl)
+            assertEquals(1, added.single().nr)
+        }
+    }
+
+    @Test
+    fun subscriptionMergeRechecksQueueAfterCandidatesHaveBeenPrepared() {
+        withSubscriptionScan { downloads, abos, _, films ->
+            films[0].urlNormalQuality = "https://example.invalid/first.mp4?token=abc"
+            val concurrentDownload = DatenDownload().apply { downloadUrl = "https://example.invalid/first.mp4" }
+            Mockito.`when`(abos.findAboForFilm(films[0], true)).thenReturn(DatenAbo())
+            val executor = Executors.newSingleThreadExecutor()
+            Mockito.`when`(abos.findAboForFilm(films[1], true)).thenAnswer {
+                executor.submit { downloads.addDownload(concurrentDownload) }.get(1, TimeUnit.SECONDS)
+                DatenAbo()
+            }
+
+            try {
+                val added = downloads.searchAboDownloads(null)
+                assertEquals(listOf(films[1]), added.map { it.film })
+                assertEquals(listOf(concurrentDownload) + added, downloads.queuedDownloads())
+                assertEquals(listOf(1, 2), downloads.queuedDownloads().map { it.nr })
+            } finally {
+                executor.shutdownNow()
+            }
+        }
+    }
+
+    private fun withSubscriptionScan(
+        prompt: (DownloadServices) -> Unit = { fail("No missing program set prompt expected") },
+        block: (DownloadServices, AboServices, ProgramSetRepository, List<DatenFilm>) -> Unit,
+    ) {
+        val filmCatalog = FilmCatalog()
+        val films = List(2) { index ->
+            DatenFilm().apply { urlNormalQuality = "https://example.invalid/$index.mp4" }
+        }
+        filmCatalog.allFilms.addAll(films)
+        val abos = Mockito.mock(AboServices::class.java)
+        Mockito.`when`(abos.historyController).thenReturn(Mockito.mock(AboHistoryController::class.java))
+        val programSets = ProgramSetRepository().apply { list.add(DatenPset()) }
+        lateinit var downloads: DownloadServices
+        downloads = DownloadServices(
+            filmCatalog, programSets, abos, BlacklistServices(filmCatalog), ReplacementRules(),
+            Mockito.mock(NotificationPublisher::class.java),
+        ) { prompt(downloads) }
+        try {
+            block(downloads, abos, programSets, films)
+        } finally {
+            downloads.shutdown()
+        }
     }
 
     private fun buttonDownload(

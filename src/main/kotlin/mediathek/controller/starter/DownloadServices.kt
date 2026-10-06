@@ -422,13 +422,16 @@ class DownloadServices(
         info
     }
 
-    fun searchAboDownloads(parent: JFrame?): List<DatenDownload> = synchronized(queue) {
+    fun searchAboDownloads(parent: JFrame?): List<DatenDownload> {
         // in der Filmliste nach passenden Filmen suchen und
         // in die Liste der Downloads eintragen
         val downloadUrls = HashSet<String>()
         val addedDownloads = mutableListOf<DatenDownload>()
+        var missingProgramSet = false
         // mit den bereits enthaltenen URL füllen
-        queue.forEach { download -> downloadUrls.add(download.downloadUrl) }
+        synchronized(queue) {
+            queue.forEach { download -> downloadUrls.add(download.downloadUrl) }
+        }
 
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         val checkWithBlackList = ApplicationConfiguration.getInstance().blacklistApplyToAbo
@@ -443,52 +446,71 @@ class DownloadServices(
             Predicate { true }
         }
 
-        for (film in listeFilme) {
-            val abo = abos.findAboForFilm(film, true) ?: continue
-            if (!abo.isActive) {
-                continue
-            }
-            if (checkWithBlackList && !blacklistFilter.test(film)) {
-                // Blacklist auch bei Abos anwenden
-                continue
-            }
-            if (aboHistoryController.urlExists(film.urlNormalQuality)) {
-                // ist schon mal geladen worden
-                continue
-            }
-
-            val pset = if (abo.psetName.isEmpty()) defaultPset else programSets.list.getPsetAbo(abo.psetName)
-            if (pset != null) {
-                // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
-                val downloadUrl = film.getUrlFuerAufloesung(pset.aufloesung)
-                if (!downloadUrls.add(downloadUrl)) {
+        val preparedDownloads = mutableListOf<DatenDownload>()
+        try {
+            for (film in listeFilme) {
+                val abo = abos.findAboForFilm(film, true) ?: continue
+                if (!abo.isActive) {
+                    continue
+                }
+                if (checkWithBlackList && !blacklistFilter.test(film)) {
+                    // Blacklist auch bei Abos anwenden
+                    continue
+                }
+                if (aboHistoryController.urlExists(film.urlNormalQuality)) {
+                    // ist schon mal geladen worden
                     continue
                 }
 
-                // diesen Film in die Downloadliste eintragen
-                abo.downloadDate = today
-                if (abo.psetName != pset.name) {
-                    // nur den Namen anpassen, falls geändert
-                    abo.psetName = pset.name
-                }
+                val pset = if (abo.psetName.isEmpty()) defaultPset else programSets.list.getPsetAbo(abo.psetName)
+                if (pset != null) {
+                    // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
+                    val downloadUrl = film.getUrlFuerAufloesung(pset.aufloesung)
+                    if (!downloadUrls.add(downloadUrl)) {
+                        continue
+                    }
 
-                // dann in die Liste schreiben
-                val download = DatenDownload(pset, film, DownloadSource.ABO, abo, "", "", "", replacementRules)
-                queue.add(download)
-                addedDownloads.add(download)
-            } else {
-                if (parent == null || CommandLineOptions.isDownloadAndQuit()) {
-                    throw IllegalStateException("Kein Programmset für Abo \"${abo.name}\" konfiguriert.")
+                    // diesen Film in die Downloadliste eintragen
+                    abo.downloadDate = today
+                    if (abo.psetName != pset.name) {
+                        // nur den Namen anpassen, falls geändert
+                        abo.psetName = pset.name
+                    }
+
+                    // Prepare outside the queue lock; merge against current stored URLs below.
+                    val download = DatenDownload(pset, film, DownloadSource.ABO, abo, "", "", "", replacementRules)
+                    preparedDownloads.add(download)
+                } else {
+                    if (parent == null || CommandLineOptions.isDownloadAndQuit()) {
+                        throw IllegalStateException("Kein Programmset für Abo \"${abo.name}\" konfiguriert.")
+                    }
+                    missingProgramSet = true
+                    break
                 }
-                showMissingAboProgramSet(parent)
-                break
+            }
+        } finally {
+            // Keep already prepared results even when a later film cannot be processed.
+            if (preparedDownloads.isNotEmpty()) {
+                synchronized(queue) {
+                    val currentUrls = queue.mapTo(HashSet<String>()) { it.downloadUrl }
+                    for (download in preparedDownloads) {
+                        // Use the stored URL, including the constructor's query normalization.
+                        if (currentUrls.add(download.downloadUrl)) {
+                            queue.add(download)
+                            addedDownloads.add(download)
+                        }
+                    }
+                }
             }
         }
 
         if (addedDownloads.isNotEmpty()) {
-            renumber(queue)
+            renumberQueuedDownloads()
         }
-        addedDownloads
+        if (missingProgramSet) {
+            showMissingAboProgramSet(checkNotNull(parent))
+        }
+        return addedDownloads
     }
 
     private fun canStartMore(max: Int): Boolean {
