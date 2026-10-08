@@ -4,6 +4,7 @@ import mediathek.config.Daten
 import mediathek.controller.history.AboHistoryController
 import mediathek.controller.DownloadColumn
 import mediathek.daten.DatenPset
+import mediathek.daten.DatenProg
 import mediathek.daten.ProgramSetRepository
 import mediathek.daten.DatenDownload
 import mediathek.daten.DatenFilm
@@ -442,7 +443,7 @@ internal class DownloadServicesTest {
         filmCatalog.allFilms.add(film)
         val abos = Mockito.mock(AboServices::class.java)
         Mockito.`when`(abos.historyController).thenReturn(Mockito.mock(AboHistoryController::class.java))
-        val programSets = ProgramSetRepository().apply { list.add(DatenPset()) }
+        val programSets = ProgramSetRepository().apply { list.add(configuredProgramSet()) }
         val downloads = DownloadServices(
             filmCatalog, programSets, abos, BlacklistServices(filmCatalog), ReplacementRules(),
             Mockito.mock(NotificationPublisher::class.java),
@@ -470,7 +471,7 @@ internal class DownloadServicesTest {
         filmCatalog.allFilms.addAll(films)
         val abos = Mockito.mock(AboServices::class.java)
         Mockito.`when`(abos.historyController).thenReturn(Mockito.mock(AboHistoryController::class.java))
-        val programSets = ProgramSetRepository().apply { list.add(DatenPset()) }
+        val programSets = ProgramSetRepository().apply { list.add(configuredProgramSet()) }
         val downloads = DownloadServices(
             filmCatalog, programSets, abos, BlacklistServices(filmCatalog), ReplacementRules(),
             Mockito.mock(NotificationPublisher::class.java),
@@ -592,7 +593,7 @@ internal class DownloadServicesTest {
         filmCatalog.allFilms.addAll(films)
         val abos = Mockito.mock(AboServices::class.java)
         Mockito.`when`(abos.historyController).thenReturn(Mockito.mock(AboHistoryController::class.java))
-        val programSets = ProgramSetRepository().apply { list.add(DatenPset()) }
+        val programSets = ProgramSetRepository().apply { list.add(configuredProgramSet()) }
         lateinit var downloads: DownloadServices
         downloads = DownloadServices(
             filmCatalog, programSets, abos, BlacklistServices(filmCatalog), ReplacementRules(),
@@ -639,6 +640,10 @@ internal class DownloadServicesTest {
 
     private fun addQueuedDownload(download: DatenDownload) {
         daten.downloads.addLoadedDownload(download)
+    }
+
+    private fun configuredProgramSet(): DatenPset = DatenPset("Test").apply {
+        addProg(DatenProg("Save", "", "", false.toString(), false.toString()))
     }
 
     private fun addButtonDownload(download: DatenDownload) {

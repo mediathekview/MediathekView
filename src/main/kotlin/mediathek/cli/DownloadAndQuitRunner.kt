@@ -318,6 +318,7 @@ class DownloadAndQuitRunner(
     private fun persistState() {
         logger.info("Persisting download and configuration state...")
         downloads.cleanupFinishedDownloads()
+        DownloadStartActions.flushSeenHistory()
         SeenHistoryController().use { history ->
             history.performMaintenance()
         }

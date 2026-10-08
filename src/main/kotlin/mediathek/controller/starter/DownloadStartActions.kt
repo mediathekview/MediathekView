@@ -25,25 +25,30 @@ import mediathek.gui.messages.StartEvent
 import mediathek.tool.MessageBus
 
 object DownloadStartActions {
+    private val seenHistoryWriter = DownloadSeenHistoryWriter { films ->
+        FilmSeenHistoryController().use { history ->
+            history.markSeen(films)
+        }
+    }
+
     fun start(download: DatenDownload) {
         startAll(listOf(download))
     }
 
     fun startAll(downloads: Iterable<DatenDownload>) {
         val downloadsToStart = downloads.toList()
-        FilmSeenHistoryController().use { historyController ->
-            for (download in downloadsToStart) {
-                download.runtime.startRun()
-                historyController.markSeen(download.film)
-            }
-        }
+        val films = downloadsToStart.mapNotNull(DatenDownload::film)
+        downloadsToStart.forEach { it.runtime.startRun() }
+        seenHistoryWriter.markSeen(films)
 
         MessageBus.messageBus.publishAsync(StartEvent())
 
-        val films = downloadsToStart.mapNotNull(DatenDownload::film).distinctBy { film -> film.sha256 }
-        if (films.isNotEmpty()) {
+        val distinctFilms = films.distinctBy { film -> film.sha256 }
+        if (distinctFilms.isNotEmpty()) {
             // Dispatch synchronously so subscribers enqueue their durable work before shutdown can begin.
-            MessageBus.messageBus.publish(FilmsDownloadStartedEvent(films))
+            MessageBus.messageBus.publish(FilmsDownloadStartedEvent(distinctFilms))
         }
     }
+
+    fun flushSeenHistory() = seenHistoryWriter.flush()
 }

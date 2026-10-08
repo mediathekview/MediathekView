@@ -375,7 +375,7 @@ class GuiDownloads(
     private fun reloadAndSave() {
         SwingUtilities.invokeLater {
             reloadTable()
-            configurationPersistence.saveAll()
+            configurationPersistence.requestDownloadSave()
         }
     }
 
@@ -394,7 +394,7 @@ class GuiDownloads(
     private fun handleDownloadListChange(event: DownloadListChangedEvent) {
         SwingUtilities.invokeLater {
             reloadTable()
-            configurationPersistence.saveAll()
+            configurationPersistence.requestDownloadSave()
         }
     }
 

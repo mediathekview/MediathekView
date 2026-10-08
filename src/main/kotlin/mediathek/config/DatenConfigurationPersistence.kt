@@ -46,6 +46,10 @@ class DatenConfigurationPersistence(
     private val replacementRules: ReplacementRules,
 ) {
     private var backupAlreadyHandled = false
+    private val saveLock = Any()
+    private val downloadSaveLock = Any()
+    private var downloadStateSaveQueue: DownloadStateSaveQueue? = null
+    private var downloadSavesClosed = false
 
     fun loadAll(): Boolean {
         if (!load(::askForBackupRestore)) {
@@ -77,14 +81,41 @@ class DatenConfigurationPersistence(
     }
 
     fun saveAll() {
-        if (!backupAlreadyHandled) {
-            backupAlreadyHandled = ConfigurationBackupService.createConfigurationBackupCopies()
-        }
+        synchronized(saveLock) {
+            if (!backupAlreadyHandled) {
+                backupAlreadyHandled = ConfigurationBackupService.createConfigurationBackupCopies()
+            }
 
-        val configWriter = IoXmlSchreiben(configData())
-        configWriter.writeConfigurationFile(StandardLocations.getMediathekXmlFile())
-        writeBlacklistRules()
-        writeAboRules()
+            val configWriter = IoXmlSchreiben(configData())
+            configWriter.writeConfigurationFile(StandardLocations.getMediathekXmlFile())
+            writeBlacklistRules()
+            writeAboRules()
+        }
+    }
+
+    fun requestDownloadSave() {
+        synchronized(downloadSaveLock) {
+            if (!downloadSavesClosed) {
+                val queue = downloadStateSaveQueue ?: DownloadStateSaveQueue(::saveDownloads).also {
+                    downloadStateSaveQueue = it
+                }
+                queue.requestSave()
+            }
+        }
+    }
+
+    fun finishPendingDownloadSaves() {
+        val queue = synchronized(downloadSaveLock) {
+            downloadSavesClosed = true
+            downloadStateSaveQueue
+        }
+        queue?.stopAndFlush()
+    }
+
+    private fun saveDownloads() {
+        synchronized(saveLock) {
+            DownloadStorage.write(StandardLocations.getDownloadsFilePath(), downloads.queuedDownloads())
+        }
     }
 
     private fun clearConfiguration() {
