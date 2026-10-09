@@ -23,7 +23,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
-import mediathek.tool.ApplicationConfiguration
+import mediathek.config.application.ApplicationConfiguration
 import org.apache.logging.log4j.LogManager
 
 /**
@@ -33,6 +33,8 @@ class GlazedSortKeysPersister<E>(
     private val configPrefix: String,
     private val chooser: TableComparatorChooser<E>
 ) {
+    private val applicationConfiguration = ApplicationConfiguration.getInstance()
+
     fun saveSortState() {
         val sortedCols = chooser.sortingColumns
         val infos = ArrayList<SortKeyInfo>(sortedCols.size)
@@ -42,7 +44,7 @@ class GlazedSortKeysPersister<E>(
         }
         try {
             val json = serializer.encodeToString(ListSerializer(SortKeyInfo.serializer()), infos)
-            ApplicationConfiguration.getConfiguration().setProperty(configPrefix + CONFIG_KEY, json)
+            applicationConfiguration.setGlazedTableSortKeys(configPrefix, json)
         } catch (ex: Exception) {
             LOG.error("Failed to save sort keys", ex)
         }
@@ -50,7 +52,7 @@ class GlazedSortKeysPersister<E>(
 
     fun restoreSortState() {
         try {
-            val json = ApplicationConfiguration.getConfiguration().getString(configPrefix + CONFIG_KEY)
+            val json = applicationConfiguration.getGlazedTableSortKeys(configPrefix)
             if (json.isBlank()) return
 
             val infos = serializer.decodeFromString(ListSerializer(SortKeyInfo.serializer()), json)
@@ -74,7 +76,6 @@ class GlazedSortKeysPersister<E>(
     )
 
     companion object {
-        private const val CONFIG_KEY = ".sortKeys"
         private val LOG = LogManager.getLogger()
         private val serializer = Json {
             ignoreUnknownKeys = true

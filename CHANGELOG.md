@@ -1,3 +1,78 @@
+# **15.0.0**
+- **Diese Version ist NICHT abwärtskompatibel mit älteren MediathekView-Versionen.**
+- JetBrains Runtime JBR 25.0.2 wird verwendet
+- **BUGFIX:** Dialog "Film speichern" neu geschrieben um vorhandene Layout-Probleme zu beheben.
+- **BUGFIX:** Das Löschen der Thema-ComboBox mit dem Löschen-Button funktioniert nach Keyboard-Manipulation. Das Thema wird auch weiter angewendet.
+- **BUGFIX:** Vorhandenes Thema wird bei Filterwechsel angewendet und nicht gelöscht.
+- **BUGFIX:** Änderung des Zeitraums löscht nicht mehr die Sender.
+- **BUGFIX:** Downloads mit ffmpeg zeigen wieder Fortschritt, Zeit und Gechwindigkeit an.
+- **BUGFIX(Windows):** Offizielle MV-Builds nutzen nun JetBrains Runtime 25. Damit sollte das Programm bei Nutzung einer RDP-Session nicht mehr abstürzen.
+- **BUGFIX:** Programm-Log Autoscroll-Verhalten wurde korrigiert.
+- **BUGFIX:** Der Abo-Historie-Dialog kann nun gleichzeitig mehrere URLs löschen und exportieren. Weiterhin wurde eine Filterfunktion integriert.
+- **BUGFIX:** Die App friert nicht mehr bei einer beschädigten History-Db ein. Es wird eine temporäre Datenbank für den Start genutzt. **In diesem Zustand gehen alle Änderungen verloren.**
+- **BUGFIX(Windows):** Bandbreitenbegrenzung der Downloads funktionierte nicht richtig.
+- **BUGFIX:** Im Tab Filme führte das Verschieben von Spalten zur fehlerhaften Darstellungen innerhalb der Spalten.
+- **BUGFIX:** Mehrfachauswahl im Tab *Download* wird nun zurückgesetzt nach dem Löschen.
+- **BUGFIX:** Mehrfachauswahl im Tab *Filme* wird nun zurückgesetzt nach dem Löschen.
+- **BUGFIX:** Ein Download Verzeichnis wird nun erst beim Downloadbeginn angelegt.
+- **BUGFIX:** Das sortieren der Spalten im *Abos verwalten* funktioniert nun.
+- **BUGFIX:** Standort-Änderungen in den Einstellungen lassen das Fenster nicht mehr im Hintergrund verschwinden.
+- **BUGFIX:** Die Warnung zur Filtermigration wird nicht mehr beim ersten Start angezeigt.
+- **BUGFIX:** Die Warnung zur Sendermigration wird nicht mehr beim ersten Start angezeigt.
+- **BUGFIX:** Unter Linux werden `vlc` und `ffmpeg` beim ersten Start nun zuerst in $PATH gesucht, erst danach wird einen hard-coded Pfad verwendet.
+- **BUGFIX:** Dialog *Merkliste verwalten* stellt Download und Play Funktionalität wieder zur Verfügung.
+- **BUGFIX:** Inaktive Abos verhindern nicht mehr die Anwendung aktiver Abos.
+- **BUGFIX:** Abo-matching sucht nun alle abos durch anstatt beim ersten Kriterium die weitere Verarbeitung abzubrechen.
+- **BUGFIX:** SRT-Untertitel nutzen wieder wie im Standard vorgesehen CRLF anstatt LF beim Zeilenumbruch.
+- **BUGFIX(macOS):** Clicks auf die Download-Buttons funktionieren nun mit externer Maus beim 1. Mal.
+- **BUGFIX:** Die Position der Programme im Tab Hilfsprogramme in den Einstellungen kann nicht modifiziert werden solange sortiert wird.
+- **BUGFIX:** Blacklist-Filter wird nun auch bei der Lucene-Suche richtig angewendet.
+- **BUGFIX:** `history.db` wird nun in allen Anwendungsfällen ordnungsgemäß geschlossen.
+- **BUGFIX:** CheckBox *Beim Programmstart einschalten* in der Blacklist wurde entfernt da sie keine Auswirkung mehr hatte.
+- **BUGFIX:** *Abos verwalten*-Dialog zeigt keine Spalte `Nr` mehr an.
+- **FEATURE:** Überzählige Backup-Dateien von `mediathek.xml` werden nun beim Programmstart gelöscht.
+- **FEATURE:** Eine beschädigte History-Db kann über *Hilfe/Hilfsmittel/History-Datenbank wiederherstellen...* wiederhergestellt werden. Dazu ist das `sqlite3`-Programm erforderlich, welches nur für Windows mitgeliefert wird. Bei Linux reicht eine Installation über den package manager. Für macOS bietet sich `brew install sqlite` an.
+- **FEATURE:** MediathekView enthält nun das Tab *Audiothek* zum Abspielen und Download von Podcasts aus der ARD Sounds Bibliothek. Die Daten sind vollindiziert für die lokale Suche. Zusätzlich können über die Schlagwortsuche auch Einträge von podcastindex.org gesucht und verwendet werden. Die Dokumentation hierfür ist über den Hilfe-Button im Suchfeld erreichbar. 
+- **FEATURE:** Filter können nun kopiert werden.
+- **FEATURE:** Sperrbare Filter. Änderungen an einem gesperrten Filter wirken sich auf die Filmliste aus, werden jedoch nicht dauerhaft gespeichert und beim nächsten Programmstart zurückgesetzt. Gesperrte Filter werden mit einem Schloß-Symbol in der Filterliste angezeigt.
+- **FEATURE:** *Download ändern*-Dialog bietet nun auch die Möglichkeit, Codec-Details abzurufen.
+- **FEATURE:** *Hilfe\Live Programm-Log anzeigen* zeigt die logging-Ausgaben von MediathekView in Echtzeit an. Diese können für die Fehlersuche exportiert werden. Lokale Dateipfade werden automatisch mittels `<redacted>` unkenntlich gemacht.
+- **FEATURE:** Die alte `downloadAbos.txt` wird nun in eine sqlite3-Datenbank `abo-history.db` migriert. Die alte Textdatei bleibt danach als `downloadAbos.txt.migrated` erhalten.
+- **FEATURE:** Farben für light/dark-Mode können in den Einstellungen getrennt konfiguriert werden.
+- **FEATURE:** URL zum JDownloader kann in *Einstellungen/Erweitert* konfiguriert werden. Vielen Dank an @robNice.
+- **FEATURE:** Filme können an *pyLoad* zum Laden übergeben werden. Vielen Dank an @robNice.
+- **FEATURE:** Das Format der Zeitdarstellung im Tab Filme kann via *Einstellungen\Allgemein* konfiguriert werden.
+- **FEATURE:** Einige Sender wie BR, MDR, NDR verwenden Content Delivery Networks, welche zu fehlerhaften Downloads mit MV führen. MV kann versuchen, CDN-Server zu erkennen und einen entsprechend angepassten Downloader zu verwenden. Dies kann je nach Konfiguration des Servers die Downloadgeschwindigkeit erheblich reduzieren. Die Funktion kann im Tab *Download* in der Toolbar via Checkbox *CDN-aware Downloader verwenden* (de-)aktiviert werden.
+- **FEATURE:** Im Tab *Downloads* wurde das Seitenpanel entfernt und in Toolbars ausgelagert. Die Filtereinstellungen sowie der Zustand der Toolbars ist persistent über Neustarts hinweg. Schwebende Toolbars werden nur angezeigt wenn das Tab aktiv ist.
+- **FEATURE:** Unfertige Downloads werden nun automatisch mit Endung `.part` markiert und bei erfolgreichem Download umbenannt.
+- **FEATURE:** Jedes Abo kann nun mittels *Nicht automatisch starten*-Option den automatischen Download der generierten Filme verhindern, wenn *Einstellungen/Erweitert/Downloads aus Abos sofort starten* aktiviert ist.
+- **FEATURE:** Im *Abos verwalten*-Dialog werden Abos, deren letzte Ausführung mehr als 3 Monate zurück liegt *gelb*, nach mehr als 6 Monaten *rot* markiert in der Spalte `letztes Abo`.
+- **FEATURE:** Die App überprüft bei jedem Start einmalig, ob der in den Einstellungen gesetzte Standort identisch mit der ermittelten Länderkennung der öffentlichen IP ist und bietet dem Nutzer an, inkorrekte Einstellungen zu korrigieren.
+- **FEATURE:** Bei der erstmaligen Einrichtung wird im Start-Dialog die Zuordnung des Standorts anhand der öffentlichen IP geprüft und vorab eingestellt.
+- **FEATURE:** Im Tab *Filme* kann nun auch der Titel via Kontextmenü zur Blacklist hinzugefügt werden.
+- **FEATURE:** Die Suchhistorie ordnet nun die Ergebnisse nach der Zeit der letzten Suche an (Last Recently Used).
+- **FEATURE:** `-dq` bzw. `--download-quit` ist nun ein vollständig CLI-basierter Ausführungsmodus.
+- **FEATURE:** Proxy-Einstellungen werden nun ohne Neustart übernommen.
+- **FEATURE(Unix):** Dark-mode-Erkennung funktioniert nun auch mit KDE6.
+- **FEATURE:** `„`, `“` und `”` werden für Thema und Titel nun in einheitliches `"` konvertiert.
+- **FEATURE:** Für Abo-Einträge im Tab *Downloads* wird nun nach der entsprechenden Größe gesucht.
+- **FEATURE:** Downloads werden nun in `downloads.json` anstatt der XML-Konfiguration gespeichert.
+- **FEATURE:** In der Infodatei wird nun auch die URL zum Untertitel gespeichert wenn verfügbar.
+- **FEATURE:** Das Download-Tab cached nun Dateigrößen-Downloads um den Startvorgang zu beschleunigen. Die Daten werden in `download-size-cache.json` gespeichert.
+- **FEATURE:** In den Blacklist-Einstellungen wird nun für jede Blacklist-Regel angezeigt, wieviele Filmeinträge sie filtert.
+- **FEATURE:** `Blacklist bearbeiten` und der enstprechende Dialog in den Einstellungen hebt nun Blacklist-Einträge in rot hervor, die keine Auswirkung auf die aktuelle Filmliste haben.
+- **FEATURE:** *Abos verwalten*-Dialog besitzt nun eine Spalte `Filme`, die berechnet wieviele Filme durch das Abo erkannt werden *könnten*. Es werden keine History, etc. in der Berechnung berücksichtigt. Werden keine Filme erkannt wird der Wert in Rot dargestellt.
+- **FEATURE:** Blacklist-Regeln werden beim Programmstart aus der alten Konfiguration in die Datei `blacklist-rules.json` migriert wenn diese noch nicht existiert.
+- **FEATURE:** Unter *Hilfe/Hilfsmittel/Konfiguration bereinigen...* kann die Programmkonfiguration von veralteten Einstellungen durch den Nutzer bereinigt werden.
+- **FEATURE:** Online-Suche für `ARD`, `ZDF` und `ARTE` wurde im Tab `Onlinesuche` integriert. Bitte beachten dass die `ARTE`-Suche aufgrund von Beschränkungen des Senders deutlich langsamer als bei den anderen sein kann.
+- **FEATURE:** Blacklist-Regeln können in den Einstellungen deaktiviert werden damit sie während des Filterns nicht mehr berücksichtigt werden. Dadurch müssen Regeln nicht mehr gelöscht werden.
+- **FEATURE:** Blacklist-Regel-Tabelle speichert nun die Breite und Position der Spalten.
+- **FEATURE:** Im Blacklist-Regel-Dialog wurden die einzelnen Aktions-Buttons entfernt und durch ein *Drei-Punkte*-Button ersetzt, der alle erlaubten Aktionen zusammenfasst.
+- **FEATURE:** Untertitel-Offsets werden nun automatisch an die Filmlänge korrigiert wenn dies möglich ist.
+- interne Optimierungen für mehr Geschwindigkeit.
+- interne Fehler wurden behoben.
+- MV nutzt `https://ipify.org` zur Erkennung der öffentlichen IP.
+
 # **14.5.0**
 - **BUGFIX(Linux):** Tray-Icon Funktion wird für KDE deaktiviert, das sie hier nicht richtig funktioniert.
 - **BUGFIX:** Workaround für Oracle JDK-8024695 eingebaut. Dies verhinderte das korrekte Abspielen von Filmen.
@@ -23,6 +98,7 @@
 - **FEATURE:** Neue integrierte Lucene-Hilfsdokumentation, die über den *?*-Button bzw. *Hilfe/Lucene-Suchsyntax anzeigen..* aufgerufen werden kann. Der Menüeintrag ist auch bei deaktivierter Lucene-Suche aufrufbar
 - **FEATURE(macOS):** Verbesserte Steuerung des IINA Players. Hierzu werden seitens macOS Berechtigungen zur Fernsteuerung benötigt.
 - **FEATURE:** zapp Livestream-Einträge haben nun auch ein Kontextmenü um das Abspielen der Einträge zu ermöglichen. Die Livestreams können weiterhin per Doppelklick gestartet werden.
+- **FEATURE:** Im *Download ändern*-Dialog kann über den Button rechts neben dem Feld `URL` die Codec-Details für eine manuell geänderte URL abgefragt werden.
 - Große Datenbank-Maintenance der Filmhistorie wird nur noch alle 30 Tage ausgeführt, nicht bei jedem Beenden. Kann manuell über das Hilfe-Menü gestartet werden.
 - Untertitel-Format-Support wurde vollständig neu implementiert und unterstützt nun auch TTML2-Standard.
 - Lucene-Index-Erstellung wurde für multi-core-Systeme optimiert.

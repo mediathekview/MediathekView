@@ -1,0 +1,84 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "insets dialog,hidemode 3,gap rel rel"
+			"$columnConstraints": "[fill][grow,fill]"
+			"$rowConstraints": "[fill][grow,fill][fill]"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Downloadfehler"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "jTextArea1"
+					"editable": false
+					"columns": 20
+					"lineWrap": true
+					"rows": 4
+					"wrapStyleWord": true
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 1,grow,push"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabelIcon"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/fontawesome/triangle-exclamation.svg", 32, 32, 1.0f )
+				"verticalAlignment": 1
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0,spany 3,aligny top"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel2"
+				"text": "Filmtitel:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0,split 2"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "jTextFieldTitel"
+				"editable": false
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "growx,pushx"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabelTime"
+				"text": "0 s"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 2"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonOk"
+				"text": "Ok"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 2,alignx center,growx 0"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 585, 300 )
+		} )
+	}
+}

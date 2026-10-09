@@ -1,8 +1,8 @@
 package mediathek
 
 import mediathek.config.Konstanten
+import mediathek.swing.SwingDispatch
 import mediathek.tool.UIProgressState
-import mediathek.tool.timer.TimerPool.timerPool
 import org.apache.commons.lang3.SystemUtils
 import org.jdesktop.swingx.StackLayout
 import java.awt.Color
@@ -10,13 +10,12 @@ import java.awt.Cursor
 import java.awt.Dimension
 import java.awt.Font
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.swing.*
 import kotlin.math.roundToInt
 
 class SplashScreen : JWindow() {
     private val versionLabel = JLabel()
-    private var curSteps = 0.0
+    private var completedSteps = 0
     private val appTitleLabel = JLabel()
     private val imageLabel = JLabel()
     private val progressBar = JProgressBar()
@@ -46,14 +45,19 @@ class SplashScreen : JWindow() {
     }
 
     fun update(state: UIProgressState) {
-        curSteps++
-        val pct = (100 * (curSteps / MAXIMUM_STEPS)).roundToInt()
-        updateStatus(state.toString(), pct)
+        SwingDispatch.dispatch {
+            completedSteps++
+            val pct = (100 * (completedSteps / MAXIMUM_STEPS)).roundToInt()
+            updateStatus(state.title, pct)
+        }
     }
 
     fun close() {
-        timerPool.schedule({ SwingUtilities.invokeLater { isVisible = false } }, 2, TimeUnit.SECONDS)
-        Main.splashScreen = Optional.empty()
+        SwingDispatch.dispatch {
+            isVisible = false
+            dispose()
+            SplashScreenLifecycle.clearIfCurrent(this)
+        }
     }
 
     /**
@@ -172,6 +176,6 @@ class SplashScreen : JWindow() {
     }
 
     companion object {
-        private val MAXIMUM_STEPS = EnumSet.allOf(UIProgressState::class.java).size - 1.0
+        private val MAXIMUM_STEPS = EnumSet.allOf(UIProgressState::class.java).size.toDouble()
     }
 }

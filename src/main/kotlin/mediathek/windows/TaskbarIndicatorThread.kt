@@ -18,15 +18,17 @@
 
 package mediathek.windows
 
+import mediathek.controller.starter.DownloadServices
 import mediathek.tool.threads.IndicatorThread
 import org.apache.logging.log4j.LogManager
 import java.awt.Taskbar
 import java.lang.foreign.*
 import java.lang.invoke.MethodHandle
-import java.util.concurrent.TimeUnit
 import javax.swing.JFrame
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.toJavaDuration
 
-internal class TaskbarIndicatorThread(parent: MediathekGuiWindows) : IndicatorThread() {
+internal class TaskbarIndicatorThread(parent: JFrame, downloads: DownloadServices) : IndicatorThread(downloads) {
     private val parent: JFrame
     private val setThreadExecutionState: MethodHandle?
 
@@ -52,7 +54,7 @@ internal class TaskbarIndicatorThread(parent: MediathekGuiWindows) : IndicatorTh
                 taskbar.setWindowProgressValue(parent, percentage)
                 taskbar.setWindowProgressState(parent, Taskbar.State.NORMAL)
                 disableStandby()
-                TimeUnit.MILLISECONDS.sleep(500)
+                Thread.sleep(500.milliseconds.toJavaDuration())
             }
         } catch (_: InterruptedException) {
         } finally {

@@ -1,0 +1,380 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"maximumSize": new java.awt.Dimension( 2147483647, 800 )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "jTabbedPaneBlacklist"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
+					"$columnConstraints": "[grow,fill]"
+					"$rowConstraints": "[][][][][grow,fill][][][]"
+				} ) {
+					name: "jPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane1"
+						"minimumSize": new java.awt.Dimension( 22, 50 )
+						"preferredSize": new java.awt.Dimension( 454, 200 )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "jTableBlacklist"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 4,growy"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+							"$horizontalGroup": "par l {seq {space :::p, par l {seq l {space :p:68:p, comp jCheckBoxRuleActive:::p::p}, seq l {space :p:68:p, par t {comp jLabel6:::p::p, comp jLabel5:::p::p}, space :p::p, par l {comp jComboBoxSender::l::714:x, comp jComboBoxThema:::::x}}, seq l {par t {comp jLabel2:::p::p, comp jLabel8::t:p::p}, space :p::p, par l {comp jTextFieldTitel::l:::x, comp jTextFieldThemaTitel:::::x}}, seq t {space :0:622:x, comp jButtonAendern:3::p::p, space :::p, comp jButtonHinzufuegen:3::p::p}}, space :::p}}"
+							"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxRuleActive:::p::p, space u:::p, par b {comp jLabel5::b:p::p, comp jComboBoxSender:2:b:p::p}, space u:::p, par b {comp jLabel6::b:p::p, comp jComboBoxThema:2:b:p::p}, space u:::p, par b {comp jLabel8::b:p::p, comp jTextFieldTitel:2:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldThemaTitel:2:b:p::p}, space :::p, par b {comp jButtonHinzufuegen::b:p::p, comp jButtonAendern::b:p::p}, space :::x}}"
+					} ) {
+						name: "jPanel4"
+						"border": new javax.swing.border.TitledBorder( "Sender, Thema, Titel oder Thema/Titel:" )
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JCheckBox" ) {
+								name: "jCheckBoxRuleActive"
+								"selected": true
+								"text": "Aktiv"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
+							} )
+							add( new FormComponent( "javax.swing.JLabel" ) {
+								name: "jLabel5"
+							"text": "Sender:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "jComboBoxSender"
+							"model": new javax.swing.DefaultComboBoxModel
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel6"
+							"text": "Thema:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "jComboBoxThema"
+							"model": new javax.swing.DefaultComboBoxModel
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+								"JavaCodeGenerator.typeParameters": "String"
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonHinzufuegen"
+							"text": "Hinzufügen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel8"
+							"text": "Titel:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldTitel"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel2"
+							"text": "Thema oder Titel:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldThemaTitel"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonAendern"
+							"text": "Ändern"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 7"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "insets 0,hidemode 3,gap 5 5"
+						"$columnConstraints": "[fill][grow,right]"
+						"$rowConstraints": "[fill][fill]"
+					} ) {
+						name: "panel2"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "jRadioButtonBlacklist"
+							"$buttonGroup": new FormReference( "buttonGroup1" )
+							"selected": true
+							"text": "\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "jRadioButtonWhitelist"
+							"$buttonGroup": new FormReference( "buttonGroup1" )
+							"text": "nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonHilfe"
+							"toolTipText": "Hilfe anzeigen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0 1 2,align right center,grow 0 0"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Suchstring:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "tfFilter"
+						"toolTipText": "<html>Hier wird der Suchtext als RegExp eingegeben.<br>Zum Zurücksetzen des Filters den Suchtext <b>löschen</b> und erneut <i>\"Filtern\"</i> drücken.</html>"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "btnFilterTable"
+						"text": "Filtern"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3,alignx center,growx 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
+						"$columnConstraints": "[fill][grow,fill][fill]"
+						"$rowConstraints": "[grow,center]"
+					} ) {
+						name: "panel1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+							"$columnConstraints": "[fill][fill]"
+							"$rowConstraints": "[grow,center]"
+							"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
+						} ) {
+							name: "panel3"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JLabel" ) {
+								name: "label2"
+								"text": "Einträge:"
+								auxiliary() {
+									"JavaCodeGenerator.variableLocal": true
+								}
+							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+								"value": "cell 0 0"
+							} )
+							add( new FormComponent( "javax.swing.JLabel" ) {
+								name: "lblNumEntries"
+								"text": "0"
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
+							}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+								"value": "cell 1 0"
+							} )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormContainer( "com.jidesoft.swing.JideSplitButton", new FormLayoutManager( class javax.swing.JMenu ) ) {
+							name: "jButtonBlacklistActions"
+							"alwaysDropdown": true
+							"toolTipText": "Blacklist-Regeln verwalten"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 0"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 5"
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator2"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 6"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Sender-Thema-Titel"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
+					"gap": 5
+				} ) {
+					name: "jPanel3"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxZukunftNichtAnzeigen"
+						"text": "Filme mit Datum in der Zukunft nicht anzeigen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "jCheckBoxGeo"
+						"text": "Filme, die per Geoblocking gesperrt sind, nicht anzeigen"
+						"toolTipText": "<html>Geogeblockte Filme können im jeweiligen \"Ausland\" nicht abgerufen werden.<br>Dazu muss die eigene Position in den Einstellungen angegeben werden</html>"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp jSliderMinuten::l:::x, seq {par l {seq l {comp jLabel1:::p::p, space :::p, comp jTextFieldMinuten:::p:81:p}, comp jLabel13::l:p::p}, space :0:430:x}}, space :::p}}"
+						"$verticalGroup": "par l {seq t {space :::p, par b {comp jLabel1::b:p::p, comp jTextFieldMinuten::b:p::p}, space u:p::p, comp jLabel13:::p::p, space :::x, comp jSliderMinuten:::p::p, space :::p}}"
+					} ) {
+						name: "jPanel6"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JSlider" ) {
+							name: "jSliderMinuten"
+							"value": 0
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel1"
+							"text": "Nur Filme anzeigen mit einer Länge von mehr als [min]:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldMinuten"
+							"editable": false
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel13"
+							"text": "Filme, die keine Längenangabe haben, werden immer angezeigt."
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Blacklist allgemein"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "insets 0,hidemode 3,gap 0 0"
+				"$columnConstraints": "[grow,fill]"
+				"$rowConstraints": "[grow,fill][grow,fill]"
+			} ) {
+				name: "jPanel8"
+				"border": new javax.swing.border.TitledBorder( "Allgemeine Einstellungen" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxBlacklistEingeschaltet"
+					"text": "Im Tab Filme einschalten"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxAbo"
+					"text": "Bei der Suche nach Abos berücksichtigen"
+					"toolTipText": "<html>Die Blacklist beim Suchen nach Abos berücksichtigen.<br/>Ansonsten wird die komplette Filmliste durchsucht.</html>"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 870, 625 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "buttonGroup1"
+			auxiliary() {
+				"JavaCodeGenerator.variableLocal": true
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 432 )
+		} )
+	}
+}

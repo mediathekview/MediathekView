@@ -3,6 +3,8 @@ package raven.toast;
 import com.formdev.flatlaf.ui.FlatUIUtils;
 import com.formdev.flatlaf.util.Animator;
 import com.formdev.flatlaf.util.UIScale;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import raven.toast.ui.ToastNotificationPanel;
 import raven.toast.util.NotificationHolder;
 import raven.toast.util.UIUtils;
@@ -87,6 +89,7 @@ import java.util.function.Consumer;
  */
 public class Notifications {
 
+    private static final Logger log = LogManager.getLogger(Notifications.class);
     private static Notifications instance;
     private JFrame frame;
     private final Map<Location, List<NotificationAnimation>> lists = new HashMap<>();
@@ -125,7 +128,7 @@ public class Notifications {
     }
 
     private int getCurrentShowCount(Location location) {
-        List list = lists.get(location);
+        var list = lists.get(location);
         return list == null ? 0 : list.size();
     }
 
@@ -442,7 +445,8 @@ public class Notifications {
             try {
                 Thread.sleep(l);
             } catch (InterruptedException e) {
-                System.err.println(e);
+                Thread.currentThread().interrupt();
+                log.error("e: ", e);
             }
         }
 

@@ -1,26 +1,15 @@
 "Einstellungen zum Abspielen/Aufzeichnen zurücksetzen"
 
-Damit werden alle Sets (auch eigene), die zum Abspielen
-und Aufzeichnen der Filme gebraucht werden, gelöscht.
-Anschließend werden die aktuellen Standardsets
-eingerichtet. Es kann dann direkt damit 
-weitergearbeitet werden.
-Abos und Blacklist bleiben erhalten.
+Damit werden alle Sets (auch eigene), die zum Abspielen und Aufzeichnen der Filme gebraucht werden, gelöscht. Anschließend werden die aktuellen Standardsets eingerichtet. Es kann dann direkt damit weitergearbeitet werden. Abos und Blacklist bleiben erhalten.
 
-Das sollte vor dem kompletten Zurücksetzen
-des Programms versucht werden.
-
+Das sollte vor dem kompletten Zurücksetzen des Programms versucht werden.
 
 oder ==============================
 
 "Alle Einstellungen zurücksetzen"
 
-Damit wird das Programm in den
-Ursprungszustand zurückgesetzt.
+Damit wird das Programm in den Ursprungszustand zurückgesetzt.
 
 Es gehen ALLE Einstellungen verloren.
 
-Das Programm beendet sich und muss neu
-gestartet werden. Der neue Start beginnt
-mit dem Einrichtungsdialog.
-
+Das Programm beendet sich und muss neu gestartet werden. Der neue Start beginnt mit dem Einrichtungsdialog.

@@ -2,25 +2,14 @@ ENTWEDER
 =========================================
 "Neue Sets hinzufügen"
 
-Die aktuellen Einstellungen werden damit nicht
-verändert. Die neuen Sets werden an die Liste der
-bestehenden Sets angehängt und sind danach noch 
-nicht aktiv. Das muss dann noch geschehen:
+Die aktuellen Einstellungen werden damit nicht verändert. Die neuen Sets werden an die Liste der bestehenden Sets angehängt und sind danach noch nicht aktiv. Das muss dann noch geschehen:
 
 "Datei->Einstellungen->Set bearbeiten"
 
-Zum Aktivieren: Haken bei Speichern und Abspielen 
-bei den neuen Sets setzen und bei den alten entfernen
-und die neuen Sets ganz nach oben Verschieben.
-
+Zum Aktivieren: Haken bei Speichern und Abspielen bei den neuen Sets setzen und bei den alten entfernen und die neuen Sets ganz nach oben Verschieben.
 
 ODER
 =========================================
 "Bestehende Sets durch die neuen ersetzen"
 
-Damit werden alle Sets (auch eigene), die zum Abspielen
-und Aufzeichnen der Filme gebraucht werden, gelöscht.
-Anschließend werden die aktuellen Standardsets
-eingerichtet. Es kann dann direkt damit 
-weitergearbeitet werden.
-
+Damit werden alle Sets (auch eigene), die zum Abspielen und Aufzeichnen der Filme gebraucht werden, gelöscht. Anschließend werden die aktuellen Standardsets eingerichtet. Es kann dann direkt damit weitergearbeitet werden.

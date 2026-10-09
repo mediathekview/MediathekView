@@ -6,6 +6,52 @@
         </Console>
     </Appenders>
     <Loggers>
+        <Logger name="mediathek.tool.FileSize" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.controller.history.SeenHistoryMigrator" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.sqlite.core.NativeDB" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.gui.tabs.tab_film.filter.FilmFilterController" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.gui.tabs.tab_film.filter.SwingFilterDialog" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="mediathek.tool.timer.TimerPool" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.tool.HlsPlaylistSizeEstimator" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.tool.HlsStreamInfoLogger" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.gui.tabs.tab_film.filter.ZeitraumSpinner" level="fatal" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.gui.tabs.tab_online_search.OnlineSearchPanel" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.sqlite.SeenHistoryCorruptionHandler" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.filmlisten.writer.FilmListWriter" level="fatal" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.config.application.FilterConfiguration" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.filmlisten.reader.FilmListReader" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name = "mediathek.audiothek.repository.SqliteExportAudioSource" level="warn" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
         <Root level="trace">
             <AppenderRef ref="Console"/>
         </Root>

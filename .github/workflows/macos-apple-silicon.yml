@@ -5,29 +5,33 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch:
 
+env:
+  # bump this when you upgrade install4j
+  INSTALL4J_VERSION: '12_0_5'
+  INSTALL4J_CACHE_VERSION: 'v12'
+  INSTALL4J_LICENSE_KEY: ${{ secrets.INSTALL4J_12_LICENSE_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
+  WINDOWS_AMD64_FFMPEG_URL: https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.zip
+  WINDOWS_ARM64_FFMPEG_URL: https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip
+  WINDOWS_AMD64_FFMPEG_MD5: '20dcf17f298bda808c05d1b9a7a55f9f'
+  WINDOWS_ARM64_FFMPEG_MD5: 'e87254bb878bd1d9190e72e348df8257'
+  MAC_BINARIES_BASE_URL: https://s3.mvorg.de/res/dev/mac/bin
+  MAC_COMMON_SHUTDOWNHELPER_MD5: 3531e6483f886877e6f32f8345503fd7
+  MAC_INTEL_FFMPEG_MD5: dd1b293c38510063f98f733229c526f5
+  MAC_INTEL_FFPROBE_MD5: 4e4d2f0b21770efeb8c69ca321115ed6
+  MAC_APPLE_SILICON_FFMPEG_MD5: 36ec3a0b676d0e344bcca9987d9f2174
+  MAC_APPLE_SILICON_FFPROBE_MD5: e2e1ceb77ab05ceaa9d6054a50de69a0
+
 jobs:
-  build:
-    if: github.ref == 'refs/heads/develop'
-    name: Build macOS ${{ matrix.arch }} nightly
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false # do not cancel other jobs when one fails
-      matrix:
-        include:
-          - arch: apple-silicon
-            runner: macos-latest
-            mvn_profile: mac_apple_silicon
-            dmg_suffix: apple-silicon
-            dmg_file: MediathekView-latest-apple-silicon.dmg
-          - arch: intel
-            runner: macos-15-intel
-            mvn_profile: mac_intel
-            dmg_suffix: mac-intel
-            dmg_file: MediathekView-latest-mac-intel.dmg
+  build-macos-apple-silicon:
+    name: Build macOS apple-silicon nightly
+    runs-on: macos-latest
 
     env:
-      # bump this when you upgrade install4j
-      INSTALL4J_VERSION: '11_0_5'
+      MACOS_ARCH: apple-silicon
+      MVN_PROFILE: mac_apple_silicon
+      DMG_SUFFIX: apple-silicon
+      DMG_FILE: MediathekView-latest-apple-silicon.dmg
 
     steps:
       - name: Checkout develop branch
@@ -35,15 +39,14 @@ jobs:
         with:
           ref: develop
 
-      - name: Extract Version from pom.xml
-        id: version
+      - &extract-version-step
+        name: Extract version
+        shell: pwsh
         run: |
-          VERSION=$(xmllint --xpath "/*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
-          echo "Extracted Version: $VERSION"
-          echo "MV_VERSION=$VERSION" >> "$GITHUB_ENV"
-
-      - name: Use Extracted Version
-        run: echo "The version is $MV_VERSION"
+          [xml]$pom = Get-Content pom.xml
+          $version = $pom.project.version
+          Write-Host "Extracted Version: $version"
+          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Set up Java 25 (Liberica) & cache Maven
         uses: actions/setup-java@v5
@@ -51,16 +54,42 @@ jobs:
           distribution: liberica
           java-version: '25'
           java-package: jdk
-          cache: maven
+      - name: Restore Maven repository cache
+        id: maven-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-java25-maven-${{ hashFiles('**/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-java25-maven-
 
       - name: Cache extracted install4j.app
         id: cache-install4j-app
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: download/install4j.app
-          key: install4j-app-${{ matrix.arch }}-${{ env.INSTALL4J_VERSION }}
+          key: install4j-app-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}
           restore-keys: |
-            install4j-app-${{ matrix.arch }}-
+            install4j-app-${{ env.MACOS_ARCH }}-
+
+      - name: Restore install4j JRE bundle cache
+        id: cache-install4j-jres
+        uses: actions/cache@v5
+        with:
+          path: ~/Library/Caches/install4j/${{ env.INSTALL4J_CACHE_VERSION }}/cached_jres
+          key: install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}-${{ hashFiles('installers/mac/*.install4j') }}
+          restore-keys: |
+            install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}-
+            install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-
+
+      - name: Restore macOS helper binary cache
+        id: cache-mac-binaries
+        uses: actions/cache@v5
+        with:
+          path: target/bin
+          key: mac-binaries-${{ env.MACOS_ARCH }}-${{ env.MAC_COMMON_SHUTDOWNHELPER_MD5 }}-${{ env.MAC_APPLE_SILICON_FFMPEG_MD5 }}-${{ env.MAC_APPLE_SILICON_FFPROBE_MD5 }}
+          restore-keys: |
+            mac-binaries-${{ env.MACOS_ARCH }}-
 
       - name: Restore or download & extract install4j
         run: |
@@ -93,10 +122,194 @@ jobs:
           echo "${{ secrets.MAC_DEV_CERT_2025 }}" \
             | base64 --decode > target/mac/mac_dev_cert_with_password.p12
 
+      - name: Restore or download macOS helper binaries
+        run: |
+          mkdir -p target/bin
+          for pair in \
+            "common/MVShutdownHelper:${MAC_COMMON_SHUTDOWNHELPER_MD5}" \
+            "apple_silicon/ffmpeg:${MAC_APPLE_SILICON_FFMPEG_MD5}" \
+            "apple_silicon/ffprobe:${MAC_APPLE_SILICON_FFPROBE_MD5}"
+          do
+            IFS=":" read -r path md5 <<< "$pair"
+            dest="target/bin/$(basename "$path")"
+            url="${MAC_BINARIES_BASE_URL}/${path}"
+            if [[ -f "$dest" && "$(md5 -q "$dest")" == "$md5" ]]; then
+              echo "Using cached $dest"
+              continue
+            fi
+            echo "Downloading $url"
+            curl -fL "$url" -o "$dest"
+            actual="$(md5 -q "$dest")"
+            if [[ "$actual" != "$md5" ]]; then
+              echo "MD5 mismatch for $dest: got $actual expected $md5" >&2
+              exit 1
+            fi
+          done
+
       - name: Build macOS app
-        run: mvn -B package -P${{ matrix.mvn_profile }},install4j-mac-${{ matrix.arch }} -DskipTests
+        run: mvn -B package -P${{ env.MVN_PROFILE }},install4j-mac-${{ env.MACOS_ARCH }} -DskipTests
         env:
-          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
+          MAC_KEYSTORE_PASSWORD:       ${{ secrets.MAC_KEYSTORE_PASSWORD }}
+
+      - name: Print notarization logs on failure
+        if: failure()
+        run: |
+          echo "Looking for notarization logs..."
+          find target -name '*.notarization.log' -print -exec cat {} \;
+
+      - name: Upload notarization logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notarization-logs-${{ env.MACOS_ARCH }}
+          path: target/**/*.notarization.log
+          if-no-files-found: ignore
+
+      - name: Configure AWS CLI for MinIO
+        run: |
+          mkdir -p ~/.aws
+          cat > ~/.aws/credentials <<EOF
+          [default]
+          aws_access_key_id     = ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          aws_secret_access_key = ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
+          EOF
+          cat > ~/.aws/config <<EOF
+          [default]
+          region = ${AWS_DEFAULT_REGION}
+          output = json
+          EOF
+
+      - name: Upload artifact to S3
+        env:
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          FILE_NAME="MediathekView-${MV_VERSION}-${DMG_SUFFIX}-notarized-$DATE.dmg"
+
+          shasum -a 512 "target/media/${DMG_FILE}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${DMG_FILE}" "s3://${S3_BUCKET}/${FILE_NAME}"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${FILE_NAME}.sha512" "s3://${S3_BUCKET}/${FILE_NAME}.sha512"
+
+  build-macos-intel:
+    name: Build macOS intel nightly
+    runs-on: macos-15-intel
+
+    env:
+      MACOS_ARCH: intel
+      MVN_PROFILE: mac_intel
+      DMG_SUFFIX: mac-intel
+      DMG_FILE: MediathekView-latest-mac-intel.dmg
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v6
+        with:
+          ref: develop
+
+      - *extract-version-step
+
+      - name: Set up Java 25 (Liberica) & cache Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: liberica
+          java-version: '25'
+          java-package: jdk
+      - name: Restore Maven repository cache
+        id: maven-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-java25-maven-${{ hashFiles('**/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-java25-maven-
+
+      - name: Cache extracted install4j.app
+        id: cache-install4j-app
+        uses: actions/cache@v5
+        with:
+          path: download/install4j.app
+          key: install4j-app-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}
+          restore-keys: |
+            install4j-app-${{ env.MACOS_ARCH }}-
+
+      - name: Restore install4j JRE bundle cache
+        id: cache-install4j-jres
+        uses: actions/cache@v5
+        with:
+          path: ~/Library/Caches/install4j/${{ env.INSTALL4J_CACHE_VERSION }}/cached_jres
+          key: install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}-${{ hashFiles('installers/mac/*.install4j') }}
+          restore-keys: |
+            install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}-
+            install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-
+
+      - name: Restore macOS helper binary cache
+        id: cache-mac-binaries
+        uses: actions/cache@v5
+        with:
+          path: target/bin
+          key: mac-binaries-${{ env.MACOS_ARCH }}-${{ env.MAC_COMMON_SHUTDOWNHELPER_MD5 }}-${{ env.MAC_INTEL_FFMPEG_MD5 }}-${{ env.MAC_INTEL_FFPROBE_MD5 }}
+          restore-keys: |
+            mac-binaries-${{ env.MACOS_ARCH }}-
+
+      - name: Restore or download & extract install4j
+        run: |
+          mkdir -p download
+          if [ -d download/install4j.app ]; then
+            echo "✔︎ Using cached install4j.app"
+          else
+            echo "→ Downloading install4j ${INSTALL4J_VERSION}"
+            curl -L -o download/install4j.dmg \
+              https://download.ej-technologies.com/install4j/install4j_macos_${INSTALL4J_VERSION}.dmg
+            hdiutil attach download/install4j.dmg
+            cp -r /Volumes/install4j/install4j.app download/install4j.app
+            hdiutil detach /Volumes/install4j*
+          fi
+
+      - name: Install install4j
+        run: |
+          sudo rm -rf /Applications/install4j.app || true
+          sudo cp -r download/install4j.app /Applications/install4j.app
+
+      - name: Restore AuthKey
+        run: |
+          mkdir -p target/mac
+          echo "${{ secrets.AUTHKEY_WA422TZX7G }}" \
+            | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
+
+      - name: Restore dev certificate
+        run: |
+          mkdir -p target/mac
+          echo "${{ secrets.MAC_DEV_CERT_2025 }}" \
+            | base64 --decode > target/mac/mac_dev_cert_with_password.p12
+
+      - name: Restore or download macOS helper binaries
+        run: |
+          mkdir -p target/bin
+          for pair in \
+            "common/MVShutdownHelper:${MAC_COMMON_SHUTDOWNHELPER_MD5}" \
+            "intel/ffmpeg:${MAC_INTEL_FFMPEG_MD5}" \
+            "intel/ffprobe:${MAC_INTEL_FFPROBE_MD5}"
+          do
+            IFS=":" read -r path md5 <<< "$pair"
+            dest="target/bin/$(basename "$path")"
+            url="${MAC_BINARIES_BASE_URL}/${path}"
+            if [[ -f "$dest" && "$(md5 -q "$dest")" == "$md5" ]]; then
+              echo "Using cached $dest"
+              continue
+            fi
+            echo "Downloading $url"
+            curl -fL "$url" -o "$dest"
+            actual="$(md5 -q "$dest")"
+            if [[ "$actual" != "$md5" ]]; then
+              echo "MD5 mismatch for $dest: got $actual expected $md5" >&2
+              exit 1
+            fi
+          done
+
+      - name: Build macOS app
+        run: mvn -B package -P${{ env.MVN_PROFILE }},install4j-mac-${{ env.MACOS_ARCH }} -DskipTests
+        env:
           MAC_KEYSTORE_PASSWORD:       ${{ secrets.MAC_KEYSTORE_PASSWORD }}
 
       - name: Configure AWS CLI for MinIO
@@ -109,7 +322,7 @@ jobs:
           EOF
           cat > ~/.aws/config <<EOF
           [default]
-          region = ${MINIO_REGION:-us-east-1}
+          region = ${AWS_DEFAULT_REGION}
           output = json
           EOF
 
@@ -119,49 +332,70 @@ jobs:
           S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
         run: |
           DATE=$(date +'%Y-%m-%d')
-          FILE_NAME="MediathekView-${MV_VERSION}-${{ matrix.dmg_suffix }}-notarized-$DATE.dmg"
+          FILE_NAME="MediathekView-${MV_VERSION}-${DMG_SUFFIX}-notarized-$DATE.dmg"
 
-          shasum -a 512 "target/media/${{ matrix.dmg_file }}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"          
-          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${{ matrix.dmg_file }}" "s3://${S3_BUCKET}/${FILE_NAME}"
+          shasum -a 512 "target/media/${DMG_FILE}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${DMG_FILE}" "s3://${S3_BUCKET}/${FILE_NAME}"
           aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${FILE_NAME}.sha512" "s3://${S3_BUCKET}/${FILE_NAME}.sha512"
 
   build-windows-arm64:
-    if: github.ref == 'refs/heads/develop'
     name: Build Windows ARM64 nightly
     runs-on: windows-11-arm
 
-    env:
-      INSTALL4J_VERSION: '11_0_5'
-
     steps:
       - name: Checkout develop branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: develop
 
-      - name: Extract Version from pom.xml
+      - *extract-version-step
+      - &extract-sqlite-version-step
+        name: Extract SQLite version
         shell: pwsh
         run: |
           [xml]$pom = Get-Content pom.xml
-          $version = $pom.project.version
-          echo "Version: $version"
-          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+          $sqliteJdbcVersion = $pom.project.properties.'sqlite-jdbc.version'
+          if (-not $sqliteJdbcVersion) {
+            throw "Could not read sqlite-jdbc.version from pom.xml"
+          }
 
+          $sqliteVersion = $sqliteJdbcVersion -replace '\.\d+$', ''
+          Write-Host "Extracted sqlite-jdbc version: $sqliteJdbcVersion"
+          Write-Host "Derived SQLite version: $sqliteVersion"
+          "SQLITE_JDBC_VERSION=$sqliteJdbcVersion" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "SQLITE_VERSION=$sqliteVersion" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Set up Java 25 (Liberica) & cache Maven
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: liberica
           java-version: '25'
           java-package: jdk
-          cache: maven
+      - name: Restore Maven repository cache
+        id: maven-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-java25-maven-${{ hashFiles('**/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-java25-maven-
 
       - name: Cache install4j
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: download/install4j
           key: install4j-windows-arm64-${{ env.INSTALL4J_VERSION }}
           restore-keys: install4j-windows-arm64-
+
+      - name: Restore install4j JRE bundle cache
+        id: cache-install4j-jres
+        uses: actions/cache@v5
+        with:
+          path: ~\AppData\Local\install4j\${{ env.INSTALL4J_CACHE_VERSION }}\cached_jres
+          key: install4j-jres-${{ runner.os }}-arm64-${{ env.INSTALL4J_VERSION }}-${{ hashFiles('installers/windows-aarch64/*.install4j') }}
+          restore-keys: |
+            install4j-jres-${{ runner.os }}-arm64-${{ env.INSTALL4J_VERSION }}-
+            install4j-jres-${{ runner.os }}-arm64-
 
       - name: Download or reuse install4j.zip
         shell: pwsh
@@ -184,10 +418,143 @@ jobs:
         run: |
           echo "${{ github.workspace }}\download\install4j\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
+      - name: Restore cached Windows ARM64 ffmpeg bundle
+        id: cache-win-arm64-ffmpeg
+        uses: actions/cache@v5
+        with:
+          path: download\windows-bin-arm64
+          key: ffmpeg-${{ runner.os }}-arm64-${{ env.WINDOWS_ARM64_FFMPEG_MD5 }}
+
+      - name: Restore or download Windows ARM64 ffmpeg bundle
+        shell: pwsh
+        run: |
+          $bundleDir = Join-Path $env:GITHUB_WORKSPACE "download\windows-bin-arm64"
+          $zipPath = Join-Path $env:GITHUB_WORKSPACE "download\windows-arm64-ffmpeg.zip"
+          $targetDir = Join-Path $env:GITHUB_WORKSPACE "target\res\bin"
+
+          if (-not (Test-Path (Join-Path $bundleDir "ffmpeg.exe"))) {
+            Remove-Item $bundleDir -Recurse -Force -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Path $bundleDir -Force | Out-Null
+
+            Write-Host "→ Downloading $env:WINDOWS_ARM64_FFMPEG_URL"
+            curl.exe -L $env:WINDOWS_ARM64_FFMPEG_URL -o $zipPath --progress-bar
+            $actualMd5 = (Get-FileHash $zipPath -Algorithm MD5).Hash.ToLowerInvariant()
+            if ($actualMd5 -ne $env:WINDOWS_ARM64_FFMPEG_MD5.ToLowerInvariant()) {
+              throw "Windows ARM64 ffmpeg zip MD5 mismatch: got $actualMd5 expected $env:WINDOWS_ARM64_FFMPEG_MD5"
+            }
+            Expand-Archive -Path $zipPath -DestinationPath $bundleDir -Force
+
+            $inner = Join-Path $bundleDir "ffmpeg"
+            if (Test-Path $inner) {
+              Get-ChildItem $inner -Force | Move-Item -Destination $bundleDir -Force
+              Remove-Item $inner -Recurse -Force
+            }
+
+            Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+          } else {
+            Write-Host "✔︎ Cached Windows ARM64 ffmpeg bundle"
+          }
+
+          New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+          Copy-Item -Path (Join-Path $bundleDir "*") -Destination $targetDir -Recurse -Force
+
+      - name: Restore cached sqlite3 ARM64
+        id: cache-sqlite-arm64
+        uses: actions/cache@v5
+        with:
+          path: target\res\bin\sqlite3.exe
+          key: sqlite3-${{ runner.os }}-arm64-${{ env.SQLITE_VERSION }}
+
+      - name: Build sqlite3 ARM64
+        if: steps.cache-sqlite-arm64.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $sqliteVersion = $env:SQLITE_VERSION
+          $versionParts = $sqliteVersion.Split('.')
+          if ($versionParts.Count -ne 3) {
+            throw "Unexpected SQLite version format: $sqliteVersion"
+          }
+
+          $sqliteEncodedVersion = "{0}{1:D2}{2:D2}00" -f `
+            [int]$versionParts[0], `
+            [int]$versionParts[1], `
+            [int]$versionParts[2]
+
+          $sqliteRoot = Join-Path $env:GITHUB_WORKSPACE "download\sqlite-arm64"
+          $sqliteAmalgamationZip = Join-Path $sqliteRoot "sqlite-amalgamation.zip"
+          $sqliteOutDir = Join-Path $env:GITHUB_WORKSPACE "target\res\bin"
+
+          New-Item -ItemType Directory -Path $sqliteRoot -Force | Out-Null
+          New-Item -ItemType Directory -Path $sqliteOutDir -Force | Out-Null
+
+          $sqliteAmalgamationUrl = $null
+          foreach ($year in ((Get-Date).Year)..2004) {
+            $candidateUrl = "https://sqlite.org/$year/sqlite-amalgamation-$sqliteEncodedVersion.zip"
+            Write-Host "→ Trying $candidateUrl"
+            curl.exe --fail --location --silent --show-error $candidateUrl -o $sqliteAmalgamationZip
+            if ($LASTEXITCODE -eq 0) {
+              $sqliteAmalgamationUrl = $candidateUrl
+              break
+            }
+
+            Remove-Item $sqliteAmalgamationZip -Force -ErrorAction SilentlyContinue
+          }
+
+          if (-not $sqliteAmalgamationUrl) {
+            throw "Could not download sqlite-amalgamation-$sqliteEncodedVersion.zip from the SQLite release archives"
+          }
+
+          Write-Host "✔︎ Downloaded $sqliteAmalgamationUrl"
+
+          $sqliteAmalgamationDir = Join-Path $sqliteRoot "amalgamation"
+          Expand-Archive -Path $sqliteAmalgamationZip -DestinationPath $sqliteAmalgamationDir -Force
+
+          $sqliteAmalgamationSourceDir = Get-ChildItem $sqliteAmalgamationDir -Directory | Where-Object Name -like 'sqlite-amalgamation-*' | Select-Object -First 1
+          if (-not $sqliteAmalgamationSourceDir) {
+            throw "Could not locate extracted SQLite amalgamation directory"
+          }
+
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsInstallPath = & $vswhere -latest -products * -property installationPath
+          if (-not $vsInstallPath) {
+            throw "Could not find a Visual Studio installation"
+          }
+
+          $vsDevCmd = Join-Path $vsInstallPath "Common7\Tools\VsDevCmd.bat"
+          if (-not (Test-Path $vsDevCmd)) {
+            throw "Could not find VsDevCmd.bat at $vsDevCmd"
+          }
+
+          $sqliteExe = Join-Path $sqliteOutDir "sqlite3.exe"
+          Push-Location $sqliteAmalgamationSourceDir.FullName
+          try {
+            $compileCmd = @(
+              "`"$vsDevCmd`" -arch=arm64 -host_arch=arm64",
+              "&&",
+              "cl",
+              "/nologo",
+              "/O2",
+              "/MT",
+              "/DSQLITE_THREADSAFE=1",
+              "/DSQLITE_ENABLE_DBPAGE_VTAB",
+              "/Fe:`"$sqliteExe`"",
+              "`"$($sqliteAmalgamationSourceDir.FullName)\shell.c`"",
+              "`"$($sqliteAmalgamationSourceDir.FullName)\sqlite3.c`""
+            ) -join ' '
+            cmd.exe /c $compileCmd
+            if ($LASTEXITCODE -ne 0) {
+              throw "sqlite3 ARM64 compilation failed with exit code $LASTEXITCODE"
+            }
+          } finally {
+            Pop-Location
+          }
+
+          if (-not (Test-Path $sqliteExe)) {
+            throw "Expected sqlite3.exe at $sqliteExe"
+          }
+
       - name: Build Windows ARM64 app
         run: mvn -B package -P windows-aarch64,install4j-win-aarch64 -DskipTests
-        env:
-          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
 
       - name: Upload to S3
         env:
@@ -195,7 +562,6 @@ jobs:
           S3_BUCKET:   ${{ secrets.MVS3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.MVS3_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
         shell: pwsh
         run: |
           $date     = Get-Date -Format yyyy-MM-dd
@@ -225,41 +591,49 @@ jobs:
           aws --endpoint-url $endpoint s3 cp "target\media\$zipName.sha512" "s3://$bucket/$zipName.sha512"
 
   build-windows-amd64:
-    if: github.ref == 'refs/heads/develop'
     name: Build Windows AMD64 nightly
     runs-on: windows-latest
 
-    env:
-      INSTALL4J_VERSION: '11_0_5'
-
     steps:
       - name: Checkout develop branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: develop
 
-      - name: Extract Version from pom.xml
-        shell: pwsh
-        run: |
-          [xml]$pom = Get-Content pom.xml
-          $version = $pom.project.version
-          echo "Version: $version"
-          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+      - *extract-version-step
+      - *extract-sqlite-version-step
 
       - name: Set up Java 25 (Liberica) & cache Maven
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: liberica
           java-version: '25'
           java-package: jdk
-          cache: maven
+      - name: Restore Maven repository cache
+        id: maven-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-java25-maven-${{ hashFiles('**/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-java25-maven-
 
       - name: Cache install4j
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: download/install4j
           key: install4j-windows-amd64-${{ env.INSTALL4J_VERSION }}
           restore-keys: install4j-windows-amd64-
+
+      - name: Restore install4j JRE bundle cache
+        id: cache-install4j-jres
+        uses: actions/cache@v5
+        with:
+          path: ~\AppData\Local\install4j\${{ env.INSTALL4J_CACHE_VERSION }}\cached_jres
+          key: install4j-jres-${{ runner.os }}-x64-${{ env.INSTALL4J_VERSION }}-${{ hashFiles('installers/windows-amd64/*.install4j') }}
+          restore-keys: |
+            install4j-jres-${{ runner.os }}-x64-${{ env.INSTALL4J_VERSION }}-
+            install4j-jres-${{ runner.os }}-x64-
 
       - name: Download or reuse install4j.zip
         shell: pwsh
@@ -282,10 +656,143 @@ jobs:
         run: |
           echo "${{ github.workspace }}\download\install4j\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
+      - name: Restore cached Windows AMD64 ffmpeg bundle
+        id: cache-win-amd64-ffmpeg
+        uses: actions/cache@v5
+        with:
+          path: download\windows-bin-amd64
+          key: ffmpeg-${{ runner.os }}-amd64-${{ env.WINDOWS_AMD64_FFMPEG_MD5 }}
+
+      - name: Restore or download Windows AMD64 ffmpeg bundle
+        shell: pwsh
+        run: |
+          $bundleDir = Join-Path $env:GITHUB_WORKSPACE "download\windows-bin-amd64"
+          $zipPath = Join-Path $env:GITHUB_WORKSPACE "download\windows-amd64-ffmpeg.zip"
+          $targetDir = Join-Path $env:GITHUB_WORKSPACE "target\res\bin"
+
+          if (-not (Test-Path (Join-Path $bundleDir "ffmpeg.exe"))) {
+            Remove-Item $bundleDir -Recurse -Force -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Path $bundleDir -Force | Out-Null
+
+            Write-Host "→ Downloading $env:WINDOWS_AMD64_FFMPEG_URL"
+            curl.exe -L $env:WINDOWS_AMD64_FFMPEG_URL -o $zipPath --progress-bar
+            $actualMd5 = (Get-FileHash $zipPath -Algorithm MD5).Hash.ToLowerInvariant()
+            if ($actualMd5 -ne $env:WINDOWS_AMD64_FFMPEG_MD5.ToLowerInvariant()) {
+              throw "Windows AMD64 ffmpeg zip MD5 mismatch: got $actualMd5 expected $env:WINDOWS_AMD64_FFMPEG_MD5"
+            }
+            Expand-Archive -Path $zipPath -DestinationPath $bundleDir -Force
+
+            $inner = Join-Path $bundleDir "ffmpeg"
+            if (Test-Path $inner) {
+              Get-ChildItem $inner -Force | Move-Item -Destination $bundleDir -Force
+              Remove-Item $inner -Recurse -Force
+            }
+
+            Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+          } else {
+            Write-Host "✔︎ Cached Windows AMD64 ffmpeg bundle"
+          }
+
+          New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+          Copy-Item -Path (Join-Path $bundleDir "*") -Destination $targetDir -Recurse -Force
+
+      - name: Restore cached sqlite3 AMD64
+        id: cache-sqlite-amd64
+        uses: actions/cache@v5
+        with:
+          path: target\res\bin\sqlite3.exe
+          key: sqlite3-${{ runner.os }}-amd64-${{ env.SQLITE_VERSION }}
+
+      - name: Build sqlite3 AMD64
+        if: steps.cache-sqlite-amd64.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $sqliteVersion = $env:SQLITE_VERSION
+          $versionParts = $sqliteVersion.Split('.')
+          if ($versionParts.Count -ne 3) {
+            throw "Unexpected SQLite version format: $sqliteVersion"
+          }
+
+          $sqliteEncodedVersion = "{0}{1:D2}{2:D2}00" -f `
+            [int]$versionParts[0], `
+            [int]$versionParts[1], `
+            [int]$versionParts[2]
+
+          $sqliteRoot = Join-Path $env:GITHUB_WORKSPACE "download\sqlite-amd64"
+          $sqliteAmalgamationZip = Join-Path $sqliteRoot "sqlite-amalgamation.zip"
+          $sqliteOutDir = Join-Path $env:GITHUB_WORKSPACE "target\res\bin"
+
+          New-Item -ItemType Directory -Path $sqliteRoot -Force | Out-Null
+          New-Item -ItemType Directory -Path $sqliteOutDir -Force | Out-Null
+
+          $sqliteAmalgamationUrl = $null
+          foreach ($year in ((Get-Date).Year)..2004) {
+            $candidateUrl = "https://sqlite.org/$year/sqlite-amalgamation-$sqliteEncodedVersion.zip"
+            Write-Host "→ Trying $candidateUrl"
+            curl.exe --fail --location --silent --show-error $candidateUrl -o $sqliteAmalgamationZip
+            if ($LASTEXITCODE -eq 0) {
+              $sqliteAmalgamationUrl = $candidateUrl
+              break
+            }
+
+            Remove-Item $sqliteAmalgamationZip -Force -ErrorAction SilentlyContinue
+          }
+
+          if (-not $sqliteAmalgamationUrl) {
+            throw "Could not download sqlite-amalgamation-$sqliteEncodedVersion.zip from the SQLite release archives"
+          }
+
+          Write-Host "✔︎ Downloaded $sqliteAmalgamationUrl"
+
+          $sqliteAmalgamationDir = Join-Path $sqliteRoot "amalgamation"
+          Expand-Archive -Path $sqliteAmalgamationZip -DestinationPath $sqliteAmalgamationDir -Force
+
+          $sqliteAmalgamationSourceDir = Get-ChildItem $sqliteAmalgamationDir -Directory | Where-Object Name -like 'sqlite-amalgamation-*' | Select-Object -First 1
+          if (-not $sqliteAmalgamationSourceDir) {
+            throw "Could not locate extracted SQLite amalgamation directory"
+          }
+
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsInstallPath = & $vswhere -latest -products * -property installationPath
+          if (-not $vsInstallPath) {
+            throw "Could not find a Visual Studio installation"
+          }
+
+          $vsDevCmd = Join-Path $vsInstallPath "Common7\Tools\VsDevCmd.bat"
+          if (-not (Test-Path $vsDevCmd)) {
+            throw "Could not find VsDevCmd.bat at $vsDevCmd"
+          }
+
+          $sqliteExe = Join-Path $sqliteOutDir "sqlite3.exe"
+          Push-Location $sqliteAmalgamationSourceDir.FullName
+          try {
+            $compileCmd = @(
+              "`"$vsDevCmd`" -arch=amd64 -host_arch=amd64",
+              "&&",
+              "cl",
+              "/nologo",
+              "/O2",
+              "/MT",
+              "/DSQLITE_THREADSAFE=1",
+              "/DSQLITE_ENABLE_DBPAGE_VTAB",
+              "/Fe:`"$sqliteExe`"",
+              "`"$($sqliteAmalgamationSourceDir.FullName)\shell.c`"",
+              "`"$($sqliteAmalgamationSourceDir.FullName)\sqlite3.c`""
+            ) -join ' '
+            cmd.exe /c $compileCmd
+            if ($LASTEXITCODE -ne 0) {
+              throw "sqlite3 AMD64 compilation failed with exit code $LASTEXITCODE"
+            }
+          } finally {
+            Pop-Location
+          }
+
+          if (-not (Test-Path $sqliteExe)) {
+            throw "Expected sqlite3.exe at $sqliteExe"
+          }
+
       - name: Build Windows AMD64 app
         run: mvn -B package -P windows_64bit,install4j-win-amd64 -DskipTests
-        env:
-          INSTALL4J_11_LICENSE_KEY: ${{ secrets.INSTALL4J_11_LICENSE_KEY }}
 
       - name: Upload to S3
         env:
@@ -293,7 +800,6 @@ jobs:
           S3_BUCKET:   ${{ secrets.MVS3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.MVS3_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
         shell: pwsh
         run: |
           $date     = Get-Date -Format yyyy-MM-dd

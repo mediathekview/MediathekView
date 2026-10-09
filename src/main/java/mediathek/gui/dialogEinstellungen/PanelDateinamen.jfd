@@ -3,7 +3,7 @@ JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormContainer( "mediathek.gui.PanelVorlage", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq t {space :::p, comp jTabbedPane1:::::x, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jTabbedPane1:::::x, space :::p}}"
 		} ) {

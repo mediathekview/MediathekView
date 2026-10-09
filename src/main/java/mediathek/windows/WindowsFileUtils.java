@@ -18,7 +18,7 @@
 
 package mediathek.windows;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,7 +80,7 @@ public class WindowsFileUtils {
         return arena.allocateFrom(joined.toString(), StandardCharsets.UTF_16LE);
     }
 
-    public static void moveToTrash(@NotNull File... files) throws IOException {
+    public static void moveToTrash(@NonNull File... files) throws IOException {
         try (var arena = Arena.ofConfined()) {
             var pFrom = toUtf16MultiStringSegment(arena, files);
             var shfileop = arena.allocate(SHFILEOPSTRUCTW_LAYOUT);

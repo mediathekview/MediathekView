@@ -1,0 +1,169 @@
+name: nightly-macos-apple-silicon.yml
+
+on:
+  workflow_dispatch:
+
+env:
+  # bump this when you upgrade install4j
+  INSTALL4J_VERSION: '12_0_5'
+  INSTALL4J_CACHE_VERSION: 'v12'
+  INSTALL4J_LICENSE_KEY: ${{ secrets.INSTALL4J_12_LICENSE_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
+  MAC_BINARIES_BASE_URL: https://s3.mvorg.de/res/dev/mac/bin
+  MAC_COMMON_SHUTDOWNHELPER_MD5: 3531e6483f886877e6f32f8345503fd7
+  MAC_APPLE_SILICON_FFMPEG_MD5: 36ec3a0b676d0e344bcca9987d9f2174
+  MAC_APPLE_SILICON_FFPROBE_MD5: e2e1ceb77ab05ceaa9d6054a50de69a0
+
+jobs:
+  build-macos-apple-silicon:
+    name: Build macOS apple-silicon nightly
+    runs-on: macos-latest
+
+    env:
+      MACOS_ARCH: apple-silicon
+      MVN_PROFILE: mac_apple_silicon
+      DMG_SUFFIX: apple-silicon
+      DMG_FILE: MediathekView-latest-apple-silicon.dmg
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v6
+        with:
+          ref: develop
+
+      - name: Extract version
+        shell: pwsh
+        run: |
+          [xml]$pom = Get-Content pom.xml
+          $version = $pom.project.version
+          Write-Host "Extracted Version: $version"
+          "MV_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Set up Java 25 (Liberica) & cache Maven
+        uses: actions/setup-java@v5
+        with:
+          distribution: liberica
+          java-version: '25'
+          java-package: jdk
+      - name: Restore Maven repository cache
+        id: maven-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-java25-maven-${{ hashFiles('**/pom.xml', '.mvn/wrapper/maven-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-java25-maven-
+
+      - name: Cache extracted install4j.app
+        id: cache-install4j-app
+        uses: actions/cache@v5
+        with:
+          path: download/install4j.app
+          key: install4j-app-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}
+          restore-keys: |
+            install4j-app-${{ env.MACOS_ARCH }}-
+
+      - name: Restore install4j JRE bundle cache
+        id: cache-install4j-jres
+        uses: actions/cache@v5
+        with:
+          path: ~/Library/Caches/install4j/${{ env.INSTALL4J_CACHE_VERSION }}/cached_jres
+          key: install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}-${{ hashFiles('installers/mac/*.install4j') }}
+          restore-keys: |
+            install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-${{ env.INSTALL4J_VERSION }}-
+            install4j-jres-${{ runner.os }}-${{ env.MACOS_ARCH }}-
+
+      - name: Restore macOS helper binary cache
+        id: cache-mac-binaries
+        uses: actions/cache@v5
+        with:
+          path: target/bin
+          key: mac-binaries-${{ env.MACOS_ARCH }}-${{ env.MAC_COMMON_SHUTDOWNHELPER_MD5 }}-${{ env.MAC_APPLE_SILICON_FFMPEG_MD5 }}-${{ env.MAC_APPLE_SILICON_FFPROBE_MD5 }}
+          restore-keys: |
+            mac-binaries-${{ env.MACOS_ARCH }}-
+
+      - name: Restore or download & extract install4j
+        run: |
+          mkdir -p download
+          if [ -d download/install4j.app ]; then
+            echo "✔︎ Using cached install4j.app"
+          else
+            echo "→ Downloading install4j ${INSTALL4J_VERSION}"
+            curl -L -o download/install4j.dmg \
+              https://download.ej-technologies.com/install4j/install4j_macos_${INSTALL4J_VERSION}.dmg
+            hdiutil attach download/install4j.dmg
+            cp -r /Volumes/install4j/install4j.app download/install4j.app
+            hdiutil detach /Volumes/install4j*
+          fi
+
+      - name: Install install4j
+        run: |
+          sudo rm -rf /Applications/install4j.app || true
+          sudo cp -r download/install4j.app /Applications/install4j.app
+
+      - name: Restore AuthKey
+        run: |
+          mkdir -p target/mac
+          echo "${{ secrets.AUTHKEY_WA422TZX7G }}" \
+            | base64 --decode > target/mac/AuthKey_WA422TZX7G.p8
+
+      - name: Restore dev certificate
+        run: |
+          mkdir -p target/mac
+          echo "${{ secrets.MAC_DEV_CERT_2025 }}" \
+            | base64 --decode > target/mac/mac_dev_cert_with_password.p12
+
+      - name: Restore or download macOS helper binaries
+        run: |
+          mkdir -p target/bin
+          for pair in \
+            "common/MVShutdownHelper:${MAC_COMMON_SHUTDOWNHELPER_MD5}" \
+            "apple_silicon/ffmpeg:${MAC_APPLE_SILICON_FFMPEG_MD5}" \
+            "apple_silicon/ffprobe:${MAC_APPLE_SILICON_FFPROBE_MD5}"
+          do
+            IFS=":" read -r path md5 <<< "$pair"
+            dest="target/bin/$(basename "$path")"
+            url="${MAC_BINARIES_BASE_URL}/${path}"
+            if [[ -f "$dest" && "$(md5 -q "$dest")" == "$md5" ]]; then
+              echo "Using cached $dest"
+              continue
+            fi
+            echo "Downloading $url"
+            curl -fL "$url" -o "$dest"
+            actual="$(md5 -q "$dest")"
+            if [[ "$actual" != "$md5" ]]; then
+              echo "MD5 mismatch for $dest: got $actual expected $md5" >&2
+              exit 1
+            fi
+          done
+
+      - name: Build macOS app
+        run: mvn -B package -P${{ env.MVN_PROFILE }},install4j-mac-${{ env.MACOS_ARCH }} -DskipTests
+        env:
+          MAC_KEYSTORE_PASSWORD:       ${{ secrets.MAC_KEYSTORE_PASSWORD }}
+
+      - name: Configure AWS CLI for MinIO
+        run: |
+          mkdir -p ~/.aws
+          cat > ~/.aws/credentials <<EOF
+          [default]
+          aws_access_key_id     = ${{ secrets.MVS3_ACCESS_KEY_ID }}
+          aws_secret_access_key = ${{ secrets.MVS3_SECRET_ACCESS_KEY }}
+          EOF
+          cat > ~/.aws/config <<EOF
+          [default]
+          region = ${AWS_DEFAULT_REGION}
+          output = json
+          EOF
+
+      - name: Upload artifact to S3
+        env:
+          S3_ENDPOINT: ${{ secrets.MVS3_ENDPOINT }}
+          S3_BUCKET:      ${{ secrets.MVS3_BUCKET }}
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          FILE_NAME="MediathekView-${MV_VERSION}-${DMG_SUFFIX}-notarized-$DATE.dmg"
+
+          shasum -a 512 "target/media/${DMG_FILE}" | awk '{print $1}' > "target/media/${FILE_NAME}.sha512"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${DMG_FILE}" "s3://${S3_BUCKET}/${FILE_NAME}"
+          aws --endpoint-url "https://${S3_ENDPOINT}" s3 cp "target/media/${FILE_NAME}.sha512" "s3://${S3_BUCKET}/${FILE_NAME}.sha512"

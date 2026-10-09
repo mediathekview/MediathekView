@@ -1,11 +1,6 @@
+Der Programmaufruf wird von MediathekView in die einzelnen Teile (Programmschalter) zerlegt. Die einzelnen Programmschalter werden durch "<>" getrennt angegeben. Dadurch ist es möglich, auch Pfade mit Leerzeichen zu verwenden.
 
-Der Programmaufruf wird von MediathekView in die einzelnen
-Teile (Programmschalter) zerlegt. Die einzelnen Programmschalter
-werden durch "<>" getrennt angegeben. Dadurch ist es 
-möglich, auch Pfade mit Leerzeichen zu verwenden.
-
-Bei ÄNDERUNGEN des Programmaufrufs in diesem Dialog, muss diese Form
-verwendet werden.
+Bei ÄNDERUNGEN des Programmaufrufs in diesem Dialog, muss diese Form verwendet werden.
 
 der Aufruf:
 PFAD/ffmpeg -i URL -c copy -bsf:a aac_adtstoasc ZIELPFAD/DATEI.mp4
@@ -16,6 +11,4 @@ Pfad/ffmpeg<>-i<>URL<>-c<>copy<>-bsf:a<>aac_adtstoasc<>ZIELPFAD/DATEI.mp4
 Der Programmaufruf kann auch so (ohne <>) angegben werden:
 PFAD/ffmpeg -i URL -c copy -bsf:a aac_adtstoasc ZIELPFAD/DATEI.mp4
 
-Das funktioniert, kann dann aber bei Leerzeichen im Pfad zu Problemen
-führen.
-
+Das funktioniert, kann dann aber bei Leerzeichen im Pfad zu Problemen führen.

@@ -1,0 +1,301 @@
+package mediathek.controller.starter
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
+import mediathek.config.CommandLineOptions
+import mediathek.config.Konstanten
+import mediathek.controller.history.AboHistoryController
+import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadSource
+import mediathek.gui.dialog.DialogContinueDownload
+import mediathek.gui.dialog.MeldungDownloadfehler
+import mediathek.gui.messages.DownloadFinishedEvent
+import mediathek.gui.messages.DownloadListChangedEvent
+import mediathek.gui.messages.DownloadStartEvent
+import mediathek.swing.SwingDispatch
+import mediathek.tool.MessageBus
+import org.apache.logging.log4j.LogManager
+import java.io.File
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Paths
+import javax.swing.JFrame
+
+/**
+ * Download files via an external program.
+ */
+class ExternalProgramDownload(
+    private val aboHistoryControllerProvider: () -> AboHistoryController,
+    private val datenDownload: DatenDownload,
+    private val dialogOwnerProvider: () -> JFrame? = { null },
+) : Thread("EXTERNAL PROGRAM DL THREAD: ${datenDownload.title}") {
+
+    private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
+    private var file: File
+    private var state = HttpDownloadState.DOWNLOAD
+    private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
+
+    init {
+        start.markRunning()
+        var fileName = datenDownload.targetPathFileName
+
+        // JDK 25+ workaround
+        if (Runtime.version().feature() > 24 && fileName.isEmpty()) {
+            fileName = EMPTY_FILENAME_JDK25_WORKAROUND
+        }
+
+        file = File(fileName)
+        DownloadStartEventPublisher.publish(datenDownload)
+        createDirectory()
+    }
+
+    override fun run() {
+        MessageBus.messageBus.publishAsync(DownloadStartEvent())
+
+        runBlocking {
+            try {
+                startAncillaryDownloads()
+
+                if (!cancelDownload()) {
+                    processDownload()
+                }
+            } catch (ex: Exception) {
+                logger.error("run()", ex)
+                showDownloadError(ex.localizedMessage)
+            } finally {
+                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
+                waitForPendingDownloads()
+                MessageBus.messageBus.publish(DownloadFinishedEvent(datenDownload))
+            }
+        }
+    }
+
+    private fun CoroutineScope.startAncillaryDownloads() {
+        ancillaryDownloads = DirectDownloadAncillaryFiles.start(this, datenDownload, logger)
+    }
+
+    private fun processDownload() {
+        var filesize = -1L
+        var stat = STAT_START
+
+        while (stat < STAT_ENDE) {
+            stat = when (stat) {
+                STAT_START -> {
+                    if (starten()) {
+                        if (datenDownload.isDownloadManager) STAT_FERTIG_OK else STAT_LAUFEN
+                    } else {
+                        STAT_RESTART
+                    }
+                }
+
+                STAT_LAUFEN -> laufendenDownloadPruefen()
+                STAT_RESTART -> restartPruefen(filesize).also { nextStat ->
+                    if (nextStat == STAT_START && file.exists()) {
+                        filesize = file.length()
+                    }
+                }
+
+                STAT_PRUEFEN -> {
+                    if (datenDownload.quelle == DownloadSource.BUTTON || datenDownload.isDownloadManager) {
+                        STAT_FERTIG_OK
+                    } else if (
+                        DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
+                            aboHistoryControllerProvider(),
+                            datenDownload,
+                            start,
+                        )
+                    ) {
+                        STAT_FERTIG_OK
+                    } else {
+                        STAT_FERTIG_FEHLER
+                    }
+                }
+
+                STAT_FERTIG_FEHLER -> {
+                    start.markError()
+                    STAT_ENDE
+                }
+
+                STAT_FERTIG_OK -> {
+                    start.markFinished()
+                    STAT_ENDE
+                }
+
+                else -> STAT_ENDE
+            }
+        }
+    }
+
+    private fun laufendenDownloadPruefen(): Int {
+        return try {
+            if (start.stoppen) {
+                start.process?.destroy()
+                STAT_FERTIG_OK
+            } else if (start.process!!.exitValue() != 0) {
+                STAT_RESTART
+            } else {
+                /*
+                 * In case of ffmpeg there may be frames skipped which prevents correct progress calculation,
+                 * we therefore make percent max when the process terminated without error.
+                 */
+                if (start.percent > 990) {
+                    start.updateProgress(DownloadRunState.PROGRESS_FERTIG)
+                }
+                STAT_PRUEFEN
+            }
+        } catch (_: Exception) {
+            try {
+                sleep(PROCESS_POLL_DELAY_MILLIS)
+            } catch (_: InterruptedException) {
+                currentThread().interrupt()
+            }
+            STAT_LAUFEN
+        }
+    }
+
+    private fun restartPruefen(filesize: Long): Int {
+        if (!datenDownload.isRestart) {
+            return STAT_FERTIG_FEHLER
+        }
+
+        if (filesize == -1L) {
+            DownloadFileCleanup.deleteIfEmpty(file.toPath())
+            return when {
+                file.exists() -> STAT_START
+                start.startcounter < Konstanten.MAX_EXTERNAL_STARTS -> STAT_START
+                else -> STAT_FERTIG_FEHLER
+            }
+        }
+
+        return when {
+            !file.exists() -> STAT_FERTIG_FEHLER
+            file.length() > filesize -> STAT_START
+            else -> STAT_FERTIG_FEHLER
+        }
+    }
+
+    private suspend fun waitForPendingDownloads() {
+        ancillaryDownloads.await()
+    }
+
+    private fun starten(): Boolean {
+        // die Reihenfolge: startcounter - logStart ist wichtig!
+        start.incrementStartCounter()
+        DownloadLogMessages.logStart(datenDownload, start)
+        val runtimeExec = RuntimeExec(
+            datenDownload.runtime.filmSize,
+            datenDownload.runtime.runState,
+            datenDownload.programInvocation,
+            datenDownload.programInvocationArray
+        )
+        start.process = runtimeExec.exec(true)
+        return start.process != null
+    }
+
+    private suspend fun cancelDownload(): Boolean {
+        if (datenDownload.isDownloadManager) {
+            // da kuemmert sich ein anderes Programm darum
+            return false
+        }
+        if (!file.exists()) {
+            // dann ist alles OK
+            return false
+        }
+
+        if (CommandLineOptions.isDownloadAndQuit()) {
+            return resolveExistingDownloadForCli()
+        }
+
+        return SwingDispatch.call(::abbrechen)
+    }
+
+    private fun abbrechen(): Boolean {
+        var result = false
+        if (file.exists()) {
+            val dialogContinueDownload = DialogContinueDownload(dialogOwnerProvider(), datenDownload, false)
+            dialogContinueDownload.isVisible = true
+
+            when (dialogContinueDownload.result) {
+                DialogContinueDownload.DownloadResult.CANCELLED -> {
+                    // dann wars das
+                    state = HttpDownloadState.CANCEL
+                    result = true
+                }
+
+                DialogContinueDownload.DownloadResult.CONTINUE -> {
+                    // dann mit gleichem Namen und Datei vorher loeschen
+                    try {
+                        Files.deleteIfExists(file.toPath())
+                        file = File(datenDownload.targetPathFileName)
+                    } catch (ex: Exception) {
+                        // kann nicht geloescht werden, evtl. klappt ja das Ueberschreiben
+                        logger.error("File exists: {}", datenDownload.targetPathFileName, ex)
+                    }
+                }
+
+                DialogContinueDownload.DownloadResult.RESTART_WITH_NEW_NAME -> {
+                    if (dialogContinueDownload.isNewName) {
+                        // jetzt den Programmaufruf nochmal mit dem geaenderten Dateinamen nochmal bauen
+                        datenDownload.aufrufBauen()
+                        MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
+                        createDirectory(logFailure = false)
+                        file = File(datenDownload.targetPathFileName)
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private fun resolveExistingDownloadForCli(): Boolean {
+        logger.info(
+            "CLI download mode: overwriting existing external-program target for {}",
+            datenDownload.targetPathFileName
+        )
+        try {
+            Files.deleteIfExists(file.toPath())
+            file = File(datenDownload.targetPathFileName)
+        } catch (ex: Exception) {
+            logger.error("File exists: {}", datenDownload.targetPathFileName, ex)
+        }
+        return false
+    }
+
+    private fun showDownloadError(message: String?) {
+        if (CommandLineOptions.isDownloadAndQuit()) {
+            logger.error("Download failed for {}: {}", datenDownload.targetPathFileName, message)
+            return
+        }
+        SwingDispatch.dispatch {
+            MeldungDownloadfehler(dialogOwnerProvider(), message, datenDownload).isVisible = true
+        }
+    }
+
+    private fun createDirectory(logFailure: Boolean = true) {
+        try {
+            Files.createDirectories(Paths.get(datenDownload.targetPath))
+        } catch (ex: IOException) {
+            if (logFailure) {
+                logger.error("Failed to create directories", ex)
+            }
+        }
+    }
+
+    companion object {
+        private const val STAT_START = 0
+        private const val STAT_LAUFEN = 1
+        private const val STAT_RESTART = 3
+        private const val STAT_PRUEFEN = 4
+
+        // ab hier ist schluss
+        private const val STAT_FERTIG_OK = 10
+        private const val STAT_FERTIG_FEHLER = 11
+        private const val STAT_ENDE = 99
+
+        private const val PROCESS_POLL_DELAY_MILLIS = 2_000L
+        private const val EMPTY_FILENAME_JDK25_WORKAROUND =
+            "ORACLE/DO/NOT/FUCK/AROUND/WITH/CORE/JAVA/CLASSES/WITHOUT/COMPATIBILITY/SWITCH"
+
+        private val logger = LogManager.getLogger(ExternalProgramDownload::class.java)
+    }
+}

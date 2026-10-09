@@ -1,0 +1,311 @@
+/*
+ * Copyright (c) 2024-2026 derreisende77.
+ * This code was developed as part of the MediathekView project https://github.com/mediathekview/MediathekView
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package mediathek.gui.tasks
+
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.swing.Swing
+import mediathek.config.StandardLocations.getFilmIndexPath
+import mediathek.daten.DatenFilm
+import mediathek.daten.IndexedFilmList
+import mediathek.filmlisten.FilmCatalog
+import mediathek.mainwindow.FilmListLoadHost
+import mediathek.tool.FileUtils.deletePathRecursively
+import mediathek.tool.LuceneDefaultAnalyzer
+import mediathek.tool.SwingErrorDialog
+import mediathek.tool.datum.DateUtil
+import mediathek.tool.time.Stopwatch
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.apache.lucene.document.*
+import org.apache.lucene.index.DirectoryReader
+import org.apache.lucene.index.IndexWriter
+import org.apache.lucene.index.IndexWriterConfig
+import org.apache.lucene.index.IndexWriterConfig.OpenMode
+import java.io.IOException
+import java.lang.Runnable
+import java.nio.file.Files
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
+import javax.swing.JLabel
+import javax.swing.JProgressBar
+import kotlin.coroutines.cancellation.CancellationException
+
+class LuceneIndexWorker(
+    private val filmCatalog: FilmCatalog,
+    private val progLabel: JLabel,
+    private val progressBar: JProgressBar,
+    private val host: FilmListLoadHost? = null,
+) : Runnable {
+
+    private data class IndexingTuning(val queueCapacity: Int, val writeBatchSize: Int)
+
+    @Throws(IOException::class)
+    private fun createIndexDocument(film: DatenFilm): Document {
+        val doc = Document()
+        // store fields for debugging, otherwise they should stay disabled
+        doc.add(StringField(LuceneIndexKeys.ID, film.filmNr.toString(), Field.Store.YES))
+        doc.add(NumericDocValuesField(LuceneIndexKeys.ID_DOC_VALUE, film.filmNr.toLong()))
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.NEW, film.isNew)
+        doc.add(StringField(LuceneIndexKeys.SENDER, film.sender.lowercase(Locale.ROOT), Field.Store.NO))
+        doc.add(TextField(LuceneIndexKeys.TITEL, film.title, Field.Store.NO))
+        doc.add(TextField(LuceneIndexKeys.THEMA, film.thema, Field.Store.NO))
+        doc.add(IntPoint(LuceneIndexKeys.FILM_LENGTH, film.filmLength))
+        doc.add(IntPoint(LuceneIndexKeys.FILM_SIZE, film.fileSizeInMegabytes))
+
+        doc.add(TextField(LuceneIndexKeys.BESCHREIBUNG, film.description, Field.Store.NO))
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.LIVESTREAM, film.isLivestream)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.HIGH_QUALITY, film.isHighQuality)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.SUBTITLE, film.hasSubtitle() || film.hasBurnedInSubtitles())
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.TRAILER_TEASER, film.isTrailerTeaser)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.AUDIOVERSION, film.isAudioVersion)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.SIGN_LANGUAGE, film.isSignLanguage)
+        doc.addBooleanFieldIfTrue(LuceneIndexKeys.DUPLICATE, film.isDuplicate)
+        doc.add(IntPoint(LuceneIndexKeys.SEASON, film.season))
+        doc.add(IntPoint(LuceneIndexKeys.EPISODE, film.episode))
+
+        addSendeDatum(doc, film)
+        addSendeZeit(doc, film)
+        addWochentag(doc, film)
+
+        return doc
+    }
+
+    private fun Document.addBooleanFieldIfTrue(field: String, value: Boolean) {
+        if (value) {
+            add(StringField(field, TRUE_VALUE, Field.Store.NO))
+        }
+    }
+
+    private fun addSendeZeit(doc: Document, film: DatenFilm) {
+        val startzeit = film.sendeZeit
+        if (!startzeit.isEmpty()) {
+            doc.add(StringField(LuceneIndexKeys.START_TIME, startzeit, Field.Store.NO))
+        }
+    }
+
+    private fun addWochentag(doc: Document, film: DatenFilm) {
+        if (!film.isDatumFilmUndefined) {
+            val strDate = FORMATTER.format(
+                Instant.ofEpochMilli(film.datumFilmTimeMillis).atZone(DateUtil.MV_DEFAULT_TIMEZONE)
+            )
+            doc.add(TextField(LuceneIndexKeys.SENDE_WOCHENTAG, strDate, Field.Store.NO))
+        }
+    }
+
+    private fun addSendeDatum(doc: Document, film: DatenFilm) {
+        val sendeDatumStr = DateTools.timeToString(
+            DateUtil.convertFilmDateToLuceneDate(film),
+            DateTools.Resolution.DAY
+        )
+        doc.add(StringField(LuceneIndexKeys.SENDE_DATUM, sendeDatumStr, Field.Store.NO))
+    }
+
+    private fun createIndexWriter(liste: IndexedFilmList): IndexWriter {
+        val indexWriterConfig = IndexWriterConfig(LuceneDefaultAnalyzer.buildPerFieldAnalyzer())
+        indexWriterConfig.openMode = OpenMode.CREATE
+        indexWriterConfig.setCommitOnClose(false)
+        val ramBufferSizeMb = calculateRamBufferSizeMb()
+        indexWriterConfig.ramBufferSizeMB = ramBufferSizeMb
+        LOG.trace("Using Lucene RAM buffer size: {} MB", ramBufferSizeMb)
+        return IndexWriter(liste.luceneDirectory, indexWriterConfig)
+    }
+
+    private fun calculateRamBufferSizeMb(): Double {
+        val heapMb = Runtime.getRuntime().maxMemory().toDouble() / (1024.0 * 1024.0)
+        val suggested = heapMb * 0.05
+        return suggested.coerceIn(128.0, 2048.0)
+    }
+
+    private fun calculateIndexingTuning(indexingThreads: Int): IndexingTuning {
+        val heapMb = Runtime.getRuntime().maxMemory().toDouble() / (1024.0 * 1024.0)
+        val writeBatchSize = when {
+            heapMb >= 8192.0 -> 4096
+            heapMb >= 4096.0 -> 2048
+            heapMb >= 2048.0 -> 1024
+            else -> 512
+        }
+        val queueCapacity = (indexingThreads * writeBatchSize).coerceAtLeast(writeBatchSize * 2)
+        return IndexingTuning(queueCapacity, writeBatchSize)
+    }
+
+    private suspend fun updateProgress(processedCount: Int, totalCount: Int, oldProgress: AtomicInteger) {
+        val progress = if (totalCount == 0) 100 else (processedCount * 100) / totalCount
+        var previous = oldProgress.get()
+        while (progress > previous) {
+            if (oldProgress.compareAndSet(previous, progress)) {
+                withContext(Dispatchers.Swing) { progressBar.value = progress }
+                break
+            }
+            previous = oldProgress.get()
+        }
+    }
+
+    private suspend fun flushBatch(
+        writer: IndexWriter,
+        batch: MutableList<Document>,
+        counter: AtomicInteger,
+        totalCount: Int,
+        oldProgress: AtomicInteger
+    ) {
+        if (batch.isEmpty()) {
+            return
+        }
+
+        writer.addDocuments(batch)
+        val processedCount = counter.addAndGet(batch.size)
+        updateProgress(processedCount, totalCount, oldProgress)
+        batch.clear()
+    }
+
+    override fun run() = runBlocking {
+        execute()
+    }
+
+    suspend fun execute() {
+        try {
+            setupIndexingUi()
+            rebuildIndex()
+        } catch (ex: CancellationException) {
+            throw ex
+        } catch (ex: Exception) {
+            handleDamagedIndex(ex)
+        } finally {
+            enableFilmListActions()
+        }
+    }
+
+    private suspend fun setupIndexingUi() = withContext(Dispatchers.Swing) {
+        host?.setFilmIndexingActionsEnabled(false)
+
+        progLabel.text = "Indiziere Filme"
+        progressBar.isIndeterminate = false
+        progressBar.minimum = 0
+        progressBar.maximum = 100
+        progressBar.value = 0
+    }
+
+    private suspend fun rebuildIndex() = withContext(Dispatchers.IO) {
+        val indexList = filmCatalog.filteredFilms as IndexedFilmList
+        // Search all films, then map hits through the current blacklist-filtered list at query time.
+        val sourceFilms = filmCatalog.allFilms.snapshot()
+        val indexingThreads = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
+        val indexingTuning = calculateIndexingTuning(indexingThreads)
+        val newReader = createIndexWriter(indexList).use { writer ->
+            val watch = Stopwatch.createStarted()
+            val counter = AtomicInteger(0)
+            val totalCount = sourceFilms.size
+            val oldProgress = AtomicInteger(0)
+
+            val indexingDispatcher = Executors.newFixedThreadPool(indexingThreads).asCoroutineDispatcher()
+            LOG.trace(
+                "Lucene indexing uses {} worker(s), queue capacity {}, batch size {}",
+                indexingThreads,
+                indexingTuning.queueCapacity,
+                indexingTuning.writeBatchSize
+            )
+            indexingDispatcher.use { dispatcher ->
+                coroutineScope {
+                    val filmChannel = Channel<DatenFilm>(indexingTuning.queueCapacity)
+
+                    val producer = launch(dispatcher) {
+                        try {
+                            for (film in sourceFilms) {
+                                filmChannel.send(film)
+                            }
+                        } finally {
+                            filmChannel.close()
+                        }
+                    }
+
+                    val consumers = List(indexingThreads) {
+                        launch(dispatcher) {
+                            val batch = ArrayList<Document>(indexingTuning.writeBatchSize)
+                            for (film in filmChannel) {
+                                try {
+                                    batch.add(createIndexDocument(film))
+                                    if (batch.size >= indexingTuning.writeBatchSize) {
+                                        flushBatch(writer, batch, counter, totalCount, oldProgress)
+                                    }
+                                } catch (ex: IOException) {
+                                    LOG.error("Lucene indexing failed for a film entry", ex)
+                                }
+                            }
+
+                            try {
+                                flushBatch(writer, batch, counter, totalCount, oldProgress)
+                            } catch (ex: IOException) {
+                                LOG.error("Lucene indexing failed while flushing a document batch", ex)
+                            }
+                        }
+                    }
+
+                    producer.join()
+                    consumers.joinAll()
+                }
+            }
+            withContext(Dispatchers.Swing) {
+                progressBar.value = 100
+                progLabel.text = "Öffne Index"
+                progressBar.isIndeterminate = true
+            }
+            val reader = DirectoryReader.open(writer)
+            watch.stop()
+            LOG.trace("Lucene index creation took {}", watch)
+            reader
+        }
+        indexList.replaceReader(newReader)
+    }
+
+    private suspend fun handleDamagedIndex(ex: Exception) {
+        LOG.error("Lucene film index most probably damaged, deleting it.")
+        withContext(Dispatchers.IO) {
+            try {
+                val indexPath = getFilmIndexPath()
+                if (Files.exists(indexPath)) {
+                    deletePathRecursively(indexPath)
+                }
+            } catch (e: IOException) {
+                LOG.error("Unable to delete lucene index path", e)
+            }
+        }
+        withContext(Dispatchers.Swing) {
+            host?.let { host ->
+                SwingErrorDialog.showExceptionMessage(
+                    host.ownerFrame(),
+                    "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
+                    ex
+                )
+                host.quitApplication()
+            }
+        }
+    }
+
+    private suspend fun enableFilmListActions() = withContext(Dispatchers.Swing) {
+        host?.setFilmIndexingActionsEnabled(true)
+    }
+
+    companion object {
+        private val LOG: Logger = LogManager.getLogger()
+        private val FORMATTER = DateTimeFormatter.ofPattern("EEEE", Locale.GERMAN)
+        private const val TRUE_VALUE = "true"
+    }
+}

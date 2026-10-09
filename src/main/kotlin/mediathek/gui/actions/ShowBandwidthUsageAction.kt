@@ -1,12 +1,12 @@
 package mediathek.gui.actions
 
 import mediathek.gui.bandwidth.BandwidthDialog
-import mediathek.mainwindow.MediathekGui
+import java.awt.Frame
 import java.awt.event.ActionEvent
 import java.util.*
 import javax.swing.AbstractAction
 
-class ShowBandwidthUsageAction(private val mediathekGui: MediathekGui) : AbstractAction() {
+class ShowBandwidthUsageAction(private val owner: Frame) : AbstractAction() {
     var dialogOptional = Optional.empty<BandwidthDialog>()
 
     init {
@@ -14,7 +14,13 @@ class ShowBandwidthUsageAction(private val mediathekGui: MediathekGui) : Abstrac
     }
 
     override fun actionPerformed(e: ActionEvent?) {
-        val dialog = BandwidthDialog(mediathekGui, this)
+        val dialog = BandwidthDialog(owner, this)
         dialog.isVisible = true
+    }
+
+    fun closeBandwidthMonitorForShutdown() {
+        dialogOptional.ifPresent { dialog ->
+            dialog.disposeForShutdown()
+        }
     }
 }

@@ -1,0 +1,106 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel1:::::x, comp jPanel2::l:::x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jPanel1:::p::p, space u:::p, comp jPanel2:::::x, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {comp jPanelExtra:::::x}"
+				"$verticalGroup": "par l {seq t {space :::p, comp jPanelExtra:::::x}}"
+			} ) {
+				name: "jPanel2"
+				"border": new javax.swing.border.TitledBorder( "<html><b>Programme</b></html>" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:491:x}"
+					"$verticalGroup": "par l {space :0:277:x}"
+				} ) {
+					name: "jPanelExtra"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :::p, par l {comp jScrollPane2::::479:x, seq l {par l {comp jLabel1::l:p::p, comp jLabel2::l:p::p}, space :p::p, par l {seq l {comp jTextFieldZiel:::::x, space :::p, comp jButtonZiel:::p::p}, comp jTextFieldName::l:::x}}, comp jScrollPane1::l:::x}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane1:::p:116:p, space :::p, par b {comp jLabel1::b:p::p, comp jTextFieldName:6:b:p::p}, space :::p, par l {comp jButtonZiel:6:l:p::p, par b:l {comp jLabel2::b:p::p, comp jTextFieldZiel:6:b:p::p}}, space u:::p, comp jScrollPane2:::p::p, space :::x}}"
+			} ) {
+				name: "jPanel1"
+				"border": new javax.swing.border.TitledBorder( "<html><b>Set</b></html>" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel1"
+					"text": "Set Name:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel2"
+					"text": "Zielpfad:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldZiel"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				} )
+				add( new FormComponent( "javax.swing.JTextField" ) {
+					name: "jTextFieldName"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonZiel"
+					"toolTipText": "Pfad auswählen"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+						"JavaCodeGenerator.preInitCode": "${field}.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/folder-open.svg\"));"
+					}
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane2"
+					"border": new javax.swing.border.LineBorder( new com.jformdesigner.model.SwingColor( "TextField.selectionBackground" ), 1, false )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "jTextArea1"
+						"editable": false
+						"background": new com.jformdesigner.model.SwingColor( "TextField.inactiveBackground" )
+						"columns": 20
+						"rows": 4
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JList" ) {
+						name: "jListPset"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+					} )
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) )
+	}
+}

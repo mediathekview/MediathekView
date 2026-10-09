@@ -1,30 +1,17 @@
-Bei der Funktion "Blacklist" werden Filme, die den
-Angaben in einer Zeile in der Tabelle entsprechen,
-nicht angezeigt.
+Bei der Funktion "Blacklist" werden Filme, die den Angaben in einer Zeile in der Tabelle entsprechen, nicht angezeigt.
 
-Die Funktion "Whitelist" zeigt nur die Filme an, die
-den Angaben in einer Zeile in der Tabelle entsprechen.
+Die Funktion "Whitelist" zeigt nur die Filme an, die den Angaben in einer Zeile in der Tabelle entsprechen.
 
-Beim Umschalten "Blacklist - Whitelist" werden genau
-die vorher nicht angezeigten Filme jetzt angezeigt.
+Beim Umschalten "Blacklist - Whitelist" werden genau die vorher nicht angezeigten Filme jetzt angezeigt.
 
-"Sender" "Thema" werden exakt verglichen.
-Der Titelfilter muss im Titel enthalten sein.
-Das Filterfeld "Thema/Titel" muss entweder im Filmthema
-oder im Filmtitel enthalten sein.
+"Sender" "Thema" werden exakt verglichen. Der Titelfilter muss im Titel enthalten sein. Das Filterfeld "Thema/Titel" muss entweder im Filmthema oder im Filmtitel enthalten sein.
 
 Groß- und Kleinschreibung wird beim Filtern nicht beachtet.
 
-Im Feld "Titel" (dann wird im Titel gesucht) und "Thema/Titel"
-(dann wird in den Feldern Thema und Titel gesucht)
-kann auch mit regulären Ausdrücken gesucht
-werden. Diese müssen mit "#:" eingeleitet werden.
-Auch bei den regulären Ausdrücken wird nicht zwischen
-Groß- und Kleinschreibung unterschieden.
+Im Feld "Titel" (dann wird im Titel gesucht) und "Thema/Titel" (dann wird in den Feldern Thema und Titel gesucht) kann auch mit regulären Ausdrücken gesucht werden. Diese müssen mit "#:" eingeleitet werden. Auch bei den regulären Ausdrücken wird nicht zwischen Groß- und Kleinschreibung unterschieden.
 
 #:Abend.*
-Das bedeutet z.B.: Es werden alle Filme gefiltert, die 
-im jeweiligen Feld mit "Abend" (oder auch: "abend") beginnen.
+
+Das bedeutet z.B.: Es werden alle Filme gefiltert, die im jeweiligen Feld mit "Abend" (oder auch: "abend") beginnen.
 
 https://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck
-

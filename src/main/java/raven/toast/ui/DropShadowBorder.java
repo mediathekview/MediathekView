@@ -109,7 +109,7 @@ public class DropShadowBorder extends EmptyBorder {
         if (!effectRight) {
             g2.setPaint(new GradientPaint(x, 0, effectColor, x + (width * effectWidth), 0, c.getBackground()));
         } else {
-            g2.setPaint(new GradientPaint(x + width, 0, effectColor, x + width - (width * effectWidth), 0, c.getBackground()));
+            g2.setPaint(new GradientPaint((float)(x + width), 0f, effectColor, x + width - (width * effectWidth), 0f, c.getBackground()));
         }
         g2.setComposite(AlphaComposite.SrcOver.derive(effectOpacity));
         if (arc > 0) {

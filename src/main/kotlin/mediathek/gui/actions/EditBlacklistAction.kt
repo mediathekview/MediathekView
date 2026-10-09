@@ -1,0 +1,47 @@
+package mediathek.gui.actions
+
+import mediathek.daten.blacklist.BlacklistServices
+import mediathek.filmlisten.FilmCatalog
+import mediathek.filmlisten.FilmeLaden
+import mediathek.gui.dialog.StandardCloseDialog
+import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
+import mediathek.swing.IconUtils
+import mediathek.swing.centerOnScreen
+import mediathek.tool.GuiFunktionen
+import org.apache.commons.lang3.SystemUtils
+import org.kordamp.ikonli.materialdesign2.MaterialDesignL
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
+import javax.swing.AbstractAction
+import javax.swing.JComponent
+import javax.swing.JFrame
+import javax.swing.KeyStroke
+
+class EditBlacklistAction(
+    private val parent: JFrame,
+    private val blacklist: BlacklistServices,
+    private val filmCatalog: FilmCatalog,
+    private val filmListLoader: FilmeLaden,
+) : AbstractAction() {
+    init {
+        putValue(NAME, "Blacklist bearbeiten...")
+        putValue(SMALL_ICON, IconUtils.windowBarSpecificToolbarIcon(MaterialDesignL.LIST_BOX_OUTLINE))
+        putValue(SHORT_DESCRIPTION, "Blacklist bearbeiten")
+        val keyStroke = if (SystemUtils.IS_OS_MAC_OSX) {
+            KeyStroke.getKeyStroke(KeyEvent.VK_F9, GuiFunktionen.getPlatformControlKey())
+        } else {
+            KeyStroke.getKeyStroke(KeyEvent.VK_B, GuiFunktionen.getPlatformControlKey())
+        }
+        putValue(ACCELERATOR_KEY, keyStroke)
+    }
+
+    override fun actionPerformed(event: ActionEvent?) {
+        object : StandardCloseDialog(parent, "Blacklist", true) {
+            override fun createContentPanel(): JComponent =
+                PanelBlacklist(blacklist, filmCatalog, filmListLoader, null)
+        }.apply {
+            centerOnScreen()
+            isVisible = true
+        }
+    }
+}

@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>14.5.0</version>
+    <version>15.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -50,33 +50,10 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/mediathekview/MLib.git</connection>
-        <developerConnection>scm:git:ssh://github.com:mediathekview/MLib.git</developerConnection>
-        <url>https://github.com/mediathekview/MLib/tree/master</url>
+        <connection>scm:git:https://github.com/mediathekview/MediathekView.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/mediathekview/MediathekView.git</developerConnection>
+        <url>https://github.com/mediathekview/MediathekView</url>
     </scm>
-
-    <repositories>
-        <repository>
-            <id>local-maven-repository</id>
-            <url>file:///${project.basedir}/maven-repository</url>
-        </repository>
-
-        <repository>
-            <id>oss.sonatype.org-snapshot</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2/</url>
-        </repository>
-    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -84,68 +61,77 @@
         <jvm.target.version>25</jvm.target.version>
         <kotlin.language.target>25</kotlin.language.target>
 
-        <kotlin.version>2.3.10</kotlin.version>
-        <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
+        <kotlin.version>2.4.0</kotlin.version>
+        <kotlin.language.version>2.4</kotlin.language.version>
+        <kotlin.api.version>2.4</kotlin.api.version>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
-        <maven.compiler.source>${jdk.language.version}</maven.compiler.source>
-        <maven.compiler.target>${jvm.target.version}</maven.compiler.target>
-
-        <annotations.version>26.0.2</annotations.version>
-        <commons-configuration2.version>2.13.0</commons-configuration2.version>
-        <commons-io.version>2.21.0</commons-io.version>
+        <commons-configuration2.version>2.15.1</commons-configuration2.version>
+        <commons-io.version>2.22.0</commons-io.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <coroutines.version>1.10.2</coroutines.version>
-        <caffeine.version>3.2.3</caffeine.version>
-        <kotlinx-serialization.version>1.9.0</kotlinx-serialization.version>
-        <dd-plist.version>1.28</dd-plist.version>
-        <flatlaf.version>3.7</flatlaf.version>
-        <glazedlists.version>1.11.0</glazedlists.version>
+        <caffeine.version>3.2.4</caffeine.version>
+        <dd-plist.version>1.29</dd-plist.version>
+        <flatlaf.version>3.7.2</flatlaf.version>
+        <glazedlists.version>9ace85251cc0f8e70eebc9dfdb2cb2a920cb0275</glazedlists.version>
         <ikonli.version>12.4.0</ikonli.version>
-        <jackson.version>3.1.0</jackson.version>
+        <jackson.version>3.2.2</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
         <javax-activation.version>1.2.0</javax-activation.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jfreechart.version>1.5.6</jfreechart.version>
         <jide-oss.version>3.7.15</jide-oss.version>
-        <jlibnotify.version>1.2.3</jlibnotify.version>
-        <jna.version>5.18.1</jna.version>
-        <jsoup.version>1.22.1</jsoup.version>
-        <junit.jupiter.version>6.0.3</junit.jupiter.version>
-        <lucene.version>10.4.0</lucene.version>
+        <jiconfont-font-awesome.version>4.7.0.1</jiconfont-font-awesome.version>
+        <jlibnotify.version>1.3.0</jlibnotify.version>
+        <jna.version>5.19.1</jna.version>
+        <jspecify.version>1.0.0</jspecify.version>
+        <jsoup.version>1.22.2</jsoup.version>
+        <junit.jupiter.version>6.1.3</junit.jupiter.version>
+        <kotlinx-coroutines.version>1.11.0</kotlinx-coroutines.version>
+        <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
+        <lucene.version>10.5.1</lucene.version>
         <flexmark.version>0.64.8</flexmark.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
-        <log4j2.version>2.25.3</log4j2.version>
-        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
-        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
-        <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
-        <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
-        <maven-exec-maven-plugin.version>3.1.0</maven-exec-maven-plugin.version>
-        <git-commit-id-maven-plugin.version>9.0.1</git-commit-id-maven-plugin.version>
-        <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
-        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-        <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <log4j2.version>2.25.4</log4j2.version>
+        <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
+        <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
+        <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+        <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+        <git-commit-id-maven-plugin.version>10.0.0</git-commit-id-maven-plugin.version>
+        <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
+        <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+        <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
+        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <mbassador.version>1.3.2</mbassador.version>
-        <miglayout.version>11.3</miglayout.version>
-        <mockito.version>5.12.0</mockito.version>
-        <okhttp.version>5.3.2</okhttp.version>
+        <miglayout.version>11.4.3</miglayout.version>
+        <mockito.version>5.23.0</mockito.version>
+        <okhttp.version>5.5.0</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
-        <sqlite-jdbc.version>3.51.2.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.53.2.0</sqlite-jdbc.version>
+        <sqlite.native.exclude.01>__unused__</sqlite.native.exclude.01>
+        <sqlite.native.exclude.02>__unused__</sqlite.native.exclude.02>
+        <sqlite.native.exclude.03>__unused__</sqlite.native.exclude.03>
+        <sqlite.native.exclude.04>__unused__</sqlite.native.exclude.04>
+        <sqlite.native.exclude.05>__unused__</sqlite.native.exclude.05>
+        <sqlite.native.exclude.06>__unused__</sqlite.native.exclude.06>
+        <sqlite.native.exclude.07>__unused__</sqlite.native.exclude.07>
+        <sqlite.native.exclude.08>__unused__</sqlite.native.exclude.08>
+        <sqlite.native.exclude.09>__unused__</sqlite.native.exclude.09>
+        <sqlite.native.exclude.10>__unused__</sqlite.native.exclude.10>
+        <sqlite.native.exclude.11>__unused__</sqlite.native.exclude.11>
+        <sqlite.native.exclude.12>__unused__</sqlite.native.exclude.12>
         <swingx.version>1.6.5-1</swingx.version>
-        <xz.version>1.11</xz.version>
+        <xz.version>1.12</xz.version>
 
         <mainclass>mediathek.Main</mainclass>
 
-        <install4j.version>11.0.5</install4j.version>
+        <install4j.version>12.0.5</install4j.version>
         <install4j.home>./install4j${install4j.version}</install4j.home>
         <!--suppress UnresolvedMavenProperty -->
-        <install4j.license>${env.LICENSE_KEY_11}</install4j.license>
+        <install4j.license>${env.LICENSE_KEY_12}</install4j.license>
         <install4j.jdk.min-version>25</install4j.jdk.min-version>
-
         <!-- @formatter:off -->
         <!-- VM Parameters Windows x64 and aarch64 -->
         <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
@@ -153,6 +139,16 @@
         <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
         <!-- @formatter:on -->
     </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -170,13 +166,13 @@
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core-jvm</artifactId>
-            <version>${coroutines.version}</version>
+            <version>${kotlinx-coroutines.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-swing</artifactId>
-            <version>${coroutines.version}</version>
+            <version>${kotlinx-coroutines.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
@@ -391,7 +387,7 @@
         <dependency>
             <groupId>com.github.jiconfont</groupId>
             <artifactId>jiconfont-font_awesome</artifactId>
-            <version>4.7.0.1</version>
+            <version>${jiconfont-font-awesome.version}</version>
         </dependency>
 
         <dependency>
@@ -424,14 +420,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>${annotations.version}</version>
-            <scope>compile</scope>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.glazedlists</groupId>
+            <groupId>com.github.glazedlists</groupId>
             <artifactId>glazedlists</artifactId>
             <version>${glazedlists.version}</version>
         </dependency>
@@ -442,36 +437,24 @@
             <artifactId>log4j-core</artifactId>
             <version>${log4j2.version}</version>
         </dependency>
+
+        <!-- jaffree needs this -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j2.version}</version>
         </dependency>
 
-        <!-- for TimedTextMarkupParserTest -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <!-- JUnit 5 Jupiter -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
@@ -505,12 +488,6 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>airsquared</groupId>
-            <artifactId>JMacNotification</artifactId>
-            <version>1.1</version>
         </dependency>
 
         <dependency>
@@ -551,7 +528,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED</argLine>
+                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-exports=java.desktop/com.apple.laf=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -590,6 +567,7 @@
                         </goals>
                         <configuration>
                             <sourceDirs>
+                                <source>src/main/java</source>
                                 <source>src/main/kotlin</source>
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
@@ -598,7 +576,7 @@
                     </execution>
                     <execution>
                         <id>kotlin-test-compile</id>
-                        <phase>test-compile</phase>
+                        <phase>process-test-sources</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
@@ -612,6 +590,8 @@
                 </executions>
                 <configuration>
                     <jvmTarget>${jdk.language.version}</jvmTarget>
+                    <languageVersion>${kotlin.language.version}</languageVersion>
+                    <apiVersion>${kotlin.api.version}</apiVersion>
                     <compilerPlugins>
                         <plugin>kotlinx-serialization</plugin>
                     </compilerPlugins>
@@ -630,7 +610,6 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <release>${jvm.target.version}</release>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <compilerArgs>
                         <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
                     </compilerArgs>
@@ -641,8 +620,6 @@
                             <version>${picocli.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>${jdk.language.version}</source>
-                    <target>${jdk.language.version}</target>
                 </configuration>
                 <executions>
                     <!-- Replacing default-compile as it is treated specially by maven -->
@@ -693,12 +670,44 @@
                 <version>${maven-deploy-plugin.version}</version>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <configuration>
+                    <artifactSet>
+                        <includes>
+                            <include>org.xerial:sqlite-jdbc</include>
+                        </includes>
+                    </artifactSet>
+                    <filters>
+                        <filter>
+                            <artifact>org.xerial:sqlite-jdbc</artifact>
+                            <excludes>
+                                <exclude>**/native/${sqlite.native.exclude.01}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.02}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.03}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.04}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.05}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.06}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.07}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.08}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.09}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.10}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.11}/**</exclude>
+                                <exclude>**/native/${sqlite.native.exclude.12}/**</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <phase>validate</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -721,7 +730,7 @@
                     </execution>
                     <execution>
                         <id>copy-install4j-installers</id>
-                        <phase>validate</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -749,10 +758,8 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <!-- configure the plugin here -->
-                            <excludeArtifactIds>
-                                sqlite-jdbc,mockito-core,mockito-junit-jupiter,junit-jupiter-api,junit-jupiter-params,junit-jupiter-engine,kotlin-test-junit,byte-buddy,byte-buddy-agent,junit-platform-commons,junit-platform-engine,kotlin-test
-                            </excludeArtifactIds>
+                            <includeScope>runtime</includeScope>
+                            <excludeArtifactIds>sqlite-jdbc</excludeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>
@@ -761,6 +768,22 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>snapshot-repositories</id>
+            <repositories>
+                <repository>
+                    <id>oss.sonatype.org-snapshot</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+
         <profile>
             <id>windows_64bit</id>
             <activation>
@@ -771,105 +794,27 @@
             </activation>
             <properties>
                 <install4j.platform>windows</install4j.platform>
-                <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/64/bin/ffmpeg.zip</windows.ffmpeg.url>
-                <windows.ffmpeg.outdir>${project.build.directory}/res</windows.ffmpeg.outdir>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows/aarch64</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Windows/armv7</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Windows/x86</sqlite.native.exclude.08>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${maven-exec-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>fetch-unpack-clean-ffmpeg</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>powershell</executable>
-                                    <arguments>
-                                        <argument>-NoProfile</argument>
-                                        <argument>-ExecutionPolicy</argument>
-                                        <argument>Bypass</argument>
-                                        <argument>-Command</argument>
-                                        <argument>
-                                            <![CDATA[
-                      $url    = '${windows.ffmpeg.url}'
-                      $outDir = '${windows.ffmpeg.outdir}'
-                      $zip    = Join-Path $outDir 'ffmpeg_new.zip'
-
-                      # ensure output dir
-                      New-Item -ItemType Directory -Path $outDir -Force | Out-Null
-
-                      Write-Host "→ Downloading $url"
-                      # use native curl.exe for a console progress bar
-                      curl.exe -L $url -o $zip --progress-bar
-
-                      Write-Host "→ Unpacking $zip → $outDir"
-                      Expand-Archive -Path $zip -DestinationPath $outDir -Force
-
-                      Write-Host "→ Deleting $zip"
-                      Remove-Item -Path $zip -Force
-                    ]]>
-                                        </argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>1.0</version>
-                        <executions>
-                            <execution>
-                                <id>rename-file</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>rename</goal>
-                                </goals>
-                                <configuration>
-                                    <sourceFile>${project.build.directory}/res/ffmpeg/</sourceFile>
-                                    <destinationFile>${project.build.directory}/res/bin/</destinationFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/aarch64/**</exclude>
-                                                <exclude>**/native/Windows/armv7/**</exclude>
-                                                <exclude>**/native/Windows/x86/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -879,7 +824,7 @@
                         <executions>
                             <execution>
                                 <id>copy-install4j-win-amd64-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -904,7 +849,7 @@
             <properties>
                 <install4j.home>download\install4j</install4j.home>
                 <!--suppress UnresolvedMavenProperty -->
-                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+                <install4j.license>${env.INSTALL4J_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
                 <plugins>
@@ -940,88 +885,29 @@
                 </os>
             </activation>
             <properties>
-                <windows.ffmpeg.url>https://s3.mvorg.de/res/dev/windows/aarch64/ffmpeg.zip</windows.ffmpeg.url>
-                <windows.bin.dir>${project.build.directory}/res/bin</windows.bin.dir>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows/armv7</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Windows/x86</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Windows/x86_64</sqlite.native.exclude.08>
+                <!-- Keep the Windows aarch64 workaround scoped to this platform instead of disabling incremental Kotlin compilation globally. -->
+                <kotlin.compiler.incremental>false</kotlin.compiler.incremental>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${maven-exec-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>fetch-and-unpack-ffmpeg</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>powershell</executable>
-                                    <arguments>
-                                        <argument>-NoProfile</argument>
-                                        <argument>-ExecutionPolicy</argument>
-                                        <argument>Bypass</argument>
-                                        <argument>-Command</argument>
-                                        <argument>
-                                            <![CDATA[
-              $url    = '${windows.ffmpeg.url}'
-              $outDir = '${windows.bin.dir}'
-              $zip    = Join-Path $outDir 'ffmpeg.zip'
-
-              # ensure output dir exists
-              New-Item -ItemType Directory -Path $outDir -Force | Out-Null
-
-              Write-Host "→ Downloading $url"
-              # use Windows-native curl.exe for a console progress bar
-              curl.exe -L $url -o $zip --progress-bar
-
-              Write-Host "→ Unpacking $zip → $outDir"
-              Expand-Archive -Path $zip -DestinationPath $outDir -Force
-
-              Write-Host "→ Deleting $zip"
-              Remove-Item -Path $zip -Force
-            ]]>
-                                        </argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/armv7/**</exclude>
-                                                <exclude>**/native/Windows/x86/**</exclude>
-                                                <exclude>**/native/Windows/x86_64/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1031,7 +917,7 @@
                         <executions>
                             <execution>
                                 <id>copy-install4j-win-aarch64-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -1056,7 +942,7 @@
             <properties>
                 <install4j.home>download\install4j</install4j.home>
                 <!--suppress UnresolvedMavenProperty -->
-                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+                <install4j.license>${env.INSTALL4J_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
                 <plugins>
@@ -1094,13 +980,25 @@
             </activation>
             <properties>
                 <install4j.platform>linux</install4j.platform>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux-Android</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Musl</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Mac</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Windows</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Linux/aarch64</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Linux/arm</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Linux/armv6</sqlite.native.exclude.08>
+                <sqlite.native.exclude.09>Linux/armv7</sqlite.native.exclude.09>
+                <sqlite.native.exclude.10>Linux/ppc64</sqlite.native.exclude.10>
+                <sqlite.native.exclude.11>Linux/riscv64</sqlite.native.exclude.11>
+                <sqlite.native.exclude.12>Linux/x86</sqlite.native.exclude.12>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>com.coderplus.maven.plugins</groupId>
                         <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>1.0</version>
+                        <version>${copy-rename-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>rename-file</id>
@@ -1119,33 +1017,13 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1163,13 +1041,25 @@
             </activation>
             <properties>
                 <install4j.platform>arm</install4j.platform>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux-Android</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Musl</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Mac</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Windows</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Linux/arm</sqlite.native.exclude.06>
+                <sqlite.native.exclude.07>Linux/armv6</sqlite.native.exclude.07>
+                <sqlite.native.exclude.08>Linux/armv7</sqlite.native.exclude.08>
+                <sqlite.native.exclude.09>Linux/ppc64</sqlite.native.exclude.09>
+                <sqlite.native.exclude.10>Linux/riscv64</sqlite.native.exclude.10>
+                <sqlite.native.exclude.11>Linux/x86</sqlite.native.exclude.11>
+                <sqlite.native.exclude.12>Linux/x86_64</sqlite.native.exclude.12>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>com.coderplus.maven.plugins</groupId>
                         <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>1.0</version>
+                        <version>${copy-rename-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>rename-file</id>
@@ -1188,33 +1078,13 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1231,85 +1101,25 @@
                 </os>
             </activation>
             <properties>
-                <binaries.base>https://s3.mvorg.de/res/dev/mac/bin</binaries.base>
-                <bin.dir>${project.build.directory}/bin</bin.dir>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac/aarch64</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows</sqlite.native.exclude.06>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${maven-exec-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>download-mac-intel-binaries</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>bash</executable>
-                                    <arguments>
-                                        <argument>-lc</argument>
-                                        <!--suppress UnresolvedMavenProperty -->
-                                        <argument>
-                                            <![CDATA[
-                set -e
-                mkdir -p "${bin.dir}"
-                for pair in \
-                  "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
-                  "intel/ffmpeg:dd1b293c38510063f98f733229c526f5" \
-                  "intel/ffprobe:4e4d2f0b21770efeb8c69ca321115ed6"
-                do
-                  IFS=":" read -r path md5 <<< "$pair"
-                  url="${binaries.base}/${path}"
-                  dest="${bin.dir}/$(basename "$path")"
-                  echo "→ Downloading $url"
-                  curl -fL "$url" -o "$dest"
-                  actual=$(md5 -q "$dest")
-                  if [[ "$actual" != "$md5" ]]; then
-                    echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
-                    exit 1
-                  fi
-                done
-                ]]>
-                                        </argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
+                                <id>shade-sqlite</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/aarch64/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1319,7 +1129,7 @@
                         <executions>
                             <execution>
                                 <id>copy-install4j-mac-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -1348,64 +1158,18 @@
                 </os>
             </activation>
             <properties>
-                <binaries.base>https://s3.mvorg.de/res/dev/mac/bin</binaries.base>
-                <bin.dir>${project.build.directory}/bin</bin.dir>
+                <sqlite.native.exclude.01>FreeBSD</sqlite.native.exclude.01>
+                <sqlite.native.exclude.02>Linux</sqlite.native.exclude.02>
+                <sqlite.native.exclude.03>Linux-Android</sqlite.native.exclude.03>
+                <sqlite.native.exclude.04>Linux-Musl</sqlite.native.exclude.04>
+                <sqlite.native.exclude.05>Mac/x86_64</sqlite.native.exclude.05>
+                <sqlite.native.exclude.06>Windows</sqlite.native.exclude.06>
             </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${maven-exec-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>download-mac-apple-silicon-binaries</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>bash</executable>
-                                    <arguments>
-                                        <argument>-lc</argument>
-                                        <!--suppress UnresolvedMavenProperty -->
-                                        <argument>
-                                            <![CDATA[
-set -e
-mkdir -p "${bin.dir}"
-for pair in \
-  "common/MVShutdownHelper:3531e6483f886877e6f32f8345503fd7" \
-  "apple_silicon/ffmpeg:36ec3a0b676d0e344bcca9987d9f2174" \
-  "apple_silicon/ffprobe:e2e1ceb77ab05ceaa9d6054a50de69a0"
-do
-  IFS=":" read -r path md5 <<< "$pair"
-  url="${binaries.base}/${path}"
-  dest="${bin.dir}/$(basename "$path")"
-
-  # if file exists and checksum matches, skip download
-  if [[ -f "$dest" && "$(md5 -q "$dest")" == "$md5" ]]; then
-    echo "→ Using cached $dest"
-  else
-    echo "→ Downloading $url"
-    curl -fL "$url" -o "$dest"
-    actual=$(md5 -q "$dest")
-    if [[ "$actual" != "$md5" ]]; then
-      echo "!! MD5 mismatch for $dest (got $actual, expected $md5)" >&2
-      exit 1
-    fi
-  fi
-done
-]]>
-                                        </argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-shade-plugin</artifactId>
-                        <version>${maven-shade-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>shade-sqlite</id>
@@ -1413,27 +1177,6 @@ done
                                 <goals>
                                     <goal>shade</goal>
                                 </goals>
-                                <configuration>
-                                    <artifactSet>
-                                        <includes>
-                                            <include>org.xerial:sqlite-jdbc</include>
-                                        </includes>
-                                    </artifactSet>
-                                    <filters>
-                                        <filter>
-                                            <artifact>org.xerial:sqlite-jdbc</artifact>
-                                            <excludes>
-                                                <exclude>**/native/FreeBSD/**</exclude>
-                                                <exclude>**/native/Linux/**</exclude>
-                                                <exclude>**/native/Linux-Android/**</exclude>
-                                                <exclude>**/native/Linux-Musl/**</exclude>
-                                                <exclude>**/native/Mac/x86_64/**</exclude>
-                                                <exclude>**/native/Windows/**</exclude>
-                                                <exclude>META-INF/MANIFEST.MF</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -1443,7 +1186,7 @@ done
                         <executions>
                             <execution>
                                 <id>copy-install4j-mac-installers</id>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -1499,7 +1242,7 @@ done
                 <install4j.disableNotarization>false</install4j.disableNotarization>
                 <install4j.disableSigning>false</install4j.disableSigning>
                 <!--suppress UnresolvedMavenProperty -->
-                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+                <install4j.license>${env.INSTALL4J_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
                 <plugins>
@@ -1534,7 +1277,7 @@ done
                 <install4j.disableNotarization>false</install4j.disableNotarization>
                 <install4j.disableSigning>false</install4j.disableSigning>
                 <!--suppress UnresolvedMavenProperty -->
-                <install4j.license>${env.INSTALL4J_11_LICENSE_KEY}</install4j.license>
+                <install4j.license>${env.INSTALL4J_LICENSE_KEY}</install4j.license>
             </properties>
             <build>
                 <plugins>

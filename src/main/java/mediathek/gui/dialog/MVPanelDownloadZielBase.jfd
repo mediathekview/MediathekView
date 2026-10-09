@@ -1,0 +1,64 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq t {space :::p, par t {seq t {comp jLabelExists:::p::p, space :0:0:x}, seq l {par l {comp jLabel2::l:p::p, comp jLabel1::l:p::p}, space :::p, par l {seq {comp jComboBoxPath::::445:x, space :::p, comp jButtonPath:::p::p, space :::p, comp jButtonDelPath:::p::p}, comp jTextFieldName:::::x}}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel1::b:p::p, comp jComboBoxPath:1:b:p::p, comp jButtonPath:1:b:p::p, comp jButtonDelPath:1:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldName:1:b:p::p}, space :p:10:p, comp jLabelExists:::p::p, space :::x}}"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel1"
+				"text": "Zielpfad:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "jComboBoxPath"
+				"editable": true
+				auxiliary() {
+					"JavaCodeGenerator.typeParameters": "String"
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonPath"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+				"toolTipText": "Zielpfad auswählen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonDelPath"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-del.png" )
+				"toolTipText": "gespeicherte Pfade löschen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabel2"
+				"text": "Dateiname:"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "jTextFieldName"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "jLabelExists"
+				"text": "Datei existiert schon!"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+		}, new FormLayoutConstraints( null ) )
+	}
+}

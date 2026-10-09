@@ -1,13 +1,8 @@
-
-Hiermit können die Standardprogramme zum "Ansehen" und "Aufzeichnen"
-der Filme eingetragen werden. Werden die Pfade nicht automatisch erkannt,
-kann man sie auch per Hand auswählen. 
+Hiermit können die Standardprogramme zum "Ansehen" und "Aufzeichnen" der Filme eingetragen werden. Werden die Pfade nicht automatisch erkannt, kann man sie auch per Hand auswählen.
 
 Der Zielpfad gibt an, wo Filme gespeichert werden sollen.
 
-
-Um alle Filme ansehen und aufzeichnen zu können, müssen mindestens
-diese Programme installiert sein:
+Um alle Filme ansehen und aufzeichnen zu können, müssen mindestens diese Programme installiert sein:
 
 VLC
 Dieses Programm dient zum Ansehen und teilweise auch zum Aufzeichnen der Filme.
@@ -15,15 +10,11 @@ Dieses Programm dient zum Ansehen und teilweise auch zum Aufzeichnen der Filme.
 ffmpeg
 Zum Aufzeichnen von Playlisten (URL endet mit "m3u8")
 
-
 Linux:
 Die Programme können über die Paketverwaltung eingespielt werden.
 
-
 Windows, OS X:
-Das Programm "ffmpeg" ist bereits in MediathekView integriert.
-Es muss bloss noch "VLC" aus dem Internet geladen werden:
-
+Das Programm "ffmpeg" ist bereits in MediathekView integriert. Es muss bloss noch "VLC" aus dem Internet geladen werden:
 
 http://www.videolan.org
 http://ffmpeg.org

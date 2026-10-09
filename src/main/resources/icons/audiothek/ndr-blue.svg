@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        class="svgbrand logo_ndrblue"
+        viewBox="0 0 324.73001 159.636"
+        version="1.1"
+        style="text-align:right"
+        id="svg22"
+        sodipodi:docname="NDR Blue.svg"
+        width="324.73001"
+        height="159.636"
+        inkscape:version="0.92.1 r15371">
+  <metadata
+     id="metadata28">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>NDR Blue</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs26" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="958"
+     inkscape:window-height="991"
+     id="namedview24"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="1.1512195"
+     inkscape:cx="160.691"
+     inkscape:cy="66.416"
+     inkscape:window-x="-8"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg22" />
+  <title
+     id="title2">NDR Blue</title>
+  <path
+     style="text-align:right;clip-rule:evenodd;fill:#0c1754;fill-rule:evenodd"
+     class="dm"
+     d="m 149.628,83.605 c 0,-6.57 -3.542,-8.288 -9.512,-8.288 h -9.498 v 17.389 h 9.498 c 5.66,10e-4 9.512,-3.23 9.512,-9.101 z m 17.487,47.216 h -16.073 l -12.03,-25.879 h -8.09 v 25.879 h -14.963 v -67.43 h 23.552 c 14.765,0 24.476,4.847 24.476,21.027 0,8.183 -3.239,14.755 -11.129,17.79 z"
+     id="path4"
+     inkscape:connector-curvature="0" />
+  <polygon
+     style="text-align:right;fill:#0c1754"
+     class="dm"
+     points="61.272,9.28 61.272,72.671 69.262,72.671 69.262,9.28 "
+     id="polygon6"
+     transform="translate(-9.309,-9.28)" />
+  <path
+     style="text-align:right;clip-rule:evenodd;fill:#0c1754;fill-rule:evenodd"
+     class="dm"
+     d="M 94.52,105.758 V 88.364 c 0,-8.198 -3.738,-12.235 -12.024,-12.235 h -7.179 v 41.953 h 7.179 c 8.286,0 12.024,-4.145 12.024,-12.324 z m 14.562,1.401 c 0,17.091 -8.891,23.662 -25.274,23.662 H 59.953 v -67.43 h 23.855 c 15.768,0 25.274,6.973 25.274,23.448 z"
+     id="path8"
+     inkscape:connector-curvature="0" />
+  <polygon
+     style="text-align:right;fill:#0c1754"
+     class="dm"
+     points="47.019,72.671 47.019,114.634 24.272,72.671 9.309,72.671 9.309,140.101 23.566,140.101 23.566,100.777 45.402,140.101 61.272,140.101 61.272,72.671 "
+     id="polygon10"
+     transform="translate(-9.309,-9.28)" />
+  <polygon
+     style="text-align:right;fill:#0c1754"
+     class="dm"
+     points="61.272,140.101 61.272,168.916 69.262,168.916 69.262,140.101 "
+     id="polygon12"
+     transform="translate(-9.309,-9.28)" />
+  <path
+     style="text-align:right;fill:#2638a5;fill-opacity:1"
+     class="subm"
+     d="m 207.512,95.121 c 3.461,0.759 6.279,2.373 8.454,4.844 2.8,3.264 4.202,7.136 4.202,11.618 0,6.458 -1.863,11.369 -5.586,14.731 -3.429,3.097 -8.422,4.646 -14.978,4.646 H 181.659 V 63.434 h 16.512 c 13.445,0 20.168,5.553 20.168,16.66 0,4.086 -1.087,7.513 -3.262,10.281 -1.779,2.242 -4.302,3.823 -7.565,4.746 z m -13.89,-3.855 h 3.756 c 6.296,0 9.441,-3.13 9.441,-9.393 0,-5.799 -2.916,-8.7 -8.748,-8.7 h -4.45 v 18.093 z m 0,29.954 h 4.646 c 6.557,0 9.839,-3.245 9.839,-9.739 0,-7.544 -3.444,-11.318 -10.332,-11.318 h -4.153 z"
+     id="path14"
+     inkscape:connector-curvature="0" />
+  <path
+     style="text-align:right;fill:#2638a5;fill-opacity:1"
+     class="subm"
+     d="m 239.583,130.959 h -11.418 v -70.34 h 11.418 z"
+     id="path16"
+     inkscape:connector-curvature="0" />
+  <path
+     style="text-align:right;fill:#2638a5;fill-opacity:1"
+     class="subm"
+     d="m 282.229,130.959 h -10.183 l -0.544,-4.548 c -4.118,3.791 -8.402,5.685 -12.852,5.685 -7.645,0 -11.467,-4.861 -11.467,-14.582 V 78.512 h 11.418 v 37.568 c 0,3.526 1.45,5.287 4.35,5.287 2.405,0 5.025,-1.251 7.86,-3.755 v -39.1 h 11.418 z"
+     id="path18"
+     inkscape:connector-curvature="0" />
+  <path
+     style="text-align:right;fill:#2638a5;fill-opacity:1"
+     class="subm"
+     d="m 324.73,114.351 v 0.789 c 0,5.669 -1.616,9.97 -4.845,12.901 -3,2.704 -7.251,4.054 -12.752,4.054 -5.966,0 -10.496,-1.712 -13.595,-5.141 -2.768,-3.064 -4.151,-7.298 -4.151,-12.705 V 95.614 c 0,-12.159 5.93,-18.24 17.795,-18.24 6.294,0 10.875,1.6 13.741,4.795 2.536,2.835 3.806,7.15 3.806,12.951 v 12.754 h -24.121 v 8.206 c 0,4.186 2.189,6.275 6.574,6.275 2.174,0 3.755,-0.541 4.743,-1.628 0.989,-1.121 1.486,-2.983 1.486,-5.587 v -0.789 z M 313.509,98.877 V 93.49 c 0,-4.581 -2.159,-6.872 -6.477,-6.872 -2.074,0 -3.673,0.626 -4.796,1.88 -1.084,1.185 -1.628,2.849 -1.628,4.992 v 5.387 z"
+     id="path20"
+     inkscape:connector-curvature="0" />
+</svg>

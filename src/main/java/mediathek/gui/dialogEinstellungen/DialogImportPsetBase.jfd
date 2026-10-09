@@ -1,0 +1,41 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::t:::x, seq l {comp jCheckBoxAlleEinstellungen:::p::p, space ::328:x, comp jButtonOk:4::p:118:p, space :::p, comp jButtonAbbrechen:4::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p::p, comp jScrollPane1::::516:x, space u:p::p, par b {comp jCheckBoxAlleEinstellungen::b:p::p, comp jButtonAbbrechen::b:p::p, comp jButtonOk::b:p::p}, space :p::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "jCheckBoxAlleEinstellungen"
+				"text": "alle Einstellungen anzeigen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonOk"
+				"text": "Ok"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonAbbrechen"
+				"text": "Abbrechen"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 4
+				}
+			} )
+		}, new FormLayoutConstraints( null ) )
+	}
+}

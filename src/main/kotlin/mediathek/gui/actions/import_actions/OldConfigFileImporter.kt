@@ -1,8 +1,9 @@
 package mediathek.gui.actions.import_actions
 
-import mediathek.config.Daten
-import mediathek.daten.abo.DatenAbo
-import mediathek.daten.blacklist.BlacklistRule
+import mediathek.controller.LegacyAboRuleXml
+import mediathek.controller.LegacyBlacklistRuleXml
+import mediathek.daten.abo.AboServices
+import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.messages.ReplaceListChangedEvent
 import mediathek.tool.MessageBus
 import mediathek.tool.ReplaceList
@@ -16,8 +17,10 @@ import javax.xml.stream.XMLStreamConstants
 import javax.xml.stream.XMLStreamException
 import javax.xml.stream.XMLStreamReader
 
-class OldConfigFileImporter {
-    private val daten: Daten = Daten.getInstance()
+class OldConfigFileImporter(
+    private val abos: AboServices,
+    private val blacklist: BlacklistServices,
+) {
     private val inFactory: XMLInputFactory = XMLInputFactory.newInstance()
 
     @Throws(IOException::class, XMLStreamException::class)
@@ -36,15 +39,15 @@ class OldConfigFileImporter {
                     while (parser!!.hasNext()) {
                         val event = parser.next()
                         if (event == XMLStreamConstants.START_ELEMENT) {
-                            if (importAbo && parser.localName == DatenAbo.TAG) {
+                            if (importAbo && parser.localName == LegacyAboRuleXml.TAG) {
                                 if (importAboEntry(parser))
                                     foundAbos++
-                            } else if (importBlacklist && parser.localName == BlacklistRule.TAG) {
+                            } else if (importBlacklist && parser.localName == LegacyBlacklistRuleXml.TAG) {
                                 try {
-                                    val rule = BlacklistRule()
-                                    rule.readFromConfig(parser)
-                                    daten.listeBlacklist.addWithoutNotification(rule)
-                                    foundBlacklistEntries++
+                                    val rule = LegacyBlacklistRuleXml.readRule(parser)
+                                    if (blacklist.rules.addWithoutNotification(rule)) {
+                                        foundBlacklistEntries++
+                                    }
                                 }
                                 catch (e: Exception) {
                                     logger.error("Failed to read blacklist rule", e)
@@ -68,10 +71,12 @@ class OldConfigFileImporter {
             }
         }
 
-        if (foundAbos > 0)
-            daten.listeAbo.aenderungMelden()
+        if (foundAbos > 0) {
+            abos.list.finishLoading()
+            abos.notifyListChanged()
+        }
         if (foundBlacklistEntries > 0)
-            daten.listeBlacklist.filterListAndNotifyListeners()
+            blacklist.applyToFilmListAndNotifyListeners()
         if (foundReplaceListEntries > 0)
             MessageBus.messageBus.publishAsync(ReplaceListChangedEvent())
 
@@ -82,9 +87,8 @@ class OldConfigFileImporter {
 
     private fun importAboEntry(parser: XMLStreamReader): Boolean {
         return try {
-            val datenAbo = DatenAbo()
-            datenAbo.readFromConfig(parser)
-            daten.listeAbo.addAbo(datenAbo)
+            val datenAbo = LegacyAboRuleXml.readAbo(parser)
+            abos.list.addAboFromConfig(datenAbo)
             true
         }
         catch (_: Exception) {
@@ -94,22 +98,18 @@ class OldConfigFileImporter {
     }
 
     private fun importReplaceList(parser: XMLStreamReader): Boolean {
-        val sa = arrayOfNulls<String>(ReplaceList.MAX_ELEM)
+        val sa = Array(ReplaceList.MAX_ELEM) { "" }
         val success = get(parser, sa)
         return if (success) {
-            ReplaceList.list.add(sa)
+            ReplaceList.add(sa)
             true
         } else
             false
     }
 
-    private operator fun get(parser: XMLStreamReader, strRet: Array<String?>): Boolean {
+    private fun get(parser: XMLStreamReader, strRet: Array<String>): Boolean {
         val maxElem = strRet.size
-        for (i in 0 until maxElem) {
-            if (strRet[i] == null) {
-                strRet[i] = ""
-            }
-        }
+        val columnNames = ReplaceList.columnNames()
 
         return try {
             while (parser.hasNext()) {
@@ -121,7 +121,7 @@ class OldConfigFileImporter {
                 }
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     for (i in 0 until maxElem) {
-                        if (parser.localName == ReplaceList.COLUMN_NAMES[i]) {
+                        if (parser.localName == columnNames[i]) {
                             strRet[i] = parser.elementText
                             break
                         }

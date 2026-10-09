@@ -19,7 +19,8 @@
 package mediathek.tool
 
 object JsonStringUtils {
-    @JvmStatic
+    data class ParsedJsonString(val value: String, val endIndex: Int)
+
     fun escapeJsonString(value: String): String {
         val result = StringBuilder(value.length + 16)
         for (c in value) {
@@ -46,7 +47,6 @@ object JsonStringUtils {
         return result.toString()
     }
 
-    @JvmStatic
     fun toJsonStringArray(values: Collection<String>): String {
         val result = StringBuilder(values.size * 8 + 2)
         result.append('[')
@@ -64,7 +64,6 @@ object JsonStringUtils {
         return result.toString()
     }
 
-    @JvmStatic
     fun unescapeJsonString(value: String): String {
         val result = StringBuilder(value.length)
         var i = 0
@@ -104,5 +103,33 @@ object JsonStringUtils {
             i++
         }
         return result.toString()
+    }
+
+    fun parseQuotedJsonString(value: String, startIndex: Int): ParsedJsonString? {
+        if (startIndex !in value.indices || value[startIndex] != '"') {
+            return null
+        }
+
+        val escapedValue = StringBuilder()
+        var escaping = false
+        for (i in startIndex + 1..<value.length) {
+            val current = value[i]
+            if (escaping) {
+                escapedValue.append('\\')
+                escapedValue.append(current)
+                escaping = false
+                continue
+            }
+            if (current == '\\') {
+                escaping = true
+                continue
+            }
+            if (current == '"') {
+                return ParsedJsonString(unescapeJsonString(escapedValue.toString()), i)
+            }
+            escapedValue.append(current)
+        }
+
+        return null
     }
 }

@@ -1,11 +1,8 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.dialogEinstellungen.shutdown.ShutdownActionComboBox;
 import mediathek.gui.messages.ProgramLocationChangedEvent;
-import mediathek.mainwindow.MediathekGui;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MessageBus;
 import mediathek.tool.SVGIconUtilities;
 import mediathek.tool.TextCopyPasteHandler;
@@ -27,74 +24,115 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.function.Consumer;
 
 public class PanelEinstellungenErweitert extends JPanel {
     private static final Logger logger = LogManager.getLogger();
+    private final Frame owner;
 
     @Handler
     private void handleProgramLocationChangedEvent(ProgramLocationChangedEvent e) {
         SwingUtilities.invokeLater(this::init);
     }
 
-    public PanelEinstellungenErweitert() {
+    public PanelEinstellungenErweitert(Frame owner) {
+        this.owner = owner;
         initComponents();
 
         init();
         setFolderIcons();
 
-        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)));
-        jCheckBoxAboSuchen.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
-        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
-        jCheckBoxDownloadSofortStarten.addActionListener(_ -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jCheckBoxAboSuchen.setSelected(applicationConfiguration.getSearchAbosImmediately());
+        jCheckBoxAboSuchen.addActionListener(_ -> applicationConfiguration.setSearchAbosImmediately(jCheckBoxAboSuchen.isSelected()));
+        jCheckBoxDownloadSofortStarten.setSelected(applicationConfiguration.getStartDownloadsImmediately());
+        jCheckBoxDownloadSofortStarten.addActionListener(_ -> applicationConfiguration.setStartDownloadsImmediately(jCheckBoxDownloadSofortStarten.isSelected()));
 
-        jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
-        jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));
-        jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
-        jButtonProgrammShutdown.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, "Shutdown Befehl", jTextFieldProgrammShutdown));
+        jButtonProgrammDateimanager.addActionListener(new BeobPfad(
+                owner, applicationConfiguration::setDirectoryOpenProgram, "Dateimanager suchen", jTextFieldProgrammDateimanager));
+        jButtonProgrammVideoplayer.addActionListener(new BeobPfad(
+                owner, applicationConfiguration::setVideoPlayerProgram, "Videoplayer suchen", jTextFieldVideoplayer));
+        jButtonProgrammUrl.addActionListener(new BeobPfad(
+                owner, applicationConfiguration::setWebBrowserProgram, "Browser suchen", jTextFieldProgrammUrl));
+        jButtonProgrammShutdown.addActionListener(new BeobPfad(
+                owner, applicationConfiguration::setLinuxShutdownCommand, "Shutdown Befehl", jTextFieldProgrammShutdown));
 
-        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
+        jTextFieldProgrammDateimanager.setText(applicationConfiguration.getDirectoryOpenProgram());
+        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setDirectoryOpenProgram, jTextFieldProgrammDateimanager));
         var handler = new TextCopyPasteHandler<>(jTextFieldProgrammDateimanager);
         jTextFieldProgrammDateimanager.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN));
-        jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
+        jTextFieldVideoplayer.setText(applicationConfiguration.getVideoPlayerProgram());
+        jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setVideoPlayerProgram, jTextFieldVideoplayer));
         handler = new TextCopyPasteHandler<>(jTextFieldVideoplayer);
         jTextFieldVideoplayer.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
-        jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
+        jTextFieldProgrammUrl.setText(applicationConfiguration.getWebBrowserProgram());
+        jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setWebBrowserProgram, jTextFieldProgrammUrl));
         handler = new TextCopyPasteHandler<>(jTextFieldProgrammUrl);
         jTextFieldProgrammUrl.setComponentPopupMenu(handler.getPopupMenu());
 
-        jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN));
-        if (jTextFieldProgrammShutdown.getText().isEmpty()) {
-            jTextFieldProgrammShutdown.setText(Konstanten.SHUTDOWN_LINUX);
-            MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
-        }
-        jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
+        jTextFieldProgrammShutdown.setText(applicationConfiguration.getLinuxShutdownCommand());
+        jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setLinuxShutdownCommand, jTextFieldProgrammShutdown));
         handler = new TextCopyPasteHandler<>(jTextFieldProgrammShutdown);
         jTextFieldProgrammShutdown.setComponentPopupMenu(handler.getPopupMenu());
 
-        if (!SystemUtils.IS_OS_LINUX) {
-            jTextFieldProgrammShutdown.setEnabled(false);
-            jButtonProgrammShutdown.setEnabled(false);
-        }
-
-        if (!SystemUtils.IS_OS_MAC_OSX) {
-            cbDefaultShutdownHelperCommand.setEnabled(false);
-        }
+        setupJDownloaderFields();
+        setupPyLoadFields();
+        hideOsSpecificFields();
 
         MessageBus.getMessageBus().subscribe(this);
     }
 
-    private String getWebBrowserLocation() {
-        return MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
+    private void setupJDownloaderFields() {
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jTextFieldJDownloaderUrl.setText(applicationConfiguration.getJDownloaderUrl());
+        jTextFieldJDownloaderUrl.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setJDownloaderUrl, jTextFieldJDownloaderUrl));
+        var handler = new TextCopyPasteHandler<>(jTextFieldJDownloaderUrl);
+        jTextFieldJDownloaderUrl.setComponentPopupMenu(handler.getPopupMenu());
+    }
+
+    private void setupPyLoadFields() {
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jTextFieldPyLoadUrl.setText(applicationConfiguration.getPyLoadUrl());
+        jTextFieldPyLoadUrl.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setPyLoadUrl, jTextFieldPyLoadUrl));
+        var handler = new TextCopyPasteHandler<>(jTextFieldPyLoadUrl);
+        jTextFieldPyLoadUrl.setComponentPopupMenu(handler.getPopupMenu());
+
+        jTextFieldPyLoadUser.setText(applicationConfiguration.getPyLoadUser());
+        jTextFieldPyLoadUser.getDocument().addDocumentListener(new BeobAppConfigDoc(
+                applicationConfiguration::setPyLoadUser, jTextFieldPyLoadUser));
+        handler = new TextCopyPasteHandler<>(jTextFieldPyLoadUser);
+        jTextFieldPyLoadUser.setComponentPopupMenu(handler.getPopupMenu());
+
+        jPasswordFieldPyLoadPassword.setText(applicationConfiguration.getPyLoadPassword());
+        jPasswordFieldPyLoadPassword.getDocument().addDocumentListener(new PyLoadPasswordDocumentListener());
+    }
+
+    private void hideOsSpecificFields() {
+        if (!SystemUtils.IS_OS_LINUX) {
+            jTextFieldProgrammShutdown.setEnabled(false);
+            jButtonProgrammShutdown.setEnabled(false);
+            pnlLinuxShutdownCommand.setVisible(false);
+        }
+
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            cbDefaultShutdownHelperCommand.setEnabled(false);
+            pnlMacShutdownBehaviour.setVisible(false);
+        }
     }
 
     private void init() {
-        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammUrl.setText(getWebBrowserLocation());
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jTextFieldProgrammDateimanager.setText(applicationConfiguration.getDirectoryOpenProgram());
+        jTextFieldVideoplayer.setText(applicationConfiguration.getVideoPlayerProgram());
+        jTextFieldProgrammUrl.setText(applicationConfiguration.getWebBrowserProgram());
     }
 
     private void setFolderIcons() {
@@ -105,13 +143,13 @@ public class PanelEinstellungenErweitert extends JPanel {
         jButtonProgrammShutdown.setIcon(icon);
     }
 
-    static private class BeobDoc implements DocumentListener {
+    static private class BeobAppConfigDoc implements DocumentListener {
 
-        final MVConfig.Configs config;
+        final Consumer<String> valueWriter;
         final JTextField txt;
 
-        public BeobDoc(MVConfig.Configs config, JTextField txt) {
-            this.config = config;
+        public BeobAppConfigDoc(Consumer<String> valueWriter, JTextField txt) {
+            this.valueWriter = valueWriter;
             this.txt = txt;
         }
 
@@ -131,19 +169,41 @@ public class PanelEinstellungenErweitert extends JPanel {
         }
 
         private void tus() {
-            MVConfig.add(config, txt.getText());
+            valueWriter.accept(txt.getText());
+        }
+    }
+
+    private class PyLoadPasswordDocumentListener implements DocumentListener {
+        private void update() {
+            ApplicationConfiguration.getInstance().setPyLoadPassword(new String(jPasswordFieldPyLoadPassword.getPassword()));
         }
 
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            update();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            update();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            update();
+        }
     }
 
     static private class BeobPfad implements ActionListener {
 
-        final MVConfig.Configs config;
+        final Frame owner;
+        final Consumer<String> valueWriter;
         final String title;
         final JTextField textField;
 
-        public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
-            this.config = config;
+        public BeobPfad(Frame owner, Consumer<String> valueWriter, String title, JTextField textField) {
+            this.owner = owner;
+            this.valueWriter = valueWriter;
             this.title = title;
             this.textField = textField;
         }
@@ -152,7 +212,7 @@ public class PanelEinstellungenErweitert extends JPanel {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), title);
+                FileDialog chooser = new FileDialog(owner, title);
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
@@ -172,7 +232,7 @@ public class PanelEinstellungenErweitert extends JPanel {
                     chooser.setCurrentDirectory(new File(SystemUtils.USER_HOME));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                returnVal = chooser.showOpenDialog(null);
+                returnVal = chooser.showOpenDialog(owner);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
@@ -182,14 +242,14 @@ public class PanelEinstellungenErweitert extends JPanel {
                 }
             }
             // merken und prüfen
-            MVConfig.add(config, textField.getText());
+            valueWriter.accept(textField.getText());
             String programm = textField.getText();
             if (!programm.isEmpty()) {
                 try {
                     if (!new File(programm).exists()) {
-                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(owner, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     } else if (!new File(programm).canExecute()) {
-                        MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(owner, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (Exception ignored) {
                 }
@@ -220,10 +280,20 @@ public class PanelEinstellungenErweitert extends JPanel {
         var jPanel4 = new JPanel();
         jTextFieldProgrammUrl = new JTextField();
         jButtonProgrammUrl = new JButton();
-        var jPanel3 = new JPanel();
+        var jPanelJDownloader = new JPanel();
+        var label1 = new JLabel();
+        jTextFieldJDownloaderUrl = new JTextField();
+        var jPanelPyLoad = new JPanel();
+        var label2 = new JLabel();
+        jTextFieldPyLoadUrl = new JTextField();
+        var label3 = new JLabel();
+        jTextFieldPyLoadUser = new JTextField();
+        var label4 = new JLabel();
+        jPasswordFieldPyLoadPassword = new JPasswordField();
+        pnlLinuxShutdownCommand = new JPanel();
         jButtonProgrammShutdown = new JButton();
         jTextFieldProgrammShutdown = new JTextField();
-        var panel1 = new JPanel();
+        pnlMacShutdownBehaviour = new JPanel();
         cbDefaultShutdownHelperCommand = new ShutdownActionComboBox();
 
         //======== this ========
@@ -320,11 +390,73 @@ public class PanelEinstellungenErweitert extends JPanel {
         }
         add(jPanel4);
 
-        //======== jPanel3 ========
+        //======== jPanelJDownloader ========
         {
-            jPanel3.setBorder(new TitledBorder("Linux: Aufruf zum Shutdown"));
-            jPanel3.setToolTipText("<html>Unter Linux wird das ausgew\u00e4hlte Programm/Script ausgef\u00fchrt um den Recher herunter zu fahren.<br>M\u00f6gliche Aufrufe sind:<br>\n<ul>\n<li>systemctl poweroff</li>\n<li>poweroff</li>\n<li>sudo shutdown -P now</li>\n<li><b>shutdown -h now</b></li>\n</ul>\n</html>");
-            jPanel3.setLayout(new MigLayout(
+            jPanelJDownloader.setBorder(new TitledBorder("JDownloader"));
+            jPanelJDownloader.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"),
+                // columns
+                new AC()
+                    .grow().fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill()));
+
+            //---- label1 ----
+            label1.setText("JDownloader-URL:");
+            jPanelJDownloader.add(label1, new CC().cell(0, 0, 2, 1));
+
+            //---- jTextFieldJDownloaderUrl ----
+            jTextFieldJDownloaderUrl.setToolTipText("<html>Wenn jDownloader nicht auf dem lokalen Host installiert ist oder unter einem anderen Port reagieren soll, hier bitte angeben.<br>Default: http://127.0.0.1:9666/flash/add</html>");
+            jPanelJDownloader.add(jTextFieldJDownloaderUrl, new CC().cell(0, 1));
+        }
+        add(jPanelJDownloader);
+
+        //======== jPanelPyLoad ========
+        {
+            jPanelPyLoad.setBorder(new TitledBorder("pyLoad"));
+            jPanelPyLoad.setLayout(new MigLayout(
+                new LC().insets("5").hideMode(3).gridGap("5", "5"),
+                // columns
+                new AC()
+                    .grow().fill().gap()
+                    .fill(),
+                // rows
+                new AC()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill().gap()
+                    .fill()));
+
+            //---- label2 ----
+            label2.setText("pyLoad-URL:");
+            jPanelPyLoad.add(label2, new CC().cell(0, 0, 2, 1));
+
+            //---- jTextFieldPyLoadUrl ----
+            jTextFieldPyLoadUrl.setToolTipText("PyLoad-URL komplett angeben (z.B.: http://127.0.0.1:8000)");
+            jPanelPyLoad.add(jTextFieldPyLoadUrl, new CC().cell(0, 1));
+
+            //---- label3 ----
+            label3.setText("Benutzer:");
+            jPanelPyLoad.add(label3, new CC().cell(0, 2, 2, 1));
+            jPanelPyLoad.add(jTextFieldPyLoadUser, new CC().cell(0, 3));
+
+            //---- label4 ----
+            label4.setText("Passwort:");
+            jPanelPyLoad.add(label4, new CC().cell(0, 4, 2, 1));
+            jPanelPyLoad.add(jPasswordFieldPyLoadPassword, new CC().cell(0, 5));
+        }
+        add(jPanelPyLoad);
+
+        //======== pnlLinuxShutdownCommand ========
+        {
+            pnlLinuxShutdownCommand.setBorder(new TitledBorder("Linux: Aufruf zum Shutdown"));
+            pnlLinuxShutdownCommand.setToolTipText("<html>Unter Linux wird das ausgew\u00e4hlte Programm/Script ausgef\u00fchrt um den Recher herunter zu fahren.<br>M\u00f6gliche Aufrufe sind:<br>\n<ul>\n<li>systemctl poweroff</li>\n<li>poweroff</li>\n<li>sudo shutdown -P now</li>\n<li><b>shutdown -h now</b></li>\n</ul>\n</html>");
+            pnlLinuxShutdownCommand.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
                 new AC()
@@ -337,18 +469,18 @@ public class PanelEinstellungenErweitert extends JPanel {
             //---- jButtonProgrammShutdown ----
             jButtonProgrammShutdown.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
             jButtonProgrammShutdown.setToolTipText("Programm/Script ausw\u00e4hlen");
-            jPanel3.add(jButtonProgrammShutdown, new CC().cell(1, 0));
+            pnlLinuxShutdownCommand.add(jButtonProgrammShutdown, new CC().cell(1, 0));
 
             //---- jTextFieldProgrammShutdown ----
             jTextFieldProgrammShutdown.setText("shutdown -h now");
-            jPanel3.add(jTextFieldProgrammShutdown, new CC().cell(0, 0));
+            pnlLinuxShutdownCommand.add(jTextFieldProgrammShutdown, new CC().cell(0, 0));
         }
-        add(jPanel3);
+        add(pnlLinuxShutdownCommand);
 
-        //======== panel1 ========
+        //======== pnlMacShutdownBehaviour ========
         {
-            panel1.setBorder(new TitledBorder("macOS: Standardverhalten des Hilfsprogramms"));
-            panel1.setLayout(new MigLayout(
+            pnlMacShutdownBehaviour.setBorder(new TitledBorder("macOS: Standardverhalten des Hilfsprogramms"));
+            pnlMacShutdownBehaviour.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
                 new AC()
@@ -356,9 +488,9 @@ public class PanelEinstellungenErweitert extends JPanel {
                 // rows
                 new AC()
                     ));
-            panel1.add(cbDefaultShutdownHelperCommand, new CC().cell(0, 0));
+            pnlMacShutdownBehaviour.add(cbDefaultShutdownHelperCommand, new CC().cell(0, 0));
         }
-        add(panel1);
+        add(pnlMacShutdownBehaviour);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -371,8 +503,14 @@ public class PanelEinstellungenErweitert extends JPanel {
     private JButton jButtonProgrammVideoplayer;
     private JTextField jTextFieldProgrammUrl;
     private JButton jButtonProgrammUrl;
+    private JTextField jTextFieldJDownloaderUrl;
+    private JTextField jTextFieldPyLoadUrl;
+    private JTextField jTextFieldPyLoadUser;
+    private JPasswordField jPasswordFieldPyLoadPassword;
+    private JPanel pnlLinuxShutdownCommand;
     private JButton jButtonProgrammShutdown;
     private JTextField jTextFieldProgrammShutdown;
+    private JPanel pnlMacShutdownBehaviour;
     private ShutdownActionComboBox cbDefaultShutdownHelperCommand;
     // End of variables declaration//GEN-END:variables
 }

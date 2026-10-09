@@ -1,0 +1,265 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, comp jTabbedPane1:::::x, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jTabbedPane1:::::x, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "jTabbedPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel4::t:::x, comp jScrollPane2::t:::x, seq t {comp jLabel5:::p::p, space :::p, comp jComboBoxBs:::p:149:p, space :::x, comp jLabel4:::p::p, space :::p, comp jButtonAktualisieren:::p::p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p:7:p, par c {comp jLabel4::c:p::p, comp jButtonAktualisieren::c:p::p, comp jLabel5::c:p::p, comp jComboBoxBs::c:p::p}, space :p::p, comp jScrollPane2::::216:x, space :::p, comp jPanel4:::p::p, space :p::p}}"
+				} ) {
+					name: "jPanel3"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane2"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "jTableVorlagen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+								"JavaCodeGenerator.preInitCode": "${field}.setModel(new NonEditableTableModel());"
+							}
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {comp jLabel1::l:p::p, comp jLabel6::l:p::p}, space :::p, par l {comp jTextFieldBs:::::x, comp jTextFieldName:::::x}}, seq t {space :0:0:x, comp jButtonImportVorlage:::p::p}, seq l {par l {comp jLabel2:::p::p, comp jLabel3::l:p::p}, space :p:26:p, par l {comp jTextFieldUrl:::::x, comp jScrollPane3::::461:x}}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel1::b:p::p, comp jTextFieldName:2:b:p::p}, space :::p, par b {comp jLabel6::b:p::p, comp jTextFieldBs:2:b:p::p}, space :::p, par b {comp jLabel2::b:p::p, comp jTextFieldUrl:2:b:p::p}, space :::p, par l {comp jLabel3:::p::p, comp jScrollPane3:::p::p}, space u:p::p, comp jButtonImportVorlage:2::p::p, space :::x}}"
+					} ) {
+						name: "jPanel4"
+						"border": new javax.swing.border.EtchedBorder( 1, null, null )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel1"
+							"text": "Name:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldName"
+							"editable": false
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel2"
+							"text": "URL:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldUrl"
+							"editable": false
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel3"
+							"text": "Beschreibung:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "jScrollPane3"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+							add( new FormComponent( "javax.swing.JTextArea" ) {
+								name: "jTextAreaBeschreibung"
+								"editable": false
+								"columns": 20
+								"rows": 5
+								auxiliary() {
+									"JavaCodeGenerator.variableModifiers": 4
+								}
+							} )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonImportVorlage"
+							"text": "Set importieren"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel6"
+							"text": "Betriebssystem:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldBs"
+							"editable": false
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonAktualisieren"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-aktualisieren.png" )
+						"toolTipText": "Neu laden"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel4"
+						"text": "Vorlagen von der Website laden:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "jLabel5"
+						"text": "Betriebssystem:"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "jComboBoxBs"
+						"model": new javax.swing.DefaultComboBoxModel
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Setvorlagen"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane4::::591:x, seq t {space :0:0:x, comp jButtonImportStandard:::p::p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane4:::p:172:p, space :::p, comp jButtonImportStandard:::p::p, space ::302:x}}"
+				} ) {
+					name: "jPanel5"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonImportStandard"
+						"text": "Set anlegen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "jScrollPane4"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "jTextArea1"
+							"editable": false
+							"background": new com.jformdesigner.model.SwingColor( "Panel.background" )
+							"columns": 20
+							"rows": 5
+							"text": "Die Standardsets, die beim ersten Programmstart\nangelegt wurden, nochmals anlegen.\n\nDie bestehenden Sets bleiben unverändert erhalten,\nsollten jedoch vorher unter \"Set bearbeiten\" umbenannt\nwerden, z.B. von \"Speichern\" zu \"Speichern alt\".\n\nSoll aber der Ursprungszustand wieder hergestellt werden,\nmüssen vorher alle bestehenden Sets gelöscht werden."
+							"margin": new java.awt.Insets( 5, 5, 5, 5 )
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Standardset"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq t {space :::p, par t {comp jPanel7:::::x, comp jPanel6:::::x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :p::p, comp jPanel6:::p::p, space u:p::p, comp jPanel7:::::x, space :p::p}}"
+				} ) {
+					name: "jPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space ::12:p, par l {seq t {comp jLabel7:::p::p, space :::p, comp jTextFieldDatei:::::x, space :::p, comp jButtonPfad:::p::p}, seq t {space :0:0:x, comp jButtonImportDatei:::p::p}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par l {comp jButtonPfad:1::p::p, par b {comp jTextFieldDatei:1:b:p::p, comp jLabel7::b:p::p}}, space u:::p, comp jButtonImportDatei:::p::p, space :::x}}"
+					} ) {
+						name: "jPanel6"
+						"border": new javax.swing.border.TitledBorder( "Set aus Datei importieren" )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldDatei"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonPfad"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+							"toolTipText": "URL/Datei auswählen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonImportDatei"
+							"text": "Set importieren"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "jLabel7"
+							"text": "Datei/URL:"
+							auxiliary() {
+								"JavaCodeGenerator.variableLocal": true
+							}
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp jTextAreaImport::::557:x, seq t {space :0:0:x, comp jButtonImportText:::p::p}}, space :::p}}"
+						"$verticalGroup": "par l {seq t {space :::p, comp jTextAreaImport::::309:x, space u:::p, comp jButtonImportText:::p::p, space :::p}}"
+					} ) {
+						name: "jPanel7"
+						"border": new javax.swing.border.TitledBorder( "Set als Text importieren" )
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "jTextAreaImport"
+							"columns": 20
+							"rows": 5
+							"border": new javax.swing.border.LineBorder( new java.awt.Color( 153, 153, 153, 255 ), 1, false )
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonImportText"
+							"text": "Set importieren"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Set importieren"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) )
+	}
+}

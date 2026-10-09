@@ -1,8 +1,6 @@
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.Daten;
-import mediathek.config.MVConfig;
-import mediathek.gui.PanelVorlage;
+import mediathek.config.application.ApplicationConfiguration;
 import mediathek.gui.messages.ReplaceListChangedEvent;
 import mediathek.tool.*;
 import mediathek.tool.models.NonEditableTableModel;
@@ -18,8 +16,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class PanelDateinamen extends PanelVorlage {
-    public boolean ok;
+public class PanelDateinamen extends JPanel {
+    private boolean stopBeob;
 
     @Handler
     private void handleReplaceListChange(ReplaceListChangedEvent e) {
@@ -29,8 +27,7 @@ public class PanelDateinamen extends PanelVorlage {
         });
     }
 
-    public PanelDateinamen(Daten d, JFrame pparentComponent) {
-        super(d, pparentComponent);
+    public PanelDateinamen() {
         initComponents();
         MessageBus.getMessageBus().subscribe(this);
 
@@ -41,27 +38,27 @@ public class PanelDateinamen extends PanelVorlage {
         jButtonMinus.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg"));
         jButtonUp.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-up.svg"));
         jButtonDown.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/arrow-down.svg"));
-        jButtonReset.addActionListener(e -> {
+        jButtonReset.addActionListener(_ -> {
             ReplaceList.init();
             tabelleLaden();
             setTextfelder();
         });
-        jButtonPlus.addActionListener(e -> {
-            ReplaceList.list.add(new String[]{"von", "nach"});
+        jButtonPlus.addActionListener(_ -> {
+            ReplaceList.add("von", "nach");
             tabelleLaden();
             tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
             setTextfelder();
         });
-        jButtonMinus.addActionListener(e -> {
+        jButtonMinus.addActionListener(_ -> {
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow != -1) {
-                ReplaceList.list.remove(selectedTableRow);
+                ReplaceList.removeAt(selectedTableRow);
                 tabelleLaden();
                 setTextfelder();
             }
         });
-        jButtonUp.addActionListener(e -> upDown(true));
-        jButtonDown.addActionListener(e -> upDown(false));
+        jButtonUp.addActionListener(_ -> upDown(true));
+        jButtonDown.addActionListener(_ -> upDown(false));
         tabelleLaden();
         setTextfelder();
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
@@ -106,18 +103,19 @@ public class PanelDateinamen extends PanelVorlage {
         handler = new TextCopyPasteHandler<>(jTextFieldVon);
         jTextFieldVon.setComponentPopupMenu(handler.getPopupMenu());
 
-        jCheckBoxTable.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected())));
-        jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)));
+        var applicationConfiguration = ApplicationConfiguration.getInstance();
+        jCheckBoxTable.addActionListener(_ -> applicationConfiguration.setUseFilenameReplaceTable(jCheckBoxTable.isSelected()));
+        jCheckBoxTable.setSelected(applicationConfiguration.getUseFilenameReplaceTable());
 
-        jCheckBoxAscii.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected())));
-        jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
+        jCheckBoxAscii.addActionListener(_ -> applicationConfiguration.setOnlyAsciiFilenames(jCheckBoxAscii.isSelected()));
+        jCheckBoxAscii.setSelected(applicationConfiguration.getOnlyAsciiFilenames());
     }
 
     private void setVon() {
         if (!stopBeob) {
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow != -1) {
-                ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
+                ReplaceList.setFrom(tabelle.convertRowIndexToModel(selectedTableRow), jTextFieldVon.getText()); // leer wird beim suchen aussortiert
                 tabelleLaden();
             }
         }
@@ -127,7 +125,7 @@ public class PanelDateinamen extends PanelVorlage {
         if (!stopBeob) {
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow != -1) {
-                ReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.NACH_NR] = jTextFieldNach.getText();
+                ReplaceList.setTo(tabelle.convertRowIndexToModel(selectedTableRow), jTextFieldNach.getText());
                 tabelleLaden();
             }
         }
@@ -153,14 +151,10 @@ public class PanelDateinamen extends PanelVorlage {
         if (selectedTableRow != -1)
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
 
-        var model = new NonEditableTableModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
+        var model = new NonEditableTableModel(new Object[][]{}, ReplaceList.columnNames());
         model.setRowCount(0);
-        Object[] object = new Object[ReplaceList.MAX_ELEM];
-        for (String[] s : ReplaceList.list) {
-            //object[i] = datenAbo.arr;
-            object[0] = s[0];
-            object[1] = s[1];
-            model.addRow(object);
+        for (ReplaceEntry entry : ReplaceList.entries()) {
+            model.addRow(entry.toArray());
         }
 
         tabelle.setModel(model);
@@ -182,8 +176,10 @@ public class PanelDateinamen extends PanelVorlage {
     private void setTextfelder() {
         final int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow != -1) {
-            jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.VON_NR).toString());
-            jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.NACH_NR).toString());
+            var model = tabelle.getModel();
+            var modelRow = tabelle.convertRowIndexToModel(selectedTableRow);
+            jTextFieldVon.setText(model.getValueAt(modelRow, ReplaceList.VON_NR).toString());
+            jTextFieldNach.setText(model.getValueAt(modelRow, ReplaceList.NACH_NR).toString());
         } else {
             jTextFieldVon.setText("");
             jTextFieldNach.setText("");
