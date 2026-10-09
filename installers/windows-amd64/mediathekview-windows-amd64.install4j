@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="12.0.3" transformSequenceNumber="12">
   <directoryPresets config="./res" />
-  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="MediathekView-latest-windows-amd64" compression="9" createChecksums="false" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="15.0.0" allPathsRelative="true" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="25">
+  <application name="MediathekView" applicationId="1927-5045-2127-3394" mediaDir="target" mediaFilePattern="MediathekView-latest-windows-amd64" compression="9" createChecksums="false" shortName="MediathekView" publisher="MediathekView Team" publisherWeb="https://mediathekview.de" version="16.0.0" allPathsRelative="true" convertDotsToUnderscores="false" macVolumeId="d594baf3c2b3424d" javaMinVersion="25">
     <languages>
       <principalLanguage id="de" />
     </languages>
@@ -28,7 +28,7 @@
   <launchers>
     <launcher name="mediathekview" id="59" menuName="MediathekView">
       <executable name="MediathekView" iconSet="true" executableMode="gui" singleInstance="true" />
-      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck" arguments="-e">
+      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck" arguments="-e">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
           <scanDirectory location="dependency" failOnError="false" />
@@ -43,7 +43,7 @@
     </launcher>
     <launcher name="MediathekView_Portable" id="61" excludeFromMenu="true">
       <executable name="MediathekView_Portable" iconSet="true" executableMode="gui" />
-      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck" arguments="-e Einstellungen/.mediathek3">
+      <java mainClass="mediathek.Main" vmParameters="-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck" arguments="-e Einstellungen/.mediathek3">
         <classPath>
           <archive location="MediathekView.jar" failOnError="false" />
           <scanDirectory location="dependency" failOnError="false" />

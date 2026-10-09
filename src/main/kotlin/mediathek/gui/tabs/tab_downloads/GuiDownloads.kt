@@ -30,10 +30,10 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.ProgramSetRepository
 import mediathek.daten.abo.AboServices
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
+import mediathek.filmlisten.FilmListLoadListener
+import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.gui.actions.*
 import mediathek.gui.dialog.DialogBeendenZeit
 import mediathek.gui.dialog.DialogFilmBeschreibung
@@ -45,6 +45,7 @@ import mediathek.gui.tabs.actions.MarkFilmAsUnseenAction
 import mediathek.tool.DirOpenAction
 import mediathek.tool.DownloadSizeState
 import mediathek.tool.MessageBus
+import mediathek.tool.ReplacementRules
 import mediathek.tool.cellrenderer.CellRendererDownloads
 import mediathek.tool.datum.Datum
 import mediathek.tool.listener.BeobTableHeader
@@ -52,10 +53,9 @@ import mediathek.tool.models.TModelDownload
 import mediathek.tool.table.MVDownloadsTable
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.*
 import java.awt.event.ActionEvent
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
 import java.io.File
 import java.util.*
@@ -75,7 +75,8 @@ class GuiDownloads(
     private val filmCatalog: FilmCatalog,
     private val abos: AboServices,
     private val downloads: DownloadServices,
-    private val filmListLoader: FilmeLaden,
+    private val replacementRules: ReplacementRules,
+    private val filmListLoader: FilmListLoadCoordinator,
     private val configurationPersistence: DatenConfigurationPersistence,
     private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
     private val ownerFrame: JFrame,
@@ -187,7 +188,7 @@ class GuiDownloads(
     private fun getSelectedDownloadsFromTable(): List<DatenDownload> = tableSelection.selectedDownloadsForLookup()
 
     private fun editFilmDescription(film: DatenFilm) {
-        DialogFilmBeschreibung(ownerFrame, programSets, film).isVisible = true
+        DialogFilmBeschreibung(ownerFrame, programSets, film, replacementRules).isVisible = true
     }
 
     private fun setupDownloadSizeSelectionUpdater() {
@@ -204,12 +205,12 @@ class GuiDownloads(
                 updateSelectedListItemsCount(tabelle)
             }
         }
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(event: ComponentEvent) {
+        addDelayedComponentListener(
+            onComponentShown = {
                 updateSelectedListItemsCount(tabelle)
                 onComponentShown()
             }
-        })
+        )
     }
 
     private fun setupDownloadListTable() {
@@ -374,7 +375,7 @@ class GuiDownloads(
     private fun reloadAndSave() {
         SwingUtilities.invokeLater {
             reloadTable()
-            configurationPersistence.saveAll()
+            configurationPersistence.requestDownloadSave()
         }
     }
 
@@ -393,7 +394,7 @@ class GuiDownloads(
     private fun handleDownloadListChange(event: DownloadListChangedEvent) {
         SwingUtilities.invokeLater {
             reloadTable()
-            configurationPersistence.saveAll()
+            configurationPersistence.requestDownloadSave()
         }
     }
 
@@ -927,15 +928,15 @@ class GuiDownloads(
         add(downloadListArea, BorderLayout.CENTER)
         add(toolBarRow, BorderLayout.NORTH)
 
-        filmListLoader.addFilmLoadListener(object : ListenerFilmeLaden() {
-            override fun start(event: ListenerFilmeLadenEvent) {
+        filmListLoader.addLoadListener(object : FilmListLoadListener {
+            override fun loadStarted(@Suppress("UNUSED_PARAMETER") progress: FilmListLoadProgress) {
                 loadFilmlist = true
                 SwingUtilities.invokeLater {
                     refreshDownloadListAction.isEnabled = false
                 }
             }
 
-            override fun fertig(event: ListenerFilmeLadenEvent) {
+            override fun loadFinished(@Suppress("UNUSED_PARAMETER") progress: FilmListLoadProgress) {
                 loadFilmlist = false
                 SwingUtilities.invokeLater {
                     refreshDownloadListAction.isEnabled = true

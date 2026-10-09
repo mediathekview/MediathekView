@@ -109,7 +109,7 @@ export DESKTOP_FILE_HINT="$APPDIR/de.mediathekview.MediathekView.desktop"
 
 dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
-MediathekView -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -ea -cp "MediathekView.jar:dependency/*" -DexternalUpdateCheck mediathek.Main "$@"
+MediathekView -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMPercentage=50.0 --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED -ea -cp "MediathekView.jar:dependency/*" -DexternalUpdateCheck mediathek.Main "$@"
 cd $OLDPWD
 EOF
 

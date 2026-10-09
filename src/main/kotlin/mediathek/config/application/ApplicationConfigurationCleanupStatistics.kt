@@ -33,6 +33,4 @@ data class ApplicationConfigurationCleanupStatistics(
 
     val keptKeyCount: Int
         get() = totalKeysAfter
-
-    fun hasRemovedKeys(): Boolean = removedKeys.isNotEmpty()
 }

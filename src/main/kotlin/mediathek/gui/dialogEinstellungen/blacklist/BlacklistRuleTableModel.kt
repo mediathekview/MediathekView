@@ -42,7 +42,7 @@ class BlacklistRuleTableModel(
             BLACKLIST_SENDER -> rule.sender
             BLACKLIST_THEMA -> rule.thema
             BLACKLIST_TITEL -> rule.titel
-            BLACKLIST_THEMA_TITEL -> rule.thema_titel
+            BLACKLIST_THEMA_TITEL -> rule.topicTitle
             BLACKLIST_FILTERED -> getFilteredCount(rowIndex)
             else -> error("Unexpected value: $columnIndex")
         }
@@ -104,7 +104,7 @@ class BlacklistRuleTableModel(
             rule.sender,
             rule.thema,
             rule.titel,
-            rule.thema_titel,
+            rule.topicTitle,
             rule.active,
         )
     }

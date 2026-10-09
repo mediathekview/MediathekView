@@ -36,17 +36,12 @@ class DialogFilterView(
     private val zeitraumFallbackWriter: (String) -> Unit,
     private val deleteCurrentFilterAction: Action,
 ) : FilmFilterView {
-    override fun render(state: FilmFilterState, availableThemen: List<String>, canDeleteCurrentFilter: Boolean) {
+    override fun renderState(state: FilmFilterState, canDeleteCurrentFilter: Boolean) {
         checkBoxBindings.forEach { (checkBox, selectedStateReader) ->
             checkBox.isSelected = selectedStateReader(state)
         }
 
         senderSelectionRenderer(state)
-
-        sourceThemaList.withWriteLock {
-            clear()
-            addAll(availableThemen)
-        }
         themaSelectionRenderer(state.thema)
 
         filmLengthRangeSlider.withValueIsAdjusting {
@@ -59,6 +54,14 @@ class DialogFilterView(
         zeitraumSpinner.restoreValue(state.zeitraum, zeitraumFallbackWriter)
 
         deleteCurrentFilterAction.isEnabled = canDeleteCurrentFilter
+    }
+
+    override fun renderAvailableThemen(state: FilmFilterState, availableThemen: List<String>) {
+        sourceThemaList.withWriteLock {
+            clear()
+            addAll(availableThemen)
+        }
+        themaSelectionRenderer(state.thema)
     }
 
     inline fun <T> FilmLengthSlider.withValueIsAdjusting(action: FilmLengthSlider.() -> T): T {

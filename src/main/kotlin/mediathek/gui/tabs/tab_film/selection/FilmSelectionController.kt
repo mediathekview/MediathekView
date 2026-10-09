@@ -21,15 +21,14 @@ package mediathek.gui.tabs.tab_film.selection
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
+import mediathek.gui.tabs.tab_film.table.FilmTableModelBinding
 import mediathek.tool.NoSelectionErrorDialog
-import mediathek.tool.models.FilmColumn
-import mediathek.tool.table.MVFilmTable
 import java.awt.Component
 import java.util.*
 
 class FilmSelectionController(private val host: Host) {
     interface Host {
-        fun table(): MVFilmTable
+        fun tableBinding(): FilmTableModelBinding
         fun parentComponent(): Component
         fun saveFilms(films: List<DatenFilm>, pSet: DatenPset?, requestedResolution: FilmResolution.Enum?)
         fun startFilmWithProgram(pSet: DatenPset, film: DatenFilm, resolution: String)
@@ -37,7 +36,7 @@ class FilmSelectionController(private val host: Host) {
         fun updateCurrentFilm(film: DatenFilm?)
     }
 
-    fun getTableRowCount(): Int = host.table().model.rowCount
+    fun getTableRowCount(): Int = host.tableBinding().rowCount
 
     @Synchronized
     fun saveFilm(pSet: DatenPset?) {
@@ -50,7 +49,7 @@ class FilmSelectionController(private val host: Host) {
     }
 
     fun startFilm(pSet: DatenPset) {
-        if (host.table().selectedRow == -1) {
+        if (host.tableBinding().table.selectedRow == -1) {
             NoSelectionErrorDialog.show(host.parentComponent())
         } else if (pSet.istSpeichern()) {
             saveFilm(pSet)
@@ -68,34 +67,21 @@ class FilmSelectionController(private val host: Host) {
     }
 
     fun getFilm(tableRow: Int): Optional<DatenFilm> {
-        return if (tableRow >= 0 && tableRow < host.table().rowCount) {
-            Optional.of(filmAtModelRow(host.table().convertRowIndexToModel(tableRow)))
-        } else {
-            Optional.empty()
-        }
+        return Optional.ofNullable(host.tableBinding().filmAtViewRow(tableRow))
     }
 
     fun getCurrentlySelectedFilm(): Optional<DatenFilm> {
-        val selectedTableRow = host.table().selectedRow
+        val selectedTableRow = host.tableBinding().table.selectedRow
         return if (selectedTableRow != -1) {
-            try {
-                Optional.of(filmAtModelRow(host.table().convertRowIndexToModel(selectedTableRow)))
-            } catch (_: Exception) {
-                Optional.empty()
-            }
+            Optional.ofNullable(host.tableBinding().filmAtViewRow(selectedTableRow))
         } else {
             Optional.empty()
         }
     }
 
     fun getSelectedFilms(): List<DatenFilm> {
-        val films = ArrayList<DatenFilm>()
-        val rows = host.table().selectedRows
-        if (rows.isNotEmpty()) {
-            for (row in rows) {
-                films.add(filmAtModelRow(host.table().convertRowIndexToModel(row)))
-            }
-        } else {
+        val films = host.tableBinding().selectedFilms()
+        if (films.isEmpty()) {
             NoSelectionErrorDialog.show(host.parentComponent())
         }
         return films
@@ -103,9 +89,5 @@ class FilmSelectionController(private val host: Host) {
 
     fun updateFilmData() {
         host.updateCurrentFilm(getCurrentlySelectedFilm().orElse(null))
-    }
-
-    private fun filmAtModelRow(modelRow: Int): DatenFilm {
-        return host.table().model.getValueAt(modelRow, FilmColumn.REF.index) as DatenFilm
     }
 }

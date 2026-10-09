@@ -4,13 +4,13 @@ class DownloadStartInfo {
     /**
      * Size of the download list.
      */
-    var total_num_download_list_entries: Int = 0
+    var totalDownloadListEntries: Int = 0
 
-    var total_starts: Int = 0
+    var totalStarts: Int = 0
 
-    var num_abos: Int = 0
+    var aboCount: Int = 0
 
-    var num_downloads: Int = 0
+    var downloadCount: Int = 0
 
     /**
      * not yet started but initialized.
@@ -34,9 +34,9 @@ class DownloadStartInfo {
      * @return true if data was changed
      */
     fun hasValues(): Boolean =
-        total_starts > 0 ||
-            num_abos > 0 ||
-            num_downloads > 0 ||
+        totalStarts > 0 ||
+            aboCount > 0 ||
+            downloadCount > 0 ||
             initialized > 0 ||
             running > 0 ||
             finished > 0 ||

@@ -35,7 +35,7 @@ import java.time.Duration
 import java.util.*
 import java.util.function.Supplier
 import javax.swing.AbstractAction
-import javax.swing.Action
+
 import javax.swing.JOptionPane
 
 class DownloadSubtitleAction(
@@ -45,7 +45,7 @@ class DownloadSubtitleAction(
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
 
     init {
-        putValue(Action.NAME, "Untertitel-Datei sofort laden...")
+        putValue(NAME, "Untertitel-Datei sofort laden...")
     }
 
     override fun actionPerformed(e: ActionEvent?) {

@@ -39,6 +39,8 @@ class ApplicationConfigurationCleanupServiceTest {
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("ui.bookmark-dialog.colummn-settings"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("abo-v3.sortKeys"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("online-search.colummn-settings"))
+        assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("film.sortKeys"))
+        assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("film.colummn-settings"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.ui.online_search.show"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.ui.online_search.ard.search.history"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.ui.online_search.ard.url.history"))

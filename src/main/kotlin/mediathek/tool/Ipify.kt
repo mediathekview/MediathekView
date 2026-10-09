@@ -6,8 +6,6 @@ import mediathek.tool.http.MVHttpClient
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
-
-
 object Ipify {
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -16,9 +14,6 @@ object Ipify {
      * @return The public ip address.
      * @throws IOException If there is an IO error.
      */
-    @get:Throws(IOException::class)
-    val publicIp: String
-        get() = getPublicIp()
 
     @Throws(IOException::class)
     fun getPublicIp(httpClient: OkHttpClient = MVHttpClient.httpClient): String =

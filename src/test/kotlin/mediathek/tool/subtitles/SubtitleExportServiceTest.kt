@@ -40,6 +40,28 @@ internal class SubtitleExportServiceTest {
     }
 
     @Test
+    fun downloadsAndExportsIntoDirectoriesWithHashCharacters() = runBlocking {
+        val url = serve(
+            """
+            WEBVTT
+
+            00:00:01.000 --> 00:00:02.500
+            Hello
+            """.trimIndent(),
+        )
+        val targetDirectory = tmp.resolve("#test").resolve("test#2")
+        Files.createDirectories(targetDirectory)
+        val target = targetDirectory.resolve("subtitle#3")
+
+        val result = SubtitleExportService.downloadAndExport(url, target)
+
+        require(result is SubtitleExportResult.Success)
+        assertTrue(result.failures.isEmpty())
+        assertTrue(Files.isRegularFile(targetDirectory.resolve("subtitle#3.vtt")))
+        assertTrue(Files.isRegularFile(targetDirectory.resolve("subtitle#3.srt")))
+    }
+
+    @Test
     fun correctsTtmlOffsetInAllPublishedArtifacts() = runBlocking {
         val url = serve(
             """
@@ -77,6 +99,7 @@ internal class SubtitleExportServiceTest {
         assertTrue(result is SubtitleExportResult.Failure)
     }
 
+    @Suppress("HttpUrlsUsage")
     private fun serve(content: String, status: Int = 200): String {
         val bytes = content.toByteArray(StandardCharsets.UTF_8)
         val server = HttpServer.create(InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0)

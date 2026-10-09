@@ -28,8 +28,7 @@ class SettingsMigrator(
         val systemChildNodeList = systemNodeList.item(0).childNodes
         for (index in 0 until systemChildNodeList.length) {
             val element = systemChildNodeList.item(index) as? Element ?: continue
-            val nodeName = element.nodeName
-            when (nodeName) {
+            when (element.nodeName) {
                 "Bandwidthmonitor-visible" -> migrateBandwidthMonitorVisibility(element)
                 "Tray-anzeigen" -> migrateShowTray(element)
                 "system-anz-tage-filmilste" -> migrateFilmListAnzTage(element) // kein Fehler!!!
@@ -71,7 +70,7 @@ class SettingsMigrator(
                 LEGACY_STANDARD_VLC_PATH -> migrateStandardVlcPath(element)
                 LEGACY_STANDARD_FFMPEG_PATH -> migrateStandardFFmpegPath(element)
                 LEGACY_SAVED_DOWNLOAD_TARGET_PATHS -> migrateSavedDownloadTargetPaths(element)
-                else -> if (MVColor.isLegacyColorKey(nodeName)) {
+                else -> if (MVColor.isLegacyColorKey(element.nodeName)) {
                     collectLegacyColor(element)
                 }
             }
@@ -386,6 +385,7 @@ class SettingsMigrator(
 
         private val logger = LogManager.getLogger(SettingsMigrator::class.java)
 
+        @Suppress("HttpUrlsUsage")
         private fun documentBuilderFactory(): DocumentBuilderFactory =
             DocumentBuilderFactory.newInstance().apply {
                 setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)

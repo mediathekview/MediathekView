@@ -11,7 +11,7 @@ class CopyToClipboardAction(private val webSiteUrl: String) : AbstractAction() {
     override fun actionPerformed(e: ActionEvent) {
         try {
             GuiFunktionen.copyToClipboard(webSiteUrl)
-        } catch (ignored: Exception) {
+        } catch (_: Exception) {
         }
     }
 }

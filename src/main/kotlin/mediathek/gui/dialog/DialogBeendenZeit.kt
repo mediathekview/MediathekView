@@ -27,9 +27,8 @@ import mediathek.daten.DatenDownload
 import mediathek.swing.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.swing.DefaultComboBoxModel
@@ -97,7 +96,7 @@ class DialogBeendenZeit(
     }
 
     private fun setTextWait() {
-        val dateTime = dateTimePicker.getDateTimePermissive()
+        val dateTime = dateTimePicker.dateTimePermissive
         val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
         val date = dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
         progressPanel?.setMessage("Downloads werden am $date um $time gestartet.")
@@ -113,7 +112,7 @@ class DialogBeendenZeit(
         downloadMonitorJob = scope.launch {
             try {
                 withContext(Dispatchers.IO) {
-                    while (LocalDateTime.now().isBefore(dateTimePicker.getDateTimePermissive())) {
+                    while (LocalDateTime.now().isBefore(dateTimePicker.dateTimePermissive)) {
                         ensureActive()
                         delay(1.seconds)
                     }
@@ -164,11 +163,7 @@ class DialogBeendenZeit(
         setLocationRelativeTo(parent)
 
         EscapeKeyHandler.installHandler(this) { escapeHandler() }
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(event: WindowEvent) {
-                escapeHandler()
-            }
-        })
+        addDelayedWindowListener(onWindowClosing = { escapeHandler()})
 
         comboActions.model = comboBoxModel
         comboActions.addActionListener { setCbShutdownCoputer() }

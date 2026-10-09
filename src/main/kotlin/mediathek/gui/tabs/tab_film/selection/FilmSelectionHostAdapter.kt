@@ -21,19 +21,19 @@ package mediathek.gui.tabs.tab_film.selection
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
-import mediathek.tool.table.MVFilmTable
+import mediathek.gui.tabs.tab_film.table.FilmTableModelBinding
 import java.awt.Component
 import java.util.function.Consumer
 
 class FilmSelectionHostAdapter(
-    private val tableProvider: () -> MVFilmTable,
+    private val tableBindingProvider: () -> FilmTableModelBinding,
     private val parentComponent: Component,
     private val saveFilmsAction: (List<DatenFilm>, DatenPset?, FilmResolution.Enum?) -> Unit,
     private val startFilmWithProgramAction: (DatenPset, DatenFilm, String) -> Unit,
     private val showHighQualityOnlyProvider: () -> Boolean,
     private val currentFilm: Consumer<DatenFilm?>,
 ) : FilmSelectionController.Host {
-    override fun table(): MVFilmTable = tableProvider()
+    override fun tableBinding(): FilmTableModelBinding = tableBindingProvider()
 
     override fun parentComponent(): Component = parentComponent
 

@@ -127,10 +127,9 @@ class MainWindowQuitController private constructor(
         }
 
         val confirmation = AtomicReference<QuitConfirmation>()
-        edtRunner.run(
-            "Confirm application quit",
-            Runnable { confirmation.set(quitConfirmer(shutdownComputer)) },
-        )
+        edtRunner.run("Confirm application quit") {
+            confirmation.set(quitConfirmer(shutdownComputer))
+        }
         return confirmation.get() ?: QuitConfirmation.declined()
     }
 

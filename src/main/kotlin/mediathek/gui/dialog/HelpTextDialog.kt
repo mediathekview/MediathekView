@@ -19,11 +19,7 @@
 package mediathek.gui.dialog
 
 import java.awt.Component
-import javax.swing.BorderFactory
-import javax.swing.JOptionPane
-import javax.swing.JScrollPane
-import javax.swing.JTextArea
-import javax.swing.SwingUtilities
+import javax.swing.*
 
 object HelpTextDialog {
     private const val ROWS = 20

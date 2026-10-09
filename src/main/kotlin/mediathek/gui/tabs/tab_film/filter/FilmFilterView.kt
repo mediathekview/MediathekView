@@ -19,5 +19,12 @@
 package mediathek.gui.tabs.tab_film.filter
 
 interface FilmFilterView {
-    fun render(state: FilmFilterState, availableThemen: List<String>, canDeleteCurrentFilter: Boolean)
+    fun renderState(state: FilmFilterState, canDeleteCurrentFilter: Boolean)
+
+    fun renderAvailableThemen(state: FilmFilterState, availableThemen: List<String>)
+
+    fun render(state: FilmFilterState, availableThemen: List<String>, canDeleteCurrentFilter: Boolean) {
+        renderState(state, canDeleteCurrentFilter)
+        renderAvailableThemen(state, availableThemen)
+    }
 }

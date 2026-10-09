@@ -100,8 +100,8 @@ open class CellRendererBase : DefaultTableCellRenderer() {
             text = ""
             icon = cachedIcon
         }
-        verticalAlignment = SwingConstants.CENTER
-        horizontalAlignment = SwingConstants.CENTER
+        verticalAlignment = CENTER
+        horizontalAlignment = CENTER
     }
 
     private fun renderSenderIcon(icon: ImageIcon, targetDim: Dimension, normalizedSender: String): Icon =

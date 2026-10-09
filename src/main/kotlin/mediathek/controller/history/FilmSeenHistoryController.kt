@@ -22,17 +22,23 @@ import mediathek.daten.DatenFilm
 import mediathek.gui.messages.history.FilmSeenStateChangedEvent
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
+import java.util.concurrent.atomic.AtomicInteger
 
 class FilmSeenHistoryController : AutoCloseable {
     private val controller = SeenHistoryController()
 
     fun markUnseen(film: DatenFilm) {
         if (controller.markUnseen(SeenHistorySource.FILM, film.urlNormalQuality)) {
+            updatePreparedSeenState(false, listOf(film))
             sendFilmSeenStateChanged(false, listOf(film))
         }
     }
 
-    fun markUnseen(list: List<DatenFilm>) {
+    fun markUnseen(
+        list: List<DatenFilm>,
+        updatePreparedState: Boolean = true,
+        publishEvent: Boolean = true,
+    ) {
         val urls = list.asSequence()
             .map { it.urlNormalQuality }
             .filter(String::isNotBlank)
@@ -40,7 +46,12 @@ class FilmSeenHistoryController : AutoCloseable {
             .toList()
 
         if (controller.markUnseen(SeenHistorySource.FILM, urls)) {
-            sendFilmSeenStateChanged(false, list)
+            if (updatePreparedState) {
+                updatePreparedSeenState(false, list)
+            }
+            if (publishEvent) {
+                sendFilmSeenStateChanged(false, list)
+            }
         }
     }
 
@@ -52,11 +63,16 @@ class FilmSeenHistoryController : AutoCloseable {
 
         val entry = film.toSeenHistoryEntry() ?: return
         if (controller.markSeen(entry)) {
+            updatePreparedSeenState(true, listOf(film))
             sendFilmSeenStateChanged(true, listOf(film))
         }
     }
 
-    fun markSeen(list: List<DatenFilm>) {
+    fun markSeen(
+        list: List<DatenFilm>,
+        updatePreparedState: Boolean = true,
+        publishEvent: Boolean = true,
+    ) {
         val candidates = list
             .asSequence()
             .mapNotNull { film -> film.toSeenHistoryEntry() }
@@ -64,19 +80,17 @@ class FilmSeenHistoryController : AutoCloseable {
             .toList()
 
         if (controller.markSeen(candidates)) {
-            sendFilmSeenStateChanged(true, list)
+            if (updatePreparedState) {
+                updatePreparedSeenState(true, list)
+            }
+            if (publishEvent) {
+                sendFilmSeenStateChanged(true, list)
+            }
         }
     }
 
     fun hasBeenSeen(film: DatenFilm): Boolean =
         controller.hasBeenSeen(SeenHistorySource.FILM, film.urlNormalQuality)
-
-    fun prepareMemoryCache() {
-        controller.prepareMemoryCache(SeenHistorySource.FILM)
-    }
-
-    fun isMemoryCachePrepared(): Boolean =
-        controller.isMemoryCachePrepared(SeenHistorySource.FILM)
 
     override fun close() {
         controller.close()
@@ -90,16 +104,35 @@ class FilmSeenHistoryController : AutoCloseable {
 
     companion object {
         private val logger = LogManager.getLogger()
+        private val annotationEpoch = AtomicInteger(1)
 
-        fun prepareSharedMemoryCache() {
-            FilmSeenHistoryController().use { it.prepareMemoryCache() }
+        fun prepareSeenState(films: Collection<DatenFilm>) {
+            if (films.isEmpty()) {
+                return
+            }
+
+            val currentEpoch = annotationEpoch.get()
+            if (films.all { film -> film.seenHistoryAnnotationEpoch == currentEpoch }) {
+                return
+            }
+
+            val seenUrls = SeenHistoryController.loadSeenUrlsFromSharedStore(SeenHistorySource.FILM) ?: return
+            films.parallelStream().forEach { film ->
+                film.isSeenInHistory = film.urlNormalQuality.isNotBlank() && film.urlNormalQuality in seenUrls
+                film.seenHistoryAnnotationEpoch = currentEpoch
+            }
         }
 
-        fun hasBeenSeenFromSharedCache(film: DatenFilm): Boolean {
-            if (!SeenHistoryCache.isPrepared(SeenHistorySource.FILM)) {
-                prepareSharedMemoryCache()
+        fun invalidateSharedSeenState() {
+            annotationEpoch.incrementAndGet()
+        }
+
+        fun updatePreparedSeenState(seen: Boolean, films: Collection<DatenFilm>) {
+            val currentEpoch = annotationEpoch.get()
+            films.forEach { film ->
+                film.isSeenInHistory = seen
+                film.seenHistoryAnnotationEpoch = currentEpoch
             }
-            return SeenHistoryCache.contains(SeenHistorySource.FILM, film.urlNormalQuality)
         }
     }
 }

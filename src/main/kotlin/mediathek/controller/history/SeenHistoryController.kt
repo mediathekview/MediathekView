@@ -32,6 +32,7 @@ import java.nio.file.Path
 import java.sql.SQLException
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -51,21 +52,18 @@ class SeenHistoryController : AutoCloseable {
         }
         if (removed) {
             SeenHistoryCache.clear()
+            invalidatePreparedSeenState()
             sendChangeMessage()
         }
     }
 
     internal fun markSeen(entry: SeenHistoryEntry): Boolean {
-        if (SeenHistoryCache.contains(entry.source, entry.url)) {
-            return false
-        }
-
         val inserted = runStoreCatching("markSeen single", false) {
             insertSeenEntry(entry)
         }
         if (inserted) {
             SeenHistoryCache.add(entry.source, entry.url)
-            sendChangeMessage()
+            invalidatePreparedSeenState(entry.source)
         }
         return inserted
     }
@@ -80,8 +78,10 @@ class SeenHistoryController : AutoCloseable {
         if (success) {
             candidates
                 .groupBy(SeenHistoryEntry::source, SeenHistoryEntry::url)
-                .forEach { (source, urls) -> SeenHistoryCache.add(source, urls) }
-            sendChangeMessage()
+                .forEach { (source, urls) ->
+                    SeenHistoryCache.add(source, urls)
+                    invalidatePreparedSeenState(source)
+                }
         }
         return success
     }
@@ -93,7 +93,7 @@ class SeenHistoryController : AutoCloseable {
         }
         if (success) {
             SeenHistoryCache.remove(source, url)
-            sendChangeMessage()
+            invalidatePreparedSeenState(source)
         }
         return success
     }
@@ -107,7 +107,7 @@ class SeenHistoryController : AutoCloseable {
         }
         if (success) {
             SeenHistoryCache.remove(source, urls)
-            sendChangeMessage()
+            invalidatePreparedSeenState(source)
         }
         return success
     }
@@ -131,6 +131,11 @@ class SeenHistoryController : AutoCloseable {
     fun isMemoryCachePrepared(source: SeenHistorySource = SeenHistorySource.FILM): Boolean =
         SeenHistoryCache.isPrepared(source)
 
+    internal fun loadSeenUrls(source: SeenHistorySource): Set<String>? =
+        runStoreCatching("loadSeenUrls", null as Set<String>?) {
+            loadUrls(source)
+        }
+
     fun performMaintenance() {
         logger.trace("Start maintenance")
 
@@ -146,6 +151,7 @@ class SeenHistoryController : AutoCloseable {
         }
         if (success) {
             SeenHistoryCache.clear()
+            invalidatePreparedSeenState()
             if (shouldRunHeavyMaintenance) {
                 applicationConfiguration.seenHistoryMaintenanceLastRun = now
             }
@@ -198,6 +204,16 @@ class SeenHistoryController : AutoCloseable {
         MessageBus.messageBus.publishAsync(SeenHistoryChangedEvent())
     }
 
+    private fun invalidatePreparedSeenState() {
+        SeenHistorySource.entries.forEach(::invalidatePreparedSeenState)
+    }
+
+    private fun invalidatePreparedSeenState(source: SeenHistorySource) {
+        if (source == SeenHistorySource.FILM) {
+            FilmSeenHistoryController.invalidateSharedSeenState()
+        }
+    }
+
 
     companion object {
         private val logger = LogManager.getLogger()
@@ -240,6 +256,11 @@ class SeenHistoryController : AutoCloseable {
             }
         }
 
+        fun loadSeenUrlsFromSharedStore(source: SeenHistorySource): Set<String>? =
+            SeenHistoryController().use { controller ->
+                controller.loadSeenUrls(source)
+            }
+
         fun closeSharedStore() {
             runBlocking {
                 withContext(databaseDispatcher) {
@@ -267,26 +288,26 @@ internal data class SeenHistoryEntry(
 
 internal object SeenHistoryCache {
     private val lock = Any()
-    private val urlCaches = SeenHistorySource.entries.associateWith {
-        java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
-    }
-    private val preparedSources = java.util.concurrent.ConcurrentHashMap.newKeySet<SeenHistorySource>()
+    private val caches = SeenHistorySource.entries.associateWith { SourceCache() }
 
-    fun isPrepared(source: SeenHistorySource): Boolean = preparedSources.contains(source)
+    fun isPrepared(source: SeenHistorySource): Boolean =
+        cacheFor(source).seenUrls != null
 
-    fun size(source: SeenHistorySource): Int = cacheFor(source).size
+    fun size(source: SeenHistorySource): Long =
+        cacheFor(source).seenUrls?.size?.toLong() ?: 0L
 
     fun contains(source: SeenHistorySource, url: String): Boolean =
-        isPrepared(source) && url.isNotBlank() && cacheFor(source).contains(url)
+        url.isNotBlank() && cacheFor(source).seenUrls?.contains(url) == true
 
     fun load(source: SeenHistorySource, urls: Set<String>) {
         synchronized(lock) {
             if (isPrepared(source)) {
                 return
             }
-            cacheFor(source).clear()
-            cacheFor(source).addAll(urls)
-            preparedSources.add(source)
+            val cache = cacheFor(source)
+            cache.seenUrls = ConcurrentHashMap.newKeySet<String>().apply {
+                addAll(urls.filter(String::isNotBlank))
+            }
         }
     }
 
@@ -301,11 +322,10 @@ internal object SeenHistoryCache {
         if (!isPrepared(source) || urls.isEmpty()) {
             return
         }
-        synchronized(lock) {
-            if (isPrepared(source)) {
-                urls.asSequence().filter(String::isNotBlank).forEach(cacheFor(source)::add)
-            }
-        }
+        val seenUrls = cacheFor(source).seenUrls ?: return
+        urls.asSequence()
+            .filter(String::isNotBlank)
+            .forEach(seenUrls::add)
     }
 
     fun remove(source: SeenHistorySource, url: String) {
@@ -316,23 +336,26 @@ internal object SeenHistoryCache {
     }
 
     fun remove(source: SeenHistorySource, urls: Collection<String>) {
-        if (!isPrepared(source) || urls.isEmpty()) {
+        if (urls.isEmpty()) {
             return
         }
-        synchronized(lock) {
-            if (isPrepared(source)) {
-                urls.asSequence().filter(String::isNotBlank).forEach(cacheFor(source)::remove)
-            }
-        }
+        val seenUrls = cacheFor(source).seenUrls ?: return
+        urls.asSequence().filter(String::isNotBlank).forEach(seenUrls::remove)
     }
 
     fun clear() {
         synchronized(lock) {
-            urlCaches.values.forEach(MutableSet<String>::clear)
-            preparedSources.clear()
+            caches.values.forEach { cache ->
+                cache.seenUrls = null
+            }
         }
     }
 
-    private fun cacheFor(source: SeenHistorySource): MutableSet<String> =
-        urlCaches.getValue(source)
+    private fun cacheFor(source: SeenHistorySource): SourceCache =
+        caches.getValue(source)
+
+    private class SourceCache {
+        @Volatile
+        var seenUrls: MutableSet<String>? = null
+    }
 }

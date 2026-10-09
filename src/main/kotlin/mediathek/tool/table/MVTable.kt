@@ -23,12 +23,9 @@ import mediathek.gui.messages.FontSizeChangedEvent
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
-import java.awt.Color
 import javax.swing.JTable
 import javax.swing.RowSorter
 import javax.swing.SwingUtilities
-import javax.swing.UIManager
-import javax.swing.plaf.UIResource
 import javax.swing.table.AbstractTableModel
 import javax.swing.table.TableColumnModel
 
@@ -71,19 +68,6 @@ abstract class MVTable protected constructor(
 
     fun setUseSmallSenderIcons(useSmallSenderIcons: Boolean) {
         useSmallSenderIconsState = useSmallSenderIcons
-    }
-
-    protected fun defaultRowBackground(row: Int): Color {
-        if (row % 2 != 0) {
-            UIManager.getColor("Table.alternateRowColor")?.let { return it }
-        }
-
-        val background = background
-        if (background !is UIResource) {
-            return background
-        }
-
-        return UIManager.getColor("Table.background") ?: background
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -151,24 +135,6 @@ abstract class MVTable protected constructor(
         if (setSpalten) {
             restoreSelectedTableRows()
         }
-    }
-
-    fun scrollToSelection() {
-        val rowCount = rowCount
-        if (rowCount <= 0) {
-            return
-        }
-
-        var selectedRow = selectedRow
-        if (selectedRow == -1) {
-            selectedRow = 0
-            selectionModel.setSelectionInterval(0, 0)
-        }
-        if (selectedRow >= rowCount) {
-            selectedRow = rowCount - 1
-        }
-
-        scrollToIndexDelegate(selectedRow)
     }
 
     protected fun scrollToIndexDelegate(index: Int) {

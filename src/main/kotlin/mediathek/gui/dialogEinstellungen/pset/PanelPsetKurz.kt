@@ -51,7 +51,7 @@ class PanelPsetKurz(
     private fun handleProgramSetChanged(@Suppress("UNUSED_PARAMETER") event: ProgramSetChangedEvent) {
         SwingUtilities.invokeLater {
             if (!isUpdatingUi) {
-                reloadProgramSetList(selectFirst = true)
+                reloadProgramSetList()
             }
         }
     }
@@ -67,7 +67,7 @@ class PanelPsetKurz(
                 displaySelectedProgramSet()
             }
         }
-        reloadProgramSetList(selectFirst = true)
+        reloadProgramSetList()
     }
 
     private fun installProgramSetEditors() {
@@ -77,7 +77,7 @@ class PanelPsetKurz(
 
         jTextFieldZiel.document.addDocumentListener(
             DocumentChangeListener {
-                updateCurrentProgramSetValue(DatenPset.PROGRAMMSET_ZIEL_PFAD, jTextFieldZiel.text)
+                updateCurrentProgramSetTargetPath(jTextFieldZiel.text)
             },
         )
         installTextPopupMenu(jTextFieldZiel)
@@ -89,12 +89,11 @@ class PanelPsetKurz(
         }
     }
 
-    private fun reloadProgramSetList(selectFirst: Boolean) {
+    private fun reloadProgramSetList() {
         withoutUiUpdates {
-            val selectedIndex = if (selectFirst) 0 else jListPset.selectedIndex
             jListPset.model = DefaultComboBoxModel(listePset.objectDataCombo)
             if (!listePset.isEmpty()) {
-                jListPset.selectedIndex = selectedIndex.coerceIn(0, listePset.size - 1)
+                jListPset.selectedIndex = 0
             }
             displaySelectedProgramSet()
         }
@@ -203,7 +202,7 @@ class PanelPsetKurz(
         return JTextField(program.programPath).also { textField ->
             textField.document.addDocumentListener(
                 DocumentChangeListener {
-                    updateProgramValue(program, DatenProg.PROGRAMM_PROGRAMMPFAD, textField.text)
+                    updateProgramPath(program, textField.text)
                 },
             )
             installTextPopupMenu(textField)
@@ -226,7 +225,7 @@ class PanelPsetKurz(
             button.addActionListener {
                 choosePath(file = true, initialPath = textField.text)?.let { selectedFile ->
                     textField.text = selectedFile.absolutePath
-                    updateProgramValue(program, DatenProg.PROGRAMM_PROGRAMMPFAD, textField.text)
+                    updateProgramPath(program, textField.text)
                 }
             }
             layout.setConstraints(button, constraints)
@@ -251,15 +250,15 @@ class PanelPsetKurz(
         }
     }
 
-    private fun updateCurrentProgramSetValue(index: Int, value: String) {
+    private fun updateCurrentProgramSetTargetPath(value: String) {
         if (!isUpdatingUi) {
-            currentProgramSet?.set(index, value)
+            currentProgramSet?.set(DatenPset.PROGRAMMSET_ZIEL_PFAD, value)
         }
     }
 
-    private fun updateProgramValue(program: DatenProg, index: Int, value: String) {
+    private fun updateProgramPath(program: DatenProg, value: String) {
         if (!isUpdatingUi) {
-            program[index] = value
+            program[DatenProg.PROGRAMM_PROGRAMMPFAD] = value
         }
     }
 

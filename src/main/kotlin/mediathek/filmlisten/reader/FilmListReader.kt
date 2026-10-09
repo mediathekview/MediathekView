@@ -26,8 +26,8 @@ import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.daten.Country
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
+import mediathek.filmlisten.FilmListLoadListener
+import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.filmlisten.FilmListMetadataStore
 import mediathek.tool.ProgressMonitorInputStream
 import mediathek.tool.TrailerTeaserChecker
@@ -58,11 +58,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import javax.swing.event.EventListenerList
 
 open class FilmListReader : AutoCloseable {
-    private val listeners = EventListenerList()
-    private val progressEvent = ListenerFilmeLadenEvent("", "Download", 0, 0, false)
+    private val progressListeners = mutableListOf<FilmListLoadListener>()
     private val ttc = TrailerTeaserChecker()
     private val manager = TitleParserManager()
     private var progress = 0
@@ -70,17 +68,15 @@ open class FilmListReader : AutoCloseable {
     private var sender = ""
     private var thema = ""
 
-    fun addAdListener(listener: ListenerFilmeLaden) {
-        listeners.add(ListenerFilmeLaden::class.java, listener)
+    internal fun addProgressListener(listener: FilmListLoadListener) {
+        progressListeners += listener
     }
 
     /**
      * Remove all registered listeners when we do not need them anymore.
      */
     private fun removeRegisteredListeners() {
-        for (listener in listeners.getListeners(ListenerFilmeLaden::class.java)) {
-            listeners.remove(ListenerFilmeLaden::class.java, listener)
-        }
+        progressListeners.clear()
     }
 
     private fun selectDecompressor(source: String, input: InputStream): InputStream =
@@ -585,10 +581,9 @@ open class FilmListReader : AutoCloseable {
         while (startIndex < films.size) {
             val endIndex = (startIndex + chunkSize).coerceAtMost(films.size)
             val chunkStartIndex = startIndex
-            val chunkEndIndex = endIndex
             deferredCounts.add(
                 async {
-                    parseSeasonAndEpisodeRange(films, chunkStartIndex, chunkEndIndex)
+                    parseSeasonAndEpisodeRange(films, chunkStartIndex, endIndex)
                 }
             )
             startIndex = endIndex
@@ -719,8 +714,9 @@ open class FilmListReader : AutoCloseable {
 
     private fun notifyStart(url: String) {
         progress = 0
-        for (listener in listeners.getListeners(ListenerFilmeLaden::class.java)) {
-            listener.start(ListenerFilmeLadenEvent(url, "", PROGRESS_MAX, 0, false))
+        val startProgress = FilmListLoadProgress.started(url)
+        for (listener in progressListeners.toList()) {
+            listener.loadStarted(startProgress)
         }
     }
 
@@ -729,11 +725,9 @@ open class FilmListReader : AutoCloseable {
         if (progress > PROGRESS_MAX) {
             progress = PROGRESS_MAX
         }
-        for (listener in listeners.getListeners(ListenerFilmeLaden::class.java)) {
-            progressEvent.senderUrl = url
-            progressEvent.progress = progress
-            progressEvent.max = PROGRESS_MAX
-            listener.progress(progressEvent)
+        val currentProgress = FilmListLoadProgress.downloading(url, progress)
+        for (listener in progressListeners.toList()) {
+            listener.loadProgress(currentProgress)
         }
     }
 
@@ -745,12 +739,9 @@ open class FilmListReader : AutoCloseable {
         )
         logger.info("  erstellt am: {}", liste.metaData.generationDateTimeAsString)
         logger.info("  Anzahl Filme: {}", liste.size)
-        for (listener in listeners.getListeners(ListenerFilmeLaden::class.java)) {
-            progressEvent.senderUrl = url
-            progressEvent.text = ""
-            progressEvent.max = PROGRESS_MAX
-            progressEvent.progress = progress
-            listener.fertig(progressEvent)
+        val finishedProgress = FilmListLoadProgress.finished(url, progress)
+        for (listener in progressListeners.toList()) {
+            listener.loadFinished(finishedProgress)
         }
     }
 
@@ -778,6 +769,7 @@ open class FilmListReader : AutoCloseable {
 
     private companion object {
         private const val PROGRESS_MAX = 100
+
         private const val DECOMPRESSOR_MEMORY_LIMIT = -1
         private const val THEMA_LIVE = "Livestream"
         private const val PLAYLIST_SUFFIX = ".m3u8"

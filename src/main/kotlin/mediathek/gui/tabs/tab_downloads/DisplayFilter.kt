@@ -37,11 +37,11 @@ data class DisplayFilter(
         const val DOWNLOADS_ONLY = "nur Downloads"
         const val ABOS_ONLY = "nur Abos"
 
-        fun all(): DisplayFilter = DisplayFilter(false, false)
+        fun all(): DisplayFilter = DisplayFilter(onlyAbos = false, onlyDownloads = false)
 
         fun from(selectedItem: Any?): DisplayFilter = when (selectedItem?.toString() ?: ALL) {
-            DOWNLOADS_ONLY -> DisplayFilter(false, true)
-            ABOS_ONLY -> DisplayFilter(true, false)
+            DOWNLOADS_ONLY -> DisplayFilter(onlyAbos = false, onlyDownloads = true)
+            ABOS_ONLY -> DisplayFilter(onlyAbos = true, onlyDownloads = false)
             else -> all()
         }
     }

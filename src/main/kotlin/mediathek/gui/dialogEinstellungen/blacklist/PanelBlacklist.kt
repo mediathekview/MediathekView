@@ -26,10 +26,10 @@ import mediathek.config.MVColor
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.blacklist.BlacklistRule
 import mediathek.daten.blacklist.BlacklistServices
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
+import mediathek.filmlisten.FilmListLoadListener
+import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.messages.BlacklistAboSettingChangedEvent
 import mediathek.gui.messages.BlacklistChangedEvent
@@ -53,13 +53,13 @@ import javax.swing.table.TableStringConverter
 class PanelBlacklist(
     private val blacklist: BlacklistServices,
     private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
+    private val filmListLoader: FilmListLoadCoordinator,
     private val parentComponent: JFrame?,
 ) : PanelBlacklistBase() {
     private val aboSettingEventSource = Any()
     private val tableModel = BlacklistRuleTableModel(blacklist.rules)
-    private val filmLoadListener = object : ListenerFilmeLaden() {
-        override fun fertig(event: ListenerFilmeLadenEvent) {
+    private val filmLoadListener = object : FilmListLoadListener {
+        override fun loadFinished(@Suppress("UNUSED_PARAMETER") progress: FilmListLoadProgress) {
             comboThemaLaden()
             scheduleFilteredCountRefresh()
         }
@@ -126,7 +126,7 @@ class PanelBlacklist(
             return
         }
         MessageBus.messageBus.subscribe(this)
-        filmListLoader.addFilmLoadListener(filmLoadListener)
+        filmListLoader.addLoadListener(filmLoadListener)
         listenersRegistered = true
     }
 
@@ -135,7 +135,7 @@ class PanelBlacklist(
             return
         }
         MessageBus.messageBus.unsubscribe(this)
-        filmListLoader.removeFilmLoadListener(filmLoadListener)
+        filmListLoader.removeLoadListener(filmLoadListener)
         listenersRegistered = false
     }
 
@@ -354,7 +354,7 @@ class PanelBlacklist(
             }
         }
 
-        jComboBoxSender.model = SenderListComboBoxModel(filmCatalog.allSendersList)
+        jComboBoxSender.model = SenderListComboBoxModel(filmCatalog.allSenders)
         comboThemaLaden()
 
         var handler = TextCopyPasteHandler(jTextFieldThemaTitel)
@@ -487,7 +487,7 @@ class PanelBlacklist(
             comboThemaLaden(rule.thema)
             jComboBoxThema.selectedItem = rule.thema
             jTextFieldTitel.text = rule.titel
-            jTextFieldThemaTitel.text = rule.thema_titel
+            jTextFieldThemaTitel.text = rule.topicTitle
         }
     }
 

@@ -5,8 +5,9 @@ import mediathek.daten.DatenPset
 import mediathek.daten.ProgramSetRepository
 import mediathek.daten.abo.AboServices
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.tool.EscapeKeyHandler
+import mediathek.tool.ReplacementRules
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.util.function.BiConsumer
@@ -15,11 +16,12 @@ import javax.swing.JFrame
 
 class ManageAboDialog(
     owner: JFrame,
-    private val programSets: ProgramSetRepository,
-    private val filmCatalog: FilmCatalog,
-    private val abos: AboServices,
-    private val filmListLoader: FilmeLaden,
-    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
+    programSets: ProgramSetRepository,
+    filmCatalog: FilmCatalog,
+    abos: AboServices,
+    replacementRules: ReplacementRules,
+    filmListLoader: FilmListLoadCoordinator,
+    programSetExporter: BiConsumer<Array<DatenPset>, String>,
 ) : JDialog(owner) {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val aboPanel: ManageAboPanel
@@ -60,7 +62,7 @@ class ManageAboDialog(
         defaultCloseOperation = DISPOSE_ON_CLOSE
         isResizable = true
         isModal = true
-        aboPanel = ManageAboPanel(this, owner, programSets, filmCatalog, abos, filmListLoader, programSetExporter)
+        aboPanel = ManageAboPanel(this, owner, programSets, filmCatalog, abos, replacementRules, filmListLoader, programSetExporter)
         val contentPane = contentPane
         contentPane.layout = BorderLayout()
         contentPane.add(aboPanel, BorderLayout.CENTER)

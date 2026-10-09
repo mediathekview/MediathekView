@@ -105,7 +105,13 @@ data class SubtitleDocument(
             }
 
         companion object {
-            val EMPTY = TextStyle(false, false, false, null, null)
+            val EMPTY = TextStyle(
+                bold = false,
+                italic = false,
+                underline = false,
+                color = null,
+                backgroundColor = null,
+            )
         }
     }
 

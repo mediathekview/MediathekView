@@ -209,14 +209,13 @@ class WebVttToTtml2Converter {
 
         var index = 0
         while (index < source.length) {
-            val character = source[index]
-            when {
-                character == '\n' -> {
+            when (val character = source[index]) {
+                '\n' -> {
                     out.append("<br/>")
                     index++
                 }
 
-                character == '<' -> {
+                '<' -> {
                     val closingIndex = source.indexOf('>', index + 1)
                     if (closingIndex < 0) {
                         out.append("&lt;")

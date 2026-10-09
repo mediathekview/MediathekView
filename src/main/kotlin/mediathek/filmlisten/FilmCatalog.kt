@@ -1,20 +1,16 @@
 package mediathek.filmlisten
 
 import ca.odell.glazedlists.BasicEventList
-import ca.odell.glazedlists.EventList
-import ca.odell.glazedlists.SortedList
+import ca.odell.glazedlists.TransactionList
 import mediathek.daten.ListeFilme
 import mediathek.gui.duplicates.FilmStatistics
-import mediathek.tool.GermanStringSorter
 import mediathek.tool.SenderListBoxModel
 
 class FilmCatalog {
     val allFilms: ListeFilme = ListeFilme()
-    val allSendersList: EventList<String> = SortedList(SenderListBoxModel.providedSenderList).apply {
-        setComparator(GermanStringSorter)
-    }
-    val duplicateStatistics: EventList<FilmStatistics> = BasicEventList()
-    val commonStatistics: EventList<FilmStatistics> = BasicEventList()
+    val allSenders: List<String> = SenderListBoxModel.providedSenders
+    val duplicateStatistics = TransactionList<FilmStatistics>(BasicEventList())
+    val commonStatistics = TransactionList<FilmStatistics>(BasicEventList())
 
     /**
      * The final list of films after all filtering is done.

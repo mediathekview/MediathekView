@@ -1,25 +1,59 @@
 package mediathek.tool.notification
 
 import org.apache.logging.log4j.LogManager
-import java.io.IOException
 import java.lang.foreign.*
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
 class MacNotificationCenter(
-    private val fallbackNotificationCenter: INotificationCenter = GenericNotificationCenter()
-) : INotificationCenter {
-    override fun displayNotification(msg: NotificationMessage) {
-        UserNotifications.show(msg, fallbackNotificationCenter)
+    private val fallbackNotificationCenter: NotificationBackend = GenericNotificationCenter()
+) : NotificationBackend {
+    private val lifecycleLock = Any()
+    private val active = AtomicBoolean(true)
+    private var userNotificationsStarted = false
+
+    override fun publish(notification: NotificationMessage) {
+        synchronized(lifecycleLock) {
+            if (!active.get()) {
+                return
+            }
+            try {
+                UserNotifications.show(notification, fallbackNotificationCenter, active)
+                userNotificationsStarted = true
+            } catch (exception: RuntimeException) {
+                logger.error("Failed to initialize macOS notifications", exception)
+                fallbackNotificationCenter.publish(notification)
+            } catch (error: LinkageError) {
+                logger.error("Failed to load macOS notification support", error)
+                fallbackNotificationCenter.publish(notification)
+            }
+        }
     }
 
-    @Throws(IOException::class)
     override fun close() {
-        fallbackNotificationCenter.close()
+        synchronized(lifecycleLock) {
+            if (!active.compareAndSet(true, false)) {
+                return
+            }
+            try {
+                if (userNotificationsStarted) {
+                    UserNotifications.cancel(active)
+                }
+            } finally {
+                fallbackNotificationCenter.close()
+            }
+        }
+    }
+
+    private companion object {
+        private val logger = LogManager.getLogger()
     }
 
     private object UserNotifications {
@@ -35,9 +69,11 @@ class MacNotificationCenter(
         private val arena = Arena.global()
         private val linker = Linker.nativeLinker()
         private val methodHandles = MethodHandles.lookup()
+        private val notificationThread = AtomicReference<Thread>()
         private val notificationExecutor: ExecutorService = Executors.newSingleThreadExecutor { command ->
             Thread(command, "MacNotificationCenter").apply {
                 isDaemon = true
+                notificationThread.set(this)
             }
         }
         private val lookup = SymbolLookup.libraryLookup("/usr/lib/libobjc.dylib", arena)
@@ -45,17 +81,11 @@ class MacNotificationCenter(
             .or(SymbolLookup.libraryLookup("/System/Library/Frameworks/UserNotifications.framework/UserNotifications", arena))
             .or(linker.defaultLookup())
         private val msgSendPointer: MemorySegment = lookup.findOrThrow("objc_msgSend")
-        private val getClass: MethodHandle = downcallPointer("objc_getClass", ValueLayout.ADDRESS)
-        private val registerSelector: MethodHandle = downcallPointer("sel_registerName", ValueLayout.ADDRESS)
+        private val getClass: MethodHandle = downcallPointer("objc_getClass")
+        private val registerSelector: MethodHandle = downcallPointer("sel_registerName")
         private val globalBlockClass: MemorySegment = lookup.findOrThrow("_NSConcreteGlobalBlock")
         private val authorizationBlock = ObjcBlock(
-            upcall(
-                "authorizationCallback",
-                FunctionDescriptor.ofVoid(ValueLayout.ADDRESS, ValueLayout.JAVA_BOOLEAN, ValueLayout.ADDRESS),
-                MemorySegment::class.java,
-                java.lang.Boolean.TYPE,
-                MemorySegment::class.java
-            ),
+            authorizationUpcall(),
             "v@?B@"
         )
         private val pendingNotifications = mutableListOf<PendingNotification>()
@@ -65,22 +95,38 @@ class MacNotificationCenter(
 
         @Suppress("unused")
         @JvmStatic
-        private fun authorizationCallback(_block: MemorySegment, granted: Boolean, _error: MemorySegment) {
+        private fun authorizationCallback(block: MemorySegment, granted: Boolean, error: MemorySegment) {
             notificationExecutor.execute(AuthorizationResult(granted))
         }
 
-        fun show(message: NotificationMessage, fallbackNotificationCenter: INotificationCenter) {
-            notificationExecutor.execute(ShowNotification(PendingNotification(message), fallbackNotificationCenter))
+        fun show(
+            notification: NotificationMessage,
+            fallbackNotificationCenter: NotificationBackend,
+            active: AtomicBoolean,
+        ) {
+            notificationExecutor.execute(
+                ShowNotification(PendingNotification(notification, active), fallbackNotificationCenter)
+            )
+        }
+
+        fun cancel(active: AtomicBoolean) {
+            runOnNotificationThreadAndWait {
+                pendingNotifications.removeAll { it.belongsTo(active) }
+            }
         }
 
         private fun showOnNotificationThread(
             message: PendingNotification,
-            fallbackNotificationCenter: INotificationCenter
+            fallbackNotificationCenter: NotificationBackend,
         ) {
+            if (!message.isActive()) {
+                return
+            }
+
             try {
                 if (!isRunningFromAppBundle()) {
                     logUnsupportedLaunch()
-                    fallbackNotificationCenter.displayNotification(message.toNotificationMessage())
+                    fallbackNotificationCenter.publish(message.toNotificationMessage())
                     return
                 }
 
@@ -94,6 +140,13 @@ class MacNotificationCenter(
                 }
             } catch (t: Throwable) {
                 logger.error("Failed to display macOS notification", t)
+                if (message.isActive()) {
+                    try {
+                        fallbackNotificationCenter.publish(message.toNotificationMessage())
+                    } catch (fallbackError: RuntimeException) {
+                        logger.error("Failed to display fallback notification", fallbackError)
+                    }
+                }
             }
         }
 
@@ -127,12 +180,7 @@ class MacNotificationCenter(
 
         private fun requestAuthorization() {
             val center = msgPtr(cls("UNUserNotificationCenter"), "currentNotificationCenter")
-            msgVoid(
-                center,
-                "requestAuthorizationWithOptions:completionHandler:",
-                UN_AUTHORIZATION_OPTION_ALERT or UN_AUTHORIZATION_OPTION_SOUND,
-                authorizationBlock.pointer
-            )
+            requestAuthorization(center, authorizationBlock.pointer)
         }
 
         private fun authorizationCompleted(granted: Boolean): Boolean {
@@ -142,7 +190,7 @@ class MacNotificationCenter(
         }
 
         private fun deliverPending() {
-            val notifications = pendingNotifications.toList()
+            val notifications = pendingNotifications.filter(PendingNotification::isActive)
             pendingNotifications.clear()
 
             notifications.forEach { message ->
@@ -154,6 +202,22 @@ class MacNotificationCenter(
             pendingNotifications.clear()
         }
 
+        private fun runOnNotificationThreadAndWait(action: () -> Unit) {
+            if (Thread.currentThread() === notificationThread.get()) {
+                action()
+                return
+            }
+
+            try {
+                notificationExecutor.submit(action).get()
+            } catch (exception: InterruptedException) {
+                Thread.currentThread().interrupt()
+                throw IllegalStateException("Notification shutdown was interrupted", exception)
+            } catch (exception: ExecutionException) {
+                throw IllegalStateException("Notification shutdown failed", exception.cause)
+            }
+        }
+
         private fun deliverModern(title: String, body: String) {
             val pool = msgPtr(msgPtr(cls("NSAutoreleasePool"), "alloc"), "init")
 
@@ -163,18 +227,16 @@ class MacNotificationCenter(
                 msgVoid(content, "setBody:", nsString(body))
                 msgVoid(content, "setSound:", msgPtr(cls("UNNotificationSound"), "defaultSound"))
 
-                val request = msgPtr(
+                val request = createNotificationRequest(
                     cls("UNNotificationRequest"),
-                    "requestWithIdentifier:content:trigger:",
                     nsString("mediathekview-${System.nanoTime()}"),
                     content,
-                    MemorySegment.NULL
                 )
 
                 val center = msgPtr(cls("UNUserNotificationCenter"), "currentNotificationCenter")
-                msgVoid(center, "addNotificationRequest:withCompletionHandler:", request, MemorySegment.NULL)
+                addNotificationRequest(center, request)
             } finally {
-                msgVoid(pool, "drain")
+                drain(pool)
             }
         }
 
@@ -187,7 +249,7 @@ class MacNotificationCenter(
         }
 
         private fun nsString(value: String): MemorySegment {
-            return msgPtr(cls("NSString"), "stringWithUTF8String:", arena.allocateFrom(value, StandardCharsets.UTF_8))
+            return createNSString(cls("NSString"), arena.allocateFrom(value, StandardCharsets.UTF_8))
         }
 
         private fun nsStringToString(value: MemorySegment): String? {
@@ -195,10 +257,10 @@ class MacNotificationCenter(
                 return null
             }
 
-            val length = msgLong(value, "lengthOfBytesUsingEncoding:", NS_UTF8_STRING_ENCODING)
+            val length = utf8Length(value)
             Arena.ofConfined().use { callArena ->
                 val buffer = callArena.allocate(length + 1)
-                msgVoid(value, "getCString:maxLength:encoding:", buffer, length + 1, NS_UTF8_STRING_ENCODING)
+                copyUtf8String(value, buffer, length + 1)
                 return buffer.getString(0, StandardCharsets.UTF_8)
             }
         }
@@ -210,7 +272,7 @@ class MacNotificationCenter(
             ).invokeExact(receiver, selector(selector)) as MemorySegment
         }
 
-        private fun msgPtr(receiver: MemorySegment, selector: String, arg: MemorySegment): MemorySegment {
+        private fun createNSString(receiver: MemorySegment, cString: MemorySegment): MemorySegment {
             return downcall(
                 msgSendPointer,
                 FunctionDescriptor.of(
@@ -219,15 +281,13 @@ class MacNotificationCenter(
                     ValueLayout.ADDRESS,
                     ValueLayout.ADDRESS
                 )
-            ).invokeExact(receiver, selector(selector), arg) as MemorySegment
+            ).invokeExact(receiver, selector("stringWithUTF8String:"), cString) as MemorySegment
         }
 
-        private fun msgPtr(
+        private fun createNotificationRequest(
             receiver: MemorySegment,
-            selector: String,
-            arg1: MemorySegment,
-            arg2: MemorySegment,
-            arg3: MemorySegment
+            identifier: MemorySegment,
+            content: MemorySegment,
         ): MemorySegment {
             return downcall(
                 msgSendPointer,
@@ -239,12 +299,18 @@ class MacNotificationCenter(
                     ValueLayout.ADDRESS,
                     ValueLayout.ADDRESS
                 )
-            ).invokeExact(receiver, selector(selector), arg1, arg2, arg3) as MemorySegment
+            ).invokeExact(
+                receiver,
+                selector("requestWithIdentifier:content:trigger:"),
+                identifier,
+                content,
+                MemorySegment.NULL,
+            ) as MemorySegment
         }
 
-        private fun msgVoid(receiver: MemorySegment, selector: String) {
+        private fun drain(receiver: MemorySegment) {
             downcallVoid(ValueLayout.ADDRESS, ValueLayout.ADDRESS)
-                .invokeExact(receiver, selector(selector))
+                .invokeExact(receiver, selector("drain"))
         }
 
         private fun msgVoid(receiver: MemorySegment, selector: String, arg: MemorySegment) {
@@ -252,37 +318,58 @@ class MacNotificationCenter(
                 .invokeExact(receiver, selector(selector), arg)
         }
 
-        private fun msgVoid(receiver: MemorySegment, selector: String, arg1: Long, arg2: MemorySegment) {
+        private fun requestAuthorization(receiver: MemorySegment, completionHandler: MemorySegment) {
             downcallVoid(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.JAVA_LONG, ValueLayout.ADDRESS)
-                .invokeExact(receiver, selector(selector), arg1, arg2)
+                .invokeExact(
+                    receiver,
+                    selector("requestAuthorizationWithOptions:completionHandler:"),
+                    UN_AUTHORIZATION_OPTION_ALERT or UN_AUTHORIZATION_OPTION_SOUND,
+                    completionHandler,
+                )
         }
 
-        private fun msgLong(receiver: MemorySegment, selector: String, arg: Long): Long {
+        private fun utf8Length(receiver: MemorySegment): Long {
             return downcall(
                 msgSendPointer,
-                FunctionDescriptor.of(ValueLayout.JAVA_LONG, ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.JAVA_LONG)
-            ).invokeExact(receiver, selector(selector), arg) as Long
+                FunctionDescriptor.of(
+                    ValueLayout.JAVA_LONG,
+                    ValueLayout.ADDRESS,
+                    ValueLayout.ADDRESS,
+                    ValueLayout.JAVA_LONG
+                )
+            ).invokeExact(receiver, selector("lengthOfBytesUsingEncoding:"), NS_UTF8_STRING_ENCODING) as Long
         }
 
-        private fun msgVoid(receiver: MemorySegment, selector: String, arg1: MemorySegment, arg2: Long, arg3: Long) {
+        private fun copyUtf8String(receiver: MemorySegment, buffer: MemorySegment, maxLength: Long) {
             downcallVoid(
                 ValueLayout.ADDRESS,
                 ValueLayout.ADDRESS,
                 ValueLayout.ADDRESS,
                 ValueLayout.JAVA_LONG,
                 ValueLayout.JAVA_LONG
-            ).invokeExact(receiver, selector(selector), arg1, arg2, arg3)
+            ).invokeExact(
+                receiver,
+                selector("getCString:maxLength:encoding:"),
+                buffer,
+                maxLength,
+                NS_UTF8_STRING_ENCODING,
+            )
         }
 
-        private fun msgVoid(receiver: MemorySegment, selector: String, arg1: MemorySegment, arg2: MemorySegment) {
+        private fun addNotificationRequest(receiver: MemorySegment, request: MemorySegment) {
             downcallVoid(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS)
-                .invokeExact(receiver, selector(selector), arg1, arg2)
+                .invokeExact(
+                    receiver,
+                    selector("addNotificationRequest:withCompletionHandler:"),
+                    request,
+                    MemorySegment.NULL,
+                )
         }
 
-        private fun downcallPointer(symbol: String, vararg args: ValueLayout): MethodHandle {
+        private fun downcallPointer(symbol: String): MethodHandle {
             return downcall(
                 lookup.findOrThrow(symbol),
-                FunctionDescriptor.of(ValueLayout.ADDRESS, *args)
+                FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS)
             )
         }
 
@@ -294,13 +381,18 @@ class MacNotificationCenter(
             return linker.downcallHandle(symbol, descriptor)
         }
 
-        private fun upcall(methodName: String, descriptor: FunctionDescriptor, vararg parameterTypes: Class<*>): MemorySegment {
+        private fun authorizationUpcall(): MemorySegment {
             val methodHandle = methodHandles.findStatic(
                 UserNotifications::class.java,
-                methodName,
-                MethodType.methodType(Void.TYPE, parameterTypes.toList())
+                "authorizationCallback",
+                MethodType.methodType(
+                    Void.TYPE,
+                    listOf(MemorySegment::class.java, java.lang.Boolean.TYPE, MemorySegment::class.java),
+                ),
             )
 
+            val descriptor =
+                FunctionDescriptor.ofVoid(ValueLayout.ADDRESS, ValueLayout.JAVA_BOOLEAN, ValueLayout.ADDRESS)
             return linker.upcallStub(methodHandle, descriptor, arena)
         }
 
@@ -329,7 +421,7 @@ class MacNotificationCenter(
 
         private class ShowNotification(
             private val message: PendingNotification,
-            private val fallbackNotificationCenter: INotificationCenter
+            private val fallbackNotificationCenter: NotificationBackend
         ) : Runnable {
             override fun run() {
                 showOnNotificationThread(message, fallbackNotificationCenter)
@@ -339,17 +431,17 @@ class MacNotificationCenter(
         private data class PendingNotification(
             val title: String,
             val body: String,
-            val type: MessageType
+            val type: MessageType,
+            private val active: AtomicBoolean,
         ) {
-            constructor(message: NotificationMessage) : this(message.title, message.message, message.type)
+            constructor(message: NotificationMessage, active: AtomicBoolean) :
+                this(message.title, message.message, message.type, active)
 
-            fun toNotificationMessage(): NotificationMessage {
-                return NotificationMessage().also {
-                    it.title = title
-                    it.message = body
-                    it.type = type
-                }
-            }
+            fun belongsTo(owner: AtomicBoolean): Boolean = active === owner
+
+            fun isActive(): Boolean = active.get()
+
+            fun toNotificationMessage(): NotificationMessage = NotificationMessage(title, body, type)
         }
 
         private class AuthorizationResult(private val granted: Boolean) : Runnable {

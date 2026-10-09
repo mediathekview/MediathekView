@@ -20,12 +20,11 @@ package mediathek.sqlite
 
 import mediathek.config.Konstanten
 import net.miginfocom.swing.MigLayout
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Frame
 import java.awt.event.KeyEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.*
 
 class SqliteRecoveryProgressDialog(owner: Frame?) : JDialog(owner, "DB-Wiederherstellung", true) {
@@ -65,11 +64,7 @@ class SqliteRecoveryProgressDialog(owner: Frame?) : JDialog(owner, "DB-Wiederher
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
             JComponent.WHEN_IN_FOCUSED_WINDOW
         )
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e: WindowEvent) {
-                cancelRecovery()
-            }
-        })
+        addDelayedWindowListener(onWindowClosing = { cancelRecovery() })
 
         pack()
         setLocationRelativeTo(owner)

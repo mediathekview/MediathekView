@@ -24,13 +24,11 @@ public class ToastNotificationPanel extends JPanel {
         String key = getKey();
         String outlineColor = toTextColor(getDefaultColor());
         String outline = convertsKey(key, "outlineColor", outlineColor);
-        putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:" + convertsKey(key, "background", "$Panel.background") + ";" +
+        putClientProperty(FlatClientProperties.STYLE, "background:" + convertsKey(key, "background", "$Panel.background") + ";" +
                 "outlineColor:" + outline + ";" +
                 "effectColor:" + convertsKey(key, "effectColor", outline));
 
-        textPane.putClientProperty(FlatClientProperties.STYLE, "" +
-                "foreground:" + convertsKey(getKey(), "foreground", "$TextPane.foreground") + ";");
+        textPane.putClientProperty(FlatClientProperties.STYLE, "foreground:" + convertsKey(getKey(), "foreground", "$TextPane.foreground") + ";");
     }
 
     private String convertsKey(String key, String value, String defaultValue) {

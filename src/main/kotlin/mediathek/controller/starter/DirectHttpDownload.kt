@@ -39,6 +39,7 @@ import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
 import mediathek.tool.http.MVHttpClient
+import mediathek.tool.notification.NotificationPublisher
 import net.engio.mbassy.bus.MBassador
 import net.engio.mbassy.listener.Handler
 import okhttp3.*
@@ -51,7 +52,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
 import java.time.Duration
 import java.time.LocalDateTime
@@ -62,6 +62,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class DirectHttpDownload(
     private val aboHistoryControllerProvider: () -> AboHistoryController,
     private val datenDownload: DatenDownload,
+    private val notificationPublisher: NotificationPublisher,
     private val dialogOwnerProvider: () -> JFrame? = { null },
 ) : Thread() {
 
@@ -383,7 +384,7 @@ class DirectHttpDownload(
 
         runBlocking {
             try {
-                createDirectory()
+                createDownloadTargetDirectory(datenDownload.targetPath)
                 finalFile = File(datenDownload.targetPathFileName)
                 file = DirectDownloadPartFiles.partFileFor(finalFile)
 
@@ -412,7 +413,7 @@ class DirectHttpDownload(
                     }
                 }
             } catch (ex: IOException) {
-                logger.error("run()", ex)
+                logger.error("Direct download failed for {}", datenDownload.targetPathFileName, ex)
                 start.markError()
                 state = HttpDownloadState.ERROR
 
@@ -422,7 +423,7 @@ class DirectHttpDownload(
             } finally {
                 awaitAncillaryDownloads()
 
-                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state)
+                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state, notificationPublisher)
 
                 messageBus.publishAsync(DownloadFinishedEvent(datenDownload))
                 messageBus.unsubscribe(this@DirectHttpDownload)
@@ -456,13 +457,6 @@ class DirectHttpDownload(
         return SwingDispatch.call(::abbrechen)
     }
 
-    private fun createDirectory() {
-        try {
-            Files.createDirectories(Paths.get(datenDownload.targetPath))
-        } catch (_: IOException) {
-        }
-    }
-
     private fun abbrechen(): Boolean {
         var result = false
         if (file.exists() || finalFile.exists()) {
@@ -489,7 +483,7 @@ class DirectHttpDownload(
                 DialogContinueDownload.DownloadResult.RESTART_WITH_NEW_NAME -> {
                     if (dialogContinueDownload.isNewName) {
                         MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
-                        createDirectory()
+                        createDownloadTargetDirectory(datenDownload.targetPath)
                         finalFile = File(datenDownload.targetPathFileName)
                         file = DirectDownloadPartFiles.partFileFor(finalFile)
                     }

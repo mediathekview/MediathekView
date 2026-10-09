@@ -28,16 +28,18 @@ import java.util.function.Supplier
 import javax.swing.DefaultComboBoxModel
 import javax.swing.SwingUtilities
 
-class FilterSelectionComboBoxModel(
+class FilterSelectionComboBoxModel @JvmOverloads constructor(
     private val selectedFilterSupplier: Supplier<FilterDTO>,
     private val availableFiltersSupplier: Supplier<List<FilterDTO>>,
     private val filterLockedReader: Predicate<FilterDTO>,
     private val selectionObserverRegistry: FilmFilterController.SelectionObserverRegistry,
+    private val selectedFilterHandler: (FilterDTO) -> Unit = {},
 ) : DefaultComboBoxModel<FilterDTO>(), AutoCloseable {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val availableFilters = ArrayList<FilterDTO>()
     private val availableFiltersObserver = Runnable(::onAvailableFiltersChanged)
     private val currentFilterObserver = Consumer<FilterDTO>(::onCurrentFilterChanged)
+    private var applyingSelectedFilter = false
 
     init {
         refreshAvailableFilters()
@@ -48,6 +50,15 @@ class FilterSelectionComboBoxModel(
     }
 
     override fun setSelectedItem(anObject: Any?) {
+        val selectedFilter = anObject as? FilterDTO
+        if (selectedFilter != null && selectedFilter != super.getSelectedItem()) {
+            applyingSelectedFilter = true
+            try {
+                selectedFilterHandler(selectedFilter)
+            } finally {
+                applyingSelectedFilter = false
+            }
+        }
         super.setSelectedItem(anObject)
     }
 
@@ -84,6 +95,9 @@ class FilterSelectionComboBoxModel(
 
     private fun onCurrentFilterChanged(filterDTO: FilterDTO) {
         dispatchOnEdt {
+            if (applyingSelectedFilter) {
+                return@dispatchOnEdt
+            }
             if (super.getSelectedItem() !== filterDTO) {
                 super.setSelectedItem(filterDTO)
             }

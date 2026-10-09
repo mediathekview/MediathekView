@@ -54,5 +54,6 @@ internal data class DownloadConfig(
     val infoFile: Boolean = false,
     val spotlight: Boolean = false,
     val subtitle: Boolean = false,
+    val mp4Metadata: Boolean = false,
     val downloadManager: Boolean = false,
 )

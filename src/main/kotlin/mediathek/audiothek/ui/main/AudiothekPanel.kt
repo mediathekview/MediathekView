@@ -48,14 +48,13 @@ import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.MessageType
 import mediathek.tool.notification.NotificationMessage
-import mediathek.tool.notification.NotificationService
+import mediathek.tool.notification.NotificationPublisher
 import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import org.jdesktop.swingx.VerticalLayout
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.*
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.awt.event.MouseEvent
 import java.io.File
 import java.net.URI
@@ -69,6 +68,7 @@ import kotlin.time.toKotlinDuration
 class AudiothekPanel(
     private val repository: AudioRepository,
     private val owner: Frame,
+    private val notificationPublisher: NotificationPublisher,
 ) : JPanel(BorderLayout()) {
     private val logger = LogManager.getLogger(AudiothekPanel::class.java)
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -176,10 +176,8 @@ class AudiothekPanel(
     }
 
     private fun setupListeners() {
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(event: ComponentEvent?) {
-                SwingUtilities.invokeLater(::loadIfNecessary)
-            }
+        addDelayedComponentListener(onComponentShown = {
+            SwingUtilities.invokeLater(::loadIfNecessary)
         })
         toolBar.addReloadListener { triggerLoad(isManualReload = true) }
         table.addEntrySelectionListener {
@@ -203,11 +201,7 @@ class AudiothekPanel(
                 downloadManagerPanel.setTasks(snapshots)
             }
         }
-        tableScrollPane.addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(event: ComponentEvent?) {
-                syncErrorOverlayBounds()
-            }
-        })
+        tableScrollPane.addDelayedComponentListener(onComponentResized = { syncErrorOverlayBounds() })
     }
 
     private fun shouldLoadWhenShown(): Boolean {
@@ -595,13 +589,7 @@ class AudiothekPanel(
     }
 
     private fun showDownloadNotification(title: String, message: String, type: MessageType) {
-        NotificationService.displayNotification(
-            NotificationMessage().apply {
-                this.title = title
-                this.message = message
-                this.type = type
-            }
-        )
+        notificationPublisher.publish(NotificationMessage(title, message, type))
     }
 
     private fun markAudioAsSeen(snapshot: AudioDownloadTaskSnapshot) {

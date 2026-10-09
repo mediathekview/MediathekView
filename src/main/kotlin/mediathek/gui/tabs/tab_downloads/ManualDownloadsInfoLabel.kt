@@ -33,6 +33,6 @@ class ManualDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : J
     }
 
     private fun process(info: DownloadStartInfo) {
-        text = if (info.num_downloads == 1) "1 Download" else "${info.num_downloads} Downloads"
+        text = if (info.downloadCount == 1) "1 Download" else "${info.downloadCount} Downloads"
     }
 }

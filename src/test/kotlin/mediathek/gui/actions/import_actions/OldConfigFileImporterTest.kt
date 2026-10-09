@@ -32,7 +32,7 @@ internal class OldConfigFileImporterTest {
         val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
-            abos.clear()
+            abos.clearWithoutNotification()
             val configFile = tempDir.resolve("old-mediathek.xml")
             Files.writeString(
                 configFile,
@@ -58,7 +58,7 @@ internal class OldConfigFileImporterTest {
                 """.trimIndent(),
             )
 
-            val result = OldConfigFileImporter(daten.abos, daten.blacklist).importAboBlacklist(
+            val result = OldConfigFileImporter(daten.abos, daten.blacklist, daten.replacementRules).importAboBlacklist(
                 configFile.toString(),
                 importAbo = true,
                 importBlacklist = false,
@@ -80,8 +80,36 @@ internal class OldConfigFileImporterTest {
             assertEquals("Save", imported.psetName)
             assertTrue(imported.isDoNotStartAutomatically)
         } finally {
-            abos.clear()
-            abos.addAll(originalAbos)
+            abos.clearWithoutNotification()
+            originalAbos.forEach(abos::addAboWithoutNotification)
         }
+    }
+
+    @Test
+    fun rejectedEmptyReplacementRuleIsNotCountedAsImported() {
+        daten.replacementRules.clear()
+        val configFile = tempDir.resolve("old-replacement-rules.xml")
+        Files.writeString(
+            configFile,
+            """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <Mediathek>
+                <Ersetzungstabelle>
+                    <von></von>
+                    <nach>_</nach>
+                </Ersetzungstabelle>
+            </Mediathek>
+            """.trimIndent(),
+        )
+
+        val result = OldConfigFileImporter(daten.abos, daten.blacklist, daten.replacementRules).importAboBlacklist(
+            configFile.toString(),
+            importAbo = false,
+            importBlacklist = false,
+            importReplaceList = true,
+        )
+
+        assertEquals(0, result.foundReplaceListEntries)
+        assertTrue(daten.replacementRules.entries().isEmpty())
     }
 }

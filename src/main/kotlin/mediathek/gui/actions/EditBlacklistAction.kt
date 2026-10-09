@@ -2,7 +2,7 @@ package mediathek.gui.actions
 
 import mediathek.daten.blacklist.BlacklistServices
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.dialog.StandardCloseDialog
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
 import mediathek.swing.IconUtils
@@ -21,7 +21,7 @@ class EditBlacklistAction(
     private val parent: JFrame,
     private val blacklist: BlacklistServices,
     private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
+    private val filmListLoader: FilmListLoadCoordinator,
 ) : AbstractAction() {
     init {
         putValue(NAME, "Blacklist bearbeiten...")

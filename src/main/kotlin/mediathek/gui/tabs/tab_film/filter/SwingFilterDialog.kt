@@ -20,26 +20,26 @@ package mediathek.gui.tabs.tab_film.filter
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
-import ca.odell.glazedlists.swing.GlazedListsSwing
+import ca.odell.glazedlists.swing.eventComboBoxModel
 import com.jidesoft.swing.CheckBoxList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.gui.messages.TableModelChangeEvent
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.swing.IconUtils
 import mediathek.tool.EventListWithEmptyFirstEntry
-import mediathek.tool.FilterDTO
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Window
-import java.awt.event.*
+import java.awt.event.ActionEvent
+import java.awt.event.ComponentEvent
 import javax.swing.*
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
@@ -83,7 +83,13 @@ class SwingFilterDialog internal constructor(
     }
 
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    private val themaDispatcher = Dispatchers.Default.limitedParallelism(1)
     private val sourceThemaList: EventList<String> = BasicEventList()
+    private val themaList = EventListWithEmptyFirstEntry(sourceThemaList)
+    private val themaComboBoxModel = themaList.eventComboBoxModel()
+    private val senderListModel = DefaultListModel<String>().apply {
+        addAll(filterController.senderList())
+    }
     private val renameFilterAction = RenameFilterAction()
     private val deleteCurrentFilterAction = DeleteCurrentFilterAction()
     private val addNewFilterAction = AddNewFilterAction()
@@ -92,6 +98,7 @@ class SwingFilterDialog internal constructor(
     private val checkBoxBindings = createCheckBoxBindings()
     private val senderCheckBoxList = SenderCheckBoxList()
     private val filmLengthRangeSlider = filmLengthSlider as FilmLengthSlider
+    private var disposed = false
     private val filterView: FilmFilterView by lazy {
         DialogFilterView(
             checkBoxBindings = checkBoxBindings.map { it.checkBox to it.selectedStateReader },
@@ -107,13 +114,14 @@ class SwingFilterDialog internal constructor(
         )
     }
     private val filterSelectionDataListener = FilterSelectionDataListener()
-    private val filterSelectionActionListener = ActionListener { syncCurrentFilterAndRestore(requestReload = true) }
     private val filterSwitchReloadRequester = object : FilmFilterController.ReloadRequester {
         override fun requestTableReload() = filterController.requestTableReload()
         override fun requestZeitraumReload() = filterController.requestZeitraumReload()
     }
     private var checkboxReloadJob: Job? = null
     private var zeitraumReloadJob: Job? = null
+    private var themaRefreshJob: Job? = null
+    private var themaRefreshGeneration = 0L
     private val suppressedEventTypes = mutableSetOf<SuppressedEventType>()
     private val managedActions by lazy {
         listOf<Action>(
@@ -198,7 +206,7 @@ class SwingFilterDialog internal constructor(
 
     init {
         scpSenderList.setViewportView(senderCheckBoxList)
-        filterController.initializeFilmData()
+        filterController.initializeFilmData(filterController.hasFilmData())
 
         configureComponents()
         setupInteraction()
@@ -207,19 +215,34 @@ class SwingFilterDialog internal constructor(
     }
 
     override fun dispose() {
+        if (disposed) return
+        disposed = true
         checkboxReloadJob?.cancel()
         zeitraumReloadJob?.cancel()
+        themaRefreshJob?.cancel()
+        themaRefreshGeneration++
         uiScope.cancel()
         filterSelectionComboBoxModel.removeListDataListener(filterSelectionDataListener)
-        cboxFilterSelection.removeActionListener(filterSelectionActionListener)
-        super.dispose()
+        senderCheckBoxList.model = DefaultListModel<String>()
+        jcbThema.model = DefaultComboBoxModel()
+        try {
+            disposeResource("theme combo box model", themaComboBoxModel::dispose)
+            disposeResource("theme list adapter", themaList::close)
+            disposeResource("theme source list", sourceThemaList::close)
+        } finally {
+            super.dispose()
+        }
+    }
+
+    private fun disposeResource(name: String, dispose: () -> Unit) {
+        runCatching(dispose)
+            .onFailure { failure -> logger.warn("Failed to dispose {}", name, failure) }
     }
 
     private fun configureComponents() {
         setupRoundControls()
         btnSplit.icon = IconUtils.of(MaterialDesignD.DOTS_VERTICAL)
         populateSplitButton()
-        ToggleVisibilityKeyHandler(this).installHandler(filterToggleButton.action)
         setupButtons()
     }
 
@@ -261,10 +284,32 @@ class SwingFilterDialog internal constructor(
         restoreDialogVisibility()
     }
 
+    private fun storeWindowPosition(event: ComponentEvent?) {
+        if (event == null) return
+
+        val component: Component = event.component
+        val dims = component.size
+        val loc = component.location
+        ApplicationConfiguration.getInstance()
+            .setFilterDialogBounds(loc.x, loc.y, dims.width, dims.height)
+    }
+
+    private fun setFilterToggleButtonState(selected: Boolean) {
+        ApplicationConfiguration.getInstance().filterDialogVisible = isVisible
+        filterToggleButton.isSelected = selected
+    }
+
     private fun registerLocalListeners() {
         filterSelectionComboBoxModel.addListDataListener(filterSelectionDataListener)
-        cboxFilterSelection.addActionListener(filterSelectionActionListener)
-        addComponentListener(FilterDialogComponentListener())
+        addDelayedComponentListener(
+            onComponentResized = { event -> storeWindowPosition(event)},
+            onComponentMoved = { event -> storeWindowPosition(event)},
+            onComponentShown = { setFilterToggleButtonState(true) },
+            onComponentHidden = { event ->
+                storeWindowPosition(event)
+                setFilterToggleButtonState(false)
+            }
+        )
     }
 
     private fun setupRoundControls() {
@@ -309,17 +354,57 @@ class SwingFilterDialog internal constructor(
     private fun createCheckBoxBindings(): List<CheckBoxBinding> {
         return listOf(
             CheckBoxBinding(cbShowNewOnly, FilmFilterState::showNewOnly, filterController::onShowNewOnlyChanged),
-            CheckBoxBinding(cbShowBookMarkedOnly, FilmFilterState::showBookMarkedOnly, filterController::onShowBookMarkedOnlyChanged),
-            CheckBoxBinding(cbShowOnlyHq, FilmFilterState::showHighQualityOnly, filterController::onShowHighQualityOnlyChanged),
-            CheckBoxBinding(cbShowSubtitlesOnly, FilmFilterState::showSubtitlesOnly, filterController::onShowSubtitlesOnlyChanged),
-            CheckBoxBinding(cbShowOnlyLivestreams, FilmFilterState::showLivestreamsOnly, filterController::onShowLivestreamsOnlyChanged),
-            CheckBoxBinding(cbShowUnseenOnly, FilmFilterState::showUnseenOnly, filterController::onShowUnseenOnlyChanged),
+            CheckBoxBinding(
+                cbShowBookMarkedOnly,
+                FilmFilterState::showBookMarkedOnly,
+                filterController::onShowBookMarkedOnlyChanged
+            ),
+            CheckBoxBinding(
+                cbShowOnlyHq,
+                FilmFilterState::showHighQualityOnly,
+                filterController::onShowHighQualityOnlyChanged
+            ),
+            CheckBoxBinding(
+                cbShowSubtitlesOnly,
+                FilmFilterState::showSubtitlesOnly,
+                filterController::onShowSubtitlesOnlyChanged
+            ),
+            CheckBoxBinding(
+                cbShowOnlyLivestreams,
+                FilmFilterState::showLivestreamsOnly,
+                filterController::onShowLivestreamsOnlyChanged
+            ),
+            CheckBoxBinding(
+                cbShowUnseenOnly,
+                FilmFilterState::showUnseenOnly,
+                filterController::onShowUnseenOnlyChanged
+            ),
             CheckBoxBinding(cbDontShowAbos, FilmFilterState::dontShowAbos, filterController::onDontShowAbosChanged),
-            CheckBoxBinding(cbDontShowSignLanguage, FilmFilterState::dontShowSignLanguage, filterController::onDontShowSignLanguageChanged),
-            CheckBoxBinding(cbDontShowGeoblocked, FilmFilterState::dontShowGeoblocked, filterController::onDontShowGeoblockedChanged),
-            CheckBoxBinding(cbDontShowTrailers, FilmFilterState::dontShowTrailers, filterController::onDontShowTrailersChanged),
-            CheckBoxBinding(cbDontShowAudioVersions, FilmFilterState::dontShowAudioVersions, filterController::onDontShowAudioVersionsChanged),
-            CheckBoxBinding(cbDontShowDuplicates, FilmFilterState::dontShowDuplicates, filterController::onDontShowDuplicatesChanged)
+            CheckBoxBinding(
+                cbDontShowSignLanguage,
+                FilmFilterState::dontShowSignLanguage,
+                filterController::onDontShowSignLanguageChanged
+            ),
+            CheckBoxBinding(
+                cbDontShowGeoblocked,
+                FilmFilterState::dontShowGeoblocked,
+                filterController::onDontShowGeoblockedChanged
+            ),
+            CheckBoxBinding(
+                cbDontShowTrailers,
+                FilmFilterState::dontShowTrailers,
+                filterController::onDontShowTrailersChanged
+            ),
+            CheckBoxBinding(
+                cbDontShowAudioVersions,
+                FilmFilterState::dontShowAudioVersions,
+                filterController::onDontShowAudioVersionsChanged
+            ),
+            CheckBoxBinding(
+                cbDontShowDuplicates,
+                FilmFilterState::dontShowDuplicates,
+                filterController::onDontShowDuplicatesChanged
+            )
         )
     }
 
@@ -340,9 +425,39 @@ class SwingFilterDialog internal constructor(
     }
 
     private fun renderFilterState() {
-        val renderModel = filterController.renderModel()
+        val state = filterController.state()
         withSuppressedEvents(SuppressedEventType.ZEITRAUM) {
-            filterView.render(renderModel.state, renderModel.availableThemen, renderModel.canDeleteCurrentFilter)
+            filterView.renderState(state, filterController.canDeleteCurrentFilter())
+        }
+        requestThemaRefresh(state)
+    }
+
+    private fun requestThemaRefresh(requestedState: FilmFilterState) {
+        val generation = ++themaRefreshGeneration
+        themaRefreshJob?.cancel()
+        themaRefreshJob = uiScope.launch {
+            val availableThemen = withContext(themaDispatcher) {
+                filterController.loadAvailableThemen(requestedState.checkedChannels)
+            }
+            if (generation != themaRefreshGeneration) {
+                return@launch
+            }
+
+            val currentState = filterController.state()
+            if (currentState.currentFilter != requestedState.currentFilter ||
+                currentState.checkedChannels != requestedState.checkedChannels
+            ) {
+                return@launch
+            }
+
+            val previousThema = currentState.thema
+            val renderModel = filterController.renderModel(availableThemen)
+            withSuppressedEvents(SuppressedEventType.THEMA) {
+                filterView.renderAvailableThemen(renderModel.state, renderModel.availableThemen)
+            }
+            if (renderModel.state.thema != previousThema) {
+                filterController.requestTableReload()
+            }
         }
     }
 
@@ -355,8 +470,7 @@ class SwingFilterDialog internal constructor(
     private fun setupThemaComboBox() {
         jcbThema.componentPopupMenu = createPopupMenu()
 
-        val model = GlazedListsSwing.eventComboBoxModel(EventListWithEmptyFirstEntry(sourceThemaList))
-        jcbThema.model = model
+        jcbThema.model = themaComboBoxModel
 
         val thema = filterController.state().thema
         sourceThemaList.withWriteLock {
@@ -458,20 +572,10 @@ class SwingFilterDialog internal constructor(
         applyEnabledState(enabled)
     }
 
-    fun onTableModelChangeEvent(event: TableModelChangeEvent) {
-        uiScope.launch {
-            val enabled = !event.active
-            isEnabled = enabled
-
-            if (event.active) {
-                deleteCurrentFilterAction.isEnabled = false
-            } else {
-                updateDeleteCurrentFilterButtonState()
-            }
-        }
-    }
-
     fun onFilmDataLoadingStarted() {
+        filterController.initializeFilmData(false)
+        themaRefreshJob?.cancel()
+        themaRefreshGeneration++
         isEnabled = false
     }
 
@@ -512,20 +616,6 @@ class SwingFilterDialog internal constructor(
         }
     }
 
-    class ToggleVisibilityKeyHandler(dlg: JDialog) {
-        companion object {
-            private const val TOGGLE_FILTER_VISIBILITY = "toggle_dialog_visibility"
-        }
-
-        private val rootPane: JRootPane = dlg.rootPane
-
-        fun installHandler(action: Action?) {
-            rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0), TOGGLE_FILTER_VISIBILITY)
-            rootPane.actionMap.put(TOGGLE_FILTER_VISIBILITY, action)
-        }
-    }
-
     private inner class ResetCurrentFilterAction : AbstractAction() {
         init {
             putValue(SMALL_ICON, IconUtils.of(FontAwesomeSolid.RECYCLE))
@@ -559,7 +649,7 @@ class SwingFilterDialog internal constructor(
         }
 
         private fun setupSenderList() {
-            model = GlazedListsSwing.eventListModel(filterController.senderList())
+            model = senderListModel
             checkBoxListSelectionModel.addListSelectionListener { event ->
                 if (isSuppressed(SuppressedEventType.SENDER_SELECTION)) {
                     return@addListSelectionListener
@@ -647,6 +737,7 @@ class SwingFilterDialog internal constructor(
                             JOptionPane.ERROR_MESSAGE
                         )
                     }
+
                     is FilmFilterController.AddFilterResult.Added -> {
                         restoreConfigSettings()
                         updateDeleteCurrentFilterButtonState()
@@ -751,6 +842,7 @@ class SwingFilterDialog internal constructor(
                         JOptionPane.ERROR_MESSAGE
                     )
                 }
+
                 FilmFilterController.RenameFilterResult.Renamed -> {
                     logger.trace("Renamed filter \"{}\" to \"{}\"", currentFilterName, trimmedName)
                 }
@@ -759,62 +851,16 @@ class SwingFilterDialog internal constructor(
 
     }
 
-    inner class FilterDialogComponentListener : ComponentAdapter() {
-        override fun componentResized(event: ComponentEvent) {
-            storeWindowPosition(event)
-        }
-
-        override fun componentMoved(event: ComponentEvent) {
-            storeWindowPosition(event)
-        }
-
-        override fun componentShown(event: ComponentEvent) {
-            storeDialogVisibility()
-            filterToggleButton.isSelected = true
-        }
-
-        override fun componentHidden(event: ComponentEvent) {
-            storeWindowPosition(event)
-            storeDialogVisibility()
-            filterToggleButton.isSelected = false
-        }
-
-        private fun storeDialogVisibility() {
-            ApplicationConfiguration.getInstance().filterDialogVisible = isVisible
-        }
-
-        private fun storeWindowPosition(event: ComponentEvent) {
-            val component: Component = event.component
-            val dims = component.size
-            val loc = component.location
-            ApplicationConfiguration.getInstance()
-                .setFilterDialogBounds(loc.x, loc.y, dims.width, dims.height)
-        }
-    }
-
     private inner class FilterSelectionDataListener : ListDataListener {
-        override fun intervalAdded(event: ListDataEvent) = restoreConfigSettings()
-        override fun intervalRemoved(event: ListDataEvent) = restoreConfigSettings()
-        override fun contentsChanged(event: ListDataEvent) {
-            if (event.index0 == -1 && event.index1 == -1) {
-                return
-            }
-            restoreConfigSettings()
-        }
-    }
+        override fun intervalAdded(event: ListDataEvent) = restoreAfterSelectionModelChange()
+        override fun intervalRemoved(event: ListDataEvent) = restoreAfterSelectionModelChange()
+        override fun contentsChanged(event: ListDataEvent) = restoreAfterSelectionModelChange()
 
-    private fun syncCurrentFilterAndRestore(requestReload: Boolean = false) {
-        if (isSuppressed(SuppressedEventType.FILTER_SELECTION)) {
-            return
+        private fun restoreAfterSelectionModelChange() {
+            if (!isSuppressed(SuppressedEventType.FILTER_SELECTION)) {
+                restoreConfigSettings()
+            }
         }
-        val selectedFilter = cboxFilterSelection.selectedItem as? FilterDTO ?: return
-        val previousState = filterController.state()
-        val changed = filterController.restoreCurrentFilterSelection(selectedFilter)
-        restoreConfigSettings()
-        if (!changed) {
-            return
-        }
-        FilterSwitchReload.apply(previousState, filterController.state(), requestReload, filterSwitchReloadRequester)
     }
 
     private data class CheckBoxBinding(

@@ -18,10 +18,8 @@
 
 package mediathek.mainwindow
 
-import mediathek.daten.abo.AboServices
-import mediathek.daten.blacklist.BlacklistServices
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.dialog.LoadFilmListDialog
 import mediathek.tool.FilmListUpdateType
 import javax.swing.JFrame
@@ -29,9 +27,7 @@ import javax.swing.JFrame
 class MainWindowFilmlistLoadCoordinator(
     private val owner: JFrame,
     private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
-    private val abos: AboServices,
-    private val blacklist: BlacklistServices,
+    private val filmListLoader: FilmListLoadCoordinator,
     private val statusBarController: MainWindowStatusBarController,
 ) : AutoCloseable {
     private var startupFilmlistLoader: StartupFilmlistLoader? = null
@@ -44,8 +40,6 @@ class MainWindowFilmlistLoadCoordinator(
         startupFilmlistLoader = StartupFilmlistLoader(
             filmCatalog,
             filmListLoader,
-            abos,
-            blacklist,
             statusBarController.startupProgressLabel,
             statusBarController.startupProgressBar,
             ::finishStartupFilmlistLoad,
@@ -57,18 +51,12 @@ class MainWindowFilmlistLoadCoordinator(
         if (manualMode || FilmListUpdateType.MANUAL.isConfigured()) {
             LoadFilmListDialog(owner, filmCatalog, filmListLoader).isVisible = true
         } else {
-            filmListLoader.loadFilmlist("", false)
+            filmListLoader.startFilmlistLoad("", false)
         }
     }
 
-    private fun finishStartupFilmlistLoad(remoteUpdateStarted: Boolean, failed: Boolean) {
-        try {
-            if (!remoteUpdateStarted) {
-                filmListLoader.completeStartupFilmListLoad(failed)
-            }
-        } finally {
-            statusBarController.uninstallStartupProgress()
-        }
+    private fun finishStartupFilmlistLoad() {
+        statusBarController.uninstallStartupProgress()
     }
 
     override fun close() {

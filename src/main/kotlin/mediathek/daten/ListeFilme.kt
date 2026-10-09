@@ -103,7 +103,7 @@ open class ListeFilme : ArrayList<DatenFilm>() {
     }
 
     @Synchronized
-    fun getFilmByUrl_klein_hoch_hd(url: String): DatenFilm? =
+    fun getFilmByAnyUrl(url: String): DatenFilm? =
         firstOrNull { film ->
             film.urlNormalQuality == url ||
                 film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY) == url ||

@@ -25,10 +25,7 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
 import mediathek.daten.abo.DatenAbo
-import mediathek.tool.FileSpecifier
-import mediathek.tool.FileUtils
-import mediathek.tool.FilenameUtils
-import mediathek.tool.GuiFunktionen
+import mediathek.tool.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
 import java.io.File
@@ -52,6 +49,7 @@ internal data class DownloadTargetRequest(
     val downloadUrl: String,
     val topic: String,
     val title: String,
+    val replacementRules: ReplacementRules? = null,
 )
 
 internal object DownloadTargetBuilder {
@@ -63,7 +61,7 @@ internal object DownloadTargetBuilder {
         val pSet = request.pSet
         var name: String
         var path: String
-        val cleanupOptions = FilenameCleanupOptions.current()
+        val cleanupOptions = FilenameCleanupOptions.current(request.replacementRules)
         if (!pSet.progsContainPath()) {
             return DownloadTarget(fileName = "", path = "", pathFileName = null)
         }
@@ -85,10 +83,10 @@ internal object DownloadTargetBuilder {
                 }
             }
 
-            name = FilenameUtils.replaceLeerDateiname(
+            name = FilenameUtils.replaceEmptyFilename(
                 name,
                 false,
-                cleanupOptions.useReplaceTable,
+                cleanupOptions.replacementRules,
                 cleanupOptions.onlyAscii,
             )
             name += suffix
@@ -126,10 +124,10 @@ internal object DownloadTargetBuilder {
             } else if (pSet.isThemaAnlegen) {
                 path = GuiFunktionen.addsPfad(
                     path,
-                    FilenameUtils.replaceLeerDateiname(
+                    FilenameUtils.replaceEmptyFilename(
                         request.topic,
                         true,
-                        cleanupOptions.useReplaceTable,
+                        cleanupOptions.replacementRules,
                         cleanupOptions.onlyAscii,
                     ),
                 )
@@ -270,10 +268,10 @@ internal object DownloadTargetBuilder {
     }
 
     private fun getField(name: String, length: Int, cleanupOptions: FilenameCleanupOptions): String {
-        var result = FilenameUtils.replaceLeerDateiname(
+        var result = FilenameUtils.replaceEmptyFilename(
             name,
             false,
-            cleanupOptions.useReplaceTable,
+            cleanupOptions.replacementRules,
             cleanupOptions.onlyAscii,
         )
 
@@ -403,14 +401,14 @@ internal object DownloadTargetBuilder {
         DateParts.current().compact
 
     private data class FilenameCleanupOptions(
-        val useReplaceTable: Boolean,
+        val replacementRules: ReplacementRules?,
         val onlyAscii: Boolean,
     ) {
         companion object {
-            fun current(): FilenameCleanupOptions =
+            fun current(replacementRules: ReplacementRules?): FilenameCleanupOptions =
                 ApplicationConfiguration.getInstance().let { applicationConfiguration ->
                     FilenameCleanupOptions(
-                        useReplaceTable = applicationConfiguration.useFilenameReplaceTable,
+                        replacementRules = replacementRules.takeIf { applicationConfiguration.useFilenameReplaceTable },
                         onlyAscii = applicationConfiguration.onlyAsciiFilenames,
                     )
                 }

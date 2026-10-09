@@ -19,10 +19,14 @@
 package mediathek.tool
 
 import org.apache.commons.lang3.SystemUtils
+import org.pushingpixels.radiance.swing.ktx.swing.KeyboardActionScopeType
+import org.pushingpixels.radiance.swing.ktx.swing.wireActionToKeyStroke
 import java.awt.Toolkit
-import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
-import javax.swing.*
+import javax.swing.JDialog
+import javax.swing.JFrame
+import javax.swing.JRootPane
+import javax.swing.KeyStroke
 
 object EscapeKeyHandler {
     private const val CANCEL_KEY_HANDLER = "key_cancel"
@@ -36,21 +40,19 @@ object EscapeKeyHandler {
     }
 
     private fun installHandler(rootPane: JRootPane, action: Runnable) {
-        val inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), CANCEL_KEY_HANDLER)
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            inputMap.put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().menuShortcutKeyMaskEx),
-                CANCEL_KEY_HANDLER,
-            )
-        }
-        rootPane.actionMap.put(
+        rootPane.wireActionToKeyStroke(
             CANCEL_KEY_HANDLER,
-            object : AbstractAction() {
-                override fun actionPerformed(e: ActionEvent) {
-                    action.run()
-                }
-            },
+            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            KeyboardActionScopeType.WHEN_IN_FOCUSED_WINDOW_TYPE
         )
+        { action.run() }
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            rootPane.wireActionToKeyStroke(
+                CANCEL_KEY_HANDLER,
+                KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().menuShortcutKeyMaskEx),
+                KeyboardActionScopeType.WHEN_IN_FOCUSED_WINDOW_TYPE
+            )
+            { action.run() }
+        }
     }
 }

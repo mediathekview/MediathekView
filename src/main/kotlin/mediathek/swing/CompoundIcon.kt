@@ -21,6 +21,7 @@ package mediathek.swing
 import java.awt.Component
 import java.awt.Graphics
 import javax.swing.Icon
+import kotlin.math.roundToInt
 
 /**
  * Paints two or more icons as a single icon.
@@ -42,19 +43,7 @@ class CompoundIcon(
     private val normalizedAlignmentX = alignmentX.coerceIn(0.0f, 1.0f)
     private val normalizedAlignmentY = alignmentY.coerceIn(0.0f, 1.0f)
 
-    constructor(vararg icons: Icon) : this(Axis.X_AXIS, 0, CENTER, CENTER, *icons)
-
-    constructor(axis: Axis, vararg icons: Icon) : this(axis, 0, CENTER, CENTER, *icons)
-
     constructor(axis: Axis, gap: Int, vararg icons: Icon) : this(axis, gap, CENTER, CENTER, *icons)
-
-    fun getAlignmentX(): Float = normalizedAlignmentX
-
-    fun getAlignmentY(): Float = normalizedAlignmentY
-
-    fun getIconCount(): Int = icons.size
-
-    fun getIcon(index: Int): Icon = icons[index]
 
     override fun getIconWidth(): Int {
         return if (axis == Axis.X_AXIS) {
@@ -107,13 +96,12 @@ class CompoundIcon(
     }
 
     private fun getOffset(maxValue: Int, iconValue: Int, alignment: Float): Int =
-        Math.round((maxValue - iconValue) * alignment)
+        ((maxValue - iconValue) * alignment).roundToInt()
 
     companion object {
         const val TOP: Float = 0.0f
         const val LEFT: Float = 0.0f
         const val CENTER: Float = 0.5f
-        const val BOTTOM: Float = 1.0f
         const val RIGHT: Float = 1.0f
     }
 }

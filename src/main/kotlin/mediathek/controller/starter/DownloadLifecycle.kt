@@ -1,5 +1,9 @@
 package mediathek.controller.starter
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.AboHistoryController
@@ -15,7 +19,7 @@ import mediathek.tool.FileUtils
 import mediathek.tool.MessageBus
 import mediathek.tool.notification.MessageType
 import mediathek.tool.notification.NotificationMessage
-import mediathek.tool.notification.NotificationService
+import mediathek.tool.notification.NotificationPublisher
 import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.LogManager
 import java.awt.GraphicsEnvironment
@@ -102,7 +106,14 @@ internal object DownloadFileCleanup {
 }
 
 internal object DownloadCompletionHandler {
-    fun finalizeDownload(datenDownload: DatenDownload, start: DownloadRunState, state: HttpDownloadState) {
+    private val mp4MetadataScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    fun finalizeDownload(
+        datenDownload: DatenDownload,
+        start: DownloadRunState,
+        state: HttpDownloadState,
+        notificationPublisher: NotificationPublisher,
+    ) {
         DownloadFileCleanup.deleteIfEmpty(Paths.get(datenDownload.targetPathFileName))
         setFileSize(datenDownload)
 
@@ -110,10 +121,12 @@ internal object DownloadCompletionHandler {
             writeSpotlightComment(datenDownload, state)
         }
 
+        scheduleMp4MetadataWrite(datenDownload, start, state)
+
         makeBeep()
         val completionMessage = DownloadLogMessages.logCompletion(datenDownload, start, state == HttpDownloadState.CANCEL)
         if (completionMessage.shouldNotify) {
-            addNotification(datenDownload, completionMessage.successful)
+            addNotification(datenDownload, completionMessage.successful, notificationPublisher)
         }
 
         if (state == HttpDownloadState.CANCEL || start.stoppen) {
@@ -141,30 +154,33 @@ internal object DownloadCompletionHandler {
     /**
      * Post a notification dialog whether download was successful or not.
      */
-    private fun addNotification(datenDownload: DatenDownload, erfolgreich: Boolean) {
-        val msg = NotificationMessage()
-        val message: String
-
-        if (erfolgreich) {
-            msg.type = MessageType.INFO
-            msg.title = "Download erfolgreich"
-            message = String.format(
-                "\"%s\" vom %s wurde geladen.",
-                datenDownload.title,
-                datenDownload.sender,
+    private fun addNotification(
+        datenDownload: DatenDownload,
+        erfolgreich: Boolean,
+        notificationPublisher: NotificationPublisher,
+    ) {
+        val notification = if (erfolgreich) {
+            NotificationMessage(
+                type = MessageType.INFO,
+                title = "Download erfolgreich",
+                message = String.format(
+                    "\"%s\" vom %s wurde geladen.",
+                    datenDownload.title,
+                    datenDownload.sender,
+                ),
             )
         } else {
-            msg.type = MessageType.ERROR
-            msg.title = "Download fehlerhaft"
-            message = String.format(
-                "Fehler beim Laden von \"%s\" des Senders %s aufgetreten.",
-                datenDownload.title,
-                datenDownload.sender,
+            NotificationMessage(
+                type = MessageType.ERROR,
+                title = "Download fehlerhaft",
+                message = String.format(
+                    "Fehler beim Laden von \"%s\" des Senders %s aufgetreten.",
+                    datenDownload.title,
+                    datenDownload.sender,
+                ),
             )
         }
-        msg.message = message
-
-        NotificationService.displayNotification(msg)
+        notificationPublisher.publish(notification)
     }
 
     private fun writeSpotlightComment(datenDownload: DatenDownload?, state: HttpDownloadState) {
@@ -180,6 +196,26 @@ internal object DownloadCompletionHandler {
                 }
             }
         }
+    }
+
+    private fun scheduleMp4MetadataWrite(datenDownload: DatenDownload, start: DownloadRunState, state: HttpDownloadState) {
+        if (state == HttpDownloadState.CANCEL || start.stoppen || !start.isFinished || !datenDownload.isMp4Metadata) {
+            return
+        }
+
+        mp4MetadataScope.launch {
+            writeMp4Metadata(datenDownload)
+        }
+    }
+
+    private fun writeMp4Metadata(datenDownload: DatenDownload) {
+        val ffmpegExecutable = FfmpegExecutableResolver.resolve(datenDownload)
+        if (ffmpegExecutable == null) {
+            logger.warn("MP4-Metadaten konnten nicht geschrieben werden, ffmpeg wurde nicht gefunden: {}", datenDownload.targetPathFileName)
+            return
+        }
+
+        Mp4Metadata.writeDefaultTags(datenDownload, ffmpegExecutable)
     }
 
     /**

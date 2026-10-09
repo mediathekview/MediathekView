@@ -171,8 +171,7 @@ object FileSize {
             logLookupFailure(url, exception)
             return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         } catch (exception: RuntimeException) {
-            logger.debug("File size lookup failed for {}: {}", url, exception.conciseLogMessage())
-            logger.trace("File size lookup failure details for {}", url, exception)
+            logLookupFailureDetails(url, exception)
             return hlsLookupLogger(url, LookupResult(INVALID_SIZE.toLong()))
         }
 
@@ -198,9 +197,13 @@ object FileSize {
         if (exception is UnknownHostException) {
             logger.debug("File size lookup failed for {}: unknown host ({})", url, exception.message)
         } else {
-            logger.debug("File size lookup failed for {}: {}", url, exception.conciseLogMessage())
-            logger.trace("File size lookup failure details for {}", url, exception)
+            logLookupFailureDetails(url, exception)
         }
+    }
+
+    private fun logLookupFailureDetails(url: HttpUrl, exception: Exception) {
+        logger.debug("File size lookup failed for {}: {}", url, exception.conciseLogMessage())
+        logger.trace("File size lookup failure details for {}", url, exception)
     }
 
     private fun HttpUrl.shouldBypassCachedHlsLookup(): Boolean =

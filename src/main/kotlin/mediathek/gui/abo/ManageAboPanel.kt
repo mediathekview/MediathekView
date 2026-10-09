@@ -19,7 +19,6 @@
 package mediathek.gui.abo
 
 import ca.odell.glazedlists.swing.AdvancedTableModel
-import ca.odell.glazedlists.swing.GlazedListsSwing
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.CenteredTextCellRenderer
@@ -28,10 +27,10 @@ import mediathek.daten.ProgramSetRepository
 import mediathek.daten.abo.AboServices
 import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
+import mediathek.filmlisten.FilmListLoadListener
+import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
@@ -62,7 +61,8 @@ class ManageAboPanel(
     private val programSets: ProgramSetRepository,
     private val filmCatalog: FilmCatalog,
     private val abos: AboServices,
-    private val filmListLoader: FilmeLaden,
+    replacementRules: ReplacementRules,
+    private val filmListLoader: FilmListLoadCoordinator,
     private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
 ) : JPanel() {
     private val tabelle = AboTable()
@@ -71,6 +71,7 @@ class ManageAboPanel(
         programSets,
         filmCatalog,
         abos,
+        replacementRules,
         { owner },
         this::ensureAboProgramSetAvailable,
     )
@@ -85,19 +86,19 @@ class ManageAboPanel(
     private val infiniteProgressPanel = InfiniteProgressPanel()
     private val btnEditAbo = JButton()
     private val scrollPane = JScrollPane(tabelle)
-    private val filmLoadListener = object : ListenerFilmeLaden() {
+    private val filmLoadListener = object : FilmListLoadListener {
         @Suppress("UNUSED_PARAMETER")
-        override fun start(event: ListenerFilmeLadenEvent) {
+        override fun loadStarted(progress: FilmListLoadProgress) {
             markAboFilmCountsLoadingFromLoad()
         }
 
         @Suppress("UNUSED_PARAMETER")
-        override fun fertig(event: ListenerFilmeLadenEvent) {
+        override fun loadFinished(progress: FilmListLoadProgress) {
             scheduleAboFilmCountRefresh()
         }
 
         @Suppress("UNUSED_PARAMETER")
-        override fun fertigOnlyOne(event: ListenerFilmeLadenEvent) {
+        override fun firstLoadFinished(progress: FilmListLoadProgress) {
             scheduleAboFilmCountRefresh()
         }
     }
@@ -116,7 +117,7 @@ class ManageAboPanel(
         updateInfoText()
 
         MessageBus.messageBus.subscribe(this)
-        filmListLoader.addFilmLoadListener(filmLoadListener)
+        filmListLoader.addLoadListener(filmLoadListener)
 
         initListeners()
         initializeTable()
@@ -139,7 +140,7 @@ class ManageAboPanel(
     override fun removeNotify() {
         if (!disposed) {
             disposed = true
-            filmListLoader.removeFilmLoadListener(filmLoadListener)
+            filmListLoader.removeLoadListener(filmLoadListener)
             countRefreshJob?.cancel()
             uiScope.cancel()
             tableBinding.dispose()
@@ -297,8 +298,7 @@ class ManageAboPanel(
 
         swingToolBar.add(JLabel("Abos für Sender:"))
         senderCombo.maximumSize = Dimension(150, Int.MAX_VALUE)
-        val model = GlazedListsSwing.eventComboBoxModel(EventListWithEmptyFirstEntry(filmCatalog.allSendersList))
-        senderCombo.model = model
+        senderCombo.model = SenderListComboBoxModel(filmCatalog.allSenders)
         senderCombo.selectedIndex = 0
         senderCombo.addActionListener { applySenderFilter() }
         swingToolBar.add(senderCombo)
@@ -330,7 +330,7 @@ class ManageAboPanel(
         }
 
     private fun initializeAboFilmCounts() {
-        if (filmListLoader.isFilmListImportRunning) {
+        if (filmListLoader.isFilmListLoadRunning) {
             markAboFilmCountsLoading()
         } else {
             scheduleAboFilmCountRefresh()

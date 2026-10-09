@@ -63,10 +63,10 @@ class MainWindowMenuTabSwitchController(
         }
 
         when (event.event) {
-            InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL ->
+            InstallTabSwitchListenerEvent.InstallType.INSTALL ->
                 SwingUtilities.invokeLater(::installConfiguredMenuTabSwitchListeners)
 
-            InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE ->
+            InstallTabSwitchListenerEvent.InstallType.REMOVE ->
                 SwingUtilities.invokeLater(::removeConfiguredMenuTabSwitchListeners)
         }
     }

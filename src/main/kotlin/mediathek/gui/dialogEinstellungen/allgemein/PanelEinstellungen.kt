@@ -121,7 +121,7 @@ class PanelEinstellungen(
     }
 
     private fun setupModernSearchPanel() {
-        modernSearchTitlePanel.setContentContainer(ModernSearchConfigPanel())
+        modernSearchTitlePanel.contentContainer = ModernSearchConfigPanel()
     }
 
     override fun removeNotify() {
@@ -221,9 +221,9 @@ class PanelEinstellungen(
                 val isOn = cbAutomaticMenuTabSwitching.isSelected
                 applicationConfiguration.installTabSwitchListener = isOn
                 val eventType = if (isOn) {
-                    InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL
+                    InstallTabSwitchListenerEvent.InstallType.INSTALL
                 } else {
-                    InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE
+                    InstallTabSwitchListenerEvent.InstallType.REMOVE
                 }
                 MessageBus.messageBus.publishAsync(InstallTabSwitchListenerEvent(eventType))
             }

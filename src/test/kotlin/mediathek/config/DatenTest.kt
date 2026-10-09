@@ -2,6 +2,9 @@ package mediathek.config
 
 import mediathek.controller.AboRuleStorage
 import mediathek.controller.BlacklistRuleStorage
+import mediathek.controller.DownloadStorage
+import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadSource
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.blacklist.BlacklistRule
 import org.junit.jupiter.api.AfterEach
@@ -29,6 +32,23 @@ internal class DatenTest {
     fun tearDown() {
         StandardLocations.portableBaseDirectory = previousPortableBaseDirectory
         daten.downloads.shutdown()
+    }
+
+    @Test
+    fun requestedDownloadSaveWritesDownloadStateBeforeShutdown() {
+        StandardLocations.portableBaseDirectory = tempDir.toString()
+        daten.downloads.addDownload(DatenDownload().apply {
+            title = "Queued download"
+            quelle = DownloadSource.DOWNLOAD
+            downloadUrl = "https://example.invalid/video.mp4"
+        })
+
+        daten.configurationPersistence.requestDownloadSave()
+        daten.configurationPersistence.finishPendingDownloadSaves()
+
+        val restored = DownloadStorage.read(StandardLocations.getDownloadsFilePath())
+        assertEquals(listOf("Queued download"), restored.map(DatenDownload::title))
+        assertFalse(Files.exists(StandardLocations.getMediathekXmlFile()))
     }
 
     @Test
@@ -65,8 +85,8 @@ internal class DatenTest {
         val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
-            abos.clear()
-            abos.add(
+            abos.clearWithoutNotification()
+            abos.addAboWithoutNotification(
                 DatenAbo().apply {
                     name = "JSON Abo"
                     sender = "ARD"
@@ -88,8 +108,8 @@ internal class DatenTest {
             assertEquals("tagesschau", restored.title)
             assertEquals(LocalDate.of(2026, 6, 25), restored.downloadDate)
         } finally {
-            abos.clear()
-            abos.addAll(originalAbos)
+            abos.clearWithoutNotification()
+            originalAbos.forEach(abos::addAboWithoutNotification)
         }
     }
 }

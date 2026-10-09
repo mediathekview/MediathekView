@@ -21,10 +21,9 @@ package mediathek.gui.actions
 import mediathek.config.Konstanten
 import mediathek.gui.dialog.lucene_tutorial.LuceneTutorialDialog
 import mediathek.tool.SVGIconUtilities
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.KeyboardFocusManager
 import java.awt.event.ActionEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import javax.swing.AbstractAction
 
 class ShowAudiothekSearchHelpAction : AbstractAction() {
@@ -37,13 +36,9 @@ class ShowAudiothekSearchHelpAction : AbstractAction() {
     override fun actionPerformed(event: ActionEvent?) {
         val owner = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
         val dialog = LuceneTutorialDialog(owner, "Audiothek-Suche", Konstanten.PFAD_AUDIOTHEK_SUCHE_HILFE_MARKDOWN)
-        dialog.addWindowListener(
-            object : WindowAdapter() {
-                override fun windowClosed(event: WindowEvent?) {
-                    isEnabled = true
-                }
-            },
-        )
+        dialog.addDelayedWindowListener(onWindowClosed = {
+            isEnabled = true
+        })
         isEnabled = false
         dialog.isVisible = true
     }

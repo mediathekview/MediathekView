@@ -35,7 +35,7 @@ class UpdateNotificationPanel : UpdateNotificationPanelBase() {
     override fun createUIComponents() {
         try {
             webView = JEditorPane(requireNotNull(Konstanten.WEBSITE_BASE_URL.resolve("changelogs")).toString())
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             logger.error("Failed to load changelog from web")
             webView = JEditorPane().apply {
                 text = "<html><body>Load failed!</body></html>"

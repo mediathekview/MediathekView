@@ -18,31 +18,20 @@
 
 package mediathek.gui.dialog
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import mediathek.config.MVColor
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
-import mediathek.tool.FileDialogs
-import mediathek.tool.FileSpecifier
-import mediathek.tool.FilenameUtils
-import mediathek.tool.GuiFunktionen
-import mediathek.tool.SVGIconUtilities
+import mediathek.tool.*
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JFrame
 import javax.swing.JOptionPane

@@ -22,7 +22,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import org.apache.logging.log4j.LogManager
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -31,40 +30,37 @@ internal class FilmListPostLoadRunner(
     private val abos: AboServices,
     private val blacklist: BlacklistServices,
     private val scope: CoroutineScope,
-    private val ui: FilmListLoadUi,
 ) {
     fun start(
-        writeFilmList: Boolean,
-        widgets: FilmListStatusBarWidgets,
-        notifyFinished: (ListenerFilmeLadenEvent) -> Unit,
+        persistFilmList: Boolean,
+        presenter: FilmListLoadPresenter,
+        notifyFinished: (FilmListLoadProgress) -> Unit,
     ) {
         scope.launch {
-            var completionEvent: ListenerFilmeLadenEvent? = null
+            var completionProgress: FilmListLoadProgress? = null
             try {
-                buildPostLoadWorkerChain(writeFilmList, widgets)
-                completionEvent = ListenerFilmeLadenEvent("", "", 100, 100, false)
+                presenter.withStatusBarWidgets { widgets ->
+                    buildPostLoadWorkerChain(persistFilmList, widgets)
+                }
+                completionProgress = FilmListLoadProgress.completed(failed = false)
             } catch (ex: CancellationException) {
                 throw ex
             } catch (ex: Exception) {
                 logger.error("Post-load filmlist work failed", ex)
-                completionEvent = ListenerFilmeLadenEvent("", "", 100, 100, true)
+                completionProgress = FilmListLoadProgress.completed(failed = true)
             } finally {
                 withContext(NonCancellable) {
-                    try {
-                        completionEvent?.let { event ->
-                            withContext(Dispatchers.Swing) {
-                                notifyFinished(event)
-                            }
+                    completionProgress?.let { progress ->
+                        withContext(Dispatchers.Swing) {
+                            notifyFinished(progress)
                         }
-                    } finally {
-                        ui.detachStatusBarWidgets(widgets)
                     }
                 }
             }
         }
     }
 
-    private suspend fun buildPostLoadWorkerChain(writeFilmList: Boolean, widgets: FilmListStatusBarWidgets) =
+    private suspend fun buildPostLoadWorkerChain(persistFilmList: Boolean, widgets: FilmListStatusBarWidgets) =
         FilmlistPostLoadTasks(
             filmCatalog,
             abos,
@@ -72,7 +68,7 @@ internal class FilmListPostLoadRunner(
             widgets.label,
             widgets.progressBar,
             widgets.host,
-        ).run(writeFilmList)
+        ).run(persistFilmList)
 
     private companion object {
         private val logger = LogManager.getLogger(FilmListPostLoadRunner::class.java)

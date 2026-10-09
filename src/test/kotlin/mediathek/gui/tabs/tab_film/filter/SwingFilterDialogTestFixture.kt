@@ -18,8 +18,8 @@
 
 package mediathek.gui.tabs.tab_film.filter
 
-import ca.odell.glazedlists.BasicEventList
 import mediathek.config.application.FilterConfiguration
+import mediathek.gui.tabs.tab_film.filter_selection.FilmFilterSelectionController
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.tool.FilterDTO
@@ -41,7 +41,9 @@ internal object SwingFilterDialogTestFixture {
         )
     }
 
-    fun createDialogSetup(): DialogSetup {
+    fun createDialogSetup(
+        getThemen: (Collection<String>) -> List<String> = { emptyList() },
+    ): DialogSetup {
         val requestedNewFilterName = AtomicReference<String?>(null)
         val requestedRenameName = AtomicReference<String?>(null)
         val filterConfiguration = TestFilterConfiguration(XMLConfiguration())
@@ -54,16 +56,12 @@ internal object SwingFilterDialogTestFixture {
         filterConfiguration.setCurrentFilter(firstFilter)
 
         val reloadRequester = RecordingReloadRequester()
+        val senderList = listOf("ARD", "3Sat")
         val controller = FilmFilterController(
             filterConfiguration,
             dataProvider = object : FilmFilterController.DataProvider {
-                private val senders = BasicEventList<String>().apply {
-                    add("ARD")
-                    add("3Sat")
-                }
-
-                override fun senderList() = senders
-                override fun getThemen(senders: Collection<String>) = emptyList<String>()
+                override fun senderList() = senderList
+                override fun getThemen(senders: Collection<String>) = getThemen.invoke(senders)
             },
             reloadRequester = reloadRequester
         )
@@ -76,11 +74,13 @@ internal object SwingFilterDialogTestFixture {
 
         controller.restoreCurrentFilterSelection(firstFilter)
 
+        val selectionController = FilmFilterSelectionController(controller, reloadRequester)
         val model = FilterSelectionComboBoxModel(
             controller::currentFilter,
             controller::availableFilters,
             controller::isFilterLocked,
-            controller.selectionObserverRegistry()
+            controller.selectionObserverRegistry(),
+            selectionController::select,
         )
 
         val dialog = withCrossPlatformLookAndFeel {
@@ -196,7 +196,7 @@ internal object SwingFilterDialogTestFixture {
         val requestedNewFilterName: AtomicReference<String?>,
         val requestedRenameName: AtomicReference<String?>,
         val secondFilter: FilterDTO,
-        val zeitraumFilter: FilterDTO
+        val zeitraumFilter: FilterDTO,
     )
 
     class RecordingReloadRequester : FilmFilterController.ReloadRequester {
@@ -213,4 +213,5 @@ internal object SwingFilterDialogTestFixture {
     }
 
     private class TestFilterConfiguration(configuration: XMLConfiguration) : FilterConfiguration(configuration)
+
 }

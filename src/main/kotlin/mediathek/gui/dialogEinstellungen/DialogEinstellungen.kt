@@ -7,17 +7,17 @@ import mediathek.daten.DatenPset
 import mediathek.daten.ProgramSetRepository
 import mediathek.daten.blacklist.BlacklistServices
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.dialogEinstellungen.allgemein.LuceneDirectoryModePanel
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
 import mediathek.mainwindow.SettingsDialogHost
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetIcon
+import mediathek.tool.ReplacementRules
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.Component
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.util.*
 import java.util.function.BiConsumer
 import javax.swing.JPanel
@@ -30,8 +30,9 @@ class DialogEinstellungen(
     private val host: SettingsDialogHost,
     private val programSets: ProgramSetRepository,
     private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
+    private val filmListLoader: FilmListLoadCoordinator,
     private val blacklist: BlacklistServices,
+    private val replacementRules: ReplacementRules,
     private val configurationPersistence: DatenConfigurationPersistence,
     private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
 ) : DialogEinstellungenBase() {
@@ -41,11 +42,7 @@ class DialogEinstellungen(
 
         iconImage = GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).image
         jButtonBeenden.addActionListener { beenden() }
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosing(e: WindowEvent) {
-                beenden()
-            }
-        })
+        addDelayedWindowListener(onWindowClosing = { beenden() })
 
         EscapeKeyHandler.installHandler(this, this::beenden)
     }
@@ -98,10 +95,10 @@ class DialogEinstellungen(
             createPanel = { PanelBlacklist(blacklist, filmCatalog, filmListLoader, this) },
         )
 
-        val dateinamen = SettingsPage(NAME_DATEINAME, createPanel = { PanelDateinamen() })
+        val dateinamen = SettingsPage(NAME_DATEINAME, createPanel = { PanelDateinamen(replacementRules) })
         val pset = SettingsPage(
             NAME_PROGRAMMSET,
-            createPanel = { PanelPset(this, programSets, programSetExporter) },
+            createPanel = { PanelPset(this, programSets, replacementRules, programSetExporter) },
         )
         val psetImport = SettingsPage(
             NAME_PROGRAMMSET_IMPORTIEREN,

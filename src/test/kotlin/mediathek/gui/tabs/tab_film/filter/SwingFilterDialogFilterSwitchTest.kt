@@ -32,8 +32,44 @@ import mediathek.gui.tabs.tab_film.filter.SwingFilterDialogTestFixture.zeitraumS
 import mediathek.tool.FilterDTO
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.measureTime
 
 internal class SwingFilterDialogFilterSwitchTest {
+
+    @Test
+    fun `combo box switch does not wait for theme catalog scan on EDT`() {
+        assumeUiAvailable()
+
+        val scanStarted = CountDownLatch(1)
+        val releaseScan = CountDownLatch(1)
+        val setup = createDialogSetup {
+            scanStarted.countDown()
+            releaseScan.await(5, TimeUnit.SECONDS)
+            emptyList()
+        }
+
+        try {
+            assertTrue(scanStarted.await(2, TimeUnit.SECONDS))
+
+            val elapsed = measureTime {
+                onEdt {
+                    setup.comboBox.selectedItem = setup.secondFilter
+                }
+            }
+
+            assertTrue(elapsed < 500.milliseconds, "filter switch blocked the EDT for $elapsed")
+            assertEquals(setup.secondFilter, setup.controller.currentFilter())
+        } finally {
+            releaseScan.countDown()
+            onEdt {
+                setup.dialog.dispose()
+                setup.model.close()
+            }
+        }
+    }
 
     @Test
     fun `combo box switch applies selected filter and requests table reload`() {

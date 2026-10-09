@@ -14,6 +14,6 @@ enum class UIProgressState(val title: String) {
     ADD_TABS_TO_UI("Tabs zum UI hinzufügen"),
     CONFIGURE_TABS("Tabs konfigurieren"),
     INIT_MENUS("Menüs initialisieren..."),
-    LOAD_MEMORY_MONITOR("Speichermonitor initialisieren..."),
+
     FINISHED("Anwendungsfenster wird geöffnet...")
 }

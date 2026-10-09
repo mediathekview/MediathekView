@@ -22,11 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.daten.abo.AboServices
-import mediathek.daten.blacklist.BlacklistServices
-import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
-import mediathek.filmlisten.FilmlistPostLoadTasks
+import mediathek.filmlisten.*
 import mediathek.filmlisten.reader.FilmListReader
 import mediathek.gui.messages.FilmListReadStartEvent
 import mediathek.gui.messages.FilmListReadStopEvent
@@ -38,41 +34,44 @@ import javax.swing.JProgressBar
 import kotlin.coroutines.cancellation.CancellationException
 
 fun interface StartupFilmlistLoadCompletion {
-    fun complete(remoteUpdateStarted: Boolean, failed: Boolean)
+    fun complete()
 }
 
 class StartupFilmlistLoader(
     private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
-    private val abos: AboServices,
-    private val blacklist: BlacklistServices,
-    private val progressLabel: JLabel,
-    private val progressBar: JProgressBar,
+    private val filmListLoader: FilmListLoadCoordinator,
+    progressLabel: JLabel,
+    progressBar: JProgressBar,
     private val completion: StartupFilmlistLoadCompletion,
 ) : AutoCloseable {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val closed = AtomicBoolean(false)
+    private val startupPresenter = StartupFilmListLoadPresenter(progressLabel, progressBar)
 
     fun start() {
         scope.launch {
-            var remoteUpdateStarted = false
+            var completionHandle: FilmListLoadHandle? = null
             var failed = false
             try {
                 readStartupFilmlist()
-                remoteUpdateStarted = startRemoteFilmlistUpdateIfNeeded()
-                if (!remoteUpdateStarted) {
-                    runPostLoadTasks()
+                val remoteUpdate = startRemoteFilmlistUpdateIfNeeded()
+                completionHandle = if (remoteUpdate.started) {
+                    remoteUpdate
+                } else {
+                    filmListLoader.startStartupPostLoad(failed = false, startupPresenter)
                 }
             } catch (ex: CancellationException) {
                 failed = true
                 throw ex
             } catch (ex: Exception) {
-                logger.error("loadFilmlist()", ex)
+                logger.error("startFilmlistLoad()", ex)
                 failed = true
             } finally {
                 if (!closed.get()) {
+                    val handle = completionHandle ?: filmListLoader.startStartupPostLoad(failed, startupPresenter)
+                    awaitStartupCompletion(handle)
                     withContext(NonCancellable + Dispatchers.Swing) {
-                        completion.complete(remoteUpdateStarted, failed)
+                        completion.complete()
                     }
                 }
             }
@@ -93,19 +92,24 @@ class StartupFilmlistLoader(
         }
     }
 
-    private fun startRemoteFilmlistUpdateIfNeeded(): Boolean {
+    private fun startRemoteFilmlistUpdateIfNeeded(): FilmListLoadHandle {
         logger.trace("Check for filmlist updates")
-        return filmListLoader.startAutomaticStartupUpdateIfNeeded()
+        return filmListLoader.startAutomaticStartupUpdate()
     }
 
-    private suspend fun runPostLoadTasks() =
-        FilmlistPostLoadTasks(
-            filmCatalog,
-            abos,
-            blacklist,
-            progressLabel,
-            progressBar,
-        ).run(writeFilmList = false)
+    private suspend fun awaitStartupCompletion(handle: FilmListLoadHandle) {
+        if (!handle.started) {
+            return
+        }
+
+        try {
+            handle.completion.await()
+        } catch (ex: CancellationException) {
+            throw ex
+        } catch (ex: Exception) {
+            logger.error("startup filmlist completion", ex)
+        }
+    }
 
     override fun close() {
         if (closed.compareAndSet(false, true)) {
@@ -115,5 +119,34 @@ class StartupFilmlistLoader(
 
     private companion object {
         private val logger = LogManager.getLogger()
+    }
+}
+
+private class StartupFilmListLoadPresenter(
+    private val label: JLabel,
+    private val progressBar: JProgressBar,
+) : FilmListLoadPresenter {
+    override fun showNoUpdateAvailable(showDialogs: Boolean) {
+    }
+
+    override fun showExceptionMessage(message: String, ex: Exception, showDialogs: Boolean) {
+    }
+
+    override fun showLoadFailedDialog() {
+    }
+
+    override suspend fun <T> withStatusBarWidgets(block: suspend (FilmListStatusBarWidgets) -> T): T =
+        block(FilmListStatusBarWidgets(StartupProgressHandle(label, progressBar), host = null))
+}
+
+private class StartupProgressHandle(
+    private val label: JLabel,
+    private val progressBar: JProgressBar,
+) : FilmListProgressHandle {
+    override fun label(): JLabel = label
+
+    override fun progressBar(): JProgressBar = progressBar
+
+    override fun close() {
     }
 }

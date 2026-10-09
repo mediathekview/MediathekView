@@ -106,4 +106,23 @@ class MainWindowTabRegistryTest {
         assertSame(realComponent, tabbedPane.getComponentAt(0))
         assertEquals(2, selectedNotifications)
     }
+
+    @Test
+    fun `tabs can be disposed repeatedly`() {
+        val registry = MainWindowTabRegistry(JTabbedPane())
+        var disposals = 0
+        val tab = MainWindowTab(
+            "Disposable",
+            { JPanel() },
+            dispose = { disposals++ },
+        )
+        registry.register(tab)
+        tab.component()
+
+        registry.disposeTabs()
+        registry.disposeTabs()
+
+        assertEquals(1, disposals)
+        assertNull(tab.existingComponent())
+    }
 }

@@ -35,14 +35,14 @@ internal class FlexmarkHtmlPane : JEditorPane() {
         isEditable = false
         contentType = "text/html"
         putClientProperty(HONOR_DISPLAY_PROPERTIES, true)
-        setEditorKit(editorKit)
+        super.editorKit = editorKit
         background = resolveColor("TextPane.background", "Panel.background", Color.WHITE)
         foreground = resolveColor("TextPane.foreground", "Label.foreground", Color.BLACK)
     }
 
     fun setHtml(html: String) {
         val document = createDocument()
-        setDocument(document)
+        super.document = document
 
         try {
             StringReader(normalizeHtmlForSwing(html)).use { reader ->
@@ -99,7 +99,7 @@ internal class FlexmarkHtmlPane : JEditorPane() {
         }
 
         return HTMLEditorKit().apply {
-            setStyleSheet(styleSheet)
+            this.styleSheet = styleSheet
         }
     }
 

@@ -23,14 +23,14 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.swing.CompoundIcon
 import mediathek.swing.IconUtils
-import mediathek.tool.MessageBus
 import mediathek.tool.SVGIconUtilities
+import mediathek.tool.models.FilmColumn
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.swing.FontIcon
 import java.awt.Color
 import javax.swing.Icon
 import javax.swing.JTable
-import javax.swing.SwingConstants
+
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ListSelectionEvent
 import javax.swing.event.TableColumnModelEvent
@@ -62,12 +62,8 @@ open class CellRendererBaseWithStart : CellRendererBase() {
     private val audioDescriptionSelected: FontIcon =
         FontIcon.of(FontAwesomeSolid.AUDIO_DESCRIPTION, IconUtils.DEFAULT_SIZE, Color.WHITE)
 
-    init {
-        MessageBus.messageBus.subscribe(this)
-    }
-
     protected fun drawGeolocationIcons(film: DatenFilm, isSelected: Boolean) {
-        horizontalAlignment = SwingConstants.CENTER
+        horizontalAlignment = CENTER
         text = ""
         val curLocation = ApplicationConfiguration.getInstance().geographicLocation
         val lockedForCurrentLocation = film.isGeoBlockedForLocation(curLocation)
@@ -99,28 +95,30 @@ open class CellRendererBaseWithStart : CellRendererBase() {
         foreground = null
         icon = null
         toolTipText = null
-        horizontalAlignment = SwingConstants.LEADING
+        horizontalAlignment = LEADING
     }
 
-    /**
-     * Show "CC" and/or "HQ" icon(s) when supported by the film.
-     *
-     * @param datenFilm film information
-     * @param isSelected is row selected.
-     */
+    /** Shows GEO, HQ, and subtitle indicators in the title when their dedicated columns are hidden. */
     protected fun setIndicatorIcons(table: JTable, datenFilm: DatenFilm, isSelected: Boolean) {
         val visibility = getIndicatorColumnVisibility(table)
-        setIndicatorIcons(datenFilm, isSelected, visibility.hqColumnHidden, visibility.utColumnHidden)
+        setIndicatorIcons(
+            datenFilm,
+            isSelected,
+            visibility.geoColumnHidden,
+            visibility.hqColumnHidden,
+            visibility.utColumnHidden,
+        )
     }
 
-    protected fun setIndicatorIcons(
+    private fun setIndicatorIcons(
         datenFilm: DatenFilm,
         isSelected: Boolean,
+        geoColumnHidden: Boolean,
         hqColumnHidden: Boolean,
         utColumnHidden: Boolean,
     ) {
         val iconList = mutableListOf<Icon>()
-        if (!filmIsCountryUnlocked(datenFilm)) {
+        if (geoColumnHidden && !filmIsCountryUnlocked(datenFilm)) {
             iconList += if (isSelected) lockedIconSelected else lockedIcon
         }
 
@@ -142,16 +140,16 @@ open class CellRendererBaseWithStart : CellRendererBase() {
             iconList += if (isSelected) liveStreamIconSelected else liveStreamIcon
         }
 
-        icon = if (iconList.size == 1) {
-            iconList.first()
-        } else {
-            CompoundIcon(CompoundIcon.Axis.X_AXIS, 3, *iconList.toTypedArray())
+        icon = when (iconList.size) {
+            0 -> null
+            1 -> iconList.first()
+            else -> CompoundIcon(CompoundIcon.Axis.X_AXIS, 3, *iconList.toTypedArray())
         }
 
         horizontalTextPosition = if (ApplicationConfiguration.getInstance().listIconPositionRight) {
-            SwingConstants.LEADING
+            LEADING
         } else {
-            SwingConstants.TRAILING
+            TRAILING
         }
     }
 
@@ -165,6 +163,7 @@ open class CellRendererBaseWithStart : CellRendererBase() {
     }
 
     private data class IndicatorColumnVisibility(
+        val geoColumnHidden: Boolean,
         val hqColumnHidden: Boolean,
         val utColumnHidden: Boolean,
     )
@@ -174,7 +173,11 @@ open class CellRendererBaseWithStart : CellRendererBase() {
     ) : TableColumnModelListener {
         val columnModel: TableColumnModel = table.columnModel
         private var dirty = true
-        private var visibility = IndicatorColumnVisibility(hqColumnHidden = true, utColumnHidden = true)
+        private var visibility = IndicatorColumnVisibility(
+            geoColumnHidden = true,
+            hqColumnHidden = true,
+            utColumnHidden = true,
+        )
 
         init {
             columnModel.addColumnModelListener(this)
@@ -183,8 +186,9 @@ open class CellRendererBaseWithStart : CellRendererBase() {
         fun get(): IndicatorColumnVisibility {
             if (dirty) {
                 visibility = IndicatorColumnVisibility(
-                    hqColumnHidden = isColumnHidden(table, "HQ"),
-                    utColumnHidden = isColumnHidden(table, "UT"),
+                    geoColumnHidden = isColumnHidden(table, FilmColumn.GEO),
+                    hqColumnHidden = isColumnHidden(table, FilmColumn.HIGH_QUALITY),
+                    utColumnHidden = isColumnHidden(table, FilmColumn.SUBTITLE),
                 )
                 dirty = false
             }
@@ -219,12 +223,14 @@ open class CellRendererBaseWithStart : CellRendererBase() {
     companion object {
         private const val INDICATOR_VISIBILITY_CACHE_KEY = "mv.renderer.indicatorVisibilityCache"
 
-        private fun isColumnHidden(table: JTable, identifier: String): Boolean =
-            try {
-                table.getColumn(identifier).width == 0
-            } catch (_: IllegalArgumentException) {
-                // If column does not exist in this table model, treat as hidden.
-                true
+        private fun isColumnHidden(table: JTable, filmColumn: FilmColumn): Boolean {
+            for (viewIndex in 0 until table.columnModel.columnCount) {
+                val column = table.columnModel.getColumn(viewIndex)
+                if (column.modelIndex == filmColumn.index) {
+                    return column.width == 0
+                }
             }
+            return true
+        }
     }
 }

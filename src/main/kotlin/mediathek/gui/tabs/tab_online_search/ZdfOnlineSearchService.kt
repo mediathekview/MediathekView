@@ -17,6 +17,7 @@ data class ZdfSearchGraphqlResult(
     val totalResults: Long?,
 )
 
+@Suppress("HttpUrlsUsage")
 class ZdfOnlineSearchService(
     private val httpClient: OnlineSearchHttpClient = MvOnlineSearchHttpClient,
     private val clock: Clock = Clock.systemDefaultZone(),
@@ -403,10 +404,10 @@ internal object ZdfGraphqlUrlFactory {
     }
 
     private const val SEARCH_QUERY =
-        "query getSearchResults(\$query: String!, \$mode: SearchMode, \$first: Int, \$after: Cursor, " +
-            "\$filters: SearchFilters, \$group: String) { " +
-            "searchDocuments(query: \$query, mode: \$mode, first: \$first, after: \$after, filters: \$filters, " +
-            "group: \$group) { " +
+        $$"query getSearchResults($query: String!, $mode: SearchMode, $first: Int, $after: Cursor, " +
+            $$"$filters: SearchFilters, $group: String) { " +
+            $$"searchDocuments(query: $query, mode: $mode, first: $first, after: $after, filters: $filters, " +
+            $$"group: $group) { " +
             "pageInfo { hasNextPage endCursor } " +
             "results { item { __typename ... on IBaseDocument { canonical } ... on ISmartCollection { canonical } " +
             "... on CuratedCollection { canonical } ... on MetaCollection { canonical } } } " +

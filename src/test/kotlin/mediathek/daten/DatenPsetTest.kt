@@ -96,6 +96,19 @@ internal class DatenPsetTest {
     }
 
     @Test
+    fun psetArrayKeepsMp4MetadataColumn() {
+        val pset = DatenPset()
+        pset.setMp4Metadata(true)
+
+        val values = pset.toArray()
+
+        assertEquals("MP4-Metadaten", DatenPset.COLUMN_NAMES[DatenPset.PROGRAMMSET_MP4_METADATA])
+        assertEquals("MP4-Metadaten", DatenPset.XML_NAMES[DatenPset.PROGRAMMSET_MP4_METADATA])
+        assertEquals("true", values[DatenPset.PROGRAMMSET_MP4_METADATA])
+        assertTrue(pset.shouldWriteMp4Metadata())
+    }
+
+    @Test
     fun copyFromPreservesInfoUrlAndDefaultValues() {
         val values = Array(DatenPset.MAX_ELEM) { "" }
         values[DatenPset.PROGRAMMSET_NAME] = "Set"
@@ -113,6 +126,19 @@ internal class DatenPsetTest {
         assertFalse(pset.istAbo())
         assertFalse(pset.shouldCreateInfofile())
         assertFalse(pset.shouldDownloadSubtitle())
+        assertFalse(pset.shouldWriteMp4Metadata())
         assertEquals(FilmResolution.Enum.NORMAL, pset.aufloesung)
+    }
+
+    @Test
+    fun copyFromPreservesMp4Metadata() {
+        val values = Array(DatenPset.MAX_ELEM) { "" }
+        values[DatenPset.PROGRAMMSET_NAME] = "Set"
+        values[DatenPset.PROGRAMMSET_MP4_METADATA] = "true"
+
+        val pset = DatenPset()
+        pset.copyFrom(values)
+
+        assertTrue(pset.shouldWriteMp4Metadata())
     }
 }

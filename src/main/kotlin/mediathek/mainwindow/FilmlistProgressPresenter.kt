@@ -18,21 +18,21 @@
 
 package mediathek.mainwindow
 
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
+import mediathek.filmlisten.FilmListLoadListener
+import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.swing.SwingDispatcher
 import java.util.function.Supplier
 
 class FilmlistProgressPresenter(
     private val uiDispatcher: SwingDispatcher,
     private val progressFactory: Supplier<StatusBarProgressHandle>,
-) : ListenerFilmeLaden(), AutoCloseable {
+) : FilmListLoadListener, AutoCloseable {
     private val progressLock = Any()
     private var handle: StatusBarProgressHandle? = null
     private var pendingProgress: ProgressSnapshot? = null
     private var progressDispatchScheduled = false
 
-    override fun start(event: ListenerFilmeLadenEvent) {
+    override fun loadStarted(@Suppress("UNUSED_PARAMETER") progress: FilmListLoadProgress) {
         uiDispatcher.dispatch {
             closeCurrent()
             clearPendingProgress()
@@ -40,9 +40,9 @@ class FilmlistProgressPresenter(
         }
     }
 
-    override fun progress(event: ListenerFilmeLadenEvent) {
+    override fun loadProgress(progress: FilmListLoadProgress) {
         val shouldScheduleDispatch = synchronized(progressLock) {
-            pendingProgress = ProgressSnapshot(event.text, event.max, event.progress)
+            pendingProgress = ProgressSnapshot(progress.text, progress.max, progress.progress)
             if (progressDispatchScheduled) {
                 false
             } else {
@@ -56,7 +56,7 @@ class FilmlistProgressPresenter(
         }
     }
 
-    override fun fertig(event: ListenerFilmeLadenEvent) {
+    override fun loadFinished(@Suppress("UNUSED_PARAMETER") progress: FilmListLoadProgress) {
         close()
     }
 

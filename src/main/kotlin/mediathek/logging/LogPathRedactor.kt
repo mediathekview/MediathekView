@@ -22,18 +22,7 @@ object LogPathRedactor {
     private const val REDACTED_PATH = "<redacted-path>"
 
     private val pathRegex = Regex(
-        pattern = """
-            (?:
-                (?<![A-Za-z0-9_])
-                [A-Za-z]:\\(?:[^\s\\/:*?"<>|\r\n]+\\)*[^\s\\/:*?"<>|\r\n]+
-            )|
-            (?:
-                (?<![A-Za-z0-9+.\-:/])
-                (?:~|/)
-                (?:[^\s\]\[(){}<>,;:'"]+/)*[^\s\]\[(){}<>,;:'"]+
-            )
-        """.trimIndent(),
-        options = setOf(RegexOption.COMMENTS)
+        pattern = """(?<![A-Za-z0-9_])[A-Za-z]:\\(?:[^\s\\/:*?"<>|\r\n]+\\)*[^\s\\/:*?"<>|\r\n]+|(?<![A-Za-z0-9+.\-:/])[~/](?:[^\s\]\[(){}<>,;:'"]+/)*[^\s\]\[(){}<>,;:'"]+""",
     )
 
     fun redact(text: String): String = pathRegex.replace(text) { match ->

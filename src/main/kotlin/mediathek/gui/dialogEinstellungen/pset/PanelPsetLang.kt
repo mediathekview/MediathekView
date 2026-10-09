@@ -1,7 +1,9 @@
 package mediathek.gui.dialogEinstellungen.pset
 
 import ca.odell.glazedlists.swing.AdvancedTableModel
-import ca.odell.glazedlists.swing.GlazedListsSwing
+import ca.odell.glazedlists.swing.eventTableModelWithThreadProxyList
+import kotlinx.coroutines.*
+import kotlinx.coroutines.swing.Swing
 import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
@@ -13,14 +15,6 @@ import mediathek.tool.*
 import mediathek.tool.cellrenderer.PsetNameCellRenderer
 import mediathek.tool.table.MVPsetTable
 import mediathek.tool.table.MVTable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.swing.Swing
-import kotlinx.coroutines.withContext
 import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import java.awt.Component
@@ -30,11 +24,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.function.BiConsumer
 import java.util.function.Consumer
-import javax.swing.BorderFactory
-import javax.swing.JColorChooser
-import javax.swing.JFrame
-import javax.swing.JOptionPane
-import javax.swing.JTable
+import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.table.TableModel
@@ -44,7 +34,8 @@ class PanelPsetLang(
     private val parentComponent: JFrame?,
     private val programSets: ProgramSetRepository,
     private val listePset: ListePset,
-    private val programSetExporter: BiConsumer<Array<DatenPset>, String>
+    private val programSetExporter: BiConsumer<Array<DatenPset>, String>,
+    private val replacementRules: ReplacementRules? = null,
 ) : PanelPsetLangBase() {
     private var neuZaehler = 0
     private val tabellePset: MVTable = MVPsetTable()
@@ -209,6 +200,9 @@ class PanelPsetLang(
         }
         jCheckBoxSubtitle.addActionListener {
             updateSelectedProgramSet({ it.setSubtitle(jCheckBoxSubtitle.isSelected) }, false)
+        }
+        jCheckBoxMp4Metadata.addActionListener {
+            updateSelectedProgramSet({ it.setMp4Metadata(jCheckBoxMp4Metadata.isSelected) }, false)
         }
 
         jCheckBoxSpotlight.isEnabled = SystemUtils.IS_OS_MAC_OSX
@@ -649,6 +643,7 @@ class PanelPsetLang(
             jCheckBoxThema.isSelected = pSet.isThemaAnlegen
             jCheckBoxInfodatei.isSelected = pSet.shouldCreateInfofile()
             jCheckBoxSubtitle.isSelected = pSet.shouldDownloadSubtitle()
+            jCheckBoxMp4Metadata.isSelected = pSet.shouldWriteMp4Metadata()
             jCheckBoxSpotlight.isEnabled = SystemUtils.IS_OS_MAC_OSX
             jCheckBoxSpotlight.isSelected = pSet.isSpotlight
             jScrollPane1.border = BorderFactory.createTitledBorder(
@@ -690,6 +685,7 @@ class PanelPsetLang(
             jCheckBoxThema.isSelected = false
             jCheckBoxInfodatei.isSelected = false
             jCheckBoxSubtitle.isSelected = false
+            jCheckBoxMp4Metadata.isSelected = false
             jCheckBoxSpotlight.isSelected = false
             jTextFieldSetName.text = ""
             tfGruppeDirektSuffix.text = ""
@@ -715,7 +711,7 @@ class PanelPsetLang(
     private fun bindProgramTableModel(listeProg: ListeProg) {
         if (currentProgramList === listeProg) return
         val oldModel = tabelleProgramme.model as? AdvancedTableModel<*>
-        val newModel = GlazedListsSwing.eventTableModelWithThreadProxyList(listeProg, PROGRAM_TABLE_FORMAT)
+        val newModel = listeProg.eventTableModelWithThreadProxyList(PROGRAM_TABLE_FORMAT)
         tabelleProgramme.rowSorter = null
         tabelleProgramme.model = newModel
         currentProgramList = listeProg
@@ -862,10 +858,10 @@ class PanelPsetLang(
             val entryName = liste.first().name
             val name = if (entryName.isEmpty()) "Name.xml" else "$entryName.xml"
             val applicationConfiguration = ApplicationConfiguration.getInstance()
-            val fileName = FilenameUtils.replaceLeerDateiname(
+            val fileName = FilenameUtils.replaceEmptyFilename(
                 name,
                 false,
-                applicationConfiguration.useFilenameReplaceTable,
+                replacementRules.takeIf { applicationConfiguration.useFilenameReplaceTable },
                 applicationConfiguration.onlyAsciiFilenames
             )
             val resultFile = FileDialogs.chooseSaveFileLocation(parentFrame(), "PSet exportieren", fileName)

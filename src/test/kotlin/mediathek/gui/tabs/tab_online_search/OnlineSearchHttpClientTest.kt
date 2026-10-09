@@ -10,6 +10,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.IOException
+import kotlin.time.Duration.Companion.seconds
 
 class OnlineSearchHttpClientTest {
     @Test
@@ -63,10 +64,10 @@ class OnlineSearchHttpClientTest {
         val request = async(Dispatchers.Default) {
             httpClient.get("https://example.invalid/test")
         }
-        withTimeout(2_000) { requestStarted.await() }
+        withTimeout(2.seconds) { requestStarted.await() }
 
         request.cancelAndJoin()
 
-        withTimeout(2_000) { callCancelled.await() }
+        withTimeout(2.seconds) { callCancelled.await() }
     }
 }

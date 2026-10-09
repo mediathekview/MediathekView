@@ -23,7 +23,6 @@ import mediathek.filmlisten.FilmCatalog
 import mediathek.swing.FilmAgeLabel
 import org.jdesktop.swingx.JXStatusBar
 import java.awt.Component
-import java.util.function.IntSupplier
 import javax.swing.JPanel
 import kotlin.time.Duration.Companion.seconds
 
@@ -33,7 +32,7 @@ import kotlin.time.Duration.Companion.seconds
 class FixedRedrawStatusBar(
     private val filmCatalog: FilmCatalog,
     downloads: DownloadServices,
-    filmTableRowCount: IntSupplier,
+    filmTableRowCount: FilmTableRowCountProperty,
     selectedListItemsProperty: ListSelectedItemsProperty,
 ) : JXStatusBar() {
     init {

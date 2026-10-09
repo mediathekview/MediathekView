@@ -27,6 +27,7 @@ internal class DownloadStorageTest {
             art = DownloadType.PROGRAM
             quelle = DownloadSource.DOWNLOAD
             selectedResolution = FilmResolution.Enum.HIGH_QUALITY
+            isMp4Metadata = true
         }
 
         DownloadStorage.write(storagePath, listOf(download))
@@ -39,6 +40,7 @@ internal class DownloadStorageTest {
         assertTrue(json.contains("\"type\": \"PROGRAM\""))
         assertTrue(json.contains("\"source\": \"DOWNLOAD\""))
         assertTrue(json.contains("\"selectedResolution\": \"HIGH_QUALITY\""))
+        assertTrue(json.contains("\"mp4Metadata\": true"))
         assertFalse(json.contains("\"filmNumber\""))
         assertFalse(json.contains("\"number\""))
         assertFalse(json.contains("\"buttonStart\""))
@@ -63,6 +65,7 @@ internal class DownloadStorageTest {
         assertEquals(DownloadType.PROGRAM, loadedDownload.art)
         assertEquals(DownloadSource.DOWNLOAD, loadedDownload.quelle)
         assertEquals(FilmResolution.Enum.HIGH_QUALITY, loadedDownload.selectedResolution)
+        assertTrue(loadedDownload.isMp4Metadata)
     }
 
     @Test

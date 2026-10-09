@@ -19,33 +19,27 @@
 package mediathek.gui.tabs.tab_film.lifecycle
 
 import mediathek.config.application.FilterConfiguration
-import mediathek.filmlisten.FilmeLaden
-import mediathek.gui.tabs.tab_film.FilmToolBar
-import mediathek.gui.tabs.tab_film.actions.FilmUiActions
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.tabs.tab_film.filter.SwingFilterDialog
-import mediathek.gui.tabs.tab_film.search.SearchField
-import mediathek.tool.table.MVFilmTable
+import mediathek.gui.tabs.tab_film.table.FilmTableModelBinding
 
 class FilmLifecycleHostAdapter(
     private val messageBusSubscriber: Any,
-    private val filmListLoader: FilmeLaden,
-    private val tableProvider: () -> MVFilmTable,
+    private val filmListLoader: FilmListLoadCoordinator,
+    private val tableBindingProvider: () -> FilmTableModelBinding,
     private val filterConfiguration: FilterConfiguration,
     private val bookmarkStartupReloadCoordinator: BookmarkStartupReloadCoordinator,
     private val swingFilterDialogProvider: () -> SwingFilterDialog?,
-    private val filmToolBarProvider: () -> FilmToolBar,
-    private val searchFieldProvider: () -> SearchField,
-    private val actionsProvider: () -> FilmUiActions,
     private val requestTableReloadAction: () -> Unit,
-    private val updateStartInfoPropertyAction: () -> Unit,
+    private val invalidateTableReloadsAction: () -> Unit,
     private val saveTableConfigurationAction: () -> Unit,
     private val closeFilterSelectionModelAction: () -> Unit,
 ) : FilmLifecycleController.Host {
     override fun messageBusSubscriber(): Any = messageBusSubscriber
 
-    override fun filmListLoader(): FilmeLaden = filmListLoader
+    override fun filmListLoader(): FilmListLoadCoordinator = filmListLoader
 
-    override fun table(): MVFilmTable = tableProvider()
+    override fun tableBinding(): FilmTableModelBinding = tableBindingProvider()
 
     override fun filterConfiguration(): FilterConfiguration = filterConfiguration
 
@@ -53,18 +47,12 @@ class FilmLifecycleHostAdapter(
 
     override fun swingFilterDialog(): SwingFilterDialog? = swingFilterDialogProvider()
 
-    override fun filmToolBar(): FilmToolBar = filmToolBarProvider()
-
-    override fun searchField(): SearchField = searchFieldProvider()
-
-    override fun actions(): FilmUiActions = actionsProvider()
-
     override fun requestTableReload() {
         requestTableReloadAction()
     }
 
-    override fun updateStartInfoProperty() {
-        updateStartInfoPropertyAction()
+    override fun invalidateTableReloads() {
+        invalidateTableReloadsAction()
     }
 
     override fun saveTableConfiguration() {

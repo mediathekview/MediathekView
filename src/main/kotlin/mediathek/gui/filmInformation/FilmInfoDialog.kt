@@ -34,16 +34,15 @@ import mediathek.tool.SwingErrorDialog
 import mediathek.tool.datum.DateUtil
 import mediathek.tool.sender_icon_cache.MVSenderIconCache
 import mediathek.tool.sender_icon_cache.SenderIconRenderUtil
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.*
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.awt.image.BufferedImage
 import java.net.URI
 import java.util.*
 import javax.swing.*
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.math.roundToInt
 
 class FilmInfoDialog(owner: Window) : JDialog(owner) {
     private val form = FilmInfoFormPanel()
@@ -93,26 +92,18 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
     }
 
     private fun setupListeners() {
-        addWindowListener(object : WindowAdapter() {
-            override fun windowOpened(e: WindowEvent) {
-                ApplicationConfiguration.getInstance().filmInfoDialogVisible = true
-            }
-
-            override fun windowClosed(e: WindowEvent) {
-                ApplicationConfiguration.getInstance().filmInfoDialogVisible = false
-            }
-        })
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(e: ComponentEvent) {
-                saveLocation()
-            }
-
-            override fun componentMoved(e: ComponentEvent) {
+        addDelayedWindowListener(
+            onWindowOpened = { ApplicationConfiguration.getInstance().filmInfoDialogVisible = true },
+            onWindowClosed = { ApplicationConfiguration.getInstance().filmInfoDialogVisible = false }
+        )
+        addDelayedComponentListener(
+            onComponentMoved = {
                 if (isVisible) {
                     saveLocation()
                 }
-            }
-        })
+            },
+            onComponentResized = { saveLocation() }
+        )
     }
 
     private fun restoreLocation() {
@@ -402,6 +393,6 @@ class FilmInfoDialog(owner: Window) : JDialog(owner) {
             }
         }
 
-        private fun Double.toIntRounded(): Int = Math.round(this).toInt()
+        private fun Double.toIntRounded(): Int = roundToInt()
     }
 }

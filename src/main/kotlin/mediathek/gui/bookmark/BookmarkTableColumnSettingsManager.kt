@@ -35,7 +35,7 @@ import javax.swing.JTable
 import javax.swing.table.TableColumn
 import javax.swing.table.TableColumnModel
 
-open class BookmarkTableColumnSettingsManager<E>(
+open class BookmarkTableColumnSettingsManager<E : Any>(
     protected val table: JTable,
     private val configPrefix: String,
     protected val comparatorChooser: TableComparatorChooser<E>?,
@@ -70,6 +70,7 @@ open class BookmarkTableColumnSettingsManager<E>(
         }
 
     fun load() {
+        var recoveredAllHiddenColumns = false
         try {
             val fileSettings = parseColumnSettingsJson(
                 applicationConfiguration.getTableColumnSettings(configPrefix),
@@ -93,6 +94,11 @@ open class BookmarkTableColumnSettingsManager<E>(
 
             val validIds = allColumns.map { it.identifier.toString() }
             lastSettings.removeIf { it.id !in validIds }
+            if (lastSettings.isNotEmpty() && lastSettings.none(ColumnSetting::visible)) {
+                log.warn("Ignoring bookmark table settings that hide every column")
+                lastSettings.forEach { it.visible = true }
+                recoveredAllHiddenColumns = true
+            }
         } catch (ex: Exception) {
             log.error("Failed to load column settings.", ex)
         }
@@ -110,6 +116,7 @@ open class BookmarkTableColumnSettingsManager<E>(
                     column.preferredWidth = setting.width
                 }
             }
+        if (recoveredAllHiddenColumns) save()
     }
 
     fun save() {
@@ -253,7 +260,7 @@ open class BookmarkTableColumnSettingsManager<E>(
     }
 
     private fun parseColumnSettingObject(objectJson: String): ColumnSetting? {
-        val id = extractJsonStringValue(objectJson, "id")
+        val id = extractId(objectJson)
         val position = extractInt(POSITION_PATTERN, objectJson)
         val width = extractInt(WIDTH_PATTERN, objectJson)
         val visible = extractBoolean(VISIBLE_PATTERN, objectJson)
@@ -286,8 +293,8 @@ open class BookmarkTableColumnSettingsManager<E>(
             append(']')
         }
 
-    private fun extractJsonStringValue(json: String, key: String): String? {
-        val fieldName = "\"$key\""
+    private fun extractId(json: String): String? {
+        val fieldName = "\"id\""
         val keyIndex = json.indexOf(fieldName)
         if (keyIndex < 0) {
             return null

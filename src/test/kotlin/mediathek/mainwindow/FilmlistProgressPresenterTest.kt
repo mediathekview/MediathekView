@@ -1,6 +1,6 @@
 package mediathek.mainwindow
 
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
+import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.swing.SwingDispatcher
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -14,12 +14,12 @@ class FilmlistProgressPresenterTest {
         val handle = TestStatusBarProgressHandle()
         val presenter = FilmlistProgressPresenter(dispatcher) { handle }
 
-        presenter.start(event())
+        presenter.loadStarted(event())
         dispatcher.runNext()
 
-        presenter.progress(event(text = "first", max = 10, progress = 1))
-        presenter.progress(event(text = "second", max = 10, progress = 2))
-        presenter.progress(event(text = "third", max = 10, progress = 3))
+        presenter.loadProgress(event(text = "first", max = 10, progress = 1))
+        presenter.loadProgress(event(text = "second", max = 10, progress = 2))
+        presenter.loadProgress(event(text = "third", max = 10, progress = 3))
 
         assertEquals(1, dispatcher.pendingActions)
 
@@ -37,9 +37,9 @@ class FilmlistProgressPresenterTest {
         val handle = TestStatusBarProgressHandle()
         val presenter = FilmlistProgressPresenter(dispatcher) { handle }
 
-        presenter.start(event())
+        presenter.loadStarted(event())
         dispatcher.runNext()
-        presenter.progress(event(text = "done", max = 10, progress = 10))
+        presenter.loadProgress(event(text = "done", max = 10, progress = 10))
         dispatcher.runNext()
 
         assertEquals("done", handle.label.text)
@@ -50,7 +50,7 @@ class FilmlistProgressPresenterTest {
         text: String = "",
         max: Int = 0,
         progress: Int = 0,
-    ): ListenerFilmeLadenEvent = ListenerFilmeLadenEvent("", text, max, progress, false)
+    ): FilmListLoadProgress = FilmListLoadProgress("", text, max, progress, failed = false)
 
     private class QueuedSwingDispatcher : SwingDispatcher {
         private val actions = ArrayDeque<Runnable>()

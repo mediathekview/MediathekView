@@ -19,7 +19,7 @@ internal class BlacklistRuleStorageTest {
             sender = "ARD",
             thema = "News",
             titel = "tagesschau",
-            thema_titel = "News tagesschau",
+            topicTitle = "News tagesschau",
         )
 
         BlacklistRuleStorage.write(storagePath, listOf(rule))

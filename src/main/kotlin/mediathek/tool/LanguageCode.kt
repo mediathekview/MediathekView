@@ -20,6 +20,7 @@ package mediathek.tool
 
 import java.util.*
 
+@Suppress("EnumEntryName", "unused")
 enum class LanguageCode(
     private val readableNameValue: String,
     private val nativeNameValue: String,

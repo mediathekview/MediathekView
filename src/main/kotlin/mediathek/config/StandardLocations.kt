@@ -79,7 +79,6 @@ object StandardLocations {
         }
         return baseDirectoryPath
     }
-
     /**
      * Return the path to "bookmarks.json"
      *
@@ -99,6 +98,11 @@ object StandardLocations {
 
     fun getAboRulesFilePath(): Path {
         return getSettingsDirectory().resolve("abo-rules.json")
+    }
+
+    /** Return the path to the watchlist SQLite database. */
+    fun getWatchlistDatabasePath(): Path {
+        return getSettingsDirectory().resolve("watchlist.db")
     }
 
     fun getApplicationSettingsFile(): Path {
@@ -208,6 +212,7 @@ object StandardLocations {
             }
         }
     }
+
     /**
      * Return the path to the lockfile.
      * On macOS we do not support roaming settings with the official app, therefore keep the old temp dir convention.

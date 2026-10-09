@@ -136,12 +136,6 @@ object CommandLineOptions {
 
     fun getNumCpus(): Int = numCpus
 
-    fun setNumCpus(num: Int) {
-        numCpus = num
-    }
-
-    fun isPortableMode(): Boolean = portableMode
-
     fun setPortableMode(portableMode: Boolean) {
         this.portableMode = portableMode
     }

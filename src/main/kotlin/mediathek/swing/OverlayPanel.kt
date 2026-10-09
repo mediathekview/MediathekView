@@ -22,8 +22,7 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics
 import java.awt.event.MouseAdapter
-import java.awt.event.MouseWheelEvent
-import java.awt.event.MouseWheelListener
+
 import javax.swing.JComponent
 
 class OverlayPanel(private val message: String) : JComponent() {
@@ -34,7 +33,7 @@ class OverlayPanel(private val message: String) : JComponent() {
         val mouseBlocker = object : MouseAdapter() {}
         addMouseListener(mouseBlocker)
         addMouseMotionListener(mouseBlocker)
-        addMouseWheelListener(MouseWheelListener { event: MouseWheelEvent -> event.consume() })
+        addMouseWheelListener { event -> event.consume() }
     }
 
     override fun paintComponent(g: Graphics) {

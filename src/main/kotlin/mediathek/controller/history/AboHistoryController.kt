@@ -146,7 +146,7 @@ class AboHistoryController(
             setEncoding(SQLiteConfig.Encoding.UTF8)
             setJournalMode(SQLiteConfig.JournalMode.WAL)
             setSynchronous(SQLiteConfig.SynchronousMode.NORMAL)
-            setBusyTimeout(5_000)
+            busyTimeout = 5_000
             enforceForeignKeys(false)
             enableLoadExtension(false)
         }
@@ -169,6 +169,7 @@ class AboHistoryController(
 
     private fun isPersistable(entry: AboHistoryEntry): Boolean = isSupportedUrl(entry.url)
 
+    @Suppress("HttpUrlsUsage")
     private fun isSupportedUrl(url: String): Boolean {
         if (url.isBlank()) {
             return false

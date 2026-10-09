@@ -3,7 +3,7 @@ package mediathek.gui.dialog
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden
 import mediathek.swing.centerOnScreen
@@ -11,9 +11,9 @@ import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FilmListUpdateType
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.BorderLayout
 import java.awt.Frame
-import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import javax.swing.JButton
 import javax.swing.JDialog
@@ -22,8 +22,8 @@ import javax.swing.JScrollPane
 
 class LoadFilmListDialog(
     owner: Frame?,
-    private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
+    filmCatalog: FilmCatalog,
+    private val filmListLoader: FilmListLoadCoordinator,
 ) : JDialog(owner, "Filmliste laden", true) {
     private val contentPanel: PanelFilmlisteLaden
     private val logger: Logger = LogManager.getLogger()
@@ -35,7 +35,7 @@ class LoadFilmListDialog(
 
         val closeBtn = JButton(DisposeDialogAction(this, "Schließen", "Dialog schließen"))
         buttonFlowPanel.add(closeBtn)
-        getRootPane().defaultButton = closeBtn
+        rootPane.defaultButton = closeBtn
 
         val btn = JButton("Filmliste laden")
         btn.addActionListener {
@@ -46,7 +46,7 @@ class LoadFilmListDialog(
 
             if (FilmListUpdateType.fromConfig() == FilmListUpdateType.AUTOMATIC) {
                 //easy, just load
-                filmListLoader.loadFilmlist("", immerNeuLaden)
+                filmListLoader.startFilmlistLoad("", immerNeuLaden)
             } else {
                 //manual or extend
                 val strUrl = contentPanel.urlTextField.text
@@ -64,9 +64,9 @@ class LoadFilmListDialog(
                     )
                 }
                 if (contentPanel.updateCheckBox.isSelected)
-                    filmListLoader.updateFilmlist(strUrl)
+                    filmListLoader.startFilmlistUpdate(strUrl)
                 else
-                    filmListLoader.loadFilmlist(strUrl, immerNeuLaden)
+                    filmListLoader.startFilmlistLoad(strUrl, immerNeuLaden)
             }
             dispose()
         }
@@ -87,24 +87,14 @@ class LoadFilmListDialog(
         }
     }
 
-    private fun registerWindowSizeListener() {
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(e: ComponentEvent) {
-                storeWindowPosition(e)
-            }
+    private fun storeWindowPosition(e: ComponentEvent?) {
+        if (e == null) return
 
-            override fun componentMoved(e: ComponentEvent) {
-                storeWindowPosition(e)
-            }
-
-            private fun storeWindowPosition(e: ComponentEvent) {
-                val component = e.component
-                val dims = component.size
-                val loc = component.location
-                ApplicationConfiguration.getInstance()
-                    .setLoadFilmListDialogBounds(loc.x, loc.y, dims.width, dims.height)
-            }
-        })
+        val component = e.component
+        val dims = component.size
+        val loc = component.location
+        ApplicationConfiguration.getInstance()
+            .setLoadFilmListDialogBounds(loc.x, loc.y, dims.width, dims.height)
     }
 
     init {
@@ -117,7 +107,10 @@ class LoadFilmListDialog(
         contentPane.add(btnContentPanel, BorderLayout.SOUTH)
 
         restoreWindowSizeFromConfig()
-        registerWindowSizeListener()
+        addDelayedComponentListener(
+            onComponentResized = { e -> storeWindowPosition(e) },
+            onComponentMoved = { e -> storeWindowPosition(e) }
+        )
 
         EscapeKeyHandler.installHandler(this) { dispose() }
     }

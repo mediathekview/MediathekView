@@ -29,16 +29,16 @@ class IconizedCheckBoxMenuItem(itemIcon: FontIcon) : JCheckBoxMenuItem() {
     private val iconizedUi = IconizedCheckBoxMenuItemUI(itemIcon)
 
     constructor(icon: FontIcon, state: Boolean) : this(icon) {
-        setState(state)
+        this.state = state
     }
 
     init {
         text = "dummy"
-        setUI(iconizedUi)
+        this.ui = iconizedUi
     }
 
     override fun updateUI() {
-        setUI(iconizedUi)
+        this.ui = iconizedUi
     }
 
     private class IconizedCheckBoxMenuItemUI(

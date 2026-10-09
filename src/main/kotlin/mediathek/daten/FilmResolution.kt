@@ -1,6 +1,10 @@
 package mediathek.daten
 
-class FilmResolution private constructor() {
+object FilmResolution {
+    const val NORMAL: String = "normal"
+    const val HIGH_QUALITY: String = "hd"
+    const val LOW: String = "klein"
+
     enum class Enum(private val legacyText: String) {
         LOW(FilmResolution.LOW),
         NORMAL(FilmResolution.NORMAL),
@@ -17,11 +21,5 @@ class FilmResolution private constructor() {
                     else -> NORMAL
                 }
         }
-    }
-
-    companion object {
-        const val NORMAL: String = "normal"
-        const val HIGH_QUALITY: String = "hd"
-        const val LOW: String = "klein"
     }
 }

@@ -2,6 +2,8 @@ package mediathek.filmlisten.reader
 
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.daten.ListeFilme
+import mediathek.filmlisten.FilmListLoadListener
+import mediathek.filmlisten.FilmListLoadProgress
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -86,6 +88,29 @@ class FilmListReaderTest {
         assertEquals("\"Solingen, wie geht's dir?\"", films[0].title)
     }
 
+    @Test
+    fun `progress listeners receive start and finish events until reader is closed`() {
+        approveOnly("APPROVED")
+        val filmListFile = writeFilmList(
+            "progress-events.json",
+            filmEntry("APPROVED", "Thema", "Title"),
+        )
+        val reader = FilmListReader()
+        val firstListener = RecordingProgressListener()
+        val secondListener = RecordingProgressListener()
+        reader.addProgressListener(firstListener)
+        reader.addProgressListener(secondListener)
+
+        reader.readFilmListe(filmListFile.toString(), ListeFilme(), 0)
+        reader.close()
+        reader.readFilmListe(filmListFile.toString(), ListeFilme(), 0)
+
+        assertEquals(listOf(filmListFile.toString()), firstListener.startedSources)
+        assertEquals(listOf(filmListFile.toString()), firstListener.finishedSources)
+        assertEquals(listOf(filmListFile.toString()), secondListener.startedSources)
+        assertEquals(listOf(filmListFile.toString()), secondListener.finishedSources)
+    }
+
     private fun approveOnly(vararg senders: String) {
         SenderFilmlistLoadApprover.senderSet.clear()
         SenderFilmlistLoadApprover.senderSet.addAll(senders)
@@ -133,4 +158,17 @@ class FilmListReaderTest {
     private fun String.escapeJson(): String =
         replace("\\", "\\\\")
             .replace("\"", "\\\"")
+
+    private class RecordingProgressListener : FilmListLoadListener {
+        val startedSources = mutableListOf<String>()
+        val finishedSources = mutableListOf<String>()
+
+        override fun loadStarted(progress: FilmListLoadProgress) {
+            startedSources += progress.senderUrl
+        }
+
+        override fun loadFinished(progress: FilmListLoadProgress) {
+            finishedSources += progress.senderUrl
+        }
+    }
 }

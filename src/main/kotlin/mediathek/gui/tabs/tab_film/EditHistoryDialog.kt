@@ -5,15 +5,16 @@
 package mediathek.gui.tabs.tab_film
 
 import ca.odell.glazedlists.EventList
-import ca.odell.glazedlists.swing.GlazedListsSwing
+import ca.odell.glazedlists.swing.DefaultEventListModel
+import ca.odell.glazedlists.swing.eventListModelWithThreadProxyList
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.tool.withWriteLock
 import org.apache.logging.log4j.LogManager
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Window
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
+import javax.swing.DefaultListModel
 import javax.swing.JMenuItem
 
 class EditHistoryDialog(
@@ -24,17 +25,20 @@ class EditHistoryDialog(
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val keyAdapter = DeleteKeyAdapter()
     private var keyAdapterInstalled = false
+    private val eventListModel: DefaultEventListModel<String> =
+        eventList.eventListModelWithThreadProxyList()
+    private var disposed = false
 
     init {
         menuItem.isEnabled = false
-        addWindowListener(object : WindowAdapter() {
-            override fun windowClosed(event: WindowEvent) {
+        addDelayedWindowListener(
+            onWindowClosed = {
                 menuItem.isEnabled = true
                 savePosition()
             }
-        })
+        )
 
-        list.model = GlazedListsSwing.eventListModelWithThreadProxyList(eventList)
+        list.model = eventListModel
         list.selectionModel.addListSelectionListener { event ->
             if (!event.valueIsAdjusting) {
                 adjustButtons()
@@ -53,6 +57,21 @@ class EditHistoryDialog(
         }
 
         restorePosition()
+    }
+
+    override fun dispose() {
+        if (disposed) {
+            super.dispose()
+            return
+        }
+        disposed = true
+        list.model = DefaultListModel()
+        try {
+            runCatching(eventListModel::dispose)
+                .onFailure { failure -> logger.warn("Failed to dispose edit history list model", failure) }
+        } finally {
+            super.dispose()
+        }
     }
 
     private fun deleteEntries() {

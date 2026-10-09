@@ -55,7 +55,7 @@ class ArdOnlineSearchService(
         val title = item.string("title") ?: return null
         val topic = item["show"]?.jsonObjectOrNull()?.string("title") ?: title
         val media = item["mediaCollection"]?.jsonObjectOrNull()?.get("embedded")?.jsonObjectOrNull()
-        val streamUrl = media?.streamUrl() ?: return null
+        val qualityUrls = media?.qualityUrls() ?: return null
         val duration = media.durationSeconds()?.let(Duration::ofSeconds)
         val broadcast = item.string("broadcastedOn")?.let {
             ZonedDateTime.parse(it).withZoneSameInstant(BERLIN).toLocalDateTime()
@@ -67,7 +67,9 @@ class ArdOnlineSearchService(
             title = title.replace("Hörfassung", "Audiodeskription"),
             description = item.string("synopsis").orEmpty(),
             websiteUrl = "https://www.ardmediathek.de/video/$id",
-            normalQualityUrl = streamUrl,
+            normalQualityUrl = qualityUrls.normalUrl,
+            highQualityUrl = qualityUrls.highUrl,
+            subtitleUrl = media.subtitleUrl(),
             broadcastTime = broadcast,
             duration = duration,
         )
@@ -81,11 +83,47 @@ class ArdOnlineSearchService(
             "&sortingCriteria=SCORE_DESC&platform=MEDIA_THEK"
     }
 
-    private fun JsonObject.streamUrl(): String? = this["streams"]?.jsonArray.orEmpty()
-        .asSequence()
-        .flatMap { stream -> stream.jsonObjectOrNull()?.get("media")?.jsonArray.orEmpty().asSequence() }
-        .firstNotNullOfOrNull { media -> media.jsonObjectOrNull()?.string("url") }
-        ?: findFirstValue("_stream")
+    private fun JsonObject.qualityUrls(): ArdQualityUrls? {
+        val media = this["streams"]?.jsonArray.orEmpty()
+            .asSequence()
+            .mapNotNull { stream ->
+                stream.jsonObjectOrNull()?.get("media")?.jsonArray.orEmpty()
+                    .mapNotNull { item ->
+                        val mediaItem = item.jsonObjectOrNull() ?: return@mapNotNull null
+                        val url = mediaItem.string("url") ?: return@mapNotNull null
+                        ArdMediaUrl(url, mediaItem["maxHResolutionPx"]?.jsonPrimitive?.intOrNull)
+                    }
+                    .takeIf { it.isNotEmpty() }
+            }
+            .firstOrNull()
+
+        if (media == null) {
+            val fallbackUrl = findFirstValue("_stream") ?: return null
+            return ArdQualityUrls(fallbackUrl, fallbackUrl)
+        }
+
+        val normalUrl = media.first().url
+        val highUrl = media.maxWithOrNull(
+            compareBy<ArdMediaUrl> { it.horizontalResolution ?: Int.MIN_VALUE },
+        )?.url ?: normalUrl
+        return ArdQualityUrls(normalUrl, highUrl)
+    }
+
+    private fun JsonObject.subtitleUrl(): String {
+        val subtitles = this["subtitles"]?.jsonArrayOrNull().orEmpty()
+            .mapNotNull { it.jsonObjectOrNull() }
+        val subtitle = subtitles.firstOrNull {
+            it.string("languageCode") in GERMAN_LANGUAGE_CODES && it.string("kind") == "normal"
+        } ?: subtitles.firstOrNull { it.string("languageCode") in GERMAN_LANGUAGE_CODES }
+            ?: subtitles.firstOrNull { it.string("kind") == "normal" }
+            ?: subtitles.firstOrNull()
+            ?: return ""
+        val sources = subtitle["sources"]?.jsonArrayOrNull().orEmpty()
+            .mapNotNull { it.jsonObjectOrNull() }
+        return sources.firstOrNull { it.string("kind") == "webvtt" }?.string("url")
+            ?: sources.firstNotNullOfOrNull { it.string("url") }
+            ?: ""
+    }
 
     private fun JsonObject.durationSeconds(): Long? =
         this["meta"]?.jsonObjectOrNull()?.get("durationSeconds")?.jsonPrimitive?.longOrNull
@@ -102,9 +140,20 @@ class ArdOnlineSearchService(
     private companion object {
         private const val PAGE_SIZE = 20
         private const val ITEM_URL = "https://api.ardmediathek.de/page-gateway/pages/ard/item/"
+        private val GERMAN_LANGUAGE_CODES = setOf("de", "deu")
         private val BERLIN: ZoneId = ZoneId.of("Europe/Berlin")
     }
 }
+
+private data class ArdMediaUrl(
+    val url: String,
+    val horizontalResolution: Int?,
+)
+
+private data class ArdQualityUrls(
+    val normalUrl: String,
+    val highUrl: String,
+)
 
 internal fun String.toOnlineSearchUrlLastSegment(): String =
     trim().substringBefore('?').trimEnd('/').substringAfterLast('/')

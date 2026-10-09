@@ -13,14 +13,14 @@ import java.awt.event.ActionEvent
 import java.io.IOException
 import java.net.URI
 import javax.swing.AbstractAction
-import javax.swing.Action
+
 
 class UrlHyperlinkAction(
     url: String,
     private val parentProvider: () -> Frame? = { null },
 ) : AbstractAction(url) {
     init {
-        putValue(Action.SHORT_DESCRIPTION, url)
+        putValue(SHORT_DESCRIPTION, url)
     }
 
     override fun actionPerformed(event: ActionEvent) {
@@ -89,7 +89,8 @@ class UrlHyperlinkAction(
                 return configuredProgram
             }
 
-            return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Browser suchen", BROWSER_NOT_FOUND_TEXT).orElse("")
+            return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Browser suchen", BROWSER_NOT_FOUND_TEXT)
+                .orElse("") ?: ""
         }
 
         private fun launchApplication(app: String, url: String) {

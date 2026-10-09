@@ -105,8 +105,7 @@ internal object DownloadSizeCacheStorage {
     }
 
     private fun PersistentCacheEntry.isFresh(nowMillis: Long): Boolean =
-        storedAtMillis > 0 &&
-            storedAtMillis <= nowMillis &&
+        storedAtMillis in 1..nowMillis &&
             nowMillis - storedAtMillis <= DownloadSizeCachePolicy.maximumEntryAge.inWholeMilliseconds
 
     private fun storagePath(): Path = StandardLocations.getSettingsDirectory().resolve(STORAGE_FILENAME)

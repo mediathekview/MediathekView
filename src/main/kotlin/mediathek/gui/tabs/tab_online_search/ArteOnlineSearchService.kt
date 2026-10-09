@@ -6,6 +6,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.*
 import mediathek.config.application.ApplicationConfiguration
+import java.net.URI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.time.Duration
@@ -121,16 +122,16 @@ class ArteOnlineSearchService(
             language = DEFAULT_STREAM_LANGUAGE,
         ),
     ): OnlineSearchResult? {
-        val attributes = get(configUrl).parseJsonObject(json)
-            .get("data")?.jsonObjectOrNull()
+        val attributes = get(configUrl).parseJsonObject(json)["data"]?.jsonObjectOrNull()
             ?.get("attributes")?.jsonObjectOrNull()
             ?: return null
         val metadata = attributes["metadata"]?.jsonObjectOrNull() ?: return null
         val title = listOfNotNull(metadata.string("title"), metadata.string("subtitle"))
             .joinToString(" - ")
             .ifBlank { return null }
-        val hlsStreamUrl = attributes["streams"]?.jsonArrayOrNull().orEmpty()
-            .firstNotNullOfOrNull { stream -> stream.jsonObjectOrNull()?.string("url") }
+        val hlsStream = attributes["streams"]?.jsonArrayOrNull().orEmpty()
+            .firstNotNullOfOrNull { stream -> stream.jsonObjectOrNull()?.takeIf { it.string("url") != null } }
+        val hlsStreamUrl = hlsStream?.string("url")
         val mp4Urls = loadMp4Urls(
             fallbackStreamRequest.copy(
                 programId = metadata.string("providerId") ?: fallbackStreamRequest.programId,
@@ -139,6 +140,7 @@ class ArteOnlineSearchService(
         val normalQualityUrl = mp4Urls.normalQualityUrl ?: hlsStreamUrl ?: return null
         val lowQualityUrl = if (mp4Urls.hasAnyUrl) mp4Urls.lowQualityUrl.orEmpty() else hlsStreamUrl.orEmpty()
         val highQualityUrl = if (mp4Urls.hasAnyUrl) mp4Urls.highQualityUrl.orEmpty() else hlsStreamUrl.orEmpty()
+        val subtitleUrl = hlsStream?.let { loadSubtitleUrl(it) }.orEmpty()
         val websiteUrl = metadata["link"]?.jsonObjectOrNull()?.string("url") ?: fallbackWebsiteUrl
         return OnlineSearchResult(
             provider = OnlineSearchProvider.ARTE,
@@ -150,11 +152,59 @@ class ArteOnlineSearchService(
             normalQualityUrl = normalQualityUrl,
             lowQualityUrl = lowQualityUrl,
             highQualityUrl = highQualityUrl,
+            subtitleUrl = subtitleUrl,
             broadcastTime = parseArteDate(attributes["rights"]?.jsonObjectOrNull()?.string("begin")),
             duration = metadata["duration"]?.jsonObjectOrNull()
                 ?.get("seconds")?.jsonPrimitive?.longOrNull?.let(Duration::ofSeconds),
         )
     }
+
+    private suspend fun loadSubtitleUrl(hlsStream: JsonObject): String {
+        val hasGermanSubtitles = hlsStream["versions"]?.jsonArrayOrNull().orEmpty()
+            .mapNotNull { it.jsonObjectOrNull() }
+            .any { version ->
+                version["closedCaptioning"]?.jsonPrimitive?.booleanOrNull == true &&
+                    version.string("subtitleLanguage") in GERMAN_LANGUAGE_CODES
+            }
+        val masterUrl = hlsStream.string("url")
+        if (!hasGermanSubtitles || masterUrl == null) {
+            return ""
+        }
+
+        return try {
+            val subtitlePlaylistUrl = get(masterUrl).hlsMediaAttributes()
+                .firstOrNull { attributes ->
+                    attributes["TYPE"] == "SUBTITLES" && attributes["LANGUAGE"] in GERMAN_LANGUAGE_CODES
+                }
+                ?.get("URI")
+                ?.let { masterUrl.resolveUrl(it) }
+                ?: return ""
+            if (!subtitlePlaylistUrl.endsWith(".m3u8", ignoreCase = true)) {
+                return subtitlePlaylistUrl
+            }
+            val subtitleFiles = get(subtitlePlaylistUrl).lineSequence()
+                .map(String::trim)
+                .filter { it.isNotEmpty() && !it.startsWith('#') }
+                .toList()
+            subtitleFiles.singleOrNull()?.let { subtitlePlaylistUrl.resolveUrl(it) }.orEmpty()
+        } catch (ex: CancellationException) {
+            throw ex
+        } catch (_: Exception) {
+            ""
+        }
+    }
+
+    private fun String.hlsMediaAttributes(): Sequence<Map<String, String>> = lineSequence()
+        .map(String::trim)
+        .filter { it.startsWith("#EXT-X-MEDIA:") }
+        .map { line ->
+            HLS_ATTRIBUTE_PATTERN.findAll(line.substringAfter(':'))
+                .associate { match ->
+                    match.groupValues[1] to (match.groupValues[2].ifEmpty { match.groupValues[3] })
+                }
+        }
+
+    private fun String.resolveUrl(reference: String): String = URI(this).resolve(reference).toString()
 
     private suspend fun loadMp4Urls(request: ArteStreamRequest): ArteQualityUrls {
         val programId = request.programId?.takeIf { ARTE_PROGRAM_ID_PATTERN.matches(it) } ?: return ArteQualityUrls.EMPTY
@@ -288,10 +338,12 @@ class ArteOnlineSearchService(
         private const val MAX_RATE_LIMIT_ATTEMPTS = 3
         private const val MIN_REQUEST_DELAY_MILLIS = 250L
         private const val MAX_REQUEST_DELAY_MILLIS = 10_000L
-        private val ARTE_PROGRAM_ID_PATTERN = Regex("""(?:[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6})""")
+        private val ARTE_PROGRAM_ID_PATTERN = Regex("""[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6}""")
         private val ARTE_DEFAULT_AUDIO_CODES = setOf("VA", "VA-STA", "VOA", "VOA-STA")
+        private val GERMAN_LANGUAGE_CODES = setOf("de", "deu")
         private val ARTE_STREAM_HEADERS = mapOf("Authorization" to ARTE_STREAM_API_TOKEN)
         private val SUBCOLLECTION_ID_PATTERN = Regex("""subCollectionId(?:=|\\u003d)(RC-[0-9]{6})""")
+        private val HLS_ATTRIBUTE_PATTERN = Regex("""([A-Z0-9-]+)=(?:"([^"]*)"|([^,]*))""")
         private val BERLIN: ZoneId = ZoneId.of("Europe/Berlin")
     }
 }

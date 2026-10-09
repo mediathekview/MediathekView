@@ -188,6 +188,16 @@ new FormModel {
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1,alignx left"
 				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxMp4Metadata"
+					"text": "MP4-Metadaten schreiben"
+					"toolTipText": "Schreibt Standard-MP4-Metadaten nach dem Download in die fertige MP4-Datei"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 1,alignx left"
+				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 2,growx"
 			} )

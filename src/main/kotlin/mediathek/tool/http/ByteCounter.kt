@@ -24,9 +24,6 @@ class ByteCounter {
         return socketFactory
     }
 
-    fun bytesWritten(): Long {
-        return bytesWritten.get()
-    }
 
     fun bytesRead(): Long {
         return bytesRead.get()
@@ -105,7 +102,7 @@ class ByteCounter {
         override fun getInputStream(): InputStream {
             synchronized(lock) {
                 if (inputStream == null) {
-                    inputStream = CountingInputStream(super.getInputStream(), this@ByteCounter)
+                    inputStream = CountingInputStream(super.inputStream, this@ByteCounter)
                 }
             }
             return inputStream!!
@@ -115,7 +112,7 @@ class ByteCounter {
         override fun getOutputStream(): OutputStream {
             synchronized(lock) {
                 if (outputStream == null) {
-                    outputStream = CountingOutputStream(super.getOutputStream(), this@ByteCounter)
+                    outputStream = CountingOutputStream(super.outputStream, this@ByteCounter)
                 }
             }
             return outputStream!!

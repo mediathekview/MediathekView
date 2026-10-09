@@ -54,8 +54,6 @@ class DialogImportPset(
         }
     }
 
-    fun isOk(): Boolean = ok
-
     private fun disposeWithCode(ok: Boolean) {
         this.ok = ok
         dispose()

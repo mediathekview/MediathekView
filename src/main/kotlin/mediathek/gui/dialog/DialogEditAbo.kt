@@ -63,7 +63,7 @@ class DialogEditAbo(
     private fun configureComboBoxes() {
         jScrollPane1.verticalScrollBar.unitIncrement = 16
         comboboxPSet.model = DefaultComboBoxModel(programSets.list.listeAbo.objectDataCombo)
-        comboboxSender.model = SenderListComboBoxModel(filmCatalog.allSendersList)
+        comboboxSender.model = SenderListComboBoxModel(filmCatalog.allSenders)
     }
 
     private fun configurePathValidation() {

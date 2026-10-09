@@ -26,6 +26,7 @@ import mediathek.daten.abo.FilmLengthState
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.tool.FilenameUtils
+import mediathek.tool.ReplacementRules
 import mediathek.tool.SVGIconUtilities
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
@@ -36,6 +37,7 @@ class CreateNewAboAction(
     private val programSets: ProgramSetRepository,
     private val filmCatalog: FilmCatalog,
     private val abos: AboServices,
+    private val replacementRules: ReplacementRules,
     private val parentProvider: () -> JFrame,
     private val ensureAboProgramSetAvailable: (JFrame) -> Boolean,
 ) : AbstractAction() {
@@ -83,10 +85,10 @@ class CreateNewAboAction(
         filmTitel: String,
     ): DatenAbo {
         val applicationConfiguration = ApplicationConfiguration.getInstance()
-        val sanitizedAboName = FilenameUtils.replaceLeerDateiname(
+        val sanitizedAboName = FilenameUtils.replaceEmptyFilename(
             aboname,
             false,
-            applicationConfiguration.useFilenameReplaceTable,
+            replacementRules.takeIf { applicationConfiguration.useFilenameReplaceTable },
             applicationConfiguration.onlyAsciiFilenames,
         )
 

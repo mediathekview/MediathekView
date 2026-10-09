@@ -18,19 +18,17 @@
 
 package mediathek.audiothek.ui.main
 
-import ca.odell.glazedlists.BasicEventList
-import ca.odell.glazedlists.EventList
 import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon
 import mediathek.audiothek.ui.download.CircularProgressIcon
 import mediathek.audiothek.ui.download.DownloadSummary
+import mediathek.gui.search.SearchHistoryModel
 import mediathek.gui.tabs.tab_film.EditHistoryDialog
+import mediathek.swing.IconUtils
 import mediathek.tool.withReadLock
-import mediathek.tool.withWriteLock
 import org.jdesktop.swingx.JXBusyLabel
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import org.kordamp.ikonli.materialdesign2.MaterialDesignT
-import org.kordamp.ikonli.swing.FontIcon
 import java.awt.Dimension
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
@@ -41,20 +39,20 @@ import javax.swing.text.JTextComponent
 class AudiothekToolBar : JToolBar() {
     companion object {
         private const val SEARCH_FIELD_COLUMNS = 28
-        private const val ICON_SIZE = 18
         private const val MAX_SEARCH_FIELD_WIDTH = 500
         private const val PODCAST_SEARCH_TOOLTIP = "Podcastindex-Suche läuft"
     }
 
     private val searchField = JTextField(SEARCH_FIELD_COLUMNS)
-    private val searchHistory = AudiothekSearchHistory()
-    private val searchHistoryList: EventList<String> = BasicEventList()
+    private val searchHistoryStore = AudiothekSearchHistory()
+    private val searchHistory = SearchHistoryModel(searchHistoryStore.load(), searchHistoryStore::save)
+    private val searchHistoryList = searchHistory.entries
     private val searchHistoryButton = JButton(FlatSearchWithHistoryIcon(true)).apply {
         toolTipText = "Vorherige Suchen"
         isFocusable = false
     }
     private val reloadButton = JButton().apply {
-        icon = FontIcon.of(FontAwesomeSolid.RECYCLE, ICON_SIZE)
+        icon = IconUtils.toolbarIcon(FontAwesomeSolid.RECYCLE)
         toolTipText = "Lokale Podcast-Daten aktualisieren"
         isFocusable = false
     }
@@ -68,7 +66,7 @@ class AudiothekToolBar : JToolBar() {
         isVisible = false
     }
     private val downloadManagerButton = JButton()
-    private val downloadManagerIdleIcon = FontIcon.of(MaterialDesignT.TRAY_ARROW_DOWN, ICON_SIZE)
+    private val downloadManagerIdleIcon = IconUtils.toolbarIcon(MaterialDesignT.TRAY_ARROW_DOWN)
     private val downloadProgressIcon = CircularProgressIcon()
 
     init {
@@ -174,10 +172,6 @@ class AudiothekToolBar : JToolBar() {
     }
 
     private fun configureSearchHistory() {
-        searchHistoryList.withWriteLock {
-            addAll(searchHistory.load())
-        }
-        searchHistoryList.addListEventListener { saveSearchHistory() }
         searchHistoryButton.addActionListener { showSearchHistoryPopup() }
     }
 
@@ -187,20 +181,13 @@ class AudiothekToolBar : JToolBar() {
             return
         }
 
-        searchHistoryList.withWriteLock {
-            remove(normalized)
-            add(0, normalized)
-        }
+        searchHistory.addMostRecent(normalized)
     }
 
     private fun showSearchHistoryPopup() {
         val popupMenu = JPopupMenu()
         val clearHistoryItem = JMenuItem("Alles löschen").apply {
-            addActionListener {
-                searchHistoryList.withWriteLock {
-                    clear()
-                }
-            }
+            addActionListener { searchHistory.clear() }
         }
         val editHistoryItem = JMenuItem("Einträge bearbeiten").apply {
             addActionListener { showEditHistoryDialog(this) }
@@ -227,12 +214,6 @@ class AudiothekToolBar : JToolBar() {
     private fun showEditHistoryDialog(menuItem: JMenuItem) {
         val owner = SwingUtilities.getWindowAncestor(this) ?: JOptionPane.getRootFrame()
         EditHistoryDialog(owner, menuItem, searchHistoryList).isVisible = true
-    }
-
-    private fun saveSearchHistory() {
-        searchHistoryList.withReadLock {
-            searchHistory.save(this)
-        }
     }
 
     private fun buildLayout() {

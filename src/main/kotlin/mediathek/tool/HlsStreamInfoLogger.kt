@@ -62,9 +62,7 @@ object HlsStreamInfoLogger {
             return
         }
 
-        if (currentEndpoint != null) {
-            TimerPool.execute(::uploadPendingEntriesSafely)
-        }
+        TimerPool.execute(::uploadPendingEntriesSafely)
     }
 
     private fun appendNdjsonEntry(entry: String) {
@@ -95,7 +93,7 @@ object HlsStreamInfoLogger {
     }
 
     private fun uploadPendingEntries() {
-        val endpoint = currentEndpoint ?: return
+        val endpoint = currentEndpoint
         val pendingBatch = synchronized(ioLock) { readPendingBatchLocked() }
         if (pendingBatch.events.isEmpty()) {
             if (pendingBatch.linesConsumed > 0) {
@@ -208,7 +206,7 @@ object HlsStreamInfoLogger {
     private val outputPath: Path
         get() = StandardLocations.getSettingsDirectory().resolve("hls-stream-info-data.ndjson")
 
-    private val currentEndpoint: HttpUrl?
+    private val currentEndpoint: HttpUrl
         get() = Konstanten.HLS_STREAM_INFO_UPLOAD_URL
 
     @Serializable

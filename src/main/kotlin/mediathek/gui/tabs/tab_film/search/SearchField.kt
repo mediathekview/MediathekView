@@ -18,13 +18,12 @@
 
 package mediathek.gui.tabs.tab_film.search
 
-import ca.odell.glazedlists.BasicEventList
-import ca.odell.glazedlists.EventList
 import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon
 import mediathek.config.MVColor
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.gui.search.SearchHistoryModel
 import mediathek.gui.tabs.tab_film.EditHistoryDialog
 import mediathek.tool.*
 import org.apache.logging.log4j.LogManager
@@ -105,18 +104,16 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
 
     inner class SearchHistoryButton(mode: SearchControlFieldMode?) : JButton(FlatSearchWithHistoryIcon(true)) {
         private val applicationConfiguration = ApplicationConfiguration.getInstance()
-        private val historyList: EventList<String> = BasicEventList()
+        private val luceneSearch = mode == SearchControlFieldMode.LUCENE
+        private val history = SearchHistoryModel(loadHistory(), ::saveHistory)
+        private val historyList = history.entries
         private val miClearHistory = JMenuItem("Alles löschen")
         private val miEditHistory = JMenuItem("Einträge bearbeiten")
-        private val luceneSearch = mode == SearchControlFieldMode.LUCENE
 
         init {
             toolTipText = "Vorherige Suchen"
 
-            miClearHistory.addActionListener {
-                historyList.clear()
-                saveHistory()
-            }
+            miClearHistory.addActionListener { history.clear() }
 
             miEditHistory.addActionListener {
                 val dialog = EditHistoryDialog(host.ownerWindow(), miEditHistory, historyList)
@@ -124,16 +121,10 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
             }
 
             addActionListener { showHistoryPopup() }
-
-            loadHistory()
-            historyList.addListEventListener { saveHistory() }
         }
 
         fun addHistoryEntry(text: String) {
-            historyList.withWriteLock {
-                historyList.remove(text)
-                historyList.add(0, text)
-            }
+            history.addMostRecent(text)
         }
 
         private fun showHistoryPopup() {
@@ -156,25 +147,18 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
             popupMenu.show(this, 0, height)
         }
 
-        private fun loadHistory() {
+        private fun loadHistory(): List<String> =
             try {
-                val entries = readHistoryEntries()
-                if (entries.isNotEmpty()) {
-                    historyList.withWriteLock {
-                        historyList.addAll(entries)
-                    }
-                }
+                readHistoryEntries()
             } catch (ex: Exception) {
                 logger.error("Failed to load search history", ex)
+                emptyList()
             }
-        }
 
-        private fun saveHistory() {
+        private fun saveHistory(entries: List<String>) {
             try {
-                historyList.withReadLock {
-                    val json = JsonStringUtils.toJsonStringArray(ArrayList(historyList))
-                    applicationConfiguration.setSearchHistoryItems(luceneSearch, json)
-                }
+                val json = JsonStringUtils.toJsonStringArray(entries)
+                applicationConfiguration.setSearchHistoryItems(luceneSearch, json)
             } catch (ex: Exception) {
                 logger.error("Failed to write search history", ex)
             }
@@ -232,7 +216,7 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
     }
 }
 
-class LuceneSearchField(host: SearchField.Host) : SearchField(host) {
+class LuceneSearchField(host: Host) : SearchField(host) {
     private val luceneSearchHistoryButton = SearchHistoryButton(SearchControlFieldMode.LUCENE)
 
     init {
@@ -263,7 +247,7 @@ class LuceneSearchField(host: SearchField.Host) : SearchField(host) {
     }
 }
 
-class RegularSearchField(host: SearchField.Host) : SearchField(host) {
+class RegularSearchField(host: Host) : SearchField(host) {
     private val regularSearchHistoryButton = SearchHistoryButton(null)
 
     init {

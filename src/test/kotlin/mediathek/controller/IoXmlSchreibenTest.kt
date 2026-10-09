@@ -122,8 +122,8 @@ internal class IoXmlSchreibenTest {
         val abos = daten.abos.list
         val originalAbos = ArrayList(abos)
         try {
-            abos.clear()
-            abos.add(
+            abos.clearWithoutNotification()
+            abos.addAboWithoutNotification(
                 DatenAbo().apply {
                     name = "Legacy Writer Abo"
                     sender = "ARD"
@@ -141,8 +141,8 @@ internal class IoXmlSchreibenTest {
             assertFalse(xml.contains("<Abonnement>"))
             assertFalse(xml.contains("Legacy Writer Abo"))
         } finally {
-            abos.clear()
-            abos.addAll(originalAbos)
+            abos.clearWithoutNotification()
+            originalAbos.forEach(abos::addAboWithoutNotification)
         }
     }
 }

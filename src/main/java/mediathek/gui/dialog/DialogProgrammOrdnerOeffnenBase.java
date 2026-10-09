@@ -1,7 +1,7 @@
 package mediathek.gui.dialog;
 
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class DialogProgrammOrdnerOeffnenBase extends JDialog {

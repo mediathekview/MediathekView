@@ -21,14 +21,12 @@ package mediathek.gui.tabs.tab_downloads
 import com.jidesoft.popup.JidePopup
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
+import org.pushingpixels.radiance.swing.ktx.addDelayedContainerListener
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.FlowLayout
 import java.awt.Insets
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
-import java.awt.event.ContainerAdapter
-import java.awt.event.ContainerEvent
 import javax.swing.JButton
 import javax.swing.JPanel
 import javax.swing.JToolBar
@@ -68,16 +66,8 @@ class DownloadsToolBarRow(
     init {
         add(primaryToolBar)
         overflowToolBars.forEach(::add)
-        addComponentListener(object : ComponentAdapter() {
-            override fun componentResized(e: ComponentEvent?) {
-                updateOverflowStateLater()
-            }
-        })
-        addContainerListener(object : ContainerAdapter() {
-            override fun componentAdded(e: ContainerEvent?) {
-                updateOverflowStateLater()
-            }
-        })
+        addDelayedComponentListener(onComponentResized = { updateOverflowStateLater() })
+        addDelayedContainerListener(onComponentAdded = { updateOverflowStateLater() })
         statePersistence.restoreLater()
     }
 

@@ -7,7 +7,7 @@
 
     <groupId>de.mediathekview</groupId>
     <artifactId>MediathekView</artifactId>
-    <version>15.0.0</version>
+    <version>16.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -61,34 +61,33 @@
         <jvm.target.version>25</jvm.target.version>
         <kotlin.language.target>25</kotlin.language.target>
 
-        <kotlin.version>2.4.0</kotlin.version>
+        <kotlin.version>2.5.0-Beta1</kotlin.version>
         <kotlin.language.version>2.4</kotlin.language.version>
         <kotlin.api.version>2.4</kotlin.api.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <commons-configuration2.version>2.15.1</commons-configuration2.version>
         <commons-io.version>2.22.0</commons-io.version>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
-        <caffeine.version>3.2.4</caffeine.version>
-        <dd-plist.version>1.29</dd-plist.version>
+        <commons-lang3.version>3.21.0</commons-lang3.version>
+        <caffeine.version>3.3.0</caffeine.version>
+        <dd-plist.version>1.30</dd-plist.version>
         <flatlaf.version>3.7.2</flatlaf.version>
-        <glazedlists.version>9ace85251cc0f8e70eebc9dfdb2cb2a920cb0275</glazedlists.version>
         <ikonli.version>12.4.0</ikonli.version>
-        <jackson.version>3.2.2</jackson.version>
+        <jackson.version>3.2.3</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
         <javax-activation.version>1.2.0</javax-activation.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
         <jfreechart.version>1.5.6</jfreechart.version>
-        <jide-oss.version>3.7.15</jide-oss.version>
+        <jide-oss.version>ba570db7da9afe78ff72820ae0dedeeb807687eb</jide-oss.version>
         <jiconfont-font-awesome.version>4.7.0.1</jiconfont-font-awesome.version>
-        <jlibnotify.version>1.3.0</jlibnotify.version>
+        <jlibnotify.version>1.3.3</jlibnotify.version>
         <jna.version>5.19.1</jna.version>
-        <jspecify.version>1.0.0</jspecify.version>
-        <jsoup.version>1.22.2</jsoup.version>
+        <jspecify.version>1.0.1</jspecify.version>
+        <jsoup.version>1.23.2</jsoup.version>
         <junit.jupiter.version>6.1.3</junit.jupiter.version>
         <kotlinx-coroutines.version>1.11.0</kotlinx-coroutines.version>
         <kotlinx-serialization.version>1.11.0</kotlinx-serialization.version>
-        <lucene.version>10.5.1</lucene.version>
+        <lucene.version>10.5.2</lucene.version>
         <flexmark.version>0.64.8</flexmark.version>
         <lgooddatepicker.version>11.2.1</lgooddatepicker.version>
         <log4j2.version>2.25.4</log4j2.version>
@@ -98,18 +97,19 @@
         <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-        <git-commit-id-maven-plugin.version>10.0.0</git-commit-id-maven-plugin.version>
+        <git-commit-id-maven-plugin.version>10.0.1</git-commit-id-maven-plugin.version>
         <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
         <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
-        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
         <mbassador.version>1.3.2</mbassador.version>
-        <miglayout.version>11.4.3</miglayout.version>
-        <mockito.version>5.23.0</mockito.version>
+        <miglayout.version>11.5.1</miglayout.version>
+        <mockito.version>5.24.0</mockito.version>
         <okhttp.version>5.5.0</okhttp.version>
         <picocli.version>4.7.7</picocli.version>
-        <sqlite-jdbc.version>3.53.2.0</sqlite-jdbc.version>
+        <radiance.version>9.0.0</radiance.version>
+        <sqlite-jdbc.version>3.53.4.0</sqlite-jdbc.version>
         <sqlite.native.exclude.01>__unused__</sqlite.native.exclude.01>
         <sqlite.native.exclude.02>__unused__</sqlite.native.exclude.02>
         <sqlite.native.exclude.03>__unused__</sqlite.native.exclude.03>
@@ -134,23 +134,19 @@
         <install4j.jdk.min-version>25</install4j.jdk.min-version>
         <!-- @formatter:off -->
         <!-- VM Parameters Windows x64 and aarch64 -->
-        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
+        <install4j.vmparameters.win.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.win.64>
         <!-- VM Parameters Linux 64bit Intel and ARM -->
-        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
+        <install4j.vmparameters.linux.64>-XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:MaxRAMPercentage=50.0 -XX:+UseStringDeduplication --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector --add-opens java.desktop/sun.awt.X11=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED -DexternalUpdateCheck</install4j.vmparameters.linux.64>
         <!-- @formatter:on -->
     </properties>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
+        <dependency>
+            <groupId>org.pushing-pixels</groupId>
+            <artifactId>radiance-swing-ktx</artifactId>
+            <version>${radiance.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.googlecode.plist</groupId>
             <artifactId>dd-plist</artifactId>
@@ -263,9 +259,16 @@
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-jide-oss</artifactId>
             <version>${flatlaf.version}</version>
+            <!-- TODO: Remove exclusion once jide-oss PR is merged -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.formdev</groupId>
+                    <artifactId>jide-oss</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.formdev</groupId>
+            <groupId>com.github.derreisende77</groupId>
             <artifactId>jide-oss</artifactId>
             <version>${jide-oss.version}</version>
         </dependency>
@@ -425,12 +428,6 @@
             <version>${jspecify.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.glazedlists</groupId>
-            <artifactId>glazedlists</artifactId>
-            <version>${glazedlists.version}</version>
-        </dependency>
-
         <!-- Logging -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -528,7 +525,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
-                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED --add-exports=java.desktop/sun.swing=ALL-UNNAMED --add-exports=java.desktop/com.apple.laf=ALL-UNNAMED</argLine>
+                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off --enable-native-access=ALL-UNNAMED --add-exports=java.desktop/com.apple.laf=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -572,6 +569,9 @@
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                             <jvmTarget>${kotlin.language.target}</jvmTarget>
+                            <args>
+                                <arg>-Xemit-jvm-type-annotations</arg>
+                            </args>
                         </configuration>
                     </execution>
                     <execution>
@@ -766,6 +766,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <!-- TODO: Remove jitpack repo once jide-oss PR is merged -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <profiles>
         <profile>

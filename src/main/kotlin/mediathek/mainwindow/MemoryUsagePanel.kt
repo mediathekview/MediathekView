@@ -118,7 +118,7 @@ class MemoryUsagePanel(
     private fun createPlot(): XYPlot {
         val dataset = TimeSeriesCollection(usedMemorySeries)
         val renderer = XYAreaRenderer().apply {
-            setOutline(true)
+            isOutline = true
             setSeriesPaint(0, SERIES_FILL)
             setSeriesOutlinePaint(0, SERIES_OUTLINE)
         }

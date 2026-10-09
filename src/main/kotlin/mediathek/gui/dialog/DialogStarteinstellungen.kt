@@ -14,10 +14,9 @@ import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang
 import mediathek.tool.GuiFunktionenProgramme
 import org.apache.commons.lang3.SystemUtils
+import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.Component
-import java.awt.event.WindowAdapter
-import java.awt.event.WindowEvent
 import java.util.function.BiConsumer
 import javax.swing.JFrame
 import kotlin.coroutines.CoroutineContext
@@ -63,7 +62,7 @@ class DialogStarteinstellungen(
         installDefaultProgramPaths()
         createLayout()
         updateInitialAvailability()
-        installWindowBehavior()
+        addDelayedWindowListener(onWindowOpened = { toFront() })
     }
 
     private fun installActions() {
@@ -99,14 +98,6 @@ class DialogStarteinstellungen(
             jButtonStandard.isEnabled = false
             anpassen = true
         }
-    }
-
-    private fun installWindowBehavior() {
-        addWindowListener(object : WindowAdapter() {
-            override fun windowOpened(e: WindowEvent) {
-                toFront()
-            }
-        })
     }
 
     private fun launchAdvance() {
@@ -149,7 +140,7 @@ class DialogStarteinstellungen(
     }
 
     private fun statusPfade() {
-        setAdjustmentControlsVisible(false)
+        hideAdjustmentControls()
         val searchFfmpeg = !SystemUtils.IS_OS_MAC_OSX && !SystemUtils.IS_OS_WINDOWS
         setMainContent(PanelProgrammPfade(parentComponent, true, searchFfmpeg))
 
@@ -205,9 +196,9 @@ class DialogStarteinstellungen(
         jButtonStandard.text = CONTINUE_TEXT
     }
 
-    private fun setAdjustmentControlsVisible(visible: Boolean) {
-        jButtonAnpassen.isVisible = visible
-        jCheckBoxAlleEinstellungen.isVisible = visible
+    private fun hideAdjustmentControls() {
+        jButtonAnpassen.isVisible = false
+        jCheckBoxAlleEinstellungen.isVisible = false
     }
 
     private fun setMainContent(component: Component) {

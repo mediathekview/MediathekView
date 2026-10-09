@@ -74,7 +74,7 @@ class OnlineSearchProxyRepository(
             clientProvider().newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
                     logger.warn(
-                        "Onlinesuche über Proxy fehlgeschlagen für '{}': HTTP {}",
+                        "Proxy request for Audiothek online search '{}' returned HTTP {}",
                         normalizedQuery,
                         response.code
                     )
@@ -86,7 +86,7 @@ class OnlineSearchProxyRepository(
                 body.byteStream().use(::parseEntries)
             }
         }.getOrElse { error ->
-            logger.warn("Onlinesuche über Proxy fehlgeschlagen für '{}': {}", normalizedQuery, error.message)
+            logger.warn("Audiothek online search proxy request for '{}' failed: {}", normalizedQuery, error.message)
             emptyList()
         }
     }

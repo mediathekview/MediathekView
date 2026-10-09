@@ -23,8 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.CommandLineOptions
-import mediathek.filmeSuchen.ListenerFilmeLaden
-import mediathek.filmeSuchen.ListenerFilmeLadenEvent
 import org.apache.logging.log4j.LogManager
 import java.awt.GraphicsEnvironment
 import java.util.concurrent.atomic.AtomicBoolean
@@ -36,49 +34,49 @@ internal class FilmListLoadEventDispatcher(
     private val listeners = EventListenerList()
     private val appLifetimeCompletionAlreadyNotified = AtomicBoolean(false)
 
-    fun addListener(listener: ListenerFilmeLaden) {
+    fun addListener(listener: FilmListLoadListener) {
         synchronized(listeners) {
-            listeners.add(ListenerFilmeLaden::class.java, listener)
+            listeners.add(FilmListLoadListener::class.java, listener)
         }
     }
 
-    fun removeListener(listener: ListenerFilmeLaden) {
+    fun removeListener(listener: FilmListLoadListener) {
         synchronized(listeners) {
-            listeners.remove(ListenerFilmeLaden::class.java, listener)
+            listeners.remove(FilmListLoadListener::class.java, listener)
         }
     }
 
-    fun notifyStart(event: ListenerFilmeLadenEvent) {
+    fun notifyStart(progress: FilmListLoadProgress) {
         try {
-            notifyListenersAsync { listener -> listener.start(event) }
+            notifyListenersAsync { listener -> listener.loadStarted(progress) }
         } catch (ex: Exception) {
             logger.error(ex)
         }
     }
 
-    fun notifyProgress(event: ListenerFilmeLadenEvent) {
+    fun notifyProgress(progress: FilmListLoadProgress) {
         try {
-            notifyListenersAsync { listener -> listener.progress(event) }
+            notifyListenersAsync { listener -> listener.loadProgress(progress) }
         } catch (ex: Exception) {
             logger.error(ex)
         }
     }
 
-    fun notifyFinished(event: ListenerFilmeLadenEvent) {
+    fun notifyFinished(progress: FilmListLoadProgress) {
         try {
-            notifyListenersAsync { listener -> listener.fertig(event) }
+            notifyListenersAsync { listener -> listener.loadFinished(progress) }
 
             if (appLifetimeCompletionAlreadyNotified.compareAndSet(false, true)) {
-                notifyListenersAsync { listener -> listener.fertigOnlyOne(event) }
+                notifyListenersAsync { listener -> listener.firstLoadFinished(progress) }
             }
         } catch (ex: Exception) {
             logger.error(ex)
         }
     }
 
-    private fun notifyListenersAsync(action: (ListenerFilmeLaden) -> Unit) {
+    private fun notifyListenersAsync(action: (FilmListLoadListener) -> Unit) {
         val currentListeners = synchronized(listeners) {
-            listeners.getListeners(ListenerFilmeLaden::class.java)
+            listeners.getListeners(FilmListLoadListener::class.java)
         }
         val notifyListeners = {
             currentListeners.forEach { listener -> action(listener) }

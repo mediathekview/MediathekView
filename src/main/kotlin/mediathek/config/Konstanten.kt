@@ -33,9 +33,9 @@ object Konstanten {
     const val JSOUP_USER_AGENT = "Mozilla/5.0"
     const val ZAPP_API_URL = "https://api.zapp.mediathekview.de/"
 
-    val MVVERSION = Version(15, 0, 0)
+    val MVVERSION = Version(16, 0, 0)
 
-    val APPLICATION_TYPE = ApplicationType.PRODUCTION
+    val APPLICATION_TYPE = ApplicationType.NIGHTLY
 
     const val AUDIOTHEK_SEARCH_TIMEOUT_SECONDS = 45L
     const val ALTER_FILMLISTE_SEKUNDEN_FUER_AUTOUPDATE = 3 * 60 * 60L

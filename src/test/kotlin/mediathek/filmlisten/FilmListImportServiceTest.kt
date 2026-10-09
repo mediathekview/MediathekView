@@ -4,7 +4,6 @@ import com.sun.net.httpserver.HttpServer
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
-import mediathek.filmeSuchen.ListenerFilmeLaden
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -27,7 +26,7 @@ class FilmListImportServiceTest {
     @BeforeEach
     fun rememberApprovedSenders() {
         approvedSenders = SenderFilmlistLoadApprover.senderSet.toSet()
-        approveOnly("APPROVED")
+        approveOnly()
     }
 
     @AfterEach
@@ -37,21 +36,21 @@ class FilmListImportServiceTest {
     }
 
     @Test
-    fun `importFromFile captures old urls before replacing list`() {
-        val oldFilm = film("APPROVED", "Old", "Old title")
+    fun `importFromFile captures old URL keys before replacing list`() {
+        val oldFilm = film("Old", "Old title")
         val films = ListeFilme().apply { add(oldFilm) }
         val service = service()
 
         val outcome = service.importFromFile(
-            writeFilmList("replacement.json", filmEntry("APPROVED", "New", "New title")).toString(),
+            writeFilmList("replacement.json", filmEntry("New", "New title")).toString(),
             films,
             0,
         ) {
-            films.mapTo(HashSet()) { film -> film.urlNormalQuality }
+            films.mapTo(HashSet()) { film -> film.storedNormalQualityUrl }
         }
 
         assertEquals(FilmListImportResult.SUCCESS, outcome.result)
-        assertEquals(setOf(oldFilm.urlNormalQuality), outcome.oldFilmUrls)
+        assertEquals(setOf(oldFilm.storedNormalQualityUrl), outcome.oldFilmUrlKeys)
         assertTrue(outcome.importedDiffList.isEmpty())
         assertEquals(1, films.size)
         assertEquals("New title", films[0].title)
@@ -59,19 +58,19 @@ class FilmListImportServiceTest {
 
     @Test
     fun `importAdditionalFromFile reads into separate imported list`() {
-        val currentFilm = film("APPROVED", "Current", "Current title")
+        val currentFilm = film("Current", "Current title")
         val currentFilms = ListeFilme().apply { add(currentFilm) }
-        val oldFilmUrls = setOf(currentFilm.urlNormalQuality)
+        val oldFilmUrlKeys = setOf(currentFilm.storedNormalQualityUrl)
         val service = service()
 
         val outcome = service.importAdditionalFromFile(
-            writeFilmList("additional.json", filmEntry("APPROVED", "Additional", "Additional title")).toString(),
+            writeFilmList("additional.json", filmEntry("Additional", "Additional title")).toString(),
             0,
-            oldFilmUrls,
+            oldFilmUrlKeys,
         )
 
         assertEquals(FilmListImportResult.SUCCESS, outcome.result)
-        assertEquals(oldFilmUrls, outcome.oldFilmUrls)
+        assertEquals(oldFilmUrlKeys, outcome.oldFilmUrlKeys)
         assertEquals(1, currentFilms.size)
         assertEquals("Current title", currentFilms[0].title)
         assertEquals(1, outcome.importedDiffList.size)
@@ -80,7 +79,7 @@ class FilmListImportServiceTest {
 
     @Test
     fun `importFromFile reports failure for unreadable source after preparing import`() {
-        val oldFilm = film("APPROVED", "Old", "Old title")
+        val oldFilm = film("Old", "Old title")
         val films = ListeFilme().apply { add(oldFilm) }
         var prepareCalled = false
         val service = service()
@@ -91,18 +90,30 @@ class FilmListImportServiceTest {
             0,
         ) {
             prepareCalled = true
-            films.mapTo(HashSet()) { film -> film.urlNormalQuality }
+            films.mapTo(HashSet()) { film -> film.storedNormalQualityUrl }
         }
 
         assertEquals(FilmListImportResult.FAILURE, outcome.result)
         assertTrue(prepareCalled)
-        assertEquals(setOf(oldFilm.urlNormalQuality), outcome.oldFilmUrls)
+        assertEquals(setOf(oldFilm.storedNormalQualityUrl), outcome.oldFilmUrlKeys)
         assertTrue(films.isEmpty())
     }
 
     @Test
+    fun `importFromFile forwards reader progress to import progress listener`() {
+        val progressListener = RecordingImportProgressListener()
+        val service = service(progressListener = progressListener)
+        val source = writeFilmList("progress.json", filmEntry("New", "New title")).toString()
+
+        service.importFromFile(source, ListeFilme(), 0) { emptySet() }
+
+        assertEquals(source, progressListener.startedSource)
+        assertEquals(source, progressListener.finishedSource)
+    }
+
+    @Test
     fun `importFromUrl returns no update for not modified response without preparing import`() {
-        val films = ListeFilme().apply { add(film("APPROVED", "Current", "Current title")) }
+        val films = ListeFilme().apply { add(film("Current", "Current title")) }
         val feedback = RecordingFeedback()
         val service = service(feedback)
         var prepareCalled = false
@@ -114,7 +125,7 @@ class FilmListImportServiceTest {
             }
 
             assertEquals(FilmListImportResult.NO_UPDATE, outcome.result)
-            assertTrue(outcome.oldFilmUrls.isEmpty())
+            assertTrue(outcome.oldFilmUrlKeys.isEmpty())
             assertTrue(outcome.importedDiffList.isEmpty())
             assertFalse(prepareCalled)
             assertEquals(1, feedback.noUpdateCount.get())
@@ -123,12 +134,16 @@ class FilmListImportServiceTest {
         }
     }
 
-    private fun service(feedback: FilmListImportFeedback = RecordingFeedback()): FilmListImportService =
+    private fun service(
+        feedback: FilmListImportFeedback = RecordingFeedback(),
+        progressListener: FilmListLoadListener = NoOpImportProgressListener,
+    ): FilmListImportService =
         FilmListImportService(
             feedback = feedback,
-            progressListener = ListenerFilmeLaden(),
+            progressListener = progressListener,
         )
 
+    @Suppress("HttpUrlsUsage")
     private fun withNotModifiedServer(block: (String) -> Unit) {
         val server = HttpServer.create(InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0)
         server.createContext("/filmlist") { exchange ->
@@ -154,9 +169,32 @@ class FilmListImportServiceTest {
         override fun showExceptionMessage(message: String, ex: Exception, showDialogs: Boolean) = Unit
     }
 
-    private fun approveOnly(vararg senders: String) {
+    private object NoOpImportProgressListener : FilmListLoadListener {
+        override fun loadStarted(progress: FilmListLoadProgress) = Unit
+
+        override fun loadProgress(progress: FilmListLoadProgress) = Unit
+
+        override fun loadFinished(progress: FilmListLoadProgress) = Unit
+    }
+
+    private class RecordingImportProgressListener : FilmListLoadListener {
+        var startedSource: String? = null
+        var finishedSource: String? = null
+
+        override fun loadStarted(progress: FilmListLoadProgress) {
+            startedSource = progress.senderUrl
+        }
+
+        override fun loadProgress(progress: FilmListLoadProgress) = Unit
+
+        override fun loadFinished(progress: FilmListLoadProgress) {
+            finishedSource = progress.senderUrl
+        }
+    }
+
+    private fun approveOnly() {
         SenderFilmlistLoadApprover.senderSet.clear()
-        SenderFilmlistLoadApprover.senderSet.addAll(senders)
+        SenderFilmlistLoadApprover.senderSet.add("APPROVED")
     }
 
     private fun writeFilmList(fileName: String, vararg entries: String): Path {
@@ -174,8 +212,9 @@ class FilmListImportServiceTest {
         return file
     }
 
-    private fun filmEntry(sender: String, thema: String, title: String): String =
-        listOf(
+    private fun filmEntry(thema: String, title: String): String {
+        val sender = "APPROVED"
+        return listOf(
             sender,
             thema,
             title,
@@ -197,10 +236,11 @@ class FilmListImportServiceTest {
             "",
             "false",
         ).joinToString(prefix = "\"X\":[", postfix = "]") { "\"${it.escapeJson()}\"" }
+    }
 
-    private fun film(sender: String, thema: String, title: String): DatenFilm =
+    private fun film(thema: String, title: String): DatenFilm =
         DatenFilm().apply {
-            this.sender = sender
+            sender = "APPROVED"
             this.thema = thema
             this.title = title
             setSendeDatumFromFilmlistValue("15.05.2026")

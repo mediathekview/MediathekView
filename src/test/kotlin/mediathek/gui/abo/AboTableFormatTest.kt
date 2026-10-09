@@ -23,6 +23,9 @@ import mediathek.daten.ListeAbo
 import mediathek.daten.abo.DatenAbo
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.SwingUtilities
 
 class AboTableFormatTest {
@@ -34,7 +37,7 @@ class AboTableFormatTest {
         }
         val format = AboTableFormat { 42 }
 
-        assertEquals(DatenAbo.MAX_ELEM, format.columnCount)
+        assertEquals(DatenAbo.MAX_ELEM, format.getColumnCount())
         assertEquals("Name", format.getColumnName(DatenAbo.ABO_NAME))
         assertEquals(Int::class.javaObjectType, format.getColumnClass(DatenAbo.ABO_MINDESTDAUER))
         assertEquals(Int::class.javaObjectType, format.getColumnClass(DatenAbo.ABO_FILM_COUNT))
@@ -64,7 +67,7 @@ class AboTableFormatTest {
     }
 
     @Test
-    fun bindingFiltersRowsBySelectedSender() {
+    fun bindingFiltersRowsByExactSenderAndMatchesAllWhenCleared() {
         val abos = ListeAbo().apply {
             addAboWithoutNotification(createAbo("ZDF", "Zebra"))
             addAboWithoutNotification(createAbo("ARD", "Alpha"))
@@ -74,16 +77,61 @@ class AboTableFormatTest {
             val table = AboTable()
             val binding = AboTableBinding(table, abos)
             try {
-                binding.setSenderFilter("ARD")
+                assertEquals(2, table.rowCount)
 
+                binding.setSenderFilter("ARD")
                 assertEquals(1, table.rowCount)
                 assertEquals("Alpha", table.getValueAt(0, DatenAbo.ABO_NAME))
                 assertEquals("ARD", binding.aboAtViewRow(0)?.sender)
+
+                binding.setSenderFilter("ard")
+                assertEquals(0, table.rowCount)
+
+                binding.setSenderFilter("ZDF")
+                assertEquals(1, table.rowCount)
+                assertEquals("ZDF", binding.aboAtViewRow(0)?.sender)
+
+                binding.setSenderFilter(null)
+                assertEquals(setOf("ARD", "ZDF"), table.senders(binding))
+
+                binding.setSenderFilter("")
+                assertEquals(setOf("ARD", "ZDF"), table.senders(binding))
             } finally {
                 binding.dispose()
             }
         }
     }
+
+    @Test
+    fun clearingSenderFilterKeepsOnlyTheSelectedAboSelected() {
+        val selectedAbo = createAbo("3Sat", "Iss besser!")
+        val abos = ListeAbo().apply {
+            addAboWithoutNotification(createAbo("ARD", "Alpha"))
+            addAboWithoutNotification(selectedAbo)
+            addAboWithoutNotification(createAbo("ZDF", "Zulu"))
+        }
+
+        SwingUtilities.invokeAndWait {
+            val table = AboTable()
+            val binding = AboTableBinding(table, abos)
+            try {
+                binding.clearSorting()
+                binding.setSenderFilter("3Sat")
+                table.selectionModel.setSelectionInterval(0, 0)
+
+                binding.setSenderFilter(null)
+
+                assertEquals(1, binding.selectedAboCount)
+                assertSame(selectedAbo, binding.selectedAbos.single())
+                assertSame(selectedAbo, binding.aboAtViewRow(table.selectedRow))
+            } finally {
+                binding.dispose()
+            }
+        }
+    }
+
+    private fun AboTable.senders(binding: AboTableBinding): Set<String> =
+        (0 until rowCount).mapNotNull(binding::aboAtViewRow).mapTo(mutableSetOf(), DatenAbo::sender)
 
     @Test
     fun aboTableKeepsSortingOutOfSwingRowSorter() {
@@ -117,6 +165,45 @@ class AboTableFormatTest {
             } finally {
                 binding.dispose()
             }
+        }
+    }
+
+    @Test
+    fun backgroundUpdatesAdjustSelectionOnTheEdt() {
+        val abos = ListeAbo().apply {
+            addAboWithoutNotification(createAbo("ARD", "Bravo"))
+            addAboWithoutNotification(createAbo("ZDF", "Charlie"))
+        }
+        lateinit var binding: AboTableBinding
+        lateinit var table: AboTable
+        val selectionChanged = CountDownLatch(1)
+        val selectionChangedOnEdt = AtomicBoolean()
+
+        SwingUtilities.invokeAndWait {
+            table = AboTable()
+            binding = AboTableBinding(table, abos)
+            table.selectionModel.setSelectionInterval(1, 1)
+            table.selectionModel.addListSelectionListener { event ->
+                if (!event.valueIsAdjusting) {
+                    selectionChangedOnEdt.set(SwingUtilities.isEventDispatchThread())
+                    selectionChanged.countDown()
+                }
+            }
+        }
+
+        try {
+            Thread.ofVirtual().start {
+                abos.addAbo(createAbo("ARTE", "Alpha"))
+            }.join()
+
+            assertTrue(selectionChanged.await(5, TimeUnit.SECONDS))
+            assertTrue(selectionChangedOnEdt.get())
+            SwingUtilities.invokeAndWait {
+                assertEquals(1, binding.selectedAboCount)
+                assertSame(binding.selectedAbos.single(), binding.aboAtViewRow(table.selectedRow))
+            }
+        } finally {
+            SwingUtilities.invokeAndWait(binding::dispose)
         }
     }
 

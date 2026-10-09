@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.print.PrinterException
 import java.util.*
-import java.util.function.Supplier
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 
@@ -35,8 +34,8 @@ class FilmPrintAndHistoryContextActions(
     private val host: TableContextMenuHandler.Host,
     private val selectedFilmAtPopupPoint: () -> DatenFilm?,
 ) {
-    private val unseenAction = MarkSingleFilmAsUnseenAction(Supplier { selectedFilmAtPopupPoint() })
-    private val seenAction = MarkSingleFilmAsSeenAction(Supplier { selectedFilmAtPopupPoint() })
+    private val unseenAction = MarkSingleFilmAsUnseenAction { selectedFilmAtPopupPoint() }
+    private val seenAction = MarkSingleFilmAsSeenAction { selectedFilmAtPopupPoint() }
     private val printActionListener = PrintActionListener()
 
     fun addActions(popupMenu: JPopupMenu, selectedFilm: Optional<DatenFilm>) {

@@ -33,8 +33,8 @@ class TotalDownloadsLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel
     }
 
     private fun process(info: DownloadStartInfo) {
-        val downloads = info.total_num_download_list_entries
-        val deferred = downloads - info.total_starts
+        val downloads = info.totalDownloadListEntries
+        val deferred = downloads - info.totalStarts
         text = buildString {
             append("Gesamtdownloads: ")
             append(downloads)

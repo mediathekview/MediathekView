@@ -19,8 +19,8 @@
 package mediathek.tool
 
 data class ReplaceEntry(
-    var from: String,
-    var to: String,
+    val from: String,
+    val to: String,
 ) {
     fun toArray(): Array<String> = arrayOf(from, to)
 }

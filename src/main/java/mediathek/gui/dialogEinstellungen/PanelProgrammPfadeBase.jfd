@@ -1,0 +1,100 @@
+JFDML JFormDesigner: "8.3" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {space :::p, comp jScrollPane1:::::x, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane1:::::x, space :::p}}"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanelVlc:::::x, seq t {space :0:0:x, comp jButtonHilfe:::p::p}, comp jPanelFFmpeg::l:::x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp jPanelVlc:::p::p, space :::p, comp jPanelFFmpeg:::p::p, space :::p, comp jButtonHilfe:::p::p, space ::84:x}}"
+				} ) {
+					name: "jPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, comp jTextFieldVlc:::::x, space :::p, comp jButtonVlcPfad:::p::p, space :::p, comp jButtonVlcSuchen:::p::p, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par c {comp jTextFieldVlc:1:c:p::p, comp jButtonVlcPfad:1:c:p::p, comp jButtonVlcSuchen::c:p::p}, space :p::p}}"
+					} ) {
+						name: "jPanelVlc"
+						"border": new javax.swing.border.TitledBorder( "Pfad zum VLC-Player auswählen" )
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldVlc"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonVlcPfad"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+							"toolTipText": "Programm auswählen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonVlcSuchen"
+							"text": "suchen"
+							"toolTipText": "nach dem Programm suchen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "jButtonHilfe"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+						"toolTipText": "Hilfe anzeigen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, comp jTextFieldFFmpeg::::345:x, space :::p, comp jButtonFFmpegPfad:::p::p, space :::p, comp jButtonFFmpegSuchen:::p::p, space :::p}}"
+						"$verticalGroup": "par l {seq {space :::p, par c {comp jTextFieldFFmpeg:9:c:p::p, comp jButtonFFmpegPfad:9:c:p::p, comp jButtonFFmpegSuchen:9:c:p::p}, space :::x}}"
+					} ) {
+						name: "jPanelFFmpeg"
+						"border": new javax.swing.border.TitledBorder( "Pfad zu ffmpeg auswählen" )
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "jTextFieldFFmpeg"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonFFmpegSuchen"
+							"text": "suchen"
+							"toolTipText": "nach dem Programm suchen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "jButtonFFmpegPfad"
+							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
+							"toolTipText": "Programm auswählen"
+							auxiliary() {
+								"JavaCodeGenerator.variableModifiers": 4
+							}
+						} )
+					} )
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) )
+	}
+}

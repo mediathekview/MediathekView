@@ -24,6 +24,7 @@ import mediathek.config.SettingsResetService
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.SeenHistoryController
 import mediathek.controller.starter.DownloadServices
+import mediathek.controller.starter.DownloadStartActions
 import mediathek.gui.bookmark.BookmarkServices
 import mediathek.shutdown.ComputerShutdown
 import mediathek.tool.RuntimeStatistics
@@ -61,7 +62,7 @@ class MainWindowShutdownCoordinator(
         }
 
         if (shutdownComputer) {
-            runInBackground("Request computer shutdown", computerShutdown::requestShutdown)
+            runInBackground(computerShutdown::requestShutdown)
         }
     }
 
@@ -72,14 +73,18 @@ class MainWindowShutdownCoordinator(
             .edt("Close memory monitor", dialogCoordinator::closeMemoryMonitor)
             .edt("Close bandwidth monitor", dialogCoordinator::closeBandwidthMonitor)
             .edt("Close abo dialog", dialogCoordinator::closeAboDialog)
-            .background("Perform history maintenance", ::performHistoryMaintenance)
             .background("Save bookmark list") { bookmarks.saveToFile() }
             .background("Stop starter thread") { downloads.shutdown() }
             .edt("Close system tray", closeSystemTray)
             .background("Close notification center", closeNotificationCenter)
             .edt("Dispose main window tabs", tabRegistry::disposeTabs)
             .background("Stop all downloads") { downloads.requestStopForShutdown() }
-            .background("Save app data") { configurationPersistence.saveAll() }
+            .background("Finish downloaded film history") { DownloadStartActions.flushSeenHistory() }
+            .background("Perform history maintenance", ::performHistoryMaintenance)
+            .background("Save app data") {
+                configurationPersistence.finishPendingDownloadSaves()
+                configurationPersistence.saveAll()
+            }
             .background("Close seen history database", SeenHistoryController::closeSharedStore)
             .edt("Close main window", owner::dispose)
             .background("Write app config") { ApplicationConfiguration.getInstance().writeConfiguration() }
@@ -123,9 +128,9 @@ class MainWindowShutdownCoordinator(
             .shutdown()
     }
 
-    private fun runInBackground(description: String, action: Runnable) {
+    private fun runInBackground(action: Runnable) {
         ShutdownCoordinator(edtRunner)
-            .background(description, action)
+            .background("Request computer shutdown", action)
             .shutdown()
     }
 }

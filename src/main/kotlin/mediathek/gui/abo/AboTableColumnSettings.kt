@@ -258,10 +258,10 @@ class AboTableColumnSettings(
     }
 
     private fun parseColumnSettingObject(objectJson: String): ColumnSetting? {
-        val id = extractJsonStringValue(objectJson, "id")
+        val id = extractId(objectJson)
         val position = extractInt(POSITION_PATTERN, objectJson)
         val width = extractInt(WIDTH_PATTERN, objectJson)
-        val visible = extractBoolean(VISIBLE_PATTERN, objectJson)
+        val visible = extractVisible(objectJson)
 
         if (id == null || position == null || width == null || visible == null) {
             return null
@@ -291,8 +291,8 @@ class AboTableColumnSettings(
             append(']')
         }
 
-    private fun extractJsonStringValue(json: String, key: String): String? {
-        val fieldName = "\"$key\""
+    private fun extractId(json: String): String? {
+        val fieldName = "\"id\""
         val keyIndex = json.indexOf(fieldName)
         if (keyIndex < 0) {
             return null
@@ -318,8 +318,8 @@ class AboTableColumnSettings(
         return matcher.group(1).toIntOrNull()
     }
 
-    private fun extractBoolean(pattern: Pattern, json: String): Boolean? {
-        val matcher = pattern.matcher(json)
+    private fun extractVisible(json: String): Boolean? {
+        val matcher = VISIBLE_PATTERN.matcher(json)
         if (!matcher.find()) {
             return null
         }

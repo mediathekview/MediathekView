@@ -110,7 +110,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isShowHighQualityOnly: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY)
 
     fun setShowHighQualityOnly(showHdOnly: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_SHOW_HD_ONLY, showHdOnly)
@@ -128,7 +128,7 @@ open class FilterConfiguration protected constructor(
     private fun toAvailableFilterKey(filterId: UUID): String = FILTER_PANEL_AVAILABLE_FILTERS + filterId
 
     val isShowSubtitlesOnly: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY)
 
     fun setShowSubtitlesOnly(showSubtitlesOnly: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_SHOW_SUBTITLES_ONLY, showSubtitlesOnly)
@@ -136,7 +136,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isShowNewOnly: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY)
 
     fun setShowNewOnly(showNewOnly: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_SHOW_NEW_ONLY, showNewOnly)
@@ -144,7 +144,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isShowBookMarkedOnly: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY)
 
     fun setShowBookMarkedOnly(showBookMarkedOnly: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_SHOW_BOOK_MARKED_ONLY, showBookMarkedOnly)
@@ -152,7 +152,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isShowUnseenOnly: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY)
 
     fun setShowUnseenOnly(showUnseenOnly: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_SHOW_UNSEEN_ONLY, showUnseenOnly)
@@ -160,7 +160,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isDontShowDuplicates: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_DUPLICATES, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_DUPLICATES)
 
     fun setDontShowDuplicates(dontShowDuplicates: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_DUPLICATES, dontShowDuplicates)
@@ -168,7 +168,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isShowLivestreamsOnly: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY)
 
     fun setShowLivestreamsOnly(showLivestreamsOnly: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY, showLivestreamsOnly)
@@ -176,7 +176,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isDontShowAbos: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS)
 
     fun setDontShowAbos(dontShowAbos: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_ABOS, dontShowAbos)
@@ -184,7 +184,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isDontShowTrailers: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS)
 
     fun setDontShowTrailers(dontShowTrailers: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_TRAILERS, dontShowTrailers)
@@ -192,7 +192,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isDontShowSignLanguage: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE)
 
     fun setDontShowSignLanguage(dontShowSignLanguage: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE, dontShowSignLanguage)
@@ -200,7 +200,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isDontShowGeoblocked: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_GEOBLOCKED, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_GEOBLOCKED)
 
     fun setDontShowGeoblocked(dontShowGeoblocked: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_GEOBLOCKED, dontShowGeoblocked)
@@ -208,7 +208,7 @@ open class FilterConfiguration protected constructor(
     }
 
     val isDontShowAudioVersions: Boolean
-        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS, false)
+        get() = getCurrentFilterBoolean(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS)
 
     fun setDontShowAudioVersions(dontShowAudioVersions: Boolean): FilterConfiguration {
         setCurrentFilterProperty(FilterConfigurationKeys.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS, dontShowAudioVersions)
@@ -489,8 +489,8 @@ open class FilterConfiguration protected constructor(
         return FilterDTO(currentFilterID, configuration.getString(toAvailableFilterKey(currentFilterID), ""))
     }
 
-    private fun getCurrentFilterBoolean(key: FilterConfigurationKeys, defaultValue: Boolean): Boolean {
-        return configuration.getBoolean(currentFilterConfigName(key), defaultValue)
+    private fun getCurrentFilterBoolean(key: FilterConfigurationKeys): Boolean {
+        return configuration.getBoolean(currentFilterConfigName(key), false)
     }
 
     private fun getCurrentFilterDouble(key: FilterConfigurationKeys, defaultValue: Double): Double {

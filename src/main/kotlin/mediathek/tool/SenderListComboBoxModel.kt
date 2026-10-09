@@ -1,10 +1,9 @@
 package mediathek.tool
 
-import ca.odell.glazedlists.EventList
-import ca.odell.glazedlists.swing.DefaultEventComboBoxModel
+import javax.swing.DefaultComboBoxModel
 
-class SenderListComboBoxModel(senders: EventList<String>) : DefaultEventComboBoxModel<String>(
-    EventListWithEmptyFirstEntry(senders)
+class SenderListComboBoxModel(senders: List<String>) : DefaultComboBoxModel<String>(
+    (listOf("") + senders).toTypedArray(),
 ) {
     init {
         selectedItem = ""

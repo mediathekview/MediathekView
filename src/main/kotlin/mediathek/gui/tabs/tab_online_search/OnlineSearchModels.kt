@@ -53,8 +53,6 @@ data class OnlineSearchResult(
     val displayTopic: String
         get() = topic.ifBlank { title }
 
-    val hasHighQuality: Boolean
-        get() = highQualityUrl.isNotBlank()
 
     val hasSubtitle: Boolean
         get() = subtitleUrl.isNotBlank()

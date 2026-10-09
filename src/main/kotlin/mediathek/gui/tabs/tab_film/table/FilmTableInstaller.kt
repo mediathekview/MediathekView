@@ -18,30 +18,24 @@
 
 package mediathek.gui.tabs.tab_film.table
 
-import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.starter.DownloadServices
 import mediathek.daten.FilmResolution
 import mediathek.gui.tabs.tab_film.actions.CopyUrlToClipboardAction
 import mediathek.gui.tabs.tab_film.actions.FilmActionHost
 import mediathek.gui.tabs.tab_film.actions.FilmUiActions
 import mediathek.gui.tabs.tab_film.context.TableContextMenuHandler
-import mediathek.tool.cellrenderer.CellRendererFilme
+import mediathek.tool.GuiFunktionen
+import mediathek.tool.cellrenderer.*
 import mediathek.tool.datum.DatumFilm
-import mediathek.tool.listener.BeobTableHeader
 import mediathek.tool.models.FilmColumn
-import mediathek.tool.models.TModelFilm
-import mediathek.tool.table.MVFilmTable
+import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import java.awt.Component
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import java.awt.event.KeyEvent
-import javax.swing.JScrollPane
-import javax.swing.KeyStroke
-import javax.swing.ListSelectionModel
+import javax.swing.*
 
 class FilmTableInstaller(private val host: Host) {
     interface Host {
-        fun table(): MVFilmTable
+        fun table(): JTable
         fun downloads(): DownloadServices
         fun filmListScrollPane(): JScrollPane
         fun ownerComponent(): Component
@@ -52,10 +46,12 @@ class FilmTableInstaller(private val host: Host) {
         fun onComponentShown()
         fun updateFilmData()
         fun selectionUpdatesSuspended(): Boolean
+        fun saveTableConfiguration()
+        fun appearance(): FilmTableAppearance
     }
 
     fun writeTableConfigurationData() {
-        host.table().writeTableConfigurationData()
+        host.saveTableConfiguration()
     }
 
     fun setupFilmListTable() {
@@ -71,18 +67,17 @@ class FilmTableInstaller(private val host: Host) {
             }
         }
 
-        host.ownerComponent().addComponentListener(object : ComponentAdapter() {
-            override fun componentShown(event: ComponentEvent) {
+        host.ownerComponent().addDelayedComponentListener(
+            onComponentShown = {
                 host.updateSelectedListItemsCount()
                 host.onComponentShown()
             }
-        })
+        )
     }
 
     fun setupTable() {
         setupKeyMapping()
 
-        host.table().model = TModelFilm()
         host.table().addMouseListener(TableContextMenuHandler(host.tableContextMenuHost()))
         host.table().selectionModel.addListSelectionListener { event ->
             val model = event.source as ListSelectionModel
@@ -93,28 +88,24 @@ class FilmTableInstaller(private val host: Host) {
 
         setupCellRenderer()
 
-        host.table().setLineBreak(ApplicationConfiguration.getInstance().filmTableLineBreak)
-
-        setupHeaderPopupMenu()
-
-        host.table().readColumnConfigurationData()
         if (host.table().rowCount > 0) {
             host.table().setRowSelectionInterval(0, 0)
         }
     }
 
     private fun setupKeyMapping() {
-        val focusedWindowMap = host.table().inputMap
+        val focusedInputMap = host.table().inputMap
 
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), ACTION_MAP_KEY_PLAY_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_PLAY_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_SAVE_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0), ACTION_MAP_KEY_BOOKMARK_FILM)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_SEEN)
-        focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), ACTION_MAP_KEY_PLAY_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_MAP_KEY_PLAY_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), ACTION_MAP_KEY_SAVE_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_B, 0), ACTION_MAP_KEY_BOOKMARK_FILM)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, 0), ACTION_MAP_KEY_COPY_HD_URL)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), ACTION_MAP_KEY_COPY_NORMAL_URL)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_K, 0), ACTION_MAP_KEY_COPY_KLEIN_URL)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_G, 0), ACTION_MAP_KEY_MARK_SEEN)
+        focusedInputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, 0), ACTION_MAP_KEY_MARK_UNSEEN)
+        installFilmUrlCopyAccelerators(focusedInputMap, GuiFunktionen.getPlatformControlKey())
 
         val actionMap = host.table().actionMap
         val actions = host.actions()
@@ -132,43 +123,48 @@ class FilmTableInstaller(private val host: Host) {
     }
 
     private fun setupCellRenderer() {
-        val cellRenderer = CellRendererFilme(host.downloads())
-        host.table().setDefaultRenderer(Any::class.java, cellRenderer)
-        host.table().setDefaultRenderer(DatumFilm::class.java, cellRenderer)
-        host.table().setDefaultRenderer(Int::class.javaObjectType, cellRenderer)
-    }
+        val table = host.table()
+        val appearance = host.appearance()
+        val textRenderer = FilmTextCellRenderer(appearance)
+        table.setDefaultRenderer(Any::class.java, textRenderer)
+        table.setDefaultRenderer(DatumFilm::class.java, textRenderer)
+        table.setDefaultRenderer(Int::class.javaObjectType, textRenderer)
 
-    private fun setupHeaderPopupMenu() {
-        val headerListener = BeobTableHeader(
-            host.table(),
-            FilmColumnVisibility.store(),
-            HIDDEN_COLUMNS,
-            BUTTON_COLUMNS,
-            true,
-        ) { ApplicationConfiguration.getInstance().filmTableLineBreak = it }
+        val formattedValueRenderer = FilmFormattedValueCellRenderer(appearance)
+        val actionRenderer = FilmActionCellRenderer(host.downloads(), appearance)
+        val specializedRenderers = mapOf(
+            FilmColumn.SENDER to FilmSenderCellRenderer(appearance),
+            FilmColumn.TITLE to FilmTitleCellRenderer(appearance),
+            FilmColumn.PLAY to actionRenderer,
+            FilmColumn.SAVE to actionRenderer,
+            FilmColumn.BOOKMARK to actionRenderer,
+            FilmColumn.TIME to formattedValueRenderer,
+            FilmColumn.DURATION to formattedValueRenderer,
+            FilmColumn.SIZE to formattedValueRenderer,
+            FilmColumn.GEO to FilmGeoCellRenderer(appearance),
+        )
 
-        host.table().tableHeader.addMouseListener(headerListener)
+        for (viewColumn in 0 until table.columnModel.columnCount) {
+            val tableColumn = table.columnModel.getColumn(viewColumn)
+            tableColumn.cellRenderer = specializedRenderers[FilmColumn.fromIndex(tableColumn.modelIndex)]
+        }
     }
 
     private companion object {
         private const val ACTION_MAP_KEY_PLAY_FILM = "film_abspielen"
         private const val ACTION_MAP_KEY_SAVE_FILM = "download_film"
         private const val ACTION_MAP_KEY_BOOKMARK_FILM = "bookmark_film"
-        private const val ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url"
-        private const val ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd"
         private const val ACTION_MAP_KEY_COPY_KLEIN_URL = "copy_url_klein"
         private const val ACTION_MAP_KEY_MARK_SEEN = "seen"
         private const val ACTION_MAP_KEY_MARK_UNSEEN = "unseen"
-
-        private val HIDDEN_COLUMNS = intArrayOf(
-            FilmColumn.PLAY.index,
-            FilmColumn.SAVE.index,
-            FilmColumn.BOOKMARK.index,
-        )
-        private val BUTTON_COLUMNS = intArrayOf(
-            FilmColumn.PLAY.index,
-            FilmColumn.SAVE.index,
-            FilmColumn.BOOKMARK.index,
-        )
     }
+}
+
+private const val ACTION_MAP_KEY_COPY_NORMAL_URL = "copy_url"
+private const val ACTION_MAP_KEY_COPY_HD_URL = "copy_url_hd"
+
+internal fun installFilmUrlCopyAccelerators(inputMap: InputMap, platformControlKey: Int) {
+    val modifiers = platformControlKey or KeyEvent.SHIFT_DOWN_MASK or KeyEvent.ALT_DOWN_MASK
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, modifiers), ACTION_MAP_KEY_COPY_HD_URL)
+    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, modifiers), ACTION_MAP_KEY_COPY_NORMAL_URL)
 }

@@ -18,7 +18,6 @@
 
 package mediathek.gui.dialogEinstellungen
 
-import ca.odell.glazedlists.swing.GlazedListsSwing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,13 +27,14 @@ import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.filmlisten.FilmCatalog
-import mediathek.filmlisten.FilmeLaden
+import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.messages.FilmListImportTypeChangedEvent
 import mediathek.swing.IconUtils
 import mediathek.tool.*
 import net.engio.mbassy.listener.Handler
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import java.awt.Frame
+import javax.swing.DefaultListModel
 import javax.swing.JCheckBox
 import javax.swing.JOptionPane
 import javax.swing.JTextField
@@ -46,7 +46,7 @@ class PanelFilmlisteLaden(
     inSettingsDialog: Boolean,
     private val owner: Frame,
     private val filmCatalog: FilmCatalog,
-    private val filmListLoader: FilmeLaden,
+    private val filmListLoader: FilmListLoadCoordinator,
 ) : PanelFilmlisteLadenBase() {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -88,12 +88,14 @@ class PanelFilmlisteLaden(
         btnReloadFilmlist.icon = IconUtils.of(FontAwesomeSolid.REDO_ALT)
         btnReloadFilmlist.addActionListener {
             filmCatalog.allFilms.clear()
-            filmListLoader.loadFilmlist("", hasSenderSelectionChanged())
+            filmListLoader.startFilmlistLoad("", hasSenderSelectionChanged())
         }
     }
 
     private fun setupSenderList() {
-        val model = GlazedListsSwing.eventComboBoxModelWithThreadProxyList(SenderListBoxModel.providedSenderList)
+        val model = DefaultListModel<String>().apply {
+            addAll(SenderListBoxModel.providedSenders)
+        }
         senderCheckBoxList.model = model
 
         val selectionModel = senderCheckBoxList.checkBoxListSelectionModel

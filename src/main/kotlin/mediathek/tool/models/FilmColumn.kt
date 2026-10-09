@@ -42,8 +42,6 @@ internal enum class FilmColumn(
     SUBTITLE(12, "UT", Boolean::class.javaObjectType, { it.hasSubtitle() }),
     GEO(13, "Geo", String::class.java, DatenFilm::countriesAsString),
     URL(14, "URL", String::class.java, DatenFilm::urlNormalQuality),
-    DATE_LONG(15, null, Long::class.javaObjectType),
-    REF(16, null, String::class.java, { it }),
     ;
 
     fun title(): String =
@@ -53,9 +51,6 @@ internal enum class FilmColumn(
         valueProvider?.invoke(film) ?: throw IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: $index")
 
     companion object {
-        val PERSISTED_COLUMN_COUNT: Int = entries.size
-        val TABLE_COLUMN_COUNT: Int = DATE_LONG.index
-
         private val byIndex = entries.associateBy(FilmColumn::index)
 
         fun fromIndex(index: Int): FilmColumn =

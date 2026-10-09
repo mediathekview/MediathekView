@@ -27,7 +27,7 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.IoXmlSchreiben
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
-import mediathek.filmeSuchen.ListenerFilmeLaden
+import mediathek.filmlisten.FilmListLoadListener
 import mediathek.gui.actions.*
 import mediathek.gui.bookmark.BookmarkDialog
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen
@@ -44,8 +44,7 @@ import mediathek.logging.LogDialog
 import mediathek.shutdown.ComputerShutdown
 import mediathek.swing.SwingDispatch
 import mediathek.tool.*
-import mediathek.tool.notification.INotificationCenter
-import mediathek.tool.notification.NotificationService
+import mediathek.tool.notification.NotificationBackend
 import mediathek.tool.timer.TimerPool
 import mediathek.update.ProgramUpdateHost
 import net.engio.mbassy.listener.Handler
@@ -58,15 +57,17 @@ import java.awt.event.KeyEvent
 import java.beans.PropertyChangeEvent
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.function.*
-import java.util.function.Function
+import java.util.function.BiConsumer
+import java.util.function.Consumer
+import java.util.function.IntConsumer
+import java.util.function.Supplier
 import javax.swing.*
 
 open class MediathekGui private constructor(
     private val daten: Daten,
-    notificationCenterFactory: Supplier<INotificationCenter>,
+    notificationBackendFactory: () -> NotificationBackend,
     computerShutdown: ComputerShutdown,
-    downloadProgressIndicatorFactory: Function<JFrame, DownloadProgressIndicator>,
+    downloadProgressIndicatorFactory: (JFrame) -> DownloadProgressIndicator,
     darkModeActionPlacement: MainWindowDarkModeActionPlacement,
     toolbarInstaller: MainWindowToolbarInstaller,
     tabPlacementController: MainWindowTabPlacementController,
@@ -88,6 +89,7 @@ open class MediathekGui private constructor(
     private val editBlacklistAction = EditBlacklistAction(this, daten.blacklist, daten.filmCatalog, daten.filmListLoader)
     private val toggleBlacklistAction = ToggleBlacklistAction(daten.blacklist)
     private val selectedListItemsProperty = ListSelectedItemsProperty(0)
+    private val filmTableRowCountProperty = FilmTableRowCountProperty()
     private val tabbedPane = PositionSavingTabbedPane()
     private val jMenuHilfe = JMenu()
     private val settingsAction = SettingsAction()
@@ -120,6 +122,7 @@ open class MediathekGui private constructor(
         daten.programSets,
         daten.filmCatalog,
         daten.abos,
+        daten.replacementRules,
         daten.filmListLoader,
         programSetExporter(),
     )
@@ -130,6 +133,7 @@ open class MediathekGui private constructor(
             daten.filmCatalog,
             daten.filmListLoader,
             daten.blacklist,
+            daten.replacementRules,
             daten.configurationPersistence,
             programSetExporter(),
             this,
@@ -147,6 +151,7 @@ open class MediathekGui private constructor(
             toggleActionFactory = { toggleOnlineSearchTabAction },
             onComponentCreated = { configureClosableOptionalTab(it, toggleOnlineSearchTabAction) },
             initialComponentFactory = { createDeferredTabPlaceholder("Onlinesuche") },
+            dispose = { (it as OnlineSearchPanel).close() },
         )
     }
     private val toggleOnlineSearchTabAction: ToggleOnlineSearchTabAction by lazy(LazyThreadSafetyMode.NONE) {
@@ -167,7 +172,7 @@ open class MediathekGui private constructor(
     private val audiothekTab: MainWindowTab by lazy(LazyThreadSafetyMode.NONE) {
         MainWindowTab(
             "Audiothek",
-            { AudiothekPanel(AudioRepository(), this) },
+            { AudiothekPanel(AudioRepository(), this, daten.notifications) },
             visible = { ApplicationConfiguration.getInstance().audiothekTabVisible },
             toggleActionFactory = { toggleAudiothekTabAction },
             onComponentCreated = { configureClosableOptionalTab(it, toggleAudiothekTabAction) },
@@ -180,14 +185,14 @@ open class MediathekGui private constructor(
         ToggleAudiothekTabAction(tabbedPane, audiothekTab)
     }
     private val logDialog = LogDialog(this)
-    private val notificationCenterFactory = notificationCenterFactory
+    private val notificationBackendFactory = notificationBackendFactory
     private val darkModeActionPlacement = darkModeActionPlacement
     private val toolbarInstaller = toolbarInstaller
     private val tabPlacementController = tabPlacementController
     private val menuPolicy = menuPolicy
     private val menuBuilder by lazy(LazyThreadSafetyMode.NONE) { createMenuBuilder() }
     private val scrollBarConfigurator = scrollBarConfigurator
-    private val downloadProgressIndicator: DownloadProgressIndicator = requireNotNull(downloadProgressIndicatorFactory.apply(this))
+    private val downloadProgressIndicator: DownloadProgressIndicator = downloadProgressIndicatorFactory(this)
     private val startupOrchestrator: MainWindowStartupOrchestrator
     private val platformIntegration: MainWindowPlatformIntegration
     private val programUpdateCoordinator = MainWindowProgramUpdateCoordinator(daten.programSets, programSetExporter(), this)
@@ -198,15 +203,13 @@ open class MediathekGui private constructor(
             daten.downloads,
             contentPane,
             selectedListItemsProperty,
-            ::getFilmTableRowCount,
+            filmTableRowCountProperty,
             ::runOnEventDispatchThreadAndWait,
         )
     private val filmlistLoadCoordinator = MainWindowFilmlistLoadCoordinator(
         this,
         daten.filmCatalog,
         daten.filmListLoader,
-        daten.abos,
-        daten.blacklist,
         statusBarController,
     )
     private val filmlistDownloadProgressListener =
@@ -240,13 +243,13 @@ open class MediathekGui private constructor(
 
     protected constructor(
         daten: Daten,
-        notificationCenterFactory: Supplier<INotificationCenter>,
+        notificationBackendFactory: () -> NotificationBackend,
         computerShutdown: ComputerShutdown,
         darkModeActionPlacement: MainWindowDarkModeActionPlacement,
         systemTrayController: MainWindowSystemTrayController,
     ) : this(
         daten,
-        notificationCenterFactory,
+        notificationBackendFactory,
         computerShutdown,
         NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY,
         darkModeActionPlacement,
@@ -262,9 +265,9 @@ open class MediathekGui private constructor(
 
     protected constructor(
         daten: Daten,
-        notificationCenterFactory: Supplier<INotificationCenter>,
+        notificationBackendFactory: () -> NotificationBackend,
         computerShutdown: ComputerShutdown,
-        downloadProgressIndicatorFactory: Function<JFrame, DownloadProgressIndicator>,
+        downloadProgressIndicatorFactory: (JFrame) -> DownloadProgressIndicator,
         toolbarInstaller: MainWindowToolbarInstaller,
         tabPlacementController: MainWindowTabPlacementController,
         menuPolicy: MainWindowMenuPolicy,
@@ -275,7 +278,7 @@ open class MediathekGui private constructor(
         afterMenusInitialized: Consumer<MainWindowQuitHost>,
     ) : this(
         daten,
-        notificationCenterFactory,
+        notificationBackendFactory,
         computerShutdown,
         downloadProgressIndicatorFactory,
         MainWindowDarkModeActionPlacement.TOOL_BAR,
@@ -291,13 +294,13 @@ open class MediathekGui private constructor(
 
     protected constructor(
         daten: Daten,
-        notificationCenterFactory: Supplier<INotificationCenter>,
+        notificationBackendFactory: () -> NotificationBackend,
         computerShutdown: ComputerShutdown,
-        downloadProgressIndicatorFactory: Function<JFrame, DownloadProgressIndicator>,
+        downloadProgressIndicatorFactory: (JFrame) -> DownloadProgressIndicator,
         darkModeActionPlacement: MainWindowDarkModeActionPlacement,
     ) : this(
         daten,
-        notificationCenterFactory,
+        notificationBackendFactory,
         computerShutdown,
         downloadProgressIndicatorFactory,
         darkModeActionPlacement,
@@ -318,7 +321,7 @@ open class MediathekGui private constructor(
             daten.downloads,
             loadFilmListAction,
         ) { filmlistLoadCoordinator.performFilmListLoadOperation(false) }
-        val filmListListener: ListenerFilmeLaden = MainWindowFilmListListener(
+        val filmListListener: FilmListLoadListener = MainWindowFilmListListener(
             SwingDispatch,
             { loadFilmListAction },
             { daten.configurationPersistence.saveAll() },
@@ -344,6 +347,7 @@ open class MediathekGui private constructor(
             this,
             loadFilmListAction,
             { setupSystemTray() },
+            daten.notifications,
             systemTrayController
         )
         startupOrchestrator = createStartupOrchestrator()
@@ -394,7 +398,6 @@ open class MediathekGui private constructor(
 
         createCommonToolBar()
         installToolBar()
-        mapFilmUrlCopyCommands()
 
         SplashScreenLifecycle.update(UIProgressState.FINISHED)
     }
@@ -426,6 +429,7 @@ open class MediathekGui private constructor(
     override fun dispose() {
         if (disposed.compareAndSet(false, true)) {
             mainWindowLifecycle.close()
+            tabRegistry.disposeTabs()
             filmlistLoadCoordinator.close()
             closeFilmlistDownloadProgress()
             filmlistReloadCoordinator.close()
@@ -445,10 +449,6 @@ open class MediathekGui private constructor(
 
     override fun ownerFrame(): JFrame = this
 
-    override fun showMainWindow() {
-        runOnEventDispatchThread { isVisible = true }
-    }
-
     override fun toggleMainWindowVisibility() {
         runOnEventDispatchThread {
             isVisible = !isVisible
@@ -466,8 +466,6 @@ open class MediathekGui private constructor(
     override fun repaintMainWindow() {
         runOnEventDispatchThread { repaint() }
     }
-
-    private fun getFilmTableRowCount(): Int = tabs().films.tableRowCount
 
     private fun getCurrentZeitraumFilterValue(): String = tabs().films.currentZeitraumFilterValue
 
@@ -511,28 +509,6 @@ open class MediathekGui private constructor(
 
     private fun performGeoCountryStartupCheck() {
         GeoCountryStartupCheck(daten.blacklist, this, { performAustrianVlcCheck() }).perform()
-    }
-
-    private fun mapFilmUrlCopyCommands() {
-        val inputMap = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        inputMap.put(
-            KeyStroke.getKeyStroke(
-                KeyEvent.VK_H,
-                GuiFunktionen.getPlatformControlKey() or KeyEvent.SHIFT_DOWN_MASK or KeyEvent.ALT_DOWN_MASK,
-            ),
-            ACTION_MAP_KEY_COPY_HQ_URL,
-        )
-        inputMap.put(
-            KeyStroke.getKeyStroke(
-                KeyEvent.VK_N,
-                GuiFunktionen.getPlatformControlKey() or KeyEvent.SHIFT_DOWN_MASK or KeyEvent.ALT_DOWN_MASK,
-            ),
-            ACTION_MAP_KEY_COPY_NORMAL_URL,
-        )
-
-        val actionMap = jMenuBar.actionMap
-        actionMap.put(ACTION_MAP_KEY_COPY_HQ_URL, tabs().films.copyHqUrlToClipboardAction())
-        actionMap.put(ACTION_MAP_KEY_COPY_NORMAL_URL, tabs().films.copyNormalUrlToClipboardAction())
     }
 
     private fun setupScrollBarWidth() {
@@ -627,7 +603,7 @@ open class MediathekGui private constructor(
 
     private fun setupNotificationCenter() {
         val showNotifications = ApplicationConfiguration.getInstance().showNotifications
-        NotificationService.configure(notificationCenterFactory, showNotifications)
+        daten.notifications.configure(notificationBackendFactory, showNotifications)
     }
 
     @Handler
@@ -637,7 +613,8 @@ open class MediathekGui private constructor(
     }
 
     private fun closeNotificationCenter() {
-        NotificationService.close()
+        daten.watchlist.close()
+        daten.notifications.close()
     }
 
     private fun setupShutdownHook() {
@@ -660,6 +637,7 @@ open class MediathekGui private constructor(
         }
     }
 
+    @Suppress("UsePropertyAccessSyntax")
     private fun createMenuBar() {
         setJMenuBar(menuBuilder.createMenuBar())
         createDarkModeMenuAction()
@@ -675,6 +653,7 @@ open class MediathekGui private constructor(
             daten.filmCatalog,
             daten.abos,
             daten.blacklist,
+            daten.replacementRules,
             daten.bookmarks,
             programSetExporter(),
             jMenuBar,
@@ -803,8 +782,10 @@ open class MediathekGui private constructor(
             daten.filmCatalog,
             daten.abos,
             daten.blacklist,
+            daten.watchlist,
             daten.bookmarks,
             daten.downloads,
+            daten.replacementRules,
             daten.filmListLoader,
             programSetExporter(),
             this,
@@ -813,6 +794,7 @@ open class MediathekGui private constructor(
             showFilmInformationAction,
             showLuceneTutorialAction,
             { setSelectedListItemsCount(it) },
+            filmTableRowCountProperty::publish,
             { film: DatenFilm? -> dialogCoordinator.updateFilmInfoCurrentFilm(film) }
         )
 
@@ -822,6 +804,7 @@ open class MediathekGui private constructor(
             daten.filmCatalog,
             daten.abos,
             daten.downloads,
+            daten.replacementRules,
             daten.filmListLoader,
             daten.configurationPersistence,
             programSetExporter(),
@@ -998,10 +981,8 @@ open class MediathekGui private constructor(
         private const val DISABLED_ACTION_KEY = "none"
         private const val MIN_WINDOW_WIDTH = 800
         private const val MIN_WINDOW_HEIGHT = 600
-        private const val ACTION_MAP_KEY_COPY_HQ_URL = "COPY_HQ_URL"
-        private const val ACTION_MAP_KEY_COPY_NORMAL_URL = "COPY_NORMAL_URL"
-        private val NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY =
-            Function<JFrame, DownloadProgressIndicator> { NoDownloadProgressIndicator }
+        private val NO_DOWNLOAD_PROGRESS_INDICATOR_FACTORY: (JFrame) -> DownloadProgressIndicator =
+            { NoDownloadProgressIndicator }
         private val DEFAULT_TOOLBAR_INSTALLER = object : MainWindowToolbarInstaller {
             override fun configure(commonToolBar: JToolBar) {
                 commonToolBar.isFloatable = true

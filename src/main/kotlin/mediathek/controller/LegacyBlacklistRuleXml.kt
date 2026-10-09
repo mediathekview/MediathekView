@@ -54,7 +54,7 @@ object LegacyBlacklistRuleXml {
                 BlacklistTags.SENDER -> rule.sender = text
                 BlacklistTags.THEMA -> rule.thema = text
                 BlacklistTags.TITEL -> rule.titel = text
-                BlacklistTags.THEMA_TITEL -> rule.thema_titel = text
+                BlacklistTags.THEMA_TITEL -> rule.topicTitle = text
             }
         } catch (ex: XMLStreamException) {
             logger.error("Error reading blacklist rule entry", ex)

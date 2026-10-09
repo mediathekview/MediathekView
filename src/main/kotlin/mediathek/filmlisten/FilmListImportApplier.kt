@@ -18,23 +18,22 @@
 
 package mediathek.filmlisten
 
-import mediathek.daten.DatenFilm
 import mediathek.daten.ListeFilme
 import org.apache.logging.log4j.LogManager
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 internal object FilmListImportApplier {
-    fun collectFilmUrls(listeFilme: ListeFilme): Set<String> =
-        listeFilme.parallelStream()
-            .map { film -> film.urlNormalQuality }
-            .toList()
-            .toHashSet()
+    fun collectFilmUrlKeys(listeFilme: ListeFilme): Set<String> =
+        synchronized(listeFilme) {
+            HashSet<String>(listeFilme.size + 1, 1f).apply {
+                listeFilme.forEach { film -> add(film.storedNormalQualityUrl) }
+            }
+        }
 
-    fun applyImportedFilms(listeFilme: ListeFilme, diffListe: ListeFilme, oldFilmUrls: Set<String>) {
+    fun applyImportedFilms(listeFilme: ListeFilme, diffListe: ListeFilme, oldFilmUrlKeys: Set<String>) {
         val readDate = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
             .format(LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()))
 
@@ -42,33 +41,34 @@ internal object FilmListImportApplier {
         if (!diffListe.isEmpty()) {
             logger.info("Liste Diff gelesen am: {}", readDate)
             logger.info("  Liste Diff erstellt am: {}", diffListe.metaData.generationDateTimeAsString)
-            logger.info("  Anzahl Filme: {}", diffListe.size)
+            logFilmCount(diffListe.size)
 
             listeFilme.updateFromFilmList(diffListe)
             listeFilme.metaData = diffListe.metaData
-            Collections.sort(listeFilme)
+            listeFilme.sort()
             diffListe.clear()
         } else {
             logger.info("Liste Kompl. gelesen am: {}", readDate)
             logger.info("  Liste Kompl erstellt am: {}", listeFilme.metaData.generationDateTimeAsString)
-            logger.info("  Anzahl Filme: {}", listeFilme.size)
+            logFilmCount(listeFilme.size)
         }
 
-        findAndMarkNewFilms(listeFilme, oldFilmUrls)
+        findAndMarkNewFilms(listeFilme, oldFilmUrlKeys)
     }
 
     /**
      * Search through history and mark new films.
      */
-    private fun findAndMarkNewFilms(listeFilme: ListeFilme, oldFilmUrls: Set<String>) {
-        // reset all current new films to false
-        listeFilme.parallelStream()
-            .filter(DatenFilm::isNew)
-            .forEach { film -> film.isNew = false }
-        // mark new entries
-        listeFilme.parallelStream()
-            .filter { film -> film.urlNormalQuality !in oldFilmUrls }
-            .forEach { film -> film.isNew = true }
+    private fun findAndMarkNewFilms(listeFilme: ListeFilme, oldFilmUrlKeys: Set<String>) {
+        synchronized(listeFilme) {
+            listeFilme.forEach { film ->
+                film.isNew = film.storedNormalQualityUrl !in oldFilmUrlKeys
+            }
+        }
+    }
+
+    private fun logFilmCount(size: Int) {
+        logger.info("  Anzahl Filme: {}", size)
     }
 
     private val logger = LogManager.getLogger(FilmListImportApplier::class.java)

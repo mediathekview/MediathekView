@@ -66,7 +66,7 @@ private fun getSuffixEnd(fileName: String, lastSeparator: Int): Int {
 
 private fun looksLikeUrl(fileName: String, delimiterIndex: Int): Boolean {
     val schemeIndex = fileName.indexOf("://")
-    return schemeIndex > 0 && schemeIndex < delimiterIndex
+    return schemeIndex in 1..<delimiterIndex
 }
 
 fun looksLikeExtension(suffix: String): Boolean =

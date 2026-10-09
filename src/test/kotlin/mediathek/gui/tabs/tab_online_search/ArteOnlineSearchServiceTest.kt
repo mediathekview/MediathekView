@@ -134,6 +134,26 @@ class ArteOnlineSearchServiceTest {
     }
 
     @Test
+    fun `search resolves German WebVTT subtitles from ARTE HLS manifests`() = runBlocking {
+        val masterUrl = "https://manifest-arte.akamaized.net/118267-006-A.m3u8"
+        val subtitlePlaylistUrl = "https://manifest-arte.akamaized.net/subtitles/de.m3u8"
+        val httpClient = FakeOnlineSearchHttpClient(
+            mapOf(
+                "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
+                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(hasGermanSubtitles = true),
+                "$OPA_STREAM_URL/118267-006-A/SHOW/de" to arteOpaStreamsJson(),
+                masterUrl to arteMasterPlaylist(subtitlePlaylistUrl),
+                subtitlePlaylistUrl to arteSubtitlePlaylist("de/118267-006-A.vtt"),
+            ),
+        )
+        val service = testArteService(httpClient)
+
+        val result = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort")).results.single()
+
+        assertEquals("https://manifest-arte.akamaized.net/subtitles/de/118267-006-A.vtt", result.subtitleUrl)
+    }
+
+    @Test
     fun `search builds config url from id when player config is absent`() = runBlocking {
         val httpClient = FakeOnlineSearchHttpClient(
             mapOf(
@@ -354,11 +374,17 @@ private fun arteConfigJson(
     id: String = "118267-006-A",
     title: String = "Re: Tatort Kirche - Betroffene klagen an",
     streamUrl: String? = "https://manifest-arte.akamaized.net/118267-006-A.m3u8",
+    hasGermanSubtitles: Boolean = false,
 ): String {
     val streams = if (streamUrl == null) {
         "[]"
     } else {
-        """[{ "url": "$streamUrl", "versions": [{ "code": "VA", "audioDescription": false }], "mainQuality": { "code": "XQ" } }]"""
+        val subtitleVersion = if (hasGermanSubtitles) {
+            """, { "code": "VA-STMA", "subtitleLanguage": "de", "closedCaptioning": true }"""
+        } else {
+            ""
+        }
+        """[{ "url": "$streamUrl", "versions": [{ "code": "VA", "audioDescription": false }$subtitleVersion], "mainQuality": { "code": "XQ" } }]"""
     }
     return """
         {
@@ -379,6 +405,19 @@ private fun arteConfigJson(
         }
     """.trimIndent()
 }
+
+private fun arteMasterPlaylist(subtitlePlaylistUrl: String): String = """
+    #EXTM3U
+    #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subtitle_0",LANGUAGE="de",NAME="Deutsch",URI="$subtitlePlaylistUrl"
+""".trimIndent()
+
+private fun arteSubtitlePlaylist(subtitleFile: String): String = """
+    #EXTM3U
+    #EXT-X-PLAYLIST-TYPE:VOD
+    #EXTINF:1815,
+    $subtitleFile
+    #EXT-X-ENDLIST
+""".trimIndent()
 
 private fun arteOpaStreamsJson(
     id: String = "118267-006-A",

@@ -33,6 +33,7 @@ import java.awt.event.MouseEvent
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.swing.*
 import javax.swing.event.ListSelectionListener
 import javax.swing.event.TableColumnModelEvent
@@ -79,6 +80,7 @@ class AudiothekTable(
     private var externalSearchEntries: List<AudioEntry> = emptyList()
     private var currentFilterQuery = ""
     private var restoringState = false
+    private var seenRows = BitSet()
 
     init {
         autoCreateRowSorter = false
@@ -86,7 +88,7 @@ class AudiothekTable(
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
         fillsViewportHeight = true
         rowHeight = Konstanten.TABLE_DEFAULT_ROW_HEIGHT
-        setAutoResizeMode(AUTO_RESIZE_OFF)
+        autoResizeMode = AUTO_RESIZE_OFF
 
         configureSorting()
         configureColumns()
@@ -109,7 +111,7 @@ class AudiothekTable(
         externalSearchEntries = emptyList()
         luceneIndex.close()
         luceneIndex = preparedRows.luceneIndex
-        audioTableModel.setRows(preparedRows.filteredEntries)
+        setTableRows(preparedRows.filteredEntries)
     }
 
     fun setExternalSearchEntries(entries: List<AudioEntry>) {
@@ -150,11 +152,11 @@ class AudiothekTable(
         currentFilterQuery = query
         val normalized = query.trim()
         if (normalized.isEmpty()) {
-            audioTableModel.setRows(allEntries)
+            setTableRows(allEntries)
             return
         }
         val localResults = luceneIndex.search(normalized, visibleSearchFields())
-        audioTableModel.setRows(mergeSearchResults(localResults, externalSearchEntries))
+        setTableRows(mergeSearchResults(localResults, externalSearchEntries))
     }
 
     fun selectFirstRow() {
@@ -164,6 +166,7 @@ class AudiothekTable(
     }
 
     fun refreshSeenState() {
+        seenRows = buildSeenRows()
         repaint()
     }
 
@@ -171,12 +174,32 @@ class AudiothekTable(
         val component = super.prepareRenderer(renderer, row, column)
         if (!isRowSelected(row)) {
             component.background = defaultRowBackground(row)
-            val entry = audioTableModel.getEntry(convertRowIndexToModel(row))
-            if (entry != null && seenState.hasBeenSeen(entry)) {
+            val modelRow = convertRowIndexToModel(row)
+            if (seenRows[modelRow]) {
                 component.background = MVColor.FILM_HISTORY.color
             }
         }
         return component
+    }
+
+    private fun setTableRows(entries: List<AudioEntry>) {
+        audioTableModel.setRows(entries)
+        refreshSeenState()
+    }
+
+    private fun buildSeenRows(): BitSet {
+        val rows = BitSet(audioTableModel.rowCount)
+        if (!seenState.isPrepared) {
+            return rows
+        }
+
+        for (row in 0 until audioTableModel.rowCount) {
+            val entry = audioTableModel.getEntry(row)
+            if (entry != null && seenState.hasBeenSeen(entry)) {
+                rows.set(row)
+            }
+        }
+        return rows
     }
 
     private fun defaultRowBackground(row: Int): java.awt.Color {

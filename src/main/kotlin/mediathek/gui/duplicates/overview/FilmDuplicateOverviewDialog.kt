@@ -6,15 +6,18 @@ package mediathek.gui.duplicates.overview
 
 import ca.odell.glazedlists.BasicEventList
 import ca.odell.glazedlists.EventList
-import ca.odell.glazedlists.swing.GlazedListsSwing
+import ca.odell.glazedlists.swing.AdvancedTableModel
+import ca.odell.glazedlists.swing.eventTableModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.daten.DatenFilm
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsTableFormat
 import mediathek.tool.EscapeKeyHandler
+import org.apache.logging.log4j.LogManager
 import java.awt.Window
 import javax.swing.ToolTipManager
+import javax.swing.table.DefaultTableModel
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeSelectionModel
@@ -25,7 +28,9 @@ class FilmDuplicateOverviewDialog(
 ) : FilmDuplicateOverviewDialogBase(owner) {
     private val dialogScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val filmList: EventList<DatenFilm> = BasicEventList()
+    private lateinit var tableModel: AdvancedTableModel<DatenFilm>
     private var selectionJob: Job? = null
+    private var disposed = false
 
     init {
         EscapeKeyHandler.installHandler(this, this::dispose)
@@ -36,16 +41,30 @@ class FilmDuplicateOverviewDialog(
     }
 
     override fun dispose() {
+        if (disposed) return
+        disposed = true
         dialogScope.cancel()
-        super.dispose()
+        ToolTipManager.sharedInstance().unregisterComponent(tree)
+        table.model = DefaultTableModel()
+        try {
+            disposeResource("duplicate overview table model", tableModel::dispose)
+            disposeResource("duplicate overview film list", filmList::close)
+        } finally {
+            super.dispose()
+        }
     }
 
     private fun setupTable() {
-        table.model = GlazedListsSwing.eventTableModelWithThreadProxyList(
-            filmList,
+        tableModel = filmList.eventTableModel(
             DuplicateFilmDetailsTableFormat(),
         )
+        table.model = tableModel
         resetColumnWidths()
+    }
+
+    private fun disposeResource(name: String, dispose: () -> Unit) {
+        runCatching(dispose)
+            .onFailure { failure -> logger.warn("Failed to dispose {}", name, failure) }
     }
 
     private fun setupTree() {
@@ -170,5 +189,6 @@ class FilmDuplicateOverviewDialog(
         private const val ROOT_NODE_LABEL = "Filmduplikate"
         private const val DEFAULT_COLUMN_WIDTH = 90
         private val PENALIZED_SENDERS = setOf("ARD", "ZDF")
+        private val logger = LogManager.getLogger()
     }
 }

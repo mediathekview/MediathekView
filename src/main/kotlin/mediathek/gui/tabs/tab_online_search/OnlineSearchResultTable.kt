@@ -3,13 +3,15 @@ package mediathek.gui.tabs.tab_online_search
 import ca.odell.glazedlists.EventList
 import ca.odell.glazedlists.SortedList
 import ca.odell.glazedlists.gui.AbstractTableComparatorChooser
-import ca.odell.glazedlists.swing.GlazedListsSwing
+import ca.odell.glazedlists.swing.AdvancedTableModel
 import ca.odell.glazedlists.swing.TableComparatorChooser
+import ca.odell.glazedlists.swing.eventTableModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import mediathek.config.application.ApplicationConfiguration
 import javax.swing.JTable
 import javax.swing.ListSelectionModel
+import javax.swing.table.DefaultTableModel
 import javax.swing.table.TableColumn
 
 class OnlineSearchResultTable(
@@ -17,14 +19,17 @@ class OnlineSearchResultTable(
     private val stateStore: OnlineSearchTableStateStore = ApplicationOnlineSearchTableStateStore,
 ) : JTable() {
     private val sortedResults = SortedList(source, null)
-    private val allColumns = mutableListOf<TableColumn>()
-
-    init {
-        model = GlazedListsSwing.eventTableModelWithThreadProxyList(
-            sortedResults,
+    private val eventTableModel: AdvancedTableModel<OnlineSearchResult> =
+        sortedResults.eventTableModel(
             OnlineSearchResultTableFormat(),
         )
-        TableComparatorChooser.install(
+    private val comparatorChooser: TableComparatorChooser<OnlineSearchResult>
+    private val allColumns = mutableListOf<TableColumn>()
+    private var disposed = false
+
+    init {
+        model = eventTableModel
+        comparatorChooser = TableComparatorChooser.install(
             this,
             sortedResults,
             AbstractTableComparatorChooser.SINGLE_COLUMN,
@@ -35,6 +40,16 @@ class OnlineSearchResultTable(
         setDefaultColumnWidths()
         captureColumns()
         restoreColumnState()
+    }
+
+    fun dispose() {
+        if (disposed) return
+        disposed = true
+        rowSorter = null
+        model = DefaultTableModel()
+        comparatorChooser.dispose()
+        eventTableModel.dispose()
+        sortedResults.dispose()
     }
 
     fun selectedResult(): OnlineSearchResult? {
