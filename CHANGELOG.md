@@ -8,6 +8,7 @@
 - **BUGFIX:** Die App stürzt nicht mehr unter JDK 26 aufgrund der JIde-Bibliothek ab.
 - **BUGFIX:** Film-Shortcuts wie `g`, `u` und die URL-Kopierbefehle werden nicht mehr fälschlicherweise in anderen Tabs angewendet.
 - **BUGFIX:** Onlinesuche erkennt nun auch die höchste Qualitätsstufe und Untertitel.
+- **BUGFIX:** Abo-Import schlägt nicht mehr bei URLs fehl, die `[]` beinhalten.
 - viele interne Änderungen
 
 # **15.0.0**
