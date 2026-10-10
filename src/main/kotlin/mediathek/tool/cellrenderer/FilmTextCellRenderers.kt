@@ -108,7 +108,9 @@ internal class FilmSenderCellRenderer(
         arteLocaleCode = null
         if (appearance.showSenderIcons) {
             setSenderIcon(film.sender, getSenderCellDimension(table, row, column), isSelected)
-            arteLocaleCode = ArteLocaleBadge.localeCode(film.sender)
+            if (!ApplicationConfiguration.getInstance().localSenderIcons) {
+                arteLocaleCode = ArteLocaleBadge.localeCode(film.sender)
+            }
         }
         return this
     }

@@ -26,11 +26,13 @@ import mediathek.daten.DatenFilm
 import mediathek.gui.messages.SenderIconStyleChangedEvent
 import mediathek.gui.tabs.tab_film.table.FilmTableAppearance
 import mediathek.tool.MessageBus
+import mediathek.tool.models.FilmColumn
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.awt.Color
+import java.awt.Component
 import java.awt.Dimension
 import java.awt.Rectangle
 import java.awt.image.BufferedImage
@@ -102,11 +104,11 @@ class ArteLocaleBadgeTest {
     }
 
     @Test
-    fun `film sender renderer paints localized ARTE differently from plain ARTE`() {
+    fun `film sender renderer adds locale badge to Wikipedia ARTE icon`() {
         val configuration = ApplicationConfiguration.getInstance()
         val previousLocalSenderIcons = configuration.localSenderIcons
         try {
-            configuration.localSenderIcons = true
+            configuration.localSenderIcons = false
             MessageBus.messageBus.publish(SenderIconStyleChangedEvent())
 
             val localizedImage = renderSenderCell("ARTE.DE")
@@ -124,7 +126,32 @@ class ArteLocaleBadgeTest {
         }
     }
 
-    private fun renderSenderCell(sender: String): BufferedImage {
+    @Test
+    fun `film sender renderer does not add locale badge to old ARTE icon`() {
+        val configuration = ApplicationConfiguration.getInstance()
+        val previousLocalSenderIcons = configuration.localSenderIcons
+        try {
+            configuration.localSenderIcons = true
+            MessageBus.messageBus.publish(SenderIconStyleChangedEvent())
+
+            val actual = renderSenderCell("ARTE.DE")
+            val iconOnly = renderSenderCell("ARTE.DE", SenderIconOnlyRenderer())
+
+            for (x in 0 until CELL_WIDTH) {
+                for (y in 0 until CELL_HEIGHT) {
+                    assertEquals(iconOnly.getRGB(x, y), actual.getRGB(x, y), "Unexpected badge pixel at ($x, $y)")
+                }
+            }
+        } finally {
+            configuration.localSenderIcons = previousLocalSenderIcons
+            MessageBus.messageBus.publish(SenderIconStyleChangedEvent())
+        }
+    }
+
+    private fun renderSenderCell(
+        sender: String,
+        renderer: FilmCellRenderer = FilmSenderCellRenderer(FilmTableAppearance(false, true, false)),
+    ): BufferedImage {
         val film = DatenFilm().apply { this.sender = sender }
         val films = BasicEventList<DatenFilm>().apply { add(film) }
         val model = films.eventTableModel(SENDER_TABLE_FORMAT)
@@ -133,7 +160,6 @@ class ArteLocaleBadgeTest {
                 rowHeight = CELL_HEIGHT
                 columnModel.getColumn(0).width = CELL_WIDTH
             }
-            val renderer = FilmSenderCellRenderer(FilmTableAppearance(false, true, false))
             renderer.getTableCellRendererComponent(table, sender, false, false, 0, 0)
             renderer.size = Dimension(CELL_WIDTH, CELL_HEIGHT)
             val image = BufferedImage(CELL_WIDTH, CELL_HEIGHT, BufferedImage.TYPE_INT_ARGB)
@@ -147,6 +173,21 @@ class ArteLocaleBadgeTest {
         } finally {
             model.dispose()
             films.dispose()
+        }
+    }
+
+    private class SenderIconOnlyRenderer : FilmCellRenderer(FilmTableAppearance(false, true, false)) {
+        override fun renderFilmCell(
+            table: JTable,
+            value: Any?,
+            isSelected: Boolean,
+            row: Int,
+            column: Int,
+            filmColumn: FilmColumn,
+            film: DatenFilm,
+        ): Component {
+            setSenderIcon(film.sender, getSenderCellDimension(table, row, column), isSelected)
+            return this
         }
     }
 
