@@ -30,6 +30,7 @@ import org.sqlite.SQLiteConfig
 import org.sqlite.SQLiteDataSource
 import java.io.IOException
 import java.net.URI
+import java.net.URISyntaxException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -189,6 +190,8 @@ class AboHistoryController(
             uri.isAbsolute &&
                 (uri.scheme.equals("http", ignoreCase = true) || uri.scheme.equals("https", ignoreCase = true)) &&
                 !uri.host.isNullOrBlank()
+        } catch (_: URISyntaxException) {
+            false
         } catch (_: IllegalArgumentException) {
             false
         }

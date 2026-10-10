@@ -37,6 +37,7 @@ internal class AboHistoryControllerTest {
             legacyFile,
             """
                 02.11.2020 |#| Thema A |#| Titel A  |###|  https://example.org/a.mp4
+                02.11.2020 |#| Thema A |#| Titel A  |###|  https://example.org/VO-STE[ESP].mp4
                 02.11.2020 |#| Thema B |#| Titel B  |###|  https://example.org/b.mp4
                 02.11.2020 |#| Thema B |#| Titel B  |###|  https://example.org/b.mp4
                 invalid line
@@ -55,6 +56,7 @@ internal class AboHistoryControllerTest {
         assertEquals(2, controller.getDataList().size)
         assertTrue(controller.urlExists("https://example.org/a.mp4"))
         assertTrue(controller.urlExists("https://example.org/b.mp4"))
+        assertFalse(controller.urlExists("https://example.org/VO-STE[ESP].mp4"))
         assertFalse(controller.urlExists("https://example.org/c.mp4"))
     }
 
