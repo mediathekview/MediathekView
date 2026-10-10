@@ -44,7 +44,10 @@ private val DEFAULT_DIMENSION = Dimension(500, 100)
 private val LUCENE_DEFAULT_DIMENSION = Dimension(700, 100)
 private const val SEARCHMODE_PROPERTY_STRING = "searchMode"
 
-abstract class SearchField(protected val host: Host) : JTextField("", 40) {
+abstract class SearchField(
+    protected val host: Host,
+    historyMode: SearchControlFieldMode?,
+) : JTextField("", 40) {
     interface Host {
         val showLuceneTutorialAction: Action
 
@@ -55,10 +58,12 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
 
     private val pcs = PropertyChangeSupport(this)
     private var currentSearchMode: SearchControlFieldMode? = null
+    private val searchHistoryButton = SearchHistoryButton(historyMode)
 
     init {
         maximumSize = DEFAULT_DIMENSION
         putClientProperty(FlatClientProperties.TEXT_FIELD_SHOW_CLEAR_BUTTON, true)
+        putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_COMPONENT, searchHistoryButton)
         putClientProperty("JTextField.clearCallback", Consumer<JTextComponent> { clearSearchField() })
 
         addKeyListener(EscapeKeyAdapter())
@@ -75,7 +80,14 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
 
     protected abstract fun createTrailingComponents()
 
-    protected abstract fun performSearch()
+    private fun performSearch() {
+        val searchText = text
+        if (searchText.isNotEmpty()) {
+            searchHistoryButton.addHistoryEntry(searchText)
+        }
+
+        host.loadTable(true)
+    }
 
     protected fun clearSearchField() {
         text = ""
@@ -132,7 +144,7 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
             popupMenu.add(miClearHistory)
             popupMenu.add(miEditHistory)
             historyList.withReadLock {
-                if (!historyList.isEmpty()) {
+                if (historyList.isNotEmpty()) {
                     popupMenu.addSeparator()
                     for (item in historyList) {
                         val historyItem = JMenuItem(item)
@@ -216,15 +228,12 @@ abstract class SearchField(protected val host: Host) : JTextField("", 40) {
     }
 }
 
-class LuceneSearchField(host: Host) : SearchField(host) {
-    private val luceneSearchHistoryButton = SearchHistoryButton(SearchControlFieldMode.LUCENE)
-
+class LuceneSearchField(host: Host) : SearchField(host, SearchControlFieldMode.LUCENE) {
     init {
         maximumSize = LUCENE_DEFAULT_DIMENSION
         setSearchMode(SearchControlFieldMode.LUCENE)
 
         putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Lucene Search Query")
-        putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_COMPONENT, luceneSearchHistoryButton)
     }
 
     override fun createTrailingComponents() {
@@ -236,25 +245,12 @@ class LuceneSearchField(host: Host) : SearchField(host) {
         searchToolbar.add(luceneButton)
         putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT, searchToolbar)
     }
-
-    override fun performSearch() {
-        val searchText = text
-        if (searchText.isNotEmpty()) {
-            luceneSearchHistoryButton.addHistoryEntry(searchText)
-        }
-
-        host.loadTable(true)
-    }
 }
 
-class RegularSearchField(host: Host) : SearchField(host) {
-    private val regularSearchHistoryButton = SearchHistoryButton(null)
-
+class RegularSearchField(host: Host) : SearchField(host, null) {
     init {
         addSearchModeChangeListener { setupHelperTexts() }
         setupPlaceholderText()
-
-        putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_COMPONENT, regularSearchHistoryButton)
 
         installDocumentListener()
     }
@@ -266,15 +262,6 @@ class RegularSearchField(host: Host) : SearchField(host) {
         } else {
             setSearchMode(SearchControlFieldMode.THEMA_TITEL)
         }
-    }
-
-    override fun performSearch() {
-        val searchText = text
-        if (searchText.isNotEmpty()) {
-            regularSearchHistoryButton.addHistoryEntry(searchText)
-        }
-
-        host.loadTable(true)
     }
 
     private fun installDocumentListener() {
