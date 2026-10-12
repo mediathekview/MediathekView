@@ -6,6 +6,7 @@ import mediathek.tool.FileSize
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 
 internal class DatenDownloadTest {
 
@@ -192,7 +193,7 @@ internal class DatenDownloadTest {
         }
         val programSet = DatenPset("Set").apply {
             zielDateiname = "%s-%t-%T.%S"
-            zielPfad = "/downloads/%s"
+            zielPfad = Path.of("/downloads", "%s").toString()
             addProg(DatenProg("Program", "program", "--target **", false.toString(), false.toString()))
         }
 
@@ -210,8 +211,9 @@ internal class DatenDownloadTest {
         )
 
         assertEquals("Sender One-Topic One-Title One.mp4", target.fileName)
-        assertEquals("/downloads/Sender One/Topic One", target.path)
-        assertEquals("/downloads/Sender One/Topic One/Sender One-Topic One-Title One.mp4", target.pathFileName)
+        val expectedPath = Path.of("/downloads", "Sender One", "Topic One")
+        assertEquals(expectedPath.toString(), target.path)
+        assertEquals(expectedPath.resolve("Sender One-Topic One-Title One.mp4").toString(), target.pathFileName)
     }
 
     @Test
