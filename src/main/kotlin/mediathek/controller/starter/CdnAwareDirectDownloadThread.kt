@@ -69,9 +69,23 @@ class CdnAwareDirectDownloadThread(
     private val start = checkNotNull(datenDownload.runtime.runState)
     private val rateLimiter = ByteRateLimiter(downloadLimit())
     private val messageBus: MBassador<BaseEvent> = MessageBus.messageBus
+    private val downloadPool = ConnectionPool()
+    private val routeSelector = DownloadRouteSelector(
+        MVHttpClient.httpClient.dns,
+        downloadPool,
+        { previous, address ->
+            if (previous == null) logger.info("CDN-aware download connected to {}", address)
+            else logger.info("CDN-aware download route changed from {} to {}", previous, address)
+        },
+        { address -> logger.warn("CDN-aware download retry preferring another address over {}", address) },
+    )
+    private val rangeValidator = DownloadRangeValidator()
     private val client: OkHttpClient = MVHttpClient.httpClient.newBuilder()
         .protocols(listOf(Protocol.HTTP_1_1))
         .dispatcher(dispatcher)
+        .connectionPool(downloadPool)
+        .dns(routeSelector)
+        .eventListenerFactory(routeSelector.eventListenerFactory)
         .build()
 
     private var state = HttpDownloadState.DOWNLOAD
@@ -172,6 +186,7 @@ class CdnAwareDirectDownloadThread(
             if (!response.isSuccessful) {
                 return -1
             }
+            rangeValidator.rememberEntity(response)
 
             val contentSize = FileSize.getContentLength(response)
             return if (contentSize < 300_000) -1 else contentSize
@@ -187,6 +202,7 @@ class CdnAwareDirectDownloadThread(
                 if (!ex.isDownloadTimeout() || retryCount >= MAX_HEAD_TIMEOUT_RETRIES) {
                     throw ex
                 }
+                routeSelector.recordTimeout()
                 retryCount++
                 logger.warn("HEAD request timed out (retry {}/{})", retryCount, MAX_HEAD_TIMEOUT_RETRIES, ex)
                 delay(RETRY_DELAY_MILLIS.milliseconds)
@@ -211,11 +227,13 @@ class CdnAwareDirectDownloadThread(
             val chunkStart = alreadyDownloaded
             val chunkEnd = minOf(chunkStart + DOWNLOAD_CHUNK_SIZE - 1, totalSize - 1)
             val request = buildChunkRequest(url, chunkStart, chunkEnd)
+            val chunkStartedAt = System.nanoTime()
 
             try {
                 client.newCall(request).execute().use { response ->
                     when (response.code) {
                         HTTP_PARTIAL_CONTENT -> {
+                            rangeValidator.validate(response, chunkStart, chunkEnd, totalSize)
                             val body = response.body
                             transferContent(body.byteStream())
                             retryCount = 0
@@ -239,6 +257,14 @@ class CdnAwareDirectDownloadThread(
                     }
                 }
             } catch (ex: IOException) {
+                if (ex.isDownloadTimeout()) routeSelector.recordTimeout()
+                if (ex is SlowDownloadException) routeSelector.switchRoute()
+                val elapsedMillis = maxOf(1L, (System.nanoTime() - chunkStartedAt) / 1_000_000L)
+                val bytes = alreadyDownloaded - chunkStart
+                logger.warn(
+                    "CDN-aware transfer from {}: {} bytes in {} ms ({} KiB/s)",
+                    routeSelector.connectedAddress(), bytes, elapsedMillis, bytes * 1000 / elapsedMillis / 1024,
+                )
                 when {
                     isRetryableStreamException(ex) && alreadyDownloaded > chunkStart -> {
                         if (CommandLineOptions.isDebugModeEnabled())
@@ -297,6 +323,9 @@ class CdnAwareDirectDownloadThread(
                         val buffer = ByteArray(DOWNLOAD_BUFFER_SIZE)
                         var displayedBytes = datenDownload.runtime.filmSize.aktSize
                         var notifyProgress = false
+                        val slowMonitor = SlowDownloadMonitor(canSwitch = {
+                            !ApplicationConfiguration.getInstance().downloadRateLimitActive && routeSelector.canSwitch()
+                        })
 
                         while (!start.stoppen) {
                             val len = bandwidthInput.read(buffer)
@@ -345,6 +374,7 @@ class CdnAwareDirectDownloadThread(
                                 DownloadProgressEventPublisher.publishThrottled()
                                 notifyProgress = false
                             }
+                            slowMonitor.record(len)
                         }
 
                         bufferedSink.flush()
@@ -433,6 +463,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private fun isRetryableStreamException(ex: IOException): Boolean {
+        if (ex is SlowDownloadException) return true
         if (ex.isDownloadTimeout()) return true
         val lower = ex.message?.lowercase(Locale.ROOT) ?: return false
         return lower.contains("stream was reset") ||

@@ -69,7 +69,22 @@ class DirectHttpDownload(
     private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
     private val rateLimiter = ByteRateLimiter(downloadLimit())
     private val messageBus: MBassador<BaseEvent> = MessageBus.messageBus
-    private val httpClient: OkHttpClient = MVHttpClient.httpClient
+    private val downloadPool = ConnectionPool()
+    private val routeSelector = DownloadRouteSelector(
+        MVHttpClient.httpClient.dns,
+        downloadPool,
+        { previous, address ->
+            if (previous == null) logger.info("Direct download connected to {}", address)
+            else logger.info("Direct download route changed from {} to {}", previous, address)
+        },
+        { address -> logger.warn("Direct download retry preferring another address over {}", address) },
+    )
+    private val rangeValidator = DownloadRangeValidator()
+    private val httpClient: OkHttpClient = MVHttpClient.httpClient.newBuilder()
+        .connectionPool(downloadPool)
+        .dns(routeSelector)
+        .eventListenerFactory(routeSelector.eventListenerFactory)
+        .build()
     private val http11Client: OkHttpClient = httpClient.newBuilder()
         .protocols(listOf(Protocol.HTTP_1_1))
         .build()
@@ -139,6 +154,7 @@ class DirectHttpDownload(
             if (!response.isSuccessful) {
                 return -1
             }
+            rangeValidator.rememberEntity(response)
 
             var contentSize = FileSize.getContentLength(response)
             // alles unter 300k sind Playlisten, ...
@@ -159,6 +175,7 @@ class DirectHttpDownload(
             }
 
             logger.info("HEAD request failed for {}, retrying with HTTP/1.1", url, ex)
+            if (ex.isDownloadTimeout()) routeSelector.recordTimeout()
             getContentLength(url, http11Client)
         }
     }
@@ -194,6 +211,9 @@ class DirectHttpDownload(
                         var startProgress = -1L
                         var aktSize = 0L
                         var melden = false
+                        val slowMonitor = SlowDownloadMonitor(canSwitch = {
+                            !ApplicationConfiguration.getInstance().downloadRateLimitActive && routeSelector.canSwitch()
+                        })
 
                         while (!start.stoppen) {
                             val len = bandwidthInput.read(buffer)
@@ -242,6 +262,7 @@ class DirectHttpDownload(
                                 DownloadProgressEventPublisher.publishThrottled()
                                 melden = false
                             }
+                            slowMonitor.record(len)
                         }
                         bufferedSink.flush()
                     }
@@ -300,6 +321,7 @@ class DirectHttpDownload(
         val request = buildDownloadRequest(url)
         client.newCall(request).execute().use { response ->
             if (response.isSuccessful) {
+                rangeValidator.validate(response, alreadyDownloaded)
                 downloadContent(response.body.byteStream())
                 return true
             }
@@ -311,6 +333,7 @@ class DirectHttpDownload(
                 val retryRequest = buildDownloadRequest(url)
                 client.newCall(retryRequest).execute().use { retryResponse ->
                     if (retryResponse.isSuccessful) {
+                        rangeValidator.validate(retryResponse, alreadyDownloaded)
                         downloadContent(retryResponse.body.byteStream())
                         return true
                     }
@@ -353,7 +376,7 @@ class DirectHttpDownload(
     }
 
     private fun isRetryableStreamException(ex: IOException): Boolean {
-        if (ex.isDownloadTimeout() || isHttp2InternalStreamReset(ex)) {
+        if (ex.isDownloadTimeout() || ex is SlowDownloadException || isHttp2InternalStreamReset(ex)) {
             return true
         }
 
@@ -399,10 +422,13 @@ class DirectHttpDownload(
                     while (!start.stoppen) {
                         val client = if (forceHttp11) http11Client else httpClient
                         val attemptStart = alreadyDownloaded
+                        val attemptStartedAt = System.nanoTime()
                         try {
                             executeDownloadRequest(url, client)
                             break
                         } catch (ex: IOException) {
+                            if (ex.isDownloadTimeout()) routeSelector.recordTimeout()
+                            if (ex is SlowDownloadException) routeSelector.switchRoute()
                             val nextRetryCount = nextDownloadRetryCount(retryCount, attemptStart, alreadyDownloaded)
                             if (isRetryableStreamException(ex) && nextRetryCount <= MAX_TRANSIENT_DOWNLOAD_RETRIES) {
                                 retryCount = nextRetryCount
@@ -411,6 +437,13 @@ class DirectHttpDownload(
                                 continue
                             }
                             throw ex
+                        } finally {
+                            val bytes = alreadyDownloaded - attemptStart
+                            val elapsedMillis = maxOf(1L, (System.nanoTime() - attemptStartedAt) / 1_000_000L)
+                            logger.info(
+                                "Direct transfer from {}: {} bytes in {} ms ({} KiB/s)",
+                                routeSelector.connectedAddress(), bytes, elapsedMillis, bytes * 1000 / elapsedMillis / 1024,
+                            )
                         }
                     }
                 }
