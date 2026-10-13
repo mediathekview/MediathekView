@@ -353,7 +353,7 @@ class DirectHttpDownload(
     }
 
     private fun isRetryableStreamException(ex: IOException): Boolean {
-        if (isHttp2InternalStreamReset(ex)) {
+        if (ex.isDownloadTimeout() || isHttp2InternalStreamReset(ex)) {
             return true
         }
 
@@ -398,12 +398,14 @@ class DirectHttpDownload(
 
                     while (!start.stoppen) {
                         val client = if (forceHttp11) http11Client else httpClient
+                        val attemptStart = alreadyDownloaded
                         try {
                             executeDownloadRequest(url, client)
                             break
                         } catch (ex: IOException) {
-                            if (isRetryableStreamException(ex) && retryCount < MAX_TRANSIENT_DOWNLOAD_RETRIES) {
-                                retryCount++
+                            val nextRetryCount = nextDownloadRetryCount(retryCount, attemptStart, alreadyDownloaded)
+                            if (isRetryableStreamException(ex) && nextRetryCount <= MAX_TRANSIENT_DOWNLOAD_RETRIES) {
+                                retryCount = nextRetryCount
                                 forceHttp11 = true
                                 waitForRetry(retryCount, ex)
                                 continue

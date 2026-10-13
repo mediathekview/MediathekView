@@ -118,7 +118,7 @@ class CdnAwareDirectDownloadThread(
                         datenDownload.sender
                     )
 
-                    val contentLength = getContentLength(url)
+                    val contentLength = getContentLengthWithTimeoutRetry(url)
                     if (contentLength <= 0) {
                         throw IOException("Could not determine content length for download")
                     }
@@ -175,6 +175,22 @@ class CdnAwareDirectDownloadThread(
 
             val contentSize = FileSize.getContentLength(response)
             return if (contentSize < 300_000) -1 else contentSize
+        }
+    }
+
+    private suspend fun getContentLengthWithTimeoutRetry(url: HttpUrl): Long {
+        var retryCount = 0
+        while (true) {
+            try {
+                return getContentLength(url)
+            } catch (ex: IOException) {
+                if (!ex.isDownloadTimeout() || retryCount >= MAX_HEAD_TIMEOUT_RETRIES) {
+                    throw ex
+                }
+                retryCount++
+                logger.warn("HEAD request timed out (retry {}/{})", retryCount, MAX_HEAD_TIMEOUT_RETRIES, ex)
+                delay(RETRY_DELAY_MILLIS.milliseconds)
+            }
         }
     }
 
@@ -417,6 +433,7 @@ class CdnAwareDirectDownloadThread(
     }
 
     private fun isRetryableStreamException(ex: IOException): Boolean {
+        if (ex.isDownloadTimeout()) return true
         val lower = ex.message?.lowercase(Locale.ROOT) ?: return false
         return lower.contains("stream was reset") ||
                 lower.contains("unexpected end of stream") ||
@@ -558,6 +575,7 @@ class CdnAwareDirectDownloadThread(
         private const val MAX_CONCURRENT_REQUESTS = 2
         private const val MAX_CONCURRENT_REQUESTS_PER_HOST = 2
         private const val MAX_CHUNK_RETRIES = 25
+        private const val MAX_HEAD_TIMEOUT_RETRIES = 3
         private const val DOWNLOAD_CHUNK_SIZE = 16L * 1024L * 1024L
         private const val DOWNLOAD_BUFFER_SIZE = 256 * 1024
         private const val NANOS_PER_SECOND = 1_000_000_000L
