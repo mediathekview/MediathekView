@@ -61,6 +61,12 @@ class MainWindowShutdownCoordinator(
             }
         }
 
+        if (resetSettingsOnQuit) {
+            ShutdownCoordinator(edtRunner)
+                .background("Move settings directory aside for reset", SettingsResetService::moveSettingsDirectoryAside)
+                .shutdown()
+        }
+
         if (shutdownComputer) {
             runInBackground(computerShutdown::requestShutdown)
         }
@@ -90,11 +96,6 @@ class MainWindowShutdownCoordinator(
             .background("Write app config") { ApplicationConfiguration.getInstance().writeConfiguration() }
             .background("Shutdown timer pool", shutdownTimerPool)
             .background("Wait for common pool", waitForCommonPoolToComplete)
-            .apply {
-                if (resetSettingsOnQuit) {
-                    background("Move settings directory aside for reset", SettingsResetService::moveSettingsDirectoryAside)
-                }
-            }
             .background("Print runtime statistics", ::printRuntimeStatistics)
 
     private fun performHistoryMaintenance() {
