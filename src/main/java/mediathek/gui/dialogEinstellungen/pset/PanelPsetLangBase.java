@@ -13,6 +13,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+/** Settings controls using the selected interface-language bundle. */
 public class PanelPsetLangBase extends JPanel {
     protected PanelPsetLangBase() {
         initComponents();
@@ -26,6 +27,7 @@ public class PanelPsetLangBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         jButtonHilfe = new JButton();
         jButtonPruefen = new JButton();
         var jSplitPane1 = new JSplitPane();
@@ -122,11 +124,11 @@ public class PanelPsetLangBase extends JPanel {
 
         //---- jButtonHilfe ----
         jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png")));
-        jButtonHilfe.setToolTipText("Hilfe anzeigen");
+        jButtonHilfe.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonHilfe.toolTipText"));
 
         //---- jButtonPruefen ----
-        jButtonPruefen.setText("Pr\u00fcfen");
-        jButtonPruefen.setToolTipText("Programmpfade pr\u00fcfen");
+        jButtonPruefen.setText(bundle.getString("settings.PanelPsetLang.jButtonPruefen.text"));
+        jButtonPruefen.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonPruefen.toolTipText"));
 
         //======== jSplitPane1 ========
         {
@@ -144,11 +146,11 @@ public class PanelPsetLangBase extends JPanel {
                         jPanel7.setBorder(new EtchedBorder());
 
                         //---- jLabel6 ----
-                        jLabel6.setText("Set Name:");
+                        jLabel6.setText(bundle.getString("settings.PanelPsetLang.jLabel6.text"));
 
                         //======== jPanel4 ========
                         {
-                            jPanel4.setBorder(new TitledBorder("Beschreibung"));
+                            jPanel4.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetLang.jPanel4.borderTitle")));
 
                             //======== jScrollPane2 ========
                             {
@@ -180,19 +182,19 @@ public class PanelPsetLangBase extends JPanel {
 
                         //======== jPanel6 ========
                         {
-                            jPanel6.setBorder(new TitledBorder("Funktion"));
+                            jPanel6.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetLang.jPanel6.borderTitle")));
 
                             //---- jCheckBoxSpeichern ----
-                            jCheckBoxSpeichern.setText("Speichern");
+                            jCheckBoxSpeichern.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxSpeichern.text"));
 
                             //---- jCheckBoxButton ----
-                            jCheckBoxButton.setText("Button");
+                            jCheckBoxButton.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxButton.text"));
 
                             //---- jCheckBoxAbo ----
-                            jCheckBoxAbo.setText("Abo");
+                            jCheckBoxAbo.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxAbo.text"));
 
                             //---- jButtonAbspielen ----
-                            jButtonAbspielen.setText("Abspielen via schwarzem Play-Button");
+                            jButtonAbspielen.setText(bundle.getString("settings.PanelPsetLang.jButtonAbspielen.text"));
 
                             GroupLayout jPanel6Layout = new GroupLayout(jPanel6);
                             jPanel6.setLayout(jPanel6Layout);
@@ -223,10 +225,10 @@ public class PanelPsetLangBase extends JPanel {
                         }
 
                         //---- jLabelMeldungAbspielen ----
-                        jLabelMeldungAbspielen.setText("kein Set zum Abspielen ausgew\u00e4hlt!");
+                        jLabelMeldungAbspielen.setText(bundle.getString("settings.PanelPsetLang.jLabelMeldungAbspielen.text"));
 
                         //---- jLabelMeldungSeichern ----
-                        jLabelMeldungSeichern.setText("kein Set zum Speichern ausgew\u00e4hlt!");
+                        jLabelMeldungSeichern.setText(bundle.getString("settings.PanelPsetLang.jLabelMeldungSeichern.text"));
 
                         GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
                         jPanel7.setLayout(jPanel7Layout);
@@ -284,7 +286,7 @@ public class PanelPsetLangBase extends JPanel {
                                 .addGap(21, 21, 21))
                     );
                 }
-                jTabbedPane.addTab("Einstellungen", jPanelDetails);
+                jTabbedPane.addTab(bundle.getString("settings.PanelPsetLang.jLabelMeldungSeichern.title"), jPanelDetails);
 
                 //======== jPanel10 ========
                 {
@@ -294,18 +296,18 @@ public class PanelPsetLangBase extends JPanel {
                         jPanel5.setBorder(new EtchedBorder());
 
                         //---- jButtonGruppeFarbe ----
-                        jButtonGruppeFarbe.setText("Farbe");
-                        jButtonGruppeFarbe.setToolTipText("Farbauswahldialog anzeigen");
+                        jButtonGruppeFarbe.setText(bundle.getString("settings.PanelPsetLang.jButtonGruppeFarbe.text"));
+                        jButtonGruppeFarbe.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppeFarbe.toolTipText"));
 
                         //---- jButtonGruppeStandardfarbe ----
-                        jButtonGruppeStandardfarbe.setText("Standardfarbe");
-                        jButtonGruppeStandardfarbe.setToolTipText("Farbe zur\u00fccksetzen");
+                        jButtonGruppeStandardfarbe.setText(bundle.getString("settings.PanelPsetLang.jButtonGruppeStandardfarbe.text"));
+                        jButtonGruppeStandardfarbe.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppeStandardfarbe.toolTipText"));
 
                         //---- jLabel11 ----
-                        jLabel11.setText("Wird das Set als Button verwendet,");
+                        jLabel11.setText(bundle.getString("settings.PanelPsetLang.jLabel11.text"));
 
                         //---- jLabel13 ----
-                        jLabel13.setText("kann damit die Schriftfarbe ver\u00e4ndert werden.");
+                        jLabel13.setText(bundle.getString("settings.PanelPsetLang.jLabel13.text"));
 
                         GroupLayout jPanel5Layout = new GroupLayout(jPanel5);
                         jPanel5.setLayout(jPanel5Layout);
@@ -355,7 +357,7 @@ public class PanelPsetLangBase extends JPanel {
                                 .addContainerGap(431, Short.MAX_VALUE))
                     );
                 }
-                jTabbedPane.addTab("Aussehen", jPanel10);
+                jTabbedPane.addTab(bundle.getString("settings.PanelPsetLang.jLabel13.title"), jPanel10);
 
                 //======== jPanel9 ========
                 {
@@ -365,40 +367,40 @@ public class PanelPsetLangBase extends JPanel {
                         jPanel1.setBorder(new EtchedBorder());
 
                         //---- jLabel7 ----
-                        jLabel7.setText("Zielpfad:");
+                        jLabel7.setText(bundle.getString("settings.PanelPsetLang.jLabel7.text"));
 
                         //---- jButtonGruppePfad ----
                         jButtonGruppePfad.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-                        jButtonGruppePfad.setToolTipText("Pfad ausw\u00e4hlen");
+                        jButtonGruppePfad.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppePfad.toolTipText"));
 
                         //---- jCheckBoxThema ----
-                        jCheckBoxThema.setText("Einen Unterordner mit dem Thema / Abo-Zielpfad anlegen");
-                        jCheckBoxThema.setToolTipText("im Zielverzeichnis wird ein Unterordner mit dem Namen des Themas zum Speichern der Filme angelegt");
+                        jCheckBoxThema.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxThema.text"));
+                        jCheckBoxThema.setToolTipText(bundle.getString("settings.PanelPsetLang.jCheckBoxThema.toolTipText"));
 
                         //---- jLabel8 ----
-                        jLabel8.setText("Zieldateiname:");
+                        jLabel8.setText(bundle.getString("settings.PanelPsetLang.jLabel8.text"));
 
                         //---- jCheckBoxLaenge ----
-                        jCheckBoxLaenge.setText("Ganzen Dateinamen beschr\u00e4nken auf:");
-                        jCheckBoxLaenge.setToolTipText("die L\u00e4nge des Dateinamens wird auf die Anzahl Zeichen beschr\u00e4nkt");
+                        jCheckBoxLaenge.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxLaenge.text"));
+                        jCheckBoxLaenge.setToolTipText(bundle.getString("settings.PanelPsetLang.jCheckBoxLaenge.toolTipText"));
 
                         //---- jSpinnerLaenge ----
                         jSpinnerLaenge.setModel(new SpinnerNumberModel(25, 10, 200, 1));
 
                         //---- jLabel12 ----
-                        jLabel12.setText("Zeichen");
+                        jLabel12.setText(bundle.getString("settings.PanelPsetLang.jLabel12.text"));
 
                         //---- jLabel15 ----
-                        jLabel15.setText("(ist der Abo-Zielpfad leer, wird das Thema verwendet)");
+                        jLabel15.setText(bundle.getString("settings.PanelPsetLang.jLabel15.text"));
 
                         //---- jCheckBoxField ----
-                        jCheckBoxField.setText("Einzelne Felder beschr\u00e4nken auf:");
+                        jCheckBoxField.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxField.text"));
 
                         //---- jSpinnerField ----
                         jSpinnerField.setModel(new SpinnerNumberModel(10, 3, 100, 1));
 
                         //---- jLabel16 ----
-                        jLabel16.setText("Zeichen");
+                        jLabel16.setText(bundle.getString("settings.PanelPsetLang.jLabel16.text"));
 
                         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
                         jPanel1.setLayout(jPanel1Layout);
@@ -493,20 +495,20 @@ public class PanelPsetLangBase extends JPanel {
                                 .addContainerGap(285, Short.MAX_VALUE))
                     );
                 }
-                jTabbedPane.addTab("Speicherziel", jPanel9);
+                jTabbedPane.addTab(bundle.getString("settings.PanelPsetLang.jLabel16.title"), jPanel9);
 
                 //======== jPanel11 ========
                 {
 
                     //======== jPanel8 ========
                     {
-                        jPanel8.setBorder(new TitledBorder("Direkt speichern"));
+                        jPanel8.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetLang.jPanel8.borderTitle")));
 
                         //---- jLabel10 ----
-                        jLabel10.setText("Direkter Download, Pr\u00e4fix ( z.B. http ):");
+                        jLabel10.setText(bundle.getString("settings.PanelPsetLang.jLabel10.text"));
 
                         //---- jLabel5 ----
-                        jLabel5.setText("Suffix ( z.B. mp4,mp3):");
+                        jLabel5.setText(bundle.getString("settings.PanelPsetLang.jLabel5.text"));
 
                         GroupLayout jPanel8Layout = new GroupLayout(jPanel8);
                         jPanel8.setLayout(jPanel8Layout);
@@ -541,25 +543,25 @@ public class PanelPsetLangBase extends JPanel {
                     jTextArea1.setBackground(new Color(0xeeeeee));
                     jTextArea1.setColumns(20);
                     jTextArea1.setRows(4);
-                    jTextArea1.setText("Filme, deren URL mit \"Pr\u00e4fix\" beginnt und mit \"Suffix\" endet, werden nicht\nmit einem Hilfsprogramm gespeichert, sondern direkt geladen.\n\nEine geringere Aufl\u00f6sung ist nicht bei jedem Sender m\u00f6glich, es wird dann in der gleichen\nAufl\u00f6sung geladen.");
+                    jTextArea1.setText(bundle.getString("settings.PanelPsetLang.jTextArea1.text"));
                     jTextArea1.setBorder(null);
 
                     //======== jPanel12 ========
                     {
-                        jPanel12.setBorder(new TitledBorder("Film downloaden in"));
+                        jPanel12.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetLang.jPanel12.borderTitle")));
 
                         //---- jRadioButtonAufloesungNormal ----
                         jRadioButtonAufloesungNormal.setSelected(true);
-                        jRadioButtonAufloesungNormal.setText("Mittlere Qualit\u00e4t");
+                        jRadioButtonAufloesungNormal.setText(bundle.getString("settings.PanelPsetLang.jRadioButtonAufloesungNormal.text"));
 
                         //---- jRadioButtonAufloesungKlein ----
-                        jRadioButtonAufloesungKlein.setText("Niedrige Qualit\u00e4t");
+                        jRadioButtonAufloesungKlein.setText(bundle.getString("settings.PanelPsetLang.jRadioButtonAufloesungKlein.text"));
 
                         //---- jRadioButtonAufloesungHD ----
-                        jRadioButtonAufloesungHD.setText("H\u00f6chste/Hohe Qualit\u00e4t");
+                        jRadioButtonAufloesungHD.setText(bundle.getString("settings.PanelPsetLang.jRadioButtonAufloesungHD.text"));
 
                         //---- jLabel14 ----
-                        jLabel14.setText("Wenn es die Qualit\u00e4tstufe im Angebot nicht gibt, wird die n\u00e4chstkleinere genommen.");
+                        jLabel14.setText(bundle.getString("settings.PanelPsetLang.jLabel14.text"));
 
                         GroupLayout jPanel12Layout = new GroupLayout(jPanel12);
                         jPanel12.setLayout(jPanel12Layout);
@@ -591,16 +593,16 @@ public class PanelPsetLangBase extends JPanel {
 
                     //======== jPanel13 ========
                     {
-                        jPanel13.setBorder(new TitledBorder("Nach dem Speichern"));
+                        jPanel13.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetLang.jPanel13.borderTitle")));
 
                         //---- jCheckBoxInfodatei ----
-                        jCheckBoxInfodatei.setText("Infodatei anlegen: \"Filmname.txt\"");
+                        jCheckBoxInfodatei.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxInfodatei.text"));
 
                         //---- jCheckBoxSpotlight ----
-                        jCheckBoxSpotlight.setText("Filmbeschreibung als Finder-Kommentar f\u00fcr Spotlight speichern (nur OS X)");
+                        jCheckBoxSpotlight.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxSpotlight.text"));
 
                         //---- jCheckBoxSubtitle ----
-                        jCheckBoxSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
+                        jCheckBoxSubtitle.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxSubtitle.text"));
 
                         //---- jCheckBoxMp4Metadata ----
                         jCheckBoxMp4Metadata.setText("MP4-Metadaten schreiben");
@@ -660,7 +662,7 @@ public class PanelPsetLangBase extends JPanel {
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
-                jTabbedPane.addTab("Download", jPanel11);
+                jTabbedPane.addTab(bundle.getString("settings.PanelPsetLang.jCheckBoxSubtitle.title"), jPanel11);
 
                 //======== jPanelProgramme ========
                 {
@@ -681,23 +683,23 @@ public class PanelPsetLangBase extends JPanel {
 
                         //---- jButtonProgPlus ----
                         jButtonProgPlus.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png")));
-                        jButtonProgPlus.setToolTipText("neues Programm anlegen");
+                        jButtonProgPlus.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonProgPlus.toolTipText"));
 
                         //---- jButtonProgMinus ----
                         jButtonProgMinus.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png")));
-                        jButtonProgMinus.setToolTipText("markiertes Programm l\u00f6schen");
+                        jButtonProgMinus.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonProgMinus.toolTipText"));
 
                         //---- jButtonProgDuplizieren ----
-                        jButtonProgDuplizieren.setText("Duplizieren");
-                        jButtonProgDuplizieren.setToolTipText("markierte Zeile duplizieren");
+                        jButtonProgDuplizieren.setText(bundle.getString("settings.PanelPsetLang.jButtonProgDuplizieren.text"));
+                        jButtonProgDuplizieren.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonProgDuplizieren.toolTipText"));
 
                         //---- jButtonProgAuf ----
                         jButtonProgAuf.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-up.png")));
-                        jButtonProgAuf.setToolTipText("markierte Zeile eins nach oben");
+                        jButtonProgAuf.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonProgAuf.toolTipText"));
 
                         //---- jButtonProgAb ----
                         jButtonProgAb.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-down.png")));
-                        jButtonProgAb.setToolTipText("markierte Zeile eins nach unten");
+                        jButtonProgAb.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonProgAb.toolTipText"));
 
                         GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
                         jPanel2.setLayout(jPanel2Layout);
@@ -736,32 +738,32 @@ public class PanelPsetLangBase extends JPanel {
                         jPanelProgrammDetails.setBorder(new EtchedBorder());
 
                         //---- jLabel ----
-                        jLabel.setText("Programm:");
+                        jLabel.setText(bundle.getString("settings.PanelPsetLang.jLabel.text"));
 
                         //---- jButtonProgPfad ----
                         jButtonProgPfad.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-                        jButtonProgPfad.setToolTipText("Programm ausw\u00e4hlen");
+                        jButtonProgPfad.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonProgPfad.toolTipText"));
 
                         //---- jLabel1 ----
-                        jLabel1.setText("Schalter:");
+                        jLabel1.setText(bundle.getString("settings.PanelPsetLang.jLabel1.text"));
 
                         //---- jLabel2 ----
-                        jLabel2.setText("Beschreibung:");
+                        jLabel2.setText(bundle.getString("settings.PanelPsetLang.jLabel2.text"));
 
                         //---- jLabel3 ----
-                        jLabel3.setText("Pr\u00e4fix (z.B. http):");
+                        jLabel3.setText(bundle.getString("settings.PanelPsetLang.jLabel3.text"));
 
                         //---- jLabel4 ----
-                        jLabel4.setText("Suffix ( z.B. mp4,mp3):");
+                        jLabel4.setText(bundle.getString("settings.PanelPsetLang.jLabel4.text"));
 
                         //---- jCheckBoxRestart ----
-                        jCheckBoxRestart.setText("Fehlgeschlagene Downloads wieder starten");
+                        jCheckBoxRestart.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxRestart.text"));
 
                         //---- jLabel9 ----
-                        jLabel9.setText("Zieldateiname:");
+                        jLabel9.setText(bundle.getString("settings.PanelPsetLang.jLabel9.text"));
 
                         //---- jCheckBoxRemoteDownload ----
-                        jCheckBoxRemoteDownload.setText("Externer Downloadmanager");
+                        jCheckBoxRemoteDownload.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxRemoteDownload.text"));
 
                         GroupLayout jPanelProgrammDetailsLayout = new GroupLayout(jPanelProgrammDetails);
                         jPanelProgrammDetails.setLayout(jPanelProgrammDetailsLayout);
@@ -861,7 +863,7 @@ public class PanelPsetLangBase extends JPanel {
                                 .addComponent(jPanelProgrammDetails, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                     );
                 }
-                jTabbedPane.addTab("Hilfsprogramme", jPanelProgramme);
+                jTabbedPane.addTab(bundle.getString("settings.PanelPsetLang.jCheckBoxRemoteDownload.title"), jPanelProgramme);
             }
             jSplitPane1.setRightComponent(jTabbedPane);
 
@@ -903,34 +905,34 @@ public class PanelPsetLangBase extends JPanel {
                 jPanel3.add(jScrollPane3, new CC().cell(0, 0, 3, 1));
 
                 //---- jButtonGruppeDuplizieren ----
-                jButtonGruppeDuplizieren.setText("Duplizieren");
-                jButtonGruppeDuplizieren.setToolTipText("Programmgruppe kopieren");
+                jButtonGruppeDuplizieren.setText(bundle.getString("settings.PanelPsetLang.jButtonGruppeDuplizieren.text"));
+                jButtonGruppeDuplizieren.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppeDuplizieren.toolTipText"));
                 jPanel3.add(jButtonGruppeDuplizieren, new CC().cell(0, 3, 3, 1));
 
                 //---- jButtonExport ----
-                jButtonExport.setText("Export");
-                jButtonExport.setToolTipText("Programmgruppe in Datei exportieren");
+                jButtonExport.setText(bundle.getString("settings.PanelPsetLang.jButtonExport.text"));
+                jButtonExport.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonExport.toolTipText"));
                 jPanel3.add(jButtonExport, new CC().cell(0, 4, 3, 1));
 
                 //---- jButtonGruppeNeu ----
                 jButtonGruppeNeu.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png")));
-                jButtonGruppeNeu.setToolTipText("neue Programmgruppe anlegen");
+                jButtonGruppeNeu.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppeNeu.toolTipText"));
                 jPanel3.add(jButtonGruppeNeu, new CC().cell(0, 2).alignX("center").growX(0));
 
                 //---- jButtonGruppeLoeschen ----
                 jButtonGruppeLoeschen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png")));
-                jButtonGruppeLoeschen.setToolTipText("Programmgruppe l\u00f6schen");
+                jButtonGruppeLoeschen.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppeLoeschen.toolTipText"));
                 jPanel3.add(jButtonGruppeLoeschen, new CC().cell(2, 2).alignX("center").growX(0));
 
                 //---- jButtonGruppeAuf ----
                 jButtonGruppeAuf.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-up.png")));
-                jButtonGruppeAuf.setToolTipText("Programmgruppe nach oben schieben");
+                jButtonGruppeAuf.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppeAuf.toolTipText"));
                 jPanel3.add(jButtonGruppeAuf, new CC().cell(0, 1).alignX("center").growX(0));
                 jPanel3.add(hSpacer1, new CC().cell(1, 1));
 
                 //---- jButtonGruppeAb ----
                 jButtonGruppeAb.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-down.png")));
-                jButtonGruppeAb.setToolTipText("Programmgruppe nach unten schieben");
+                jButtonGruppeAb.setToolTipText(bundle.getString("settings.PanelPsetLang.jButtonGruppeAb.toolTipText"));
                 jPanel3.add(jButtonGruppeAb, new CC().cell(2, 1).alignX("center").growX(0));
             }
             jSplitPane1.setLeftComponent(jPanel3);

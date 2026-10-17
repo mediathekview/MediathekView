@@ -11,12 +11,14 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
+/** Settings controls using the selected interface-language bundle. */
 public class PanelNotificationsBase extends JPanel {
     public PanelNotificationsBase() {
         initComponents();
     }
 
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         cbShowNotifications = new JCheckBox();
@@ -33,8 +35,8 @@ public class PanelNotificationsBase extends JPanel {
                 ));
 
         //---- cbShowNotifications ----
-        cbShowNotifications.setText("Benachrichtigungen anzeigen"); //NON-NLS
-        cbShowNotifications.setToolTipText("Zeige Programminformationen als Benachrichtigungen in einem Popup-Fenster an."); //NON-NLS
+        cbShowNotifications.setText(bundle.getString("settings.PanelNotifications.cbShowNotifications.text")); //NON-NLS
+        cbShowNotifications.setToolTipText(bundle.getString("settings.PanelNotifications.cbShowNotifications.toolTipText")); //NON-NLS
         add(cbShowNotifications, new CC().cell(0, 0));
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

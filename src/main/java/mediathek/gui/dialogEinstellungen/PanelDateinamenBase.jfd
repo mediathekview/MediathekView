@@ -2,7 +2,14 @@ JFDML JFormDesigner: "7.0.2.4.305" Java: "11.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelDateinamen"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq t {space :::p, comp jTabbedPane1:::::x, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jTabbedPane1:::::x, space :::p}}"
@@ -31,7 +38,7 @@ new FormModel {
 							"editable": false
 							"columns": 20
 							"rows": 5
-							"text": "\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will, kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"ß\" durch \"ss\" ersetzen.\n"
+							"text": new FormMessage( null, "settings.PanelDateinamen.jTextArea3.text" )
 							"margin": new java.awt.Insets( 3, 3, 3, 3 )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
@@ -39,7 +46,7 @@ new FormModel {
 						} )
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Dateinamen"
+					"title": new FormMessage( null, "settings.PanelDateinamen.jTextArea3.title" )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq {space :::p, par l {seq {space :21:21:p, comp jPanel3:::::x}, seq {par l {comp jCheckBoxAscii:::p::p, comp jCheckBoxTable::l:p::p}, space :0:0:x}}, space :::p}}"
@@ -54,7 +61,7 @@ new FormModel {
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
-						"text": "Ersetzungstabelle anwenden"
+						"text": new FormMessage( null, "settings.PanelDateinamen.jCheckBoxTable.text" )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq l {space :::p, par l {comp jScrollPane4:::::x, seq l {comp jScrollPane3:::::x, space u:::p, comp jLabelAlert:::p::p}, seq {comp jButtonReset:::p::p, space :0:0:x}, seq l {comp jLabelVon:::p::p, space :::p, comp jTextFieldVon:::p:100:p, space u:::p, comp jLabelNach:::p::p, space :::p, comp jTextFieldNach:::p:100:p, space ::111:x, comp jButtonUp:::p::p, space :::p, comp jButtonDown:::p::p, space :::p, comp jButtonPlus:::p::p, space :::p, comp jButtonMinus:::p::p}}, space :p:15:p}}"
@@ -70,7 +77,7 @@ new FormModel {
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
-							"text": "Tabelle zurücksetzen"
+							"text": new FormMessage( null, "settings.PanelDateinamen.jButtonReset.text" )
 						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "jScrollPane3"
@@ -84,7 +91,7 @@ new FormModel {
 								"background": new com.jformdesigner.model.SwingColor( "Label.background" )
 								"columns": 20
 								"rows": 4
-								"text": "Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also möglich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!"
+								"text": new FormMessage( null, "settings.PanelDateinamen.jTextArea2.text" )
 								"border": new javax.swing.border.EmptyBorder( 1, 1, 1, 1 )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
@@ -154,14 +161,14 @@ new FormModel {
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
-							"text": "Achtung"
+							"text": new FormMessage( null, "settings.PanelDateinamen.jLabelAlert.text" )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabelVon"
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
-							"text": "von:"
+							"text": new FormMessage( null, "settings.PanelDateinamen.jLabelVon.text" )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "jTextFieldVon"
@@ -174,7 +181,7 @@ new FormModel {
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
-							"text": "nach:"
+							"text": new FormMessage( null, "settings.PanelDateinamen.jLabelNach.text" )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "jTextFieldNach"
@@ -216,11 +223,11 @@ new FormModel {
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
-						"text": "Nur ASCII-Zeichen erlauben"
-						"toolTipText": "<html>Es werden alle Zeichen \"über 127\" ersetzt.  Auch Umlaute wie \"ö -> oe\" werden ersetzt.<br>Wenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.</html>"
+						"text": new FormMessage( null, "settings.PanelDateinamen.jCheckBoxAscii.text" )
+						"toolTipText": new FormMessage( null, "settings.PanelDateinamen.jCheckBoxAscii.toolTipText" )
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Eigene Einstellungen"
+					"title": new FormMessage( null, "settings.PanelDateinamen.jCheckBoxAscii.title" )
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) {

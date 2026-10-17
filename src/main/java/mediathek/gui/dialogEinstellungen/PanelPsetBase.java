@@ -16,6 +16,7 @@ public class PanelPsetBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         jPanelPset = new JPanel();
         jCheckBoxAlleEinstellungen = new JCheckBox();
 
@@ -37,7 +38,7 @@ public class PanelPsetBase extends JPanel {
         add(jPanelPset, new CC().cell(0, 1));
 
         //---- jCheckBoxAlleEinstellungen ----
-        jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen"); //NON-NLS
+        jCheckBoxAlleEinstellungen.setText(bundle.getString("settings.PanelPset.jCheckBoxAlleEinstellungen.text")); //NON-NLS //NON-NLS
         add(jCheckBoxAlleEinstellungen, new CC().cell(0, 0));
     }// </editor-fold>//GEN-END:initComponents
 

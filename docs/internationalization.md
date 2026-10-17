@@ -10,30 +10,32 @@ The interface language is independent of the geographic location and the languag
 
 ## Current coverage
 
-The draft PR covers the catalogue, downloads, subscriptions, bookmarks, and General and Advanced settings.
+The draft PR covers the catalogue, downloads, subscriptions, bookmarks, and all settings pages.
 
-| Area                    | Coverage                                             |
-|-------------------------|------------------------------------------------------|
-| General settings        | Controls, tooltips, modern-search explanation        |
-| Advanced settings       | Program paths, download integrations, shutdown       |
-| Settings window         | Window title, close button, navigation tree          |
-| Single-film download    | Controls, subtitles, validation and status text      |
-| Main window             | Menu names and entries, tab labels, toolbar actions  |
-| Film catalogue          | Column headings, search hints, description panel     |
-| Catalogue filters       | Controls, tooltips, filter-management dialogs        |
-| Film context menu       | Actions, clipboard labels, duplicate-removal prompts |
-| Status bar              | Film/download counts, creation date and list age     |
-| Download list           | Columns, filters, toolbars, counts, progress, menus  |
-| Download dialogs        | Editing, batch setup, destinations, resume, errors   |
-| Download scheduling     | Start time, completion options, waiting messages     |
-| Subscription management | Columns, actions, filters, counts, editing, deletion |
-| Subscription history    | Columns, filtering, counts, deletion prompts         |
-| Bookmarks               | Columns, actions, notes, expiry picker, deletion     |
-| Text-field menus        | Undo, cut, copy, paste, and select all               |
+| Area                    | Coverage                                               |
+| ----------------------- | ------------------------------------------------------ |
+| General settings        | Controls, tooltips, modern-search explanation          |
+| Advanced settings       | Program paths, download integrations, shutdown         |
+| Other settings          | Notifications, location, colours, Lucene tuning        |
+| Film-list settings      | Loading, channel selection, blacklist rules            |
+| Recording settings      | File names, replacements, download options             |
+| Program sets            | Simple/full editor, helpers, import/export, validation |
+| Settings window         | Window title, close button, navigation tree            |
+| Single-film download    | Controls, subtitles, validation and status text        |
+| Main window             | Menu names and entries, tab labels, toolbar actions    |
+| Film catalogue          | Column headings, search hints, description panel       |
+| Catalogue filters       | Controls, tooltips, filter-management dialogs          |
+| Film context menu       | Actions, clipboard labels, duplicate-removal prompts   |
+| Status bar              | Film/download counts, creation date and list age       |
+| Download list           | Columns, filters, toolbars, counts, progress, menus    |
+| Download dialogs        | Editing, batch setup, destinations, resume, errors     |
+| Download scheduling     | Start time, completion options, waiting messages       |
+| Subscription management | Columns, actions, filters, counts, editing, deletion   |
+| Subscription history    | Columns, filtering, counts, deletion prompts           |
+| Bookmarks               | Columns, actions, notes, expiry picker, deletion       |
+| Text-field menus        | Undo, cut, copy, paste, and select all                 |
 
-Other settings pages, first-run setup, and secondary dialogs remain partly German.
-
-These include notifications, location, colours, Lucene tuning, film-list loading, blacklist, and recording settings.
+First-run setup and secondary dialogs remain partly German.
 
 Help documents and background loading messages are still untranslated.
 
@@ -75,6 +77,10 @@ The scheduler creates its date and time picker with the selected UI locale.
 The macOS shutdown selector translates its labels while retaining the helper's original command values.
 
 Program paths, download-manager URLs, credentials, and shutdown commands remain configuration data.
+
+Blacklist and program-set tables retain historical column identifiers for saved layouts.
+
+Colour keys, Lucene mode values, program-set XML fields, and command macros remain unchanged.
 
 Saved filter names, program-set names, channel names, and programme metadata are user data and are not translated.
 
@@ -150,7 +156,7 @@ Select a language, close the application, and reopen the same profile to review 
 
 Review download and subscription management in both languages, including saved filters and column layouts.
 
-Bookmarks and the Advanced settings page are also ready for review in both languages.
+Bookmarks and all settings pages are also ready for review in both languages.
 
 The Linux screenshots below cover actual Swing components rendered with separate profiles.
 
@@ -172,3 +178,7 @@ These screens were rendered on Linux with separate settings directories and samp
 - Bookmarks: [German](images/i18n/bookmarks-de.png) · [English](images/i18n/bookmarks-en.png).
 - Bookmark notes: [German](images/i18n/bookmark-note-de.png) · [English](images/i18n/bookmark-note-en.png).
 - Advanced settings: [German](images/i18n/advanced-settings-de.png) · [English](images/i18n/advanced-settings-en.png).
+- Colours: [German](images/i18n/colours-de.png) · [English](images/i18n/colours-en.png).
+- Blacklist: [German](images/i18n/blacklist-de.png) · [English](images/i18n/blacklist-en.png).
+- Program sets: [German](images/i18n/program-sets-de.png) · [English](images/i18n/program-sets-en.png).
+- Program-set import: [German](images/i18n/import-set-de.png) · [English](images/i18n/import-set-en.png).
