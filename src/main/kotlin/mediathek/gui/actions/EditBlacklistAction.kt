@@ -5,6 +5,7 @@ import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.dialog.StandardCloseDialog
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.swing.centerOnScreen
 import mediathek.tool.GuiFunktionen
@@ -24,9 +25,9 @@ class EditBlacklistAction(
     private val filmListLoader: FilmListLoadCoordinator,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Blacklist bearbeiten...")
+        putValue(NAME, UiMessages.text("action.editBlacklistAction.text"))
         putValue(SMALL_ICON, IconUtils.windowBarSpecificToolbarIcon(MaterialDesignL.LIST_BOX_OUTLINE))
-        putValue(SHORT_DESCRIPTION, "Blacklist bearbeiten")
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.editBlacklistAction.description"))
         val keyStroke = if (SystemUtils.IS_OS_MAC_OSX) {
             KeyStroke.getKeyStroke(KeyEvent.VK_F9, GuiFunktionen.getPlatformControlKey())
         } else {

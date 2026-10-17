@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.daten.DatenFilm
+import mediathek.i18n.UiMessages
 import mediathek.tool.FileDialogs
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.subtitles.SubtitleExportResult
@@ -45,7 +46,7 @@ class DownloadSubtitleAction(
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
 
     init {
-        putValue(NAME, "Untertitel-Datei sofort laden...")
+        putValue(Action.NAME, UiMessages.text("film.context.downloadSubtitles"))
     }
 
     override fun actionPerformed(e: ActionEvent?) {

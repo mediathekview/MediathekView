@@ -89,20 +89,20 @@ class MainWindowMenuBuilder(
         configureMenu(filmMenu, UiMessages.text("menu.films.mnemonic").first(), UiMessages.text("menu.films.text"))
         menuBar.add(filmMenu)
 
-        configureMenu(downloadMenu, 'O', "Downloads")
+        configureMenu(downloadMenu, UiMessages.text("menu.downloads.mnemonic").first(), UiMessages.text("menu.downloads.text"))
         menuBar.add(downloadMenu)
 
-        configureMenu(aboMenu, 'b', "Abos")
+        configureMenu(aboMenu, UiMessages.text("menu.subscriptions.mnemonic").first(), UiMessages.text("menu.subscriptions.text"))
         menuBar.add(aboMenu)
 
         if (menuPolicy.supportsFontMenu) {
             menuBar.add(fontMenu)
         }
 
-        configureMenu(viewMenu, 'a', "Ansicht")
+        configureMenu(viewMenu, UiMessages.text("menu.view.mnemonic").first(), UiMessages.text("menu.view.text"))
         menuBar.add(viewMenu)
 
-        configureMenu(helpMenu, 'h', "Hilfe")
+        configureMenu(helpMenu, UiMessages.text("menu.help.mnemonic").first(), UiMessages.text("menu.help.text"))
         menuBar.add(helpMenu)
 
         return menuBar
@@ -132,11 +132,11 @@ class MainWindowMenuBuilder(
         fileMenu.add(loadFilmListAction)
         fileMenu.addSeparator()
 
-        val exportMenu = JMenu("Export")
+        val exportMenu = JMenu(UiMessages.text("menu.export.text"))
         exportMenu.add(ExportReadableFilmlistAction(filmCatalog.allFilms, ownerFrame))
         exportMenu.add(ExportDecompressedFilmlistAction(filmCatalog.allFilms, ownerFrame))
 
-        val importMenu = JMenu("Import")
+        val importMenu = JMenu(UiMessages.text("menu.import.text"))
         importMenu.add(ImportOldAbosAction(ownerFrame, abos, blacklist, replacementRules))
         importMenu.add(ImportOldBlacklistAction(ownerFrame, abos, blacklist, replacementRules))
         importMenu.add(ImportOldReplacementListAction(ownerFrame, abos, blacklist, replacementRules))
@@ -158,7 +158,7 @@ class MainWindowMenuBuilder(
         viewMenu.addSeparator()
         viewMenu.add(ShowFilmStatisticsAction(ownerFrame, filmCatalog))
         viewMenu.add(ShowDuplicateStatisticsAction(ownerFrame, filmCatalog))
-        viewMenu.add(JMenuItem("Übersicht aller Duplikate anzeigen...").apply {
+        viewMenu.add(JMenuItem(UiMessages.text("menu.duplicateOverview.text")).apply {
             addActionListener {
                 FilmDuplicateOverviewDialog(ownerFrame, filmCatalog).isVisible = true
             }
@@ -206,7 +206,7 @@ class MainWindowMenuBuilder(
     }
 
     private fun createHelperToolsEntries() {
-        val menu = JMenu("Hilfsmittel")
+        val menu = JMenu(UiMessages.text("menu.tools.text"))
         menu.add(OptimizeHistoryDbAction(ownerFrame))
         menu.add(RecoverHistoryDbAction(ownerFrame))
         menu.addSeparator()
@@ -215,8 +215,8 @@ class MainWindowMenuBuilder(
     }
 
     private fun createDeveloperMenu() {
-        val devMenu = JMenu("Entwickler")
-        devMenu.add(JMenuItem("GC ausführen").apply {
+        val devMenu = JMenu(UiMessages.text("menu.developer.text"))
+        devMenu.add(JMenuItem(UiMessages.text("menu.runGc.text")).apply {
             addActionListener { System.gc() }
         })
 

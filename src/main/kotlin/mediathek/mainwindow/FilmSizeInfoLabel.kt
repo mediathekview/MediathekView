@@ -20,6 +20,7 @@ package mediathek.mainwindow
 
 import mediathek.filmlisten.FilmCatalog
 import java.beans.PropertyChangeListener
+import mediathek.i18n.UiMessages
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
 
@@ -66,7 +67,7 @@ class FilmSizeInfoLabel(
         val textLinks = if (gesamt == rowCount) {
             createFilmLabel(rowCount)
         } else {
-            "${createFilmLabel(rowCount)} (Insgesamt: $gesamt)"
+            UiMessages.format("status.films.total", createFilmLabel(rowCount), gesamt)
         }
 
         text = textLinks
@@ -75,9 +76,5 @@ class FilmSizeInfoLabel(
         oldRowCount = rowCount
     }
 
-    private fun createFilmLabel(rowCount: Int): String = if (rowCount == 1) {
-        "1 Film"
-    } else {
-        "$rowCount Filme"
-    }
+    private fun createFilmLabel(rowCount: Int): String = UiMessages.format("status.films.count", rowCount)
 }

@@ -42,6 +42,7 @@ import mediathek.gui.messages.*
 import mediathek.gui.tabs.DescriptionTabController
 import mediathek.gui.tabs.actions.MarkFilmAsSeenAction
 import mediathek.gui.tabs.actions.MarkFilmAsUnseenAction
+import mediathek.i18n.UiMessages
 import mediathek.tool.DirOpenAction
 import mediathek.tool.DownloadSizeState
 import mediathek.tool.MessageBus
@@ -114,7 +115,7 @@ class GuiDownloads(
     private val displayFilterToolBar = DownloadsDisplayFilterToolBar()
     private val toolBarRow = DownloadsToolBarRow(swingToolBar, displayFilterToolBar, configToolBar)
     private val lastUpdate = AtomicLong(0)
-    private val cbShowDownloadDescription = JCheckBoxMenuItem("Filmbeschreibung anzeigen")
+    private val cbShowDownloadDescription = JCheckBoxMenuItem(UiMessages.text("download.description.show"))
     private val descriptionTabController = DescriptionTabController({ ownerFrame }, ::editFilmDescription)
     private val markFilmAsSeenAction = MarkFilmAsSeenAction(::getSelFilme)
     private val markFilmAsUnseenAction = MarkFilmAsUnseenAction(::getSelFilme)
@@ -231,11 +232,11 @@ class GuiDownloads(
         val taskbar = Taskbar.getTaskbar()
         if (taskbar.isSupported(Taskbar.Feature.MENU)) {
             val popupMenu = taskbar.menu ?: PopupMenu()
-            MenuItem("Alle Downloads starten").apply {
+            MenuItem(UiMessages.text("action.startAllDownloadsAction.text")).apply {
                 addActionListener { starten(true) }
                 popupMenu.add(this)
             }
-            MenuItem("Alle Downloads stoppen").apply {
+            MenuItem(UiMessages.text("action.stopAllDownloadsAction.text")).apply {
                 addActionListener { stoppen(true) }
                 popupMenu.add(this)
             }

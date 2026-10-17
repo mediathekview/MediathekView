@@ -22,6 +22,7 @@ import mediathek.audiothek.model.AudioEntry
 import mediathek.config.Konstanten
 import mediathek.daten.DatenFilm
 import mediathek.gui.actions.UrlHyperlinkAction
+import mediathek.i18n.UiMessages
 import mediathek.tool.CopyToClipboardAction
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.SwingErrorDialog
@@ -49,10 +50,10 @@ class FilmDescriptionPanel(
     private val lblTitel = JLabel()
     private val textArea = JTextArea()
     private val hyperlink = JXHyperlink()
-    private val editDescriptionItem = JMenuItem("Beschreibung ändern...")
+    private val editDescriptionItem = JMenuItem(UiMessages.text("film.description.edit"))
     private val editSeparator = JPopupMenu.Separator()
-    private val copyDescriptionItem = JMenuItem("Beschreibung in Zwischenablage kopieren")
-    private val copyBaseInfoItem = JMenuItem("Filmbasisinformationen in Zwischenablage kopieren")
+    private val copyDescriptionItem = JMenuItem(UiMessages.text("film.description.copy"))
+    private val copyBaseInfoItem = JMenuItem(UiMessages.text("film.description.copyInfo"))
     private var currentFilm: DatenFilm? = null
     private var currentAudioEntry: AudioEntry? = null
 
@@ -73,7 +74,7 @@ class FilmDescriptionPanel(
                     } catch (ex: Exception) {
                         SwingErrorDialog.showExceptionMessage(
                             ownerProvider(),
-                            "Es trat ein Fehler beim Öffnen des Links auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                            UiMessages.text("film.description.linkError"),
                             ex
                         )
                     }
@@ -103,11 +104,11 @@ class FilmDescriptionPanel(
         popupMenu.add(copyBaseInfoItem)
 
         popupMenu.addSeparator()
-        val copySelectionItem = JMenuItem("Auswahl kopieren")
+        val copySelectionItem = JMenuItem(UiMessages.text("film.description.copySelection"))
         copySelectionItem.addActionListener {
             val selected = (textArea.selectionEnd - textArea.selectionStart) > 0
             if (!selected) {
-                JOptionPane.showMessageDialog(this, "Kein Text markiert!", Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(this, UiMessages.text("film.description.noSelection"), Konstanten.PROGRAMMNAME, JOptionPane.ERROR_MESSAGE)
             } else {
                 GuiFunktionen.copyToClipboard(textArea.selectedText)
             }
@@ -173,7 +174,7 @@ class FilmDescriptionPanel(
     }
 
     fun install(tabbedPane: JTabbedPane, tabelle: JTable, filmSupplier: Supplier<Optional<DatenFilm>>) {
-        tabbedPane.add("Beschreibung", this)
+        tabbedPane.add(UiMessages.text("film.description.tab"), this)
         tabelle.selectionModel.addListSelectionListener {
             filmSupplier.get().ifPresentOrElse(::setCurrentFilm) { setCurrentFilm(null) }
         }
@@ -215,7 +216,7 @@ class FilmDescriptionPanel(
         try {
             showHyperlink(film.websiteUrl, JPopupMenu().apply { add(CopyToClipboardAction(film.websiteUrl)) })
         } catch (_: Exception) {
-            hyperlink.text = "Link nicht verfügbar"
+            hyperlink.text = UiMessages.text("film.description.linkUnavailable")
             hyperlink.isVisible = true
             hyperlink.toolTipText = film.websiteUrl
             hyperlink.componentPopupMenu = null
@@ -229,7 +230,7 @@ class FilmDescriptionPanel(
     private fun showAudioDescription(entry: AudioEntry) {
         setDescriptionPopupMenuEnabled(false)
         lblThema.text = entry.theme
-        lblTitel.text = entry.title.ifBlank { "(ohne Titel)" }
+        lblTitel.text = entry.title.ifBlank { UiMessages.text("film.description.untitled") }
 
         val websiteUrl = entry.websiteUrl
         if (websiteUrl != null) {
@@ -240,7 +241,7 @@ class FilmDescriptionPanel(
         }
 
         val description = entry.description
-        textArea.text = description.ifBlank { "Keine Beschreibung vorhanden." }
+        textArea.text = description.ifBlank { UiMessages.text("film.description.empty") }
         SwingUtilities.invokeLater { scrollPane1.verticalScrollBar.value = 0 }
         lblIcon.setSender(entry.channel)
     }
@@ -253,7 +254,7 @@ class FilmDescriptionPanel(
 
     private fun showHyperlink(url: String, popupMenu: JPopupMenu) {
         hyperlink.isVisible = true
-        hyperlink.text = "Link zur Webseite"
+        hyperlink.text = UiMessages.text("film.description.website")
         hyperlink.isClicked = false
         hyperlink.toolTipText = url
         hyperlink.componentPopupMenu = popupMenu

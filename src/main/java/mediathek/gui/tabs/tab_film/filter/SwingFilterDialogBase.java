@@ -32,16 +32,22 @@ import org.jspecify.annotations.NonNull;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Generated layout for the catalogue filters, using the selected interface language.
+ */
 public class SwingFilterDialogBase extends JDialog {
+    /** Creates the filter controls for the owning window and filter selection model. */
     protected SwingFilterDialogBase(@NonNull Window owner, @NonNull FilterSelectionComboBoxModel model) {
         super(owner);
         initComponents();
         cboxFilterSelection.setModel(model);
     }
 
+    /** Initializes the form controls with the session resource bundle. */
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var pnlFilterCommon = new JPanel();
         cboxFilterSelection = new FilterSelectionComboBox();
         cbLockCurrentFilter = new JCheckBox();
@@ -88,7 +94,7 @@ public class SwingFilterDialogBase extends JDialog {
 
         //======== this ========
         setType(Window.Type.UTILITY);
-        setTitle("Filter");
+        setTitle(bundle.getString("filter.dialog.this.title"));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             new LC().fillX().insets("5").hideMode(3),
@@ -131,8 +137,8 @@ public class SwingFilterDialogBase extends JDialog {
             pnlFilterCommon.add(cboxFilterSelection, new CC().cell(0, 0));
 
             //---- cbLockCurrentFilter ----
-            cbLockCurrentFilter.setText("Sperren");
-            cbLockCurrentFilter.setToolTipText("Filteränderungen nur temporär anwenden und nicht speichern");
+            cbLockCurrentFilter.setText(bundle.getString("filter.dialog.cbLockCurrentFilter.text"));
+            cbLockCurrentFilter.setToolTipText(bundle.getString("filter.dialog.cbLockCurrentFilter.toolTipText"));
             pnlFilterCommon.add(cbLockCurrentFilter, new CC().cell(1, 0));
 
             //======== btnSplit ========
@@ -149,23 +155,23 @@ public class SwingFilterDialogBase extends JDialog {
             pnlShowOnly.setLayout(new VerticalLayout());
 
             //---- cbShowNewOnly ----
-            cbShowNewOnly.setText("Nur neue Filme anzeigen");
+            cbShowNewOnly.setText(bundle.getString("filter.dialog.cbShowNewOnly.text"));
             pnlShowOnly.add(cbShowNewOnly);
 
             //---- cbShowBookMarkedOnly ----
-            cbShowBookMarkedOnly.setText("Nur gemerkte Filme anzeigen");
+            cbShowBookMarkedOnly.setText(bundle.getString("filter.dialog.cbShowBookMarkedOnly.text"));
             pnlShowOnly.add(cbShowBookMarkedOnly);
 
             //---- cbShowOnlyHq ----
-            cbShowOnlyHq.setText("Nur High-Quality-Filme (HQ) anzeigen");
+            cbShowOnlyHq.setText(bundle.getString("filter.dialog.cbShowOnlyHq.text"));
             pnlShowOnly.add(cbShowOnlyHq);
 
             //---- cbShowSubtitlesOnly ----
-            cbShowSubtitlesOnly.setText("Nur Filme mit Untertitel anzeigen");
+            cbShowSubtitlesOnly.setText(bundle.getString("filter.dialog.cbShowSubtitlesOnly.text"));
             pnlShowOnly.add(cbShowSubtitlesOnly);
 
             //---- cbShowOnlyLivestreams ----
-            cbShowOnlyLivestreams.setText("Nur Livestreams anzeigen");
+            cbShowOnlyLivestreams.setText(bundle.getString("filter.dialog.cbShowOnlyLivestreams.text"));
             pnlShowOnly.add(cbShowOnlyLivestreams);
         }
         contentPane.add(pnlShowOnly, new CC().cell(0, 2).growX());
@@ -176,31 +182,31 @@ public class SwingFilterDialogBase extends JDialog {
             pnlDontShow.setLayout(new VerticalLayout());
 
             //---- cbShowUnseenOnly ----
-            cbShowUnseenOnly.setText("Gesehene Filme nicht anzeigen");
+            cbShowUnseenOnly.setText(bundle.getString("filter.dialog.cbShowUnseenOnly.text"));
             pnlDontShow.add(cbShowUnseenOnly);
 
             //---- cbDontShowAbos ----
-            cbDontShowAbos.setText("Abos nicht anzeigen");
+            cbDontShowAbos.setText(bundle.getString("filter.dialog.cbDontShowAbos.text"));
             pnlDontShow.add(cbDontShowAbos);
 
             //---- cbDontShowSignLanguage ----
-            cbDontShowSignLanguage.setText("Geb\u00e4rdensprache nicht anzeigen");
+            cbDontShowSignLanguage.setText(bundle.getString("filter.dialog.cbDontShowSignLanguage.text"));
             pnlDontShow.add(cbDontShowSignLanguage);
 
             //---- cbDontShowTrailers ----
-            cbDontShowTrailers.setText("Trailer/Teaser/Vorschau nicht anzeigen");
+            cbDontShowTrailers.setText(bundle.getString("filter.dialog.cbDontShowTrailers.text"));
             pnlDontShow.add(cbDontShowTrailers);
 
             //---- cbDontShowAudioVersions ----
-            cbDontShowAudioVersions.setText("H\u00f6rfassungen ausblenden");
+            cbDontShowAudioVersions.setText(bundle.getString("filter.dialog.cbDontShowAudioVersions.text"));
             pnlDontShow.add(cbDontShowAudioVersions);
 
             //---- cbDontShowDuplicates ----
-            cbDontShowDuplicates.setText("Duplikate nicht anzeigen");
+            cbDontShowDuplicates.setText(bundle.getString("filter.dialog.cbDontShowDuplicates.text"));
             pnlDontShow.add(cbDontShowDuplicates);
 
             //---- cbDontShowGeoblocked ----
-            cbDontShowGeoblocked.setText("Geo-blockierte Filme nicht anzeigen");
+            cbDontShowGeoblocked.setText(bundle.getString("filter.dialog.cbDontShowGeoblocked.text"));
             pnlDontShow.add(cbDontShowGeoblocked);
         }
         contentPane.add(pnlDontShow, new CC().cell(0, 4).growX());
@@ -220,7 +226,7 @@ public class SwingFilterDialogBase extends JDialog {
                     .grow()));
 
             //---- label3 ----
-            label3.setText("Sender:");
+            label3.setText(bundle.getString("filter.dialog.label3.text"));
             pnlSenderlist.add(label3, new CC().cell(0, 0));
 
             //======== scpSenderList ========
@@ -254,7 +260,7 @@ public class SwingFilterDialogBase extends JDialog {
                     ));
 
             //---- label4 ----
-            label4.setText("Thema:");
+            label4.setText(bundle.getString("filter.dialog.label4.text"));
             pnlThema.add(label4, new CC().cell(0, 0));
 
             //---- jcbThema ----
@@ -284,7 +290,7 @@ public class SwingFilterDialogBase extends JDialog {
                     ));
 
             //---- label5 ----
-            label5.setText("Mindestl\u00e4nge:");
+            label5.setText(bundle.getString("filter.dialog.label5.text"));
             pnlFlimlength.add(label5, new CC().cell(0, 0));
 
             //---- lblMinFilmLengthValue ----
@@ -293,7 +299,7 @@ public class SwingFilterDialogBase extends JDialog {
             pnlFlimlength.add(hSpacer1, new CC().cell(2, 0).growX());
 
             //---- label7 ----
-            label7.setText("Maximall\u00e4nge:");
+            label7.setText(bundle.getString("filter.dialog.label7.text"));
             pnlFlimlength.add(label7, new CC().cell(3, 0));
 
             //---- lblMaxFilmLengthValue ----
@@ -318,12 +324,12 @@ public class SwingFilterDialogBase extends JDialog {
                     ));
 
             //---- label1 ----
-            label1.setText("Zeitraum:");
+            label1.setText(bundle.getString("filter.dialog.label1.text"));
             pnlZeitraum.add(label1, new CC().cell(0, 0));
             pnlZeitraum.add(spZeitraum, new CC().cell(1, 0));
 
             //---- label2 ----
-            label2.setText("Tage");
+            label2.setText(bundle.getString("filter.dialog.label2.text"));
             pnlZeitraum.add(label2, new CC().cell(2, 0));
         }
         contentPane.add(pnlZeitraum, new CC().cell(0, 12).growX());

@@ -45,10 +45,10 @@ interface FilmActionHost {
 
 class ToggleFilterDialogVisibilityAction(private val host: FilmActionHost) : AbstractAction() {
     init {
-        putValue(NAME, "Filterdialog anzeigen")
-        putValue(SHORT_DESCRIPTION, "Filter anzeigen")
-        putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.FILTER))
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0))
+        putValue(Action.NAME, UiMessages.text("film.filter.showDialog"))
+        putValue(Action.SHORT_DESCRIPTION, UiMessages.text("film.filter.show"))
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.FILTER))
+        putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0))
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -106,10 +106,10 @@ class BookmarkAddFilmAction(private val host: FilmActionHost) : AbstractAction()
         } else {
             KeyStroke.getKeyStroke(KeyEvent.VK_B, GuiFunktionen.getPlatformControlKey())
         }
-        putValue(ACCELERATOR_KEY, keyStroke)
-        putValue(SHORT_DESCRIPTION, "Ausgewählte Filme in der Merkliste speichern")
-        putValue(NAME, "Ausgewählte Filme merken")
-        putValue(SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_PLUS))
+        putValue(Action.ACCELERATOR_KEY, keyStroke)
+        putValue(Action.SHORT_DESCRIPTION, UiMessages.text("film.bookmark.add.description"))
+        putValue(Action.NAME, UiMessages.text("film.bookmark.add.text"))
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_PLUS))
     }
 
     override fun actionPerformed(e: ActionEvent?) {
@@ -128,9 +128,9 @@ class BookmarkAddFilmAction(private val host: FilmActionHost) : AbstractAction()
 
 class BookmarkRemoveFilmAction(private val host: FilmActionHost) : AbstractAction() {
     init {
-        putValue(SHORT_DESCRIPTION, "Ausgewählte Filme aus der Merkliste löschen")
-        putValue(NAME, "Ausgewählte Filme aus der Merkliste löschen")
-        putValue(SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_MINUS))
+        putValue(Action.SHORT_DESCRIPTION, UiMessages.text("film.bookmark.remove.text"))
+        putValue(Action.NAME, UiMessages.text("film.bookmark.remove.text"))
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_MINUS))
     }
 
     override fun actionPerformed(e: ActionEvent?) {

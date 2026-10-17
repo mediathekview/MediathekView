@@ -10,16 +10,22 @@ The interface language is independent of the geographic location and the languag
 
 ## Current coverage
 
-This first contribution introduces the translation infrastructure and two working screens.
+The draft PR introduces the translation infrastructure, the main catalogue, and the first translated dialogs.
 
-| Area                        | Coverage                                          |
-|-----------------------------|---------------------------------------------------|
-| General settings            | Controls, tooltips, modern-search explanation     |
-| Settings window             | Window title, close button, navigation tree       |
-| Single-film download        | Controls, subtitles, validation and status text   |
-| Navigation to these screens | File/Films menu titles, settings/download actions |
+| Area                 | Coverage                                             |
+|----------------------|------------------------------------------------------|
+| General settings     | Controls, tooltips, modern-search explanation        |
+| Settings window      | Window title, close button, navigation tree          |
+| Single-film download | Controls, subtitles, validation and status text      |
+| Main window          | Menu names and entries, tab labels, toolbar actions  |
+| Film catalogue       | Column headings, search hints, description panel     |
+| Catalogue filters    | Controls, tooltips, filter-management dialogs        |
+| Film context menu    | Actions, clipboard labels, duplicate-removal prompts |
+| Status bar           | Film/download counts, creation date and list age     |
 
-Other screens, first-run setup, most menus, and bundled help still use their existing text.
+Download management, subscriptions, bookmarks, advanced settings, and first-run setup remain partly German.
+
+Help documents, background loading messages, and most dialogs opened from menu actions are still untranslated.
 
 ## Resource bundles
 
@@ -37,6 +43,12 @@ It uses the selected UI locale explicitly and disables fallback to the operating
 Missing English entries inherit German. A key missing from both bundles is a programming error.
 
 The JVM default locale stays unchanged, preserving existing filtering and data-processing behaviour.
+
+Film columns retain their numeric model indexes, including saved order, width, visibility, and sort settings.
+
+The subtitle indicator lookup uses the translated heading for the film table; download columns keep their current names.
+
+Saved filter names, program-set names, channel names, and programme metadata are user data and are not translated.
 
 Swing's component and UI defaults receive the selected UI locale before the main interface is created.
 
@@ -108,11 +120,13 @@ Build with `./mvnw package`. Use the application's positional settings-directory
 
 Select a language, close the application, and reopen the same profile to review its saved preference.
 
-The current pilot is ready for review before translating the remaining screens.
+The main catalogue and filter dialog are ready for review before continuing with download and subscription management.
 
-## Pilot screenshots
+## Screenshots
 
 These screens were rendered on Linux with separate settings directories and sample programme data.
 
 - General settings: [German](images/i18n/settings-de.png) · [English](images/i18n/settings-en.png).
 - Single-film download: [German](images/i18n/download-de.png) · [English](images/i18n/download-en.png).
+- Main catalogue: [German](images/i18n/catalogue-de.png) · [English](images/i18n/catalogue-en.png).
+- Catalogue filters: [German](images/i18n/filter-de.png) · [English](images/i18n/filter-en.png).

@@ -21,6 +21,7 @@ package mediathek.gui.actions
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.config.application.ApplicationConfigurationCleanupStatistics
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
@@ -30,11 +31,11 @@ import javax.swing.SwingWorker
 
 class CleanupApplicationConfigurationAction(
     private val owner: JFrame,
-) : AbstractAction("Konfiguration bereinigen...") {
+) : AbstractAction(UiMessages.text("action.cleanupApplicationConfigurationAction.text")) {
     init {
         putValue(
             SHORT_DESCRIPTION,
-            "Entfernt veraltete oder unbekannte Einträge aus der Anwendungskonfiguration.",
+            UiMessages.text("action.cleanupApplicationConfigurationAction.description"),
         )
     }
 

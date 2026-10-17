@@ -1,5 +1,6 @@
 package mediathek.gui.actions
 
+import mediathek.i18n.UiMessages
 import mediathek.update.ProgrammUpdateSuchen
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
@@ -9,7 +10,7 @@ class ShowProgramInfosAction(
     private val parent: JFrame,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Programminfos anzeigen...")
+        putValue(NAME, UiMessages.text("action.showProgramInfosAction.text"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

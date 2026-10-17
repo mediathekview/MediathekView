@@ -20,6 +20,7 @@ package mediathek.gui.actions
 
 import mediathek.config.Konstanten
 import mediathek.gui.bookmark.BookmarkServices
+import mediathek.i18n.UiMessages
 import mediathek.mainwindow.FilmBookmarkHost
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF
@@ -32,8 +33,8 @@ class DeleteBookmarksAction(
     private val host: FilmBookmarkHost,
 ) : AbstractAction() {
     init {
-        putValue(SHORT_DESCRIPTION, "Merkliste vollständig löschen")
-        putValue(NAME, "Merkliste vollständig löschen...")
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.deleteBookmarksAction.description"))
+        putValue(NAME, UiMessages.text("action.deleteBookmarksAction.text"))
         putValue(SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignF.FILE_DOCUMENT_REMOVE))
     }
 

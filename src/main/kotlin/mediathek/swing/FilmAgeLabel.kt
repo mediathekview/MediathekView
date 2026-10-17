@@ -20,6 +20,7 @@ package mediathek.swing
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
+import mediathek.i18n.UiMessages
 import mediathek.tool.DurationFormatter
 import javax.swing.JLabel
 import kotlin.time.Duration
@@ -73,7 +74,7 @@ class FilmAgeLabel(
     private fun updateLabel() {
         val renderedText = ageProvider()
             ?.let(DurationFormatter::from)
-            ?.toDisplayText("Alter: ")
+            ?.let { UiMessages.format("status.filmList.age", it.toDisplayText()) }
             .orEmpty()
         if (renderedText == lastRenderedText) {
             return

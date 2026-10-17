@@ -30,6 +30,7 @@ import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBox
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
 import mediathek.gui.tabs.tab_film.search.SearchField
 import mediathek.gui.watchlist.WatchlistBellButton
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconOnlyToggleButton
 import javax.swing.Action
@@ -48,7 +49,7 @@ class FilmToolBar(
     private val toggleFilterDialogVisibilityAction: ToggleFilterDialogVisibilityAction,
     watchlistBellButton: WatchlistBellButton,
 ) : JToolBar() {
-    private val lblSearch = JLabel("Suche:")
+    private val lblSearch = JLabel(UiMessages.text("film.search.label"))
     private val filterSelectionComboBox = FilterSelectionComboBox(filterModel)
     val toggleFilterDialogVisibilityButton = FilterVisibilityToggleButton(toggleFilterDialogVisibilityAction)
 

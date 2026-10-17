@@ -21,6 +21,7 @@ package mediathek.mainwindow
 import mediathek.daten.FilmListMetaData
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.messages.FilmListReadStopEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
 import java.beans.PropertyChangeEvent
@@ -40,7 +41,7 @@ class FilmListCreationDateLabel(
     }
 
     private fun setText(metaData: FilmListMetaData) {
-        val text = "Filmliste erstellt: ${metaData.generationDateTimeAsString} Uhr"
+        val text = UiMessages.format("status.filmList.created", metaData.generationDateTimeAsString)
         SwingUtilities.invokeLater { this@FilmListCreationDateLabel.text = text }
     }
 

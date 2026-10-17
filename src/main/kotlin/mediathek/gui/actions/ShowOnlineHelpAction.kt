@@ -19,6 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.config.Konstanten
+import mediathek.i18n.UiMessages
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.SwingErrorDialog
 import java.awt.Desktop
@@ -33,7 +34,7 @@ class ShowOnlineHelpAction(
     private val parent: JFrame,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Online-Hilfe anzeigen...")
+        putValue(NAME, UiMessages.text("action.showOnlineHelpAction.text"))
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
     }
 
