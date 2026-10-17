@@ -11,6 +11,7 @@
 - **BUGFIX:** Abo-Import schlägt nicht mehr bei URLs fehl, die `[]` beinhalten.
 - **BUGFIX:** ARTE Country Badge wird nicht mehr bei der Verwendung der alten Sendericons dargestellt.
 - **BUGFIX:** *Alle Einstellungen zurücksetzen* löscht nun wieder alle notwendigen Dateien.
+- **BUGFIX(macOS):** Die bisher englischen Apple-Menüeinträge von MediathekView werden auf deutschen Systemen nun in Deutsch dargestellt.
 - viele interne Änderungen
 
 # **15.0.0**
