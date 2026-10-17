@@ -18,8 +18,8 @@ public class PanelNotificationsBase extends JPanel {
     }
 
     private void initComponents() {
-        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // Generated using JFormDesigner non-commercial license
         cbShowNotifications = new JCheckBox();
 

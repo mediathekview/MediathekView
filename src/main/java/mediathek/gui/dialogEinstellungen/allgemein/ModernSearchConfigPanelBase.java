@@ -22,8 +22,8 @@ public class ModernSearchConfigPanelBase extends JPanel {
 
     /** Initializes the controls and their resource-bundle labels. */
     private void initComponents() {
-        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // Generated using JFormDesigner non-commercial license
         var multilineLabel1 = new MultilineLabel();
         cbActivateModernSearch = new JCheckBox();

@@ -605,8 +605,8 @@ public class PanelPsetLangBase extends JPanel {
                         jCheckBoxSubtitle.setText(bundle.getString("settings.PanelPsetLang.jCheckBoxSubtitle.text"));
 
                         //---- jCheckBoxMp4Metadata ----
-                        jCheckBoxMp4Metadata.setText("MP4-Metadaten schreiben");
-                        jCheckBoxMp4Metadata.setToolTipText("Schreibt Standard-MP4-Metadaten nach dem Download in die fertige MP4-Datei");
+                        jCheckBoxMp4Metadata.setText(bundle.getString("settings.PanelPsetLangBase.jCheckBoxMp4Metadata.text"));
+                        jCheckBoxMp4Metadata.setToolTipText(bundle.getString("settings.PanelPsetLangBase.jCheckBoxMp4Metadata.toolTipText"));
 
                         GroupLayout jPanel13Layout = new GroupLayout(jPanel13);
                         jPanel13.setLayout(jPanel13Layout);

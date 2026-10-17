@@ -46,7 +46,7 @@ class DownloadSubtitleAction(
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
 
     init {
-        putValue(Action.NAME, UiMessages.text("film.context.downloadSubtitles"))
+        putValue(NAME, UiMessages.text("film.context.downloadSubtitles"))
     }
 
     override fun actionPerformed(e: ActionEvent?) {

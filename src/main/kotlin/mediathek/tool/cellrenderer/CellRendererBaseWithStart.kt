@@ -20,7 +20,6 @@ package mediathek.tool.cellrenderer
 
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import mediathek.config.application.ApplicationConfiguration
-import mediathek.controller.DownloadColumn
 import mediathek.daten.DatenFilm
 import mediathek.i18n.UiMessages
 import mediathek.swing.CompoundIcon

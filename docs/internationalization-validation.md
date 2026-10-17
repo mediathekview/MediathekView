@@ -4,17 +4,19 @@ Reviewed on Linux with Java 25 on 17 October 2026.
 
 ## Build and existing tests
 
-`./mvnw -B package` passed after the final code changes.
+`./mvnw -B package` passed after rebasing onto upstream `develop` (`9183b8efb`).
 
-725 tests ran: 0 failures, 0 errors, 3 skipped. No new automated tests were added.
+1,642 tests ran: 0 failures, 0 errors, 4 skipped. No new automated tests were added.
 
-The four newly localized duplicate/subtitle forms parsed with JFormDesigner's form loader.
+All 37 localized forms parsed with JFormDesigner's form loader after the rebase.
 
 The About form retains its regenerated layout and protected fields, with one generated bundle declaration.
 
 ## Saved-language persistence
 
 The real General settings language control was exercised in disposable profiles under `/tmp`.
+
+The German → English → German full-application restart review passed again after the rebase.
 
 The existing profile and IntelliJ run configuration were not modified.
 
@@ -38,7 +40,7 @@ Main-window captures: [German](images/i18n/restarted-de.png) · [English](images
 
 ## Dialogs and help
 
-Actual Swing dialogs were rendered in German and English with disposable profiles.
+Before the rebase, actual Swing dialogs were rendered in German and English with disposable profiles.
 
 Reviewed subtitle merging, duplicate statistics/details/overview, and the English Lucene help document.
 
@@ -49,6 +51,10 @@ English selected `_en` help resources; German selected the originals. Missing tr
 All eleven German help resources have English counterparts, including the Lucene and Audiothek guides.
 
 Search field keys, query examples, language codes, and program-set macros remain configuration or input syntax.
+
+The rebase preserves `develop`'s Kotlin settings classes, table models, and film-list loading lifecycle.
+
+Its new MP4 metadata control and column are translated; macOS menu localization follows the selected UI language.
 
 ## Remaining validation
 

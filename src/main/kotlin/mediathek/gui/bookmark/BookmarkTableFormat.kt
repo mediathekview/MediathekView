@@ -21,7 +21,20 @@ package mediathek.gui.bookmark
 import ca.odell.glazedlists.gui.TableFormat
 
 internal object BookmarkTableFormat : TableFormat<BookmarkData> {
-    private val columns = BookmarkDialog.COLUMNS
+    // Stable layout identifiers paired with translated header keys.
+    val columns = arrayOf(
+        "Gesehen" to "bookmark.column.seen",
+        "Sender" to "bookmark.column.sender",
+        "Thema" to "bookmark.column.topic",
+        "Titel" to "bookmark.column.title",
+        "Dauer" to "bookmark.column.duration",
+        "Sendedatum" to "bookmark.column.broadcast",
+        "Verfügbar bis" to "bookmark.column.availableUntil",
+        "URL" to "bookmark.column.url",
+        "Notiz" to "bookmark.column.note",
+        "Hash Code" to "bookmark.column.hash",
+        "hinzugefügt am" to "bookmark.column.added",
+    )
 
     override fun getColumnCount(): Int = columns.size
 

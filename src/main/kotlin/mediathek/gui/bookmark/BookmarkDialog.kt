@@ -258,8 +258,8 @@ class BookmarkDialog(
         table.autoResizeMode = JTable.AUTO_RESIZE_OFF
         table.model = tableModel
         // Saved layouts retain the historical identifiers across interface languages.
-        for (index in COLUMNS.indices) {
-            table.columnModel.getColumn(index).identifier = COLUMNS[index].first
+        for (index in BookmarkTableFormat.columns.indices) {
+            table.columnModel.getColumn(index).identifier = BookmarkTableFormat.columns[index].first
         }
         table.selectionModel = selectionModel
 
@@ -513,20 +513,6 @@ class BookmarkDialog(
         const val COLUMN_HASHCODE = 9
         const val COLUM_BOOKMARK_ADDED_AT = 10
 
-        // Stable layout identifiers paired with translated header keys.
-        val COLUMNS = arrayOf(
-            "Gesehen" to "bookmark.column.seen",
-            "Sender" to "bookmark.column.sender",
-            "Thema" to "bookmark.column.topic",
-            "Titel" to "bookmark.column.title",
-            "Dauer" to "bookmark.column.duration",
-            "Sendedatum" to "bookmark.column.broadcast",
-            "Verfügbar bis" to "bookmark.column.availableUntil",
-            "URL" to "bookmark.column.url",
-            "Notiz" to "bookmark.column.note",
-            "Hash Code" to "bookmark.column.hash",
-            "hinzugefügt am" to "bookmark.column.added",
-        )
 
         const val CONFIG_PREFIX = "ui.bookmark-dialog"
         private val logger = LogManager.getLogger()

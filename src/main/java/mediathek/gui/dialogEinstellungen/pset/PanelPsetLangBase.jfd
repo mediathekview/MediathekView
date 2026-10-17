@@ -452,8 +452,8 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "MP4-Metadaten schreiben"
-								"toolTipText": "Schreibt Standard-MP4-Metadaten nach dem Download in die fertige MP4-Datei"
+								"text": new FormMessage( null, "settings.PanelPsetLangBase.jCheckBoxMp4Metadata.text" )
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLangBase.jCheckBoxMp4Metadata.toolTipText" )
 							} )
 						} )
 					}, new FormLayoutConstraints( null ) {
