@@ -555,10 +555,7 @@ object Main {
 
                 JOptionPane.showMessageDialog(
                     null,
-                    "<html>" +
-                        "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=$strScale</i>.<br>" +
-                        "<b>Java unter Linux unterstützt nur ganzzahlige Skalierung!</b><br><br>" +
-                        "Sie sollten <i>-Dsun.java2d.uiScale=$newScale</i> oder größer verwenden falls die Schriftgröße zu klein ist.",
+                    UiMessages.format("startup.scale", strScale, newScale.toString()),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.WARNING_MESSAGE
                 )
@@ -594,9 +591,7 @@ object Main {
             if (!WindowsVersionHelper.IsWindows10OrGreater()) {
                 JOptionPane.showMessageDialog(
                     null,
-                    "<html>MediathekView benötigt mindestens Windows 10 zum Start.<br/>" +
-                        "<b>Die Nutzung erfolgt auf eigenes Risiko ohne Support!!</b><br/><br/>" +
-                        "Die nächste MV-Version wird nicht mehr unter diesem Betriebssystem starten!</html>",
+                    UiMessages.text("startup.windows"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.WARNING_MESSAGE
                 )
@@ -626,9 +621,7 @@ object Main {
                 SplashScreenLifecycle.hide()
                 splashHidden = true
                 val shouldActivate = showStartupQuestionDialog(
-                    "<html>Die maximale Filterlänge wurde <b>von 120 auf 240 Minuten</b> erhöht.<br/>" +
-                        "Die Filter wurden damals nicht automatisch angepasst.<br/><br/>" +
-                        "Soll MediathekView einmalig alle Filter anpassen?</html>"
+                    UiMessages.text("startup.filterMigration")
                 )
                 if (shouldActivate != null) {
                     if (shouldActivate) {
@@ -670,8 +663,7 @@ object Main {
             SplashScreenLifecycle.hide()
             try {
                 val shouldActivate = showStartupQuestionDialog(
-                    "<html>Diese Version unterstützt neue Sender, die in den Einstellungen aktiviert werden müssen.<br/>" +
-                        "Soll MediathekView einmalig alle Sender aktivieren?</html>"
+                    UiMessages.text("startup.channels")
                 )
                 if (shouldActivate != null) {
                     if (shouldActivate) {
@@ -853,8 +845,7 @@ object Main {
     private fun installSingleInstanceHandler(showDialog: Boolean = true) {
         singleInstanceWatcher = SingleInstance()
         if (singleInstanceWatcher?.isAppAlreadyActive() == true) {
-            val message = "Es dürfen nicht mehrere MediathekView-Instanzen gleichzeitig laufen.\n" +
-                "Bitte beenden Sie zuerst das andere Programm."
+            val message = UiMessages.text("startup.singleInstance")
             if (showDialog) {
                 JOptionPane.showMessageDialog(
                     null,

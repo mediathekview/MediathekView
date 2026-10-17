@@ -41,7 +41,6 @@ public class AboutDialogBase extends JDialog {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         ResourceBundle bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
-        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var label1 = new JLabel();
         var panel1 = new JPanel();
         var label2 = new JLabel();
