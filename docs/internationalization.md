@@ -42,9 +42,9 @@ The draft PR covers the catalogue, downloads, subscriptions, bookmarks, and all 
 | Film description editor | Controls, save messages, and inline help               |
 | Text-field menus        | Undo, cut, copy, paste, and select all                 |
 
-Duplicate-film dialogs, subtitle merging, and some startup warnings remain partly German.
+Duplicate-film dialogs, subtitle merging, startup warnings, and loading messages now use the selected language.
 
-Help documents and background loading messages are still untranslated.
+All eleven bundled help documents now have English versions, with German fallback.
 
 Server announcements and release notes retain the language supplied by their source.
 
@@ -98,6 +98,14 @@ Swing's component and UI defaults receive the selected UI locale before the main
 The saved key is `application.ui.language`, with the stable values `de` and `en`.
 
 It is registered with `@ApplicationConfigKey`, so configuration cleanup retains it.
+
+## Help resources
+
+Bundled help uses `_en.txt` and `_en.md` resources next to the original German files.
+
+`GetFile.localizedResourcePath` selects an existing translation, otherwise retaining the original resource.
+
+Search keys, sample queries, command arguments, and file-name macros retain their executable syntax.
 
 ## One complete translation example
 
@@ -169,7 +177,9 @@ Bookmarks and all settings pages are also ready for review in both languages.
 
 The Linux screenshots below cover actual Swing components rendered with separate profiles.
 
-They do not replace a full application restart test or Windows and macOS layout review.
+Linux language persistence was reviewed across full application launches. Windows and macOS review remains pending.
+
+See [validation results](internationalization-validation.md) for evidence and limitations.
 
 ## Screenshots
 
@@ -194,3 +204,5 @@ These screens were rendered on Linux with separate settings directories and samp
 - First-run setup: [German](images/i18n/first-run-de.png) · [English](images/i18n/first-run-en.png).
 - Program-set update: [German](images/i18n/set-update-de.png) · [English](images/i18n/set-update-en.png).
 - About: [German](images/i18n/about-de.png) · [English](images/i18n/about-en.png).
+- Subtitle merging: [German](images/i18n/subtitle-merge-de.png) · [English](images/i18n/subtitle-merge-en.png).
+- Duplicate statistics: [German](images/i18n/duplicate-statistics-de.png) · [English](images/i18n/duplicate-statistics-en.png).
