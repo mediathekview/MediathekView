@@ -68,8 +68,8 @@ class CreateNewAboAction(
         if (abos.list.existsAlready(datenAbo)) {
             JOptionPane.showMessageDialog(
                 parent,
-                "Abo existiert bereits",
-                "Abo anlegen",
+                UiMessages.text("abo.create.exists"),
+                UiMessages.text("abo.create.title"),
                 JOptionPane.INFORMATION_MESSAGE,
             )
             return

@@ -9,6 +9,7 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import java.awt.*;
 
+/** Generated layout using the selected interface language. */
 public class MeldungDownloadfehlerBase extends JDialog {
     protected MeldungDownloadfehlerBase(Frame parent) {
         super(parent, false);
@@ -22,7 +23,9 @@ public class MeldungDownloadfehlerBase extends JDialog {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the generated controls using the selected interface language. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jScrollPane1 = new JScrollPane();
         jTextArea1 = new JTextArea();
         var jLabelIcon = new JLabel();
@@ -33,7 +36,7 @@ public class MeldungDownloadfehlerBase extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Downloadfehler");
+        setTitle(bundle.getString("download.error.dialog.this.title"));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             new LC().insets("dialog").hideMode(3).gridGap("rel", "rel"),
@@ -66,7 +69,7 @@ public class MeldungDownloadfehlerBase extends JDialog {
         contentPane.add(jLabelIcon, new CC().cell(0, 0, 1, 3).alignY("top"));
 
         //---- jLabel2 ----
-        jLabel2.setText("Filmtitel:");
+        jLabel2.setText(bundle.getString("download.error.dialog.jLabel2.text"));
         contentPane.add(jLabel2, new CC().split(2).cell(1, 0));
 
         //---- jTextFieldTitel ----
@@ -78,7 +81,7 @@ public class MeldungDownloadfehlerBase extends JDialog {
         contentPane.add(jLabelTime, new CC().cell(1, 2));
 
         //---- jButtonOk ----
-        jButtonOk.setText("Ok");
+        jButtonOk.setText(bundle.getString("download.error.dialog.jButtonOk.text"));
         contentPane.add(jButtonOk, new CC().cell(1, 2).alignX("center").growX(0));
         pack();
         setLocationRelativeTo(getOwner());

@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "download.error.dialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets dialog,hidemode 3,gap rel rel"
 			"$columnConstraints": "[fill][grow,fill]"
@@ -10,7 +17,7 @@ new FormModel {
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
-			"title": "Downloadfehler"
+			"title": new FormMessage( null, "download.error.dialog.this.title" )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "jScrollPane1"
 				auxiliary() {
@@ -42,7 +49,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabel2"
-				"text": "Filmtitel:"
+				"text": new FormMessage( null, "download.error.dialog.jLabel2.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -69,7 +76,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonOk"
-				"text": "Ok"
+				"text": new FormMessage( null, "download.error.dialog.jButtonOk.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

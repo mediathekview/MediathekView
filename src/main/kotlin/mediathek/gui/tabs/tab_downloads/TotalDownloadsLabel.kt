@@ -21,10 +21,11 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.controller.starter.DownloadStartInfo
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import mediathek.i18n.UiMessages
 
 class TotalDownloadsLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     init {
-        toolTipText = "Gesamtzahl aller Downloads"
+        toolTipText = UiMessages.text("downloads.status.TotalDownloadsLabel.description")
         startInfoProperty.addStartInfoChangeListener { event ->
             SwingUtilities.invokeLater {
                 process(event.newValue as DownloadStartInfo)
@@ -35,14 +36,10 @@ class TotalDownloadsLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel
     private fun process(info: DownloadStartInfo) {
         val downloads = info.totalDownloadListEntries
         val deferred = downloads - info.totalStarts
-        text = buildString {
-            append("Gesamtdownloads: ")
-            append(downloads)
-            if (deferred >= 1) {
-                append(" (")
-                append(deferred)
-                append(" zurückgestellt)")
-            }
+        text = if (deferred >= 1) {
+            UiMessages.format("downloads.status.totalDeferred", downloads, deferred)
+        } else {
+            UiMessages.format("downloads.status.total", downloads)
         }
     }
 }

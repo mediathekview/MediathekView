@@ -10,22 +10,27 @@ The interface language is independent of the geographic location and the languag
 
 ## Current coverage
 
-The draft PR introduces the translation infrastructure, the main catalogue, and the first translated dialogs.
+The draft PR covers the main catalogue, download management, subscriptions, and the first settings panels.
 
-| Area                 | Coverage                                             |
-|----------------------|------------------------------------------------------|
-| General settings     | Controls, tooltips, modern-search explanation        |
-| Settings window      | Window title, close button, navigation tree          |
-| Single-film download | Controls, subtitles, validation and status text      |
-| Main window          | Menu names and entries, tab labels, toolbar actions  |
-| Film catalogue       | Column headings, search hints, description panel     |
-| Catalogue filters    | Controls, tooltips, filter-management dialogs        |
-| Film context menu    | Actions, clipboard labels, duplicate-removal prompts |
-| Status bar           | Film/download counts, creation date and list age     |
+| Area                    | Coverage                                            |
+|-------------------------|-----------------------------------------------------|
+| General settings        | Controls, tooltips, modern-search explanation        |
+| Settings window         | Window title, close button, navigation tree          |
+| Single-film download    | Controls, subtitles, validation and status text      |
+| Main window             | Menu names and entries, tab labels, toolbar actions  |
+| Film catalogue          | Column headings, search hints, description panel     |
+| Catalogue filters       | Controls, tooltips, filter-management dialogs        |
+| Film context menu       | Actions, clipboard labels, duplicate-removal prompts |
+| Status bar              | Film/download counts, creation date and list age     |
+| Download list           | Columns, filters, toolbars, counts, progress, menus  |
+| Download dialogs        | Editing, batch setup, destinations, resume, errors   |
+| Download scheduling     | Start time, completion options, waiting messages     |
+| Subscription management | Columns, actions, filters, counts, editing, deletion |
+| Subscription history    | Columns, filtering, counts, deletion prompts         |
 
-Download management, subscriptions, bookmarks, advanced settings, and first-run setup remain partly German.
+Bookmarks, advanced settings, first-run setup, and other secondary dialogs remain partly German.
 
-Help documents, background loading messages, and most dialogs opened from menu actions are still untranslated.
+Help documents and background loading messages are still untranslated.
 
 ## Resource bundles
 
@@ -44,9 +49,19 @@ Missing English entries inherit German. A key missing from both bundles is a pro
 
 The JVM default locale stays unchanged, preserving existing filtering and data-processing behaviour.
 
-Film columns retain their numeric model indexes, including saved order, width, visibility, and sort settings.
+Film and download columns retain numeric indexes for saved order, width, visibility, and sort settings.
 
-The subtitle indicator lookup uses the translated heading for the film table; download columns keep their current names.
+Subtitle indicator lookup uses translated headings for both film and download tables.
+
+Subscription columns keep their historical identifiers for saved layouts; headings and column menus use translations.
+
+Default subscription widths fit translated headings. Previously saved widths still take precedence.
+
+Download filter values remain unchanged in configuration; combo-box renderers translate their displayed labels.
+
+Download type and source labels translate separately from their stable identifiers and legacy data labels.
+
+The scheduler creates its date and time picker with the selected UI locale.
 
 Saved filter names, program-set names, channel names, and programme metadata are user data and are not translated.
 
@@ -120,7 +135,11 @@ Build with `./mvnw package`. Use the application's positional settings-directory
 
 Select a language, close the application, and reopen the same profile to review its saved preference.
 
-The main catalogue and filter dialog are ready for review before continuing with download and subscription management.
+Review download and subscription management in both languages, including saved filters and column layouts.
+
+The Linux screenshots below cover actual Swing components rendered with separate profiles.
+
+They do not replace a full application restart test or Windows and macOS layout review.
 
 ## Screenshots
 
@@ -130,3 +149,8 @@ These screens were rendered on Linux with separate settings directories and samp
 - Single-film download: [German](images/i18n/download-de.png) · [English](images/i18n/download-en.png).
 - Main catalogue: [German](images/i18n/catalogue-de.png) · [English](images/i18n/catalogue-en.png).
 - Catalogue filters: [German](images/i18n/filter-de.png) · [English](images/i18n/filter-en.png).
+- Download list: [German](images/i18n/downloads-de.png) · [English](images/i18n/downloads-en.png).
+- Subscriptions: [German](images/i18n/subscriptions-de.png) · [English](images/i18n/subscriptions-en.png).
+- Subscription editor: [German](images/i18n/subscription-edit-de.png) · [English](images/i18n/subscription-edit-en.png).
+- Download editor: [German](images/i18n/download-edit-de.png) · [English](images/i18n/download-edit-en.png).
+- Scheduler: [German](images/i18n/download-schedule-de.png) · [English](images/i18n/download-schedule-en.png).

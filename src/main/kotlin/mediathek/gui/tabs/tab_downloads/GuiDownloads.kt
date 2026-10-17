@@ -627,21 +627,21 @@ class GuiDownloads(
 
         val currentStart = datenDownload.runtime.runState
         if (currentStart != null && currentStart.status < StartStatus.FINISHED) {
-            JOptionPane.showMessageDialog(ownerFrame, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(ownerFrame, UiMessages.text("downloads.delete.stopFirst"), UiMessages.text("downloads.delete.title"), JOptionPane.ERROR_MESSAGE)
             return
         }
 
         try {
             val file = getExistingDownloadFile(datenDownload)
             if (!file.exists()) {
-                JOptionPane.showMessageDialog(ownerFrame, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(ownerFrame, UiMessages.text("downloads.delete.missing"), UiMessages.text("downloads.delete.title"), JOptionPane.ERROR_MESSAGE)
                 return
             }
 
             val result = JOptionPane.showConfirmDialog(
                 ownerFrame,
                 file.absolutePath,
-                "Film Löschen?",
+                UiMessages.text("downloads.delete.confirm"),
                 JOptionPane.YES_NO_OPTION,
             )
             if (result == JOptionPane.OK_OPTION) {
@@ -651,7 +651,7 @@ class GuiDownloads(
                 }
             }
         } catch (_: Exception) {
-            JOptionPane.showMessageDialog(ownerFrame, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(ownerFrame, UiMessages.text("downloads.delete.failed"), UiMessages.text("downloads.delete.title"), JOptionPane.ERROR_MESSAGE)
             logger.error("Fehler beim löschen: {}", datenDownload.targetPathFileName)
         }
     }
@@ -737,7 +737,7 @@ class GuiDownloads(
         if (tabelle.rowCount == 0) {
             JOptionPane.showMessageDialog(
                 this,
-                "Es sind keine Downloads in der Liste zum Starten vorhanden.",
+                UiMessages.text("downloads.start.empty"),
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.INFORMATION_MESSAGE,
             )
@@ -758,8 +758,8 @@ class GuiDownloads(
                 if (start.status > StartStatus.RUNNING) {
                     val reply = createDismissableMessageDialog(
                         ownerFrame,
-                        "Fertiger Download",
-                        "Film nochmal starten?  ==> " + download.title,
+                        UiMessages.text("downloads.start.finished"),
+                        UiMessages.format("downloads.start.again", download.title),
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.NO_OPTION,
                         10.seconds,
@@ -824,14 +824,13 @@ class GuiDownloads(
                     if (start.status > StartStatus.RUNNING) {
                         if (answer == -1) {
                             val text = if (selectedDownloads.size > 1) {
-                                "Es sind bereits fertige Filme dabei,\n" +
-                                    "diese nochmal starten?"
+                                UiMessages.text("downloads.start.completedAgain")
                             } else {
-                                "Film nochmal starten?  ==> " + download.title
+                                UiMessages.format("downloads.start.again", download.title)
                             }
                             answer = createDismissableMessageDialog(
                                 ownerFrame,
-                                "Fertiger Download",
+                                UiMessages.text("downloads.start.finished"),
                                 text,
                                 JOptionPane.YES_NO_CANCEL_OPTION,
                                 JOptionPane.NO_OPTION,
