@@ -763,8 +763,7 @@ object Main {
                     //show termination dialog
                     JOptionPane.showMessageDialog(
                         null,
-                        "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" +
-                            "MediathekView muss deshalb beendet werden.</html>",
+                        UiMessages.text("startup.cancelled"),
                         Konstanten.PROGRAMMNAME,
                         JOptionPane.ERROR_MESSAGE
                     )

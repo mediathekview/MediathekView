@@ -36,7 +36,7 @@ class ShowAudiothekSearchHelpAction : AbstractAction() {
 
     override fun actionPerformed(event: ActionEvent?) {
         val owner = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
-        val dialog = LuceneTutorialDialog(owner, "Audiothek-Suche", Konstanten.PFAD_AUDIOTHEK_SUCHE_HILFE_MARKDOWN)
+        val dialog = LuceneTutorialDialog(owner, UiMessages.text("help.audiothekTitle"), Konstanten.PFAD_AUDIOTHEK_SUCHE_HILFE_MARKDOWN)
         dialog.addDelayedWindowListener(onWindowClosed = {
             isEnabled = true
         })

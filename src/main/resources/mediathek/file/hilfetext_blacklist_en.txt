@@ -1,0 +1,17 @@
+The blacklist hides films that match a row in the table.
+
+The whitelist shows only films that match a row in the table.
+
+Switching between blacklist and whitelist reverses which films are displayed.
+
+Channel and topic must match exactly. The title filter must occur within the film title. The topic/title filter must occur in either the film topic or its title.
+
+Matching is case-insensitive.
+
+The Title and Topic/title fields also accept regular expressions, introduced by "#:". Regular expressions are also case-insensitive.
+
+#:Abend.*
+
+This matches films whose corresponding field begins with "Abend" or "abend".
+
+https://en.wikipedia.org/wiki/Regular_expression

@@ -582,10 +582,8 @@ open class MediathekGui private constructor(
                         .sorted()
                         .joinToString("<br/>") { HtmlUtils.escapeHtml(it) }
 
-                    val message = String.format(
-                        "<html>Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.<br/>" +
-                            "<b>Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!</b><br/><br/>" +
-                            "Nachfolgende Ausdrücke sind fehlerbehaftet: <br/>%s</html>",
+                    val message = UiMessages.format(
+                        "startup.invalidRegex",
                         regexString,
                     )
 
