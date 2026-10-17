@@ -10,14 +10,19 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 
 /**
+ * JFormDesigner layout for the localized modern-search controls.
+ *
  * @author Christian Franzke
  */
 public class ModernSearchConfigPanelBase extends JPanel {
+    /** Creates the localized controls using the current startup language. */
     public ModernSearchConfigPanelBase() {
         initComponents();
     }
 
+    /** Initializes the controls and their resource-bundle labels. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         var multilineLabel1 = new MultilineLabel();
@@ -33,11 +38,11 @@ public class ModernSearchConfigPanelBase extends JPanel {
             "[]"));
 
         //---- multilineLabel1 ----
-        multilineLabel1.setText("Mit der modernen Suche k\u00f6nnen komplexe Abfragen inkl. UND-/ODER-/NICHT-Anteilen \u00fcber diverse Felder der Filmliste durchgef\u00fchrt werden. \nDie Bedienung ist komplett anders und deutlich komplexer als die bisher verwendete Suche und richtet sich daher nur an erfahrene Nutzer, die sich in die Materie einarbeiten wollen. Eine Suche im Internet zur Gestaltung der Abfragen ist unausweichlich.\nDie Lade-/Verarbeitungszeit der Filmliste erh\u00f6ht sich je nach verwendetem Rechner um ca. 10-30 Sekunden.\nEs ist nicht m\u00f6glich, die neue Suche und die alte parallel zu verwenden.");
+        multilineLabel1.setText(bundle.getString("settings.search.multilineLabel1.text"));
         add(multilineLabel1, "cell 0 0,grow");
 
         //---- cbActivateModernSearch ----
-        cbActivateModernSearch.setText("<html>Moderne Suchfunktion aktivieren <b>(erfordert Neustart!)</b></html>");
+        cbActivateModernSearch.setText(bundle.getString("settings.search.cbActivateModernSearch.text"));
         add(cbActivateModernSearch, "cell 0 1");
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }

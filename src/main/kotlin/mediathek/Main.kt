@@ -38,6 +38,7 @@ import mediathek.daten.abo.AboServices
 import mediathek.gui.dialog.DialogStarteinstellungen
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider
 import mediathek.logging.JavaUtilLoggingConfiguration
+import mediathek.i18n.UiMessages
 import mediathek.logging.SwingAppender
 import mediathek.mac.MediathekGuiMac
 import mediathek.mainwindow.MediathekGui
@@ -103,6 +104,7 @@ object Main {
         configureStartup(parseResult, args)
         printDirectoryPaths()
 
+        UiMessages.initialize(ApplicationConfiguration.getInstance().uiLanguage)
         val daten = Daten()
 
         if (CommandLineOptions.isDownloadAndQuit()) {
@@ -228,6 +230,7 @@ object Main {
     }
 
     private suspend fun initializeSwingEnvironment() = withContext(Dispatchers.Swing) {
+        JComponent.setDefaultLocale(UiMessages.language.locale)
         if (SystemUtils.IS_OS_LINUX && !CommandLineOptions.isDisableFlatLafDecorations()) {
             // enable custom window decorations
             JFrame.setDefaultLookAndFeelDecorated(true)
@@ -239,6 +242,7 @@ object Main {
         UIManager.put("TabbedPane.showTabSeparators", true)
         registerFlatLafCustomization()
         DarkModeSetup.setup()
+        UIManager.getDefaults().defaultLocale = UiMessages.language.locale
 
         if (SystemUtils.IS_OS_LINUX) {
             checkUiScaleSetting()

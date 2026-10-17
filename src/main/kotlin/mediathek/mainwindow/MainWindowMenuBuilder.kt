@@ -37,6 +37,7 @@ import mediathek.gui.history.ResetAboHistoryAction
 import mediathek.gui.history.ResetDownloadHistoryAction
 import mediathek.gui.tabs.tab_downloads.GuiDownloads
 import mediathek.gui.tabs.tab_film.GuiFilme
+import mediathek.i18n.UiMessages
 import mediathek.logging.LogDialog
 import mediathek.sqlite.RecoverHistoryDbAction
 import mediathek.tool.GuiFunktionen
@@ -82,10 +83,10 @@ class MainWindowMenuBuilder(
     private val searchProgramUpdateAction: Action,
 ) {
     fun createMenuBar(): JMenuBar {
-        configureMenu(fileMenu, 'd', "Datei")
+        configureMenu(fileMenu, UiMessages.text("menu.file.mnemonic").first(), UiMessages.text("menu.file.text"))
         menuBar.add(fileMenu)
 
-        configureMenu(filmMenu, 'F', "Filme")
+        configureMenu(filmMenu, UiMessages.text("menu.films.mnemonic").first(), UiMessages.text("menu.films.text"))
         menuBar.add(filmMenu)
 
         configureMenu(downloadMenu, 'O', "Downloads")

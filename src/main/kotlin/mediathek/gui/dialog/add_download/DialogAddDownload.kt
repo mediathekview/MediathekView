@@ -35,6 +35,7 @@ import mediathek.gui.dialog.download.DownloadQualityResolutionSizeLoadResult
 import mediathek.gui.dialog.download.DownloadQualityResolutionSizes
 import mediathek.gui.dialog.download.DownloadQualitySupport
 import mediathek.gui.messages.DownloadListChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.*
 import mediathek.tool.MessageBus.messageBus
 import org.apache.commons.lang3.SystemUtils
@@ -101,7 +102,7 @@ class DialogAddDownload(
     companion object {
         private val logger = LogManager.getLogger()
         private const val MINIMUM_DIALOG_WIDTH = 720
-        private const val TITLED_BORDER_STRING = "Download-Qualität"
+        private val TITLED_BORDER_STRING get() = UiMessages.text("download.dialog.jPanelSize.borderTitle")
         private const val KEY_LABEL_FOREGROUND: String = "Label.foreground"
         private const val KEY_TEXTFIELD_BACKGROUND: String = "TextField.background"
         private val INITIAL_SIZE_LOOKUP_TIMEOUT = 20.seconds
@@ -265,7 +266,7 @@ class DialogAddDownload(
                 }
 
                 if (sizeLoadResult == null) {
-                    showInitialSizeLookupMessage("Dateigröße konnte nicht rechtzeitig ermittelt werden.")
+                    showInitialSizeLookupMessage(UiMessages.text("download.sizeTimeout"))
                 } else {
                     applyResolutionSizes(sizeLoadResult.sizes)
                     if (sizeLoadResult.sizes.high.isEmpty() &&
@@ -273,9 +274,9 @@ class DialogAddDownload(
                         sizeLoadResult.sizes.low.isEmpty()
                     ) {
                         if (sizeLoadResult.httpStatusCode == 403 || sizeLoadResult.httpStatusCode == 404) {
-                            showInitialSizeLookupError("HTTP ${sizeLoadResult.httpStatusCode} beim Ermitteln der Dateigröße.")
+                            showInitialSizeLookupError(UiMessages.format("download.sizeHttpError", sizeLoadResult.httpStatusCode.toString()))
                         } else {
-                            showInitialSizeLookupMessage("Dateigröße konnte nicht ermittelt werden.")
+                            showInitialSizeLookupMessage(UiMessages.text("download.sizeUnavailable"))
                         }
                     } else {
                         clearInitialSizeLookupMessage()
@@ -519,8 +520,8 @@ class DialogAddDownload(
         if (pfadRaw.isEmpty() || name.isEmpty()) {
             JOptionPane.showMessageDialog(
                 this,
-                "Pfad oder Name ist leer",
-                "Fehlerhafter Pfad/Name!",
+                UiMessages.text("download.emptyPath"),
+                UiMessages.text("download.invalidPathName"),
                 JOptionPane.ERROR_MESSAGE
             )
             return false
@@ -533,8 +534,8 @@ class DialogAddDownload(
         } else {
             JOptionPane.showMessageDialog(
                 this,
-                "Pfad ist nicht beschreibbar",
-                "Fehlerhafter Pfad!",
+                UiMessages.text("download.pathNotWritable"),
+                UiMessages.text("download.invalidPath"),
                 JOptionPane.ERROR_MESSAGE
             )
             false
@@ -636,8 +637,8 @@ class DialogAddDownload(
             lblBusyIndicator.apply {
                 isVisible = true
                 isBusy = false
-                text = "Hilfsprogramm nicht gefunden!"
-                foreground = Color.RED
+                setText(UiMessages.text("download.missingHelper"))
+                setForeground(Color.RED)
             }
             btnRequestLiveInfo.isEnabled = false
         }
@@ -671,7 +672,7 @@ class DialogAddDownload(
         } catch (ex: JaffreeAbnormalExitException) {
             showLiveInfoError(DownloadQualitySupport.getLiveInfoErrorString(ex))
         } catch (_: Exception) {
-            showLiveInfoError("Unbekannter Fehler aufgetreten.")
+            showLiveInfoError(UiMessages.text("download.unknownError"))
         } finally {
             isLiveInfoLookupRunning = false
             if (isInitialSizeLookupRunning) {
@@ -690,14 +691,14 @@ class DialogAddDownload(
                     isVisible = true
                     isBusy = true
                     text = ""
-                    showBusyStatusMessage("Codec-Details werden geladen...")
+                    showBusyStatusMessage(UiMessages.text("download.loadingCodecs"))
                 }
 
                 isInitialSizeLookupRunning -> {
                     isVisible = true
                     isBusy = true
                     text = ""
-                    showBusyStatusMessage("Dateigrößen werden geladen...")
+                    showBusyStatusMessage(UiMessages.text("download.loadingSizes"))
                 }
 
                 else -> {
@@ -955,7 +956,7 @@ class DialogAddDownload(
                 val initialDirectory = (jComboBoxPfad.selectedItem as? String).orEmpty()
                 FileDialogs.chooseDirectoryLocation(
                     ownerFrame,
-                    "Film speichern",
+                    UiMessages.text("download.dialog.this.title"),
                     initialDirectory
                 )?.absolutePath?.let { selectedDirectory ->
                     SwingUtilities.invokeLater {

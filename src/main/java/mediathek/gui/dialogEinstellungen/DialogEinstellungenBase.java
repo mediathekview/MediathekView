@@ -5,14 +5,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
+/** JFormDesigner layout whose labels use the interface language selected at startup. */
 public class DialogEinstellungenBase extends JFrame {
+    /** Creates the localized controls using the current startup language. */
     public DialogEinstellungenBase() {
         initComponents();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the controls and their resource-bundle labels. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         jButtonBeenden = new JButton();
         var jSplitPane1 = new JSplitPane();
         var jScrollPane2 = new JScrollPane();
@@ -22,11 +26,11 @@ public class DialogEinstellungenBase extends JFrame {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Einstellungen"); //NON-NLS
+        setTitle(bundle.getString("settings.dialog.this.title"));
         var contentPane = getContentPane();
 
         //---- jButtonBeenden ----
-        jButtonBeenden.setText("Schlie\u00dfen"); //NON-NLS
+        jButtonBeenden.setText(bundle.getString("settings.dialog.jButtonBeenden.text"));
 
         //======== jSplitPane1 ========
         {

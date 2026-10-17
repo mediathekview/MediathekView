@@ -20,6 +20,7 @@ package mediathek.config.application
 
 import mediathek.config.Konstanten
 import mediathek.daten.Country
+import mediathek.i18n.UiLanguage
 import org.apache.commons.configuration2.XMLConfiguration
 import org.apache.logging.log4j.LogManager
 import java.time.LocalDate
@@ -27,6 +28,13 @@ import java.time.LocalDate
 class ApplicationGeneralConfiguration(
     private val config: XMLConfiguration,
 ) {
+    /** Interface language applied on the next start; existing configurations retain German. */
+    var uiLanguage: UiLanguage
+        get() = UiLanguage.fromCode(config.getString(APPLICATION_UI_LANGUAGE, null))
+        set(value) {
+            config.setProperty(APPLICATION_UI_LANGUAGE, value.code)
+        }
+
     var geographicLocation: Country
         get() =
             try {
@@ -123,6 +131,9 @@ class ApplicationGeneralConfiguration(
 
     private companion object {
         private val logger = LogManager.getLogger()
+
+        @field:ApplicationConfigKey
+        private const val APPLICATION_UI_LANGUAGE = "application.ui.language"
 
         @field:ApplicationConfigKey
         private const val APPLICATION_DARK_MODE = "application.dark_mode"

@@ -21,6 +21,7 @@ package mediathek.gui.tabs.tab_film.actions
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
 import mediathek.daten.FilmResolution
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen
 import org.apache.commons.lang3.SystemUtils
@@ -82,9 +83,9 @@ internal class ActionAcceleratorDispatcher(
 
 class SaveFilmAction(private val host: FilmActionHost) : AbstractAction() {
     init {
-        putValue(SHORT_DESCRIPTION, "Film downloaden")
-        putValue(NAME, "Film downloaden")
-        putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD))
+        putValue(Action.SHORT_DESCRIPTION, UiMessages.text("download.action.text"))
+        putValue(Action.NAME, UiMessages.text("download.action.text"))
+        putValue(Action.SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD))
         val keyStroke = if (SystemUtils.IS_OS_MAC_OSX) {
             KeyStroke.getKeyStroke(KeyEvent.VK_F7, GuiFunktionen.getPlatformControlKey())
         } else {

@@ -7,6 +7,7 @@ import com.github.kokorin.jaffree.ffprobe.Stream
 import com.github.kokorin.jaffree.process.JaffreeAbnormalExitException
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
+import mediathek.i18n.UiMessages
 import mediathek.tool.ArteHlsQualitySelector
 import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
@@ -42,7 +43,7 @@ data class DownloadQualityResolutionSizeLoadResult(
 
 object DownloadQualitySupport {
     private val logger = LogManager.getLogger()
-    private const val NO_DATA_AVAILABLE = "Keine Daten verfügbar."
+    private val NO_DATA_AVAILABLE get() = UiMessages.text("download.noData")
 
     fun loadResolutionSizes(film: DatenFilm): DownloadQualityResolutionSizes {
         return loadResolutionSizeResult(film).sizes
@@ -94,7 +95,7 @@ object DownloadQualitySupport {
 
     fun qualityPanelTitle(baseTitle: String, usableSpaceBytes: Long): String {
         return if (usableSpaceBytes > 0L) {
-            "$baseTitle [ Freier Speicherplatz: ${FileUtils.humanReadableByteCountBinary(usableSpaceBytes)} ]"
+            UiMessages.format("download.qualityWithFreeSpace", baseTitle, FileUtils.humanReadableByteCountBinary(usableSpaceBytes))
         } else {
             baseTitle
         }
@@ -171,7 +172,7 @@ object DownloadQualitySupport {
             ?.takeIf { it.startsWith("Server returned ") }
             ?.removePrefix("Server returned ")
             ?.trim()
-            ?: "Unbekannter Fehler aufgetreten."
+            ?: UiMessages.text("download.unknownError")
     }
 
     private fun fetchFileSizeForQuality(film: DatenFilm, resolution: FilmResolution.Enum): FileSize.LookupResult {
