@@ -25,6 +25,7 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.messages.GeoStateChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.GeoLocationDetector
 import mediathek.tool.MessageBus
 import mediathek.tool.http.MVHttpClient
@@ -86,15 +87,12 @@ class GeoCountryStartupCheck(
     private fun confirmAndApplyMismatch(mismatch: CountryMismatch) {
         val answer = JOptionPane.showConfirmDialog(
             owner as Component,
-            "<html>" +
-                "Der über Ihre öffentliche IP erkannte Standort (${mismatch.detectedCountryCode} / ${mismatch.detectedCountry.name})<br>" +
-                "stimmt nicht mit der gespeicherten Ländereinstellung (${mismatch.configuredCountry.name}) überein.<br>" +
-                "<br>" +
-                "Die Standorteinstellung ist nicht dazu gedacht, Geoblocking zu umgehen, sondern dabei zu helfen,<br>" +
-                "geoblockierte Filme korrekt anzuzeigen.<br>" +
-                "<br>" +
-                "Soll die gespeicherte Ländereinstellung auf ${mismatch.detectedCountry.name} geändert werden?" +
-                "</html>",
+            UiMessages.format(
+                "startup.locationMismatch",
+                mismatch.detectedCountryCode,
+                mismatch.detectedCountry.name,
+                mismatch.configuredCountry.name,
+            ),
             Konstanten.PROGRAMMNAME,
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE,

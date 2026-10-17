@@ -14,6 +14,7 @@ public class UpdateNotificationPanelBase extends JPanel {
     protected void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         createUIComponents();
 
         var label1 = new JLabel();
@@ -35,7 +36,7 @@ public class UpdateNotificationPanelBase extends JPanel {
             "[grow]"));
 
         //---- label1 ----
-        label1.setText("Eine neue Version von MediathekView ist verf\u00fcgbar!");
+        label1.setText(bundle.getString("dialog.UpdateNotificationPanel.label1.text"));
         label1.setFont(label1.getFont().deriveFont(label1.getFont().getStyle() | Font.BOLD, label1.getFont().getSize() + 5f));
         add(label1, "cell 1 0,aligny bottom,growy 0");
 
@@ -44,12 +45,12 @@ public class UpdateNotificationPanelBase extends JPanel {
         add(lblAppIcon, "cell 0 0 1 2");
 
         //---- lblReleaseInfo ----
-        lblReleaseInfo.setText("text");
+        lblReleaseInfo.setText(bundle.getString("dialog.UpdateNotificationPanel.label3.text"));
         lblReleaseInfo.setFont(lblReleaseInfo.getFont().deriveFont(lblReleaseInfo.getFont().getSize() - 1f));
         add(lblReleaseInfo, "cell 1 1,aligny top,growy 0");
 
         //---- label4 ----
-        label4.setText("Release Notes:");
+        label4.setText(bundle.getString("dialog.UpdateNotificationPanel.label4.text"));
         label4.setFont(label4.getFont().deriveFont(label4.getFont().getStyle() | Font.BOLD));
         add(label4, "cell 1 2");
 

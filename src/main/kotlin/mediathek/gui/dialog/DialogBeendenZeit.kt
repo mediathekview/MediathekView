@@ -24,6 +24,7 @@ import mediathek.config.Konstanten
 import mediathek.controller.starter.DownloadServices
 import mediathek.controller.starter.DownloadStartActions
 import mediathek.daten.DatenDownload
+import mediathek.i18n.UiMessages
 import mediathek.swing.AppTerminationIndefiniteProgress
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
@@ -99,7 +100,7 @@ class DialogBeendenZeit(
         val dateTime = dateTimePicker.dateTimePermissive
         val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
         val date = dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-        progressPanel?.setMessage("Downloads werden am $date um $time gestartet.")
+        progressPanel?.setMessage(UiMessages.format("downloads.schedule.startAt", date, time))
     }
 
     private fun waitUntilDownloadsHaveFinished() {
@@ -118,7 +119,7 @@ class DialogBeendenZeit(
                     }
                 }
 
-                progressPanel?.setMessage("Warte auf Abschluss der Downloads...")
+                progressPanel?.setMessage(UiMessages.text("downloads.schedule.wait"))
                 DownloadStartActions.startAll(listeDownloadsStarten)
 
                 withContext(Dispatchers.IO) {
@@ -151,11 +152,11 @@ class DialogBeendenZeit(
     }
 
     companion object {
-        private const val WAIT_FOR_DOWNLOADS_AND_TERMINATE =
-            "Auf Abschluß aller Downloads warten und danach Programm beenden"
-        private const val WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM =
-            "Auf Abschluß aller Downloads warten, Programm danach NICHT beenden"
-        private const val DONT_START = "Downloads nicht starten"
+        private val WAIT_FOR_DOWNLOADS_AND_TERMINATE get() =
+            UiMessages.text("downloads.schedule.quit")
+        private val WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM get() =
+            UiMessages.text("downloads.schedule.stayOpen")
+        private val DONT_START get() = UiMessages.text("downloads.schedule.dontStart")
     }
 
     init {

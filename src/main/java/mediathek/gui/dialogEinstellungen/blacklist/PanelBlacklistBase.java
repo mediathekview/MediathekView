@@ -16,6 +16,7 @@ import java.awt.*;
  * Base class for UI Designer.
  * Subclasses contain the hand-written panel behavior.
  */
+/** Settings controls using the selected interface-language bundle. */
 public class PanelBlacklistBase extends JPanel {
     public PanelBlacklistBase() {
         super();
@@ -30,6 +31,7 @@ public class PanelBlacklistBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jTabbedPaneBlacklist = new JTabbedPane();
         var jPanel1 = new JPanel();
         var jScrollPane1 = new JScrollPane();
@@ -107,14 +109,14 @@ public class PanelBlacklistBase extends JPanel {
 
                 //======== jPanel4 ========
                 {
-                    jPanel4.setBorder(new TitledBorder("Sender, Thema, Titel oder Thema/Titel:"));
+                    jPanel4.setBorder(new TitledBorder(bundle.getString("settings.PanelBlacklist.jPanel4.borderTitle")));
 
                     //---- jCheckBoxRuleActive ----
                     jCheckBoxRuleActive.setSelected(true);
-                    jCheckBoxRuleActive.setText("Aktiv");
+                    jCheckBoxRuleActive.setText(bundle.getString("settings.PanelBlacklist.jCheckBoxRuleActive.text"));
 
                     //---- jLabel5 ----
-                    jLabel5.setText("Sender:");
+                    jLabel5.setText(bundle.getString("settings.PanelBlacklist.jLabel5.text"));
 
                     //---- jComboBoxSender ----
                     jComboBoxSender.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -122,7 +124,7 @@ public class PanelBlacklistBase extends JPanel {
                     }));
 
                     //---- jLabel6 ----
-                    jLabel6.setText("Thema:");
+                    jLabel6.setText(bundle.getString("settings.PanelBlacklist.jLabel6.text"));
 
                     //---- jComboBoxThema ----
                     jComboBoxThema.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -130,16 +132,16 @@ public class PanelBlacklistBase extends JPanel {
                     }));
 
                     //---- jButtonHinzufuegen ----
-                    jButtonHinzufuegen.setText("Hinzuf\u00fcgen");
+                    jButtonHinzufuegen.setText(bundle.getString("settings.PanelBlacklist.jButtonHinzufuegen.text"));
 
                     //---- jLabel8 ----
-                    jLabel8.setText("Titel:");
+                    jLabel8.setText(bundle.getString("settings.PanelBlacklist.jLabel8.text"));
 
                     //---- jLabel2 ----
-                    jLabel2.setText("Thema oder Titel:");
+                    jLabel2.setText(bundle.getString("settings.PanelBlacklist.jLabel2.text"));
 
                     //---- jButtonAendern ----
-                    jButtonAendern.setText("\u00c4ndern");
+                    jButtonAendern.setText(bundle.getString("settings.PanelBlacklist.jButtonAendern.text"));
 
                     GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
                     jPanel4.setLayout(jPanel4Layout);
@@ -222,30 +224,30 @@ public class PanelBlacklistBase extends JPanel {
 
                     //---- jRadioButtonBlacklist ----
                     jRadioButtonBlacklist.setSelected(true);
-                    jRadioButtonBlacklist.setText("\"Sender / Thema / Titel\" werden nicht angezeigt (Blacklist)");
+                    jRadioButtonBlacklist.setText(bundle.getString("settings.PanelBlacklist.jRadioButtonBlacklist.text"));
                     panel2.add(jRadioButtonBlacklist, new CC().cell(0, 0));
 
                     //---- jRadioButtonWhitelist ----
-                    jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)");
+                    jRadioButtonWhitelist.setText(bundle.getString("settings.PanelBlacklist.jRadioButtonWhitelist.text"));
                     panel2.add(jRadioButtonWhitelist, new CC().cell(0, 1));
 
                     //---- jButtonHilfe ----
-                    jButtonHilfe.setToolTipText("Hilfe anzeigen");
+                    jButtonHilfe.setToolTipText(bundle.getString("settings.PanelBlacklist.jButtonHilfe.toolTipText"));
                     panel2.add(jButtonHilfe, new CC().cell(1, 0, 1, 2).alignX("right").alignY("center").grow(0, 0));
                 }
                 jPanel1.add(panel2, new CC().cell(0, 0));
                 jPanel1.add(separator1, new CC().cell(0, 2));
 
                 //---- label1 ----
-                label1.setText("Suchstring:");
+                label1.setText(bundle.getString("settings.PanelBlacklist.label1.text"));
                 jPanel1.add(label1, new CC().cell(0, 3).alignX("center").growX(0));
 
                 //---- tfFilter ----
-                tfFilter.setToolTipText("<html>Hier wird der Suchtext als RegExp eingegeben.<br>Zum Zur\u00fccksetzen des Filters den Suchtext <b>l\u00f6schen</b> und erneut <i>\"Filtern\"</i> dr\u00fccken.</html>");
+                tfFilter.setToolTipText(bundle.getString("settings.PanelBlacklist.tfFilter.toolTipText"));
                 jPanel1.add(tfFilter, new CC().cell(0, 3));
 
                 //---- btnFilterTable ----
-                btnFilterTable.setText("Filtern");
+                btnFilterTable.setText(bundle.getString("settings.PanelBlacklist.btnFilterTable.text"));
                 jPanel1.add(btnFilterTable, new CC().cell(0, 3).alignX("center").growX(0));
 
                 //======== panel1 ========
@@ -274,7 +276,7 @@ public class PanelBlacklistBase extends JPanel {
                                 .grow().align("center")));
 
                         //---- label2 ----
-                        label2.setText("Eintr\u00e4ge:");
+                        label2.setText(bundle.getString("settings.PanelBlacklist.label2.text"));
                         panel3.add(label2, new CC().cell(0, 0));
 
                         //---- lblNumEntries ----
@@ -286,26 +288,26 @@ public class PanelBlacklistBase extends JPanel {
                     //======== jButtonBlacklistActions ========
                     {
                         jButtonBlacklistActions.setAlwaysDropdown(true);
-                        jButtonBlacklistActions.setToolTipText("Blacklist-Regeln verwalten");
+                        jButtonBlacklistActions.setToolTipText(bundle.getString("settings.PanelBlacklist.jButtonBlacklistActions.toolTipText"));
                     }
                     panel1.add(jButtonBlacklistActions, new CC().cell(2, 0));
                 }
                 jPanel1.add(panel1, new CC().cell(0, 5));
                 jPanel1.add(separator2, new CC().cell(0, 6));
             }
-            jTabbedPaneBlacklist.addTab("Sender-Thema-Titel", jPanel1);
+            jTabbedPaneBlacklist.addTab(bundle.getString("settings.PanelBlacklist.separator2.title"), jPanel1);
 
             //======== jPanel3 ========
             {
                 jPanel3.setLayout(new VerticalLayout(5));
 
                 //---- jCheckBoxZukunftNichtAnzeigen ----
-                jCheckBoxZukunftNichtAnzeigen.setText("Filme mit Datum in der Zukunft nicht anzeigen");
+                jCheckBoxZukunftNichtAnzeigen.setText(bundle.getString("settings.PanelBlacklist.jCheckBoxZukunftNichtAnzeigen.text"));
                 jPanel3.add(jCheckBoxZukunftNichtAnzeigen);
 
                 //---- jCheckBoxGeo ----
-                jCheckBoxGeo.setText("Filme, die per Geoblocking gesperrt sind, nicht anzeigen");
-                jCheckBoxGeo.setToolTipText("<html>Geogeblockte Filme k\u00f6nnen im jeweiligen \"Ausland\" nicht abgerufen werden.<br>Dazu muss die eigene Position in den Einstellungen angegeben werden</html>");
+                jCheckBoxGeo.setText(bundle.getString("settings.PanelBlacklist.jCheckBoxGeo.text"));
+                jCheckBoxGeo.setToolTipText(bundle.getString("settings.PanelBlacklist.jCheckBoxGeo.toolTipText"));
                 jPanel3.add(jCheckBoxGeo);
 
                 //======== jPanel6 ========
@@ -316,13 +318,13 @@ public class PanelBlacklistBase extends JPanel {
                     jSliderMinuten.setValue(0);
 
                     //---- jLabel1 ----
-                    jLabel1.setText("Nur Filme anzeigen mit einer L\u00e4nge von mehr als [min]:");
+                    jLabel1.setText(bundle.getString("settings.PanelBlacklist.jLabel1.text"));
 
                     //---- jTextFieldMinuten ----
                     jTextFieldMinuten.setEditable(false);
 
                     //---- jLabel13 ----
-                    jLabel13.setText("Filme, die keine L\u00e4ngenangabe haben, werden immer angezeigt.");
+                    jLabel13.setText(bundle.getString("settings.PanelBlacklist.jLabel13.text"));
 
                     GroupLayout jPanel6Layout = new GroupLayout(jPanel6);
                     jPanel6.setLayout(jPanel6Layout);
@@ -358,13 +360,13 @@ public class PanelBlacklistBase extends JPanel {
                 }
                 jPanel3.add(jPanel6);
             }
-            jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3);
+            jTabbedPaneBlacklist.addTab(bundle.getString("settings.PanelBlacklist.jLabel13.title"), jPanel3);
         }
         add(jTabbedPaneBlacklist, BorderLayout.CENTER);
 
         //======== jPanel8 ========
         {
-            jPanel8.setBorder(new TitledBorder("Allgemeine Einstellungen"));
+            jPanel8.setBorder(new TitledBorder(bundle.getString("settings.PanelBlacklist.jPanel8.borderTitle")));
             jPanel8.setLayout(new MigLayout(
                 new LC().insets("0").hideMode(3).gridGap("0", "0"),
                 // columns
@@ -376,12 +378,12 @@ public class PanelBlacklistBase extends JPanel {
                     .grow().fill()));
 
             //---- jCheckBoxBlacklistEingeschaltet ----
-            jCheckBoxBlacklistEingeschaltet.setText("Im Tab Filme einschalten");
+            jCheckBoxBlacklistEingeschaltet.setText(bundle.getString("settings.PanelBlacklist.jCheckBoxBlacklistEingeschaltet.text"));
             jPanel8.add(jCheckBoxBlacklistEingeschaltet, new CC().cell(0, 0));
 
             //---- jCheckBoxAbo ----
-            jCheckBoxAbo.setText("Bei der Suche nach Abos ber\u00fccksichtigen");
-            jCheckBoxAbo.setToolTipText("<html>Die Blacklist beim Suchen nach Abos ber\u00fccksichtigen.<br/>Ansonsten wird die komplette Filmliste durchsucht.</html>");
+            jCheckBoxAbo.setText(bundle.getString("settings.PanelBlacklist.jCheckBoxAbo.text"));
+            jCheckBoxAbo.setToolTipText(bundle.getString("settings.PanelBlacklist.jCheckBoxAbo.toolTipText"));
             jPanel8.add(jCheckBoxAbo, new CC().cell(0, 1));
         }
         add(jPanel8, BorderLayout.NORTH);

@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.DialogProgrammOrdnerOeffnen"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel1:::::x, seq t {space :0:0:x, comp jButtonOk:3::p::p, space :::p, comp jButtonAbbrechen:3::p::p}, comp jScrollPane1::l:::x}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :p::p, comp jScrollPane1::::126:x, space u:p::p, comp jPanel1:::p::p, space u:p::p, par b {comp jButtonAbbrechen::b:p::p, comp jButtonOk::b:p::p}, space :p::p}}"
@@ -21,7 +28,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonZiel"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-					"toolTipText": "Programm auswählen"
+					"toolTipText": new FormMessage( null, "dialog.DialogProgrammOrdnerOeffnen.jButtonZiel.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -34,7 +41,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "Programm:"
+					"text": new FormMessage( null, "dialog.DialogProgrammOrdnerOeffnen.jLabel1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -42,14 +49,14 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonAbbrechen"
-				"text": "Abbrechen"
+				"text": new FormMessage( null, "dialog.DialogProgrammOrdnerOeffnen.jButtonAbbrechen.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonOk"
-				"text": "Ok"
+				"text": new FormMessage( null, "dialog.DialogProgrammOrdnerOeffnen.jButtonOk.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
@@ -64,7 +71,7 @@ new FormModel {
 					"editable": false
 					"columns": 20
 					"rows": 4
-					"text": "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen.\n"
+					"text": new FormMessage( null, "dialog.DialogProgrammOrdnerOeffnen.jTextArea1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}

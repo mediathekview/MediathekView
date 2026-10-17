@@ -1,0 +1,15 @@
+"Reset playback/recording settings"
+
+Deletes all program sets, including custom sets, used for playback and recording. The current default sets are then created and can be used immediately. Subscriptions and the blacklist are retained.
+
+Try this before resetting the whole application.
+
+OR ==============================
+
+"Reset all settings"
+
+Restores the application to its original state.
+
+ALL settings are lost.
+
+The application exits and must be restarted. It then opens the setup dialog.

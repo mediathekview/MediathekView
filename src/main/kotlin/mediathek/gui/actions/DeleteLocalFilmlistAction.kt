@@ -2,6 +2,7 @@ package mediathek.gui.actions
 
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
+import mediathek.i18n.UiMessages
 import mediathek.mainwindow.MainWindowQuitHost
 import mediathek.tool.FileUtils
 import java.awt.event.ActionEvent
@@ -13,7 +14,7 @@ class DeleteLocalFilmlistAction(
     private val host: MainWindowQuitHost,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Lokale Filmliste löschen")
+        putValue(NAME, UiMessages.text("action.deleteLocalFilmlistAction.text"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

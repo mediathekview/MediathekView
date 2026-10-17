@@ -2,6 +2,7 @@ package mediathek.gui.dialog
 
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
@@ -37,7 +38,7 @@ class DialogContinueDownload(
 
     init {
         if (!direkterDownload) {
-            jButtonWeiter.text = "Überschreiben"
+            jButtonWeiter.text = UiMessages.text("download.resume.overwrite")
             if (!datenDownload.canBuildInvocation()) {
                 jPanelNewName.isVisible = false
             }
@@ -49,15 +50,15 @@ class DialogContinueDownload(
         parent?.let { setLocationRelativeTo(it) }
 
         jLabel1.text =
-            "<html>Der Film \"${datenDownload.title}\" existiert bereits.<br>Wie möchten Sie fortfahren?</html>"
+            UiMessages.format("download.resume.question", datenDownload.title)
 
         jButtonNeuerName.addActionListener {
             isNewName = downloadZielPanel.applyTargetSelection()
             if (!direkterDownload && !isNewName) {
                 JOptionPane.showMessageDialog(
                     parent,
-                    "Der Dateiname wurde nicht geändert!",
-                    "Datei existiert bereits!",
+                    UiMessages.text("download.resume.unchangedName"),
+                    UiMessages.text("download.resume.exists"),
                     JOptionPane.ERROR_MESSAGE,
                 )
             } else {
@@ -108,9 +109,9 @@ class DialogContinueDownload(
         override fun actionPerformed(event: ActionEvent) {
             if (countdown > 0) {
                 jButtonWeiter.text = if (direkterDownload) {
-                    "Weiterführen in ${countdown}s"
+                    UiMessages.format("download.resume.countdown", countdown)
                 } else {
-                    "Überschreiben in ${countdown}s"
+                    UiMessages.format("download.resume.overwriteCountdown", countdown)
                 }
                 countdownTimer.delay = 1.seconds.inWholeMilliseconds.toInt()
             } else {

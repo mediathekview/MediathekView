@@ -27,6 +27,7 @@ import javax.swing.JPopupMenu
 import javax.swing.event.PopupMenuEvent
 import javax.swing.event.PopupMenuListener
 import javax.swing.text.JTextComponent
+import mediathek.i18n.UiMessages
 
 class TextCopyPasteHandler<T : JTextComponent>(
     private val textComponent: T,
@@ -41,7 +42,7 @@ class TextCopyPasteHandler<T : JTextComponent>(
     private var lastActionSelected: Actions? = null
 
     init {
-        undoAction = object : AbstractAction("Widerrufen") {
+        undoAction = object : AbstractAction(UiMessages.text("text.undo")) {
             override fun actionPerformed(ae: ActionEvent) {
                 textComponent.text = ""
                 textComponent.replaceSelection(savedString)
@@ -53,7 +54,7 @@ class TextCopyPasteHandler<T : JTextComponent>(
         popup.add(undoAction)
         popup.addSeparator()
 
-        cutAction = object : AbstractAction("Ausschneiden") {
+        cutAction = object : AbstractAction(UiMessages.text("text.cut")) {
             override fun actionPerformed(ae: ActionEvent) {
                 lastActionSelected = Actions.CUT
                 savedString = textComponent.text
@@ -63,7 +64,7 @@ class TextCopyPasteHandler<T : JTextComponent>(
 
         popup.add(cutAction)
 
-        copyAction = object : AbstractAction("Kopieren") {
+        copyAction = object : AbstractAction(UiMessages.text("text.copy")) {
             override fun actionPerformed(ae: ActionEvent) {
                 lastActionSelected = Actions.COPY
                 textComponent.copy()
@@ -72,7 +73,7 @@ class TextCopyPasteHandler<T : JTextComponent>(
 
         popup.add(copyAction)
 
-        pasteAction = object : AbstractAction("Einfügen") {
+        pasteAction = object : AbstractAction(UiMessages.text("text.paste")) {
             override fun actionPerformed(ae: ActionEvent) {
                 lastActionSelected = Actions.PASTE
                 savedString = textComponent.text
@@ -83,7 +84,7 @@ class TextCopyPasteHandler<T : JTextComponent>(
         popup.add(pasteAction)
         popup.addSeparator()
 
-        selectAllAction = object : AbstractAction("Alles markieren") {
+        selectAllAction = object : AbstractAction(UiMessages.text("text.selectAll")) {
             override fun actionPerformed(ae: ActionEvent) {
                 lastActionSelected = Actions.SELECT_ALL
                 textComponent.selectAll()

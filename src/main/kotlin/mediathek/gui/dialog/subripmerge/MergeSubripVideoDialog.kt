@@ -21,6 +21,7 @@ package mediathek.gui.dialog.subripmerge
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
+import mediathek.i18n.UiMessages
 import mediathek.tool.FileDialogs
 import mediathek.tool.LanguageCode
 import mediathek.tool.SwingErrorDialog
@@ -58,12 +59,12 @@ class MergeSubripVideoDialog(owner: Window) : MergeSubripVideoDialogBase(owner) 
     }
 
     private fun chooseSubripFile() {
-        val file = FileDialogs.chooseLoadFileLocation(this, "Untertitel wählen", "") ?: return
+        val file = FileDialogs.chooseLoadFileLocation(this, UiMessages.text("merge.chooseSubtitle"), "") ?: return
         val filePath = file.absolutePath
         if (!filePath.lowercase().endsWith(".srt")) {
             JOptionPane.showMessageDialog(
                 this,
-                "Untertiteldatei muss auf .srt enden.",
+                UiMessages.text("merge.extension"),
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.ERROR_MESSAGE,
             )
@@ -74,17 +75,17 @@ class MergeSubripVideoDialog(owner: Window) : MergeSubripVideoDialogBase(owner) 
     }
 
     private fun chooseVideoFile() {
-        tfVideoFilePath.text = FileDialogs.chooseLoadFileLocation(this, "Video wählen", "")?.absolutePath.orEmpty()
+        tfVideoFilePath.text = FileDialogs.chooseLoadFileLocation(this, UiMessages.text("merge.chooseVideo"), "")?.absolutePath.orEmpty()
     }
 
     private fun chooseVideoOutputPath() {
-        tfVideoOutputPath.text = FileDialogs.chooseSaveFileLocation(this, "Videospeicherort wählen", "")?.absolutePath.orEmpty()
+        tfVideoOutputPath.text = FileDialogs.chooseSaveFileLocation(this, UiMessages.text("merge.chooseOutput"), "")?.absolutePath.orEmpty()
     }
 
     private fun mergeSubripWithVideo() {
         val language = runCatching(::selectedLanguageCode).getOrElse { ex ->
             logger.error("Error occurred while reading selected subtitle language", ex)
-            SwingErrorDialog.showExceptionMessage(this, "Es ist ein Fehler aufgetreten.", ex)
+            SwingErrorDialog.showExceptionMessage(this, UiMessages.text("merge.error"), ex)
             return
         }
 
@@ -104,7 +105,7 @@ class MergeSubripVideoDialog(owner: Window) : MergeSubripVideoDialogBase(owner) 
                 shutdownMergeProcess()
                 JOptionPane.showMessageDialog(
                     this@MergeSubripVideoDialog,
-                    "Das Zusammenführen war erfolgreich",
+                    UiMessages.text("merge.success"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.INFORMATION_MESSAGE,
                 )
@@ -114,7 +115,7 @@ class MergeSubripVideoDialog(owner: Window) : MergeSubripVideoDialogBase(owner) 
             } catch (ex: Exception) {
                 logger.error("Error occurred while merging video", ex)
                 shutdownMergeProcess()
-                SwingErrorDialog.showExceptionMessage(this@MergeSubripVideoDialog, "Der Vorgang war fehlerhaft", ex)
+                SwingErrorDialog.showExceptionMessage(this@MergeSubripVideoDialog, UiMessages.text("merge.failed"), ex)
                 dispose()
             }
         }

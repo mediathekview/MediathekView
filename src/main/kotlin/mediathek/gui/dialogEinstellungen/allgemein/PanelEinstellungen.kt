@@ -1,7 +1,9 @@
 package mediathek.gui.dialogEinstellungen.allgemein
 
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.i18n.UiLanguage
 import mediathek.gui.messages.*
+import mediathek.i18n.UiMessages
 import mediathek.mainwindow.SettingsDialogHost
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.MessageBus
@@ -10,6 +12,7 @@ import mediathek.x11.DesktopEnvDetector
 import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import javax.swing.SwingUtilities
+import javax.swing.DefaultComboBoxModel
 
 class PanelEinstellungen(
     private val host: SettingsDialogHost,
@@ -18,6 +21,7 @@ class PanelEinstellungen(
     private var subscribedToMessageBus = false
 
     init {
+        setupLanguageSelection()
         setupModernSearchPanel()
         setupUserAgentSettings()
         setupProxySettings()
@@ -31,6 +35,16 @@ class PanelEinstellungen(
         setupToolbarSettings()
         setupSystemThemeSettings()
         setupFilmTimeFormatSettings()
+    }
+
+    /** Persists the next startup language while keeping the current session's widgets consistent. */
+    private fun setupLanguageSelection() {
+        val configuration = ApplicationConfiguration.getInstance()
+        languageComboBox.model = DefaultComboBoxModel(UiLanguage.entries.toTypedArray())
+        languageComboBox.selectedItem = configuration.uiLanguage
+        languageComboBox.addActionListener {
+            configuration.uiLanguage = languageComboBox.selectedItem as UiLanguage
+        }
     }
 
     private fun setupProxySettings() {
@@ -163,7 +177,7 @@ class PanelEinstellungen(
         cbAutomaticUpdateChecks.isSelected = applicationConfiguration.automaticUpdateCheck
         if (GuiFunktionen.isUsingExternalUpdater()) {
             cbAutomaticUpdateChecks.isEnabled = false
-            cbAutomaticUpdateChecks.toolTipText = "Diese Option ist deaktiviert, da ein externer Updater verwendet wird."
+            cbAutomaticUpdateChecks.toolTipText = UiMessages.text("settings.general.externalUpdater")
         }
     }
 
@@ -231,6 +245,6 @@ class PanelEinstellungen(
     }
 
     private companion object {
-        private const val NO_INFLUENCE_TEXT = "Einstellung hat unter macOS keine Auswirkung"
+        private val NO_INFLUENCE_TEXT get() = UiMessages.text("settings.general.noEffectOnMac")
     }
 }

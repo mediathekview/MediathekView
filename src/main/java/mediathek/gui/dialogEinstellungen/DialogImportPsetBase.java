@@ -3,6 +3,7 @@ package mediathek.gui.dialogEinstellungen;
 import javax.swing.*;
 import java.awt.*;
 
+/** Settings controls using the selected interface-language bundle. */
 public class DialogImportPsetBase extends JDialog {
 
     public DialogImportPsetBase(
@@ -21,6 +22,7 @@ public class DialogImportPsetBase extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         jScrollPane1 = new JScrollPane();
         jCheckBoxAlleEinstellungen = new JCheckBox();
         jButtonOk = new JButton();
@@ -31,13 +33,13 @@ public class DialogImportPsetBase extends JDialog {
         var contentPane = getContentPane();
 
         //---- jCheckBoxAlleEinstellungen ----
-        jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen");
+        jCheckBoxAlleEinstellungen.setText(bundle.getString("settings.DialogImportPset.jCheckBoxAlleEinstellungen.text"));
 
         //---- jButtonOk ----
-        jButtonOk.setText("Ok");
+        jButtonOk.setText(bundle.getString("settings.DialogImportPset.jButtonOk.text"));
 
         //---- jButtonAbbrechen ----
-        jButtonAbbrechen.setText("Abbrechen");
+        jButtonAbbrechen.setText(bundle.getString("settings.DialogImportPset.jButtonAbbrechen.text"));
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);

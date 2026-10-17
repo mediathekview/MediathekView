@@ -23,6 +23,7 @@ import mediathek.daten.ListePset
 import mediathek.daten.ProgramSetRepository
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import java.util.function.BiConsumer
 import javax.swing.JFrame
@@ -38,7 +39,7 @@ class DialogImportPset(
         private set
 
     init {
-        title = "Programmset"
+        title = UiMessages.text("settings.import.title")
         jScrollPane1.setViewportView(PanelPsetKurz(parentComponent, liste))
         jButtonOk.addActionListener { disposeWithCode(true) }
         jButtonAbbrechen.addActionListener { disposeWithCode(false) }

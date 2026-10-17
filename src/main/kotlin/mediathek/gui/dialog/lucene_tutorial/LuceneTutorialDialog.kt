@@ -19,6 +19,7 @@ package mediathek.gui.dialog.lucene_tutorial
 
 import mediathek.config.Konstanten
 import mediathek.gui.actions.UrlHyperlinkAction
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import org.apache.logging.log4j.LogManager
 import java.awt.BorderLayout
@@ -32,7 +33,7 @@ import javax.swing.event.HyperlinkEvent
 
 class LuceneTutorialDialog(
     owner: Window,
-    title: String = "Lucene-Suchsyntax",
+    title: String = UiMessages.text("help.luceneTitle"),
     private val markdownResourcePath: String = Konstanten.PFAD_LUCENE_TUTORIAL_MARKDOWN,
 ) : JDialog(owner, title, ModalityType.MODELESS) {
     private val tutorialPane = FlexmarkHtmlPane()
@@ -63,7 +64,7 @@ class LuceneTutorialDialog(
     }
 
     private fun loadMarkdownResource(): String? =
-        javaClass.getResourceAsStream(markdownResourcePath)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+        javaClass.getResourceAsStream(mediathek.tool.GetFile.localizedResourcePath(markdownResourcePath))?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
 
     private fun showFallbackHtml() {
         tutorialPane.setHtml(FALLBACK_HTML)
@@ -98,10 +99,6 @@ class LuceneTutorialDialog(
 
     private companion object {
         private val logger = LogManager.getLogger()
-        private val FALLBACK_HTML = """
-            <html><body>
-            <p>Die Hilfe konnte nicht geladen werden.</p>
-            </body></html>
-            """.trimIndent()
+        private val FALLBACK_HTML get() = UiMessages.text("help.unavailable")
     }
 }

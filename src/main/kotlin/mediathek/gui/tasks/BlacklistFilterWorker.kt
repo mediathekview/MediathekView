@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 import mediathek.daten.blacklist.BlacklistServices
 import javax.swing.JLabel
 import javax.swing.JProgressBar
+import mediathek.i18n.UiMessages
 
 class BlacklistFilterWorker(
     private val blacklist: BlacklistServices,
@@ -37,7 +38,7 @@ class BlacklistFilterWorker(
 
     suspend fun execute() {
         withContext(Dispatchers.Swing) {
-            progLabel.text = "Blacklist anwenden"
+            progLabel.text = UiMessages.text("loading.blacklist")
             progressBar.isIndeterminate = true
         }
 

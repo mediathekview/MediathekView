@@ -25,6 +25,7 @@ import kotlinx.coroutines.withContext
 import mediathek.daten.abo.AboServices
 import javax.swing.JLabel
 import javax.swing.JProgressBar
+import mediathek.i18n.UiMessages
 
 class RefreshAboWorker(
     private val abos: AboServices,
@@ -37,7 +38,7 @@ class RefreshAboWorker(
 
     suspend fun execute() {
         withContext(Dispatchers.Swing) {
-            progLabel.text = "Abos eintragen"
+            progLabel.text = UiMessages.text("abo.refresh")
             progressBar.isIndeterminate = true
         }
 

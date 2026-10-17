@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelPsetLang"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq {par l {comp jSplitPane1::::926:x, seq t {space ::742:x, comp jButtonPruefen:::p:100:p, space :::p, comp jButtonHilfe:::p::p}}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :p::p, comp jSplitPane1:::::x, space u:p::p, par c {comp jButtonHilfe::c:p::p, comp jButtonPruefen::c:p::p}, space :p::p}}"
@@ -14,15 +21,15 @@ new FormModel {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-				"toolTipText": "Hilfe anzeigen"
+				"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonHilfe.toolTipText" )
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonPruefen"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
-				"text": "Prüfen"
-				"toolTipText": "Programmpfade prüfen"
+				"text": new FormMessage( null, "settings.PanelPsetLang.jButtonPruefen.text" )
+				"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonPruefen.toolTipText" )
 			} )
 			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
 				name: "jSplitPane1"
@@ -55,7 +62,7 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel6"
-								"text": "Set Name:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel6.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -71,7 +78,7 @@ new FormModel {
 								"$verticalGroup": "par l {seq l {comp jScrollPane2::::234:x, space :p::p}}"
 							} ) {
 								name: "jPanel4"
-								"border": new javax.swing.border.TitledBorder( "Beschreibung" )
+								"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetLang.jPanel4.borderTitle" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -97,7 +104,7 @@ new FormModel {
 								"$verticalGroup": "par l {seq l {space :::p, par b {comp jCheckBoxSpeichern::b:p::p, comp jCheckBoxButton::b:p::p, comp jCheckBoxAbo::b:p::p, comp jButtonAbspielen::b:p::p}, space :::x}}"
 							} ) {
 								name: "jPanel6"
-								"border": new javax.swing.border.TitledBorder( "Funktion" )
+								"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetLang.jPanel6.borderTitle" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -106,28 +113,28 @@ new FormModel {
 									auxiliary() {
 										"JavaCodeGenerator.variableModifiers": 4
 									}
-									"text": "Speichern"
+									"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxSpeichern.text" )
 								} )
 								add( new FormComponent( "javax.swing.JCheckBox" ) {
 									name: "jCheckBoxButton"
 									auxiliary() {
 										"JavaCodeGenerator.variableModifiers": 4
 									}
-									"text": "Button"
+									"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxButton.text" )
 								} )
 								add( new FormComponent( "javax.swing.JCheckBox" ) {
 									name: "jCheckBoxAbo"
 									auxiliary() {
 										"JavaCodeGenerator.variableModifiers": 4
 									}
-									"text": "Abo"
+									"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxAbo.text" )
 								} )
 								add( new FormComponent( "javax.swing.JButton" ) {
 									name: "jButtonAbspielen"
 									auxiliary() {
 										"JavaCodeGenerator.variableModifiers": 4
 									}
-									"text": "Abspielen via schwarzem Play-Button"
+									"text": new FormMessage( null, "settings.PanelPsetLang.jButtonAbspielen.text" )
 								} )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
@@ -135,18 +142,18 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "kein Set zum Abspielen ausgewählt!"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabelMeldungAbspielen.text" )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabelMeldungSeichern"
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "kein Set zum Speichern ausgewählt!"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabelMeldungSeichern.text" )
 							} )
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "Einstellungen"
+						"title": new FormMessage( null, "settings.PanelPsetLang.jLabelMeldungSeichern.title" )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, comp jPanel5:::::x, space :::p}}"
@@ -170,34 +177,34 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Farbe"
-								"toolTipText": "Farbauswahldialog anzeigen"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeFarbe.text" )
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeFarbe.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonGruppeStandardfarbe"
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Standardfarbe"
-								"toolTipText": "Farbe zurücksetzen"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeStandardfarbe.text" )
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeStandardfarbe.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel11"
-								"text": "Wird das Set als Button verwendet,"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel11.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel13"
-								"text": "kann damit die Schriftfarbe verändert werden."
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel13.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
 							} )
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "Aussehen"
+						"title": new FormMessage( null, "settings.PanelPsetLang.jLabel13.title" )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, comp jPanel1:::::x, space :::p}}"
@@ -218,7 +225,7 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel7"
-								"text": "Zielpfad:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel7.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -235,19 +242,19 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-								"toolTipText": "Pfad auswählen"
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppePfad.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxThema"
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Einen Unterordner mit dem Thema / Abo-Zielpfad anlegen"
-								"toolTipText": "im Zielverzeichnis wird ein Unterordner mit dem Namen des Themas zum Speichern der Filme angelegt"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxThema.text" )
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxThema.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel8"
-								"text": "Zieldateiname:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel8.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -263,8 +270,8 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Ganzen Dateinamen beschränken auf:"
-								"toolTipText": "die Länge des Dateinamens wird auf die Anzahl Zeichen beschränkt"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxLaenge.text" )
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxLaenge.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jSpinnerLaenge"
@@ -275,14 +282,14 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel12"
-								"text": "Zeichen"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel12.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel15"
-								"text": "(ist der Abo-Zielpfad leer, wird das Thema verwendet)"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel15.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -292,7 +299,7 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Einzelne Felder beschränken auf:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxField.text" )
 							} )
 							add( new FormComponent( "javax.swing.JSpinner" ) {
 								name: "jSpinnerField"
@@ -303,14 +310,14 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel16"
-								"text": "Zeichen"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel16.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
 							} )
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "Speicherziel"
+						"title": new FormMessage( null, "settings.PanelPsetLang.jLabel16.title" )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, par l {comp jTextArea1:::::x, comp jPanel8::t:::x, comp jPanel12::l:::x, comp jPanel13::l:::x}, space :::p}}"
@@ -325,13 +332,13 @@ new FormModel {
 							"$verticalGroup": "par l {seq l {space :::p, par c {comp jLabel10::c:p::p, comp tfGruppeDirektPraefix::c:p::p, comp jLabel5::c:p::p, comp tfGruppeDirektSuffix::c:p::p}, space ::34:x}}"
 						} ) {
 							name: "jPanel8"
-							"border": new javax.swing.border.TitledBorder( "Direkt speichern" )
+							"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetLang.jPanel8.borderTitle" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel10"
-								"text": "Direkter Download, Präfix ( z.B. http ):"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel10.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -344,7 +351,7 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel5"
-								"text": "Suffix ( z.B. mp4,mp3):"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel5.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -362,7 +369,7 @@ new FormModel {
 							"background": new java.awt.Color( 238, 238, 238, 255 )
 							"columns": 20
 							"rows": 4
-							"text": "Filme, deren URL mit \"Präfix\" beginnt und mit \"Suffix\" endet, werden nicht\nmit einem Hilfsprogramm gespeichert, sondern direkt geladen.\n\nEine geringere Auflösung ist nicht bei jedem Sender möglich, es wird dann in der gleichen\nAuflösung geladen."
+							"text": new FormMessage( null, "settings.PanelPsetLang.jTextArea1.text" )
 							"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
@@ -373,7 +380,7 @@ new FormModel {
 							"$verticalGroup": "par l {seq l {space :::p, comp jRadioButtonAufloesungHD:::p::p, space u:::p, comp jRadioButtonAufloesungNormal:::p::p, space u:::p, comp jRadioButtonAufloesungKlein:::p::p, space u:::p, comp jLabel14:::p::p, space ::30:x}}"
 						} ) {
 							name: "jPanel12"
-							"border": new javax.swing.border.TitledBorder( "Film downloaden in" )
+							"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetLang.jPanel12.borderTitle" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
@@ -384,7 +391,7 @@ new FormModel {
 								}
 								"$buttonGroup": new FormReference( "buttonGroup1" )
 								"selected": true
-								"text": "Mittlere Qualität"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jRadioButtonAufloesungNormal.text" )
 							} )
 							add( new FormComponent( "javax.swing.JRadioButton" ) {
 								name: "jRadioButtonAufloesungKlein"
@@ -392,7 +399,7 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"$buttonGroup": new FormReference( "buttonGroup1" )
-								"text": "Niedrige Qualität"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jRadioButtonAufloesungKlein.text" )
 							} )
 							add( new FormComponent( "javax.swing.JRadioButton" ) {
 								name: "jRadioButtonAufloesungHD"
@@ -400,11 +407,11 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"$buttonGroup": new FormReference( "buttonGroup1" )
-								"text": "Höchste/Hohe Qualität"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jRadioButtonAufloesungHD.text" )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel14"
-								"text": "Wenn es die Qualitätstufe im Angebot nicht gibt, wird die nächstkleinere genommen."
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel14.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -415,7 +422,7 @@ new FormModel {
 							"$verticalGroup": "par l {seq l {space :::p, comp jCheckBoxInfodatei:::p::p, space u:::p, comp jCheckBoxSubtitle:::p::p, space u:::x, comp jCheckBoxMp4Metadata:::p::p, space u:::p, comp jCheckBoxSpotlight:::p::p}}"
 						} ) {
 							name: "jPanel13"
-							"border": new javax.swing.border.TitledBorder( "Nach dem Speichern" )
+							"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetLang.jPanel13.borderTitle" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
@@ -424,33 +431,33 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Infodatei anlegen: \"Filmname.txt\""
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxInfodatei.text" )
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxSpotlight"
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Filmbeschreibung als Finder-Kommentar für Spotlight speichern (nur OS X)"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxSpotlight.text" )
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxSubtitle"
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Untertitel speichern: \"Filmname.xxx\""
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxSubtitle.text" )
 							} )
 							add( new FormComponent( "javax.swing.JCheckBox" ) {
 								name: "jCheckBoxMp4Metadata"
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "MP4-Metadaten schreiben"
-								"toolTipText": "Schreibt Standard-MP4-Metadaten nach dem Download in die fertige MP4-Datei"
+								"text": new FormMessage( null, "settings.PanelPsetLangBase.jCheckBoxMp4Metadata.text" )
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLangBase.jCheckBoxMp4Metadata.toolTipText" )
 							} )
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "Download"
+						"title": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxSubtitle.title" )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanelProgrammDetails::l:::x, comp jScrollPane1::l:::x:2, comp jPanel2::l:::x:1}, space :::p}}"
@@ -490,7 +497,7 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-add.png" )
-								"toolTipText": "neues Programm anlegen"
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonProgPlus.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgMinus"
@@ -498,15 +505,15 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-remove.png" )
-								"toolTipText": "markiertes Programm löschen"
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonProgMinus.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgDuplizieren"
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Duplizieren"
-								"toolTipText": "markierte Zeile duplizieren"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jButtonProgDuplizieren.text" )
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonProgDuplizieren.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgAuf"
@@ -514,7 +521,7 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-up.png" )
-								"toolTipText": "markierte Zeile eins nach oben"
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonProgAuf.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JButton" ) {
 								name: "jButtonProgAb"
@@ -522,7 +529,7 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-down.png" )
-								"toolTipText": "markierte Zeile eins nach unten"
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonProgAb.toolTipText" )
 							} )
 						} )
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -536,7 +543,7 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel"
-								"text": "Programm:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -553,7 +560,7 @@ new FormModel {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
 								"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-								"toolTipText": "Programm auswählen"
+								"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonProgPfad.toolTipText" )
 							} )
 							add( new FormComponent( "javax.swing.JTextField" ) {
 								name: "jTextFieldProgSchalter"
@@ -563,14 +570,14 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel1"
-								"text": "Schalter:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel1.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel2"
-								"text": "Beschreibung:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel2.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -583,7 +590,7 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel3"
-								"text": "Präfix (z.B. http):"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel3.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -596,7 +603,7 @@ new FormModel {
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel4"
-								"text": "Suffix ( z.B. mp4,mp3):"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel4.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -612,11 +619,11 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Fehlgeschlagene Downloads wieder starten"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxRestart.text" )
 							} )
 							add( new FormComponent( "javax.swing.JLabel" ) {
 								name: "jLabel9"
-								"text": "Zieldateiname:"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jLabel9.text" )
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
 								}
@@ -632,11 +639,11 @@ new FormModel {
 								auxiliary() {
 									"JavaCodeGenerator.variableModifiers": 4
 								}
-								"text": "Externer Downloadmanager"
+								"text": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxRemoteDownload.text" )
 							} )
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "Hilfsprogramme"
+						"title": new FormMessage( null, "settings.PanelPsetLang.jCheckBoxRemoteDownload.title" )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "right"
@@ -696,8 +703,8 @@ new FormModel {
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
-						"text": "Duplizieren"
-						"toolTipText": "Programmgruppe kopieren"
+						"text": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeDuplizieren.text" )
+						"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeDuplizieren.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 3 3 1"
 					} )
@@ -706,8 +713,8 @@ new FormModel {
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
-						"text": "Export"
-						"toolTipText": "Programmgruppe in Datei exportieren"
+						"text": new FormMessage( null, "settings.PanelPsetLang.jButtonExport.text" )
+						"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonExport.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 4 3 1"
 					} )
@@ -717,7 +724,7 @@ new FormModel {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-add.png" )
-						"toolTipText": "neue Programmgruppe anlegen"
+						"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeNeu.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 2,alignx center,growx 0"
 					} )
@@ -727,7 +734,7 @@ new FormModel {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-remove.png" )
-						"toolTipText": "Programmgruppe löschen"
+						"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeLoeschen.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 2,alignx center,growx 0"
 					} )
@@ -737,7 +744,7 @@ new FormModel {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-up.png" )
-						"toolTipText": "Programmgruppe nach oben schieben"
+						"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeAuf.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 1,alignx center,growx 0"
 					} )
@@ -755,7 +762,7 @@ new FormModel {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-move-down.png" )
-						"toolTipText": "Programmgruppe nach unten schieben"
+						"toolTipText": new FormMessage( null, "settings.PanelPsetLang.jButtonGruppeAb.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 1,alignx center,growx 0"
 					} )

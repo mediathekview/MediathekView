@@ -3,6 +3,7 @@ package mediathek.gui.actions
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.blacklist.BlacklistServices
 import mediathek.gui.messages.BlacklistChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
@@ -36,12 +37,12 @@ class ToggleBlacklistAction(
 
     private fun setupState() {
         if (blacklistIsOn) {
-            putValue(NAME, "Blacklist ausschalten")
-            putValue(SHORT_DESCRIPTION, "Blacklist ausschalten")
+            putValue(NAME, UiMessages.text("action.toggleBlacklistAction.disable.text"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("action.toggleBlacklistAction.disable.description"))
             putValue(SMALL_ICON, enabledIcon)
         } else {
-            putValue(NAME, "Blacklist einschalten")
-            putValue(SHORT_DESCRIPTION, "Blacklist einschalten")
+            putValue(NAME, UiMessages.text("action.toggleBlacklistAction.enable.text"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("action.toggleBlacklistAction.enable.description"))
             putValue(SMALL_ICON, disabledIcon)
         }
     }

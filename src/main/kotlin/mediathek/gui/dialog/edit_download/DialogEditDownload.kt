@@ -34,6 +34,7 @@ import mediathek.gui.dialog.MVPanelDownloadZiel
 import mediathek.gui.dialog.download.DownloadQualityLiveInfoText
 import mediathek.gui.dialog.download.DownloadQualityResolutionSizes
 import mediathek.gui.dialog.download.DownloadQualitySupport
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.swing.MultilineLabel
 import mediathek.tool.*
@@ -159,7 +160,7 @@ class DialogEditDownload(
 
         jLabelBusyIndicator.isVisible = true
         jLabelBusyIndicator.isBusy = false
-        jLabelBusyIndicator.text = "Hilfsprogramm nicht gefunden!"
+        jLabelBusyIndicator.text = UiMessages.text("download.edit.missingTool")
         jLabelBusyIndicator.foreground = Color.RED
         jButtonRequestLiveInfo.isEnabled = false
     }
@@ -304,7 +305,7 @@ class DialogEditDownload(
     private fun requestLiveInfoForUrl(url: String) {
         val executablePath = ffprobePath ?: return
         if (url.isBlank()) {
-            showLiveInfoErrorDialog("Keine URL vorhanden.")
+            showLiveInfoErrorDialog(UiMessages.text("download.edit.noUrl"))
             return
         }
 
@@ -329,7 +330,7 @@ class DialogEditDownload(
             } catch (ex: JaffreeAbnormalExitException) {
                 showLiveInfoError(DownloadQualitySupport.getLiveInfoErrorString(ex))
             } catch (_: Exception) {
-                showLiveInfoError("Unbekannter Fehler aufgetreten.")
+                showLiveInfoError(UiMessages.text("download.edit.unknownError"))
             } finally {
                 resetBusyIndicator()
                 setLiveInfoButtonsEnabled(ffprobePath != null)
@@ -358,7 +359,7 @@ class DialogEditDownload(
                 showLiveInfoErrorDialog(DownloadQualitySupport.getLiveInfoErrorString(ex))
             } catch (_: Exception) {
                 resetBusyIndicator()
-                showLiveInfoErrorDialog("Unbekannter Fehler aufgetreten.")
+                showLiveInfoErrorDialog(UiMessages.text("download.edit.unknownError"))
             } finally {
                 resetBusyIndicator()
                 setLiveInfoButtonsEnabled(ffprobePath != null)
@@ -415,7 +416,7 @@ class DialogEditDownload(
             append(liveInfoText.audio.removePrefix("Audio:").trimStart())
 
             if (fileSizeInMegabytes.isNotBlank()) {
-                append("<br><b>Dateigröße:</b> ")
+                append(UiMessages.text("download.edit.codecSize"))
                 append(fileSizeInMegabytes)
                 append(" MB")
             }
@@ -425,7 +426,7 @@ class DialogEditDownload(
         JOptionPane.showMessageDialog(
             this,
             message,
-            "Codec-Details",
+            UiMessages.text("download.edit.codecTitle"),
             JOptionPane.INFORMATION_MESSAGE
         )
     }
@@ -434,7 +435,7 @@ class DialogEditDownload(
         JOptionPane.showMessageDialog(
             this,
             message,
-            "Codec-Details",
+            UiMessages.text("download.edit.codecTitle"),
             JOptionPane.ERROR_MESSAGE
         )
     }
@@ -565,7 +566,7 @@ class DialogEditDownload(
             DownloadColumn.RTMP_URL -> datenDownload.rtmpUrl
             DownloadColumn.SUBTITLE_URL -> datenDownload.subtitleUrl
             DownloadColumn.PROGRAM_SET -> datenDownload.programSetName
-            DownloadColumn.PROGRAM -> datenDownload.programName
+            DownloadColumn.PROGRAM -> if (isDirectDownloadProgram()) DownloadType.DIRECT.displayLabel else datenDownload.programName
             DownloadColumn.PROGRAM_INVOCATION -> datenDownload.programInvocation
             DownloadColumn.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray
             DownloadColumn.TARGET_FILE_NAME -> datenDownload.targetFileName
@@ -588,8 +589,8 @@ class DialogEditDownload(
             DownloadColumn.INTERRUPTED -> datenDownload.isInterrupted.toString()
             DownloadColumn.GEO -> datenDownload.geo
             DownloadColumn.PROGRAM_RESTART -> datenDownload.isRestart.toString()
-            DownloadColumn.TYPE -> datenDownload.art.label
-            DownloadColumn.SOURCE -> datenDownload.quelle.label
+            DownloadColumn.TYPE -> datenDownload.art.displayLabel
+            DownloadColumn.SOURCE -> datenDownload.quelle.displayLabel
             DownloadColumn.DEFERRED -> datenDownload.isDeferred.toString()
             DownloadColumn.INFO_FILE -> datenDownload.isInfoFile.toString()
             DownloadColumn.SPOTLIGHT -> datenDownload.isSpotlight.toString()
@@ -611,33 +612,33 @@ class DialogEditDownload(
     }
 
     private fun labelText(column: DownloadColumn): String = when (column) {
-        DownloadColumn.ABO -> "Abo"
-        DownloadColumn.SENDER -> "Sender"
-        DownloadColumn.TOPIC -> "Thema"
-        DownloadColumn.TITLE -> "Titel"
-        DownloadColumn.SIZE -> "Größe"
-        DownloadColumn.DATE -> "Datum"
-        DownloadColumn.TIME -> "Zeit"
-        DownloadColumn.DURATION -> "Dauer"
-        DownloadColumn.HIGH_QUALITY -> "HD"
-        DownloadColumn.SUBTITLE_AVAILABLE -> "UT"
-        DownloadColumn.GEO -> "Geo"
-        DownloadColumn.FILM_URL -> "Film-URL"
-        DownloadColumn.URL -> "URL"
-        DownloadColumn.SUBTITLE_URL -> "URL-Untertitel"
-        DownloadColumn.PROGRAM_SET -> "Programmset"
-        DownloadColumn.PROGRAM -> "Programm"
-        DownloadColumn.PROGRAM_INVOCATION -> "Programmaufruf_"
-        DownloadColumn.PROGRAM_INVOCATION_ARRAY -> "Programmaufruf"
-        DownloadColumn.PROGRAM_RESTART -> "Restart"
-        DownloadColumn.TARGET_FILE_NAME -> "Dateiname"
-        DownloadColumn.TARGET_PATH -> "Pfad"
-        DownloadColumn.TARGET_PATH_FILE_NAME -> "Pfad-Dateiname"
-        DownloadColumn.TYPE -> "Art"
-        DownloadColumn.SOURCE -> "Quelle"
-        DownloadColumn.INFO_FILE -> "Infodatei"
-        DownloadColumn.SPOTLIGHT -> "Spotlight"
-        DownloadColumn.SUBTITLE -> "Untertitel"
+        DownloadColumn.ABO -> UiMessages.text("download.edit.label.abo")
+        DownloadColumn.SENDER -> UiMessages.text("download.edit.label.sender")
+        DownloadColumn.TOPIC -> UiMessages.text("download.edit.label.topic")
+        DownloadColumn.TITLE -> UiMessages.text("download.edit.label.title")
+        DownloadColumn.SIZE -> UiMessages.text("download.edit.label.size")
+        DownloadColumn.DATE -> UiMessages.text("download.edit.label.date")
+        DownloadColumn.TIME -> UiMessages.text("download.edit.label.time")
+        DownloadColumn.DURATION -> UiMessages.text("download.edit.label.duration")
+        DownloadColumn.HIGH_QUALITY -> UiMessages.text("download.edit.label.high_quality")
+        DownloadColumn.SUBTITLE_AVAILABLE -> UiMessages.text("download.edit.label.subtitle_available")
+        DownloadColumn.GEO -> UiMessages.text("download.edit.label.geo")
+        DownloadColumn.FILM_URL -> UiMessages.text("download.edit.label.film_url")
+        DownloadColumn.URL -> UiMessages.text("download.edit.label.url")
+        DownloadColumn.SUBTITLE_URL -> UiMessages.text("download.edit.label.subtitle_url")
+        DownloadColumn.PROGRAM_SET -> UiMessages.text("download.edit.label.program_set")
+        DownloadColumn.PROGRAM -> UiMessages.text("download.edit.label.program")
+        DownloadColumn.PROGRAM_INVOCATION -> UiMessages.text("download.edit.label.program_invocation")
+        DownloadColumn.PROGRAM_INVOCATION_ARRAY -> UiMessages.text("download.edit.label.program_invocation_array")
+        DownloadColumn.PROGRAM_RESTART -> UiMessages.text("download.edit.label.program_restart")
+        DownloadColumn.TARGET_FILE_NAME -> UiMessages.text("download.edit.label.target_file_name")
+        DownloadColumn.TARGET_PATH -> UiMessages.text("download.edit.label.target_path")
+        DownloadColumn.TARGET_PATH_FILE_NAME -> UiMessages.text("download.edit.label.target_path_file_name")
+        DownloadColumn.TYPE -> UiMessages.text("download.edit.label.type")
+        DownloadColumn.SOURCE -> UiMessages.text("download.edit.label.source")
+        DownloadColumn.INFO_FILE -> UiMessages.text("download.edit.label.info_file")
+        DownloadColumn.SPOTLIGHT -> UiMessages.text("download.edit.label.spotlight")
+        DownloadColumn.SUBTITLE -> UiMessages.text("download.edit.label.subtitle")
         else -> error("Unknown download label column: $column")
     }
 
@@ -783,7 +784,7 @@ class DialogEditDownload(
         }
         val helpButton = JButton("").apply {
             icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
-            toolTipText = "Hilfe anzeigen"
+            toolTipText = UiMessages.text("download.edit.help")
             addActionListener {
                 HelpTextDialog.show(
                     this@DialogEditDownload,
@@ -803,7 +804,7 @@ class DialogEditDownload(
             DownloadColumn.ABO -> addValueComponent(label, createValueLabel(datenDownload.aboName))
             DownloadColumn.SENDER -> addValueComponent(label, createValueLabel(datenDownload.sender))
             DownloadColumn.PROGRAM_SET -> addValueComponent(label, createValueLabel(datenDownload.programSetName))
-            DownloadColumn.PROGRAM -> addValueComponent(label, createValueLabel(datenDownload.programName))
+            DownloadColumn.PROGRAM -> addValueComponent(label, createValueLabel(textFieldValue(column)))
             DownloadColumn.SUBTITLE_URL -> addValueComponent(label, createValueLabel(datenDownload.subtitleUrl))
             DownloadColumn.DATE -> addValueComponent(label, createValueLabel(datenDownload.date))
             DownloadColumn.TIME -> addValueComponent(label, createValueLabel(datenDownload.time))
@@ -858,7 +859,7 @@ class DialogEditDownload(
         val queryCodecDetailsButton = JButton("").apply {
             name = "btnQuerCodecDetailsForLocalUrl"
             icon = IconUtils.of(MaterialDesignM.MOVIE_SEARCH)
-            toolTipText = "Codec-Details für URL abfragen"
+            toolTipText = UiMessages.text("download.edit.codecUrl")
             isEnabled = ffprobePath != null
             addActionListener { requestLiveInfoForUrl(textField.text.trim()) }
         }
@@ -880,16 +881,16 @@ class DialogEditDownload(
         val film = datenDownload.film
         val currentLocation = ApplicationConfiguration.getInstance().geographicLocation
         if (film == null) {
-            toolTipText = "Keine Geoinformationen vorhanden"
+            toolTipText = UiMessages.text("film.geo.unknown")
             icon = IconUtils.of(FontAwesomeSolid.LOCK_OPEN)
             return@apply
         }
 
         val unlocked = !film.isGeoBlockedForLocation(currentLocation)
         toolTipText = when {
-            !unlocked && !film.hasCountries() -> "Gesperrt für $currentLocation"
+            !unlocked && !film.hasCountries() -> UiMessages.format("film.geo.blocked", currentLocation)
             film.hasCountries() -> film.countriesAsString
-            else -> "Keine Geoinformationen vorhanden"
+            else -> UiMessages.text("film.geo.unknown")
         }
         icon = IconUtils.of(if (unlocked) FontAwesomeSolid.LOCK_OPEN else FontAwesomeSolid.LOCK)
         makeShrinkable(this)
@@ -924,9 +925,9 @@ class DialogEditDownload(
         }
     }
 
-    private fun downloadArtText(): String = datenDownload.art.label
+    private fun downloadArtText(): String = datenDownload.art.displayLabel
 
-    private fun downloadQuelleText(): String = datenDownload.quelle.label
+    private fun downloadQuelleText(): String = datenDownload.quelle.displayLabel
 
     private fun addValueComponent(label: JLabel, component: Component) {
         (component as? JComponent)?.let(::makeShrinkable)
@@ -980,8 +981,8 @@ class DialogEditDownload(
 
             val ret = JOptionPane.showConfirmDialog(
                 this,
-                "Die Auflösung wurde geändert, der Film kann nicht weitergeführt werden.\nDatei muss zuerst gelöscht werden.",
-                "Film Löschen?",
+                UiMessages.text("download.edit.resolutionChanged"),
+                UiMessages.text("downloads.delete.confirm"),
                 JOptionPane.YES_NO_OPTION
             )
             if (ret != JOptionPane.YES_OPTION) {
@@ -992,7 +993,7 @@ class DialogEditDownload(
             check(file.delete()) { "delete failed" }
             true
         } catch (_: Exception) {
-            JOptionPane.showMessageDialog(this, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(this, UiMessages.text("downloads.delete.failed"), UiMessages.text("downloads.delete.title"), JOptionPane.ERROR_MESSAGE)
             logger.error("Fehler beim löschen: {}", download.targetPathFileName)
             true
         }
@@ -1012,7 +1013,7 @@ class DialogEditDownload(
     fun isConfirmed(): Boolean = confirmed
 
     companion object {
-        private const val QUALITY_PANEL_TITLE = "Download-Qualität"
+        private val QUALITY_PANEL_TITLE get() = UiMessages.text("download.edit.qualityTitle")
         private const val LABEL_FOREGROUND_KEY = "Label.foreground"
         private val LIVE_INFO_PLACEHOLDER = DownloadQualityLiveInfoText(
             video = "Video: 1920x1080, 2220 kBit/s, 50 fps (avg), H.264",

@@ -21,6 +21,7 @@ package mediathek.tool.cellrenderer
 import com.formdev.flatlaf.extras.FlatSVGIcon
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
+import mediathek.i18n.UiMessages
 import mediathek.swing.CompoundIcon
 import mediathek.swing.IconUtils
 import mediathek.tool.SVGIconUtilities
@@ -69,12 +70,12 @@ open class CellRendererBaseWithStart : CellRendererBase() {
         val lockedForCurrentLocation = film.isGeoBlockedForLocation(curLocation)
         when {
             lockedForCurrentLocation -> {
-                toolTipText = if (film.hasCountries()) film.countriesAsString else "Gesperrt für $curLocation"
+                toolTipText = if (film.hasCountries()) film.countriesAsString else UiMessages.format("film.geo.blocked", curLocation)
                 icon = if (isSelected) lockedIconSelected else lockedIcon
             }
 
             !film.hasCountries() -> {
-                toolTipText = "Keine Geoinformationen vorhanden"
+                toolTipText = UiMessages.text("film.geo.unknown")
                 icon = if (isSelected) unlockedIconSelected else unlockedIcon
             }
 

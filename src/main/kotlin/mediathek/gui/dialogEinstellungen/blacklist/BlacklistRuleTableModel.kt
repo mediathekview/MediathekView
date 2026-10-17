@@ -23,6 +23,7 @@ import mediathek.daten.blacklist.BlacklistRule
 import mediathek.daten.blacklist.CompiledBlacklistMatcher
 import mediathek.daten.blacklist.ListeBlacklist
 import javax.swing.table.AbstractTableModel
+import mediathek.i18n.UiMessages
 
 class BlacklistRuleTableModel(
     private val blacklist: ListeBlacklist,
@@ -48,7 +49,10 @@ class BlacklistRuleTableModel(
         }
     }
 
-    override fun getColumnName(column: Int): String =
+    override fun getColumnName(column: Int): String = UiMessages.text("settings.blacklist.column.$column")
+
+    /** Historical layout identifier, independent of the translated column heading. */
+    fun columnIdentifier(column: Int): String =
         when (column) {
             BLACKLIST_ACTIVE -> "aktiv"
             BLACKLIST_SENDER -> "Sender"

@@ -21,12 +21,13 @@ package mediathek.gui.actions
 import mediathek.gui.tabs.tab_downloads.GuiDownloads
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import mediathek.i18n.UiMessages
 
 class StartAllDownloadsTimedAction(
     private val guiDownloads: GuiDownloads,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Alle Downloads zeitverzögert starten...")
+        putValue(NAME, UiMessages.text("action.startAllDownloadsTimedAction.text"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

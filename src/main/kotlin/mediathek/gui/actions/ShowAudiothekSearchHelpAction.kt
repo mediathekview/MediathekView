@@ -20,6 +20,7 @@ package mediathek.gui.actions
 
 import mediathek.config.Konstanten
 import mediathek.gui.dialog.lucene_tutorial.LuceneTutorialDialog
+import mediathek.i18n.UiMessages
 import mediathek.tool.SVGIconUtilities
 import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.KeyboardFocusManager
@@ -28,14 +29,14 @@ import javax.swing.AbstractAction
 
 class ShowAudiothekSearchHelpAction : AbstractAction() {
     init {
-        putValue(NAME, "Audiothek-Suche anzeigen...")
-        putValue(SHORT_DESCRIPTION, "Hilfe zur Audiothek-Suche")
+        putValue(NAME, UiMessages.text("action.showAudiothekSearchHelpAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.showAudiothekSearchHelpAction.description"))
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {
         val owner = KeyboardFocusManager.getCurrentKeyboardFocusManager().activeWindow
-        val dialog = LuceneTutorialDialog(owner, "Audiothek-Suche", Konstanten.PFAD_AUDIOTHEK_SUCHE_HILFE_MARKDOWN)
+        val dialog = LuceneTutorialDialog(owner, UiMessages.text("help.audiothekTitle"), Konstanten.PFAD_AUDIOTHEK_SUCHE_HILFE_MARKDOWN)
         dialog.addDelayedWindowListener(onWindowClosed = {
             isEnabled = true
         })

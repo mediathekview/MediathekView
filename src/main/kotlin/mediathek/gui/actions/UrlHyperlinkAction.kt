@@ -3,6 +3,7 @@ package mediathek.gui.actions
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen
 import mediathek.gui.messages.ProgramLocationChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.mac.escapeAppleScriptString
 import mediathek.tool.MessageBus
 import org.apache.commons.lang3.SystemUtils
@@ -29,8 +30,8 @@ class UrlHyperlinkAction(
 
     companion object {
         private val logger = LogManager.getLogger(UrlHyperlinkAction::class.java)
-        private const val BROWSER_NOT_FOUND_TEXT =
-            "Der Browser zum Anzeigen der URL wird nicht gefunden. Browser selbst auswählen."
+        private val BROWSER_NOT_FOUND_TEXT get() =
+            UiMessages.text("browser.missing")
 
         fun openURI(uri: URI, parent: Frame? = null) {
             openURL(uri.toString(), parent)
@@ -89,8 +90,7 @@ class UrlHyperlinkAction(
                 return configuredProgram
             }
 
-            return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Browser suchen", BROWSER_NOT_FOUND_TEXT)
-                .orElse("") ?: ""
+            return DialogProgrammOrdnerOeffnen.showDialog(parent, "", UiMessages.text("browser.choose"), BROWSER_NOT_FOUND_TEXT).orElse("") ?: ""
         }
 
         private fun launchApplication(app: String, url: String) {

@@ -40,6 +40,7 @@ import mediathek.gui.tabs.tab_film.GuiFilme
 import mediathek.gui.tabs.tab_livestreams.LivestreamPanel
 import mediathek.gui.tabs.tab_online_search.OnlineSearchHost
 import mediathek.gui.tabs.tab_online_search.OnlineSearchPanel
+import mediathek.i18n.UiMessages
 import mediathek.logging.LogDialog
 import mediathek.shutdown.ComputerShutdown
 import mediathek.swing.SwingDispatch
@@ -96,7 +97,7 @@ open class MediathekGui private constructor(
     private val commonToolBar = JToolBar()
     private val manageBookmarkAction = ManageBookmarkAction(this)
     private val toggleDarkModeAction = ToggleDarkModeAction(this)
-    private val fontMenu = JMenu("Schrift")
+    private val fontMenu = JMenu(UiMessages.text("menu.font.text"))
     private val jMenuDatei = JMenu()
     private val jMenuFilme = JMenu()
     private val jMenuBar = JMenuBar()
@@ -145,12 +146,12 @@ open class MediathekGui private constructor(
     private val showLuceneTutorialAction = ShowLuceneTutorialAction(this)
     private val onlineSearchTab: MainWindowTab by lazy(LazyThreadSafetyMode.NONE) {
         MainWindowTab(
-            "Onlinesuche",
+            UiMessages.text("tab.onlineSearch"),
             { OnlineSearchPanel(createOnlineSearchHost()) },
             visible = { ApplicationConfiguration.getInstance().onlineSearchTabVisible },
             toggleActionFactory = { toggleOnlineSearchTabAction },
             onComponentCreated = { configureClosableOptionalTab(it, toggleOnlineSearchTabAction) },
-            initialComponentFactory = { createDeferredTabPlaceholder("Onlinesuche") },
+            initialComponentFactory = { createDeferredTabPlaceholder(UiMessages.text("tab.onlineSearch")) },
             dispose = { (it as OnlineSearchPanel).close() },
         )
     }
@@ -581,10 +582,8 @@ open class MediathekGui private constructor(
                         .sorted()
                         .joinToString("<br/>") { HtmlUtils.escapeHtml(it) }
 
-                    val message = String.format(
-                        "<html>Während des Starts wurden ungültige reguläre Ausdrücke (RegExp) in Ihrer Blacklist und/oder Abos entdeckt.<br/>" +
-                            "<b>Sie müssen diese korrigieren, ansonsten funktioniert das Programm nicht fehlerfrei!</b><br/><br/>" +
-                            "Nachfolgende Ausdrücke sind fehlerbehaftet: <br/>%s</html>",
+                    val message = UiMessages.format(
+                        "startup.invalidRegex",
                         regexString,
                     )
 
@@ -853,7 +852,7 @@ open class MediathekGui private constructor(
     private fun registerMainWindowTabs() {
         tabRegistry.register(
             MainWindowTab(
-                GuiFilme.NAME,
+                UiMessages.text("tab.films"),
                 { tabs().films },
                 visible = { true },
                 icon = { GetIcon.getProgramIcon("tab-film.png", 32, 32) },
@@ -881,7 +880,7 @@ open class MediathekGui private constructor(
 
     private fun createDeferredTabPlaceholder(tabTitle: String): JComponent =
         JPanel(BorderLayout()).apply {
-            add(JLabel("$tabTitle wird beim ersten Öffnen geladen.", SwingConstants.CENTER), BorderLayout.CENTER)
+            add(JLabel(UiMessages.format("tab.loadOnOpen", tabTitle), SwingConstants.CENTER), BorderLayout.CENTER)
         }
 
     override fun enableUpdateMenuItem(enable: Boolean) {

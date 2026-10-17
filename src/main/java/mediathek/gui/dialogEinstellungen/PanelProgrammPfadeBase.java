@@ -17,6 +17,7 @@ public class PanelProgrammPfadeBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jScrollPane1 = new JScrollPane();
         var jPanel1 = new JPanel();
         jPanelVlc = new JPanel();
@@ -39,15 +40,15 @@ public class PanelProgrammPfadeBase extends JPanel {
 
                 //======== jPanelVlc ========
                 {
-                    jPanelVlc.setBorder(new TitledBorder("Pfad zum VLC-Player ausw\u00e4hlen"));
+                    jPanelVlc.setBorder(new TitledBorder(bundle.getString("settings.PanelProgrammPfade.jPanelVlc.borderTitle")));
 
                     //---- jButtonVlcPfad ----
                     jButtonVlcPfad.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-                    jButtonVlcPfad.setToolTipText("Programm ausw\u00e4hlen");
+                    jButtonVlcPfad.setToolTipText(bundle.getString("settings.PanelProgrammPfade.jButtonVlcPfad.toolTipText"));
 
                     //---- jButtonVlcSuchen ----
-                    jButtonVlcSuchen.setText("suchen");
-                    jButtonVlcSuchen.setToolTipText("nach dem Programm suchen");
+                    jButtonVlcSuchen.setText(bundle.getString("settings.PanelProgrammPfade.jButtonVlcSuchen.text"));
+                    jButtonVlcSuchen.setToolTipText(bundle.getString("settings.PanelProgrammPfade.jButtonVlcSuchen.toolTipText"));
 
                     GroupLayout jPanelVlcLayout = new GroupLayout(jPanelVlc);
                     jPanelVlc.setLayout(jPanelVlcLayout);
@@ -77,19 +78,19 @@ public class PanelProgrammPfadeBase extends JPanel {
 
                 //---- jButtonHilfe ----
                 jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png")));
-                jButtonHilfe.setToolTipText("Hilfe anzeigen");
+                jButtonHilfe.setToolTipText(bundle.getString("settings.PanelProgrammPfade.jButtonHilfe.toolTipText"));
 
                 //======== jPanelFFmpeg ========
                 {
-                    jPanelFFmpeg.setBorder(new TitledBorder("Pfad zu ffmpeg ausw\u00e4hlen"));
+                    jPanelFFmpeg.setBorder(new TitledBorder(bundle.getString("settings.PanelProgrammPfade.jPanelFFmpeg.borderTitle")));
 
                     //---- jButtonFFmpegSuchen ----
-                    jButtonFFmpegSuchen.setText("suchen");
-                    jButtonFFmpegSuchen.setToolTipText("nach dem Programm suchen");
+                    jButtonFFmpegSuchen.setText(bundle.getString("settings.PanelProgrammPfade.jButtonFFmpegSuchen.text"));
+                    jButtonFFmpegSuchen.setToolTipText(bundle.getString("settings.PanelProgrammPfade.jButtonFFmpegSuchen.toolTipText"));
 
                     //---- jButtonFFmpegPfad ----
                     jButtonFFmpegPfad.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-                    jButtonFFmpegPfad.setToolTipText("Programm ausw\u00e4hlen");
+                    jButtonFFmpegPfad.setToolTipText(bundle.getString("settings.PanelProgrammPfade.jButtonFFmpegPfad.toolTipText"));
 
                     GroupLayout jPanelFFmpegLayout = new GroupLayout(jPanelFFmpeg);
                     jPanelFFmpeg.setLayout(jPanelFFmpegLayout);

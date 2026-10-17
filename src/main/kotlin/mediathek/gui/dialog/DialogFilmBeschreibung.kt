@@ -25,6 +25,7 @@ import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenFilm
 import mediathek.daten.ProgramSetRepository
+import mediathek.i18n.UiMessages
 import mediathek.tool.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.apache.logging.log4j.LogManager
@@ -79,7 +80,7 @@ class DialogFilmBeschreibung(
         datenFilm.description = jTextArea1.text
 
         val destinationPath = buildDestinationPath()
-        val destinationFile = FileDialogs.chooseSaveFileLocation(this, "Infos speichern", destinationPath)
+        val destinationFile = FileDialogs.chooseSaveFileLocation(this, UiMessages.text("description.save"), destinationPath)
             ?: return
         val path = destinationFile.toPath()
 
@@ -89,14 +90,14 @@ class DialogFilmBeschreibung(
                 writeInfoFile(path)
                 JOptionPane.showMessageDialog(
                     this@DialogFilmBeschreibung,
-                    "Infodatei wurde erfolgreich geschrieben.",
+                    UiMessages.text("description.saved"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.INFORMATION_MESSAGE,
                 )
             } catch (ex: IOException) {
                 SwingErrorDialog.showExceptionMessage(
                     this@DialogFilmBeschreibung,
-                    "Ein unbekannter Fehler ist aufgetreten!",
+                    UiMessages.text("description.error"),
                     ex,
                 )
                 logger.error("Ziel: {}", path.toAbsolutePath().toString(), ex)
@@ -139,12 +140,8 @@ class DialogFilmBeschreibung(
 
     private companion object {
         private val logger = LogManager.getLogger()
-        private const val TITLE = "Beschreibung ändern"
+        private val TITLE get() = UiMessages.text("description.title")
         private const val SUFFIX = ".txt"
-        private val HELP_MESSAGE = """
-            Diese Funktion richtet sich z.B. an Benutzer,welche eine angepasste Beschreibung der Sendung in Form der Infodatei ("Filmname.txt") anlegen und durch Drittprogramme einlesen lassen wollen.
-
-            Achtung: Diese Änderungen gehen nach dem Neuladen einer Filmliste verloren.
-        """.trimIndent()
+        private val HELP_MESSAGE get() = UiMessages.text("description.help")
     }
 }

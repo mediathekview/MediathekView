@@ -3,6 +3,7 @@ package mediathek.gui.dialog;
 import javax.swing.*;
 import java.awt.*;
 
+/** Generated layout using the selected interface language. */
 public class MVPanelDownloadZielBase extends JPanel {
     public MVPanelDownloadZielBase() {
         initComponents();
@@ -10,7 +11,9 @@ public class MVPanelDownloadZielBase extends JPanel {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the generated controls using the selected interface language. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jLabel1 = new JLabel();
         jComboBoxPath = new JComboBox<>();
         jButtonPath = new JButton();
@@ -22,24 +25,24 @@ public class MVPanelDownloadZielBase extends JPanel {
         //======== this ========
 
         //---- jLabel1 ----
-        jLabel1.setText("Zielpfad:");
+        jLabel1.setText(bundle.getString("download.destination.jLabel1.text"));
 
         //---- jComboBoxPath ----
         jComboBoxPath.setEditable(true);
 
         //---- jButtonPath ----
         jButtonPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-        jButtonPath.setToolTipText("Zielpfad ausw\u00e4hlen");
+        jButtonPath.setToolTipText(bundle.getString("download.destination.jButtonPath.toolTipText"));
 
         //---- jButtonDelPath ----
         jButtonDelPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png")));
-        jButtonDelPath.setToolTipText("gespeicherte Pfade l\u00f6schen");
+        jButtonDelPath.setToolTipText(bundle.getString("download.destination.jButtonDelPath.toolTipText"));
 
         //---- jLabel2 ----
-        jLabel2.setText("Dateiname:");
+        jLabel2.setText(bundle.getString("download.destination.jLabel2.text"));
 
         //---- jLabelExists ----
-        jLabelExists.setText("Datei existiert schon!");
+        jLabelExists.setText(bundle.getString("download.destination.jLabelExists.text"));
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
