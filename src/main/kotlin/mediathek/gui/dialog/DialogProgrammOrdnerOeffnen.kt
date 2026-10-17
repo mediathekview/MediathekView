@@ -18,6 +18,7 @@
 
 package mediathek.gui.dialog
 
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.SVGIconUtilities
 import org.apache.commons.lang3.SystemUtils
@@ -80,8 +81,8 @@ class DialogProgrammOrdnerOeffnen private constructor(
                 !programFile.exists() -> {
                     JOptionPane.showMessageDialog(
                         parentComponent,
-                        "Das Programm:  \"$program\"  existiert nicht!",
-                        "Fehler",
+                        UiMessages.format("dialog.fileManager.missing", program),
+                        UiMessages.text("dialog.error"),
                         JOptionPane.ERROR_MESSAGE,
                     )
                 }
@@ -89,8 +90,8 @@ class DialogProgrammOrdnerOeffnen private constructor(
                 !programFile.canExecute() -> {
                     JOptionPane.showMessageDialog(
                         parentComponent,
-                        "Das Programm:  \"$program\"  kann nicht ausgeführt werden!",
-                        "Fehler",
+                        UiMessages.format("dialog.fileManager.notExecutable", program),
+                        UiMessages.text("dialog.error"),
                         JOptionPane.ERROR_MESSAGE,
                     )
                 }
@@ -114,7 +115,7 @@ class DialogProgrammOrdnerOeffnen private constructor(
         override fun actionPerformed(e: ActionEvent) {
             // we can use native chooser on Mac...
             if (SystemUtils.IS_OS_MAC_OSX) {
-                val chooser = FileDialog(parentComponent, "Dateimanager suchen")
+                val chooser = FileDialog(parentComponent, UiMessages.text("dialog.fileManager.choose"))
                 chooser.mode = FileDialog.LOAD
                 chooser.isVisible = true
                 if (chooser.file != null) {

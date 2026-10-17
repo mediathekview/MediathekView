@@ -18,6 +18,7 @@ public class DialogProgrammOrdnerOeffnenBase extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jPanel1 = new JPanel();
         jButtonZiel = new JButton();
         jTextFieldProgramm = new JTextField();
@@ -37,10 +38,10 @@ public class DialogProgrammOrdnerOeffnenBase extends JDialog {
 
             //---- jButtonZiel ----
             jButtonZiel.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-            jButtonZiel.setToolTipText("Programm ausw\u00e4hlen");
+            jButtonZiel.setToolTipText(bundle.getString("dialog.DialogProgrammOrdnerOeffnen.jButtonZiel.toolTipText"));
 
             //---- jLabel1 ----
-            jLabel1.setText("Programm:");
+            jLabel1.setText(bundle.getString("dialog.DialogProgrammOrdnerOeffnen.jLabel1.text"));
 
             GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
             jPanel1.setLayout(jPanel1Layout);
@@ -69,10 +70,10 @@ public class DialogProgrammOrdnerOeffnenBase extends JDialog {
         }
 
         //---- jButtonAbbrechen ----
-        jButtonAbbrechen.setText("Abbrechen");
+        jButtonAbbrechen.setText(bundle.getString("dialog.DialogProgrammOrdnerOeffnen.jButtonAbbrechen.text"));
 
         //---- jButtonOk ----
-        jButtonOk.setText("Ok");
+        jButtonOk.setText(bundle.getString("dialog.DialogProgrammOrdnerOeffnen.jButtonOk.text"));
 
         //======== jScrollPane1 ========
         {
@@ -81,7 +82,7 @@ public class DialogProgrammOrdnerOeffnenBase extends JDialog {
             jTextArea1.setEditable(false);
             jTextArea1.setColumns(20);
             jTextArea1.setRows(4);
-            jTextArea1.setText("\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst ausw\u00e4hlen.\n");
+            jTextArea1.setText(bundle.getString("dialog.DialogProgrammOrdnerOeffnen.jTextArea1.text"));
             jScrollPane1.setViewportView(jTextArea1);
         }
 

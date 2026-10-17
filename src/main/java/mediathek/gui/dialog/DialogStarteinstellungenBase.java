@@ -13,6 +13,7 @@ public class DialogStarteinstellungenBase extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jPanel2 = new JPanel();
         jButtonStandard = new JButton();
         jCheckBoxAlleEinstellungen = new JCheckBox();
@@ -22,7 +23,7 @@ public class DialogStarteinstellungenBase extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Erster Start"); //NON-NLS
+        setTitle(bundle.getString("dialog.DialogStarteinstellungen.this.title")); //NON-NLS
         var contentPane = getContentPane();
 
         //======== jPanel2 ========
@@ -30,13 +31,13 @@ public class DialogStarteinstellungenBase extends JDialog {
             jPanel2.setBorder(new LineBorder(new Color(153, 153, 255), 3));
 
             //---- jButtonStandard ----
-            jButtonStandard.setText("Mit Standardeinstellungen starten"); //NON-NLS
+            jButtonStandard.setText(bundle.getString("dialog.DialogStarteinstellungen.jButtonStandard.text")); //NON-NLS
 
             //---- jCheckBoxAlleEinstellungen ----
-            jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen"); //NON-NLS
+            jCheckBoxAlleEinstellungen.setText(bundle.getString("dialog.DialogStarteinstellungen.jCheckBoxAlleEinstellungen.text")); //NON-NLS
 
             //---- jButtonAnpassen ----
-            jButtonAnpassen.setText("Einstellungen anpassen"); //NON-NLS
+            jButtonAnpassen.setText(bundle.getString("dialog.DialogStarteinstellungen.jButtonAnpassen.text")); //NON-NLS
 
             GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
             jPanel2.setLayout(jPanel2Layout);

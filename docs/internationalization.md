@@ -8,6 +8,10 @@ Existing installations continue to use German. Unsupported or missing language p
 
 The interface language is independent of the geographic location and the language of programme metadata.
 
+First-run setup uses the saved UI language; a fresh profile still starts in German.
+
+The language selector remains in General settings and requires a restart.
+
 ## Current coverage
 
 The draft PR covers the catalogue, downloads, subscriptions, bookmarks, and all settings pages.
@@ -33,11 +37,16 @@ The draft PR covers the catalogue, downloads, subscriptions, bookmarks, and all 
 | Subscription management | Columns, actions, filters, counts, editing, deletion   |
 | Subscription history    | Columns, filtering, counts, deletion prompts           |
 | Bookmarks               | Columns, actions, notes, expiry picker, deletion       |
+| First-run setup         | Navigation, location, program paths and program sets   |
+| Secondary dialogs       | About, updates, set updates, program selection         |
+| Film description editor | Controls, save messages, and inline help               |
 | Text-field menus        | Undo, cut, copy, paste, and select all                 |
 
-First-run setup and secondary dialogs remain partly German.
+Duplicate-film dialogs, subtitle merging, and some startup warnings remain partly German.
 
 Help documents and background loading messages are still untranslated.
+
+Server announcements and release notes retain the language supplied by their source.
 
 ## Resource bundles
 
@@ -182,3 +191,6 @@ These screens were rendered on Linux with separate settings directories and samp
 - Blacklist: [German](images/i18n/blacklist-de.png) · [English](images/i18n/blacklist-en.png).
 - Program sets: [German](images/i18n/program-sets-de.png) · [English](images/i18n/program-sets-en.png).
 - Program-set import: [German](images/i18n/import-set-de.png) · [English](images/i18n/import-set-en.png).
+- First-run setup: [German](images/i18n/first-run-de.png) · [English](images/i18n/first-run-en.png).
+- Program-set update: [German](images/i18n/set-update-de.png) · [English](images/i18n/set-update-en.png).
+- About: [German](images/i18n/about-de.png) · [English](images/i18n/about-en.png).
