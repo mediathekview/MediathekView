@@ -22,6 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.gui.expiration.SenderExpirationService
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.swing.JIkonliSafeButton
 import mediathek.tool.EscapeKeyHandler
@@ -45,18 +46,18 @@ class BookmarkEditNoteDialog(
 ) : JDialog(owner, true) {
 
     private var okPressed = false
-    private val datePicker = JXDatePicker()
+    private val datePicker = JXDatePicker(UiMessages.language.locale)
     private val btnSearch = JIkonliSafeButton()
     private val textArea = JTextArea()
-    private val okButton = JButton("OK")
-    private val cancelButton = JButton("Abbrechen")
+    private val okButton = JButton(UiMessages.text("bookmark.note.ok"))
+    private val cancelButton = JButton(UiMessages.text("bookmark.note.cancel"))
     private val busyIndicator = JXBusyLabel()
 
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(job + Dispatchers.Swing)
 
     init {
-        title = "Notiz hinzufügen"
+        title = UiMessages.text("bookmark.note.title")
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
         initComponents()
@@ -70,7 +71,7 @@ class BookmarkEditNoteDialog(
         setupDatePicker()
 
         btnSearch.icon = IconUtils.of(MaterialDesignC.CLOUD_SEARCH_OUTLINE, 20)
-        btnSearch.toolTipText = "Auf Website suchen"
+        btnSearch.toolTipText = UiMessages.text("bookmark.note.search")
         btnSearch.addActionListener {
             coroutineScope.launch {
                 btnSearch.isEnabled = false
@@ -133,7 +134,7 @@ class BookmarkEditNoteDialog(
     private fun showNotFoundMessage() {
         JOptionPane.showMessageDialog(
             this,
-            "Das Ablaufdatum wurde nicht gefunden.",
+            UiMessages.text("bookmark.note.notFound"),
             Konstanten.PROGRAMMNAME,
             JOptionPane.WARNING_MESSAGE
         )
@@ -152,12 +153,12 @@ class BookmarkEditNoteDialog(
             )
         )
 
-        contentPanel.add(JLabel("Verfügbar bis:"), CC().cell(0, 0))
+        contentPanel.add(JLabel(UiMessages.text("bookmark.note.availableUntil")), CC().cell(0, 0))
         contentPanel.add(datePicker, CC().cell(1, 0))
         contentPanel.add(btnSearch, CC().cell(2, 0))
         contentPanel.add(busyIndicator, CC().cell(3, 0))
 
-        contentPanel.add(JLabel("Notiz:"), CC().cell(0, 1))
+        contentPanel.add(JLabel(UiMessages.text("bookmark.note.label")), CC().cell(0, 1))
 
         val scrollPane = JScrollPane(textArea).apply {
             minimumSize = Dimension(400, 150)

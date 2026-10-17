@@ -10,11 +10,12 @@ The interface language is independent of the geographic location and the languag
 
 ## Current coverage
 
-The draft PR covers the main catalogue, download management, subscriptions, and the first settings panels.
+The draft PR covers the catalogue, downloads, subscriptions, bookmarks, and General and Advanced settings.
 
-| Area                    | Coverage                                            |
-|-------------------------|-----------------------------------------------------|
+| Area                    | Coverage                                             |
+|-------------------------|------------------------------------------------------|
 | General settings        | Controls, tooltips, modern-search explanation        |
+| Advanced settings       | Program paths, download integrations, shutdown       |
 | Settings window         | Window title, close button, navigation tree          |
 | Single-film download    | Controls, subtitles, validation and status text      |
 | Main window             | Menu names and entries, tab labels, toolbar actions  |
@@ -27,8 +28,12 @@ The draft PR covers the main catalogue, download management, subscriptions, and 
 | Download scheduling     | Start time, completion options, waiting messages     |
 | Subscription management | Columns, actions, filters, counts, editing, deletion |
 | Subscription history    | Columns, filtering, counts, deletion prompts         |
+| Bookmarks               | Columns, actions, notes, expiry picker, deletion     |
+| Text-field menus        | Undo, cut, copy, paste, and select all               |
 
-Bookmarks, advanced settings, first-run setup, and other secondary dialogs remain partly German.
+Other settings pages, first-run setup, and secondary dialogs remain partly German.
+
+These include notifications, location, colours, Lucene tuning, film-list loading, blacklist, and recording settings.
 
 Help documents and background loading messages are still untranslated.
 
@@ -55,6 +60,10 @@ Subtitle indicator lookup uses translated headings for both film and download ta
 
 Subscription columns keep their historical identifiers for saved layouts; headings and column menus use translations.
 
+Bookmark columns also retain their historical identifiers, including icon selection and saved layouts.
+
+The bookmark expiry picker uses the selected UI locale without changing the stored date.
+
 Default subscription widths fit translated headings. Previously saved widths still take precedence.
 
 Download filter values remain unchanged in configuration; combo-box renderers translate their displayed labels.
@@ -62,6 +71,10 @@ Download filter values remain unchanged in configuration; combo-box renderers tr
 Download type and source labels translate separately from their stable identifiers and legacy data labels.
 
 The scheduler creates its date and time picker with the selected UI locale.
+
+The macOS shutdown selector translates its labels while retaining the helper's original command values.
+
+Program paths, download-manager URLs, credentials, and shutdown commands remain configuration data.
 
 Saved filter names, program-set names, channel names, and programme metadata are user data and are not translated.
 
@@ -137,6 +150,8 @@ Select a language, close the application, and reopen the same profile to review 
 
 Review download and subscription management in both languages, including saved filters and column layouts.
 
+Bookmarks and the Advanced settings page are also ready for review in both languages.
+
 The Linux screenshots below cover actual Swing components rendered with separate profiles.
 
 They do not replace a full application restart test or Windows and macOS layout review.
@@ -154,3 +169,6 @@ These screens were rendered on Linux with separate settings directories and samp
 - Subscription editor: [German](images/i18n/subscription-edit-de.png) · [English](images/i18n/subscription-edit-en.png).
 - Download editor: [German](images/i18n/download-edit-de.png) · [English](images/i18n/download-edit-en.png).
 - Scheduler: [German](images/i18n/download-schedule-de.png) · [English](images/i18n/download-schedule-en.png).
+- Bookmarks: [German](images/i18n/bookmarks-de.png) · [English](images/i18n/bookmarks-en.png).
+- Bookmark notes: [German](images/i18n/bookmark-note-de.png) · [English](images/i18n/bookmark-note-en.png).
+- Advanced settings: [German](images/i18n/advanced-settings-de.png) · [English](images/i18n/advanced-settings-en.png).

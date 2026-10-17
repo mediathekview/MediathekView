@@ -34,6 +34,7 @@ import mediathek.daten.ProgramSetRepository
 import mediathek.gui.bookmark.renderer.*
 import mediathek.gui.tabs.actions.FilmSeenHistoryActionRunner
 import mediathek.gui.tabs.tab_film.FilmDescriptionPanel
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconOnlyButton
 import mediathek.swing.IconUtils
 import mediathek.swing.NoIconMenuItem
@@ -96,7 +97,7 @@ class BookmarkDialog(
         get() = disposed
 
     init {
-        title = "Merkliste verwalten"
+        title = UiMessages.text("bookmark.title")
         isModal = false
         defaultCloseOperation = DISPOSE_ON_CLOSE
 
@@ -220,9 +221,9 @@ class BookmarkDialog(
 
     private fun createTabbedPane(): JTabbedPane =
         JTabbedPane(JTabbedPane.TOP).apply {
-            addTab("Beschreibung", filmDescriptionPanel)
+            addTab(UiMessages.text("bookmark.description"), filmDescriptionPanel)
             addTab(
-                "Notizen",
+                UiMessages.text("bookmark.notes"),
                 JPanel(BorderLayout()).apply {
                     border = BorderFactory.createEmptyBorder(5, 5, 5, 5)
                     add(noteArea, BorderLayout.CENTER)
@@ -256,6 +257,10 @@ class BookmarkDialog(
 
         table.autoResizeMode = JTable.AUTO_RESIZE_OFF
         table.model = tableModel
+        // Saved layouts retain the historical identifiers across interface languages.
+        for (index in COLUMNS.indices) {
+            table.columnModel.getColumn(index).identifier = COLUMNS[index].first
+        }
         table.selectionModel = selectionModel
 
         comparatorChooser = TableComparatorChooser.install(
@@ -281,7 +286,7 @@ class BookmarkDialog(
 
         val seenColumn = columnModel.getColumn(COLUMN_SEEN)
         seenColumn.cellRenderer = SeenCellRenderer()
-        seenColumn.headerRenderer = IconHeaderCellRenderer(IconUtils.of(MaterialDesignE.EYE), "Gesehen")
+        seenColumn.headerRenderer = IconHeaderCellRenderer(IconUtils.of(MaterialDesignE.EYE), UiMessages.text("bookmark.column.seen"))
 
         columnModel.getColumn(COLUMN_SENDER).cellRenderer = CenteredTextCellRenderer()
         columnModel.getColumn(COLUMN_DAUER).cellRenderer = FilmLengthCellRenderer()
@@ -290,7 +295,7 @@ class BookmarkDialog(
 
         val noteColumn = columnModel.getColumn(COLUMN_NOTIZ)
         noteColumn.cellRenderer = NoteCellRenderer()
-        noteColumn.headerRenderer = IconHeaderCellRenderer(IconUtils.of(MaterialDesignN.NOTE), "Notiz vorhanden")
+        noteColumn.headerRenderer = IconHeaderCellRenderer(IconUtils.of(MaterialDesignN.NOTE), UiMessages.text("bookmark.note.present"))
 
         columnModel.getColumn(COLUM_BOOKMARK_ADDED_AT).cellRenderer = AddedAtCellRenderer()
     }
@@ -351,8 +356,8 @@ class BookmarkDialog(
 
     inner class PlayFilmAction : AbstractAction() {
         init {
-            putValue(NAME, "Film abspielen")
-            putValue(SHORT_DESCRIPTION, "Ausgewählten Merklisteintrag abspielen")
+            putValue(NAME, UiMessages.text("bookmark.play"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("bookmark.play.hint"))
             putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.PLAY))
         }
 
@@ -362,8 +367,7 @@ class BookmarkDialog(
             if (pSet == null) {
                 JOptionPane.showMessageDialog(
                     this@BookmarkDialog,
-                    "Es wurde kein Videoplayer eingerichtet.\n" +
-                        "Bitte legen Sie diesen unter \"Einstellungen->Set bearbeiten\" fest.",
+                    UiMessages.text("bookmark.playerMissing"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.INFORMATION_MESSAGE,
                 )
@@ -376,8 +380,8 @@ class BookmarkDialog(
 
     inner class AddDownloadAction : AbstractAction() {
         init {
-            putValue(NAME, "Download anlegen...")
-            putValue(SHORT_DESCRIPTION, "Download für ausgewählte Merklisteinträge anlegen")
+            putValue(NAME, UiMessages.text("bookmark.download"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("bookmark.download.hint"))
             putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.DOWNLOAD))
         }
 
@@ -394,8 +398,7 @@ class BookmarkDialog(
             if (skippedBookmarks > 0) {
                 JOptionPane.showMessageDialog(
                     this@BookmarkDialog,
-                    "$skippedBookmarks Merklisteinträge konnten nicht geladen werden,\n" +
-                        "weil die Filme nicht mehr in der Filmliste vorhanden sind.",
+                    UiMessages.format("bookmark.download.missing", skippedBookmarks),
                     title,
                     JOptionPane.INFORMATION_MESSAGE,
                 )
@@ -405,8 +408,8 @@ class BookmarkDialog(
 
     inner class MarkSeenAction : AbstractAction() {
         init {
-            putValue(NAME, "Als gesehen markieren")
-            putValue(SHORT_DESCRIPTION, "Als gesehen markieren")
+            putValue(NAME, UiMessages.text("bookmark.seen"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("bookmark.seen"))
             putValue(SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignE.EYE))
         }
 
@@ -421,8 +424,8 @@ class BookmarkDialog(
 
     inner class MarkUnseenAction : AbstractAction() {
         init {
-            putValue(NAME, "Als ungesehen markieren")
-            putValue(SHORT_DESCRIPTION, "Als ungesehen markieren")
+            putValue(NAME, UiMessages.text("bookmark.unseen"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("bookmark.unseen"))
             putValue(SMALL_ICON, IconUtils.toolbarIcon(MaterialDesignE.EYE_OFF))
         }
 
@@ -437,8 +440,8 @@ class BookmarkDialog(
 
     inner class AddNoteAction : AbstractAction() {
         init {
-            putValue(NAME, "Notiz hinzufügen...")
-            putValue(SHORT_DESCRIPTION, "Notiz hinzufügen")
+            putValue(NAME, UiMessages.text("bookmark.note.add"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("bookmark.note.addHint"))
             putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeRegular.EDIT))
         }
 
@@ -461,8 +464,8 @@ class BookmarkDialog(
 
     inner class RemoveNoteAction : AbstractAction() {
         init {
-            putValue(NAME, "Notiz löschen...")
-            putValue(SHORT_DESCRIPTION, "Notiz löschen")
+            putValue(NAME, UiMessages.text("bookmark.note.remove"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("bookmark.note.removeHint"))
             putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.ERASER))
         }
 
@@ -477,8 +480,8 @@ class BookmarkDialog(
 
     inner class DeleteBookmarkAction : AbstractAction() {
         init {
-            putValue(NAME, "Aus Merkliste löschen...")
-            putValue(SHORT_DESCRIPTION, "Aus Merkliste löschen")
+            putValue(NAME, UiMessages.text("bookmark.remove"))
+            putValue(SHORT_DESCRIPTION, UiMessages.text("bookmark.removeHint"))
             putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeRegular.TRASH_ALT))
         }
 
@@ -509,6 +512,21 @@ class BookmarkDialog(
         const val COLUMN_NOTIZ = 8
         const val COLUMN_HASHCODE = 9
         const val COLUM_BOOKMARK_ADDED_AT = 10
+
+        // Stable layout identifiers paired with translated header keys.
+        val COLUMNS = arrayOf(
+            "Gesehen" to "bookmark.column.seen",
+            "Sender" to "bookmark.column.sender",
+            "Thema" to "bookmark.column.topic",
+            "Titel" to "bookmark.column.title",
+            "Dauer" to "bookmark.column.duration",
+            "Sendedatum" to "bookmark.column.broadcast",
+            "Verfügbar bis" to "bookmark.column.availableUntil",
+            "URL" to "bookmark.column.url",
+            "Notiz" to "bookmark.column.note",
+            "Hash Code" to "bookmark.column.hash",
+            "hinzugefügt am" to "bookmark.column.added",
+        )
 
         const val CONFIG_PREFIX = "ui.bookmark-dialog"
         private val logger = LogManager.getLogger()

@@ -49,7 +49,7 @@ class DeleteBookmarksAction(
         }
         val result = JOptionPane.showConfirmDialog(
             owner,
-            "Möchten Sie wirklich die Merkliste vollständig löschen?",
+            UiMessages.text("bookmark.deleteAll.confirm"),
             Konstanten.PROGRAMMNAME,
             JOptionPane.YES_NO_OPTION,
         )
@@ -59,7 +59,7 @@ class DeleteBookmarksAction(
             bookmarkList.saveToFile()
             JOptionPane.showMessageDialog(
                 owner,
-                "Die Merkliste wurde gelöscht",
+                UiMessages.text("bookmark.deleteAll.done"),
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.INFORMATION_MESSAGE,
             )
