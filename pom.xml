@@ -69,7 +69,7 @@
         <commons-configuration2.version>2.15.1</commons-configuration2.version>
         <commons-io.version>2.22.0</commons-io.version>
         <commons-lang3.version>3.21.0</commons-lang3.version>
-        <caffeine.version>3.3.0</caffeine.version>
+        <caffeine.version>3.3.1</caffeine.version>
         <dd-plist.version>1.30</dd-plist.version>
         <flatlaf.version>3.7.2</flatlaf.version>
         <ikonli.version>12.4.0</ikonli.version>
