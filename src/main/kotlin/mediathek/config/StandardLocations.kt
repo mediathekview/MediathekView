@@ -41,7 +41,7 @@ object StandardLocations {
                 ?.let(Paths::get)
         }
     private var portableSettingsDirectory: Path? = null
-    private val logger = LogManager.getLogger()
+    private val logger by lazy { LogManager.getLogger(StandardLocations::class.java) }
 
     fun configureDefault() {
         portableSettingsDirectory = null

@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager
  * Owns the active notification backend and serializes publication, replacement, and shutdown.
  */
 class NotificationService : NotificationPublisher, AutoCloseable {
-    private val logger = LogManager.getLogger()
+    private val logger by lazy { LogManager.getLogger(NotificationService::class.java) }
     private val lifecycleLock = Any()
     private var notificationBackend: NotificationBackend = DisabledNotificationBackend
     private var closed = false

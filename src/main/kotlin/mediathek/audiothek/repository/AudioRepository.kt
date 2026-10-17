@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager
 class AudioRepository(
     private val sqliteExportSource: SqliteExportAudioSource = SqliteExportAudioSource(),
 ) {
-    private val logger = LogManager.getLogger(AudioRepository::class.java)
+    private val logger by lazy { LogManager.getLogger(AudioRepository::class.java) }
 
     suspend fun loadAudiothek(): AudioLoadResult = withContext(Dispatchers.IO) {
         val downloadStatus = sqliteExportSource.updateLocalDatabase()

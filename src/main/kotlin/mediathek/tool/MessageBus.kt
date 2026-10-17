@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager
 object MessageBus {
     @JvmStatic
     val messageBus: MBassador<BaseEvent>
-    private val logger = LogManager.getLogger()
+    private val logger by lazy { LogManager.getLogger(MessageBus::class.java) }
 
     init {
         messageBus = MBassador(BusConfiguration()

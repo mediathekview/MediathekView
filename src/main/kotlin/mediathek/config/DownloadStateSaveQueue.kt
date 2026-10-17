@@ -1,13 +1,7 @@
 package mediathek.config
 
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.apache.logging.log4j.LogManager
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -16,7 +10,7 @@ internal class DownloadStateSaveQueue(
     private val save: () -> Unit,
     private val debounce: Duration = 250.milliseconds,
 ) {
-    private val logger = LogManager.getLogger(DownloadStateSaveQueue::class.java)
+    private val logger by lazy { LogManager.getLogger(DownloadStateSaveQueue::class.java) }
     private val requests = Channel<Request>(Channel.UNLIMITED)
     private val requestLock = Any()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

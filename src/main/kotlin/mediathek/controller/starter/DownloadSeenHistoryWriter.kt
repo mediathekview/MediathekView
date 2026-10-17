@@ -1,17 +1,12 @@
 package mediathek.controller.starter
 
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import mediathek.daten.DatenFilm
 import org.apache.logging.log4j.LogManager
 
 internal class DownloadSeenHistoryWriter(private val write: (List<DatenFilm>) -> Unit) {
-    private val logger = LogManager.getLogger(DownloadSeenHistoryWriter::class.java)
+    private val logger by lazy { LogManager.getLogger(DownloadSeenHistoryWriter::class.java) }
     private val requests = Channel<Request>(Channel.UNLIMITED)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
