@@ -17,13 +17,13 @@ internal object MacApplicationMenuLocalizer {
         }
 
         try {
-            NativeMenu.localizeGerman()
+            AppKitMenu.scheduleGermanLocalization()
         } catch (failure: Throwable) {
             logger.warn("Could not localize the macOS application menu", failure)
         }
     }
 
-    private object NativeMenu {
+    private object AppKitMenu {
         private const val NS_UTF8_STRING_ENCODING = 4L
 
         private val linker = Linker.nativeLinker()
@@ -78,42 +78,38 @@ internal object MacApplicationMenuLocalizer {
             msgSend,
             FunctionDescriptor.ofVoid(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS),
         )
-        private val dispatchSync = linker.downcallHandle(
-            lookup.findOrThrow("dispatch_sync_f"),
+        private val dispatchAsync = linker.downcallHandle(
+            lookup.findOrThrow("dispatch_async_f"),
             FunctionDescriptor.ofVoid(ValueLayout.ADDRESS, ValueLayout.ADDRESS, ValueLayout.ADDRESS),
         )
         private val mainQueue = lookup.findOrThrow("_dispatch_main_q")
+        // The queued callback can run after scheduling returns, so its stub must remain valid.
+        private val localizationUpcall = linker.upcallStub(
+            MethodHandles.lookup().findVirtual(
+                AppKitMenu::class.java,
+                "localizeOnAppKitThread",
+                MethodType.methodType(Void.TYPE, MemorySegment::class.java),
+            ).bindTo(this),
+            FunctionDescriptor.ofVoid(ValueLayout.ADDRESS),
+            Arena.global(),
+        )
 
-        fun localizeGerman() {
-            Arena.ofShared().use { arena ->
-                val call = LocalizationCall(arena)
-                val callback = MethodHandles.lookup().findVirtual(
-                    LocalizationCall::class.java,
-                    "run",
-                    MethodType.methodType(Void.TYPE, MemorySegment::class.java),
-                ).bindTo(call)
-                val upcall = linker.upcallStub(callback, FunctionDescriptor.ofVoid(ValueLayout.ADDRESS), arena)
-                // The Swing EDT and AppKit's main thread are different threads.
-                dispatchSync.invokeExact(mainQueue, MemorySegment.NULL, upcall)
-                call.failure?.let { throw it }
+        fun scheduleGermanLocalization() {
+            // AppKit may wait for the Swing EDT during startup, so never wait for this callback on the EDT.
+            dispatchAsync.invokeExact(mainQueue, MemorySegment.NULL, localizationUpcall)
+        }
+
+        @Suppress("UNUSED_PARAMETER")
+        fun localizeOnAppKitThread(context: MemorySegment) {
+            try {
+                Arena.ofConfined().use { arena -> MenuTranslator(arena).translate() }
+            } catch (failure: Throwable) {
+                logger.warn("Could not localize the macOS application menu", failure)
             }
         }
 
-        private class LocalizationCall(private val arena: Arena) {
-            @Volatile
-            var failure: Throwable? = null
-                private set
-
-            @Suppress("UNUSED_PARAMETER")
-            fun run(context: MemorySegment) {
-                try {
-                    translateMenu()
-                } catch (error: Throwable) {
-                    failure = error
-                }
-            }
-
-            private fun translateMenu() {
+        private class MenuTranslator(private val arena: Arena) {
+            fun translate() {
                 val application = sendPointer(objcClass("NSApplication"), "sharedApplication")
                 val menuBar = sendPointer(application, "mainMenu")
                 if (menuBar == MemorySegment.NULL || sendInteger(menuBar, "numberOfItems") == 0L) {

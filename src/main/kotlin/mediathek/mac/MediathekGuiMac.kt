@@ -40,10 +40,7 @@ import java.awt.FlowLayout
 import java.awt.desktop.QuitEvent
 import java.awt.desktop.QuitResponse
 import java.lang.foreign.*
-import javax.swing.JOptionPane
-import javax.swing.JPanel
-import javax.swing.JTabbedPane
-import javax.swing.JToolBar
+import javax.swing.*
 import kotlin.time.Duration.Companion.seconds
 
 class MediathekGuiMac(daten: Daten) : MediathekGui(
@@ -180,9 +177,7 @@ private fun setupUserInterfaceForOsx(mainWindow: MainWindowQuitHost) {
         }
     }
 
-    /*logger.trace("Start localizing mac app menu...")
     SwingUtilities.invokeLater(MacApplicationMenuLocalizer::localize)
-    logger.trace("End localizing mac app menu...")*/
 
     val rootPane = ownerFrame.rootPane
     rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
