@@ -132,7 +132,12 @@ class MediathekGuiMac(daten: Daten) : MediathekGui(
                             "Sie nutzen jedoch eine MediathekView Version für Intel Prozessoren.<br/><br/>" +
                             "Um die Geschwindigkeit des Programms erheblich zu verbessern laden Sie bitte<br/>" +
                             "die passende <b>MediathekView für Apple Silicon</b> herunter.</html>"
-                    JOptionPane.showMessageDialog(this@MediathekGuiMac, msg, Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE)
+                    JOptionPane.showMessageDialog(
+                        this@MediathekGuiMac,
+                        msg,
+                        Konstanten.PROGRAMMNAME,
+                        JOptionPane.WARNING_MESSAGE
+                    )
                 }
             }
         } catch (e: Throwable) {
@@ -145,6 +150,8 @@ class MediathekGuiMac(daten: Daten) : MediathekGui(
         val logger: Logger = LogManager.getLogger()
     }
 }
+
+private val logger = LogManager.getLogger()
 
 /**
  * Setup the UI for OS X
@@ -170,7 +177,9 @@ private fun setupUserInterfaceForOsx(mainWindow: MainWindowQuitHost) {
         }
     }
 
+    logger.trace("Start localizing mac app menu...")
     SwingUtilities.invokeLater(MacApplicationMenuLocalizer::localize)
+    logger.trace("End localizing mac app menu...")
 
     val rootPane = ownerFrame.rootPane
     rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
