@@ -18,6 +18,8 @@
 
 package mediathek.daten
 
+import mediathek.i18n.UiMessages
+
 enum class DownloadType(
     val legacyId: Byte,
     val label: String,
@@ -25,6 +27,13 @@ enum class DownloadType(
     DIRECT(1, "direkter Download"),
     PROGRAM(2, "Programm"),
     ;
+
+    /** Translated display text; the legacy label remains stable for existing download data. */
+    val displayLabel: String
+        get() = UiMessages.text(when (this) {
+            DIRECT -> "download.type.direct"
+            PROGRAM -> "download.type.program"
+        })
 
     companion object {
         private val byLegacyId = entries.associateBy { it.legacyId }

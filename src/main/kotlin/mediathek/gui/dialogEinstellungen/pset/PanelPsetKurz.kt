@@ -22,6 +22,7 @@ import mediathek.daten.DatenProg
 import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
 import mediathek.gui.messages.ProgramSetChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.MessageBus
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.TextCopyPasteHandler
@@ -221,7 +222,7 @@ class PanelPsetKurz(
         constraints.weightx = 0.0
         JButton().also { button ->
             button.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg")
-            button.toolTipText = "Programm auswählen"
+            button.toolTipText = UiMessages.text("settings.pset.chooseProgram")
             button.addActionListener {
                 choosePath(file = true, initialPath = textField.text)?.let { selectedFile ->
                     textField.text = selectedFile.absolutePath
@@ -362,8 +363,8 @@ class PanelPsetKurz(
     }
 
     companion object {
-        private const val CHOOSER_TITLE = "Film speichern"
-        private const val PROGRAM_PATH_LABEL = "Programmpfad: "
+        private val CHOOSER_TITLE get() = UiMessages.text("settings.pset.saveFilm")
+        private val PROGRAM_PATH_LABEL get() = UiMessages.text("settings.pset.programPath")
         private val PROGRAM_PATH_INSETS = Insets(4, 10, 4, 10)
     }
 }

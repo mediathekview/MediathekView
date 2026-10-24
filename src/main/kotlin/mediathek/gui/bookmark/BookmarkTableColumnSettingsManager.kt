@@ -20,6 +20,7 @@ package mediathek.gui.bookmark
 
 import ca.odell.glazedlists.swing.TableComparatorChooser
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.swing.IconizedCheckBoxMenuItem
 import mediathek.tool.JsonStringUtils
@@ -58,16 +59,19 @@ open class BookmarkTableColumnSettingsManager<E : Any>(
         }
     }
 
-    private fun createMenuItem(columnName: String, visible: Boolean): JCheckBoxMenuItem =
-        when {
+    /** Uses stable column identifiers for icon selection and translated headings for visible text. */
+    private fun createMenuItem(column: TableColumn, visible: Boolean): JCheckBoxMenuItem {
+        val columnName = column.identifier.toString()
+        return when {
             columnName.equals("Gesehen", ignoreCase = true) ->
                 IconizedCheckBoxMenuItem(IconUtils.of(MaterialDesignE.EYE), visible)
 
             columnName.equals("Notiz", ignoreCase = true) ->
                 IconizedCheckBoxMenuItem(IconUtils.of(MaterialDesignN.NOTE), visible)
 
-            else -> JCheckBoxMenuItem(columnName, visible)
-        }
+            else -> JCheckBoxMenuItem(column.headerValue.toString(), visible)
+        }.apply { toolTipText = column.headerValue.toString() }
+    }
 
     fun load() {
         var recoveredAllHiddenColumns = false
@@ -147,7 +151,7 @@ open class BookmarkTableColumnSettingsManager<E : Any>(
             val columnName = column.identifier.toString()
             val columnSetting = lastSettings.firstOrNull { it.id == columnName }
             val visible = columnSetting?.visible ?: true
-            val item = createMenuItem(columnName, visible)
+            val item = createMenuItem(column, visible)
             item.addActionListener {
                 val columnModel: TableColumnModel = table.columnModel
                 columnSetting?.visible = item.isSelected
@@ -168,7 +172,7 @@ open class BookmarkTableColumnSettingsManager<E : Any>(
             popup.add(item)
         }
         popup.addSeparator()
-        val resetSortingItem = JMenuItem("Sortierschlüssel zurücksetzen")
+        val resetSortingItem = JMenuItem(UiMessages.text("bookmark.columns.reset"))
         resetSortingItem.addActionListener { comparatorChooser?.clearComparator() }
         popup.add(resetSortingItem)
 

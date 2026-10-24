@@ -5,6 +5,7 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
+import mediathek.i18n.UiMessages
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
 import okhttp3.FormBody
@@ -71,28 +72,28 @@ class JDownloadHelper(
     }
 
     fun installContextMenu(film: DatenFilm, jPopupMenu: JPopupMenu) {
-        val mJD = JMenu("Mit JDownloader herunterladen")
+        val mJD = JMenu(UiMessages.text("film.context.JDownloader"))
         val uNormal = film.urlNormalQuality.toHttpUrl()
         val uHq = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).toHttpUrl()
         val uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW).toHttpUrl()
 
         if (film.isHighQuality) {
-            val miHq = JMenuItem("in bester Qualität")
+            val miHq = JMenuItem(UiMessages.text("film.context.downloadQuality.high"))
             miHq.addActionListener { downloadUrl(uHq, film) }
             mJD.add(miHq)
         }
-        val miNormal = JMenuItem("in normaler Qualität")
+        val miNormal = JMenuItem(UiMessages.text("film.context.downloadQuality.normal"))
         miNormal.addActionListener { downloadUrl(uNormal, film) }
         mJD.add(miNormal)
 
         if (uLow !== uNormal) {
-            val miLow = JMenuItem("in niedriger Qualität")
+            val miLow = JMenuItem(UiMessages.text("film.context.downloadQuality.low"))
             miLow.addActionListener { downloadUrl(uLow, film) }
             mJD.add(miLow)
         }
         jPopupMenu.add(mJD)
 
-        val miWebsiteToJd = JMenuItem("Webseiten-URL an JDownloader übergeben")
+        val miWebsiteToJd = JMenuItem(UiMessages.text("film.context.jdownloaderWebsite"))
         miWebsiteToJd.addActionListener {
             try {
                 val webSiteUrl = film.websiteUrl.toHttpUrl()

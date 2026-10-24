@@ -20,6 +20,7 @@ package mediathek.gui.dialog
 
 import mediathek.config.Konstanten
 import mediathek.daten.ProgramSetRepository
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetFile
 import mediathek.tool.SVGIconUtilities
@@ -40,29 +41,13 @@ class DialogNewSet(
 
     init {
         setLocationRelativeTo(parent)
-        title = "Das Standardset wurde aktualisiert"
-        jTextArea3.text = """
-
-                   Es gibt ein neues Standardset der Videoplayer
-                   für den Download und das Abspielen der Filme.
-        """.trimIndent()
+        title = UiMessages.text("sets.update.title")
+        jTextArea3.text = UiMessages.text("sets.update.intro")
         jCheckBoxMorgen.isSelected = true
 
-        jTextArea1.text = """
+        jTextArea1.text = UiMessages.text("sets.update.add")
 
-                   Die bestehenden Einstellungen werden nicht verändert.
-                   Das neue Set wird nur angefügt und muss dann erst noch in den
-                   "Datei->Einstellungen->Set bearbeiten"
-                   aktiviert werden.
-        """.trimIndent()
-
-        jTextArea2.text = """
-                Es werden alle Programmsets (auch eigene)
-                gelöscht und die neuen Standardsets wieder angelegt.
-
-                (Wenn Sie die Einstellungen nicht verändert haben
-                 ist das die Empfehlung)
-        """.trimIndent().prependIndent("   ")
+        jTextArea2.text = UiMessages.text("sets.update.replace")
 
         jButtonAdd.addActionListener {
             selectedAction = DialogNewSetAction.ADD
@@ -75,8 +60,8 @@ class DialogNewSet(
         jButtonReplace.addActionListener {
             val result = JOptionPane.showConfirmDialog(
                 parent,
-                "Alle Sets zurücksetzen?",
-                "Alle Sets zurücksetzen!",
+                UiMessages.text("sets.update.confirm"),
+                UiMessages.text("sets.update.reset"),
                 JOptionPane.YES_NO_OPTION,
             )
             if (result == JOptionPane.OK_OPTION) {

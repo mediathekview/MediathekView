@@ -6,6 +6,7 @@ import mediathek.daten.ProgramSetRepository
 import mediathek.daten.abo.AboServices
 import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmListLoadCoordinator
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.ReplacementRules
 import java.awt.BorderLayout
@@ -58,7 +59,7 @@ class ManageAboDialog(
     }
 
     init {
-        title = "Abos verwalten"
+        title = UiMessages.text("abo.manage.title")
         defaultCloseOperation = DISPOSE_ON_CLOSE
         isResizable = true
         isModal = true

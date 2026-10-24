@@ -19,6 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.gui.tabs.tab_downloads.GuiDownloads
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import java.awt.event.ActionEvent
@@ -28,8 +29,8 @@ class CleanupDownloadListAction(
     private val guiDownloads: GuiDownloads,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Liste säubern")
-        putValue(SHORT_DESCRIPTION, "Liste säubern")
+        putValue(NAME, UiMessages.text("action.cleanupDownloadListAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.cleanupDownloadListAction.description"))
         putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.ERASER))
     }
 

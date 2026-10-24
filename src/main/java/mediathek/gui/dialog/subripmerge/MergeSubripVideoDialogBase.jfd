@@ -2,12 +2,19 @@ JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.4" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.MergeSubripVideoDialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"defaultCloseOperation": 2
 			"modal": true
-			"title": "Untertitel zu Video hinzufügen"
+			"title": new FormMessage( null, "dialog.MergeSubripVideoDialog.this.title" )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -24,7 +31,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
-						"text": "Untertitel-Datei:"
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.label1.text" )
 						"horizontalAlignment": 4
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
@@ -32,21 +39,21 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfSubripFilePath"
-						"toolTipText": "Pfad zur Untertiteldatei im Subrip Text Format (.srt)"
+						"toolTipText": new FormMessage( null, "dialog.MergeSubripVideoDialog.tfSubripFilePath.toolTipText" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectInputSubrip"
-						"text": "..."
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.btnSelectInputSubrip.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
-						"text": "Video-Datei:"
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.label2.text" )
 						"horizontalAlignment": 4
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
@@ -54,21 +61,21 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "tfVideoFilePath"
-						"toolTipText": "Pfad zu einer von ffmpeg unterstützten Videodatei als Eingabemedium"
+						"toolTipText": new FormMessage( null, "dialog.MergeSubripVideoDialog.tfVideoFilePath.toolTipText" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectInputVideo"
-						"text": "..."
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.btnSelectInputVideo.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label3"
-						"text": "Sprache:"
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.label3.text" )
 						"horizontalAlignment": 4
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
@@ -76,7 +83,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "cbLanguage"
-						"toolTipText": "Sprache der Untertitel"
+						"toolTipText": new FormMessage( null, "dialog.MergeSubripVideoDialog.cbLanguage.toolTipText" )
 						auxiliary() {
 							"JavaCodeGenerator.typeParameters": "String"
 							"JavaCodeGenerator.variableModifiers": 4
@@ -84,7 +91,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label4"
-						"text": "Zieldatei:"
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.label4.text" )
 						"horizontalAlignment": 4
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
@@ -98,14 +105,14 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnSelectVideoOutputPath"
-						"text": "..."
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.btnSelectVideoOutputPath.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "org.jdesktop.swingx.JXBusyLabel" ) {
 						name: "busyLabel"
-						"text": "Führe Video und Untertitel zusammen"
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.busyLabel.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -126,7 +133,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnCancel"
-						"text": "Abbrechen"
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.btnCancel.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -135,7 +142,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnClose"
-						"text": "Zusammenführen"
+						"text": new FormMessage( null, "dialog.MergeSubripVideoDialog.btnClose.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableName": "btnMerge"
 							"JavaCodeGenerator.variableModifiers": 4

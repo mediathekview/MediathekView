@@ -25,6 +25,7 @@ import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.dialog.DialogEditAbo
+import mediathek.i18n.UiMessages
 import mediathek.tool.FilenameUtils
 import mediathek.tool.ReplacementRules
 import mediathek.tool.SVGIconUtilities
@@ -67,8 +68,8 @@ class CreateNewAboAction(
         if (abos.list.existsAlready(datenAbo)) {
             JOptionPane.showMessageDialog(
                 parent,
-                "Abo existiert bereits",
-                "Abo anlegen",
+                UiMessages.text("abo.create.exists"),
+                UiMessages.text("abo.create.title"),
                 JOptionPane.INFORMATION_MESSAGE,
             )
             return
@@ -107,8 +108,8 @@ class CreateNewAboAction(
     }
 
     init {
-        putValue(NAME, "Abo anlegen...")
-        putValue(SHORT_DESCRIPTION, "Abo anlegen")
+        putValue(NAME, UiMessages.text("action.createNewAboAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.createNewAboAction.description"))
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/plus.svg"))
     }
 }

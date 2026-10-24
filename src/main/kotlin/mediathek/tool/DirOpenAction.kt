@@ -3,6 +3,7 @@ package mediathek.tool
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen
 import mediathek.gui.messages.ProgramLocationChangedEvent
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import java.awt.Desktop
 import java.awt.Frame
@@ -63,8 +64,8 @@ object DirOpenAction {
                 MessageBus.messageBus.publishAsync(ProgramLocationChangedEvent())
                 JOptionPane.showMessageDialog(
                     parent,
-                    "Kann den Dateimanager nicht öffnen!",
-                    "Fehler",
+                    UiMessages.text("directory.error"),
+                    UiMessages.text("directory.errorTitle"),
                     JOptionPane.ERROR_MESSAGE,
                 )
             }
@@ -77,8 +78,8 @@ object DirOpenAction {
             return configuredProgram
         }
 
-        val text = "Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden. Dateimanager selbst auswählen."
-        return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Dateimanager suchen", text).orElse("") ?: ""
+        val text = UiMessages.text("directory.missing")
+        return DialogProgrammOrdnerOeffnen.showDialog(parent, "", UiMessages.text("directory.choose"), text).orElse("") ?: ""
     }
 
     private fun configuredDirectoryOpener(): String =

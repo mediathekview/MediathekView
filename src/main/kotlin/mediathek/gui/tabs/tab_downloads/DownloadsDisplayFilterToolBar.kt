@@ -18,8 +18,12 @@
 
 package mediathek.gui.tabs.tab_downloads
 
+import mediathek.i18n.UiMessages
+import java.awt.Component
+import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
 import javax.swing.JLabel
+import javax.swing.JList
 import javax.swing.JToolBar
 
 class DownloadsDisplayFilterToolBar : JToolBar() {
@@ -28,21 +32,44 @@ class DownloadsDisplayFilterToolBar : JToolBar() {
 
     init {
         isFloatable = true
-        name = "Anzeige"
+        name = UiMessages.text("downloads.filter.toolbar")
         setDownloadsToolBarId("display-filter")
 
-        displayCategoriesComboBox.putClientProperty("JComponent.roundRect", true)
-        displayCategoriesComboBox.prototypeDisplayValue = "nur Downloads"
-        displayCategoriesComboBox.maximumSize = displayCategoriesComboBox.preferredSize
+        configureFilterComboBox(displayCategoriesComboBox, mapOf(
+            DisplayFilter.ALL to "downloads.filter.all",
+            DisplayFilter.DOWNLOADS_ONLY to "downloads.filter.manual",
+            DisplayFilter.ABOS_ONLY to "downloads.filter.subscriptions",
+        ))
+        configureFilterComboBox(viewComboBox, mapOf(
+            ViewFilter.ALL to "downloads.filter.all",
+            ViewFilter.NOT_STARTED to "downloads.filter.notStarted",
+            ViewFilter.STARTED to "downloads.filter.started",
+            ViewFilter.WAITING to "downloads.filter.waiting",
+            ViewFilter.RUN_ONLY to "downloads.filter.running",
+            ViewFilter.FINISHED_ONLY to "downloads.filter.finished",
+        ))
 
-        viewComboBox.putClientProperty("JComponent.roundRect", true)
-        viewComboBox.prototypeDisplayValue = "nur abgeschlossene"
-        viewComboBox.maximumSize = viewComboBox.preferredSize
-
-        add(JLabel("Typ:"))
+        add(JLabel(UiMessages.text("downloads.filter.type")))
         add(displayCategoriesComboBox)
         addSeparator()
-        add(JLabel("Status:"))
+        add(JLabel(UiMessages.text("downloads.filter.status")))
         add(viewComboBox)
+    }
+
+    /** Translates displayed options while retaining the legacy values used by persisted filters. */
+    private fun configureFilterComboBox(comboBox: JComboBox<String>, labels: Map<String, String>) {
+        comboBox.putClientProperty("JComponent.roundRect", true)
+        comboBox.renderer = object : DefaultListCellRenderer() {
+            override fun getListCellRendererComponent(
+                list: JList<*>, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean,
+            ): Component {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
+                text = labels[value]?.let(UiMessages::text) ?: value?.toString().orEmpty()
+                return this
+            }
+        }
+        val metrics = comboBox.getFontMetrics(comboBox.font)
+        comboBox.prototypeDisplayValue = labels.maxBy { metrics.stringWidth(UiMessages.text(it.value)) }.key
+        comboBox.maximumSize = comboBox.preferredSize
     }
 }

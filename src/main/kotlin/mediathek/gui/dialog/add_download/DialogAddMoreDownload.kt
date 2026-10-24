@@ -21,6 +21,7 @@ package mediathek.gui.dialog.add_download
 import mediathek.config.MVColor
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenPset
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FileDialogs
 import mediathek.tool.FilenameUtils
@@ -79,7 +80,7 @@ class DialogAddMoreDownload(
             val initialDirectory = jComboBoxPath.selectedItem?.toString().orEmpty()
             val selectedDirectory = FileDialogs.chooseDirectoryLocation(
                 parent,
-                "Film speichern",
+                UiMessages.text("download.batch.chooseFolder"),
                 initialDirectory,
             )
             if (selectedDirectory != null) {

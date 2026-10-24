@@ -23,6 +23,7 @@ public class PanelEinstellungenErweitertBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jPanel6 = new JPanel();
         jCheckBoxAboSuchen = new JCheckBox();
         jCheckBoxDownloadSofortStarten = new JCheckBox();
@@ -57,7 +58,7 @@ public class PanelEinstellungenErweitertBase extends JPanel {
 
         //======== jPanel6 ========
         {
-            jPanel6.setBorder(new TitledBorder("Nach dem Neuladen der Filmliste"));
+            jPanel6.setBorder(new TitledBorder(bundle.getString("settings.advanced.jPanel6.borderTitle")));
             jPanel6.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
@@ -69,20 +70,20 @@ public class PanelEinstellungenErweitertBase extends JPanel {
                     .fill()));
 
             //---- jCheckBoxAboSuchen ----
-            jCheckBoxAboSuchen.setText("Abos automatisch suchen");
-            jCheckBoxAboSuchen.setToolTipText("<html>Nach dem Neuladen einer Filmliste wird dann sofort nach neuen Abos gesucht.<br>Ansonsten muss man im Tab Download auf <i>Downloadliste aktualisieren</i> klicken.</html>");
+            jCheckBoxAboSuchen.setText(bundle.getString("settings.advanced.jCheckBoxAboSuchen.text"));
+            jCheckBoxAboSuchen.setToolTipText(bundle.getString("settings.advanced.jCheckBoxAboSuchen.toolTipText"));
             jPanel6.add(jCheckBoxAboSuchen, new CC().cell(0, 0));
 
             //---- jCheckBoxDownloadSofortStarten ----
-            jCheckBoxDownloadSofortStarten.setText("Downloads aus Abos sofort starten");
-            jCheckBoxDownloadSofortStarten.setToolTipText("<html>Neu angelegte Downloads (aus Abos) werden sofort gestartet.<br>Ansonsten muss man sie selbst starten.</html>");
+            jCheckBoxDownloadSofortStarten.setText(bundle.getString("settings.advanced.jCheckBoxDownloadSofortStarten.text"));
+            jCheckBoxDownloadSofortStarten.setToolTipText(bundle.getString("settings.advanced.jCheckBoxDownloadSofortStarten.toolTipText"));
             jPanel6.add(jCheckBoxDownloadSofortStarten, new CC().cell(0, 1));
         }
         add(jPanel6);
 
         //======== jPanel2 ========
         {
-            jPanel2.setBorder(new TitledBorder("Tab Downloads"));
+            jPanel2.setBorder(new TitledBorder(bundle.getString("settings.advanced.jPanel2.borderTitle")));
             jPanel2.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
@@ -97,37 +98,37 @@ public class PanelEinstellungenErweitertBase extends JPanel {
                     .fill()));
 
             //---- jTextFieldProgrammDateimanager ----
-            jTextFieldProgrammDateimanager.setToolTipText("<html>Im Tab <i>Downloads</i> kann man mit der rechten Maustaste den Downloadordner (Zielordner) des jeweiligen Downloads \u00f6ffnen.<br>Normalerweise wird der Dateimanager des Betriebssystems gefunden und ge\u00f6ffnet.<br><br>Klappt das nicht, kann hier ein Programm daf\u00fcr angegeben werden.</html>");
+            jTextFieldProgrammDateimanager.setToolTipText(bundle.getString("settings.advanced.jTextFieldProgrammDateimanager.toolTipText"));
             jPanel2.add(jTextFieldProgrammDateimanager, new CC().cell(0, 1));
 
             //---- jButtonProgrammDateimanager ----
             jButtonProgrammDateimanager.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-            jButtonProgrammDateimanager.setToolTipText("Programm ausw\u00e4hlen");
+            jButtonProgrammDateimanager.setToolTipText(bundle.getString("settings.advanced.jButtonProgrammDateimanager.toolTipText"));
             jPanel2.add(jButtonProgrammDateimanager, new CC().cell(1, 1));
 
             //---- jLabel1 ----
-            jLabel1.setText("Datei-Manager zum \u00d6ffnen des Downloadordners:");
+            jLabel1.setText(bundle.getString("settings.advanced.jLabel1.text"));
             jPanel2.add(jLabel1, new CC().cell(0, 0, 2, 1));
 
             //---- jLabel2 ----
-            jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme:");
+            jLabel2.setText(bundle.getString("settings.advanced.jLabel2.text"));
             jPanel2.add(jLabel2, new CC().cell(0, 2, 2, 1));
 
             //---- jTextFieldVideoplayer ----
-            jTextFieldVideoplayer.setToolTipText("<html>Im Tab <i>Downloads</i> kann man den gespeicherten Film in einem Videoplayer \u00f6ffnen.<br>Normalerweise wird der Videoplayer des Betriebssystems gefunden und ge\u00f6ffnet.<br>Klappt das nicht, kann hier ein Programm als Alternative angegeben werden.</html>");
+            jTextFieldVideoplayer.setToolTipText(bundle.getString("settings.advanced.jTextFieldVideoplayer.toolTipText"));
             jPanel2.add(jTextFieldVideoplayer, new CC().cell(0, 3));
 
             //---- jButtonProgrammVideoplayer ----
             jButtonProgrammVideoplayer.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-            jButtonProgrammVideoplayer.setToolTipText("Programm ausw\u00e4hlen");
+            jButtonProgrammVideoplayer.setToolTipText(bundle.getString("settings.advanced.jButtonProgrammVideoplayer.toolTipText"));
             jPanel2.add(jButtonProgrammVideoplayer, new CC().cell(1, 3));
         }
         add(jPanel2);
 
         //======== jPanel4 ========
         {
-            jPanel4.setBorder(new TitledBorder("Webbrowser zum \u00d6ffnen von URLs"));
-            jPanel4.setToolTipText("<html>Wenn das Programm versucht, einen Link zu \u00f6ffnen und die Standardanwendung nicht startet, kann damit ein Programm ausgew\u00e4hlt und fest zugeordnet werden.</html>");
+            jPanel4.setBorder(new TitledBorder(bundle.getString("settings.advanced.jPanel4.borderTitle")));
+            jPanel4.setToolTipText(bundle.getString("settings.advanced.jPanel4.toolTipText"));
             jPanel4.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
@@ -141,14 +142,14 @@ public class PanelEinstellungenErweitertBase extends JPanel {
 
             //---- jButtonProgrammUrl ----
             jButtonProgrammUrl.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-            jButtonProgrammUrl.setToolTipText("Programm ausw\u00e4hlen");
+            jButtonProgrammUrl.setToolTipText(bundle.getString("settings.advanced.jButtonProgrammUrl.toolTipText"));
             jPanel4.add(jButtonProgrammUrl, new CC().cell(1, 0));
         }
         add(jPanel4);
 
         //======== jPanelJDownloader ========
         {
-            jPanelJDownloader.setBorder(new TitledBorder("JDownloader"));
+            jPanelJDownloader.setBorder(new TitledBorder(bundle.getString("settings.advanced.jPanelJDownloader.borderTitle")));
             jPanelJDownloader.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
@@ -161,18 +162,18 @@ public class PanelEinstellungenErweitertBase extends JPanel {
                     .fill()));
 
             //---- label1 ----
-            label1.setText("JDownloader-URL:");
+            label1.setText(bundle.getString("settings.advanced.label1.text"));
             jPanelJDownloader.add(label1, new CC().cell(0, 0, 2, 1));
 
             //---- jTextFieldJDownloaderUrl ----
-            jTextFieldJDownloaderUrl.setToolTipText("<html>Wenn jDownloader nicht auf dem lokalen Host installiert ist oder unter einem anderen Port reagieren soll, hier bitte angeben.<br>Default: http://127.0.0.1:9666/flash/add</html>");
+            jTextFieldJDownloaderUrl.setToolTipText(bundle.getString("settings.advanced.jTextFieldJDownloaderUrl.toolTipText"));
             jPanelJDownloader.add(jTextFieldJDownloaderUrl, new CC().cell(0, 1));
         }
         add(jPanelJDownloader);
 
         //======== jPanelPyLoad ========
         {
-            jPanelPyLoad.setBorder(new TitledBorder("pyLoad"));
+            jPanelPyLoad.setBorder(new TitledBorder(bundle.getString("settings.advanced.jPanelPyLoad.borderTitle")));
             jPanelPyLoad.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
@@ -189,20 +190,20 @@ public class PanelEinstellungenErweitertBase extends JPanel {
                     .fill()));
 
             //---- label2 ----
-            label2.setText("pyLoad-URL:");
+            label2.setText(bundle.getString("settings.advanced.label2.text"));
             jPanelPyLoad.add(label2, new CC().cell(0, 0, 2, 1));
 
             //---- jTextFieldPyLoadUrl ----
-            jTextFieldPyLoadUrl.setToolTipText("PyLoad-URL komplett angeben (z.B.: http://127.0.0.1:8000)");
+            jTextFieldPyLoadUrl.setToolTipText(bundle.getString("settings.advanced.jTextFieldPyLoadUrl.toolTipText"));
             jPanelPyLoad.add(jTextFieldPyLoadUrl, new CC().cell(0, 1));
 
             //---- label3 ----
-            label3.setText("Benutzer:");
+            label3.setText(bundle.getString("settings.advanced.label3.text"));
             jPanelPyLoad.add(label3, new CC().cell(0, 2, 2, 1));
             jPanelPyLoad.add(jTextFieldPyLoadUser, new CC().cell(0, 3));
 
             //---- label4 ----
-            label4.setText("Passwort:");
+            label4.setText(bundle.getString("settings.advanced.label4.text"));
             jPanelPyLoad.add(label4, new CC().cell(0, 4, 2, 1));
             jPanelPyLoad.add(jPasswordFieldPyLoadPassword, new CC().cell(0, 5));
         }
@@ -210,8 +211,8 @@ public class PanelEinstellungenErweitertBase extends JPanel {
 
         //======== pnlLinuxShutdownCommand ========
         {
-            pnlLinuxShutdownCommand.setBorder(new TitledBorder("Linux: Aufruf zum Shutdown"));
-            pnlLinuxShutdownCommand.setToolTipText("<html>Unter Linux wird das ausgew\u00e4hlte Programm/Script ausgef\u00fchrt um den Recher herunter zu fahren.<br>M\u00f6gliche Aufrufe sind:<br>\n<ul>\n<li>systemctl poweroff</li>\n<li>poweroff</li>\n<li>sudo shutdown -P now</li>\n<li><b>shutdown -h now</b></li>\n</ul>\n</html>");
+            pnlLinuxShutdownCommand.setBorder(new TitledBorder(bundle.getString("settings.advanced.pnlLinuxShutdownCommand.borderTitle")));
+            pnlLinuxShutdownCommand.setToolTipText(bundle.getString("settings.advanced.pnlLinuxShutdownCommand.toolTipText"));
             pnlLinuxShutdownCommand.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns
@@ -224,7 +225,7 @@ public class PanelEinstellungenErweitertBase extends JPanel {
 
             //---- jButtonProgrammShutdown ----
             jButtonProgrammShutdown.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-            jButtonProgrammShutdown.setToolTipText("Programm/Script ausw\u00e4hlen");
+            jButtonProgrammShutdown.setToolTipText(bundle.getString("settings.advanced.jButtonProgrammShutdown.toolTipText"));
             pnlLinuxShutdownCommand.add(jButtonProgrammShutdown, new CC().cell(1, 0));
 
             //---- jTextFieldProgrammShutdown ----
@@ -235,7 +236,7 @@ public class PanelEinstellungenErweitertBase extends JPanel {
 
         //======== pnlMacShutdownBehaviour ========
         {
-            pnlMacShutdownBehaviour.setBorder(new TitledBorder("macOS: Standardverhalten des Hilfsprogramms"));
+            pnlMacShutdownBehaviour.setBorder(new TitledBorder(bundle.getString("settings.advanced.pnlMacShutdownBehaviour.borderTitle")));
             pnlMacShutdownBehaviour.setLayout(new MigLayout(
                 new LC().insets("5").hideMode(3).gridGap("5", "5"),
                 // columns

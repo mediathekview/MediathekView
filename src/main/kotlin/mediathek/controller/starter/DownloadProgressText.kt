@@ -18,6 +18,7 @@
 
 package mediathek.controller.starter
 
+import mediathek.i18n.UiMessages
 object DownloadProgressText {
     fun getTextProgress(isDownloadManager: Boolean, state: DownloadRunState?): String {
         if (state == null) {
@@ -26,16 +27,16 @@ object DownloadProgressText {
 
         return when (state.percent) {
             DownloadRunState.PROGRESS_NICHT_GESTARTET -> ""
-            DownloadRunState.PROGRESS_WARTEN -> if (isDownloadManager) "extern" else "warten"
-            DownloadRunState.PROGRESS_GESTARTET -> if (isDownloadManager) "extern:gesendet" else "gestartet"
+            DownloadRunState.PROGRESS_WARTEN -> if (isDownloadManager) UiMessages.text("downloads.progress.external") else UiMessages.text("downloads.progress.waiting")
+            DownloadRunState.PROGRESS_GESTARTET -> if (isDownloadManager) UiMessages.text("downloads.progress.sent") else UiMessages.text("downloads.progress.started")
             DownloadRunState.PROGRESS_FERTIG -> if (state.isError) {
-                if (isDownloadManager) "extern:fehler" else "fehlerhaft"
+                if (isDownloadManager) UiMessages.text("downloads.progress.externalFailed") else UiMessages.text("downloads.progress.failed")
             } else {
-                if (isDownloadManager) "extern:fertig" else "fertig"
+                if (isDownloadManager) UiMessages.text("downloads.progress.externalFinished") else UiMessages.text("downloads.progress.finished")
             }
 
             else -> when {
-                isDownloadManager -> "extern"
+                isDownloadManager -> UiMessages.text("downloads.progress.external")
                 state.percent in 2 until DownloadRunState.PROGRESS_FERTIG -> "${state.percent / 10.0}%"
                 else -> ""
             }

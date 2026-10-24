@@ -21,8 +21,9 @@ package mediathek.gui.dialogEinstellungen
 import mediathek.config.application.ApplicationConfiguration
 import javax.swing.JSpinner
 import javax.swing.SpinnerListModel
+import mediathek.i18n.UiMessages
 
-private const val ALL_DAYS_TEXT = " Alle "
+private val ALL_DAYS_TEXT get() = UiMessages.text("settings.days.all")
 private val DAY_OPTIONS = listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 25, 30, 60, 90, 180, 365)
 private val DAY_OPTION_TEXTS = DAY_OPTIONS.map(::toDisplayText).toTypedArray()
 

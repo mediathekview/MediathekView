@@ -8,6 +8,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+/** Settings controls using the selected interface-language bundle. */
 public class PanelPsetImportBase extends JPanel {
     public PanelPsetImportBase() {
         initComponents();
@@ -21,6 +22,7 @@ public class PanelPsetImportBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jTabbedPane1 = new JTabbedPane();
         var jPanel3 = new JPanel();
         var jScrollPane2 = new JScrollPane();
@@ -75,19 +77,19 @@ public class PanelPsetImportBase extends JPanel {
                     jPanel4.setBorder(new EtchedBorder());
 
                     //---- jLabel1 ----
-                    jLabel1.setText("Name:");
+                    jLabel1.setText(bundle.getString("settings.PanelPsetImport.jLabel1.text"));
 
                     //---- jTextFieldName ----
                     jTextFieldName.setEditable(false);
 
                     //---- jLabel2 ----
-                    jLabel2.setText("URL:");
+                    jLabel2.setText(bundle.getString("settings.PanelPsetImport.jLabel2.text"));
 
                     //---- jTextFieldUrl ----
                     jTextFieldUrl.setEditable(false);
 
                     //---- jLabel3 ----
-                    jLabel3.setText("Beschreibung:");
+                    jLabel3.setText(bundle.getString("settings.PanelPsetImport.jLabel3.text"));
 
                     //======== jScrollPane3 ========
                     {
@@ -100,10 +102,10 @@ public class PanelPsetImportBase extends JPanel {
                     }
 
                     //---- jButtonImportVorlage ----
-                    jButtonImportVorlage.setText("Set importieren");
+                    jButtonImportVorlage.setText(bundle.getString("settings.PanelPsetImport.jButtonImportVorlage.text"));
 
                     //---- jLabel6 ----
-                    jLabel6.setText("Betriebssystem:");
+                    jLabel6.setText(bundle.getString("settings.PanelPsetImport.jLabel6.text"));
 
                     //---- jTextFieldBs ----
                     jTextFieldBs.setEditable(false);
@@ -164,13 +166,13 @@ public class PanelPsetImportBase extends JPanel {
 
                 //---- jButtonAktualisieren ----
                 jButtonAktualisieren.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png")));
-                jButtonAktualisieren.setToolTipText("Neu laden");
+                jButtonAktualisieren.setToolTipText(bundle.getString("settings.PanelPsetImport.jButtonAktualisieren.toolTipText"));
 
                 //---- jLabel4 ----
-                jLabel4.setText("Vorlagen von der Website laden:");
+                jLabel4.setText(bundle.getString("settings.PanelPsetImport.jLabel4.text"));
 
                 //---- jLabel5 ----
-                jLabel5.setText("Betriebssystem:");
+                jLabel5.setText(bundle.getString("settings.PanelPsetImport.jLabel5.text"));
 
                 //---- jComboBoxBs ----
                 jComboBoxBs.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -212,13 +214,13 @@ public class PanelPsetImportBase extends JPanel {
                             .addContainerGap())
                 );
             }
-            jTabbedPane1.addTab("Setvorlagen", jPanel3);
+            jTabbedPane1.addTab(bundle.getString("settings.PanelPsetImport.jComboBoxBs.title"), jPanel3);
 
             //======== jPanel5 ========
             {
 
                 //---- jButtonImportStandard ----
-                jButtonImportStandard.setText("Set anlegen");
+                jButtonImportStandard.setText(bundle.getString("settings.PanelPsetImport.jButtonImportStandard.text"));
 
                 //======== jScrollPane4 ========
                 {
@@ -228,7 +230,7 @@ public class PanelPsetImportBase extends JPanel {
                     jTextArea1.setBackground(UIManager.getColor("Panel.background"));
                     jTextArea1.setColumns(20);
                     jTextArea1.setRows(5);
-                    jTextArea1.setText("Die Standardsets, die beim ersten Programmstart\nangelegt wurden, nochmals anlegen.\n\nDie bestehenden Sets bleiben unver\u00e4ndert erhalten,\nsollten jedoch vorher unter \"Set bearbeiten\" umbenannt\nwerden, z.B. von \"Speichern\" zu \"Speichern alt\".\n\nSoll aber der Ursprungszustand wieder hergestellt werden,\nm\u00fcssen vorher alle bestehenden Sets gel\u00f6scht werden.");
+                    jTextArea1.setText(bundle.getString("settings.PanelPsetImport.jTextArea1.text"));
                     jTextArea1.setMargin(new Insets(5, 5, 5, 5));
                     jScrollPane4.setViewportView(jTextArea1);
                 }
@@ -256,24 +258,24 @@ public class PanelPsetImportBase extends JPanel {
                             .addContainerGap(302, Short.MAX_VALUE))
                 );
             }
-            jTabbedPane1.addTab("Standardset", jPanel5);
+            jTabbedPane1.addTab(bundle.getString("settings.PanelPsetImport.jTextArea1.title"), jPanel5);
 
             //======== jPanel1 ========
             {
 
                 //======== jPanel6 ========
                 {
-                    jPanel6.setBorder(new TitledBorder("Set aus Datei importieren"));
+                    jPanel6.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetImport.jPanel6.borderTitle")));
 
                     //---- jButtonPfad ----
                     jButtonPfad.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-                    jButtonPfad.setToolTipText("URL/Datei ausw\u00e4hlen");
+                    jButtonPfad.setToolTipText(bundle.getString("settings.PanelPsetImport.jButtonPfad.toolTipText"));
 
                     //---- jButtonImportDatei ----
-                    jButtonImportDatei.setText("Set importieren");
+                    jButtonImportDatei.setText(bundle.getString("settings.PanelPsetImport.jButtonImportDatei.text"));
 
                     //---- jLabel7 ----
-                    jLabel7.setText("Datei/URL:");
+                    jLabel7.setText(bundle.getString("settings.PanelPsetImport.jLabel7.text"));
 
                     GroupLayout jPanel6Layout = new GroupLayout(jPanel6);
                     jPanel6.setLayout(jPanel6Layout);
@@ -311,7 +313,7 @@ public class PanelPsetImportBase extends JPanel {
 
                 //======== jPanel7 ========
                 {
-                    jPanel7.setBorder(new TitledBorder("Set als Text importieren"));
+                    jPanel7.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetImport.jPanel7.borderTitle")));
 
                     //---- jTextAreaImport ----
                     jTextAreaImport.setColumns(20);
@@ -319,7 +321,7 @@ public class PanelPsetImportBase extends JPanel {
                     jTextAreaImport.setBorder(new LineBorder(new Color(0x999999)));
 
                     //---- jButtonImportText ----
-                    jButtonImportText.setText("Set importieren");
+                    jButtonImportText.setText(bundle.getString("settings.PanelPsetImport.jButtonImportText.text"));
 
                     GroupLayout jPanel7Layout = new GroupLayout(jPanel7);
                     jPanel7.setLayout(jPanel7Layout);
@@ -366,7 +368,7 @@ public class PanelPsetImportBase extends JPanel {
                             .addContainerGap())
                 );
             }
-            jTabbedPane1.addTab("Set importieren", jPanel1);
+            jTabbedPane1.addTab(bundle.getString("settings.PanelPsetImport.jButtonImportText.title"), jPanel1);
         }
 
         GroupLayout layout = new GroupLayout(this);

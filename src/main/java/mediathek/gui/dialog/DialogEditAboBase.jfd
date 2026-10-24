@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "abo.dialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets dialog,hidemode 3,gap rel rel"
 			"$columnConstraints": "[grow,fill]"
@@ -10,7 +17,7 @@ new FormModel {
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
-			"title": "Neues Abo anlegen"
+			"title": new FormMessage( null, "abo.dialog.this.title" )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "jScrollPane1"
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
@@ -24,13 +31,13 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelMultiEditHeader"
-						"text": "<html><style type=\"text/css\"> p { text-align: center; }</style><p>bei allen<br />ändern</p></html>"
+						"text": new FormMessage( null, "abo.dialog.labelMultiEditHeader.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 0"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelEingeschaltet"
-						"text": "Aktiv:"
+						"text": new FormMessage( null, "abo.dialog.labelEingeschaltet.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -49,7 +56,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelDoNotStartAutomatically"
-						"text": "Nicht automatisch starten:"
+						"text": new FormMessage( null, "abo.dialog.labelDoNotStartAutomatically.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -58,7 +65,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "checkBoxDoNotStartAutomatically"
-						"toolTipText": "<html>Wenn aktiviert werden die aus diesem Abo generierten Downloads <b>nicht automatisch</b><br/> gestartet, auch wenn <i>Downloads aus Abos sofort starten</i> in den Einstellungen aktiviert ist."
+						"toolTipText": new FormMessage( null, "abo.dialog.checkBoxDoNotStartAutomatically.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 2"
 					} )
@@ -69,7 +76,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelName"
-						"text": "Name:"
+						"text": new FormMessage( null, "abo.dialog.labelName.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -83,7 +90,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelSender"
-						"text": "Sender:"
+						"text": new FormMessage( null, "abo.dialog.labelSender.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 4"
 					} )
@@ -94,7 +101,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelThema"
-						"text": "Thema:"
+						"text": new FormMessage( null, "abo.dialog.labelThema.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 5"
 					} )
@@ -105,7 +112,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelTitel"
-						"text": "Titel:"
+						"text": new FormMessage( null, "abo.dialog.labelTitel.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 6"
 					} )
@@ -116,7 +123,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelThemaTitel"
-						"text": "Thema-Titel:"
+						"text": new FormMessage( null, "abo.dialog.labelThemaTitel.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 7"
 					} )
@@ -127,7 +134,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelIrgendwo"
-						"text": "Irgendwo:"
+						"text": new FormMessage( null, "abo.dialog.labelIrgendwo.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 8"
 					} )
@@ -138,7 +145,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelMindestdauer"
-						"text": "Dauer [Min]: "
+						"text": new FormMessage( null, "abo.dialog.labelMindestdauer.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -172,7 +179,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelMin"
-						"text": "Min/Max:"
+						"text": new FormMessage( null, "abo.dialog.labelMin.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -186,13 +193,13 @@ new FormModel {
 						}
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "rbMin"
-							"text": "Mindestdauer"
+							"text": new FormMessage( null, "abo.dialog.rbMin.text" )
 						}, new FormLayoutConstraints( class java.lang.String ) {
 							"value": "North"
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "rbMax"
-							"text": "Maximaldauer"
+							"text": new FormMessage( null, "abo.dialog.rbMax.text" )
 						}, new FormLayoutConstraints( class java.lang.String ) {
 							"value": "Center"
 						} )
@@ -206,7 +213,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelZielpfad"
-						"text": "Zielpfad:"
+						"text": new FormMessage( null, "abo.dialog.labelZielpfad.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -225,7 +232,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelDownDatum"
-						"text": "Letztes Abo:"
+						"text": new FormMessage( null, "abo.dialog.labelDownDatum.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -239,7 +246,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "labelPSet"
-						"text": "Programmset:"
+						"text": new FormMessage( null, "abo.dialog.labelPSet.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -269,16 +276,16 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonBeenden"
-					"text": "Ok"
+					"text": new FormMessage( null, "abo.dialog.jButtonBeenden.text" )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonAbbrechen"
-					"text": "Abbrechen"
+					"text": new FormMessage( null, "abo.dialog.jButtonAbbrechen.text" )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonHelp"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "icons/fontawesome/circle-question.svg", 16, 16, 1.0f )
-					"toolTipText": "Hilfe anzeigen"
+					"toolTipText": new FormMessage( null, "abo.dialog.jButtonHelp.toolTipText" )
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1,alignx right,growx 0"

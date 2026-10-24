@@ -1,5 +1,6 @@
 package mediathek.gui.actions
 
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import java.awt.event.ActionEvent
@@ -13,8 +14,8 @@ class LoadFilmListAction(
     init {
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0))
         putValue(SMALL_ICON, IconUtils.windowBarSpecificToolbarIcon(FontAwesomeSolid.CLOUD_DOWNLOAD_ALT))
-        putValue(NAME, "Neue Filmliste laden...")
-        putValue(SHORT_DESCRIPTION, "Neue Filmliste laden")
+        putValue(NAME, UiMessages.text("action.loadFilmListAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.loadFilmListAction.description"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

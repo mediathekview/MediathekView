@@ -2,14 +2,21 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.AboutDialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "fill,insets 5,hidemode 3,gap 5 5"
 			"$columnConstraints": "[316,fill][fill]"
 			"$rowConstraints": "[fill][fill][fill]"
 		} ) {
 			name: "this"
-			"title": "Über dieses Programm"
+			"title": new FormMessage( null, "dialog.AboutDialog.this.title" )
 			"modal": true
 			"minimumSize": new java.awt.Dimension( 725, 470 )
 			"defaultCloseOperation": 2
@@ -34,7 +41,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label2"
-					"text": "MediathekView"
+					"text": new FormMessage( null, "dialog.AboutDialog.label2.text" )
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 35, false )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
@@ -44,7 +51,10 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "lblVersion"
-					"text": "Version"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.lblVersion.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1"
 				} )
@@ -69,7 +79,7 @@ new FormModel {
 							}
 							add( new FormComponent( "javax.swing.JTextPane" ) {
 								name: "textPane1"
-								"text": "MediathekView-Client:\nChristian Franzke (derreisende77)\n\nMediathekView-Server:\nNicklas Wiegandt (nicklas2751)\nPeter W. (pidoubleyou)\nSascha Wiegandt (thesasch)\n\nServer-Administration:\nAlexander Finkhäuser (alex1702)"
+								"text": new FormMessage( null, "dialog.AboutDialog.textPane1.text" )
 								"editable": false
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
@@ -79,7 +89,7 @@ new FormModel {
 							"value": "Center"
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "Aktive Entwickler"
+						"title": new FormMessage( null, "dialog.AboutDialog.textPane1.title" )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 						name: "panel3"
@@ -88,9 +98,12 @@ new FormModel {
 						}
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane1"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
 							add( new FormComponent( "javax.swing.JTextPane" ) {
 								name: "textPane2"
-								"text": "Gründer des Programms:\nXaver W. (xaverW)\n\nWeitere Beteiligte:\nsiedlerchr\nstyrol\nzxsd\napoleon\nhostis\npmshell\nclel\nthausherr\nklauswich"
+								"text": new FormMessage( null, "dialog.AboutDialog.textPane2.text" )
 								"editable": false
 								auxiliary() {
 									"JavaCodeGenerator.variableLocal": true
@@ -100,7 +113,7 @@ new FormModel {
 							"value": "Center"
 						} )
 					}, new FormLayoutConstraints( null ) {
-						"title": "Ehemalige Mitwirkende"
+						"title": new FormMessage( null, "dialog.AboutDialog.textPane2.title" )
 					} )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2,grow"
@@ -119,37 +132,55 @@ new FormModel {
 				}
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkHomepage"
-					"text": "Homepage"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkHomepage.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkGuiDonation"
-					"text": "Spende an den Entwickler des Programms"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkGuiDonation.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1"
 				} )
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkServerDonation"
-					"text": "Spende für den Server-Betrieb"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkServerDonation.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2"
 				} )
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkForum"
-					"text": "Hilfe-Forum"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkForum.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 3"
 				} )
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkOnlineHelp"
-					"text": "Online-Anleitung"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkOnlineHelp.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 4"
 				} )
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkFaq"
-					"text": "Frequently Asked Questions (FAQ)"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkFaq.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 5"
 				} )
@@ -167,7 +198,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label4"
-					"text": "Die Entwicklung wird unterstützt von:"
+					"text": new FormMessage( null, "dialog.AboutDialog.label4.text" )
 					"verticalAlignment": 1
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
@@ -189,14 +220,20 @@ new FormModel {
 				}
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkJetBrains"
-					"text": "JetBrains IntelliJ"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkJetBrains.text" )
 					"verticalAlignment": 1
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0,growx"
 				} )
 				add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 					name: "hyperlinkEjTechnologies"
-					"text": "ej-technologies install4j & JProfiler"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					"text": new FormMessage( null, "dialog.AboutDialog.hyperlinkEjTechnologies.text" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1,growx"
 				} )

@@ -22,6 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.CommandLineOptions
 import mediathek.daten.*
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionenProgramme
 import mediathek.tool.SVGIconUtilities
@@ -170,6 +171,11 @@ class PanelPsetImport(
     }
 
     private fun hideVersionColumnUnlessDebug() {
+        for (index in 0 until jTableVorlagen.columnModel.columnCount) {
+            val column = jTableVorlagen.columnModel.getColumn(index)
+            column.identifier = ListePsetVorlagen.PGR_COLUMN_NAMES[column.modelIndex]
+            column.headerValue = UiMessages.text("settings.template.column.${column.modelIndex}")
+        }
         if (CommandLineOptions.isDebugModeEnabled()) {
             return
         }
@@ -264,7 +270,7 @@ class PanelPsetImport(
         }
     }
 
-    private fun chooseNativeFile(): File? = FileDialog(parentComponent, "Programmset auswählen").apply {
+    private fun chooseNativeFile(): File? = FileDialog(parentComponent, UiMessages.text("settings.import.choose")).apply {
         mode = FileDialog.LOAD
         isVisible = true
     }.takeIf { chooser -> chooser.file != null }

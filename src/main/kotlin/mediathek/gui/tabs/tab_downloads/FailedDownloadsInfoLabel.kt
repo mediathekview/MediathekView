@@ -21,10 +21,11 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.controller.starter.DownloadStartInfo
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import mediathek.i18n.UiMessages
 
 class FailedDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     init {
-        toolTipText = "Anzahl der fehlerhaften Downloads"
+        toolTipText = UiMessages.text("downloads.status.FailedDownloadsInfoLabel.description")
         startInfoProperty.addStartInfoChangeListener { event ->
             SwingUtilities.invokeLater {
                 process(event.newValue as DownloadStartInfo)
@@ -33,6 +34,6 @@ class FailedDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : J
     }
 
     private fun process(info: DownloadStartInfo) {
-        text = if (info.hasValues()) "${info.error} fehlerhaft" else "0 fehlerhaft"
+        text = UiMessages.format("downloads.status.failed", if (info.hasValues()) info.error else 0)
     }
 }

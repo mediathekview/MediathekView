@@ -7,6 +7,7 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
+/** Settings controls using the selected interface-language bundle. */
 public class PanelEinstellungenColorBase extends JPanel {
     public PanelEinstellungenColorBase() {
         initComponents();
@@ -15,6 +16,7 @@ public class PanelEinstellungenColorBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         jTabbedPane1 = new JTabbedPane();
         var panelLight = new JPanel();
         var scrollPaneLight = new JScrollPane();
@@ -57,7 +59,7 @@ public class PanelEinstellungenColorBase extends JPanel {
                 }
                 panelLight.add(scrollPaneLight, new CC().cell(0, 0));
             }
-            jTabbedPane1.addTab("Hell", panelLight);
+            jTabbedPane1.addTab(bundle.getString("settings.PanelEinstellungenColor.jTableLight.value"), panelLight);
 
             //======== panelDark ========
             {
@@ -76,13 +78,13 @@ public class PanelEinstellungenColorBase extends JPanel {
                 }
                 panelDark.add(scrollPaneDark, new CC().cell(0, 0));
             }
-            jTabbedPane1.addTab("Dunkel", panelDark);
+            jTabbedPane1.addTab(bundle.getString("settings.PanelEinstellungenColor.jTableDark.value"), panelDark);
         }
         add(jTabbedPane1, new CC().cell(1, 0, 2, 1));
         add(hSpacer1, new CC().cell(1, 1));
 
         //---- jButtonReset ----
-        jButtonReset.setText("Helle Farben zur\u00fccksetzen"); //NON-NLS
+        jButtonReset.setText(bundle.getString("settings.PanelEinstellungenColor.jButtonReset.text")); //NON-NLS
         add(jButtonReset, new CC().cell(2, 1));
     }// </editor-fold>//GEN-END:initComponents
 
