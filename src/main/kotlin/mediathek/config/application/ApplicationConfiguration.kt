@@ -95,6 +95,12 @@ class ApplicationConfiguration private constructor() {
         generalConfiguration.setUserAgent(newValue)
     }
 
+    var useLruSearchHistory: Boolean
+        get() = searchConfiguration.useLruSearchHistory
+        set(value) {
+            searchConfiguration.useLruSearchHistory = value
+        }
+
     var useModernSearch: Boolean
         get() = searchConfiguration.useModernSearch
         set(value) {

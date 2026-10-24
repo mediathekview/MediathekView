@@ -22,6 +22,7 @@ import com.formdev.flatlaf.FlatClientProperties
 import com.formdev.flatlaf.icons.FlatSearchWithHistoryIcon
 import mediathek.audiothek.ui.download.CircularProgressIcon
 import mediathek.audiothek.ui.download.DownloadSummary
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.search.SearchHistoryModel
 import mediathek.gui.tabs.tab_film.EditHistoryDialog
 import mediathek.swing.IconUtils
@@ -181,7 +182,7 @@ class AudiothekToolBar : JToolBar() {
             return
         }
 
-        searchHistory.addMostRecent(normalized)
+        searchHistory.addEntry(normalized, ApplicationConfiguration.getInstance().useLruSearchHistory)
     }
 
     private fun showSearchHistoryPopup() {
@@ -213,7 +214,10 @@ class AudiothekToolBar : JToolBar() {
 
     private fun showEditHistoryDialog(menuItem: JMenuItem) {
         val owner = SwingUtilities.getWindowAncestor(this) ?: JOptionPane.getRootFrame()
-        EditHistoryDialog(owner, menuItem, searchHistoryList).isVisible = true
+        EditHistoryDialog(
+            owner, menuItem, searchHistoryList,
+            ApplicationConfiguration.getInstance().useLruSearchHistory,
+        ).isVisible = true
     }
 
     private fun buildLayout() {

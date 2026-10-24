@@ -128,7 +128,10 @@ abstract class SearchField(
             miClearHistory.addActionListener { history.clear() }
 
             miEditHistory.addActionListener {
-                val dialog = EditHistoryDialog(host.ownerWindow(), miEditHistory, historyList)
+                val dialog = EditHistoryDialog(
+                    host.ownerWindow(), miEditHistory, historyList,
+                    applicationConfiguration.useLruSearchHistory,
+                )
                 dialog.isVisible = true
             }
 
@@ -136,7 +139,7 @@ abstract class SearchField(
         }
 
         fun addHistoryEntry(text: String) {
-            history.addMostRecent(text)
+            history.addEntry(text, applicationConfiguration.useLruSearchHistory)
         }
 
         private fun showHistoryPopup() {

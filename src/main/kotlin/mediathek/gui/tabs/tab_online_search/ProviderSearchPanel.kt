@@ -216,6 +216,6 @@ class OnlineSearchTextField(
 
     private fun showEditHistoryDialog(menuItem: JMenuItem) {
         val owner = SwingUtilities.getWindowAncestor(this) ?: JOptionPane.getRootFrame()
-        EditHistoryDialog(owner, menuItem, historyEntries).isVisible = true
+        EditHistoryDialog(owner, menuItem, historyEntries, useLru = true).isVisible = true
     }
 }

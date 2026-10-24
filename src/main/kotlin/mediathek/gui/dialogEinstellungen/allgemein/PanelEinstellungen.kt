@@ -121,7 +121,8 @@ class PanelEinstellungen(
     }
 
     private fun setupModernSearchPanel() {
-        modernSearchTitlePanel.contentContainer = ModernSearchConfigPanel()
+        modernSearchTitlePanel.title = "Suche"
+        modernSearchTitlePanel.contentContainer = SearchConfigPanel()
     }
 
     override fun removeNotify() {

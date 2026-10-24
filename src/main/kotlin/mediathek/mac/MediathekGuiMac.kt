@@ -151,8 +151,6 @@ class MediathekGuiMac(daten: Daten) : MediathekGui(
     }
 }
 
-private val logger = LogManager.getLogger()
-
 /**
  * Setup the UI for OS X
  */

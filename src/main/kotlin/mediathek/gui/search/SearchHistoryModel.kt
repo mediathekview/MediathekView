@@ -39,10 +39,14 @@ internal class SearchHistoryModel(
         }
     }
 
-    fun addMostRecent(entry: String) {
+    fun addEntry(entry: String, useLru: Boolean = false) {
         history.withTransaction {
-            remove(entry)
-            add(0, entry)
+            if (useLru) {
+                remove(entry)
+                add(0, entry)
+            } else if (!contains(entry)) {
+                add(0, entry)
+            }
         }
     }
 

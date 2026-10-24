@@ -33,6 +33,7 @@ class ApplicationConfigurationCleanupServiceTest {
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("application.dark_mode"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("config.major"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("search.history.items_lucene"))
+        assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("search.history.lru"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("download.toolbar.state.main.x"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("filter.available.filters.filter_$filterId"))
         assertTrue(AnnotatedApplicationConfigurationKeyRegistry.isValidKey("filter.filter_$filterId.show.new_only"))

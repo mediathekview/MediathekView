@@ -23,6 +23,12 @@ import org.apache.commons.configuration2.XMLConfiguration
 class ApplicationSearchConfiguration(
     private val config: XMLConfiguration,
 ) {
+    var useLruSearchHistory: Boolean
+        get() = config.getBoolean(SEARCH_HISTORY_LRU, false)
+        set(value) {
+            config.setProperty(SEARCH_HISTORY_LRU, value)
+        }
+
     var useModernSearch: Boolean
         get() = config.getBoolean(APPLICATION_USE_MODERN_SEARCH, false)
         set(newValue) {
@@ -46,6 +52,8 @@ class ApplicationSearchConfiguration(
         if (luceneSearch) "$SEARCH_HISTORY_ITEMS$SEARCH_HISTORY_LUCENE_SUFFIX" else SEARCH_HISTORY_ITEMS
 
     private companion object {
+        @field:ApplicationConfigKey
+        private const val SEARCH_HISTORY_LRU = "search.history.lru"
         @field:ApplicationConfigKey
         private const val APPLICATION_USE_MODERN_SEARCH = "application.use.modern_search"
         @field:ApplicationConfigKey

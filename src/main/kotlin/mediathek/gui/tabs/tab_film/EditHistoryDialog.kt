@@ -21,6 +21,7 @@ class EditHistoryDialog(
     owner: Window,
     menuItem: JMenuItem,
     private val eventList: EventList<String>,
+    useLru: Boolean,
 ) : EditHistoryDialogBase(owner) {
     private val applicationConfiguration = ApplicationConfiguration.getInstance()
     private val keyAdapter = DeleteKeyAdapter()
@@ -39,6 +40,8 @@ class EditHistoryDialog(
         )
 
         list.model = eventListModel
+        btnUp.isVisible = !useLru
+        btnDown.isVisible = !useLru
         list.selectionModel.addListSelectionListener { event ->
             if (!event.valueIsAdjusting) {
                 adjustButtons()
