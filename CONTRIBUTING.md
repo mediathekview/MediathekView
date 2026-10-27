@@ -139,6 +139,9 @@ That's it. Happy coding! 🥳
 
 
 ### Improving The Documentation
+
+For interface translations and JFormDesigner forms, see the [translation guide](docs/internationalization.md).
+
 The user documentation is [part](https://github.com/mediathekview/MediathekViewDE/blob/master/content/anleitung.md) of the [website](https://github.com/mediathekview/MediathekViewDE) so it can be edited through this GitHub project: [MediathekViewDE](https://github.com/mediathekview/MediathekViewDE). All new features should get documented there. Make sure to update the documentation if you change some documented behavior.
 ## Styleguides
 We use the [SonarSource](https://rules.sonarsource.com/java) default rules. To check if your code against the rules use [SonarLint](https://www.sonarlint.org/). We also run a [SonarCloud](https://sonarcloud.io/dashboard?id=mediathekview_MediathekView) analysis with our builds. The [SonarCloud Bot](https://github.com/apps/sonarcloud) checks Pull-Request to not break the quality gate.

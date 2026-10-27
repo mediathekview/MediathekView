@@ -12,6 +12,7 @@ import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetKurz
 import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang
+import mediathek.i18n.UiMessages
 import mediathek.tool.GuiFunktionenProgramme
 import org.apache.commons.lang3.SystemUtils
 import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
@@ -212,7 +213,7 @@ class DialogStarteinstellungen(
     }
 
     companion object {
-        private const val CONTINUE_TEXT = "Weiter"
-        private const val START_WITH_DEFAULTS_TEXT = "Mit Standardeinstellungen starten"
+        private val CONTINUE_TEXT get() = UiMessages.text("startup.continue")
+        private val START_WITH_DEFAULTS_TEXT get() = UiMessages.text("startup.defaults")
     }
 }

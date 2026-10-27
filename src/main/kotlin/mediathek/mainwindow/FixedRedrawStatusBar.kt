@@ -20,6 +20,7 @@ package mediathek.mainwindow
 
 import mediathek.controller.starter.DownloadServices
 import mediathek.filmlisten.FilmCatalog
+import mediathek.i18n.UiMessages
 import mediathek.swing.FilmAgeLabel
 import org.jdesktop.swingx.JXStatusBar
 import java.awt.Component
@@ -51,7 +52,7 @@ class FixedRedrawStatusBar(
                         .coerceAtLeast(0)
                         .seconds
                 },
-                tooltip = "Alter der Filmliste"
+                tooltip = UiMessages.text("status.filmList.age.description")
             )
         )
     }

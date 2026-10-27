@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelDownload"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
@@ -16,7 +23,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbkDownloadError"
-					"text": "Bei Downloadfehler eine Fehlermeldung anzeigen"
+					"text": new FormMessage( null, "settings.PanelDownload.cbkDownloadError.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -25,7 +32,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxBeep"
-					"text": "Nach jedem Download einen \"Beep\" ausgeben"
+					"text": new FormMessage( null, "settings.PanelDownload.jCheckBoxBeep.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -34,7 +41,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonBeep"
-					"text": "Test"
+					"text": new FormMessage( null, "settings.PanelDownload.jButtonBeep.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -43,7 +50,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbFetchMissingFileSize"
-					"text": "Fehlende Filmgröße nachladen"
+					"text": new FormMessage( null, "settings.PanelDownload.cbFetchMissingFileSize.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -59,7 +66,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
-						"text": "Standard-Wert für automatische Weiterführung:"
+						"text": new FormMessage( null, "settings.PanelDownload.label1.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}

@@ -19,6 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.gui.dialog.lucene_tutorial.LuceneTutorialDialog
+import mediathek.i18n.UiMessages
 import mediathek.tool.SVGIconUtilities
 import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Window
@@ -29,8 +30,8 @@ class ShowLuceneTutorialAction(
     private val owner: Window,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Lucene-Suchsyntax anzeigen...")
-        putValue(SHORT_DESCRIPTION, "Lucene Query Syntax Hilfe")
+        putValue(NAME, UiMessages.text("action.showLuceneTutorialAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.showLuceneTutorialAction.description"))
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
     }
 

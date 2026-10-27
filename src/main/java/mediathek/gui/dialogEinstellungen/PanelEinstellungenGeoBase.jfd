@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.0.1.0.199" Java: "17.0.5" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelEinstellungenGeo"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 			"$columnConstraints": "[grow,fill]"
@@ -11,7 +18,7 @@ new FormModel {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
 				name: "panel1"
-				"border": new javax.swing.border.TitledBorder( "Mein Standort" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelEinstellungenGeo.panel1.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -38,7 +45,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
-						"text": "Deutschland (DE)"
+						"text": new FormMessage( null, "settings.PanelEinstellungenGeo.label2.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -68,7 +75,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label4"
-						"text": "Österreich (AT)"
+						"text": new FormMessage( null, "settings.PanelEinstellungenGeo.label4.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -98,7 +105,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label6"
-						"text": "Schweiz (CH)"
+						"text": new FormMessage( null, "settings.PanelEinstellungenGeo.label6.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -128,7 +135,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label8"
-						"text": "Frankreich (FR)"
+						"text": new FormMessage( null, "settings.PanelEinstellungenGeo.label8.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -158,7 +165,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label10"
-						"text": "EU (EBU - European Broadcasting Union)"
+						"text": new FormMessage( null, "settings.PanelEinstellungenGeo.label10.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -169,7 +176,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JRadioButton" ) {
 					name: "jRadioButtonSonst"
 					"$buttonGroup": new FormReference( "buttonGroup1" )
-					"text": "Sonstiger"
+					"text": new FormMessage( null, "settings.PanelEinstellungenGeo.jRadioButtonSonst.text" )
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 0"
@@ -177,7 +184,7 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonHilfe"
 				"icon": sfield com.jformdesigner.model.FormObject NULL_VALUE
-				"toolTipText": "Hilfe anzeigen"
+				"toolTipText": new FormMessage( null, "settings.PanelEinstellungenGeo.jButtonHilfe.toolTipText" )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1,alignx right,growx 0"
 			} )

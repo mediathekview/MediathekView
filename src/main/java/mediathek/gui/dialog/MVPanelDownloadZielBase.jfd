@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "download.destination"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq t {space :::p, par t {seq t {comp jLabelExists:::p::p, space :0:0:x}, seq l {par l {comp jLabel2::l:p::p, comp jLabel1::l:p::p}, space :::p, par l {seq {comp jComboBoxPath::::445:x, space :::p, comp jButtonPath:::p::p, space :::p, comp jButtonDelPath:::p::p}, comp jTextFieldName:::::x}}}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel1::b:p::p, comp jComboBoxPath:1:b:p::p, comp jButtonPath:1:b:p::p, comp jButtonDelPath:1:b:p::p}, space u:::p, par b {comp jLabel2::b:p::p, comp jTextFieldName:1:b:p::p}, space :p:10:p, comp jLabelExists:::p::p, space :::x}}"
@@ -10,7 +17,7 @@ new FormModel {
 			name: "this"
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabel1"
-				"text": "Zielpfad:"
+				"text": new FormMessage( null, "download.destination.jLabel1.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -26,7 +33,7 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonPath"
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-				"toolTipText": "Zielpfad auswählen"
+				"toolTipText": new FormMessage( null, "download.destination.jButtonPath.toolTipText" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
@@ -34,14 +41,14 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonDelPath"
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-del.png" )
-				"toolTipText": "gespeicherte Pfade löschen"
+				"toolTipText": new FormMessage( null, "download.destination.jButtonDelPath.toolTipText" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabel2"
-				"text": "Dateiname:"
+				"text": new FormMessage( null, "download.destination.jLabel2.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -54,7 +61,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "jLabelExists"
-				"text": "Datei existiert schon!"
+				"text": new FormMessage( null, "download.destination.jLabelExists.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

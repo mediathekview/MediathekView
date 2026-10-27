@@ -19,6 +19,7 @@
 package mediathek.tool.models
 
 import mediathek.config.MVColor
+import mediathek.i18n.UiMessages
 import mediathek.tool.MVC
 import javax.swing.table.AbstractTableModel
 
@@ -29,12 +30,12 @@ class TModelColor(
 
     override fun getColumnCount(): Int = COLUMN_NAMES.size
 
-    override fun getColumnName(column: Int): String = COLUMN_NAMES[column]
+    override fun getColumnName(column: Int): String = UiMessages.text("settings.color.column.$column")
 
     override fun getValueAt(rowIndex: Int, columnIndex: Int): Any? {
         val mvc = getEntry(rowIndex)
         return when (columnIndex) {
-            MVColor.MVC_TEXT -> mvc.text
+            MVColor.MVC_TEXT -> UiMessages.text("settings.color.${mvc.key}")
             MVColor.MVC_COLOR -> mvc
             else -> null
         }

@@ -8,6 +8,7 @@ import mediathek.daten.abo.AboTags
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
 import mediathek.filmlisten.FilmCatalog
+import mediathek.i18n.UiMessages
 import mediathek.swing.centerOnScreen
 import mediathek.tool.*
 import mediathek.tool.datum.DateUtil
@@ -92,7 +93,7 @@ class DialogEditAbo(
             if (applyIfValid()) {
                 dispose()
             } else {
-                JOptionPane.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(parent, UiMessages.text("abo.edit.filterRequired"), UiMessages.text("abo.edit.empty"), JOptionPane.ERROR_MESSAGE)
             }
         }
         jButtonAbbrechen.addActionListener { dispose() }
@@ -263,7 +264,7 @@ class DialogEditAbo(
 
     private companion object {
         private const val TEXTFIELD_BACKGROUND = "TextField.background"
-        private const val DAUER_TEXT_ALL = "Alles"
+        private val DAUER_TEXT_ALL get() = UiMessages.text("abo.edit.allDurations")
 
         private fun durationLabelText(duration: Int): String = if (duration == 0) DAUER_TEXT_ALL else duration.toString()
 

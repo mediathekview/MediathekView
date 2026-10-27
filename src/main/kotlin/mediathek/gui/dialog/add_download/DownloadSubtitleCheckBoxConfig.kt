@@ -19,16 +19,9 @@
 package mediathek.gui.dialog.add_download
 
 import javax.swing.JCheckBox
+import mediathek.i18n.UiMessages
 
 internal fun JCheckBox.configureDownloadSubtitleCheckBox() {
-    text = "Untertitel-Dateien speichern"
-    toolTipText = """
-        <html>Untertitel werden im Format TTML bzw. WebVTT geladen und zusätzlich nach
-        <ul>
-        <li>SubRip Text (SRT)</li>
-        <li>Advanced SubStation Alpha (ASS)</li>
-        </ul>
-        konvertiert.
-        </html>
-    """.trimIndent()
+    text = UiMessages.text("download.subtitles.text")
+    toolTipText = UiMessages.text("download.subtitles.tooltip")
 }

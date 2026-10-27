@@ -19,6 +19,7 @@
 package mediathek.gui.dialogEinstellungen
 
 import mediathek.config.MVColor
+import mediathek.i18n.UiMessages
 import mediathek.mainwindow.SettingsDialogHost
 import mediathek.tool.MVC
 import mediathek.tool.cellrenderer.CellRendererColor
@@ -38,12 +39,12 @@ class PanelEinstellungenColor(
     private val colorThemes = listOf(
         ColorTheme(
             tabIndex = 0,
-            resetButtonText = "Helle Farben zurücksetzen",
+            resetButtonText = UiMessages.text("settings.color.resetLight"),
             model = lightColorTableModel,
         ),
         ColorTheme(
             tabIndex = 1,
-            resetButtonText = "Dunkle Farben zurücksetzen",
+            resetButtonText = UiMessages.text("settings.color.resetDark"),
             model = darkColorTableModel,
         ),
     )
@@ -83,7 +84,7 @@ class PanelEinstellungenColor(
 
     private fun chooseColor(mvc: MVC, darkMode: Boolean) {
         val currentColor = mvc.getColor(darkMode)
-        val selectedColor = JColorChooser.showDialog(this, "Farbe auswählen", currentColor)
+        val selectedColor = JColorChooser.showDialog(this, UiMessages.text("settings.color.choose"), currentColor)
         if (selectedColor != null && selectedColor != currentColor) {
             mvc.setColor(darkMode, selectedColor)
             saveAndRefreshColors()

@@ -2,14 +2,21 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "download.batch.dialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq {par l {comp jPanelExtra::t:::x, seq t {space :::p, comp btnChange:::p::p, space :::x, comp btnQueueDownloads:::p::p, space s:::p, comp btnStartImmediately:::p::p, space :::p, comp btnCancel:::p::p}}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jPanelExtra:::p::p, space :::p, par b {comp btnCancel::b:p::p, comp btnStartImmediately::b:p::p, comp btnQueueDownloads::b:p::p, comp btnChange::b:p::p}, space ::1:x}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
-			"title": "Alle Downloads starten"
+			"title": new FormMessage( null, "download.batch.dialog.this.title" )
 			"modal": true
 			"resizable": false
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -23,7 +30,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "Speicherpfad:"
+					"text": new FormMessage( null, "download.batch.dialog.jLabel1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -40,7 +47,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonDelPath"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-del.png" )
-					"toolTipText": "History löschen"
+					"toolTipText": new FormMessage( null, "download.batch.dialog.jButtonDelPath.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -48,7 +55,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonPath"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-					"toolTipText": "Zielpfad auswählen"
+					"toolTipText": new FormMessage( null, "download.batch.dialog.jButtonPath.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -62,14 +69,14 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "chkInfo"
-						"text": "Infodatei anlegen: \"Filmname.txt\""
+						"text": new FormMessage( null, "download.batch.dialog.chkInfo.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "jCheckBoxPfadSpeichern"
-						"text": "Zielpfad speichern"
+						"text": new FormMessage( null, "download.batch.dialog.jCheckBoxPfadSpeichern.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -84,29 +91,29 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnChange"
-				"text": "Einzeln anlegen"
-				"toolTipText": "Die Sammelaktion wird abgebrochen und Sie können im Anschluß die Einstellungen für jeden Download einzeln festlegen."
+				"text": new FormMessage( null, "download.batch.dialog.btnChange.text" )
+				"toolTipText": new FormMessage( null, "download.batch.dialog.btnChange.toolTipText" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnCancel"
-				"text": "Abbrechen"
+				"text": new FormMessage( null, "download.batch.dialog.btnCancel.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnStartImmediately"
-				"text": "Sofort starten"
+				"text": new FormMessage( null, "download.batch.dialog.btnStartImmediately.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "btnQueueDownloads"
-				"text": "In die Warteschlange"
+				"text": new FormMessage( null, "download.batch.dialog.btnQueueDownloads.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

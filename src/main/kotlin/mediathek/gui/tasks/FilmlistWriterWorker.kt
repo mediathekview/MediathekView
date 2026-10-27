@@ -30,6 +30,7 @@ import mediathek.filmlisten.writer.FilmListWriter
 import javax.swing.JLabel
 import javax.swing.JProgressBar
 import kotlin.math.roundToInt
+import mediathek.i18n.UiMessages
 
 class FilmlistWriterWorker(
     private val films: ListeFilme,
@@ -46,7 +47,7 @@ class FilmlistWriterWorker(
 
         try {
             withContext(Dispatchers.Swing) {
-                progLabel.text = "Schreibe Filmliste"
+                progLabel.text = UiMessages.text("loading.write")
                 applyProgress(0)
             }
 

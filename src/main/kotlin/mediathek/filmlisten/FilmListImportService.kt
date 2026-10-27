@@ -21,6 +21,7 @@ package mediathek.filmlisten
 import mediathek.config.StandardLocations
 import mediathek.daten.ListeFilme
 import mediathek.filmlisten.reader.FilmListReader
+import mediathek.i18n.UiMessages
 import mediathek.tool.FilmListUpdateType
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -219,10 +220,10 @@ internal class FilmListImportService(
             }
         } catch (ex: IOException) {
             logger.error("IOxception:", ex)
-            feedback.showExceptionMessage("Netzwerkfehler aufgetreten!", ex, true)
+            feedback.showExceptionMessage(UiMessages.text("load.networkError"), ex, true)
         } catch (ex: Exception) {
             logger.error("Filmlist update check failed", ex)
-            feedback.showExceptionMessage("Ein unbekannter Fehler ist aufgetreten.", ex, showDialogs)
+            feedback.showExceptionMessage(UiMessages.text("load.unknownError"), ex, showDialogs)
         }
 
         return result
@@ -271,7 +272,7 @@ internal class FilmListImportService(
 
     private companion object {
         private val logger = LogManager.getLogger(FilmListImportService::class.java)
-        private const val NETWORK_NOT_AVAILABLE = "Netzwerk nicht verfügbar"
+        private val NETWORK_NOT_AVAILABLE get() = UiMessages.text("load.offline")
         private const val HTTP_NOT_FOUND = 404
     }
 }

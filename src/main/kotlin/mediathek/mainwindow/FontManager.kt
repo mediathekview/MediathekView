@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.FontSizeChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.MessageBus
 import java.awt.Component
 import java.awt.GraphicsEnvironment
@@ -59,21 +60,21 @@ class FontManager(private val fontMenu: JMenu) {
     }
 
     private fun initStandardMenuEntries() {
-        restoreFontMenuItem.text = "Schrift zurücksetzen"
+        restoreFontMenuItem.text = UiMessages.text("menu.font.reset")
         restoreFontMenuItem.accelerator = KeyStroke.getKeyStroke(
             KeyEvent.VK_0,
             Toolkit.getDefaultToolkit().menuShortcutKeyMaskEx,
         )
         restoreFontMenuItem.addActionListener { runFontUpdate(::resetFont) }
 
-        incrFontMenuItem.text = "Schrift vergrößern"
+        incrFontMenuItem.text = UiMessages.text("menu.font.increase")
         incrFontMenuItem.accelerator = KeyStroke.getKeyStroke(
             KeyEvent.VK_PLUS,
             Toolkit.getDefaultToolkit().menuShortcutKeyMaskEx,
         )
         incrFontMenuItem.addActionListener { runFontUpdate(::increaseFontSize) }
 
-        decrFontMenuItem.text = "Schrift verkleinern"
+        decrFontMenuItem.text = UiMessages.text("menu.font.decrease")
         decrFontMenuItem.accelerator = KeyStroke.getKeyStroke(
             KeyEvent.VK_MINUS,
             Toolkit.getDefaultToolkit().menuShortcutKeyMaskEx,

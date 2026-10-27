@@ -34,6 +34,7 @@ import java.awt.*;
  * Subclass contains the dialog behavior.
  */
 public class DialogAddDownloadBase extends JDialog {
+    /** Creates the localized controls using the current startup language. */
     public DialogAddDownloadBase(Frame parent) {
         super(parent, true);
         initComponents();
@@ -41,7 +42,9 @@ public class DialogAddDownloadBase extends JDialog {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the controls and their resource-bundle labels. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var panel1 = new JPanel();
         btnQueueDownload = new JButton();
         btnDownloadImmediately = new JButton();
@@ -80,7 +83,7 @@ public class DialogAddDownloadBase extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Film speichern");
+        setTitle(bundle.getString("download.dialog.this.title"));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             new LC().fillX().insets("dialog").hideMode(3),
@@ -109,15 +112,15 @@ public class DialogAddDownloadBase extends JDialog {
                     .fill()));
 
             //---- btnQueueDownload ----
-            btnQueueDownload.setText("In die Warteschlange");
+            btnQueueDownload.setText(bundle.getString("download.dialog.btnQueueDownload.text"));
             panel1.add(btnQueueDownload, new CC().cell(0, 0));
 
             //---- btnDownloadImmediately ----
-            btnDownloadImmediately.setText("Sofort laden");
+            btnDownloadImmediately.setText(bundle.getString("download.dialog.btnDownloadImmediately.text"));
             panel1.add(btnDownloadImmediately, new CC().cell(1, 0));
 
             //---- jButtonAbbrechen ----
-            jButtonAbbrechen.setText("Abbrechen");
+            jButtonAbbrechen.setText(bundle.getString("download.dialog.jButtonAbbrechen.text"));
             panel1.add(jButtonAbbrechen, new CC().cell(2, 0));
         }
         contentPane.add(panel1, new CC().cell(0, 4).alignX("right"));
@@ -137,12 +140,12 @@ public class DialogAddDownloadBase extends JDialog {
                     ));
 
             //---- jLabelSet ----
-            jLabelSet.setText("Set:");
+            jLabelSet.setText(bundle.getString("download.dialog.jLabelSet.text"));
             jPanel7.add(jLabelSet, new CC().cell(0, 0));
             jPanel7.add(jComboBoxPset, new CC().cell(1, 0).growX());
 
             //---- jLabel1 ----
-            jLabel1.setText("Zielpfad:");
+            jLabel1.setText(bundle.getString("download.dialog.jLabel1.text"));
             jPanel7.add(jLabel1, new CC().cell(0, 1));
 
             //======== jPanel4 ========
@@ -163,19 +166,19 @@ public class DialogAddDownloadBase extends JDialog {
                 jPanel4.add(jComboBoxPfad, new CC().cell(0, 0).pushX().growX());
 
                 //---- jButtonZiel ----
-                jButtonZiel.setText("F");
-                jButtonZiel.setToolTipText("Zielpfad ausw\u00e4hlen");
+                jButtonZiel.setText(bundle.getString("download.dialog.jButtonZiel.text"));
+                jButtonZiel.setToolTipText(bundle.getString("download.dialog.jButtonZiel.toolTipText"));
                 jPanel4.add(jButtonZiel, new CC().cell(1, 0));
 
                 //---- jButtonDelHistory ----
-                jButtonDelHistory.setText("H");
-                jButtonDelHistory.setToolTipText("History l\u00f6schen");
+                jButtonDelHistory.setText(bundle.getString("download.dialog.jButtonDelHistory.text"));
+                jButtonDelHistory.setToolTipText(bundle.getString("download.dialog.jButtonDelHistory.toolTipText"));
                 jPanel4.add(jButtonDelHistory, new CC().cell(2, 0));
             }
             jPanel7.add(jPanel4, new CC().cell(1, 1).growX());
 
             //---- jLabel4 ----
-            jLabel4.setText("Dateiname:");
+            jLabel4.setText(bundle.getString("download.dialog.jLabel4.text"));
             jPanel7.add(jLabel4, new CC().cell(0, 2));
 
             //---- jTextFieldName ----
@@ -200,12 +203,12 @@ public class DialogAddDownloadBase extends JDialog {
                     ));
 
             //---- jCheckBoxInfodatei ----
-            jCheckBoxInfodatei.setText("Lege Infodatei an");
-            jCheckBoxInfodatei.setToolTipText("Erzeugt eine Infodatei im Format \"Infodatei.txt\"");
+            jCheckBoxInfodatei.setText(bundle.getString("download.dialog.jCheckBoxInfodatei.text"));
+            jCheckBoxInfodatei.setToolTipText(bundle.getString("download.dialog.jCheckBoxInfodatei.toolTipText"));
             jPanel2.add(jCheckBoxInfodatei, new CC().cell(0, 0).alignX("left"));
 
             //---- jCheckBoxPfadSpeichern ----
-            jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
+            jCheckBoxPfadSpeichern.setText(bundle.getString("download.dialog.jCheckBoxPfadSpeichern.text"));
             jPanel2.add(jCheckBoxPfadSpeichern, new CC().cell(1, 0).alignX("left"));
             jPanel2.add(jCheckBoxSubtitle, new CC().cell(0, 1).alignX("left"));
 
@@ -218,7 +221,7 @@ public class DialogAddDownloadBase extends JDialog {
 
         //======== jPanelSize ========
         {
-            jPanelSize.setBorder(new TitledBorder("Download-Qualit\u00e4t"));
+            jPanelSize.setBorder(new TitledBorder(bundle.getString("download.dialog.jPanelSize.borderTitle")));
             jPanelSize.setLayout(new MigLayout(
                 new LC().fillX().insets("0").hideMode(3),
                 // columns
@@ -243,15 +246,15 @@ public class DialogAddDownloadBase extends JDialog {
                         ));
 
                 //---- jRadioButtonAufloesungHd ----
-                jRadioButtonAufloesungHd.setText("H\u00f6chste/Hoch");
+                jRadioButtonAufloesungHd.setText(bundle.getString("download.dialog.jRadioButtonAufloesungHd.text"));
                 jPanel6.add(jRadioButtonAufloesungHd, new CC().cell(0, 0));
 
                 //---- jRadioButtonAufloesungHoch ----
-                jRadioButtonAufloesungHoch.setText("Mittel");
+                jRadioButtonAufloesungHoch.setText(bundle.getString("download.dialog.jRadioButtonAufloesungHoch.text"));
                 jPanel6.add(jRadioButtonAufloesungHoch, new CC().cell(1, 0));
 
                 //---- jRadioButtonAufloesungKlein ----
-                jRadioButtonAufloesungKlein.setText("Niedrig");
+                jRadioButtonAufloesungKlein.setText(bundle.getString("download.dialog.jRadioButtonAufloesungKlein.text"));
                 jPanel6.add(jRadioButtonAufloesungKlein, new CC().cell(2, 0));
             }
             jPanelSize.add(jPanel6, new CC().cell(0, 0).alignX("left"));
@@ -270,7 +273,7 @@ public class DialogAddDownloadBase extends JDialog {
                         ));
 
                 //---- btnRequestLiveInfo ----
-                btnRequestLiveInfo.setText("Codec-Details abrufen...");
+                btnRequestLiveInfo.setText(bundle.getString("download.dialog.btnRequestLiveInfo.text"));
                 jPanel3.add(btnRequestLiveInfo, new CC().cell(0, 0).alignY("top"));
                 jPanel3.add(lblBusyIndicator, new CC().cell(1, 0).alignY("top"));
 
@@ -279,11 +282,11 @@ public class DialogAddDownloadBase extends JDialog {
                     jPanel5.setLayout(new GridLayout(2, 1));
 
                     //---- lblStatus ----
-                    lblStatus.setText("Video: n/a");
+                    lblStatus.setText(bundle.getString("download.dialog.lblStatus.text"));
                     jPanel5.add(lblStatus);
 
                     //---- lblAudioInfo ----
-                    lblAudioInfo.setText("Audio: n/a");
+                    lblAudioInfo.setText(bundle.getString("download.dialog.lblAudioInfo.text"));
                     jPanel5.add(lblAudioInfo);
                 }
                 jPanel3.add(jPanel5, new CC().cell(2, 0).pushX().growX());
@@ -326,12 +329,12 @@ public class DialogAddDownloadBase extends JDialog {
                 //---- lblFilmTitle ----
                 lblFilmTitle.setFont(lblFilmTitle.getFont().deriveFont(lblFilmTitle.getFont().getStyle() | Font.BOLD));
                 lblFilmTitle.setMinimumSize(new Dimension(0, 0));
-                lblFilmTitle.setText("Tatort, ...");
+                lblFilmTitle.setText(bundle.getString("download.dialog.lblFilmTitle.text"));
                 filmTextPanel.add(lblFilmTitle, new CC().cell(0, 0).pushX().growX());
 
                 //---- lblFilmThema ----
                 lblFilmThema.setMinimumSize(new Dimension(0, 0));
-                lblFilmThema.setText("Thema");
+                lblFilmThema.setText(bundle.getString("download.dialog.lblFilmThema.text"));
                 filmTextPanel.add(lblFilmThema, new CC().cell(0, 1).pushX().growX());
             }
             filmPanel.add(filmTextPanel, new CC().cell(1, 0).pushX().growX());

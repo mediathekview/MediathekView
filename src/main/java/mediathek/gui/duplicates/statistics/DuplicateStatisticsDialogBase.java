@@ -21,6 +21,7 @@ public class DuplicateStatisticsDialogBase extends JDialog {
     }
 
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
         var tabbedPane = new JTabbedPane();
@@ -34,7 +35,7 @@ public class DuplicateStatisticsDialogBase extends JDialog {
         lblTotalDuplicates = new JLabel();
 
         //======== this ========
-        setTitle("Film-Statistik"); //NON-NLS
+        setTitle(bundle.getString("dialog.DuplicateStatisticsDialog.this.title")); //NON-NLS
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setType(Window.Type.UTILITY);
         var contentPane = getContentPane();
@@ -63,10 +64,10 @@ public class DuplicateStatisticsDialogBase extends JDialog {
                 commonStats.add(scrollPane2, BorderLayout.CENTER);
 
                 //---- lblTotalCommon ----
-                lblTotalCommon.setText("Gesamtanzahl Filme:"); //NON-NLS
+                lblTotalCommon.setText(bundle.getString("dialog.DuplicateStatisticsDialog.lblTotalCommon.text")); //NON-NLS
                 commonStats.add(lblTotalCommon, BorderLayout.SOUTH);
             }
-            tabbedPane.addTab("Allgemein", commonStats); //NON-NLS
+            tabbedPane.addTab(bundle.getString("dialog.DuplicateStatisticsDialog.lblTotalCommon.title"), commonStats); //NON-NLS
 
             //======== duplicatePanel ========
             {
@@ -87,10 +88,10 @@ public class DuplicateStatisticsDialogBase extends JDialog {
                 duplicatePanel.add(scrollPane1, BorderLayout.CENTER);
 
                 //---- lblTotalDuplicates ----
-                lblTotalDuplicates.setText("Gesamtanzahl Duplikate:"); //NON-NLS
+                lblTotalDuplicates.setText(bundle.getString("dialog.DuplicateStatisticsDialog.lblTotalDuplicates.text")); //NON-NLS
                 duplicatePanel.add(lblTotalDuplicates, BorderLayout.PAGE_END);
             }
-            tabbedPane.addTab("Duplikate", duplicatePanel); //NON-NLS
+            tabbedPane.addTab(bundle.getString("dialog.DuplicateStatisticsDialog.lblTotalDuplicates.title"), duplicatePanel); //NON-NLS
         }
         contentPane.add(tabbedPane, BorderLayout.CENTER);
         pack();

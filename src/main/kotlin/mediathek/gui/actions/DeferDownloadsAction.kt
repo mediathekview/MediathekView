@@ -19,6 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.gui.tabs.tab_downloads.GuiDownloads
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular
 import java.awt.event.ActionEvent
@@ -28,8 +29,8 @@ class DeferDownloadsAction(
     private val guiDownloads: GuiDownloads,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Downloads zurückstellen")
-        putValue(SHORT_DESCRIPTION, "Downloads zurückstellen")
+        putValue(NAME, UiMessages.text("action.deferDownloadsAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.deferDownloadsAction.description"))
         putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeRegular.CLOCK))
     }
 

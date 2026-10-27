@@ -2,7 +2,14 @@ JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.13" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.UpdateNotificationPanel"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
 			"$columnConstraints": "[fill][grow,fill]"
@@ -11,7 +18,7 @@ new FormModel {
 			name: "this"
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label1"
-				"text": "Eine neue Version von MediathekView ist verfügbar!"
+				"text": new FormMessage( null, "dialog.UpdateNotificationPanel.label1.text" )
 				"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 5, false )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
@@ -30,7 +37,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label3"
-				"text": "text"
+				"text": new FormMessage( null, "dialog.UpdateNotificationPanel.label3.text" )
 				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 				auxiliary() {
 					"JavaCodeGenerator.variableName": "lblReleaseInfo"
@@ -40,7 +47,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label4"
-				"text": "Release Notes:"
+				"text": new FormMessage( null, "dialog.UpdateNotificationPanel.label4.text" )
 				"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true

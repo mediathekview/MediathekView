@@ -19,6 +19,7 @@
 package mediathek.gui.tabs.tab_downloads
 
 import com.jidesoft.popup.JidePopup
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.materialdesign2.MaterialDesignC
 import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
@@ -38,7 +39,7 @@ class DownloadsToolBarRow(
     private vararg val overflowToolBars: JToolBar
 ) : JPanel(FlowLayout(FlowLayout.LEFT, 0, 0)) {
     private val overflowButton = JButton(IconUtils.of(MaterialDesignC.CHEVRON_DOUBLE_RIGHT)).apply {
-        toolTipText = "Weitere Download-Optionen"
+        toolTipText = UiMessages.text("downloads.moreOptions")
         isFocusable = false
         isBorderPainted = false
         isContentAreaFilled = false

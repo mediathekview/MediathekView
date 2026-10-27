@@ -21,6 +21,7 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.DownloadRateLimitChangedEvent
 import mediathek.gui.messages.ParallelDownloadNumberChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.MessageBus.messageBus
 import net.engio.mbassy.listener.Handler
 import java.awt.Dimension
@@ -60,7 +61,7 @@ class DownloadsConfigToolBar : JToolBar() {
         spinnerMaxBandwidth.model = SpinnerNumberModel(0, 0, 1048576, 1)
         spinnerMaxBandwidth.limitToolbarWidth(100)
         spinnerMaxBandwidth.toolTipText =
-            "<html>Bandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert \u00fcber die Pfeiltasten \u00e4ndern<br>ODER<br>Zahlen eingeben UND ENTER-Taste dr\u00fccken!</b>\n</html>" //NON-NLS
+            UiMessages.text("downloads.config.bandwidthHint") //NON-NLS
 
         //restore spinner setting from config
         val oldDownloadLimit = ApplicationConfiguration.getInstance().downloadRateLimit
@@ -73,7 +74,7 @@ class DownloadsConfigToolBar : JToolBar() {
         spinnerNumDownloads.putClientProperty("JComponent.roundRect", true)
         spinnerNumDownloads.model = SpinnerNumberModel(1, 1, 9, 1)
         spinnerNumDownloads.limitToolbarWidth(80)
-        spinnerNumDownloads.toolTipText = "Anzahl der gleichzeitig möglichen Downloads"
+        spinnerNumDownloads.toolTipText = UiMessages.text("downloads.config.parallel")
         spinnerNumDownloads.value = config.maxSimultaneousDownloads
         spinnerNumDownloads.addChangeListener {
             val maxNumDownloads = (spinnerNumDownloads.model.value as Number).toInt()
@@ -101,7 +102,7 @@ class DownloadsConfigToolBar : JToolBar() {
 
     private fun initComponents() {
         isFloatable = true
-        name = "Download-Einstellungen"
+        name = UiMessages.text("downloads.config.title")
         setDownloadsToolBarId("config")
 
         add(JLabel("Downloads:"))
@@ -116,7 +117,7 @@ class DownloadsConfigToolBar : JToolBar() {
 
     private val spinnerNumDownloads: JSpinner = JSpinner()
     private val cbMaxBandwidth: JCheckBox = JCheckBox()
-    private val cbUseCdnAwareDirectDownloader: JCheckBox = JCheckBox("CDN-aware Downloader verwenden")
+    private val cbUseCdnAwareDirectDownloader: JCheckBox = JCheckBox(UiMessages.text("downloads.config.cdn"))
     private val spinnerMaxBandwidth: JSpinner = JSpinner()
     private val downloadRateLimitChangeTimer = Timer(300) { fireDownloadRateLimitChangedEvent() }.apply {
         isRepeats = false
@@ -125,17 +126,14 @@ class DownloadsConfigToolBar : JToolBar() {
     init {
         initComponents()
         cbMaxBandwidth.apply {
-            toolTipText = "Bandbreitenbegrenzung aktiviert?"
+            toolTipText = UiMessages.text("downloads.config.limit")
             text = "Limit:"
             isFocusable = false
         }
         cbUseCdnAwareDirectDownloader.apply {
             isFocusable = false
             toolTipText =
-                "<html>Aktivieren Sie dies falls direkte Downloads häufig fehlerhaft sind.<br/>" +
-                        "Dies kann jedoch erheblich langsamer als ein normaler Download sein.<br/><br/>" +
-                        "Das Umschalten wird nur <b>vor</b> Downloadstart berücksichtigt!" +
-                        "</html>"
+                UiMessages.text("downloads.config.cdnHint")
         }
         setupNumDownloadsSpinner()
         setupDownloadRateLimitCheckBox()

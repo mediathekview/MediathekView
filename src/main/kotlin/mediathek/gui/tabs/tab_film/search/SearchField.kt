@@ -25,6 +25,7 @@ import mediathek.config.MVColor
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.search.SearchHistoryModel
 import mediathek.gui.tabs.tab_film.EditHistoryDialog
+import mediathek.i18n.UiMessages
 import mediathek.tool.*
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
@@ -119,11 +120,11 @@ abstract class SearchField(
         private val luceneSearch = mode == SearchControlFieldMode.LUCENE
         private val history = SearchHistoryModel(loadHistory(), ::saveHistory)
         private val historyList = history.entries
-        private val miClearHistory = JMenuItem("Alles löschen")
-        private val miEditHistory = JMenuItem("Einträge bearbeiten")
+        private val miClearHistory = JMenuItem(UiMessages.text("film.search.history.clear"))
+        private val miEditHistory = JMenuItem(UiMessages.text("film.search.history.edit"))
 
         init {
-            toolTipText = "Vorherige Suchen"
+            toolTipText = UiMessages.text("film.search.history")
 
             miClearHistory.addActionListener { history.clear() }
 
@@ -236,7 +237,7 @@ class LuceneSearchField(host: Host) : SearchField(host, SearchControlFieldMode.L
         maximumSize = LUCENE_DEFAULT_DIMENSION
         setSearchMode(SearchControlFieldMode.LUCENE)
 
-        putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Lucene Search Query")
+        putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, UiMessages.text("film.search.lucene.placeholder"))
     }
 
     override fun createTrailingComponents() {
@@ -303,18 +304,18 @@ class RegularSearchField(host: Host) : SearchField(host, null) {
 
     private fun setupHelperTexts() {
         val text = when (getSearchMode()) {
-            SearchControlFieldMode.IRGENDWO -> "Thema/Titel/Beschreibung"
-            SearchControlFieldMode.THEMA_TITEL -> "Thema/Titel"
-            SearchControlFieldMode.LUCENE -> "Lucene Query"
+            SearchControlFieldMode.IRGENDWO -> UiMessages.text("film.search.allFields")
+            SearchControlFieldMode.THEMA_TITEL -> UiMessages.text("film.search.topicTitle")
+            SearchControlFieldMode.LUCENE -> UiMessages.text("film.search.lucene")
         }
         putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, text)
 
         toolTipText = if (getSearchMode() == SearchControlFieldMode.IRGENDWO ||
             getSearchMode() == SearchControlFieldMode.THEMA_TITEL
         ) {
-            "$text durchsuchen"
+            UiMessages.format("film.search.fields", text)
         } else {
-            "Lucene Query Syntax für die Suche"
+            UiMessages.text("film.search.lucene.description")
         }
     }
 
@@ -360,9 +361,9 @@ class RegularSearchField(host: Host) : SearchField(host, null) {
 
         private fun setupToolTip(active: Boolean) {
             toolTipText = if (active) {
-                "Suche in Beschreibung aktiviert"
+                UiMessages.text("film.search.description.enabled")
             } else {
-                "Suche in Beschreibung deaktiviert"
+                UiMessages.text("film.search.description.disabled")
             }
         }
     }

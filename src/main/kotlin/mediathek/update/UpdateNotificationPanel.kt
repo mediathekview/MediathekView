@@ -19,6 +19,7 @@
 package mediathek.update
 
 import mediathek.config.Konstanten
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import java.io.IOException
 import javax.swing.JEditorPane
@@ -38,7 +39,7 @@ class UpdateNotificationPanel : UpdateNotificationPanelBase() {
         } catch (_: IOException) {
             logger.error("Failed to load changelog from web")
             webView = JEditorPane().apply {
-                text = "<html><body>Load failed!</body></html>"
+                text = UiMessages.text("update.changelogFailed")
             }
         }
     }

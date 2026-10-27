@@ -11,6 +11,7 @@ import ca.odell.glazedlists.swing.eventTableModelWithThreadProxyList
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.duplicates.FilmStatistics
+import mediathek.i18n.UiMessages
 import mediathek.tool.withReadLock
 import org.apache.logging.log4j.LogManager
 import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
@@ -101,14 +102,14 @@ class DuplicateStatisticsDialog(
         resizeSenderColumnWidth(tblCommon)
         val statisticsList = filmCatalog.commonStatistics
         val total = statisticsList.sumCounts()
-        lblTotalCommon.text = "Gesamtanzahl Filme: $total"
+        lblTotalCommon.text = UiMessages.format("duplicates.total", total)
     }
 
     private fun updateTotalDuplicatesStats() {
         resizeSenderColumnWidth(tblDuplicates)
         val statisticsList = filmCatalog.duplicateStatistics
         val total = statisticsList.sumCounts()
-        lblTotalDuplicates.text = "Gesamtanzahl Duplikate: $total"
+        lblTotalDuplicates.text = UiMessages.format("duplicates.totalDuplicates", total)
     }
 
     private fun restorePosition() {

@@ -27,6 +27,7 @@ import javax.swing.border.EtchedBorder;
  * Base class for UI Designer.
  * Subclasses contain the hand-written dialog behavior.
  */
+/** Generated layout using the selected interface language. */
 public class DialogAddMoreDownloadBase extends JDialog {
     public DialogAddMoreDownloadBase(JFrame parent) {
         super(parent);
@@ -40,7 +41,9 @@ public class DialogAddMoreDownloadBase extends JDialog {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the generated controls using the selected interface language. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jPanelExtra = new JPanel();
         var jLabel1 = new JLabel();
         jComboBoxPath = new JComboBox<>();
@@ -57,7 +60,7 @@ public class DialogAddMoreDownloadBase extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Alle Downloads starten");
+        setTitle(bundle.getString("download.batch.dialog.this.title"));
         setModal(true);
         setResizable(false);
         var contentPane = getContentPane();
@@ -67,7 +70,7 @@ public class DialogAddMoreDownloadBase extends JDialog {
             jPanelExtra.setBorder(new EtchedBorder());
 
             //---- jLabel1 ----
-            jLabel1.setText("Speicherpfad:");
+            jLabel1.setText(bundle.getString("download.batch.dialog.jLabel1.text"));
 
             //---- jComboBoxPath ----
             jComboBoxPath.setEditable(true);
@@ -77,22 +80,22 @@ public class DialogAddMoreDownloadBase extends JDialog {
 
             //---- jButtonDelPath ----
             jButtonDelPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png")));
-            jButtonDelPath.setToolTipText("History l\u00f6schen");
+            jButtonDelPath.setToolTipText(bundle.getString("download.batch.dialog.jButtonDelPath.toolTipText"));
 
             //---- jButtonPath ----
             jButtonPath.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png")));
-            jButtonPath.setToolTipText("Zielpfad ausw\u00e4hlen");
+            jButtonPath.setToolTipText(bundle.getString("download.batch.dialog.jButtonPath.toolTipText"));
 
             //======== jPanel1 ========
             {
                 jPanel1.setLayout(new VerticalLayout(5));
 
                 //---- chkInfo ----
-                chkInfo.setText("Infodatei anlegen: \"Filmname.txt\"");
+                chkInfo.setText(bundle.getString("download.batch.dialog.chkInfo.text"));
                 jPanel1.add(chkInfo);
 
                 //---- jCheckBoxPfadSpeichern ----
-                jCheckBoxPfadSpeichern.setText("Zielpfad speichern");
+                jCheckBoxPfadSpeichern.setText(bundle.getString("download.batch.dialog.jCheckBoxPfadSpeichern.text"));
                 jPanel1.add(jCheckBoxPfadSpeichern);
                 jPanel1.add(chkSubtitle);
             }
@@ -131,17 +134,17 @@ public class DialogAddMoreDownloadBase extends JDialog {
         }
 
         //---- btnChange ----
-        btnChange.setText("Einzeln anlegen");
-        btnChange.setToolTipText("Die Sammelaktion wird abgebrochen und Sie k\u00f6nnen im Anschlu\u00df die Einstellungen f\u00fcr jeden Download einzeln festlegen.");
+        btnChange.setText(bundle.getString("download.batch.dialog.btnChange.text"));
+        btnChange.setToolTipText(bundle.getString("download.batch.dialog.btnChange.toolTipText"));
 
         //---- btnCancel ----
-        btnCancel.setText("Abbrechen");
+        btnCancel.setText(bundle.getString("download.batch.dialog.btnCancel.text"));
 
         //---- btnStartImmediately ----
-        btnStartImmediately.setText("Sofort starten");
+        btnStartImmediately.setText(bundle.getString("download.batch.dialog.btnStartImmediately.text"));
 
         //---- btnQueueDownloads ----
-        btnQueueDownloads.setText("In die Warteschlange");
+        btnQueueDownloads.setText(bundle.getString("download.batch.dialog.btnQueueDownloads.text"));
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);

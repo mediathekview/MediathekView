@@ -3,6 +3,7 @@ package mediathek.gui.actions.import_actions
 import mediathek.config.Konstanten
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
+import mediathek.i18n.UiMessages
 import mediathek.tool.FileDialogs.chooseLoadFileLocation
 import mediathek.tool.ReplacementRules
 import mediathek.tool.SwingErrorDialog
@@ -18,8 +19,8 @@ class ImportOldReplacementListAction(
     private val replacementRules: ReplacementRules,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Alte Ersetzungstabelle...")
-        putValue(SHORT_DESCRIPTION, "Ermöglicht den Import der Ersetzungstabelle aus einer alten Konfigurationsdatei.")
+        putValue(NAME, UiMessages.text("action.importOldReplacementListAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.importOldReplacementListAction.description"))
     }
 
     override fun actionPerformed(e: ActionEvent) {

@@ -5,13 +5,14 @@ import mediathek.gui.statistics.FilmStatisticsDialog
 import java.awt.Frame
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import mediathek.i18n.UiMessages
 
 class ShowFilmStatisticsAction(
     private val owner: Frame,
     private val filmCatalog: FilmCatalog,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Filmlisten-Statistik anzeigen...")
+        putValue(NAME, UiMessages.text("action.showFilmStatisticsAction.text"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

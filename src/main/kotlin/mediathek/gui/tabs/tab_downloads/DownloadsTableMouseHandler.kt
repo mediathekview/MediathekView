@@ -30,6 +30,7 @@ import mediathek.daten.abo.DatenAbo
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.GuiFunktionenProgramme
@@ -164,7 +165,7 @@ class DownloadsTableMouseHandler(
     private fun addDownloadControlItems(popupMenu: JPopupMenu) {
         val waitingOrRunning = selectedDownloadWaitingOrRunning()
 
-        val itemStarten = JMenuItem("Download starten").apply {
+        val itemStarten = JMenuItem(UiMessages.text("downloads.start")).apply {
             icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/caret-down.svg")
             isEnabled = !waitingOrRunning
             addActionListener {
@@ -178,7 +179,7 @@ class DownloadsTableMouseHandler(
         }
         popupMenu.add(itemStarten)
 
-        val itemStoppen = JMenuItem("Download stoppen").apply {
+        val itemStoppen = JMenuItem(UiMessages.text("downloads.stop")).apply {
             isEnabled = waitingOrRunning
             addActionListener {
                 downloadsTab.filmStartenWiederholenStoppen(
@@ -201,7 +202,7 @@ class DownloadsTableMouseHandler(
         popupMenu.add(downloadsTab.startAllDownloadsAction)
         popupMenu.add(downloadsTab.stopAllDownloadsAction)
 
-        val itemWartendeStoppen = JMenuItem("Wartende Downloads stoppen").apply {
+        val itemWartendeStoppen = JMenuItem(UiMessages.text("action.stopAllWaitingDownloadsAction.text")).apply {
             addActionListener { downloadsTab.stopAllWaitingDownloads() }
         }
         popupMenu.add(itemWartendeStoppen)
@@ -227,9 +228,9 @@ class DownloadsTableMouseHandler(
     }
 
     private fun addAboMenu(popupMenu: JPopupMenu) {
-        val submenueAbo = JMenu("Abo")
-        val itemChangeAbo = JMenuItem("Abo ändern")
-        val itemDelAbo = JMenuItem("Abo löschen")
+        val submenueAbo = JMenu(UiMessages.text("film.context.subscription"))
+        val itemChangeAbo = JMenuItem(UiMessages.text("abo.edit"))
+        val itemDelAbo = JMenuItem(UiMessages.text("abo.delete"))
         val datenAbo = datenDownload
             ?.film
             ?.let { film -> abos.findAboForFilm(film, false) }
@@ -272,13 +273,13 @@ class DownloadsTableMouseHandler(
     }
 
     private fun addPlaybackItems(popupMenu: JPopupMenu) {
-        val itemPlayer = JMenuItem("Film (URL) abspielen").apply {
+        val itemPlayer = JMenuItem(UiMessages.text("downloads.playUrl")).apply {
             icon = IconUtils.of(FontAwesomeSolid.PLAY_CIRCLE)
             addActionListener { playUrlAtPopupRow() }
         }
         popupMenu.add(itemPlayer)
 
-        val itemUrl = JMenuItem("URL kopieren").apply {
+        val itemUrl = JMenuItem(UiMessages.text("downloads.copyUrl")).apply {
             addActionListener { copyUrlAtPopupRow() }
         }
         popupMenu.add(itemUrl)
@@ -312,14 +313,14 @@ class DownloadsTableMouseHandler(
 
     private fun showMissingPlayerMessage() {
         val menuPath = if (SystemUtils.IS_OS_MAC_OSX) {
-            "MediathekView->Einstellungen…->Aufzeichnen und Abspielen->Set bearbeiten"
+            UiMessages.text("downloads.player.macPath")
         } else {
-            "Datei->Einstellungen->Set bearbeiten"
+            UiMessages.text("downloads.player.path")
         }
         JOptionPane.showMessageDialog(
             ownerFrame,
-            "Bitte legen Sie im Menü \"$menuPath\" ein Programm zum Abspielen fest.",
-            "Kein Videoplayer!",
+            UiMessages.format("downloads.player.configure", menuPath),
+            UiMessages.text("downloads.player.missing"),
             JOptionPane.INFORMATION_MESSAGE
         )
     }

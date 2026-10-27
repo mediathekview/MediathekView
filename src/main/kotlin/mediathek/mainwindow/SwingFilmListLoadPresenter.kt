@@ -24,6 +24,7 @@ import kotlinx.coroutines.withContext
 import mediathek.config.CommandLineOptions
 import mediathek.config.Konstanten
 import mediathek.filmlisten.*
+import mediathek.i18n.UiMessages
 import mediathek.tool.SwingErrorDialog
 import org.apache.logging.log4j.LogManager
 import java.awt.GraphicsEnvironment
@@ -67,7 +68,7 @@ internal class SwingFilmListLoadPresenter(
         runOnSwing {
             JOptionPane.showMessageDialog(
                 dialogHost.ownerFrame(),
-                "Das Laden der Filmliste hat nicht geklappt!",
+                UiMessages.text("load.failed"),
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.ERROR_MESSAGE,
             )
@@ -131,6 +132,6 @@ internal class SwingFilmListLoadPresenter(
 
     private companion object {
         private val logger = LogManager.getLogger(SwingFilmListLoadPresenter::class.java)
-        private const val NO_UPDATE_AVAILABLE = "Es ist keine aktuellere Filmliste verfügbar."
+        private val NO_UPDATE_AVAILABLE get() = UiMessages.text("load.current")
     }
 }

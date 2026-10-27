@@ -18,16 +18,32 @@
 
 package mediathek.gui.dialogEinstellungen.shutdown
 
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.awt.Component
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import javax.swing.DefaultComboBoxModel
+import javax.swing.DefaultListCellRenderer
 import javax.swing.JComboBox
+import javax.swing.JList
 
 class ShutdownActionComboBox : JComboBox<String>() {
     init {
         model = DefaultComboBoxModel(ACTIONS.toTypedArray())
+        // The helper receives the original command values; only their displayed labels are translated.
+        renderer = object : DefaultListCellRenderer() {
+            override fun getListCellRendererComponent(
+                list: JList<*>, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean,
+            ): Component {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
+                if (value in ACTIONS) {
+                    text = UiMessages.text("settings.advanced.shutdown.$value")
+                }
+                return this
+            }
+        }
         selectedItem = readCurrentAction()
 
         addActionListener {

@@ -18,6 +18,7 @@
 
 package mediathek.gui.dialogEinstellungen
 
+import mediathek.i18n.UiMessages
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.ProgramLocationChangedEvent
 import mediathek.tool.MessageBus
@@ -57,28 +58,28 @@ class PanelEinstellungenErweitert(
         jButtonProgrammDateimanager.addActionListener {
             chooseProgramPath(
                 valueWriter = { config.directoryOpenProgram = it },
-                title = "Dateimanager suchen",
+                title = UiMessages.text("settings.advanced.choose.fileManager"),
                 textField = jTextFieldProgrammDateimanager,
             )
         }
         jButtonProgrammVideoplayer.addActionListener {
             chooseProgramPath(
                 valueWriter = { config.videoPlayerProgram = it },
-                title = "Videoplayer suchen",
+                title = UiMessages.text("settings.advanced.choose.videoPlayer"),
                 textField = jTextFieldVideoplayer,
             )
         }
         jButtonProgrammUrl.addActionListener {
             chooseProgramPath(
                 valueWriter = { config.webBrowserProgram = it },
-                title = "Browser suchen",
+                title = UiMessages.text("settings.advanced.choose.browser"),
                 textField = jTextFieldProgrammUrl,
             )
         }
         jButtonProgrammShutdown.addActionListener {
             chooseProgramPath(
                 valueWriter = { config.linuxShutdownCommand = it },
-                title = "Shutdown Befehl",
+                title = UiMessages.text("settings.advanced.choose.shutdown"),
                 textField = jTextFieldProgrammShutdown,
             )
         }
@@ -191,7 +192,7 @@ class PanelEinstellungenErweitert(
         if (SystemUtils.IS_OS_MAC_OSX) {
             chooseProgramPathWithNativeDialog(title, textField)
         } else {
-            chooseProgramPathWithSwingDialog(textField)
+            chooseProgramPathWithSwingDialog(title, textField)
         }
 
         val program = textField.text
@@ -212,8 +213,9 @@ class PanelEinstellungenErweitert(
         }
     }
 
-    private fun chooseProgramPathWithSwingDialog(textField: JTextField) {
+    private fun chooseProgramPathWithSwingDialog(title: String, textField: JTextField) {
         val chooser = JFileChooser().apply {
+            dialogTitle = title
             currentDirectory = if (textField.text.isNotEmpty()) {
                 File(textField.text)
             } else {
@@ -236,8 +238,8 @@ class PanelEinstellungenErweitert(
         }
         try {
             when {
-                !File(program).exists() -> showProgramPathError(program, "existiert nicht!")
-                !File(program).canExecute() -> showProgramPathError(program, "kann nicht ausgeführt werden!")
+                !File(program).exists() -> showProgramPathError(program, "settings.advanced.programMissing")
+                !File(program).canExecute() -> showProgramPathError(program, "settings.advanced.programNotExecutable")
             }
         } catch (_: Exception) {
         }
@@ -246,8 +248,8 @@ class PanelEinstellungenErweitert(
     private fun showProgramPathError(program: String, message: String) {
         JOptionPane.showMessageDialog(
             owner,
-            "Das Programm:  \"$program\"  $message",
-            ERROR_DIALOG_TITLE,
+            UiMessages.format(message, program),
+            UiMessages.text("settings.advanced.error"),
             JOptionPane.ERROR_MESSAGE,
         )
     }
@@ -280,7 +282,6 @@ class PanelEinstellungenErweitert(
     private companion object {
         private val logger = LogManager.getLogger(PanelEinstellungenErweitert::class.java)
         private const val PATH_ACTION_LOG_MESSAGE = "BeobPfad.actionPerformed"
-        private const val ERROR_DIALOG_TITLE = "Fehler"
     }
 }
 
