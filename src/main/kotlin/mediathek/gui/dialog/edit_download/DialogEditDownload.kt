@@ -58,7 +58,8 @@ import javax.swing.event.DocumentListener
 class DialogEditDownload(
     parent: JFrame,
     private val datenDownload: DatenDownload,
-    private val gestartet: Boolean
+    private val gestartet: Boolean,
+    private val replacementRules: ReplacementRules,
 ) : DialogEditDownloadBase(parent) {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private val logger = LogManager.getLogger(javaClass)
@@ -245,7 +246,8 @@ class DialogEditDownload(
             datenDownload.abo,
             datenDownload.targetFileName,
             datenDownload.targetPath,
-            selectedResolution.toString()
+            selectedResolution.toString(),
+            replacementRules = replacementRules,
         )
 
         datenDownload.programInvocation =

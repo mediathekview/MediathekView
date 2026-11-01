@@ -83,6 +83,7 @@ fun startDownloads(
                     "",
                     result.info(),
                     result.subtitle(),
+                    replacementRules = downloads.replacementRules,
                 )
                 downloads.addDownload(datenDownload)
                 MessageBus.messageBus.publishAsync(DownloadListChangedEvent())

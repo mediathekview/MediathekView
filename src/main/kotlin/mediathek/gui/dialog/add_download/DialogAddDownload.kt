@@ -375,7 +375,8 @@ class DialogAddDownload(
             null,
             jTextFieldName.text,
             jComboBoxPfad.selectedItem?.toString() ?: "",
-            getFilmResolution().toString()
+            getFilmResolution().toString(),
+            replacementRules = downloads.replacementRules,
         ).apply {
             setGroesse(getFilmSize())
             isInfoFile = jCheckBoxInfodatei.isSelected
@@ -464,7 +465,8 @@ class DialogAddDownload(
                 null,
                 "",
                 "",
-                getFilmResolution().toString()
+                getFilmResolution().toString(),
+                replacementRules = downloads.replacementRules,
             )
 
             applyDownloadTargetFields(datenDownload)

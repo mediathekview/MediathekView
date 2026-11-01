@@ -1,11 +1,15 @@
 package mediathek.daten
 
+import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.DownloadConfig
 import mediathek.controller.starter.*
 import mediathek.tool.FileSize
+import mediathek.tool.ReplacementRules
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Path
 
 internal class DatenDownloadTest {
@@ -318,7 +322,7 @@ internal class DatenDownloadTest {
         val programSet = createProgramSet()
         programSet.setMp4Metadata(true)
 
-        val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "")
+        val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "", ReplacementRules())
 
         assertEquals(123L * FileSize.ONE_MIB, download.runtime.filmSize.size)
         assertTrue(download.isMp4Metadata)
@@ -337,7 +341,7 @@ internal class DatenDownloadTest {
         }
         val programSet = createProgramSet()
 
-        val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "")
+        val download = DatenDownload(programSet, film, DownloadSource.ABO, null, "", "", "", ReplacementRules())
 
         assertEquals("https://example.invalid/video.mp4", download.downloadUrl)
         assertEquals(456L * FileSize.ONE_MIB, download.runtime.filmSize.size)
@@ -384,6 +388,7 @@ internal class DatenDownloadTest {
             "",
             "",
             "",
+            ReplacementRules(),
         ).copy
 
         copiedDownload.programInvocation = ""
@@ -412,6 +417,114 @@ internal class DatenDownloadTest {
         val restored = DatenDownload.fromConfig(download.toConfig())
 
         assertTrue(restored.isMp4Metadata)
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun appliesReplacementRulesToGeneratedDownloadTargets(withFlags: Boolean) {
+        withFilenameReplacementEnabled(true) {
+            val download = createDownloadWithReplacementRules(withFlags)
+            val expectedPath = Path.of("/downloads", "Sender_One", "Topic_One")
+
+            assertEquals("Topic_One-Title_One.mp4", download.targetFileName)
+            assertEquals(expectedPath.toString(), download.targetPath)
+            assertEquals(expectedPath.resolve(download.targetFileName).toString(), download.targetPathFileName)
+            if (withFlags) {
+                assertTrue(download.isInfoFile)
+                assertTrue(download.isSubtitle)
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun ignoresSuppliedReplacementRulesWhenSettingIsDisabled(withFlags: Boolean) {
+        withFilenameReplacementEnabled(false) {
+            val download = createDownloadWithReplacementRules(withFlags)
+
+            assertEquals("Topic One-Title One.mp4", download.targetFileName)
+            assertEquals(Path.of("/downloads", "Sender One", "Topic One").toString(), download.targetPath)
+        }
+    }
+
+    @Test
+    fun savingGeneratedTargetDoesNotApplyReplacementRulesAgain() {
+        withFilenameReplacementEnabled(true) {
+            val rules = ReplacementRules().apply { add("One", "One more") }
+            val preview = createDownloadWithReplacementRules(false, rules)
+            val saved = DatenDownload(
+                checkNotNull(preview.pSet),
+                checkNotNull(preview.film),
+                DownloadSource.DOWNLOAD,
+                null,
+                preview.targetFileName,
+                preview.targetPath,
+                "",
+                rules,
+            )
+
+            assertEquals(preview.targetFileName, saved.targetFileName)
+            assertEquals(preview.targetPath, saved.targetPath)
+        }
+    }
+
+    @Test
+    fun bulkDownloadPreservesChosenPathWhileReplacingGeneratedFilename() {
+        withFilenameReplacementEnabled(true) {
+            val preview = createDownloadWithReplacementRules(false)
+            val chosenPath = Path.of("/downloads", "Chosen Folder").toString()
+            val download = DatenDownload(
+                checkNotNull(preview.pSet),
+                checkNotNull(preview.film),
+                DownloadSource.DOWNLOAD,
+                null,
+                "",
+                chosenPath,
+                "",
+                true,
+                true,
+                ReplacementRules().apply { add(" ", "_") },
+            )
+
+            assertEquals("Topic_One-Title_One.mp4", download.targetFileName)
+            assertEquals(chosenPath, download.targetPath)
+        }
+    }
+
+    private fun createDownloadWithReplacementRules(
+        withFlags: Boolean,
+        rules: ReplacementRules = ReplacementRules().apply { add(" ", "_") },
+    ): DatenDownload {
+        val film = DatenFilm().apply {
+            sender = "Sender One"
+            thema = "Topic One"
+            title = "Title One"
+            urlNormalQuality = "https://example.invalid/video.mp4"
+        }
+        val programSet = createProgramSet().apply {
+            zielDateiname = "%t-%T.%S"
+            zielPfad = Path.of("/downloads", "%s").toString()
+            isThemaAnlegen = true
+        }
+        return if (withFlags) {
+            DatenDownload(programSet, film, DownloadSource.DOWNLOAD, null, "", "", "", true, true, rules)
+        } else {
+            DatenDownload(programSet, film, DownloadSource.DOWNLOAD, null, "", "", "", rules)
+        }
+    }
+
+    private fun withFilenameReplacementEnabled(enabled: Boolean, test: () -> Unit) {
+        val configuration = ApplicationConfiguration.getInstance()
+        val previousReplace = configuration.useFilenameReplaceTable
+        val previousAscii = configuration.onlyAsciiFilenames
+        try {
+            configuration.useFilenameReplaceTable = enabled
+            configuration.onlyAsciiFilenames = false
+            test()
+        } finally {
+            configuration.useFilenameReplaceTable = previousReplace
+            configuration.onlyAsciiFilenames = previousAscii
+        }
     }
 
     private fun createProgramSet(): DatenPset =

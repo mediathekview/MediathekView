@@ -62,7 +62,7 @@ class DatenDownload() : Comparable<DatenDownload> {
         name: String,
         pfad: String,
         aufloesung: String,
-        replacementRules: ReplacementRules? = null,
+        replacementRules: ReplacementRules,
     ) : this() {
         this.replacementRules = replacementRules
         this.film = film
@@ -113,7 +113,7 @@ class DatenDownload() : Comparable<DatenDownload> {
         aufloesung: String,
         info: Boolean,
         subtitle: Boolean,
-        replacementRules: ReplacementRules? = null,
+        replacementRules: ReplacementRules,
     ) : this(pSet, film, quelle, abo, name, pfad, aufloesung, replacementRules) {
         isInfoFile = info
         isSubtitle = subtitle

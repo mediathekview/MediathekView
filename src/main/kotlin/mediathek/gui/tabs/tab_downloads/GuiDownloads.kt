@@ -593,7 +593,7 @@ class GuiDownloads(
         val datenDownload = getSelDownload() ?: return
         val gestartet = datenDownload.runtime.runState?.let { it.status >= StartStatus.RUNNING } == true
         val datenDownloadCopy = datenDownload.copy
-        val dialog = DialogEditDownload(ownerFrame, datenDownloadCopy, gestartet)
+        val dialog = DialogEditDownload(ownerFrame, datenDownloadCopy, gestartet, replacementRules)
         dialog.isVisible = true
         if (dialog.isConfirmed()) {
             datenDownload.aufMichKopieren(datenDownloadCopy)
