@@ -27,7 +27,7 @@ class ArteOnlineSearchServiceTest {
         assertEquals(OnlineSearchProvider.ARTE, result.provider)
         assertEquals("ARTE", result.sender)
         assertEquals("Dokus und Reportagen", result.topic)
-        assertEquals("Re: Tatort Kirche - Betroffene klagen an", result.title)
+        assertEquals("Re: Tatort Kirche - Betroffene klagen an (Deutsch)", result.title)
         assertEquals("https://www.arte.tv/de/videos/118267-006-A/re-tatort-kirche-betroffene-klagen-an/", result.websiteUrl)
         assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.normalQualityUrl)
         assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.highQualityUrl)
@@ -39,6 +39,102 @@ class ArteOnlineSearchServiceTest {
             httpClient.requestedUrls,
         )
         assertTrue(httpClient.requestedHeaders.all { it.isEmpty() })
+    }
+
+    @Test
+    fun `search returns one labelled result per audio language with selectable HLS versions`() = runBlocking {
+        val masterUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/test-id/de/XQ+KS+CHEV1/118267-006-A.m3u8"
+        val httpClient = FakeOnlineSearchHttpClient(
+            mapOf(
+                "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
+                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
+                    [{ "url": "$masterUrl", "versions": [
+                      { "code": "VF", "audioLanguage": "fr" },
+                      { "code": "VA", "audioLanguage": "de" },
+                      { "code": "VA-STMA", "audioLanguage": "deu" },
+                      { "code": "VO-STA", "audioLanguage": "eng" },
+                      { "code": "VAUD", "audioLanguage": "de", "audioDescription": true }
+                    ] }]
+                """.trimIndent()),
+            ),
+        )
+
+        val page = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort"))
+
+        assertEquals(
+            listOf("Deutsch", "Französisch", "Englisch").map { "Re: Tatort Kirche - Betroffene klagen an ($it)" },
+            page.results.map { it.title },
+        )
+        assertEquals(
+            listOf("VA", "VF", "VO-STA").map { masterUrl.replace("/de/", "/$it/") },
+            page.results.map { it.normalQualityUrl },
+        )
+        assertEquals(1, page.results.map { it.websiteUrl }.distinct().size)
+        assertTrue(page.results.all { it.normalQualityUrl == it.lowQualityUrl && it.normalQualityUrl == it.highQualityUrl })
+        assertTrue(page.results.none { it.isAudioDescription })
+        assertEquals(2, httpClient.requestedUrls.size)
+    }
+
+    @Test
+    fun `search preserves separate legacy language streams and removes duplicate languages`() = runBlocking {
+        val httpClient = FakeOnlineSearchHttpClient(
+            mapOf(
+                "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
+                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
+                    [
+                      { "url": "https://cdn.example/fr.m3u8", "versions": [{ "audioLanguage": "fra", "code": "VF" }] },
+                      { "url": "https://cdn.example/de.m3u8", "versions": [{ "audioLanguage": "deu", "code": "VA" }] },
+                      { "url": "https://cdn.example/de-sub.m3u8", "versions": [{ "audioLanguage": "de", "code": "VA-STMA" }] },
+                      { "url": "", "versions": [{ "audioLanguage": "en" }] }
+                    ]
+                """.trimIndent()),
+            ),
+        )
+
+        val results = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort")).results
+
+        assertEquals(listOf("https://cdn.example/de.m3u8", "https://cdn.example/fr.m3u8"), results.map { it.normalQualityUrl })
+        assertTrue(results[0].title.endsWith("(Deutsch)"))
+        assertTrue(results[1].title.endsWith("(Französisch)"))
+    }
+
+    @Test
+    fun `search keeps stream without language metadata playable without inventing a label`() = runBlocking {
+        val httpClient = FakeOnlineSearchHttpClient(
+            mapOf(
+                "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
+                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
+                    [{ "url": "https://cdn.example/unknown.m3u8" }]
+                """.trimIndent()),
+            ),
+        )
+
+        val result = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort")).results.single()
+
+        assertEquals("Re: Tatort Kirche - Betroffene klagen an", result.title)
+        assertEquals("https://cdn.example/unknown.m3u8", result.normalQualityUrl)
+    }
+
+    @Test
+    fun `url lookup prefers German audio when French is listed first`() = runBlocking {
+        val masterUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/test-id/de/XQ/118267-006-A.m3u8"
+        val httpClient = FakeOnlineSearchHttpClient(
+            mapOf(
+                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
+                    [{ "url": "$masterUrl", "versions": [
+                      { "code": "VF", "audioLanguage": "fr" },
+                      { "code": "VA", "audioLanguage": "de" }
+                    ] }]
+                """.trimIndent()),
+            ),
+        )
+
+        val result = testArteService(httpClient).loadByUrl(
+            OnlineUrlRequest(OnlineSearchProvider.ARTE, "https://www.arte.tv/de/videos/118267-006-A/example/"),
+        )
+
+        assertEquals("Re: Tatort Kirche - Betroffene klagen an (Deutsch)", result?.title)
+        assertEquals(masterUrl.replace("/de/", "/VA/"), result?.normalQualityUrl)
     }
 
     @Test
@@ -73,7 +169,7 @@ class ArteOnlineSearchServiceTest {
             ),
         )
 
-        assertEquals("Re: Tatort Kirche - Betroffene klagen an", result?.title)
+        assertEquals("Re: Tatort Kirche - Betroffene klagen an (Deutsch)", result?.title)
         assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result?.normalQualityUrl)
         assertEquals(
             listOf("$PLAYER_CONFIG_URL/118267-006-A"),
@@ -120,6 +216,31 @@ class ArteOnlineSearchServiceTest {
     }
 
     @Test
+    fun `search attaches subtitles matching each audio language`() = runBlocking {
+        val masterUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/test-id/de/XQ/118267-006-A.m3u8"
+        val httpClient = FakeOnlineSearchHttpClient(
+            mapOf(
+                "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
+                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
+                    [{ "url": "$masterUrl", "versions": [
+                      { "code": "VA-STMA", "audioLanguage": "de", "subtitleLanguage": "de", "closedCaptioning": true },
+                      { "code": "VF-STMF", "audioLanguage": "fr", "subtitleLanguage": "fr", "closedCaptioning": true }
+                    ] }]
+                """.trimIndent()),
+                masterUrl to """
+                    #EXTM3U
+                    #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",LANGUAGE="de",URI="https://cdn.example/de.vtt"
+                    #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="subs",LANGUAGE="fr",URI="https://cdn.example/fr.vtt"
+                """.trimIndent(),
+            ),
+        )
+
+        val results = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort")).results
+
+        assertEquals(listOf("https://cdn.example/de.vtt", "https://cdn.example/fr.vtt"), results.map { it.subtitleUrl })
+    }
+
+    @Test
     fun `search builds config url from id when player config is absent`() = runBlocking {
         val httpClient = FakeOnlineSearchHttpClient(
             mapOf(
@@ -155,7 +276,7 @@ class ArteOnlineSearchServiceTest {
         val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "klima"))
 
         assertEquals(1, page.results.size)
-        assertEquals("Marseille lernt, mit dem Feuer zu leben", page.results.single().title)
+        assertEquals("Marseille lernt, mit dem Feuer zu leben (Deutsch)", page.results.single().title)
     }
 
     @Test
@@ -183,6 +304,12 @@ class ArteOnlineSearchServiceTest {
                 "$PLAYER_CONFIG_URL/050709-001-A" to arteConfigJson(
                     id = "050709-001-A",
                     title = "Mord im Mittsommer - Staffel 1 (1/3)",
+                    streamsJson = """
+                        [
+                          { "url": "https://cdn.example/episode1-de.m3u8", "versions": [{ "audioLanguage": "de" }] },
+                          { "url": "https://cdn.example/episode1-fr.m3u8", "versions": [{ "audioLanguage": "fr" }] }
+                        ]
+                    """.trimIndent(),
                 ),
                 "$PLAYER_CONFIG_URL/050709-002-A" to arteConfigJson(
                     id = "050709-002-A",
@@ -202,9 +329,10 @@ class ArteOnlineSearchServiceTest {
 
         assertEquals(
             listOf(
-                "Mord im Mittsommer - Staffel 1 (1/3)",
-                "Mord im Mittsommer - Staffel 1 (2/3)",
-                "Mord im Mittsommer - Staffel 2 (1/3)",
+                "Mord im Mittsommer - Staffel 1 (1/3) (Deutsch)",
+                "Mord im Mittsommer - Staffel 1 (1/3) (Französisch)",
+                "Mord im Mittsommer - Staffel 1 (2/3) (Deutsch)",
+                "Mord im Mittsommer - Staffel 2 (1/3) (Deutsch)",
             ),
             page.results.map { it.title },
         )
@@ -338,8 +466,9 @@ private fun arteConfigJson(
     title: String = "Re: Tatort Kirche - Betroffene klagen an",
     streamUrl: String? = "https://manifest-arte.akamaized.net/118267-006-A.m3u8",
     hasGermanSubtitles: Boolean = false,
+    streamsJson: String? = null,
 ): String {
-    val streams = if (streamUrl == null) {
+    val streams = streamsJson ?: if (streamUrl == null) {
         "[]"
     } else {
         val subtitleVersion = if (hasGermanSubtitles) {
@@ -347,7 +476,7 @@ private fun arteConfigJson(
         } else {
             ""
         }
-        """[{ "url": "$streamUrl", "versions": [{ "code": "VA", "audioDescription": false }$subtitleVersion], "mainQuality": { "code": "XQ" } }]"""
+        """[{ "url": "$streamUrl", "versions": [{ "code": "VA", "audioLanguage": "de", "audioDescription": false }$subtitleVersion], "mainQuality": { "code": "XQ" } }]"""
     }
     return """
         {

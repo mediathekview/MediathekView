@@ -13,6 +13,7 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 
 class ArteOnlineSearchService(
@@ -30,7 +31,7 @@ class ArteOnlineSearchService(
             .mapNotNull { it.jsonObjectOrNull() }
             .filter { it.hasVideoStreams() }
         val results = items.flatMap { loadFromSearchItem(it) }
-            .distinctBy { it.websiteUrl.ifBlank { it.normalQualityUrl } }
+            .distinctBy { it.websiteUrl to it.normalQualityUrl }
         val pagination = root["pagination"]?.jsonObjectOrNull()
         val currentPage = pagination?.get("page")?.jsonPrimitive?.intOrNull ?: pageNumber
         val pages = pagination?.get("pages")?.jsonPrimitive?.intOrNull
@@ -50,7 +51,7 @@ class ArteOnlineSearchService(
             configUrl = configUrl(id),
             fallbackTopic = "ARTE",
             fallbackWebsiteUrl = request.url,
-        )
+        ).firstOrNull()
     }
 
     private suspend fun loadFromSearchItem(item: JsonObject): List<OnlineSearchResult> {
@@ -64,11 +65,11 @@ class ArteOnlineSearchService(
             ?: item.string("id")?.let(::configUrl)
             ?: return emptyList()
         val fallbackTopic = item["genre"]?.jsonObjectOrNull()?.string("label") ?: "ARTE"
-        return listOfNotNull(loadByConfigUrl(
+        return loadByConfigUrl(
             configUrl = configUrl,
             fallbackTopic = fallbackTopic,
             fallbackWebsiteUrl = item.string("url").orEmpty(),
-        ))
+        )
     }
 
     private suspend fun loadFromCollectionItem(item: JsonObject): List<OnlineSearchResult> {
@@ -110,52 +111,89 @@ class ArteOnlineSearchService(
         configUrl: String,
         fallbackTopic: String,
         fallbackWebsiteUrl: String,
-    ): OnlineSearchResult? {
+    ): List<OnlineSearchResult> {
         val attributes = get(configUrl).parseJsonObject(json)["data"]?.jsonObjectOrNull()
             ?.get("attributes")?.jsonObjectOrNull()
-            ?: return null
-        val metadata = attributes["metadata"]?.jsonObjectOrNull() ?: return null
+            ?: return emptyList()
+        val metadata = attributes["metadata"]?.jsonObjectOrNull() ?: return emptyList()
         val title = listOfNotNull(metadata.string("title"), metadata.string("subtitle"))
             .joinToString(" - ")
-            .ifBlank { return null }
-        val hlsStream = attributes["streams"]?.jsonArrayOrNull().orEmpty()
-            .firstNotNullOfOrNull { stream -> stream.jsonObjectOrNull()?.takeIf { it.string("url") != null } }
-        val hlsStreamUrl = hlsStream?.string("url") ?: return null
-        val subtitleUrl = loadSubtitleUrl(hlsStream)
+            .ifBlank { return emptyList() }
         val websiteUrl = metadata["link"]?.jsonObjectOrNull()?.string("url") ?: fallbackWebsiteUrl
-        return OnlineSearchResult(
-            provider = OnlineSearchProvider.ARTE,
-            sender = "ARTE",
-            topic = fallbackTopic,
-            title = title,
-            description = metadata.string("description").orEmpty(),
-            websiteUrl = websiteUrl,
-            normalQualityUrl = hlsStreamUrl,
-            lowQualityUrl = hlsStreamUrl,
-            highQualityUrl = hlsStreamUrl,
-            subtitleUrl = subtitleUrl,
-            broadcastTime = parseArteDate(attributes["rights"]?.jsonObjectOrNull()?.string("begin")),
-            duration = metadata["duration"]?.jsonObjectOrNull()
-                ?.get("seconds")?.jsonPrimitive?.longOrNull?.let(Duration::ofSeconds),
-        )
+        val variants = attributes["streams"]?.jsonArrayOrNull().orEmpty()
+            .mapNotNull { it.jsonObjectOrNull() }
+            .flatMap { stream -> stream.audioVariants() }
+            .sortedWith(compareBy<ArteAudioVariant> { it.language != "de" }.thenBy { it.audioDescription })
+            .distinctBy { it.language }
+        return variants.map { variant ->
+            val languageLabel = variant.language?.let { Locale.forLanguageTag(it).getDisplayLanguage(Locale.GERMAN) }
+            val displayTitle = if (languageLabel.isNullOrBlank()) title else "$title ($languageLabel)"
+            OnlineSearchResult(
+                provider = OnlineSearchProvider.ARTE,
+                sender = "ARTE",
+                topic = fallbackTopic,
+                title = displayTitle,
+                description = metadata.string("description").orEmpty(),
+                websiteUrl = websiteUrl,
+                normalQualityUrl = variant.url,
+                lowQualityUrl = variant.url,
+                highQualityUrl = variant.url,
+                subtitleUrl = loadSubtitleUrl(variant.stream, variant.language ?: "de"),
+                broadcastTime = parseArteDate(attributes["rights"]?.jsonObjectOrNull()?.string("begin")),
+                duration = metadata["duration"]?.jsonObjectOrNull()
+                    ?.get("seconds")?.jsonPrimitive?.longOrNull?.let(Duration::ofSeconds),
+                isAudioDescription = variant.audioDescription,
+            )
+        }
     }
 
-    private suspend fun loadSubtitleUrl(hlsStream: JsonObject): String {
-        val hasGermanSubtitles = hlsStream["versions"]?.jsonArrayOrNull().orEmpty()
+    private fun JsonObject.audioVariants(): List<ArteAudioVariant> {
+        val url = string("url")?.takeIf { it.isNotBlank() } ?: return emptyList()
+        val versions = this["versions"]?.jsonArrayOrNull().orEmpty().mapNotNull { it.jsonObjectOrNull() }
+        val manifest = ARTE_MANIFEST_PATTERN.matchEntire(url)
+        // Older player responses expose one audio version per stream URL.
+        val selectableVersions = if (manifest == null) versions.take(1) else versions
+        return selectableVersions.mapNotNull { version ->
+            val language = version.string("audioLanguage")?.let(::normalizeLanguage)
+            val code = version.string("code")?.takeIf { it.isNotBlank() }
+            // A version code selects a single audio track; the locale segment alone keeps all tracks.
+            val versionUrl = if (manifest != null && code != null) {
+                manifest.groupValues[1] + URLEncoder.encode(code, StandardCharsets.UTF_8) + manifest.groupValues[2]
+            } else if (manifest != null && versions.size > 1) {
+                return@mapNotNull null
+            } else {
+                url
+            }
+            ArteAudioVariant(language, versionUrl, this, version["audioDescription"]?.jsonPrimitive?.booleanOrNull == true)
+        }.ifEmpty { listOf(ArteAudioVariant(null, url, this, false)) }
+    }
+
+    private fun normalizeLanguage(language: String): String = when (val code = language.lowercase(Locale.ROOT)) {
+        "deu", "ger" -> "de"
+        "fra", "fre" -> "fr"
+        "eng" -> "en"
+        "spa" -> "es"
+        "ita" -> "it"
+        "pol" -> "pl"
+        else -> code
+    }
+
+    private suspend fun loadSubtitleUrl(hlsStream: JsonObject, language: String): String {
+        val hasSubtitles = hlsStream["versions"]?.jsonArrayOrNull().orEmpty()
             .mapNotNull { it.jsonObjectOrNull() }
             .any { version ->
                 version["closedCaptioning"]?.jsonPrimitive?.booleanOrNull == true &&
-                    version.string("subtitleLanguage") in GERMAN_LANGUAGE_CODES
+                    version.string("subtitleLanguage")?.let(::normalizeLanguage) == language
             }
         val masterUrl = hlsStream.string("url")
-        if (!hasGermanSubtitles || masterUrl == null) {
+        if (!hasSubtitles || masterUrl == null) {
             return ""
         }
 
         return try {
             val subtitlePlaylistUrl = get(masterUrl).hlsMediaAttributes()
                 .firstOrNull { attributes ->
-                    attributes["TYPE"] == "SUBTITLES" && attributes["LANGUAGE"] in GERMAN_LANGUAGE_CODES
+                    attributes["TYPE"] == "SUBTITLES" && attributes["LANGUAGE"]?.let(::normalizeLanguage) == language
                 }
                 ?.get("URI")
                 ?.let { masterUrl.resolveUrl(it) }
@@ -269,12 +307,20 @@ class ArteOnlineSearchService(
         private const val MIN_REQUEST_DELAY_MILLIS = 250L
         private const val MAX_REQUEST_DELAY_MILLIS = 10_000L
         private val ARTE_PROGRAM_ID_PATTERN = Regex("""[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6}""")
-        private val GERMAN_LANGUAGE_CODES = setOf("de", "deu")
+        private val ARTE_MANIFEST_PATTERN =
+            Regex("""(https://manifest-arte\.akamaized\.net/api/manifest/v1/Generate/[^/]+/)[^/]+(/.*)""")
         private val SUBCOLLECTION_ID_PATTERN = Regex("""subCollectionId(?:=|\\u003d)(RC-[0-9]{6})""")
         private val HLS_ATTRIBUTE_PATTERN = Regex("""([A-Z0-9-]+)=(?:"([^"]*)"|([^,]*))""")
         private val BERLIN: ZoneId = ZoneId.of("Europe/Berlin")
     }
 }
+
+private data class ArteAudioVariant(
+    val language: String?,
+    val url: String,
+    val stream: JsonObject,
+    val audioDescription: Boolean,
+)
 
 interface ArteOnlineSearchRateLimitState {
     var requestDelayMillis: Long
