@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 class ArteOnlineSearchServiceTest {
     @Test
     fun `search loads ARTE results with HLS for all qualities`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
@@ -35,7 +35,8 @@ class ArteOnlineSearchServiceTest {
         assertEquals(Duration.ofSeconds(1815), result.duration)
         assertEquals(LocalDateTime.of(2025, 2, 25, 5, 0), result.broadcastTime)
         assertEquals(
-            listOf("$SEARCH_CONTENT_URL?page=1&query=tatort", "$PLAYER_CONFIG_URL/118267-006-A"),
+            listOf("$SEARCH_CONTENT_URL?page=1&query=tatort", "$PLAYER_CONFIG_URL/118267-006-A") +
+                otherCatalogueUrls("tatort"),
             httpClient.requestedUrls,
         )
         assertTrue(httpClient.requestedHeaders.all { it.isEmpty() })
@@ -44,7 +45,7 @@ class ArteOnlineSearchServiceTest {
     @Test
     fun `search returns one labelled result per audio language with selectable HLS versions`() = runBlocking {
         val masterUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/test-id/de/XQ+KS+CHEV1/118267-006-A.m3u8"
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
@@ -72,12 +73,12 @@ class ArteOnlineSearchServiceTest {
         assertEquals(1, page.results.map { it.websiteUrl }.distinct().size)
         assertTrue(page.results.all { it.normalQualityUrl == it.lowQualityUrl && it.normalQualityUrl == it.highQualityUrl })
         assertTrue(page.results.none { it.isAudioDescription })
-        assertEquals(2, httpClient.requestedUrls.size)
+        assertEquals(8, httpClient.requestedUrls.size)
     }
 
     @Test
     fun `search preserves separate legacy language streams and removes duplicate languages`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
@@ -100,7 +101,7 @@ class ArteOnlineSearchServiceTest {
 
     @Test
     fun `search keeps stream without language metadata playable without inventing a label`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
@@ -118,7 +119,7 @@ class ArteOnlineSearchServiceTest {
     @Test
     fun `url lookup prefers German audio when French is listed first`() = runBlocking {
         val masterUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/test-id/de/XQ/118267-006-A.m3u8"
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
                     [{ "url": "$masterUrl", "versions": [
@@ -138,24 +139,147 @@ class ArteOnlineSearchServiceTest {
     }
 
     @Test
-    fun `search follows pagination with numeric next token`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+    fun `search merges all seven catalogues by programme and preserves additional audio languages`() = runBlocking {
+        val ids = mapOf(
+            "de" to "118267-006-A", "fr" to "118267-006-A", "en" to "118267-006-A",
+            "es" to "118267-007-A", "pl" to "118267-008-A", "it" to "118267-009-A", "ro" to "118267-010-A",
+        )
+        val responses = buildMap {
+            for ((language, id) in ids) {
+                put(
+                    "${SEARCH_CONTENT_URL.replace("/de/", "/$language/")}?page=1&query=union",
+                    arteSearchJson(id = "${id}_$language", language = language, playerConfig = null),
+                )
+                val audioLanguages = when (language) {
+                    "fr" -> listOf("deu", "pol")
+                    "en" -> listOf("spa")
+                    "ro" -> listOf("ron")
+                    else -> listOf(language)
+                }
+                val streams = audioLanguages.joinToString(",") { audio ->
+                    """{ "url": "https://cdn.example/$language/$audio/$id.m3u8", "versions": [{ "audioLanguage": "$audio" }] }"""
+                }
+                put(
+                    "${PLAYER_CONFIG_URL.replace("/de", "/$language")}/$id",
+                    arteConfigJson(id = id, title = "$language programme", streamsJson = "[$streams]")
+                        .replace("https://www.arte.tv/de/", "https://www.arte.tv/$language/"),
+                )
+            }
+        }
+        val httpClient = FakeOnlineSearchHttpClient(responses)
+
+        val page = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "union"))
+
+        assertEquals(
+            listOf(
+                "de programme (Deutsch)", "fr programme (Polnisch)", "en programme (Spanisch)",
+                "es programme (Spanisch)", "pl programme (Polnisch)", "it programme (Italienisch)", "ro programme (Rumänisch)",
+            ),
+            page.results.map { it.title },
+        )
+        assertEquals(7, page.totalResults)
+        assertEquals(null, page.nextToken)
+        assertEquals(7, httpClient.requestedUrls.count { "/content?page=" in it })
+        assertEquals(7, httpClient.requestedUrls.count { "/config/" in it })
+        assertTrue(httpClient.requestedUrls.none { "_" in it.substringAfterLast('/') })
+        assertTrue(page.results.none { it.normalQualityUrl == "https://cdn.example/fr/deu/118267-006-A.m3u8" })
+    }
+
+    @Test
+    fun `search expands Polish collections using the Polish catalogue and merges episode overlaps`() = runBlocking {
+        val collectionUrl = "https://www.arte.tv/pl/videos/RC-022391/example/"
+        val plConfigUrl = "${PLAYER_CONFIG_URL.replace("/de", "/pl")}/118267-006-A"
+        val httpClient = arteHttpClient(
             mapOf(
-                "$SEARCH_CONTENT_URL?page=2&query=klima" to arteSearchJson(page = 2, pages = 3, totalCount = 42),
+                "$SEARCH_CONTENT_URL?page=1&query=collection" to arteSearchJson(),
+                "${SEARCH_CONTENT_URL.replace("/de/", "/pl/")}?page=1&query=collection" to arteSearchJson(
+                    id = "RC-022391_pl", language = "pl", url = collectionUrl, isCollection = true,
+                ),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
+                collectionUrl to """<script>subCollectionId=RC-022392</script>""",
+                "${COLLECTION_SUBCOLLECTION_CONTENT_URL.replace("/de/", "/pl/")}?collectionId=RC-022391&page=1&pageId=collection&subCollectionId=RC-022392&type=collection" to
+                    arteCollectionContentJson("118267-006-A" to "Polish episode").replace("/de/", "/pl/"),
+                plConfigUrl to arteConfigJson(
+                    title = "Polish episode",
+                    streamsJson = """[
+                        { "url": "https://cdn.example/de.m3u8", "versions": [{ "audioLanguage": "de" }] },
+                        { "url": "https://cdn.example/pl.m3u8", "versions": [{ "audioLanguage": "pl" }] }
+                    ]""".trimIndent(),
+                ),
+            ),
+        )
+
+        val page = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "collection"))
+
+        assertEquals(
+            listOf("Re: Tatort Kirche - Betroffene klagen an (Deutsch)", "Polish episode (Polnisch)"),
+            page.results.map { it.title },
+        )
+        assertEquals(2, page.totalResults)
+        assertEquals(1, httpClient.requestedUrls.count { it == plConfigUrl })
+        assertTrue(httpClient.requestedUrls.none { "/config/pl/RC-022391" in it })
+    }
+
+    @Test
+    fun `search returns zero results when every catalogue is empty`() = runBlocking {
+        val httpClient = arteHttpClient(
+            mapOf("$SEARCH_CONTENT_URL?page=1&query=empty" to """{ "data": [], "pagination": null }"""),
+        )
+
+        val page = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "empty"))
+
+        assertTrue(page.results.isEmpty())
+        assertEquals(null, page.nextToken)
+        assertEquals(0, page.totalResults)
+        assertEquals(7, httpClient.requestedUrls.size)
+    }
+
+    @Test
+    fun `search follows independent catalogue pages and deduplicates across pages`() = runBlocking {
+        val deUrl = "$SEARCH_CONTENT_URL?page=1&query=klima"
+        val plUrl = deUrl.replace("/de/", "/pl/")
+        val httpClient = arteHttpClient(
+            mapOf(
+                deUrl to arteSearchJson(pages = 2, totalCount = 42),
+                plUrl to arteSearchJson(pages = 3, totalCount = 50),
+                deUrl.replace("page=1", "page=2") to arteSearchJson(page = 2, pages = 2),
+                plUrl.replace("page=1", "page=2") to arteSearchJson(page = 2, pages = 3),
+                plUrl.replace("page=1", "page=3") to arteSearchJson(
+                    page = 3, pages = 3, id = "118267-006-A_pl", playerConfig = null,
+                ),
+                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
+                "${PLAYER_CONFIG_URL.replace("/de", "/pl")}/118267-006-A" to arteConfigJson(
+                    title = "Polish-only result",
+                    streamsJson = """[{ "url": "https://cdn.example/pl.m3u8", "versions": [{ "audioLanguage": "pl" }] }]""",
+                ),
             ),
         )
         val service = testArteService(httpClient)
 
-        val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "klima", nextToken = "2"))
+        val first = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "klima"))
+        val second = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "klima", first.nextToken))
+        val third = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "klima", second.nextToken))
 
-        assertEquals("3", page.nextToken)
-        assertEquals(42, page.totalResults)
+        assertEquals(1, first.results.size)
+        assertEquals(null, first.totalResults)
+        assertTrue(first.hasNextPage)
+        assertTrue(second.results.isEmpty())
+        assertTrue(second.hasNextPage)
+        assertEquals(null, second.totalResults)
+        assertEquals("Polish-only result (Polnisch)", third.results.single().title)
+        assertEquals(null, third.nextToken)
+        assertEquals(2, third.totalResults)
+        assertEquals(2, httpClient.requestedUrls.count { it == "$PLAYER_CONFIG_URL/118267-006-A" })
+        assertEquals(1, httpClient.requestedUrls.count { it == deUrl })
+        assertEquals(1, httpClient.requestedUrls.count { it == plUrl })
+        assertTrue(httpClient.requestedUrls.none { it == deUrl.replace("page=1", "page=3") })
+        assertEquals(1, httpClient.requestedUrls.count { it == plUrl.replace("page=1", "page=3") })
+        assertTrue(otherCatalogueUrls("klima").all { url -> httpClient.requestedUrls.count { it == url } == 1 })
     }
 
     @Test
     fun `url lookup extracts ARTE program id and loads config`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
             ),
@@ -179,7 +303,7 @@ class ArteOnlineSearchServiceTest {
 
     @Test
     fun `search skips results without playable streams`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamUrl = null),
@@ -191,7 +315,8 @@ class ArteOnlineSearchServiceTest {
 
         assertEquals(emptyList<OnlineSearchResult>(), page.results)
         assertEquals(
-            listOf("$SEARCH_CONTENT_URL?page=1&query=tatort", "$PLAYER_CONFIG_URL/118267-006-A"),
+            listOf("$SEARCH_CONTENT_URL?page=1&query=tatort", "$PLAYER_CONFIG_URL/118267-006-A") +
+                otherCatalogueUrls("tatort"),
             httpClient.requestedUrls,
         )
     }
@@ -200,7 +325,7 @@ class ArteOnlineSearchServiceTest {
     fun `search resolves German WebVTT subtitles from ARTE HLS manifests`() = runBlocking {
         val masterUrl = "https://manifest-arte.akamaized.net/118267-006-A.m3u8"
         val subtitlePlaylistUrl = "https://manifest-arte.akamaized.net/subtitles/de.m3u8"
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(hasGermanSubtitles = true),
@@ -218,7 +343,7 @@ class ArteOnlineSearchServiceTest {
     @Test
     fun `search attaches subtitles matching each audio language`() = runBlocking {
         val masterUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/test-id/de/XQ/118267-006-A.m3u8"
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamsJson = """
@@ -242,7 +367,7 @@ class ArteOnlineSearchServiceTest {
 
     @Test
     fun `search builds config url from id when player config is absent`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(playerConfig = null),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
@@ -258,7 +383,7 @@ class ArteOnlineSearchServiceTest {
 
     @Test
     fun `search accepts collection-like ARTE ids when config returns streams`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=klima" to arteSearchJson(
                     id = "RC-020428",
@@ -281,7 +406,7 @@ class ArteOnlineSearchServiceTest {
 
     @Test
     fun `search expands ARTE collection result to playable episodes`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
+        val httpClient = arteHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=mittsommer" to arteSearchJson(
                     id = "RC-022391",
@@ -369,6 +494,24 @@ class ArteOnlineSearchServiceTest {
     }
 }
 
+private val arteCatalogueLanguages = listOf("de", "fr", "en", "es", "pl", "it", "ro")
+private const val arteSearchUrl =
+    "https://api.arte.tv/api/emac/v4/de/web/zones/f75e7b54-a37b-4f8f-b01b-dbefa877c041/content"
+
+private fun otherCatalogueUrls(query: String): List<String> =
+    arteCatalogueLanguages.drop(1).map { language -> "${arteSearchUrl.replace("/de/", "/$language/")}?page=1&query=$query" }
+
+private fun Map<String, String>.withEmptyOtherCatalogues(): Map<String, String> {
+    val emptyCatalogues = keys.filter { it.startsWith(arteSearchUrl) }.flatMap { url ->
+        val query = url.substringAfter("&query=")
+        otherCatalogueUrls(query).map { it to """{ "data": [], "pagination": null }""" }
+    }.toMap()
+    return emptyCatalogues + this
+}
+
+private fun arteHttpClient(responses: Map<String, String>): FakeOnlineSearchHttpClient =
+    FakeOnlineSearchHttpClient(responses.withEmptyOtherCatalogues())
+
 private class TestArteRateLimitState(
     override var requestDelayMillis: Long = 0,
 ) : ArteOnlineSearchRateLimitState
@@ -377,9 +520,10 @@ private fun testArteService(httpClient: OnlineSearchHttpClient): ArteOnlineSearc
     ArteOnlineSearchService(httpClient, TestArteRateLimitState())
 
 private class RateLimitedOnlineSearchHttpClient(
-    private val responses: Map<String, String>,
+    responses: Map<String, String>,
     private val rateLimitedUrl: String,
 ) : OnlineSearchHttpClient {
+    private val responses = responses.withEmptyOtherCatalogues()
     val requestedUrls = ArrayList<String>()
     private var rateLimitThrown = false
 
@@ -400,11 +544,12 @@ private class RateLimitedOnlineSearchHttpClient(
 private fun arteSearchJson(
     id: String = "118267-006-A",
     title: String = "Re: Tatort Kirche - Betroffene klagen an",
-    url: String = "https://www.arte.tv/de/videos/$id/re-tatort-kirche-betroffene-klagen-an/",
+    language: String = "de",
+    url: String = "https://www.arte.tv/$language/videos/${id.substringBefore('_')}/re-tatort-kirche-betroffene-klagen-an/",
     page: Int = 1,
     pages: Int = 1,
     totalCount: Long = 1,
-    playerConfig: String? = "https://api.arte.tv/api/player/v2/config/de/118267-006-A",
+    playerConfig: String? = "https://api.arte.tv/api/player/v2/config/$language/${id.substringBefore('_')}",
     isCollection: Boolean = false,
 ): String {
     val player = playerConfig?.let { """, "player": { "config": "$it" }""" }.orEmpty()
