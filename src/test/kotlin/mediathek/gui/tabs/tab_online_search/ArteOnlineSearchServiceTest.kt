@@ -9,12 +9,11 @@ import java.time.LocalDateTime
 
 class ArteOnlineSearchServiceTest {
     @Test
-    fun `search loads ARTE results and resolves playable config`() = runBlocking {
+    fun `search loads ARTE results with HLS for all qualities`() = runBlocking {
         val httpClient = FakeOnlineSearchHttpClient(
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
-                "$OPA_STREAM_URL/118267-006-A/SHOW/de" to arteOpaStreamsJson(),
             ),
         )
         val service = testArteService(httpClient)
@@ -30,16 +29,16 @@ class ArteOnlineSearchServiceTest {
         assertEquals("Dokus und Reportagen", result.topic)
         assertEquals("Re: Tatort Kirche - Betroffene klagen an", result.title)
         assertEquals("https://www.arte.tv/de/videos/118267-006-A/re-tatort-kirche-betroffene-klagen-an/", result.websiteUrl)
-        assertEquals("https://arte-cdn.example/118267-006-A_EQ.mp4", result.normalQualityUrl)
-        assertEquals("https://arte-cdn.example/118267-006-A_SQ.mp4", result.highQualityUrl)
-        assertEquals("https://arte-cdn.example/118267-006-A_HQ.mp4", result.lowQualityUrl)
+        assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.normalQualityUrl)
+        assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.highQualityUrl)
+        assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.lowQualityUrl)
         assertEquals(Duration.ofSeconds(1815), result.duration)
         assertEquals(LocalDateTime.of(2025, 2, 25, 5, 0), result.broadcastTime)
-        val streamRequestIndex = httpClient.requestedUrls.indexOf("$OPA_STREAM_URL/118267-006-A/SHOW/de")
         assertEquals(
-            mapOf("Authorization" to ARTE_STREAM_API_TOKEN),
-            httpClient.requestedHeaders[streamRequestIndex],
+            listOf("$SEARCH_CONTENT_URL?page=1&query=tatort", "$PLAYER_CONFIG_URL/118267-006-A"),
+            httpClient.requestedUrls,
         )
+        assertTrue(httpClient.requestedHeaders.all { it.isEmpty() })
     }
 
     @Test
@@ -63,7 +62,6 @@ class ArteOnlineSearchServiceTest {
         val httpClient = FakeOnlineSearchHttpClient(
             mapOf(
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
-                "$OPA_STREAM_URL/118267-006-A/SHOW/de" to arteOpaStreamsJson(),
             ),
         )
         val service = testArteService(httpClient)
@@ -76,9 +74,9 @@ class ArteOnlineSearchServiceTest {
         )
 
         assertEquals("Re: Tatort Kirche - Betroffene klagen an", result?.title)
-        assertEquals("https://arte-cdn.example/118267-006-A_EQ.mp4", result?.normalQualityUrl)
+        assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result?.normalQualityUrl)
         assertEquals(
-            listOf("$PLAYER_CONFIG_URL/118267-006-A", "$OPA_STREAM_URL/118267-006-A/SHOW/de"),
+            listOf("$PLAYER_CONFIG_URL/118267-006-A"),
             httpClient.requestedUrls,
         )
     }
@@ -96,41 +94,10 @@ class ArteOnlineSearchServiceTest {
         val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort"))
 
         assertEquals(emptyList<OnlineSearchResult>(), page.results)
-    }
-
-    @Test
-    fun `search uses OPA mp4 streams when player config has no HLS stream`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
-            mapOf(
-                "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
-                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(streamUrl = null),
-                "$OPA_STREAM_URL/118267-006-A/SHOW/de" to arteOpaStreamsJson(),
-            ),
+        assertEquals(
+            listOf("$SEARCH_CONTENT_URL?page=1&query=tatort", "$PLAYER_CONFIG_URL/118267-006-A"),
+            httpClient.requestedUrls,
         )
-        val service = testArteService(httpClient)
-
-        val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort"))
-
-        assertEquals("https://arte-cdn.example/118267-006-A_EQ.mp4", page.results.single().normalQualityUrl)
-    }
-
-    @Test
-    fun `search falls back to HLS stream when OPA has no usable mp4 stream`() = runBlocking {
-        val httpClient = FakeOnlineSearchHttpClient(
-            mapOf(
-                "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
-                "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
-                "$OPA_STREAM_URL/118267-006-A/SHOW/de" to arteOpaStreamsJson(includeDefaultAudio = false),
-            ),
-        )
-        val service = testArteService(httpClient)
-
-        val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort"))
-
-        val result = page.results.single()
-        assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.normalQualityUrl)
-        assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.highQualityUrl)
-        assertEquals("https://manifest-arte.akamaized.net/118267-006-A.m3u8", result.lowQualityUrl)
     }
 
     @Test
@@ -141,7 +108,6 @@ class ArteOnlineSearchServiceTest {
             mapOf(
                 "$SEARCH_CONTENT_URL?page=1&query=tatort" to arteSearchJson(),
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(hasGermanSubtitles = true),
-                "$OPA_STREAM_URL/118267-006-A/SHOW/de" to arteOpaStreamsJson(),
                 masterUrl to arteMasterPlaylist(subtitlePlaylistUrl),
                 subtitlePlaylistUrl to arteSubtitlePlaylist("de/118267-006-A.vtt"),
             ),
@@ -270,11 +236,8 @@ class ArteOnlineSearchServiceTest {
         private const val SEARCH_CONTENT_URL =
             "https://api.arte.tv/api/emac/v4/de/web/zones/f75e7b54-a37b-4f8f-b01b-dbefa877c041/content"
         private const val PLAYER_CONFIG_URL = "https://api.arte.tv/api/player/v2/config/de"
-        private const val OPA_STREAM_URL = "https://www.arte.tv/hbbtvv2/services/web/index.php/OPA/v3/streams"
         private const val COLLECTION_SUBCOLLECTION_CONTENT_URL =
             "https://api-cdn.arte.tv/api/emac/v4/de/web/zones/8fbf35e4-324d-4d3e-a194-28f7d288789b/content"
-        private const val ARTE_STREAM_API_TOKEN =
-            "Bearer Nzc1Yjc1ZjJkYjk1NWFhN2I2MWEwMmRlMzAzNjI5NmU3NWU3ODg4ODJjOWMxNTMxYzEzZGRjYjg2ZGE4MmIwOA"
     }
 }
 
@@ -418,26 +381,3 @@ private fun arteSubtitlePlaylist(subtitleFile: String): String = """
     $subtitleFile
     #EXT-X-ENDLIST
 """.trimIndent()
-
-private fun arteOpaStreamsJson(
-    id: String = "118267-006-A",
-    includeDefaultAudio: Boolean = true,
-): String {
-    val defaultAudio = if (includeDefaultAudio) {
-        """
-            { "programId": "$id", "url": "http://arte-cdn.example/${id}_SQ.mp4", "quality": "SQ", "audioCode": "VA", "width": "1920", "height": "1080" },
-            { "programId": "$id", "url": "https://arte-cdn.example/${id}_EQ.mp4", "quality": "EQ", "audioCode": "VA", "width": "1280", "height": "720" },
-            { "programId": "$id", "url": "https://arte-cdn.example/${id}_HQ.mp4", "quality": "HQ", "audioCode": "VA", "width": "768", "height": "432" },
-        """.trimIndent()
-    } else {
-        ""
-    }
-    return """
-        {
-          "videoStreams": [
-            $defaultAudio
-            { "programId": "$id", "url": "https://arte-cdn.example/${id}_VO.mp4", "quality": "EQ", "audioCode": "VO", "width": "1280", "height": "720" }
-          ]
-        }
-    """.trimIndent()
-}

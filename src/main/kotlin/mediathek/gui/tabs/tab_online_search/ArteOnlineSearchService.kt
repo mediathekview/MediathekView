@@ -64,16 +64,10 @@ class ArteOnlineSearchService(
             ?: item.string("id")?.let(::configUrl)
             ?: return emptyList()
         val fallbackTopic = item["genre"]?.jsonObjectOrNull()?.string("label") ?: "ARTE"
-        val streamRequest = ArteStreamRequest(
-            programId = item.string("programId") ?: item.string("id")?.substringBefore('_'),
-            kind = item["kind"]?.jsonObjectOrNull()?.string("code") ?: DEFAULT_STREAM_KIND,
-            language = DEFAULT_STREAM_LANGUAGE,
-        )
         return listOfNotNull(loadByConfigUrl(
             configUrl = configUrl,
             fallbackTopic = fallbackTopic,
             fallbackWebsiteUrl = item.string("url").orEmpty(),
-            fallbackStreamRequest = streamRequest,
         ))
     }
 
@@ -116,11 +110,6 @@ class ArteOnlineSearchService(
         configUrl: String,
         fallbackTopic: String,
         fallbackWebsiteUrl: String,
-        fallbackStreamRequest: ArteStreamRequest = ArteStreamRequest(
-            programId = configUrl.substringAfterLast('/'),
-            kind = DEFAULT_STREAM_KIND,
-            language = DEFAULT_STREAM_LANGUAGE,
-        ),
     ): OnlineSearchResult? {
         val attributes = get(configUrl).parseJsonObject(json)["data"]?.jsonObjectOrNull()
             ?.get("attributes")?.jsonObjectOrNull()
@@ -131,16 +120,8 @@ class ArteOnlineSearchService(
             .ifBlank { return null }
         val hlsStream = attributes["streams"]?.jsonArrayOrNull().orEmpty()
             .firstNotNullOfOrNull { stream -> stream.jsonObjectOrNull()?.takeIf { it.string("url") != null } }
-        val hlsStreamUrl = hlsStream?.string("url")
-        val mp4Urls = loadMp4Urls(
-            fallbackStreamRequest.copy(
-                programId = metadata.string("providerId") ?: fallbackStreamRequest.programId,
-            ),
-        )
-        val normalQualityUrl = mp4Urls.normalQualityUrl ?: hlsStreamUrl ?: return null
-        val lowQualityUrl = if (mp4Urls.hasAnyUrl) mp4Urls.lowQualityUrl.orEmpty() else hlsStreamUrl.orEmpty()
-        val highQualityUrl = if (mp4Urls.hasAnyUrl) mp4Urls.highQualityUrl.orEmpty() else hlsStreamUrl.orEmpty()
-        val subtitleUrl = hlsStream?.let { loadSubtitleUrl(it) }.orEmpty()
+        val hlsStreamUrl = hlsStream?.string("url") ?: return null
+        val subtitleUrl = loadSubtitleUrl(hlsStream)
         val websiteUrl = metadata["link"]?.jsonObjectOrNull()?.string("url") ?: fallbackWebsiteUrl
         return OnlineSearchResult(
             provider = OnlineSearchProvider.ARTE,
@@ -149,9 +130,9 @@ class ArteOnlineSearchService(
             title = title,
             description = metadata.string("description").orEmpty(),
             websiteUrl = websiteUrl,
-            normalQualityUrl = normalQualityUrl,
-            lowQualityUrl = lowQualityUrl,
-            highQualityUrl = highQualityUrl,
+            normalQualityUrl = hlsStreamUrl,
+            lowQualityUrl = hlsStreamUrl,
+            highQualityUrl = hlsStreamUrl,
             subtitleUrl = subtitleUrl,
             broadcastTime = parseArteDate(attributes["rights"]?.jsonObjectOrNull()?.string("begin")),
             duration = metadata["duration"]?.jsonObjectOrNull()
@@ -206,50 +187,14 @@ class ArteOnlineSearchService(
 
     private fun String.resolveUrl(reference: String): String = URI(this).resolve(reference).toString()
 
-    private suspend fun loadMp4Urls(request: ArteStreamRequest): ArteQualityUrls {
-        val programId = request.programId?.takeIf { ARTE_PROGRAM_ID_PATTERN.matches(it) } ?: return ArteQualityUrls.EMPTY
-        return runCatching {
-            val root = get(streamUrl(programId, request.kind, request.language), ARTE_STREAM_HEADERS).parseJsonObject(json)
-            root["videoStreams"]?.jsonArrayOrNull().orEmpty()
-                .mapNotNull { it.jsonObjectOrNull() }
-                .toArteQualityUrls()
-        }.getOrElse {
-            if (it is CancellationException) {
-                throw it
-            }
-            ArteQualityUrls.EMPTY
-        }
-    }
-
-    private fun List<JsonObject>.toArteQualityUrls(): ArteQualityUrls {
-        val defaultStreams = filter { it.string("audioCode") in ARTE_DEFAULT_AUDIO_CODES }
-        val byQuality = defaultStreams.mapNotNull { stream ->
-            val url = stream.string("url")?.fixMissingHttpsProtocol()?.takeIf { it.contains(".mp4", ignoreCase = true) }
-            val quality = stream.string("quality")
-            if (url == null || quality == null) {
-                null
-            } else {
-                quality to url
-            }
-        }.toMap()
-        val highQualityUrl = byQuality["SQ"]
-        val normalQualityUrl = byQuality["EQ"] ?: highQualityUrl
-        val lowQualityUrl = byQuality["HQ"] ?: byQuality["MQ"]
-        return ArteQualityUrls(
-            normalQualityUrl = normalQualityUrl,
-            lowQualityUrl = lowQualityUrl,
-            highQualityUrl = highQualityUrl,
-        )
-    }
-
-    private suspend fun get(url: String, headers: Map<String, String> = emptyMap()): String = rateLimitMutex.withLock {
+    private suspend fun get(url: String): String = rateLimitMutex.withLock {
         var retryDelayMillis = rateLimitState.requestDelayMillis.coerceIn(MIN_REQUEST_DELAY_MILLIS, MAX_REQUEST_DELAY_MILLIS)
         repeat(MAX_RATE_LIMIT_ATTEMPTS) { attempt ->
             if (attempt > 0) {
                 delay(retryDelayMillis.milliseconds)
             }
             try {
-                return httpClient.get(url, headers)
+                return httpClient.get(url)
             } catch (ex: OnlineSearchHttpException) {
                 if (!ex.isRateLimit || attempt == MAX_RATE_LIMIT_ATTEMPTS - 1) {
                     throw ex
@@ -277,9 +222,6 @@ class ArteOnlineSearchService(
     }
 
     private fun configUrl(id: String): String = "$PLAYER_CONFIG_URL/$id"
-
-    private fun streamUrl(programId: String, kind: String, language: String): String =
-        "$OPA_STREAM_URL/$programId/$kind/$language"
 
     private fun subCollectionContentUrl(collectionId: String, subCollectionId: String, pageNumber: Int): String =
         "$COLLECTION_SUBCOLLECTION_CONTENT_URL?collectionId=$collectionId" +
@@ -317,53 +259,20 @@ class ArteOnlineSearchService(
             .distinct()
             .toList()
 
-    private fun String.fixMissingHttpsProtocol(): String =
-        if (startsWith("http:")) {
-            replaceFirst("http:", "https:")
-        } else {
-            this
-        }
-
     private companion object {
         private const val SEARCH_CONTENT_URL =
             "https://api.arte.tv/api/emac/v4/de/web/zones/f75e7b54-a37b-4f8f-b01b-dbefa877c041/content"
         private const val PLAYER_CONFIG_URL = "https://api.arte.tv/api/player/v2/config/de"
-        private const val OPA_STREAM_URL = "https://www.arte.tv/hbbtvv2/services/web/index.php/OPA/v3/streams"
         private const val COLLECTION_SUBCOLLECTION_CONTENT_URL =
             "https://api-cdn.arte.tv/api/emac/v4/de/web/zones/8fbf35e4-324d-4d3e-a194-28f7d288789b/content"
-        private const val DEFAULT_STREAM_KIND = "SHOW"
-        private const val DEFAULT_STREAM_LANGUAGE = "de"
-        private const val ARTE_STREAM_API_TOKEN =
-            "Bearer Nzc1Yjc1ZjJkYjk1NWFhN2I2MWEwMmRlMzAzNjI5NmU3NWU3ODg4ODJjOWMxNTMxYzEzZGRjYjg2ZGE4MmIwOA"
         private const val MAX_RATE_LIMIT_ATTEMPTS = 3
         private const val MIN_REQUEST_DELAY_MILLIS = 250L
         private const val MAX_REQUEST_DELAY_MILLIS = 10_000L
         private val ARTE_PROGRAM_ID_PATTERN = Regex("""[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6}""")
-        private val ARTE_DEFAULT_AUDIO_CODES = setOf("VA", "VA-STA", "VOA", "VOA-STA")
         private val GERMAN_LANGUAGE_CODES = setOf("de", "deu")
-        private val ARTE_STREAM_HEADERS = mapOf("Authorization" to ARTE_STREAM_API_TOKEN)
         private val SUBCOLLECTION_ID_PATTERN = Regex("""subCollectionId(?:=|\\u003d)(RC-[0-9]{6})""")
         private val HLS_ATTRIBUTE_PATTERN = Regex("""([A-Z0-9-]+)=(?:"([^"]*)"|([^,]*))""")
         private val BERLIN: ZoneId = ZoneId.of("Europe/Berlin")
-    }
-}
-
-private data class ArteStreamRequest(
-    val programId: String?,
-    val kind: String,
-    val language: String,
-)
-
-private data class ArteQualityUrls(
-    val normalQualityUrl: String?,
-    val lowQualityUrl: String?,
-    val highQualityUrl: String?,
-) {
-    val hasAnyUrl: Boolean
-        get() = normalQualityUrl != null || lowQualityUrl != null || highQualityUrl != null
-
-    companion object {
-        val EMPTY = ArteQualityUrls(null, null, null)
     }
 }
 
