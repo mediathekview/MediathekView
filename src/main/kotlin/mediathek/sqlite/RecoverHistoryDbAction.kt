@@ -21,6 +21,7 @@ package mediathek.sqlite
 import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
+import mediathek.i18n.UiMessages
 import mediathek.tool.sql.SqlDatabaseConfig
 import java.awt.Desktop
 import java.awt.Dimension
@@ -40,7 +41,7 @@ class RecoverHistoryDbAction(private val owner: Frame) : AbstractAction() {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
 
     init {
-        putValue(NAME, "History-Datenbank wiederherstellen...")
+        putValue(NAME, UiMessages.text("action.recoverHistoryDbAction.text"))
     }
 
     override fun actionPerformed(e: ActionEvent?) {

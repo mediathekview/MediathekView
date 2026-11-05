@@ -5,12 +5,13 @@ import java.awt.Frame
 import java.awt.event.ActionEvent
 import java.util.*
 import javax.swing.AbstractAction
+import mediathek.i18n.UiMessages
 
 class ShowBandwidthUsageAction(private val owner: Frame) : AbstractAction() {
     var dialogOptional = Optional.empty<BandwidthDialog>()
 
     init {
-        putValue(NAME, "Bandbreitennutzung")
+        putValue(NAME, UiMessages.text("action.showBandwidthUsageAction.text"))
     }
 
     override fun actionPerformed(e: ActionEvent?) {

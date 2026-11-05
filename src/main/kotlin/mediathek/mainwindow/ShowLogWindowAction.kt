@@ -18,11 +18,12 @@
 
 package mediathek.mainwindow
 
+import mediathek.i18n.UiMessages
 import mediathek.logging.LogDialog
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 
-class ShowLogWindowAction(private val logDialog: LogDialog) : AbstractAction("Live Programm-Log anzeigen") {
+class ShowLogWindowAction(private val logDialog: LogDialog) : AbstractAction(UiMessages.text("action.showLogWindowAction.text")) {
     override fun actionPerformed(e: ActionEvent?) {
         if (!logDialog.isVisible) {
             logDialog.isVisible = true

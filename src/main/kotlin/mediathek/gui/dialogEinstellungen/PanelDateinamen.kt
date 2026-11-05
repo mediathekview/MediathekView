@@ -186,7 +186,7 @@ class PanelDateinamen internal constructor(
             }
 
             val model = NonEditableTableModel().apply {
-                setColumnIdentifiers(replacementRules.columnNames())
+                setColumnIdentifiers(arrayOf(mediathek.i18n.UiMessages.text("settings.replace.from"), mediathek.i18n.UiMessages.text("settings.replace.to")))
                 replacementRules.entries().forEach { entry -> addRow(entry.toArray()) }
             }
             tabelle.model = model

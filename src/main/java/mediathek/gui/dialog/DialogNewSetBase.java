@@ -18,6 +18,7 @@ public class DialogNewSetBase extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         jButtonAbbrechen = new JButton();
         jCheckBoxMorgen = new JCheckBox();
         var jPanel3 = new JPanel();
@@ -37,15 +38,15 @@ public class DialogNewSetBase extends JDialog {
         var contentPane = getContentPane();
 
         //---- jButtonAbbrechen ----
-        jButtonAbbrechen.setText("Abbrechen"); //NON-NLS
+        jButtonAbbrechen.setText(bundle.getString("dialog.DialogNewSet.jButtonAbbrechen.text")); //NON-NLS
 
         //---- jCheckBoxMorgen ----
         jCheckBoxMorgen.setSelected(true);
-        jCheckBoxMorgen.setText("Morgen wieder fragen"); //NON-NLS
+        jCheckBoxMorgen.setText(bundle.getString("dialog.DialogNewSet.jCheckBoxMorgen.text")); //NON-NLS
 
         //======== jPanel3 ========
         {
-            jPanel3.setBorder(new TitledBorder(null, "Entweder", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204))); //NON-NLS
+            jPanel3.setBorder(new TitledBorder(null, bundle.getString("dialog.DialogNewSet.either"), TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204))); //NON-NLS
 
             //======== jScrollPane1 ========
             {
@@ -58,7 +59,7 @@ public class DialogNewSetBase extends JDialog {
             }
 
             //---- jButtonAdd ----
-            jButtonAdd.setText("Neue Sets hinzuf\u00fcgen"); //NON-NLS
+            jButtonAdd.setText(bundle.getString("dialog.DialogNewSet.jButtonAdd.text")); //NON-NLS
 
             GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
             jPanel3.setLayout(jPanel3Layout);
@@ -86,10 +87,10 @@ public class DialogNewSetBase extends JDialog {
 
         //======== jPanel4 ========
         {
-            jPanel4.setBorder(new TitledBorder(null, "Oder", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204))); //NON-NLS
+            jPanel4.setBorder(new TitledBorder(null, bundle.getString("dialog.DialogNewSet.or"), TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, null, new Color(0, 102, 204))); //NON-NLS
 
             //---- jButtonReplace ----
-            jButtonReplace.setText("Bestehende Sets durch die neuen ersetzen"); //NON-NLS
+            jButtonReplace.setText(bundle.getString("dialog.DialogNewSet.jButtonReplace.text")); //NON-NLS
 
             //======== jScrollPane2 ========
             {
@@ -138,7 +139,7 @@ public class DialogNewSetBase extends JDialog {
 
         //---- jButtonSetHelp ----
         jButtonSetHelp.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
-        jButtonSetHelp.setToolTipText("Hilfe anzeigen"); //NON-NLS
+        jButtonSetHelp.setToolTipText(bundle.getString("dialog.DialogNewSet.jButtonSetHelp.toolTipText")); //NON-NLS
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);

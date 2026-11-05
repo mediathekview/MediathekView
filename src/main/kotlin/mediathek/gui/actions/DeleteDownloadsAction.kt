@@ -19,6 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.gui.tabs.tab_downloads.GuiDownloads
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeRegular
 import java.awt.event.ActionEvent
@@ -28,8 +29,8 @@ class DeleteDownloadsAction(
     private val guiDownloads: GuiDownloads,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Downloads aus Liste entfernen")
-        putValue(SHORT_DESCRIPTION, "Downloads entfernen")
+        putValue(NAME, UiMessages.text("action.deleteDownloadsAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.deleteDownloadsAction.description"))
         putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeRegular.TRASH_ALT))
     }
 

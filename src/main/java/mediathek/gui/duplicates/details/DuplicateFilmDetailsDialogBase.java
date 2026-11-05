@@ -21,6 +21,7 @@ public class DuplicateFilmDetailsDialogBase extends JDialog {
     }
 
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
         var dialogPane = new JPanel();
@@ -33,7 +34,7 @@ public class DuplicateFilmDetailsDialogBase extends JDialog {
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
-        setTitle("Zusammengeh\u00f6rige Filme"); //NON-NLS
+        setTitle(bundle.getString("dialog.DuplicateFilmDetailsDialog.this.title")); //NON-NLS
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
@@ -69,7 +70,7 @@ public class DuplicateFilmDetailsDialogBase extends JDialog {
                 ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
                 //---- okButton ----
-                okButton.setText("Schlie\u00dfen"); //NON-NLS
+                okButton.setText(bundle.getString("dialog.DuplicateFilmDetailsDialog.okButton.text")); //NON-NLS
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));

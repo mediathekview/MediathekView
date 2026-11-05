@@ -1,0 +1,15 @@
+EITHER
+=========================================
+"Add new sets"
+
+Your current settings remain unchanged. The new sets are appended to the existing list but are not yet active. Activate them under:
+
+"File → Settings → Edit set"
+
+Enable Save and Play on the new sets, disable them on the old sets, and move the new sets to the top.
+
+OR
+=========================================
+"Replace existing sets with the new sets"
+
+Deletes all sets, including custom sets, used for playback and recording. The current default sets are created and can be used immediately.

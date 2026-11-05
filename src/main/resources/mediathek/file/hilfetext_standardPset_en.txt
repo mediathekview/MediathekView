@@ -1,0 +1,20 @@
+Set the default programs for playing and recording films here. If their paths are not detected automatically, select them manually.
+
+The destination path specifies where films are saved.
+
+To play and record all supported films, install at least:
+
+VLC
+Used for playback and some recording operations.
+
+ffmpeg
+Used to record playlists whose URLs end in "m3u8".
+
+Linux:
+Install these programs through your package manager.
+
+Windows and macOS:
+ffmpeg is bundled with MediathekView. Download and install VLC separately:
+
+http://www.videolan.org
+http://ffmpeg.org

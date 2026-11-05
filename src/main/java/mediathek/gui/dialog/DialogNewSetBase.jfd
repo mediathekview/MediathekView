@@ -2,7 +2,14 @@ JFDML JFormDesigner: "7.0.0.0.142" Java: "1.8.0_152-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.DialogNewSet"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel3::l:::x, comp jPanel4::l:::x, comp jScrollPane3::l:::x, seq l {comp jCheckBoxMorgen:::p::p, space :::x, comp jButtonAbbrechen:::p::p, space u:::p, comp jButtonSetHelp:::p::p}}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :p:39:p, comp jScrollPane3:::p:75:p, space u:p::p, comp jPanel3:::::x, space u:p::p, comp jPanel4:::::x, space u:p::p, par l {par b {comp jButtonAbbrechen::b:p::p, comp jCheckBoxMorgen::b:p::p}, comp jButtonSetHelp:::p::p}, space :p::p}}"
@@ -11,19 +18,19 @@ new FormModel {
 			"defaultCloseOperation": 2
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonAbbrechen"
-				"text": "Abbrechen"
+				"text": new FormMessage( null, "dialog.DialogNewSet.jButtonAbbrechen.text" )
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "jCheckBoxMorgen"
 				"selected": true
-				"text": "Morgen wieder fragen"
+				"text": new FormMessage( null, "dialog.DialogNewSet.jCheckBoxMorgen.text" )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 				"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1:::::x, seq l {comp jButtonAdd:3::p::p, space :0:0:x}}, space :::p}}"
 				"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane1::::127:x, space u:::p, comp jButtonAdd:::p::p, space :::p}}"
 			} ) {
 				name: "jPanel3"
-				"border": new javax.swing.border.TitledBorder( null, "Entweder", 4, 0, null, new java.awt.Color( 0, 102, 204, 255 ) )
+				"border": new javax.swing.border.TitledBorder( null, "i18nKey=dialog.DialogNewSet.either", 4, 0, null, new java.awt.Color( 0, 102, 204, 255 ) )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -41,7 +48,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonAdd"
-					"text": "Neue Sets hinzufügen"
+					"text": new FormMessage( null, "dialog.DialogNewSet.jButtonAdd.text" )
 				} )
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -49,13 +56,13 @@ new FormModel {
 				"$verticalGroup": "par l {seq l {space :p::p, comp jScrollPane2::::127:x, space u:p::p, comp jButtonReplace:::p::p, space :p:13:p}}"
 			} ) {
 				name: "jPanel4"
-				"border": new javax.swing.border.TitledBorder( null, "Oder", 4, 0, null, new java.awt.Color( 0, 102, 204, 255 ) )
+				"border": new javax.swing.border.TitledBorder( null, "i18nKey=dialog.DialogNewSet.or", 4, 0, null, new java.awt.Color( 0, 102, 204, 255 ) )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonReplace"
-					"text": "Bestehende Sets durch die neuen ersetzen"
+					"text": new FormMessage( null, "dialog.DialogNewSet.jButtonReplace.text" )
 				} )
 				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 					name: "jScrollPane2"
@@ -86,7 +93,7 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonSetHelp"
 				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-				"toolTipText": "Hilfe anzeigen"
+				"toolTipText": new FormMessage( null, "dialog.DialogNewSet.jButtonSetHelp.toolTipText" )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"size": new java.awt.Dimension( 570, 585 )

@@ -21,10 +21,11 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.controller.starter.DownloadStartInfo
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import mediathek.i18n.UiMessages
 
 class WaitingDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     init {
-        toolTipText = "Anzahl der wartenden Downloads"
+        toolTipText = UiMessages.text("downloads.status.WaitingDownloadsInfoLabel.description")
         startInfoProperty.addStartInfoChangeListener { event ->
             SwingUtilities.invokeLater {
                 process(event.newValue as DownloadStartInfo)
@@ -34,7 +35,7 @@ class WaitingDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : 
 
     private fun process(info: DownloadStartInfo) {
         text = if (info.hasValues()) {
-            if (info.initialized == 1) "1 wartet" else "${info.initialized} warten"
+            UiMessages.format("downloads.status.waiting", info.initialized)
         } else {
             ""
         }

@@ -2,13 +2,14 @@ package mediathek.gui.duplicates.statistics
 
 import ca.odell.glazedlists.gui.AdvancedTableFormat
 import mediathek.gui.duplicates.FilmStatistics
+import mediathek.i18n.UiMessages
 
 class DuplicateStatisticsTableFormat : AdvancedTableFormat<FilmStatistics> {
     override fun getColumnCount(): Int = 2
 
     override fun getColumnName(column: Int): String = when (column) {
-        0 -> "Sender"
-        1 -> "Anzahl"
+        0 -> UiMessages.text("duplicates.sender")
+        1 -> UiMessages.text("duplicates.count")
         else -> throw IndexOutOfBoundsException(column)
     }
 

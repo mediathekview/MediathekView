@@ -23,6 +23,7 @@ import com.github.lgooddatepicker.components.DateTimePicker;
 
 import javax.swing.*;
 
+/** Generated layout using the selected interface language. */
 public class DialogBeendenZeitBase extends JDialog {
 
     protected DialogBeendenZeitBase(JFrame parent) {
@@ -32,7 +33,9 @@ public class DialogBeendenZeitBase extends JDialog {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the generated controls using the selected interface language. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jLabel1 = new JLabel();
         comboActions = new JComboBox<>();
         btnContinue = new JButton();
@@ -40,32 +43,34 @@ public class DialogBeendenZeitBase extends JDialog {
         btnCancel = new JButton();
         jButtonHilfe = new JButton();
         var jLabel2 = new JLabel();
-        dateTimePicker = new DateTimePicker();
+        dateTimePicker = new DateTimePicker(
+            new com.github.lgooddatepicker.components.DatePickerSettings(mediathek.i18n.UiMessages.INSTANCE.getLanguage().getLocale()),
+            new com.github.lgooddatepicker.components.TimePickerSettings(mediathek.i18n.UiMessages.INSTANCE.getLanguage().getLocale()));
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
-        setTitle("Zeitverz\u00f6gerter Download-Start");
+        setTitle(bundle.getString("downloads.schedule.dialog.this.title"));
         var contentPane = getContentPane();
 
         //---- jLabel1 ----
-        jLabel1.setText("Wie m\u00f6chten Sie fortfahren, wenn alle Downloads fertig sind?");
+        jLabel1.setText(bundle.getString("downloads.schedule.dialog.jLabel1.text"));
 
         //---- btnContinue ----
-        btnContinue.setText("Weiter");
+        btnContinue.setText(bundle.getString("downloads.schedule.dialog.btnContinue.text"));
 
         //---- cbShutdownComputer ----
-        cbShutdownComputer.setText("Rechner herunterfahren");
+        cbShutdownComputer.setText(bundle.getString("downloads.schedule.dialog.cbShutdownComputer.text"));
 
         //---- btnCancel ----
-        btnCancel.setText("Abbrechen");
+        btnCancel.setText(bundle.getString("downloads.schedule.dialog.btnCancel.text"));
 
         //---- jButtonHilfe ----
-        jButtonHilfe.setToolTipText("Hilfe anzeigen");
+        jButtonHilfe.setToolTipText(bundle.getString("downloads.schedule.dialog.jButtonHilfe.toolTipText"));
         jButtonHilfe.setIcon(new FlatSVGIcon("icons/fontawesome/circle-question.svg", 16, 16));
 
         //---- jLabel2 ----
-        jLabel2.setText("Alle Downloads starten um: ");
+        jLabel2.setText(bundle.getString("downloads.schedule.dialog.jLabel2.text"));
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);

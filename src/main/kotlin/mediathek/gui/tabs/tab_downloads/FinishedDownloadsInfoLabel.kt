@@ -21,10 +21,11 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.controller.starter.DownloadStartInfo
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import mediathek.i18n.UiMessages
 
 class FinishedDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     init {
-        toolTipText = "Anzahl der abgeschlossenen Downloads"
+        toolTipText = UiMessages.text("downloads.status.FinishedDownloadsInfoLabel.description")
         startInfoProperty.addStartInfoChangeListener { event ->
             SwingUtilities.invokeLater {
                 process(event.newValue as DownloadStartInfo)
@@ -33,10 +34,6 @@ class FinishedDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) :
     }
 
     private fun process(info: DownloadStartInfo) {
-        text = if (info.hasValues()) {
-            if (info.finished == 1) "1 fertig" else "${info.finished} fertig"
-        } else {
-            "0 fertig"
-        }
+        text = UiMessages.format("downloads.status.finished", if (info.hasValues()) info.finished else 0)
     }
 }

@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelPsetImport"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq l {space :::p, comp jTabbedPane1:::::x, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jTabbedPane1:::::x, space :::p}}"
@@ -45,7 +52,7 @@ new FormModel {
 						}
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabel1"
-							"text": "Name:"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jLabel1.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
@@ -59,7 +66,7 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabel2"
-							"text": "URL:"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jLabel2.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
@@ -73,7 +80,7 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabel3"
-							"text": "Beschreibung:"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jLabel3.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
@@ -95,14 +102,14 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonImportVorlage"
-							"text": "Set importieren"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jButtonImportVorlage.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabel6"
-							"text": "Betriebssystem:"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jLabel6.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
@@ -118,21 +125,21 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonAktualisieren"
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-aktualisieren.png" )
-						"toolTipText": "Neu laden"
+						"toolTipText": new FormMessage( null, "settings.PanelPsetImport.jButtonAktualisieren.toolTipText" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "jLabel4"
-						"text": "Vorlagen von der Website laden:"
+						"text": new FormMessage( null, "settings.PanelPsetImport.jLabel4.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "jLabel5"
-						"text": "Betriebssystem:"
+						"text": new FormMessage( null, "settings.PanelPsetImport.jLabel5.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -146,7 +153,7 @@ new FormModel {
 						}
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Setvorlagen"
+					"title": new FormMessage( null, "settings.PanelPsetImport.jComboBoxBs.title" )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane4::::591:x, seq t {space :0:0:x, comp jButtonImportStandard:::p::p}}, space :::p}}"
@@ -158,7 +165,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonImportStandard"
-						"text": "Set anlegen"
+						"text": new FormMessage( null, "settings.PanelPsetImport.jButtonImportStandard.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -174,7 +181,7 @@ new FormModel {
 							"background": new com.jformdesigner.model.SwingColor( "Panel.background" )
 							"columns": 20
 							"rows": 5
-							"text": "Die Standardsets, die beim ersten Programmstart\nangelegt wurden, nochmals anlegen.\n\nDie bestehenden Sets bleiben unverändert erhalten,\nsollten jedoch vorher unter \"Set bearbeiten\" umbenannt\nwerden, z.B. von \"Speichern\" zu \"Speichern alt\".\n\nSoll aber der Ursprungszustand wieder hergestellt werden,\nmüssen vorher alle bestehenden Sets gelöscht werden."
+							"text": new FormMessage( null, "settings.PanelPsetImport.jTextArea1.text" )
 							"margin": new java.awt.Insets( 5, 5, 5, 5 )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
@@ -182,7 +189,7 @@ new FormModel {
 						} )
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Standardset"
+					"title": new FormMessage( null, "settings.PanelPsetImport.jTextArea1.title" )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq t {space :::p, par t {comp jPanel7:::::x, comp jPanel6:::::x}, space :::p}}"
@@ -197,7 +204,7 @@ new FormModel {
 						"$verticalGroup": "par l {seq l {space :::p, par l {comp jButtonPfad:1::p::p, par b {comp jTextFieldDatei:1:b:p::p, comp jLabel7::b:p::p}}, space u:::p, comp jButtonImportDatei:::p::p, space :::x}}"
 					} ) {
 						name: "jPanel6"
-						"border": new javax.swing.border.TitledBorder( "Set aus Datei importieren" )
+						"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetImport.jPanel6.borderTitle" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -210,21 +217,21 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonPfad"
 							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-							"toolTipText": "URL/Datei auswählen"
+							"toolTipText": new FormMessage( null, "settings.PanelPsetImport.jButtonPfad.toolTipText" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonImportDatei"
-							"text": "Set importieren"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jButtonImportDatei.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabel7"
-							"text": "Datei/URL:"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jLabel7.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableLocal": true
 							}
@@ -235,7 +242,7 @@ new FormModel {
 						"$verticalGroup": "par l {seq t {space :::p, comp jTextAreaImport::::309:x, space u:::p, comp jButtonImportText:::p::p, space :::p}}"
 					} ) {
 						name: "jPanel7"
-						"border": new javax.swing.border.TitledBorder( "Set als Text importieren" )
+						"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetImport.jPanel7.borderTitle" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -250,14 +257,14 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonImportText"
-							"text": "Set importieren"
+							"text": new FormMessage( null, "settings.PanelPsetImport.jButtonImportText.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						} )
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Set importieren"
+					"title": new FormMessage( null, "settings.PanelPsetImport.jButtonImportText.title" )
 				} )
 			} )
 		}, new FormLayoutConstraints( null ) )

@@ -22,11 +22,12 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import mediathek.i18n.UiMessages
 
 class SelectedListItemsLabel(selectedListItemsProperty: ListSelectedItemsProperty) : JLabel(), PropertyChangeListener {
     init {
         text = "0"
-        toolTipText = "Ausgewählte Einträge der aktiven Tabelle"
+        toolTipText = UiMessages.text("status.selected.description")
         selectedListItemsProperty.addSelectedItemsChangeListener(this)
     }
 

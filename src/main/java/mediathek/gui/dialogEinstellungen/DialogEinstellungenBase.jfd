@@ -2,17 +2,25 @@ JFDML JFormDesigner: "7.0.5.0.404" Java: "11.0.13" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.dialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
+
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq {space :::p, par t {comp jSplitPane1::::1068:x, seq {space :12:965:x, comp jButtonBeenden:::p::p}}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jSplitPane1::::620:x, space u:::p, comp jButtonBeenden:::p::p, space :p:6:p}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 0
-			"title": "Einstellungen"
+			"title": new FormMessage( null, "settings.dialog.this.title" )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonBeenden"
-				"text": "Schließen"
+				"text": new FormMessage( null, "settings.dialog.jButtonBeenden.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

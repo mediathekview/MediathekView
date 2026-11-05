@@ -21,6 +21,7 @@ package mediathek.gui.abo
 import ca.odell.glazedlists.gui.AdvancedTableFormat
 import mediathek.daten.abo.DatenAbo
 import mediathek.daten.abo.FilmLengthState
+import mediathek.i18n.UiMessages
 import mediathek.tool.GermanStringSorter
 import java.time.LocalDate
 
@@ -69,24 +70,7 @@ class AboTableFormat(
 
     override fun getColumnCount(): Int = DatenAbo.MAX_ELEM
 
-    override fun getColumnName(column: Int): String =
-        when (column) {
-            DatenAbo.ABO_EINGESCHALTET -> "aktiv"
-            DatenAbo.ABO_NAME -> "Name"
-            DatenAbo.ABO_SENDER -> "Sender"
-            DatenAbo.ABO_THEMA -> "Thema"
-            DatenAbo.ABO_TITEL -> "Titel"
-            DatenAbo.ABO_THEMA_TITEL -> "Thema-Titel"
-            DatenAbo.ABO_IRGENDWO -> "Irgendwo"
-            DatenAbo.ABO_MINDESTDAUER -> "Dauer"
-            DatenAbo.ABO_MIN -> "min/max"
-            DatenAbo.ABO_ZIELPFAD -> "Zielpfad"
-            DatenAbo.ABO_DOWN_DATUM -> "letztes Abo"
-            DatenAbo.ABO_PSET -> "Programmset"
-            DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY -> "nicht automatisch starten"
-            DatenAbo.ABO_FILM_COUNT -> "Filme"
-            else -> throw IndexOutOfBoundsException("UNKNOWN COLUMN NAME: $column")
-        }
+    override fun getColumnName(column: Int): String = UiMessages.text(columnDescriptor(column).second)
 
     override fun getColumnValue(baseObject: DatenAbo, column: Int): Any? =
         when (column) {
@@ -106,4 +90,29 @@ class AboTableFormat(
             DatenAbo.ABO_FILM_COUNT -> filmCountProvider(baseObject)
             else -> throw IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: $column")
         }
+
+    companion object {
+        /** Historical identifiers used by saved column layouts, independent of translated headings. */
+        fun columnIdentifier(column: Int): String = columnDescriptor(column).first
+
+        private fun columnDescriptor(column: Int): Pair<String, String> =
+            columns[column] ?: throw IndexOutOfBoundsException("UNKNOWN COLUMN NAME: $column")
+
+        private val columns = mapOf(
+            DatenAbo.ABO_EINGESCHALTET to ("aktiv" to "abo.column.eingeschaltet"),
+            DatenAbo.ABO_NAME to ("Name" to "abo.column.name"),
+            DatenAbo.ABO_SENDER to ("Sender" to "abo.column.sender"),
+            DatenAbo.ABO_THEMA to ("Thema" to "abo.column.thema"),
+            DatenAbo.ABO_TITEL to ("Titel" to "abo.column.titel"),
+            DatenAbo.ABO_THEMA_TITEL to ("Thema-Titel" to "abo.column.thema_titel"),
+            DatenAbo.ABO_IRGENDWO to ("Irgendwo" to "abo.column.irgendwo"),
+            DatenAbo.ABO_MINDESTDAUER to ("Dauer" to "abo.column.mindestdauer"),
+            DatenAbo.ABO_MIN to ("min/max" to "abo.column.min"),
+            DatenAbo.ABO_ZIELPFAD to ("Zielpfad" to "abo.column.zielpfad"),
+            DatenAbo.ABO_DOWN_DATUM to ("letztes Abo" to "abo.column.down_datum"),
+            DatenAbo.ABO_PSET to ("Programmset" to "abo.column.pset"),
+            DatenAbo.ABO_DO_NOT_START_AUTOMATICALLY to ("nicht automatisch starten" to "abo.column.do_not_start_automatically"),
+            DatenAbo.ABO_FILM_COUNT to ("Filme" to "abo.column.film_count"),
+        )
+    }
 }

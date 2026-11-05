@@ -2,7 +2,14 @@ JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9.1" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelNotifications"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
 			"$columnConstraints": "[fill][fill]"
@@ -11,8 +18,8 @@ new FormModel {
 			name: "this"
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "cbShowNotifications"
-				"text": "Benachrichtigungen anzeigen"
-				"toolTipText": "Zeige Programminformationen als Benachrichtigungen in einem Popup-Fenster an."
+				"text": new FormMessage( null, "settings.PanelNotifications.cbShowNotifications.text" )
+				"toolTipText": new FormMessage( null, "settings.PanelNotifications.cbShowNotifications.toolTipText" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

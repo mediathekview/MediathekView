@@ -22,6 +22,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
+import mediathek.i18n.UiMessages
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.Version
 import mediathek.tool.http.MVHttpClient
@@ -114,7 +115,7 @@ class ProgrammUpdateSuchen(
                     displayUpdateError(PI_VERSION_INVALID_MSG)
                 }
             } else if (Konstanten.MVVERSION.isOlderThan(remoteVersion)) {
-                val dlg = UpdateNotificationDialog(ownerProvider(), "Software Update", remoteVersion)
+                val dlg = UpdateNotificationDialog(ownerProvider(), UiMessages.text("update.notificationTitle"), remoteVersion)
                 dlg.isVisible = true
             } else if (options.showAlert) {
                 displayNoUpdateAvailableMessage()
@@ -133,7 +134,7 @@ class ProgrammUpdateSuchen(
     private fun displayNoUpdateAvailableMessage() {
         JOptionPane.showMessageDialog(
             ownerProvider(),
-            "Sie benutzen die aktuellste Version von MediathekView.",
+            UiMessages.text("update.current"),
             UPDATE_SEARCH_TITLE,
             JOptionPane.INFORMATION_MESSAGE,
         )
@@ -172,8 +173,8 @@ class ProgrammUpdateSuchen(
     private fun displayNoNewInfoMessage() {
         JOptionPane.showMessageDialog(
             ownerProvider(),
-            "Es liegen keine aktuellen Informationen vor.",
-            "Programminformationen",
+            UiMessages.text("update.noInformation"),
+            UiMessages.text("update.information"),
             JOptionPane.INFORMATION_MESSAGE,
         )
     }
@@ -287,9 +288,8 @@ class ProgrammUpdateSuchen(
     )
 
     private companion object {
-        private const val UPDATE_SEARCH_TITLE = "Software-Aktualisierung"
-        private const val UPDATE_ERROR_MESSAGE = "Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.\n" +
-            "Die aktuelle Version konnte nicht ermittelt werden."
+        private val UPDATE_SEARCH_TITLE get() = UiMessages.text("update.title")
+        private val UPDATE_ERROR_MESSAGE get() = UiMessages.text("update.error")
         private val logger = LogManager.getLogger(ProgrammUpdateSuchen::class.java)
         private const val SPI_RECEPTION_ERROR_MSG = "Did not receive program update information"
         private const val PI_VERSION_INVALID_MSG = "progInfo.version() is invalid"

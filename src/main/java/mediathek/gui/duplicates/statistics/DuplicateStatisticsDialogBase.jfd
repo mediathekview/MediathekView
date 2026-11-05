@@ -2,10 +2,17 @@ JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.4" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.DuplicateStatisticsDialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"title": "Film-Statistik"
+			"title": new FormMessage( null, "dialog.DuplicateStatisticsDialog.this.title" )
 			"defaultCloseOperation": 2
 			"type": enum java.awt.Window$Type UTILITY
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
@@ -43,7 +50,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "lblTotalCommon"
-						"text": "Gesamtanzahl Filme:"
+						"text": new FormMessage( null, "dialog.DuplicateStatisticsDialog.lblTotalCommon.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -51,7 +58,7 @@ new FormModel {
 						"value": "South"
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Allgemein"
+					"title": new FormMessage( null, "dialog.DuplicateStatisticsDialog.lblTotalCommon.title" )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) {
 					"vgap": 5
@@ -82,7 +89,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "lblTotalDuplicates"
-						"text": "Gesamtanzahl Duplikate:"
+						"text": new FormMessage( null, "dialog.DuplicateStatisticsDialog.lblTotalDuplicates.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -90,7 +97,7 @@ new FormModel {
 						"value": "Last"
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Duplikate"
+					"title": new FormMessage( null, "dialog.DuplicateStatisticsDialog.lblTotalDuplicates.title" )
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"

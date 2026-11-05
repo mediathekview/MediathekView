@@ -23,13 +23,14 @@ import mediathek.gui.history.AboHistoryDialog
 import java.awt.Frame
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import mediathek.i18n.UiMessages
 
 class ShowAboHistoryAction(
     private val owner: Frame,
     private val historyController: AboHistoryController,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Abo-Historie anzeigen...")
+        putValue(NAME, UiMessages.text("action.showAboHistoryAction.text"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

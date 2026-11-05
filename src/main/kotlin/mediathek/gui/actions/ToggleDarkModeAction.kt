@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLaf
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.messages.DarkModeChangeEvent
+import mediathek.i18n.UiMessages
 import mediathek.mainwindow.LookAndFeelHost
 import mediathek.tool.DarkModeFactory
 import mediathek.tool.LightModeFactory
@@ -17,7 +18,7 @@ class ToggleDarkModeAction(
     private val host: LookAndFeelHost,
 ) : AbstractAction() {
     init {
-        putValue(SHORT_DESCRIPTION, "Dunkelmodus ein-/ausschalten")
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.toggleDarkModeAction.description"))
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-half-stroke.svg"))
     }
 

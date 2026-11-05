@@ -1,0 +1,14 @@
+MediathekView splits the program command into individual arguments, separated by "<>". This allows paths containing spaces.
+
+When editing the program command in this dialog, use this format.
+
+The command:
+PATH/ffmpeg -i URL -c copy -bsf:a aac_adtstoasc OUTPUT_PATH/FILE.mp4
+
+is entered as:
+PATH/ffmpeg<>-i<>URL<>-c<>copy<>-bsf:a<>aac_adtstoasc<>OUTPUT_PATH/FILE.mp4
+
+The command can also be entered without <>:
+PATH/ffmpeg -i URL -c copy -bsf:a aac_adtstoasc OUTPUT_PATH/FILE.mp4
+
+However, this can cause problems when the path contains spaces.

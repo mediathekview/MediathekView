@@ -5,6 +5,7 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.history.FilmSeenHistoryController
 import mediathek.daten.DatenFilm
 import mediathek.daten.FilmResolution
+import mediathek.i18n.UiMessages
 import mediathek.tool.SwingErrorDialog
 import mediathek.tool.http.MVHttpClient
 import okhttp3.Credentials
@@ -98,23 +99,23 @@ class PyLoadHelper(
         val pyLoadUrl = ApplicationConfiguration.getInstance().pyLoadUrl
         val pyLoadConfigured = pyLoadUrl.isNotBlank()
 
-        val mJD = JMenu("Mit pyLoad herunterladen")
+        val mJD = JMenu(UiMessages.text("film.context.pyLoad"))
         mJD.isEnabled = pyLoadConfigured
         val uNormal = film.urlNormalQuality.toHttpUrl()
         val uHq = film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY).toHttpUrl()
         val uLow = film.getUrlFuerAufloesung(FilmResolution.Enum.LOW).toHttpUrl()
 
         if (film.isHighQuality) {
-            val miHq = JMenuItem("in bester Qualität")
+            val miHq = JMenuItem(UiMessages.text("film.context.downloadQuality.high"))
             miHq.addActionListener { downloadUrl(uHq, film) }
             mJD.add(miHq)
         }
-        val miNormal = JMenuItem("in normaler Qualität")
+        val miNormal = JMenuItem(UiMessages.text("film.context.downloadQuality.normal"))
         miNormal.addActionListener { downloadUrl(uNormal, film) }
         mJD.add(miNormal)
 
         if (uLow !== uNormal) {
-            val miLow = JMenuItem("in niedriger Qualität")
+            val miLow = JMenuItem(UiMessages.text("film.context.downloadQuality.low"))
             miLow.addActionListener { downloadUrl(uLow, film) }
             mJD.add(miLow)
         }

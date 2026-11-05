@@ -21,6 +21,7 @@ package mediathek.mainwindow
 import mediathek.controller.starter.DownloadProgressSnapshot
 import mediathek.controller.starter.DownloadServices
 import mediathek.gui.messages.DownloadInfoUpdateAvailableEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.FileSize
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
@@ -80,45 +81,30 @@ class DownloadInformationLabel(
             return
         }
 
-        append(" (Größe: ")
-        if (byteAktDownloads > 0) {
-            append(FileSize.convertSize(byteAktDownloads))
-                .append(" von ")
-                .append(FileSize.convertSize(byteAlleDownloads))
-                .append(" MByte)")
+        val totalSize = FileSize.convertSize(byteAlleDownloads)
+        val sizeText = if (byteAktDownloads > 0) {
+            UiMessages.format("status.download.sizeProgress", FileSize.convertSize(byteAktDownloads), totalSize)
         } else {
-            append(FileSize.convertSize(byteAlleDownloads))
-                .append(" MByte)")
+            UiMessages.format("status.download.size", totalSize)
         }
+        append(" (").append(sizeText).append(')')
     }
 
     private fun StringBuilder.appendFinishedDownloads(finishedDownloads: Int) {
         if (finishedDownloads > 0) {
-            append(if (finishedDownloads == 1) ", 1 fertig" else ", $finishedDownloads fertig")
+            append(UiMessages.format("status.download.finished", finishedDownloads))
         }
     }
 
     private fun StringBuilder.appendFailedDownloads(failedDownloads: Int) {
         if (failedDownloads > 0) {
-            append(if (failedDownloads == 1) ", 1 fehlerhaft" else ", $failedDownloads fehlerhaft")
+            append(UiMessages.format("status.download.failed", failedDownloads))
         }
     }
 
-    private fun totalDownloadsText(downloads: Int): String = if (downloads == 1) {
-        "1 Download"
-    } else {
-        "$downloads Downloads"
-    }
+    private fun totalDownloadsText(downloads: Int): String = UiMessages.format("status.download.count", downloads)
 
-    private fun activeDownloadsText(downloads: Int): String = if (downloads == 1) {
-        "1 läuft"
-    } else {
-        "$downloads laufen"
-    }
+    private fun activeDownloadsText(downloads: Int): String = UiMessages.format("status.download.active", downloads)
 
-    private fun waitingDownloadsText(downloads: Int): String = if (downloads == 1) {
-        ", 1 wartet"
-    } else {
-        ", $downloads warten"
-    }
+    private fun waitingDownloadsText(downloads: Int): String = UiMessages.format("status.download.waiting", downloads)
 }

@@ -1,0 +1,3 @@
+Some films cannot be accessed outside their permitted countries. Set your location here to mark geoblocked films.
+
+Downloading a geoblocked programme outside its permitted region immediately fails. MediathekView cannot recognize every geoblocking pattern. To investigate a failed download, click "Go to website" at the bottom of the Films tab. If the programme also cannot be played on the broadcaster's website, geoblocking is usually the cause.

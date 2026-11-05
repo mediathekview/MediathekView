@@ -27,6 +27,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.tabs.tab_film.filter_selection.FilterSelectionComboBoxModel
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.EventListWithEmptyFirstEntry
 import mediathek.tool.SVGIconUtilities
@@ -56,11 +57,11 @@ class SwingFilterDialog internal constructor(
     companion object {
         private const val CHECKBOX_RELOAD_DEBOUNCE_MS = 450L
         private const val ZEITRAUM_RELOAD_DEBOUNCE_MS = 450L
-        private const val STR_NEW_FILTER = "Neuen Filter anlegen"
-        private const val STR_CLONE_CURRENT_FILTER = "Aktuellen Filter kopieren"
-        private const val STR_DELETE_CURRENT_FILTER = "Aktuellen Filter löschen"
-        private const val STR_RESET_THEMA = "Thema zurücksetzen"
-        private const val STR_RENAME_FILTER = "Filter umbenennen"
+        private val STR_NEW_FILTER get() = UiMessages.text("filter.new")
+        private val STR_CLONE_CURRENT_FILTER get() = UiMessages.text("filter.clone")
+        private val STR_DELETE_CURRENT_FILTER get() = UiMessages.text("filter.delete")
+        private val STR_RESET_THEMA get() = UiMessages.text("filter.topic.reset")
+        private val STR_RENAME_FILTER get() = UiMessages.text("filter.rename")
         private val logger = LogManager.getLogger()
 
         internal fun applyFilterStateChangeReload(
@@ -164,7 +165,7 @@ class SwingFilterDialog internal constructor(
         override fun confirmDeleteCurrentFilter(): Boolean {
             return JOptionPane.showConfirmDialog(
                 owner,
-                "Möchten Sie wirklich den aktuellen Filter löschen?",
+                UiMessages.text("filter.delete.confirm"),
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.YES_NO_OPTION
             ) == JOptionPane.YES_OPTION
@@ -173,8 +174,8 @@ class SwingFilterDialog internal constructor(
         override fun confirmResetCurrentFilter(): Boolean {
             return JOptionPane.showConfirmDialog(
                 owner,
-                "Sind Sie sicher, dass Sie den Filter zurücksetzen möchten?",
-                "Filter zurücksetzen",
+                UiMessages.text("filter.reset.confirm"),
+                UiMessages.text("filter.reset.title"),
                 JOptionPane.YES_NO_OPTION
             ) == JOptionPane.YES_OPTION
         }
@@ -182,7 +183,7 @@ class SwingFilterDialog internal constructor(
         override fun requestNewFilterName(suggestedName: String): String? {
             return JOptionPane.showInputDialog(
                 owner,
-                "Filtername:",
+                UiMessages.text("filter.name"),
                 STR_NEW_FILTER,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
@@ -194,8 +195,8 @@ class SwingFilterDialog internal constructor(
         override fun requestRenameFilterName(currentFilterName: String): String? {
             return JOptionPane.showInputDialog(
                 owner,
-                "Neuer Name des Filters:",
-                "Filter umbenennen",
+                UiMessages.text("filter.rename.name"),
+                UiMessages.text("filter.rename"),
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 null,
@@ -272,9 +273,9 @@ class SwingFilterDialog internal constructor(
 
     private fun updateLockTooltip() {
         cbLockCurrentFilter.toolTipText = if (cbLockCurrentFilter.isSelected) {
-            "Filter ist gesperrt: Änderungen werden angewendet, aber nicht gespeichert"
+            UiMessages.text("filter.locked")
         } else {
-            "Filter ist entsperrt: Änderungen werden angewendet und gespeichert"
+            UiMessages.text("filter.unlocked")
         }
     }
 
@@ -619,8 +620,8 @@ class SwingFilterDialog internal constructor(
     private inner class ResetCurrentFilterAction : AbstractAction() {
         init {
             putValue(SMALL_ICON, IconUtils.of(FontAwesomeSolid.RECYCLE))
-            putValue(SHORT_DESCRIPTION, "Aktuellen Filter zurücksetzen")
-            putValue(NAME, "Aktuellen Filter zurücksetzen...")
+            putValue(SHORT_DESCRIPTION, UiMessages.text("filter.reset.description"))
+            putValue(NAME, UiMessages.text("filter.reset.text"))
         }
 
         override fun actionPerformed(e: ActionEvent?) {
@@ -634,7 +635,7 @@ class SwingFilterDialog internal constructor(
     }
 
     private inner class SenderCheckBoxList : CheckBoxList() {
-        private val miVerticalWrap = JCheckBoxMenuItem("Senderliste vertikal umbrechen", false)
+        private val miVerticalWrap = JCheckBoxMenuItem(UiMessages.text("filter.channels.wrap"), false)
 
         init {
             visibleRowCount = -1
@@ -665,7 +666,7 @@ class SwingFilterDialog internal constructor(
 
         private fun setupContextMenu() {
             componentPopupMenu = JPopupMenu().apply {
-                add(JMenuItem("Alle Senderfilter zurücksetzen").apply {
+                add(JMenuItem(UiMessages.text("filter.channels.reset")).apply {
                     addActionListener { selectNone() }
                 })
                 addSeparator()
@@ -732,7 +733,7 @@ class SwingFilterDialog internal constructor(
                     FilmFilterController.AddFilterResult.NameAlreadyExists -> {
                         JOptionPane.showMessageDialog(
                             owner,
-                            "Ein Filter mit dem gewählten Namen existiert bereits!",
+                            UiMessages.text("filter.name.exists"),
                             STR_NEW_FILTER,
                             JOptionPane.ERROR_MESSAGE
                         )
@@ -819,7 +820,7 @@ class SwingFilterDialog internal constructor(
             if (input.isEmpty()) {
                 JOptionPane.showMessageDialog(
                     owner,
-                    "Filtername darf nicht leer sein!",
+                    UiMessages.text("filter.name.empty"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.ERROR_MESSAGE
                 )
@@ -837,7 +838,7 @@ class SwingFilterDialog internal constructor(
                 FilmFilterController.RenameFilterResult.NameAlreadyExists -> {
                     JOptionPane.showMessageDialog(
                         owner,
-                        "Filter $trimmedName existiert bereits.\nAktion wird abgebrochen",
+                        UiMessages.format("filter.rename.exists", trimmedName),
                         Konstanten.PROGRAMMNAME,
                         JOptionPane.ERROR_MESSAGE
                     )

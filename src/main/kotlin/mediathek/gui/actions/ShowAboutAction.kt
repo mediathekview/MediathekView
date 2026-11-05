@@ -1,6 +1,7 @@
 package mediathek.gui.actions
 
 import mediathek.gui.dialog.AboutDialog
+import mediathek.i18n.UiMessages
 import mediathek.swing.centerOnScreen
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
@@ -17,6 +18,6 @@ class ShowAboutAction(
     }
 
     init {
-        putValue(NAME, "Über dieses Programm...")
+        putValue(NAME, UiMessages.text("action.showAboutAction.text"))
     }
 }

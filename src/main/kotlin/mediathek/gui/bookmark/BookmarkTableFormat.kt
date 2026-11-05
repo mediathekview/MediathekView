@@ -21,24 +21,24 @@ package mediathek.gui.bookmark
 import ca.odell.glazedlists.gui.TableFormat
 
 internal object BookmarkTableFormat : TableFormat<BookmarkData> {
-    private val columnNames =
-        listOf(
-            "Gesehen",
-            "Sender",
-            "Thema",
-            "Titel",
-            "Dauer",
-            "Sendedatum",
-            "Verfügbar bis",
-            "URL",
-            "Notiz",
-            "Hash Code",
-            "hinzugefügt am",
-        )
+    // Stable layout identifiers paired with translated header keys.
+    val columns = arrayOf(
+        "Gesehen" to "bookmark.column.seen",
+        "Sender" to "bookmark.column.sender",
+        "Thema" to "bookmark.column.topic",
+        "Titel" to "bookmark.column.title",
+        "Dauer" to "bookmark.column.duration",
+        "Sendedatum" to "bookmark.column.broadcast",
+        "Verfügbar bis" to "bookmark.column.availableUntil",
+        "URL" to "bookmark.column.url",
+        "Notiz" to "bookmark.column.note",
+        "Hash Code" to "bookmark.column.hash",
+        "hinzugefügt am" to "bookmark.column.added",
+    )
 
-    override fun getColumnCount(): Int = columnNames.size
+    override fun getColumnCount(): Int = columns.size
 
-    override fun getColumnName(column: Int): String = columnNames[column]
+    override fun getColumnName(column: Int): String = mediathek.i18n.UiMessages.text(columns[column].second)
 
     override fun getColumnValue(baseObject: BookmarkData, column: Int): Any? =
         when (column) {

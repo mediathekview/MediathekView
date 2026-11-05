@@ -18,6 +18,7 @@
 
 package mediathek.gui.tabs.tab_film.filter_selection
 
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.FilterDTO
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
@@ -42,7 +43,7 @@ class FilterSelectionComboBox() : JComboBox<FilterDTO>() {
     private fun setup() {
         maximumSize = Dimension(200, 100)
         isEditable = false
-        toolTipText = "Aktiver Filter"
+        toolTipText = UiMessages.text("filter.active")
         renderer = FilterSelectionRenderer()
     }
 

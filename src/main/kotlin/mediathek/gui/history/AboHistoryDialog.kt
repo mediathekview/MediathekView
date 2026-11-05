@@ -24,6 +24,7 @@ import mediathek.audiothek.ui.table.TriStateTableRowSorter
 import mediathek.controller.history.AboHistoryController
 import mediathek.controller.history.AboHistoryEntry
 import mediathek.gui.messages.history.AboHistoryChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GuiFunktionen
 import mediathek.tool.MessageBus
@@ -45,14 +46,14 @@ import javax.swing.table.AbstractTableModel
 class AboHistoryDialog(
     owner: Frame?,
     private val controller: AboHistoryController,
-) : JDialog(owner, "Abo-Historie", true) {
+) : JDialog(owner, UiMessages.text("abo.history.title"), true) {
     private val uiScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
-    private val deleteAction = object : AbstractAction("Einträge löschen") {
+    private val deleteAction = object : AbstractAction(UiMessages.text("abo.history.delete")) {
         override fun actionPerformed(e: java.awt.event.ActionEvent?) {
             deleteSelectedEntries()
         }
     }
-    private val copyAction = object : AbstractAction("URL(s) kopieren") {
+    private val copyAction = object : AbstractAction(UiMessages.text("abo.history.copy")) {
         override fun actionPerformed(e: java.awt.event.ActionEvent?) {
             copySelectedUrls()
         }
@@ -63,9 +64,9 @@ class AboHistoryDialog(
     private val filterField = JTextField()
     private val summaryLabel = JLabel("", SwingConstants.LEFT)
     private val loadingLabel = JLabel("", SwingConstants.RIGHT)
-    private val deleteButton = JButton("Einträge löschen")
-    private val copyButton = JButton("URL(s) kopieren")
-    private val closeButton = JButton("Schließen")
+    private val deleteButton = JButton(UiMessages.text("abo.history.delete"))
+    private val copyButton = JButton(UiMessages.text("abo.history.copy"))
+    private val closeButton = JButton(UiMessages.text("abo.history.close"))
 
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -103,7 +104,7 @@ class AboHistoryDialog(
         rootPane.border = BorderFactory.createEmptyBorder(12, 12, 12, 12)
 
         val toolbar = JPanel(MigLayout("insets 0, fillx", "[grow,fill][]", "[][]"))
-        toolbar.add(JLabel("Filter:"), "split 2")
+        toolbar.add(JLabel(UiMessages.text("abo.history.filter")), "split 2")
         toolbar.add(filterField, "growx, wrap")
         toolbar.add(summaryLabel, "growx")
         toolbar.add(loadingLabel, "alignx right")
@@ -155,10 +156,10 @@ class AboHistoryDialog(
 
     private fun configureActions() {
         deleteButton.action = deleteAction
-        deleteButton.text = "Einträge löschen"
+        deleteButton.text = UiMessages.text("abo.history.delete")
 
         copyButton.action = copyAction
-        copyButton.text = "URL(s) kopieren"
+        copyButton.text = UiMessages.text("abo.history.copy")
 
         closeButton.addActionListener { dispose() }
         rootPane.defaultButton = closeButton
@@ -222,15 +223,15 @@ class AboHistoryDialog(
 
         val count = selectedEntries.size
         val message = if (count == 1) {
-            "Soll der ausgewählte Eintrag aus der Abo-Historie gelöscht werden?"
+            UiMessages.text("abo.history.deleteSingle")
         } else {
-            "Sollen $count ausgewählte Einträge aus der Abo-Historie gelöscht werden?"
+            UiMessages.format("abo.history.deleteMany", count)
         }
 
         val confirmed = JOptionPane.showConfirmDialog(
             this,
             message,
-            "Abo-Historie",
+            UiMessages.text("abo.history.title"),
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE
         ) == JOptionPane.YES_OPTION
@@ -272,12 +273,13 @@ class AboHistoryDialog(
         val totalCount = tableModel.rowCount
 
         summaryLabel.text = buildString {
-            append("Einträge: ").append(visibleCount)
-            if (visibleCount != totalCount) {
-                append(" von ").append(totalCount)
-            }
+            append(if (visibleCount != totalCount) {
+                UiMessages.format("abo.history.count.filtered", visibleCount, totalCount)
+            } else {
+                UiMessages.format("abo.history.count", visibleCount)
+            })
             if (selectedCount > 0) {
-                append(" | Ausgewählt: ").append(selectedCount)
+                append(UiMessages.format("abo.history.selected", selectedCount))
             }
         }
 
@@ -286,7 +288,7 @@ class AboHistoryDialog(
     }
 
     private fun setLoading(loading: Boolean) {
-        loadingLabel.text = if (loading) "Lade..." else ""
+        loadingLabel.text = if (loading) UiMessages.text("abo.history.loading") else ""
         table.isEnabled = !loading
         deleteAction.isEnabled = !loading && table.selectedRowCount > 0
         copyAction.isEnabled = !loading && table.selectedRowCount > 0
@@ -335,7 +337,7 @@ class AboHistoryDialog(
 
         override fun getColumnCount(): Int = COLUMN_NAMES.size
 
-        override fun getColumnName(column: Int): String = COLUMN_NAMES[column]
+        override fun getColumnName(column: Int): String = UiMessages.text(COLUMN_NAMES[column])
 
         override fun getValueAt(rowIndex: Int, columnIndex: Int): String {
             val entry = entries[rowIndex]
@@ -354,7 +356,7 @@ class AboHistoryDialog(
             const val COLUMN_TITLE = 2
             const val COLUMN_URL = 3
 
-            private val COLUMN_NAMES = arrayOf("Datum", "Thema", "Titel", "URL")
+            private val COLUMN_NAMES = arrayOf("film.column.date", "film.column.topic", "film.column.title", "film.column.url")
         }
     }
 

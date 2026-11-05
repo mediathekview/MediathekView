@@ -5,6 +5,7 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade
 import javax.swing.JFrame
 import javax.swing.JOptionPane
+import mediathek.i18n.UiMessages
 
 object ProgramSetTemplateResolver {
     const val MUSTER_PFAD_ZIEL = "ZIELPFAD"
@@ -62,6 +63,6 @@ object ProgramSetTemplateResolver {
     }
 
     private fun showProgramPathDialog(parent: JFrame?, panel: PanelProgrammPfade) {
-        JOptionPane.showMessageDialog(parent, panel, "Pfade Standardprogramme", JOptionPane.PLAIN_MESSAGE)
+        JOptionPane.showMessageDialog(parent, panel, UiMessages.text("settings.pset.standardPaths"), JOptionPane.PLAIN_MESSAGE)
     }
 }

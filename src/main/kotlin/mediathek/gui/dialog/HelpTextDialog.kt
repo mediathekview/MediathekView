@@ -20,6 +20,7 @@ package mediathek.gui.dialog
 
 import java.awt.Component
 import javax.swing.*
+import mediathek.i18n.UiMessages
 
 object HelpTextDialog {
     private const val ROWS = 20
@@ -45,6 +46,6 @@ object HelpTextDialog {
             caretPosition = 0
         }
 
-        JOptionPane.showMessageDialog(parent, JScrollPane(textArea), "Hilfe", JOptionPane.PLAIN_MESSAGE)
+        JOptionPane.showMessageDialog(parent, JScrollPane(textArea), UiMessages.text("dialog.help"), JOptionPane.PLAIN_MESSAGE)
     }
 }

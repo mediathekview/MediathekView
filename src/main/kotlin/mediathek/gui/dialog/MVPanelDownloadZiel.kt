@@ -25,6 +25,7 @@ import mediathek.config.StandardLocations
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.DatenDownload
 import mediathek.tool.*
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import java.awt.Color
 import java.awt.event.ActionEvent
@@ -164,10 +165,10 @@ class MVPanelDownloadZiel(
     private fun updatePathNameStatus(fileExists: Boolean, targetChanged: Boolean) {
         if (fileExists) {
             jLabelExists.foreground = Color.RED
-            jLabelExists.text = "Datei existiert schon!"
+            jLabelExists.text = UiMessages.text("download.destination.exists")
         } else if (targetChanged) {
             jLabelExists.foreground = MVColor.DOWNLOAD_DATEINAME_NEU.color
-            jLabelExists.text = "Neuer Name"
+            jLabelExists.text = UiMessages.text("download.destination.newName")
         } else {
             jLabelExists.foreground = MVColor.DOWNLOAD_DATEINAME_ALT.color
             jLabelExists.text = ""
@@ -196,8 +197,8 @@ class MVPanelDownloadZiel(
         if (fileSpecifier.path != pfad || fileSpecifier.fileName != name) {
             JOptionPane.showMessageDialog(
                 parent,
-                "Dateiname war zu lang und wurde gekürzt!",
-                "Pfad zu lang!",
+                UiMessages.text("download.destination.shortened"),
+                UiMessages.text("download.destination.tooLong"),
                 JOptionPane.ERROR_MESSAGE,
             )
         }
@@ -219,7 +220,7 @@ class MVPanelDownloadZiel(
     private inner class ZielBeobachter : ActionListener {
         override fun actionPerformed(e: ActionEvent) {
             val selectedItem = jComboBoxPath.selectedItem?.toString().orEmpty()
-            val selectedDirectory = FileDialogs.chooseDirectoryLocation(this@MVPanelDownloadZiel, "Film speichern", selectedItem)
+            val selectedDirectory = FileDialogs.chooseDirectoryLocation(this@MVPanelDownloadZiel, UiMessages.text("download.batch.chooseFolder"), selectedItem)
             if (selectedDirectory != null) {
                 jComboBoxPath.addItem(selectedDirectory.absolutePath)
                 jComboBoxPath.selectedItem = selectedDirectory.absolutePath

@@ -6,6 +6,7 @@ import mediathek.daten.abo.AboServices
 import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.abo.ManageAboDialog
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.ReplacementRules
 import org.kordamp.ikonli.materialdesign2.MaterialDesignD
@@ -36,8 +37,8 @@ class ManageAboAction(
     }
 
     init {
-        putValue(NAME, "Abos verwalten...")
+        putValue(NAME, UiMessages.text("action.manageAboAction.text"))
         putValue(SMALL_ICON, IconUtils.windowBarSpecificToolbarIcon(MaterialDesignD.DATABASE))
-        putValue(SHORT_DESCRIPTION, "Abos verwalten")
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.manageAboAction.description"))
     }
 }

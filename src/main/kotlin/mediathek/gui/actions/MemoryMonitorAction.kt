@@ -22,6 +22,7 @@ import mediathek.gui.dialog.MemoryMonitorDialog
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JFrame
+import mediathek.i18n.UiMessages
 
 class MemoryMonitorAction(
     private val parent: JFrame,
@@ -29,7 +30,7 @@ class MemoryMonitorAction(
     private var dialog: MemoryMonitorDialog? = null
 
     init {
-        putValue(NAME, "Speicherverbrauch anzeigen")
+        putValue(NAME, UiMessages.text("action.memoryMonitorAction.text"))
     }
 
     fun closeMemoryMonitor() {

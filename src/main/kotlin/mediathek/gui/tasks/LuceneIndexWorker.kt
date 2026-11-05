@@ -25,6 +25,7 @@ import mediathek.daten.DatenFilm
 import mediathek.daten.IndexedFilmList
 import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmListIndexingHost
+import mediathek.i18n.UiMessages
 import mediathek.tool.FileUtils.deletePathRecursively
 import mediathek.tool.LuceneDefaultAnalyzer
 import mediathek.tool.SwingErrorDialog
@@ -196,7 +197,7 @@ class LuceneIndexWorker(
     private suspend fun setupIndexingUi() = withContext(Dispatchers.Swing) {
         host?.setFilmIndexingActionsEnabled(false)
 
-        progLabel.text = "Indiziere Filme"
+        progLabel.text = UiMessages.text("loading.index")
         progressBar.isIndeterminate = false
         progressBar.minimum = 0
         progressBar.maximum = 100
@@ -264,7 +265,7 @@ class LuceneIndexWorker(
             }
             withContext(Dispatchers.Swing) {
                 progressBar.value = 100
-                progLabel.text = "Öffne Index"
+                progLabel.text = UiMessages.text("loading.openIndex")
                 progressBar.isIndeterminate = true
             }
             val reader = DirectoryReader.open(writer)
@@ -291,7 +292,7 @@ class LuceneIndexWorker(
             host?.let { host ->
                 SwingErrorDialog.showExceptionMessage(
                     host.ownerFrame(),
-                    "Der Filmindex ist beschädigt und wurde gelöscht.\nDas Programm wird beendet, bitte starten Sie es erneut.",
+                    UiMessages.text("loading.brokenIndex"),
                     ex
                 )
                 host.quitApplication()

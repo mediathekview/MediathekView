@@ -35,6 +35,7 @@ public class MergeSubripVideoDialogBase extends JDialog {
     }
 
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         // Generated using JFormDesigner non-commercial license
         var dialogPane = new JPanel();
@@ -58,7 +59,7 @@ public class MergeSubripVideoDialogBase extends JDialog {
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
-        setTitle("Untertitel zu Video hinzuf\u00fcgen"); //NON-NLS
+        setTitle(bundle.getString("dialog.MergeSubripVideoDialog.this.title")); //NON-NLS
         var contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
@@ -71,41 +72,41 @@ public class MergeSubripVideoDialogBase extends JDialog {
             {
 
                 //---- label1 ----
-                label1.setText("Untertitel-Datei:"); //NON-NLS
+                label1.setText(bundle.getString("dialog.MergeSubripVideoDialog.label1.text")); //NON-NLS
                 label1.setHorizontalAlignment(SwingConstants.RIGHT);
 
                 //---- tfSubripFilePath ----
-                tfSubripFilePath.setToolTipText("Pfad zur Untertiteldatei im Subrip Text Format (.srt)"); //NON-NLS
+                tfSubripFilePath.setToolTipText(bundle.getString("dialog.MergeSubripVideoDialog.tfSubripFilePath.toolTipText")); //NON-NLS
 
                 //---- btnSelectInputSubrip ----
-                btnSelectInputSubrip.setText("..."); //NON-NLS
+                btnSelectInputSubrip.setText(bundle.getString("dialog.MergeSubripVideoDialog.btnSelectInputSubrip.text")); //NON-NLS
 
                 //---- label2 ----
-                label2.setText("Video-Datei:"); //NON-NLS
+                label2.setText(bundle.getString("dialog.MergeSubripVideoDialog.label2.text")); //NON-NLS
                 label2.setHorizontalAlignment(SwingConstants.RIGHT);
 
                 //---- tfVideoFilePath ----
-                tfVideoFilePath.setToolTipText("Pfad zu einer von ffmpeg unterst\u00fctzten Videodatei als Eingabemedium"); //NON-NLS
+                tfVideoFilePath.setToolTipText(bundle.getString("dialog.MergeSubripVideoDialog.tfVideoFilePath.toolTipText")); //NON-NLS
 
                 //---- btnSelectInputVideo ----
-                btnSelectInputVideo.setText("..."); //NON-NLS
+                btnSelectInputVideo.setText(bundle.getString("dialog.MergeSubripVideoDialog.btnSelectInputVideo.text")); //NON-NLS
 
                 //---- label3 ----
-                label3.setText("Sprache:"); //NON-NLS
+                label3.setText(bundle.getString("dialog.MergeSubripVideoDialog.label3.text")); //NON-NLS
                 label3.setHorizontalAlignment(SwingConstants.RIGHT);
 
                 //---- cbLanguage ----
-                cbLanguage.setToolTipText("Sprache der Untertitel"); //NON-NLS
+                cbLanguage.setToolTipText(bundle.getString("dialog.MergeSubripVideoDialog.cbLanguage.toolTipText")); //NON-NLS
 
                 //---- label4 ----
-                label4.setText("Zieldatei:"); //NON-NLS
+                label4.setText(bundle.getString("dialog.MergeSubripVideoDialog.label4.text")); //NON-NLS
                 label4.setHorizontalAlignment(SwingConstants.RIGHT);
 
                 //---- btnSelectVideoOutputPath ----
-                btnSelectVideoOutputPath.setText("..."); //NON-NLS
+                btnSelectVideoOutputPath.setText(bundle.getString("dialog.MergeSubripVideoDialog.btnSelectVideoOutputPath.text")); //NON-NLS
 
                 //---- busyLabel ----
-                busyLabel.setText("F\u00fchre Video und Untertitel zusammen"); //NON-NLS
+                busyLabel.setText(bundle.getString("dialog.MergeSubripVideoDialog.busyLabel.text")); //NON-NLS
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -184,13 +185,13 @@ public class MergeSubripVideoDialogBase extends JDialog {
                 ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
                 //---- btnCancel ----
-                btnCancel.setText("Abbrechen"); //NON-NLS
+                btnCancel.setText(bundle.getString("dialog.MergeSubripVideoDialog.btnCancel.text")); //NON-NLS
                 buttonBar.add(btnCancel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- btnMerge ----
-                btnMerge.setText("Zusammenf\u00fchren"); //NON-NLS
+                btnMerge.setText(bundle.getString("dialog.MergeSubripVideoDialog.btnClose.text")); //NON-NLS
                 buttonBar.add(btnMerge, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));

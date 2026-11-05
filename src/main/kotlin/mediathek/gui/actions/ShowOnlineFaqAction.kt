@@ -1,6 +1,7 @@
 package mediathek.gui.actions
 
 import mediathek.config.Konstanten
+import mediathek.i18n.UiMessages
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.SwingErrorDialog
 import java.awt.Component
@@ -14,7 +15,7 @@ import javax.swing.JOptionPane
 
 class ShowOnlineFaqAction(private val parentComponent: Component) : AbstractAction() {
     init {
-        putValue(NAME, "Frequently Asked Questions (FAQs) anzeigen...")
+        putValue(NAME, UiMessages.text("action.showOnlineFaqAction.text"))
         putValue(SMALL_ICON, SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg"))
     }
 

@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.DialogImportPset"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::t:::x, seq l {comp jCheckBoxAlleEinstellungen:::p::p, space ::328:x, comp jButtonOk:4::p:118:p, space :::p, comp jButtonAbbrechen:4::p::p}}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :p::p, comp jScrollPane1::::516:x, space u:p::p, par b {comp jCheckBoxAlleEinstellungen::b:p::p, comp jButtonAbbrechen::b:p::p, comp jButtonOk::b:p::p}, space :p::p}}"
@@ -17,21 +24,21 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "jCheckBoxAlleEinstellungen"
-				"text": "alle Einstellungen anzeigen"
+				"text": new FormMessage( null, "settings.DialogImportPset.jCheckBoxAlleEinstellungen.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonOk"
-				"text": "Ok"
+				"text": new FormMessage( null, "settings.DialogImportPset.jButtonOk.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonAbbrechen"
-				"text": "Abbrechen"
+				"text": new FormMessage( null, "settings.DialogImportPset.jButtonAbbrechen.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

@@ -18,6 +18,8 @@
 
 package mediathek.config.application
 
+import mediathek.i18n.UiLanguage
+
 import mediathek.config.Konstanten
 import mediathek.config.StandardLocations
 import mediathek.daten.Country
@@ -81,6 +83,13 @@ class ApplicationConfiguration private constructor() {
 
     fun createFilterConfiguration(): FilterConfiguration =
         object : FilterConfiguration(config) {}
+
+    /** Saved interface language, applied when the application next starts. */
+    var uiLanguage: UiLanguage
+        get() = generalConfiguration.uiLanguage
+        set(value) {
+            generalConfiguration.uiLanguage = value
+        }
 
     var geographicLocation: Country
         get() = generalConfiguration.geographicLocation

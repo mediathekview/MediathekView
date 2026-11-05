@@ -43,6 +43,7 @@ public class DialogHinweisUpdateBase extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jScrollPane1 = new JScrollPane();
         jTextArea1 = new JTextArea();
         jButtonOk = new JButton();
@@ -50,7 +51,7 @@ public class DialogHinweisUpdateBase extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Programminformationen"); //NON-NLS
+        setTitle(bundle.getString("dialog.DialogHinweisUpdate.this.title")); //NON-NLS
         setMinimumSize(new Dimension(480, 100));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
@@ -72,7 +73,7 @@ public class DialogHinweisUpdateBase extends JDialog {
             jTextArea1.setColumns(20);
             jTextArea1.setLineWrap(true);
             jTextArea1.setRows(5);
-            jTextArea1.setText("\n\n"); //NON-NLS
+            jTextArea1.setText(bundle.getString("dialog.DialogHinweisUpdate.jTextArea1.text")); //NON-NLS
             jTextArea1.setWrapStyleWord(true);
             jTextArea1.setMinimumSize(new Dimension(459, 85));
             jScrollPane1.setViewportView(jTextArea1);
@@ -80,11 +81,11 @@ public class DialogHinweisUpdateBase extends JDialog {
         contentPane.add(jScrollPane1, new CC().cell(0, 0));
 
         //---- jButtonOk ----
-        jButtonOk.setText("Schlie\u00dfen"); //NON-NLS
+        jButtonOk.setText(bundle.getString("dialog.DialogHinweisUpdate.jButtonOk.text")); //NON-NLS
         contentPane.add(jButtonOk, new CC().cell(0, 2).alignX("right").growX(0)); //NON-NLS
 
         //---- hyperLink ----
-        hyperLink.setText("Link zur Webseite"); //NON-NLS
+        hyperLink.setText(bundle.getString("dialog.DialogHinweisUpdate.hyperLink.text")); //NON-NLS
         contentPane.add(hyperLink, new CC().cell(0, 1));
         pack();
         setLocationRelativeTo(getOwner());

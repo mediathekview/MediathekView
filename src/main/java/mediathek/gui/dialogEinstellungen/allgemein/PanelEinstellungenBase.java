@@ -10,14 +10,18 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+/** JFormDesigner layout whose labels use the interface language selected at startup. */
 public class PanelEinstellungenBase extends JPanel {
+    /** Creates the localized controls using the current startup language. */
     public PanelEinstellungenBase() {
         initComponents();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the controls and their resource-bundle labels. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jPanel5 = new JPanel();
         jCheckBoxTabsTop = new JCheckBox();
         jCheckBoxTabIcon = new JCheckBox();
@@ -44,6 +48,9 @@ public class PanelEinstellungenBase extends JPanel {
         cbDrawListIconsRight = new JCheckBox();
         cbUseSystemDarkMode = new JCheckBox();
         cbTabFilmeTimeUseLongFormat = new JCheckBox();
+        var languageLabel = new JLabel();
+        languageComboBox = new JComboBox<>();
+        var languageRestartLabel = new JLabel();
         modernSearchTitlePanel = new JXTitledPanel();
 
         //======== this ========
@@ -51,7 +58,7 @@ public class PanelEinstellungenBase extends JPanel {
 
         //======== jPanel5 ========
         {
-            jPanel5.setBorder(new TitledBorder("Tab-Verhalten"));
+            jPanel5.setBorder(new TitledBorder(bundle.getString("settings.general.jPanel5.borderTitle")));
             jPanel5.setLayout(new MigLayout(
                 new LC().insets("0").hideMode(3).gridGap("5", "5"),
                 // columns
@@ -65,30 +72,30 @@ public class PanelEinstellungenBase extends JPanel {
                     .fill()));
 
             //---- jCheckBoxTabsTop ----
-            jCheckBoxTabsTop.setText("Tabs oben anzeigen");
+            jCheckBoxTabsTop.setText(bundle.getString("settings.general.jCheckBoxTabsTop.text"));
             jPanel5.add(jCheckBoxTabsTop, new CC().cell(0, 0));
 
             //---- jCheckBoxTabIcon ----
-            jCheckBoxTabIcon.setText("Icons anzeigen");
-            jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
+            jCheckBoxTabIcon.setText(bundle.getString("settings.general.jCheckBoxTabIcon.text"));
+            jCheckBoxTabIcon.setToolTipText(bundle.getString("settings.general.jCheckBoxTabIcon.toolTipText"));
             jPanel5.add(jCheckBoxTabIcon, new CC().cell(1, 0));
 
             //---- cbAutomaticMenuTabSwitching ----
-            cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Men\u00fcnutzung um");
+            cbAutomaticMenuTabSwitching.setText(bundle.getString("settings.general.cbAutomaticMenuTabSwitching.text"));
             jPanel5.add(cbAutomaticMenuTabSwitching, new CC().cell(2, 0));
 
             //---- cbRestoreSelectedTab ----
-            cbRestoreSelectedTab.setText("Letzte Auswahl beim Start wiederherstellen");
-            cbRestoreSelectedTab.setToolTipText("Wenn gew\u00e4hlt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert.");
+            cbRestoreSelectedTab.setText(bundle.getString("settings.general.cbRestoreSelectedTab.text"));
+            cbRestoreSelectedTab.setToolTipText(bundle.getString("settings.general.cbRestoreSelectedTab.toolTipText"));
             jPanel5.add(cbRestoreSelectedTab, new CC().cell(0, 1, 3, 1));
         }
 
         //======== jPanel3 ========
         {
-            jPanel3.setBorder(new TitledBorder("Download"));
+            jPanel3.setBorder(new TitledBorder(bundle.getString("settings.general.jPanel3.borderTitle")));
 
             //---- jLabel3 ----
-            jLabel3.setText("User-Agent:");
+            jLabel3.setText(bundle.getString("settings.general.jLabel3.text"));
 
             //---- jtfUserAgent ----
             jtfUserAgent.setMinimumSize(new Dimension(200, 26));
@@ -118,23 +125,23 @@ public class PanelEinstellungenBase extends JPanel {
 
         //======== jPanel4 ========
         {
-            jPanel4.setBorder(new TitledBorder("HTTP-Proxy"));
+            jPanel4.setBorder(new TitledBorder(bundle.getString("settings.general.jPanel4.borderTitle")));
             jPanel4.setToolTipText("");
 
             //---- jLabel4 ----
-            jLabel4.setText("Host:");
+            jLabel4.setText(bundle.getString("settings.general.jLabel4.text"));
 
             //---- jLabel5 ----
-            jLabel5.setText("Port:");
+            jLabel5.setText(bundle.getString("settings.general.jLabel5.text"));
 
             //---- jLabel7 ----
-            jLabel7.setText("User:");
+            jLabel7.setText(bundle.getString("settings.general.jLabel7.text"));
 
             //---- jLabel8 ----
-            jLabel8.setText("Passwort:");
+            jLabel8.setText(bundle.getString("settings.general.jLabel8.text"));
 
             //---- jButtonApplyProxySettings ----
-            jButtonApplyProxySettings.setText("Proxy übernehmen");
+            jButtonApplyProxySettings.setText(bundle.getString("settings.general.jButtonApplyProxySettings.text"));
 
             GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
             jPanel4.setLayout(jPanel4Layout);
@@ -203,41 +210,53 @@ public class PanelEinstellungenBase extends JPanel {
                     .fill().gap()
                     .gap()
                     .fill().gap()
+                    .gap()
+                    .gap()
                     ));
 
             //---- jCheckBoxTray ----
-            jCheckBoxTray.setText("Programm ins Tray minimieren");
+            jCheckBoxTray.setText(bundle.getString("settings.general.jCheckBoxTray.text"));
             panel1.add(jCheckBoxTray, new CC().cell(0, 0));
 
             //---- cbShowBlacklistIconWithText ----
-            cbShowBlacklistIconWithText.setText("Blacklist-Filter-Icon mit Text anzeigen");
-            cbShowBlacklistIconWithText.setToolTipText("Neustart erforderlich");
+            cbShowBlacklistIconWithText.setText(bundle.getString("settings.general.cbShowBlacklistIconWithText.text"));
+            cbShowBlacklistIconWithText.setToolTipText(bundle.getString("settings.general.cbShowBlacklistIconWithText.toolTipText"));
             panel1.add(cbShowBlacklistIconWithText, new CC().cell(1, 0));
 
             //---- cbUseWikipediaSenderLogos ----
-            cbUseWikipediaSenderLogos.setText("Senderlogos von Wikipedia verwenden");
+            cbUseWikipediaSenderLogos.setText(bundle.getString("settings.general.cbUseWikipediaSenderLogos.text"));
             panel1.add(cbUseWikipediaSenderLogos, new CC().cell(0, 1));
 
             //---- cbAutomaticUpdateChecks ----
-            cbAutomaticUpdateChecks.setText("Programmupdates t\u00e4glich suchen");
+            cbAutomaticUpdateChecks.setText(bundle.getString("settings.general.cbAutomaticUpdateChecks.text"));
             panel1.add(cbAutomaticUpdateChecks, new CC().cell(0, 2));
 
             //---- cbDrawListIconsRight ----
-            cbDrawListIconsRight.setText("Info-Icons der Listen rechts darstellen");
+            cbDrawListIconsRight.setText(bundle.getString("settings.general.cbDrawListIconsRight.text"));
             panel1.add(cbDrawListIconsRight, new CC().cell(0, 3));
 
             //---- cbUseSystemDarkMode ----
-            cbUseSystemDarkMode.setText("Erscheinungsbild des Betriebssystems verwenden");
-            cbUseSystemDarkMode.setToolTipText("Stellt den Hell-/Dunkelmodus der App beim Programmstart nach den aktuellen Einstellungen des Betriebssystem ein.");
+            cbUseSystemDarkMode.setText(bundle.getString("settings.general.checkBox1.text"));
+            cbUseSystemDarkMode.setToolTipText(bundle.getString("settings.general.checkBox1.toolTipText"));
             panel1.add(cbUseSystemDarkMode, new CC().cell(0, 4, 2, 1));
 
             //---- cbTabFilmeTimeUseLongFormat ----
-            cbTabFilmeTimeUseLongFormat.setText("Langes Zeitformat (HH:mm:ss) im Tab Filme f\u00fcr Zeit verwenden");
+            cbTabFilmeTimeUseLongFormat.setText(bundle.getString("settings.general.cbTabFilmeTimeUseLongFormat.text"));
             panel1.add(cbTabFilmeTimeUseLongFormat, new CC().cell(0, 5));
+
+            //---- languageLabel ----
+            languageLabel.setText(bundle.getString("settings.general.languageLabel.text"));
+            languageLabel.setLabelFor(languageComboBox);
+            panel1.add(languageLabel, new CC().cell(0, 6).split(2));
+            panel1.add(languageComboBox, new CC().cell(0, 6));
+
+            //---- languageRestartLabel ----
+            languageRestartLabel.setText(bundle.getString("settings.general.languageRestartLabel.text"));
+            panel1.add(languageRestartLabel, new CC().cell(0, 7, 2, 1));
         }
 
         //---- modernSearchTitlePanel ----
-        modernSearchTitlePanel.setTitle("Moderne Suche");
+        modernSearchTitlePanel.setTitle(bundle.getString("settings.general.modernSearchTitlePanel.title"));
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -291,6 +310,7 @@ public class PanelEinstellungenBase extends JPanel {
     protected JCheckBox cbDrawListIconsRight;
     protected JCheckBox cbUseSystemDarkMode;
     protected JCheckBox cbTabFilmeTimeUseLongFormat;
+    protected JComboBox<mediathek.i18n.UiLanguage> languageComboBox;
     protected JXTitledPanel modernSearchTitlePanel;
     // End of variables declaration//GEN-END:variables
 }

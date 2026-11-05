@@ -20,6 +20,7 @@ package mediathek.tool.cellrenderer
 
 import mediathek.controller.starter.DownloadServices
 import mediathek.controller.starter.StartStatus
+import mediathek.i18n.UiMessages
 import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.tab_film.table.FilmTableAppearance
 import mediathek.swing.IconUtils
@@ -66,7 +67,7 @@ internal class FilmActionCellRenderer(
         if (!appearance.lineBreak) horizontalAlignment = CENTER
         when (filmColumn) {
             FilmColumn.PLAY -> renderPlayAction(film, isSelected)
-            FilmColumn.SAVE -> setSelectedIconAndToolTip(isSelected, downloadIcons, "Film aufzeichnen")
+            FilmColumn.SAVE -> setSelectedIconAndToolTip(isSelected, downloadIcons, UiMessages.text("film.record"))
             FilmColumn.BOOKMARK -> renderBookmarkAction(film, isSelected)
             else -> error("Unsupported film action column: $filmColumn")
         }
@@ -76,9 +77,9 @@ internal class FilmActionCellRenderer(
     private fun renderPlayAction(film: DatenFilm, isSelected: Boolean) {
         val download = downloads.findButtonDownloadByFilmUrl(film.urlNormalQuality)
         if (download?.runtime?.runState?.status == StartStatus.RUNNING) {
-            setSelectedIconAndToolTip(isSelected, stopIcons, "Film stoppen")
+            setSelectedIconAndToolTip(isSelected, stopIcons, UiMessages.text("film.stop"))
         } else {
-            setSelectedIconAndToolTip(isSelected, playIcons, "Film abspielen")
+            setSelectedIconAndToolTip(isSelected, playIcons, UiMessages.text("action.playFilmAction.text"))
         }
     }
 
@@ -88,7 +89,7 @@ internal class FilmActionCellRenderer(
             return
         }
 
-        toolTipText = if (film.isBookmarked) "Film aus Merkliste entfernen" else "Film merken"
+        toolTipText = if (film.isBookmarked) UiMessages.text("film.bookmark.removeSingle") else UiMessages.text("film.bookmark.addSingle")
         icon = if (film.isBookmarked) selectedBookmarkIconHighlighted else bookmarkIcons.icon(isSelected)
     }
 

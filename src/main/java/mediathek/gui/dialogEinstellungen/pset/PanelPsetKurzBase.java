@@ -25,6 +25,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+/** Settings controls using the selected interface-language bundle. */
 public class PanelPsetKurzBase extends JPanel {
     protected PanelPsetKurzBase() {
         initComponents();
@@ -33,6 +34,7 @@ public class PanelPsetKurzBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jPanel2 = new JPanel();
         jPanelExtra = new JPanel();
         var jPanel1 = new JPanel();
@@ -50,7 +52,7 @@ public class PanelPsetKurzBase extends JPanel {
 
         //======== jPanel2 ========
         {
-            jPanel2.setBorder(new TitledBorder("<html><b>Programme</b></html>"));
+            jPanel2.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetKurz.jPanel2.borderTitle")));
 
             //======== jPanelExtra ========
             {
@@ -83,17 +85,17 @@ public class PanelPsetKurzBase extends JPanel {
 
         //======== jPanel1 ========
         {
-            jPanel1.setBorder(new TitledBorder("<html><b>Set</b></html>"));
+            jPanel1.setBorder(new TitledBorder(bundle.getString("settings.PanelPsetKurz.jPanel1.borderTitle")));
 
             //---- jLabel1 ----
-            jLabel1.setText("Set Name:");
+            jLabel1.setText(bundle.getString("settings.PanelPsetKurz.jLabel1.text"));
 
             //---- jLabel2 ----
-            jLabel2.setText("Zielpfad:");
+            jLabel2.setText(bundle.getString("settings.PanelPsetKurz.jLabel2.text"));
 
             //---- jButtonZiel ----
             jButtonZiel.setIcon(SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg"));
-            jButtonZiel.setToolTipText("Pfad ausw\u00e4hlen");
+            jButtonZiel.setToolTipText(bundle.getString("settings.PanelPsetKurz.jButtonZiel.toolTipText"));
 
             //======== jScrollPane2 ========
             {

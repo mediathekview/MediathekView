@@ -2,7 +2,15 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.general"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
+
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq l {space :::p, par l {comp jPanel3:::::x, comp jPanel5::t:::x, seq {par l {comp jPanel4:::p::p, comp panel1:::p::p}, space :0:0:x}, comp modernSearchTitlePanel::l:::x}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jPanel5:::p::p, space :::p, comp jPanel3:::p::p, space :::p, comp jPanel4:::p::p, space :::p, comp panel1:::p::p, space :::p, comp modernSearchTitlePanel:::::x, space :::p}}"
@@ -15,13 +23,13 @@ new FormModel {
 				"$rowConstraints": "[][fill]"
 			} ) {
 				name: "jPanel5"
-				"border": new javax.swing.border.TitledBorder( "Tab-Verhalten" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.general.jPanel5.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTabsTop"
-					"text": "Tabs oben anzeigen"
+					"text": new FormMessage( null, "settings.general.jCheckBoxTabsTop.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -30,8 +38,8 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTabIcon"
-					"text": "Icons anzeigen"
-					"toolTipText": "Im Tab keine Icons anzeigen"
+					"text": new FormMessage( null, "settings.general.jCheckBoxTabIcon.text" )
+					"toolTipText": new FormMessage( null, "settings.general.jCheckBoxTabIcon.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -40,7 +48,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbAutomaticMenuTabSwitching"
-					"text": "Tabs schalten automatisch bei Menünutzung um"
+					"text": new FormMessage( null, "settings.general.cbAutomaticMenuTabSwitching.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -49,8 +57,8 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbRestoreSelectedTab"
-					"text": "Letzte Auswahl beim Start wiederherstellen"
-					"toolTipText": "Wenn gewählt wird beim Start des Programms automatisch das zuletzt genutzte Tab aktiviert."
+					"text": new FormMessage( null, "settings.general.cbRestoreSelectedTab.text" )
+					"toolTipText": new FormMessage( null, "settings.general.cbRestoreSelectedTab.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -63,13 +71,13 @@ new FormModel {
 				"$verticalGroup": "par l {seq {space :10:10:p, comp jLabel3:::p::p}, seq {space :5:5:p, comp jtfUserAgent:::p::p}}"
 			} ) {
 				name: "jPanel3"
-				"border": new javax.swing.border.TitledBorder( "Download" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.general.jPanel3.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel3"
-					"text": "User-Agent:"
+					"text": new FormMessage( null, "settings.general.jLabel3.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -88,14 +96,14 @@ new FormModel {
 				"$verticalGroup": "par l {seq l {space :::p, par b {comp jLabel4::b:p::p, comp jtfProxyHost::b:p::p, comp jLabel5::b:p::p, comp jtfProxyPort::b:p::p}, space :::p, par b {comp jLabel7::b:p::p, comp jtfProxyUser::b:p::p, comp jLabel8::b:p::p, comp jpfProxyPassword::b:p::p}, space :::p, comp jButtonApplyProxySettings:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel4"
-				"border": new javax.swing.border.TitledBorder( "HTTP-Proxy" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.general.jPanel4.borderTitle" )
 				"toolTipText": ""
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel4"
-					"text": "Host:"
+					"text": new FormMessage( null, "settings.general.jLabel4.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -108,7 +116,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel5"
-					"text": "Port:"
+					"text": new FormMessage( null, "settings.general.jLabel5.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -121,7 +129,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel7"
-					"text": "User:"
+					"text": new FormMessage( null, "settings.general.jLabel7.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -134,7 +142,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel8"
-					"text": "Passwort:"
+					"text": new FormMessage( null, "settings.general.jLabel8.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -147,7 +155,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonApplyProxySettings"
-					"text": "Proxy übernehmen"
+					"text": new FormMessage( null, "settings.general.jButtonApplyProxySettings.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -156,7 +164,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 0,hidemode 3,gap 5 0"
 				"$columnConstraints": "[grow,left][fill]"
-				"$rowConstraints": "[fill][fill][fill][][fill][]"
+				"$rowConstraints": "[fill][fill][fill][][fill][][][]"
 			} ) {
 				name: "panel1"
 				auxiliary() {
@@ -164,7 +172,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxTray"
-					"text": "Programm ins Tray minimieren"
+					"text": new FormMessage( null, "settings.general.jCheckBoxTray.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -173,8 +181,8 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowBlacklistIconWithText"
-					"text": "Blacklist-Filter-Icon mit Text anzeigen"
-					"toolTipText": "Neustart erforderlich"
+					"text": new FormMessage( null, "settings.general.cbShowBlacklistIconWithText.text" )
+					"toolTipText": new FormMessage( null, "settings.general.cbShowBlacklistIconWithText.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -183,7 +191,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbUseWikipediaSenderLogos"
-					"text": "Senderlogos von Wikipedia verwenden"
+					"text": new FormMessage( null, "settings.general.cbUseWikipediaSenderLogos.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -192,7 +200,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbAutomaticUpdateChecks"
-					"text": "Programmupdates täglich suchen"
+					"text": new FormMessage( null, "settings.general.cbAutomaticUpdateChecks.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -201,7 +209,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDrawListIconsRight"
-					"text": "Info-Icons der Listen rechts darstellen"
+					"text": new FormMessage( null, "settings.general.cbDrawListIconsRight.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -210,8 +218,8 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "checkBox1"
-					"text": "Erscheinungsbild des Betriebssystems verwenden"
-					"toolTipText": "Stellt den Hell-/Dunkelmodus der App beim Programmstart nach den aktuellen Einstellungen des Betriebssystem ein."
+					"text": new FormMessage( null, "settings.general.checkBox1.text" )
+					"toolTipText": new FormMessage( null, "settings.general.checkBox1.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableName": "cbUseSystemDarkMode"
 						"JavaCodeGenerator.variableModifiers": 4
@@ -221,17 +229,45 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbTabFilmeTimeUseLongFormat"
-					"text": "Langes Zeitformat (HH:mm:ss) im Tab Filme für Zeit verwenden"
+					"text": new FormMessage( null, "settings.general.cbTabFilmeTimeUseLongFormat.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 5"
 				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "languageLabel"
+					"text": new FormMessage( null, "settings.general.languageLabel.text" )
+					"labelFor": new FormReference( "languageComboBox" )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 6,split 2"
+				} )
+				add( new FormComponent( "javax.swing.JComboBox" ) {
+					name: "languageComboBox"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+						"JavaCodeGenerator.typeParameters": "mediathek.i18n.UiLanguage"
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 6"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "languageRestartLabel"
+					"text": new FormMessage( null, "settings.general.languageRestartLabel.text" )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 7 2 1"
+				} )
 			} )
 			add( new FormComponent( "org.jdesktop.swingx.JXTitledPanel" ) {
 				name: "modernSearchTitlePanel"
-				"title": "Moderne Suche"
+				"title": new FormMessage( null, "settings.general.modernSearchTitlePanel.title" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

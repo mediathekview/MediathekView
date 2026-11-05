@@ -1,0 +1,3 @@
+For shutdown to work on Linux, your user must be allowed to execute:
+
+shutdown -h now

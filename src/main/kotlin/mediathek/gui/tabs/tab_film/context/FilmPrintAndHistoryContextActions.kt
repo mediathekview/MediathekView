@@ -22,6 +22,7 @@ import mediathek.daten.DatenFilm
 import mediathek.gui.tabs.actions.MarkSingleFilmAsSeenAction
 import mediathek.gui.tabs.actions.MarkSingleFilmAsUnseenAction
 import mediathek.gui.tabs.actions.hasBeenSeenInHistory
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
@@ -39,7 +40,7 @@ class FilmPrintAndHistoryContextActions(
     private val printActionListener = PrintActionListener()
 
     fun addActions(popupMenu: JPopupMenu, selectedFilm: Optional<DatenFilm>) {
-        val printTableMenuItem = JMenuItem("Tabelle drucken")
+        val printTableMenuItem = JMenuItem(UiMessages.text("film.context.print"))
         printTableMenuItem.addActionListener(printActionListener)
         popupMenu.add(printTableMenuItem)
 

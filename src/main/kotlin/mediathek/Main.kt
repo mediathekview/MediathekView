@@ -38,6 +38,7 @@ import mediathek.daten.abo.AboServices
 import mediathek.gui.dialog.DialogStarteinstellungen
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider
 import mediathek.logging.JavaUtilLoggingConfiguration
+import mediathek.i18n.UiMessages
 import mediathek.logging.SwingAppender
 import mediathek.mac.MediathekGuiMac
 import mediathek.mainwindow.MediathekGui
@@ -103,6 +104,7 @@ object Main {
         configureStartup(parseResult, args)
         printDirectoryPaths()
 
+        UiMessages.initialize(ApplicationConfiguration.getInstance().uiLanguage)
         val daten = Daten()
 
         if (CommandLineOptions.isDownloadAndQuit()) {
@@ -228,6 +230,7 @@ object Main {
     }
 
     private suspend fun initializeSwingEnvironment() = withContext(Dispatchers.Swing) {
+        JComponent.setDefaultLocale(UiMessages.language.locale)
         if (SystemUtils.IS_OS_LINUX && !CommandLineOptions.isDisableFlatLafDecorations()) {
             // enable custom window decorations
             JFrame.setDefaultLookAndFeelDecorated(true)
@@ -239,6 +242,7 @@ object Main {
         UIManager.put("TabbedPane.showTabSeparators", true)
         registerFlatLafCustomization()
         DarkModeSetup.setup()
+        UIManager.getDefaults().defaultLocale = UiMessages.language.locale
 
         if (SystemUtils.IS_OS_LINUX) {
             checkUiScaleSetting()
@@ -551,10 +555,7 @@ object Main {
 
                 JOptionPane.showMessageDialog(
                     null,
-                    "<html>" +
-                        "Sie verwenden den Parameter <i>-Dsun.java2d.uiScale=$strScale</i>.<br>" +
-                        "<b>Java unter Linux unterstützt nur ganzzahlige Skalierung!</b><br><br>" +
-                        "Sie sollten <i>-Dsun.java2d.uiScale=$newScale</i> oder größer verwenden falls die Schriftgröße zu klein ist.",
+                    UiMessages.format("startup.scale", strScale, newScale.toString()),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.WARNING_MESSAGE
                 )
@@ -590,9 +591,7 @@ object Main {
             if (!WindowsVersionHelper.IsWindows10OrGreater()) {
                 JOptionPane.showMessageDialog(
                     null,
-                    "<html>MediathekView benötigt mindestens Windows 10 zum Start.<br/>" +
-                        "<b>Die Nutzung erfolgt auf eigenes Risiko ohne Support!!</b><br/><br/>" +
-                        "Die nächste MV-Version wird nicht mehr unter diesem Betriebssystem starten!</html>",
+                    UiMessages.text("startup.windows"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.WARNING_MESSAGE
                 )
@@ -622,9 +621,7 @@ object Main {
                 SplashScreenLifecycle.hide()
                 splashHidden = true
                 val shouldActivate = showStartupQuestionDialog(
-                    "<html>Die maximale Filterlänge wurde <b>von 120 auf 240 Minuten</b> erhöht.<br/>" +
-                        "Die Filter wurden damals nicht automatisch angepasst.<br/><br/>" +
-                        "Soll MediathekView einmalig alle Filter anpassen?</html>"
+                    UiMessages.text("startup.filterMigration")
                 )
                 if (shouldActivate != null) {
                     if (shouldActivate) {
@@ -666,8 +663,7 @@ object Main {
             SplashScreenLifecycle.hide()
             try {
                 val shouldActivate = showStartupQuestionDialog(
-                    "<html>Diese Version unterstützt neue Sender, die in den Einstellungen aktiviert werden müssen.<br/>" +
-                        "Soll MediathekView einmalig alle Sender aktivieren?</html>"
+                    UiMessages.text("startup.channels")
                 )
                 if (shouldActivate != null) {
                     if (shouldActivate) {
@@ -767,8 +763,7 @@ object Main {
                     //show termination dialog
                     JOptionPane.showMessageDialog(
                         null,
-                        "<html>Sie haben die Einrichtung des Programms abgebrochen.<br>" +
-                            "MediathekView muss deshalb beendet werden.</html>",
+                        UiMessages.text("startup.cancelled"),
                         Konstanten.PROGRAMMNAME,
                         JOptionPane.ERROR_MESSAGE
                     )
@@ -849,8 +844,7 @@ object Main {
     private fun installSingleInstanceHandler(showDialog: Boolean = true) {
         singleInstanceWatcher = SingleInstance()
         if (singleInstanceWatcher?.isAppAlreadyActive() == true) {
-            val message = "Es dürfen nicht mehrere MediathekView-Instanzen gleichzeitig laufen.\n" +
-                "Bitte beenden Sie zuerst das andere Programm."
+            val message = UiMessages.text("startup.singleInstance")
             if (showDialog) {
                 JOptionPane.showMessageDialog(
                     null,

@@ -29,6 +29,7 @@ import java.util.*
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
+import mediathek.i18n.UiMessages
 
 class FilmAboAndBlacklistContextActions(
     private val host: TableContextMenuHandler.Host,
@@ -41,11 +42,11 @@ class FilmAboAndBlacklistContextActions(
     private val aboWithTitleAction = AboActionListener(true)
 
     fun addAboMenu(popupMenu: JPopupMenu, selectedFilm: Optional<DatenFilm>) {
-        val submenuAbo = JMenu("Abo")
+        val submenuAbo = JMenu(UiMessages.text("film.context.subscription"))
         popupMenu.add(submenuAbo)
 
-        val itemAbo = JMenuItem("Abo mit Sender und Thema anlegen")
-        val itemAboMitTitel = JMenuItem("Abo mit Sender und Thema und Titel anlegen")
+        val itemAbo = JMenuItem(UiMessages.text("film.context.subscribeTopic"))
+        val itemAboMitTitel = JMenuItem(UiMessages.text("film.context.subscribeTitle"))
 
         selectedFilm.ifPresent { film -> configureAboMenuItems(film, itemAbo, itemAboMitTitel) }
 
@@ -54,10 +55,10 @@ class FilmAboAndBlacklistContextActions(
     }
 
     fun addBlacklistMenu(popupMenu: JPopupMenu) {
-        val submenuBlack = JMenu("Blacklist")
+        val submenuBlack = JMenu(UiMessages.text("film.context.blacklist"))
         popupMenu.add(submenuBlack)
 
-        val itemBlackSender = JMenuItem("Sender in die Blacklist einfügen")
+        val itemBlackSender = JMenuItem(UiMessages.text("film.context.blacklistChannel"))
         itemBlackSender.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
                 blacklistServices.rules.add(BlacklistRule(film.sender, "", "", ""))
@@ -65,7 +66,7 @@ class FilmAboAndBlacklistContextActions(
         }
         submenuBlack.add(itemBlackSender)
 
-        val itemBlackThema = JMenuItem("Thema in die Blacklist einfügen")
+        val itemBlackThema = JMenuItem(UiMessages.text("film.context.blacklistTopic"))
         itemBlackThema.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
                 blacklistServices.rules.add(BlacklistRule("", film.thema, "", ""))
@@ -73,7 +74,7 @@ class FilmAboAndBlacklistContextActions(
         }
         submenuBlack.add(itemBlackThema)
 
-        val itemAddTitleToBlacklist = JMenuItem("Titel in die Blacklist einfügen")
+        val itemAddTitleToBlacklist = JMenuItem(UiMessages.text("film.context.blacklistTitle"))
         itemAddTitleToBlacklist.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
                 blacklistServices.rules.add(BlacklistRule("", "", film.title, ""))
@@ -81,7 +82,7 @@ class FilmAboAndBlacklistContextActions(
         }
         submenuBlack.add(itemAddTitleToBlacklist)
 
-        val itemBlackSenderThema = JMenuItem("Sender und Thema in die Blacklist einfügen")
+        val itemBlackSenderThema = JMenuItem(UiMessages.text("film.context.blacklistChannelTopic"))
         itemBlackSenderThema.addActionListener {
             addBlacklistRuleForSelectedFilm { film ->
                 blacklistServices.rules.add(BlacklistRule(film.sender, film.thema, "", ""))

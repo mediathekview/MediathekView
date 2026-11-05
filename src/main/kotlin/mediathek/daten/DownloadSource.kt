@@ -18,6 +18,8 @@
 
 package mediathek.daten
 
+import mediathek.i18n.UiMessages
+
 enum class DownloadSource(
     val legacyId: Byte,
     val label: String,
@@ -27,6 +29,15 @@ enum class DownloadSource(
     DOWNLOAD(2, "Download"),
     ABO(3, "Abo"),
     ;
+
+    /** Translated display text, independent of the legacy source identifier and label. */
+    val displayLabel: String
+        get() = UiMessages.text(when (this) {
+            ALL -> "download.source.all"
+            BUTTON -> "download.source.button"
+            DOWNLOAD -> "download.source.download"
+            ABO -> "download.source.abo"
+        })
 
     companion object {
         private val byLegacyId = entries.associateBy { it.legacyId }

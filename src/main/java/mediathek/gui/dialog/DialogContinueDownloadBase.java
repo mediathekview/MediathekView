@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/** Generated layout using the selected interface language. */
 public class DialogContinueDownloadBase extends JDialog {
     protected DialogContinueDownloadBase(JFrame parent) {
         super(parent, true);
@@ -17,7 +18,9 @@ public class DialogContinueDownloadBase extends JDialog {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the generated controls using the selected interface language. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         jLabel1 = new JLabel();
         jPanelNewName = new JPanel();
         jPanelPath = new JPanel();
@@ -28,7 +31,7 @@ public class DialogContinueDownloadBase extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Download weiterf\u00fchren");
+        setTitle(bundle.getString("download.resume.dialog.this.title"));
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             new LC().fillX().insets("5").hideMode(3).gridGap("rel", "rel"),
@@ -42,7 +45,7 @@ public class DialogContinueDownloadBase extends JDialog {
                 ));
 
         //---- jLabel1 ----
-        jLabel1.setText("<html>Die Filmdatei existiert bereits.<br>Wie m\u00f6chten Sie forfahren?</html>");
+        jLabel1.setText(bundle.getString("download.resume.dialog.jLabel1.text"));
         contentPane.add(jLabel1, new CC().cell(0, 0));
 
         //======== jPanelNewName ========
@@ -66,7 +69,7 @@ public class DialogContinueDownloadBase extends JDialog {
             jPanelNewName.add(jPanelPath, new CC().cell(0, 0).growX().width("527").height("96"));
 
             //---- jButtonNeuerName ----
-            jButtonNeuerName.setText("Mit diesem Namen neu Starten");
+            jButtonNeuerName.setText(bundle.getString("download.resume.dialog.jButtonNeuerName.text"));
             jPanelNewName.add(jButtonNeuerName, new CC().cell(0, 1).alignX("right"));
         }
         contentPane.add(jPanelNewName, new CC().cell(0, 1).growX());
@@ -84,11 +87,11 @@ public class DialogContinueDownloadBase extends JDialog {
                     ));
 
             //---- jButtonAbbrechen ----
-            jButtonAbbrechen.setText("Abbrechen");
+            jButtonAbbrechen.setText(bundle.getString("download.resume.dialog.jButtonAbbrechen.text"));
             buttonPanel.add(jButtonAbbrechen, new CC().cell(0, 0));
 
             //---- jButtonWeiter ----
-            jButtonWeiter.setText("Weiterf\u00fchren in XXX");
+            jButtonWeiter.setText(bundle.getString("download.resume.dialog.jButtonWeiter.text"));
             buttonPanel.add(jButtonWeiter, new CC().cell(1, 0));
         }
         contentPane.add(buttonPanel, new CC().cell(0, 2).alignX("right"));

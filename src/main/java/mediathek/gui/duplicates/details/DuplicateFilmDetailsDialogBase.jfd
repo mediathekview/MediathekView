@@ -2,12 +2,19 @@ JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.4" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.DuplicateFilmDetailsDialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"defaultCloseOperation": 2
 			"modal": true
-			"title": "Zusammengehörige Filme"
+			"title": new FormMessage( null, "dialog.DuplicateFilmDetailsDialog.this.title" )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -54,7 +61,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
-						"text": "Schließen"
+						"text": new FormMessage( null, "dialog.DuplicateFilmDetailsDialog.okButton.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}

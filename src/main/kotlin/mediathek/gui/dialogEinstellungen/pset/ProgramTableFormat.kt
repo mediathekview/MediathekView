@@ -20,6 +20,7 @@ package mediathek.gui.dialogEinstellungen.pset
 
 import ca.odell.glazedlists.gui.AdvancedTableFormat
 import mediathek.daten.DatenProg
+import mediathek.i18n.UiMessages
 
 class ProgramTableFormat : AdvancedTableFormat<DatenProg> {
     private val booleanComparator = Comparator<Boolean?> { first, second -> compareValues(first, second) }
@@ -27,7 +28,7 @@ class ProgramTableFormat : AdvancedTableFormat<DatenProg> {
 
     override fun getColumnCount(): Int = DatenProg.MAX_ELEM
 
-    override fun getColumnName(column: Int): String = DatenProg.COLUMN_NAMES[column]
+    override fun getColumnName(column: Int): String = UiMessages.text("settings.program.column.$column")
 
     override fun getColumnClass(column: Int): Class<*> =
         when (column) {

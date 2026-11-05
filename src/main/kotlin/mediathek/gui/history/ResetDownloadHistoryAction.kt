@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JFrame
 import javax.swing.JOptionPane
+import mediathek.i18n.UiMessages
 
 class ResetDownloadHistoryAction(private val owner: JFrame) : AbstractAction() {
     override fun actionPerformed(e: ActionEvent) {
@@ -18,6 +19,6 @@ class ResetDownloadHistoryAction(private val owner: JFrame) : AbstractAction() {
     }
 
     init {
-        putValue(NAME, "Download-Historie zurücksetzen...")
+        putValue(NAME, UiMessages.text("action.resetDownloadHistoryAction.text"))
     }
 }

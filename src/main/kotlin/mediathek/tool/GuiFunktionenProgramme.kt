@@ -23,6 +23,7 @@ import mediathek.daten.DatenPset
 import mediathek.daten.ListePset
 import mediathek.daten.ProgramSetRepository
 import mediathek.gui.dialogEinstellungen.DialogImportPset
+import mediathek.i18n.UiMessages
 import mediathek.tool.http.MVHttpClient
 import okhttp3.Request
 import org.apache.commons.lang3.SystemUtils
@@ -55,7 +56,7 @@ object GuiFunktionenProgramme {
     private const val PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg"
     private const val PFAD_MAC_FFMPEG = "bin/ffmpeg"
     private const val PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe"
-    private const val MSG_FILE_NOT_IMPORTED = "Die Datei wurde nicht importiert!"
+    private val MSG_FILE_NOT_IMPORTED get() = UiMessages.text("settings.import.failed")
 
     private fun setWinProgPfade() {
         System.getenv("ProgramFiles")?.let { pfad ->
@@ -177,7 +178,7 @@ object GuiFunktionenProgramme {
             JOptionPane.showMessageDialog(
                 null,
                 MSG_FILE_NOT_IMPORTED,
-                "Fehler",
+                UiMessages.text("settings.import.error"),
                 JOptionPane.ERROR_MESSAGE
             )
             return false
@@ -189,7 +190,7 @@ object GuiFunktionenProgramme {
                 JOptionPane.showMessageDialog(
                     null,
                     MSG_FILE_NOT_IMPORTED,
-                    "Fehler",
+                    UiMessages.text("settings.import.error"),
                     JOptionPane.ERROR_MESSAGE
                 )
                 parent?.cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)
@@ -207,16 +208,16 @@ object GuiFunktionenProgramme {
                 }
                 JOptionPane.showMessageDialog(
                     null,
-                    "${pSet.size} Programmset importiert!",
-                    "Ok",
+                    UiMessages.format("settings.import.success", pSet.size),
+                    UiMessages.text("settings.import.ok"),
                     JOptionPane.INFORMATION_MESSAGE
                 )
                 return true
             } else {
                 JOptionPane.showMessageDialog(
                     null,
-                    "Die Datei wurde nicht importiert!",
-                    "Fehler",
+                    UiMessages.text("settings.import.failed"),
+                    UiMessages.text("settings.import.error"),
                     JOptionPane.ERROR_MESSAGE
                 )
             }

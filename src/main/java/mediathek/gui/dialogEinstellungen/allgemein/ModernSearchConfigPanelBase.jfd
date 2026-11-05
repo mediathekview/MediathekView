@@ -2,7 +2,15 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.search"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
+
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3"
 			"$columnConstraints": "[grow,fill]"
@@ -11,7 +19,7 @@ new FormModel {
 			name: "this"
 			add( new FormComponent( "com.jidesoft.swing.MultilineLabel" ) {
 				name: "multilineLabel1"
-				"text": "Mit der modernen Suche können komplexe Abfragen inkl. UND-/ODER-/NICHT-Anteilen über diverse Felder der Filmliste durchgeführt werden. \nDie Bedienung ist komplett anders und deutlich komplexer als die bisher verwendete Suche und richtet sich daher nur an erfahrene Nutzer, die sich in die Materie einarbeiten wollen. Eine Suche im Internet zur Gestaltung der Abfragen ist unausweichlich.\nDie Lade-/Verarbeitungszeit der Filmliste erhöht sich je nach verwendetem Rechner um ca. 10-30 Sekunden.\nEs ist nicht möglich, die neue Suche und die alte parallel zu verwenden."
+				"text": new FormMessage( null, "settings.search.multilineLabel1.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -20,7 +28,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "cbActivateModernSearch"
-				"text": "<html>Moderne Suchfunktion aktivieren <b>(erfordert Neustart!)</b></html>"
+				"text": new FormMessage( null, "settings.search.cbActivateModernSearch.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

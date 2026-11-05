@@ -11,6 +11,7 @@ import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.dialogEinstellungen.allgemein.LuceneDirectoryModePanel
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen
 import mediathek.gui.dialogEinstellungen.blacklist.PanelBlacklist
+import mediathek.i18n.UiMessages
 import mediathek.mainwindow.SettingsDialogHost
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.GetIcon
@@ -204,21 +205,21 @@ class DialogEinstellungen(
     }
 
     private companion object {
-        private const val NAME_EINSTELLUNGEN = "Einstellungen"
-        private const val NAME_ALLGEMEINE_EINSTELLUNGEN = "Allgemein"
-        private const val NAME_NOTIFICATIONS = "Benachrichtigungen"
-        private const val NAME_BANDWIDTH = "Download"
-        private const val NAME_ALLGEMEINE_EINSTELLUNGEN_ERWEITERT = "Erweitert"
-        private const val NAME_ALLGEMEINE_EINSTELLUNGEN_GEO = "Standort & Geoblocking"
-        private const val NAME_ALLGEMEINE_EINSTELLUNGEN_COLOR = "Farben"
-        private const val NAME_ALLGEMEINE_EINSTELLUNGEN_LUCENE = "Lucene-Tuning"
-        private const val NAME_FILMLISTE = "Filmliste"
-        private const val NAME_FILMLISTE_LADEN = "Filmliste laden"
-        private const val NAME_BLACKLIST = "Blacklist"
-        private const val NAME_AUFZEICHNEN = "Aufzeichnen und Abspielen"
-        private const val NAME_DATEINAME = "Datei- und Pfadnamen"
-        private const val NAME_PROGRAMMSET = "Set bearbeiten"
-        private const val NAME_PROGRAMMSET_IMPORTIEREN = "Set importieren"
+        private val NAME_EINSTELLUNGEN get() = UiMessages.text("settings.navigation.settings")
+        private val NAME_ALLGEMEINE_EINSTELLUNGEN get() = UiMessages.text("settings.navigation.general")
+        private val NAME_NOTIFICATIONS get() = UiMessages.text("settings.navigation.notifications")
+        private val NAME_BANDWIDTH get() = UiMessages.text("settings.navigation.download")
+        private val NAME_ALLGEMEINE_EINSTELLUNGEN_ERWEITERT get() = UiMessages.text("settings.navigation.advanced")
+        private val NAME_ALLGEMEINE_EINSTELLUNGEN_GEO get() = UiMessages.text("settings.navigation.location")
+        private val NAME_ALLGEMEINE_EINSTELLUNGEN_COLOR get() = UiMessages.text("settings.navigation.colours")
+        private val NAME_ALLGEMEINE_EINSTELLUNGEN_LUCENE get() = UiMessages.text("settings.navigation.lucene")
+        private val NAME_FILMLISTE get() = UiMessages.text("settings.navigation.filmList")
+        private val NAME_FILMLISTE_LADEN get() = UiMessages.text("settings.navigation.loadFilmList")
+        private val NAME_BLACKLIST get() = UiMessages.text("settings.navigation.blacklist")
+        private val NAME_AUFZEICHNEN get() = UiMessages.text("settings.navigation.recording")
+        private val NAME_DATEINAME get() = UiMessages.text("settings.navigation.fileNames")
+        private val NAME_PROGRAMMSET get() = UiMessages.text("settings.navigation.editSet")
+        private val NAME_PROGRAMMSET_IMPORTIEREN get() = UiMessages.text("settings.navigation.importSet")
     }
 
     private class SettingsPage(

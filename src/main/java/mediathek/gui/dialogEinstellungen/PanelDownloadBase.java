@@ -16,6 +16,7 @@ public class PanelDownloadBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jPanel2 = new JPanel();
         cbkDownloadError = new JCheckBox();
         jCheckBoxBeep = new JCheckBox();
@@ -44,19 +45,19 @@ public class PanelDownloadBase extends JPanel {
                     ));
 
             //---- cbkDownloadError ----
-            cbkDownloadError.setText("Bei Downloadfehler eine Fehlermeldung anzeigen");
+            cbkDownloadError.setText(bundle.getString("settings.PanelDownload.cbkDownloadError.text"));
             jPanel2.add(cbkDownloadError, new CC().cell(0, 0));
 
             //---- jCheckBoxBeep ----
-            jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben");
+            jCheckBoxBeep.setText(bundle.getString("settings.PanelDownload.jCheckBoxBeep.text"));
             jPanel2.add(jCheckBoxBeep, new CC().cell(0, 1));
 
             //---- jButtonBeep ----
-            jButtonBeep.setText("Test");
+            jButtonBeep.setText(bundle.getString("settings.PanelDownload.jButtonBeep.text"));
             jPanel2.add(jButtonBeep, new CC().cell(1, 1));
 
             //---- cbFetchMissingFileSize ----
-            cbFetchMissingFileSize.setText("Fehlende Filmgr\u00f6\u00dfe nachladen");
+            cbFetchMissingFileSize.setText(bundle.getString("settings.PanelDownload.cbFetchMissingFileSize.text"));
             jPanel2.add(cbFetchMissingFileSize, new CC().cell(0, 2));
 
             //======== panel1 ========
@@ -64,7 +65,7 @@ public class PanelDownloadBase extends JPanel {
                 panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
 
                 //---- label1 ----
-                label1.setText("Standard-Wert f\u00fcr automatische Weiterf\u00fchrung:");
+                label1.setText(bundle.getString("settings.PanelDownload.label1.text"));
                 panel1.add(label1);
 
                 //---- spDefaultDownloadContinuation ----

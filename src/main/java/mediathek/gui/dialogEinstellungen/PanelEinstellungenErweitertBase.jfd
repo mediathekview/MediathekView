@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.advanced"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) {
 			"gap": 5
 		} ) {
@@ -13,14 +20,14 @@ new FormModel {
 				"$rowConstraints": "[fill][fill]"
 			} ) {
 				name: "jPanel6"
-				"border": new javax.swing.border.TitledBorder( "Nach dem Neuladen der Filmliste" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.advanced.jPanel6.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxAboSuchen"
-					"text": "Abos automatisch suchen"
-					"toolTipText": "<html>Nach dem Neuladen einer Filmliste wird dann sofort nach neuen Abos gesucht.<br>Ansonsten muss man im Tab Download auf <i>Downloadliste aktualisieren</i> klicken.</html>"
+					"text": new FormMessage( null, "settings.advanced.jCheckBoxAboSuchen.text" )
+					"toolTipText": new FormMessage( null, "settings.advanced.jCheckBoxAboSuchen.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -29,8 +36,8 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxDownloadSofortStarten"
-					"text": "Downloads aus Abos sofort starten"
-					"toolTipText": "<html>Neu angelegte Downloads (aus Abos) werden sofort gestartet.<br>Ansonsten muss man sie selbst starten.</html>"
+					"text": new FormMessage( null, "settings.advanced.jCheckBoxDownloadSofortStarten.text" )
+					"toolTipText": new FormMessage( null, "settings.advanced.jCheckBoxDownloadSofortStarten.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -44,13 +51,13 @@ new FormModel {
 				"$rowConstraints": "[fill][fill][fill][fill]"
 			} ) {
 				name: "jPanel2"
-				"border": new javax.swing.border.TitledBorder( "Tab Downloads" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.advanced.jPanel2.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldProgrammDateimanager"
-					"toolTipText": "<html>Im Tab <i>Downloads</i> kann man mit der rechten Maustaste den Downloadordner (Zielordner) des jeweiligen Downloads öffnen.<br>Normalerweise wird der Dateimanager des Betriebssystems gefunden und geöffnet.<br><br>Klappt das nicht, kann hier ein Programm dafür angegeben werden.</html>"
+					"toolTipText": new FormMessage( null, "settings.advanced.jTextFieldProgrammDateimanager.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -60,7 +67,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammDateimanager"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-					"toolTipText": "Programm auswählen"
+					"toolTipText": new FormMessage( null, "settings.advanced.jButtonProgrammDateimanager.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -69,7 +76,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "Datei-Manager zum Öffnen des Downloadordners:"
+					"text": new FormMessage( null, "settings.advanced.jLabel1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -78,7 +85,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel2"
-					"text": "Videoplayer zum Abspielen gespeicherter Filme:"
+					"text": new FormMessage( null, "settings.advanced.jLabel2.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -87,7 +94,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldVideoplayer"
-					"toolTipText": "<html>Im Tab <i>Downloads</i> kann man den gespeicherten Film in einem Videoplayer öffnen.<br>Normalerweise wird der Videoplayer des Betriebssystems gefunden und geöffnet.<br>Klappt das nicht, kann hier ein Programm als Alternative angegeben werden.</html>"
+					"toolTipText": new FormMessage( null, "settings.advanced.jTextFieldVideoplayer.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -97,7 +104,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammVideoplayer"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-					"toolTipText": "Programm auswählen"
+					"toolTipText": new FormMessage( null, "settings.advanced.jButtonProgrammVideoplayer.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -111,8 +118,8 @@ new FormModel {
 				"$rowConstraints": "[fill]"
 			} ) {
 				name: "jPanel4"
-				"border": new javax.swing.border.TitledBorder( "Webbrowser zum Öffnen von URLs" )
-				"toolTipText": "<html>Wenn das Programm versucht, einen Link zu öffnen und die Standardanwendung nicht startet, kann damit ein Programm ausgewählt und fest zugeordnet werden.</html>"
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.advanced.jPanel4.borderTitle" )
+				"toolTipText": new FormMessage( null, "settings.advanced.jPanel4.toolTipText" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -127,7 +134,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammUrl"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-					"toolTipText": "Programm auswählen"
+					"toolTipText": new FormMessage( null, "settings.advanced.jButtonProgrammUrl.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -141,13 +148,13 @@ new FormModel {
 				"$rowConstraints": "[fill][fill]"
 			} ) {
 				name: "jPanelJDownloader"
-				"border": new javax.swing.border.TitledBorder( "JDownloader" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.advanced.jPanelJDownloader.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label1"
-					"text": "JDownloader-URL:"
+					"text": new FormMessage( null, "settings.advanced.label1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -156,7 +163,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldJDownloaderUrl"
-					"toolTipText": "<html>Wenn jDownloader nicht auf dem lokalen Host installiert ist oder unter einem anderen Port reagieren soll, hier bitte angeben.<br>Default: http://127.0.0.1:9666/flash/add</html>"
+					"toolTipText": new FormMessage( null, "settings.advanced.jTextFieldJDownloaderUrl.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -170,13 +177,13 @@ new FormModel {
 				"$rowConstraints": "[fill][fill][fill][fill][fill][fill]"
 			} ) {
 				name: "jPanelPyLoad"
-				"border": new javax.swing.border.TitledBorder( "pyLoad" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.advanced.jPanelPyLoad.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label2"
-					"text": "pyLoad-URL:"
+					"text": new FormMessage( null, "settings.advanced.label2.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -185,7 +192,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JTextField" ) {
 					name: "jTextFieldPyLoadUrl"
-					"toolTipText": "PyLoad-URL komplett angeben (z.B.: http://127.0.0.1:8000)"
+					"toolTipText": new FormMessage( null, "settings.advanced.jTextFieldPyLoadUrl.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -194,7 +201,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label3"
-					"text": "Benutzer:"
+					"text": new FormMessage( null, "settings.advanced.label3.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -211,7 +218,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label4"
-					"text": "Passwort:"
+					"text": new FormMessage( null, "settings.advanced.label4.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -233,15 +240,15 @@ new FormModel {
 				"$rowConstraints": "[fill]"
 			} ) {
 				name: "pnlLinuxShutdownCommand"
-				"border": new javax.swing.border.TitledBorder( "Linux: Aufruf zum Shutdown" )
-				"toolTipText": "<html>Unter Linux wird das ausgewählte Programm/Script ausgeführt um den Recher herunter zu fahren.<br>Mögliche Aufrufe sind:<br>\n<ul>\n<li>systemctl poweroff</li>\n<li>poweroff</li>\n<li>sudo shutdown -P now</li>\n<li><b>shutdown -h now</b></li>\n</ul>\n</html>"
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.advanced.pnlLinuxShutdownCommand.borderTitle" )
+				"toolTipText": new FormMessage( null, "settings.advanced.pnlLinuxShutdownCommand.toolTipText" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonProgrammShutdown"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-					"toolTipText": "Programm/Script auswählen"
+					"toolTipText": new FormMessage( null, "settings.advanced.jButtonProgrammShutdown.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -264,7 +271,7 @@ new FormModel {
 				"$rowConstraints": "[]"
 			} ) {
 				name: "pnlMacShutdownBehaviour"
-				"border": new javax.swing.border.TitledBorder( "macOS: Standardverhalten des Hilfsprogramms" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.advanced.pnlMacShutdownBehaviour.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

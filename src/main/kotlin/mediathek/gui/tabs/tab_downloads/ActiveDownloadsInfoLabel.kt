@@ -21,10 +21,11 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.controller.starter.DownloadStartInfo
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import mediathek.i18n.UiMessages
 
 class ActiveDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     init {
-        toolTipText = "Anzahl der aktiven Downloads"
+        toolTipText = UiMessages.text("downloads.status.ActiveDownloadsInfoLabel.description")
         startInfoProperty.addStartInfoChangeListener { event ->
             SwingUtilities.invokeLater {
                 process(event.newValue as DownloadStartInfo)
@@ -33,10 +34,6 @@ class ActiveDownloadsInfoLabel(startInfoProperty: DownloadStartInfoProperty) : J
     }
 
     private fun process(info: DownloadStartInfo) {
-        text = if (info.hasValues()) {
-            if (info.running == 1) "1 läuft" else "${info.running} laufen"
-        } else {
-            "0 laufen"
-        }
+        text = UiMessages.format("status.download.active", if (info.hasValues()) info.running else 0)
     }
 }

@@ -81,7 +81,8 @@ internal class BlacklistRuleTableColumnSettings(
     private fun setDefaultColumnWidths() {
         for (index in 0 until table.columnModel.columnCount) {
             val column = table.columnModel.getColumn(index)
-            column.identifier = table.model.getColumnName(column.modelIndex)
+            column.identifier = (table.model as? BlacklistRuleTableModel)?.columnIdentifier(column.modelIndex)
+                ?: table.model.getColumnName(column.modelIndex)
             column.preferredWidth = defaultColumnWidth(column.modelIndex)
         }
     }

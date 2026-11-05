@@ -1,0 +1,102 @@
+A set is a group of helper programs to which a film URL is passed. Depending on the program, the film is recorded or played.
+
+====================
+External download manager
+===
+
+If enabled, MediathekView assumes that the helper program handles the entire download. MediathekView considers the download successful as soon as the helper is launched.
+
+====================
+Purposes
+===
+
+Create one set for playback and one for recording. The default configuration creates these on first startup. The playback set is used when you play a film; the saving set is used when you save it. If several saving sets exist, a dialog asks which one to use for each film.
+
+Subscriptions also need a suitable set. The saving set is usually appropriate: enable both Save and Subscription for it.
+
+Button allows additional programs or sets to be displayed through View → Show buttons.
+
+====================
+Set details
+===
+
+For recording, specify the destination path and target file name. These file-name parameters are available:
+
+%D Broadcast date, or today's date if missing
+%d Broadcast time, or the current time if missing
+%H Today's date
+%h Current time
+Date format: YYYYMMDD, e.g. 20090815 (15 August 2009)
+Time format: HHmmss, e.g. 152059 (15:20:59)
+
+%1 Day
+%2 Month
+%3 Year of the broadcast date, or today's date if missing
+%3_2 Two-digit year of the broadcast date, or today's date if missing
+
+%4 Hour
+%5 Minute
+%6 Second of the broadcast time, or the current time if missing
+
+%s Channel
+%T Film title
+%t Film topic
+
+%N Original file name (which may be long and cryptic)
+%S Original file extension, e.g. "mp4"
+
+%i Formerly the internal film number; now the current time in milliseconds since 1970
+%q Film quality ("HD", "H", "L")
+
+%Z URL hash, e.g. 1433245578
+%z URL hash and extension, equivalent to %Z.%S, e.g. 1433245578.mp4
+
+Example file names:
+%H__%t-%T.mp4 -> 20131206__Documentary-Film_title.mp4
+%H__%t-%T.%S  -> 20131206__Documentary-Film_title.xxx (original extension)
+
+Direct download, prefix and suffix identify URLs to download directly instead of using a helper program.
+
+You can also specify the resolution. If it is unavailable for a film, the next lower resolution is used.
+
+Limit the complete file name to truncates the final generated name.
+Limit individual fields to limits variable-length fields before building the name:
+%t, %T, %s, %N -> topic, title, channel, original file name.
+
+====================
+Helper programs
+===
+
+Add programs to the set here. If several programs are listed, use each program's prefix and suffix to choose which URLs it handles.
+
+Target file name overrides the set's file name for this program. Leave it blank to use the set's name; normally no override is needed.
+
+Program contains ONLY the program path: "Path/ProgramFile".
+
+Arguments contains the command-line arguments required by the program. Available parameters:
+
+%f Original film URL
+** Target file name including its path
+%a Destination path
+%b File name
+%w URL of the film's broadcaster webpage
+
+You can therefore use "%a/%b" instead of "**".
+
+==================================================
+VLC example:
+Program: "/usr/bin/vlc"
+Arguments: "%f :sout=#standard{access=file,mux=ts,dst=**} -I dummy --play-and-exit"
+File name: "%t-%T.ts"
+
+%f becomes the film URL. The file name is generated from the topic (%t) and title (%T), combined with the destination path, and substituted for **. Example output: Volumes/Path/Topic-Title.ts or C:\Path\Topic-Title.ts.
+
+==================================================
+ffmpeg example:
+Program: "bin\ffmpeg.exe"
+Arguments: "-i %f -c copy -bsf:a aac_adtstoasc "**""
+File name: "%t-%T.mp4"
+
+%f becomes the film URL. The file name is generated from the topic (%t) and title (%T), combined with the destination path, and substituted for **. Example output: Volumes/Path/Topic-Title.mp4 or C:\Path\Topic-Title.mp4.
+
+Here the program path is relative to the MediathekView application file. This example uses the ffmpeg executable bundled in its bin directory.

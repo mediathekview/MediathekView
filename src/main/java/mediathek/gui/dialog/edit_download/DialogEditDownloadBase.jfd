@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "download.edit.dialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets panel,hidemode 3,gap 0 11"
 			"$columnConstraints": "[grow,fill]"
@@ -10,7 +17,7 @@ new FormModel {
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
-			"title": "Download ändern"
+			"title": new FormMessage( null, "download.edit.dialog.this.title" )
 			"minimumSize": new java.awt.Dimension( 720, 500 )
 			"modal": true
 			"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
@@ -39,7 +46,7 @@ new FormModel {
 				"$rowConstraints": "[fill][fill]"
 			} ) {
 				name: "jPanelRes"
-				"border": new javax.swing.border.TitledBorder( "Download-Qualität:" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=download.edit.dialog.jPanelRes.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
@@ -55,7 +62,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "jRadioButtonResHd"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"text": "Höchste/Hoch"
+						"text": new FormMessage( null, "download.edit.dialog.jRadioButtonResHd.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -65,7 +72,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "jRadioButtonResHi"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"text": "Mittel"
+						"text": new FormMessage( null, "download.edit.dialog.jRadioButtonResHi.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -75,7 +82,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "jRadioButtonResLo"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"text": "Niedrig"
+						"text": new FormMessage( null, "download.edit.dialog.jRadioButtonResLo.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -96,7 +103,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonRequestLiveInfo"
-						"text": "Codec-Details abrufen..."
+						"text": new FormMessage( null, "download.edit.dialog.jButtonRequestLiveInfo.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -121,14 +128,14 @@ new FormModel {
 						}
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabelVideoInfo"
-							"text": "Video: n/a"
+							"text": new FormMessage( null, "download.edit.dialog.jLabelVideoInfo.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "jLabelAudioInfo"
-							"text": "Audio: n/a"
+							"text": new FormMessage( null, "download.edit.dialog.jLabelAudioInfo.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
@@ -153,14 +160,14 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonOk"
-					"text": "Ok"
+					"text": new FormMessage( null, "download.edit.dialog.jButtonOk.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonAbbrechen"
-					"text": "Abbrechen"
+					"text": new FormMessage( null, "download.edit.dialog.jButtonAbbrechen.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}

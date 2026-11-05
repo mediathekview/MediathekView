@@ -19,33 +19,36 @@
 package mediathek.tool.models
 
 import mediathek.daten.DatenFilm
+import mediathek.i18n.UiMessages
 import mediathek.tool.datum.DatumFilm
 
 internal enum class FilmColumn(
     val index: Int,
-    private val displayTitle: String?,
+    private val titleKey: String?,
     val valueType: Class<*>,
     private val valueProvider: ((DatenFilm) -> Any)? = null,
 ) {
-    NUMBER(0, "Nr", Int::class.javaObjectType, DatenFilm::filmNr),
-    SENDER(1, "Sender", String::class.java, DatenFilm::sender),
-    TOPIC(2, "Thema", String::class.java, DatenFilm::thema),
-    TITLE(3, "Titel", String::class.java, DatenFilm::title),
+    NUMBER(0, "film.column.number", Int::class.javaObjectType, DatenFilm::filmNr),
+    SENDER(1, "film.column.channel", String::class.java, DatenFilm::sender),
+    TOPIC(2, "film.column.topic", String::class.java, DatenFilm::thema),
+    TITLE(3, "film.column.title", String::class.java, DatenFilm::title),
     PLAY(4, "", String::class.java, { "" }),
     SAVE(5, "", String::class.java, { "" }),
     BOOKMARK(6, "", String::class.java, { "" }),
-    DATE(7, "Datum", DatumFilm::class.java, DatenFilm::datumFilm),
-    TIME(8, "Zeit", String::class.java, DatenFilm::sendeZeit),
-    DURATION(9, "Dauer", Int::class.javaObjectType, DatenFilm::filmLength),
-    SIZE(10, "Größe [MB]", Int::class.javaObjectType, DatenFilm::fileSizeInMegabytes),
-    HIGH_QUALITY(11, "HQ", Boolean::class.javaObjectType, DatenFilm::isHighQuality),
-    SUBTITLE(12, "UT", Boolean::class.javaObjectType, { it.hasSubtitle() }),
-    GEO(13, "Geo", String::class.java, DatenFilm::countriesAsString),
-    URL(14, "URL", String::class.java, DatenFilm::urlNormalQuality),
+    DATE(7, "film.column.date", DatumFilm::class.java, DatenFilm::datumFilm),
+    TIME(8, "film.column.time", String::class.java, DatenFilm::sendeZeit),
+    DURATION(9, "film.column.duration", Int::class.javaObjectType, DatenFilm::filmLength),
+    SIZE(10, "film.column.size", Int::class.javaObjectType, DatenFilm::fileSizeInMegabytes),
+    HIGH_QUALITY(11, "film.column.hq", Boolean::class.javaObjectType, DatenFilm::isHighQuality),
+    SUBTITLE(12, "film.column.subtitles", Boolean::class.javaObjectType, { it.hasSubtitle() }),
+    GEO(13, "film.column.geo", String::class.java, DatenFilm::countriesAsString),
+    URL(14, "film.column.url", String::class.java, DatenFilm::urlNormalQuality),
     ;
 
+    /** Returns the localized heading without changing the stable column index or value type. */
     fun title(): String =
-        displayTitle ?: throw IndexOutOfBoundsException("UNKNOWN COLUMN NAME: $index")
+        titleKey?.let { if (it.isEmpty()) "" else UiMessages.text(it) }
+            ?: throw IndexOutOfBoundsException("UNKNOWN COLUMN NAME: $index")
 
     fun valueFrom(film: DatenFilm): Any =
         valueProvider?.invoke(film) ?: throw IndexOutOfBoundsException("UNKNOWN COLUMN VALUE: $index")

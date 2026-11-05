@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.2.4.0.393" Java: "21.0.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelPset"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 			"$columnConstraints": "[grow,fill]"
@@ -19,7 +26,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JCheckBox" ) {
 				name: "jCheckBoxAlleEinstellungen"
-				"text": "alle Einstellungen anzeigen"
+				"text": new FormMessage( null, "settings.PanelPset.jCheckBoxAlleEinstellungen.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

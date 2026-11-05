@@ -33,10 +33,11 @@ import java.util.function.Supplier
 import javax.swing.AbstractAction
 
 import javax.swing.KeyStroke
+import mediathek.i18n.UiMessages
 
 class MarkFilmAsSeenAction(
     private val selectedFilms: Supplier<List<DatenFilm>>,
-) : AbstractAction("Filme als gesehen markieren") {
+) : AbstractAction(UiMessages.text("film.mark.seen")) {
     init {
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK))
     }
@@ -48,7 +49,7 @@ class MarkFilmAsSeenAction(
 
 class MarkFilmAsUnseenAction(
     private val selectedFilms: Supplier<List<DatenFilm>>,
-) : AbstractAction("Filme als ungesehen markieren") {
+) : AbstractAction(UiMessages.text("film.mark.unseen")) {
     init {
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK))
     }
@@ -60,7 +61,7 @@ class MarkFilmAsUnseenAction(
 
 class MarkSingleFilmAsSeenAction(
     private val selectedFilm: Supplier<DatenFilm?>,
-) : AbstractAction("Film als gesehen markieren") {
+) : AbstractAction(UiMessages.text("film.mark.single.seen")) {
     override fun actionPerformed(event: ActionEvent?) {
         val film = selectedFilm.get() ?: return
         FilmSeenHistoryActionRunner.markSeen(listOf(film))
@@ -69,7 +70,7 @@ class MarkSingleFilmAsSeenAction(
 
 class MarkSingleFilmAsUnseenAction(
     private val selectedFilm: Supplier<DatenFilm?>,
-) : AbstractAction("Film als ungesehen markieren") {
+) : AbstractAction(UiMessages.text("film.mark.single.unseen")) {
     override fun actionPerformed(event: ActionEvent?) {
         val film = selectedFilm.get() ?: return
         FilmSeenHistoryActionRunner.markUnseen(listOf(film))

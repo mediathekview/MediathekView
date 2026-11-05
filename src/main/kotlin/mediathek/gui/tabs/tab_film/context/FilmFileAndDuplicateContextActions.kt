@@ -26,6 +26,7 @@ import mediathek.daten.blacklist.BlacklistServices
 import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.writer.FilmListWriter
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsDialog
+import mediathek.i18n.UiMessages
 import mediathek.tool.FileDialogs
 import mediathek.tool.MVInfoFile
 import org.apache.logging.log4j.LogManager
@@ -57,9 +58,9 @@ class FilmFileAndDuplicateContextActions(
     }
 
     private fun createInfoFileMenuItem(film: DatenFilm): JMenuItem =
-        JMenuItem("Infodatei erzeugen...").apply {
+        JMenuItem(UiMessages.text("film.context.createInfo")).apply {
             addActionListener {
-                val file = FileDialogs.chooseSaveFileLocation(host.ownerFrame(), "Infodatei speichern", "")
+                val file = FileDialogs.chooseSaveFileLocation(host.ownerFrame(), UiMessages.text("film.context.saveInfo"), "")
                     ?: return@addActionListener
 
                 isEnabled = false
@@ -74,7 +75,7 @@ class FilmFileAndDuplicateContextActions(
                         logger.error("Could not write info file.", ex)
                         JOptionPane.showMessageDialog(
                             host.ownerFrame(),
-                            "Infodatei konnte nicht geschrieben werden.",
+                            UiMessages.text("film.context.infoError"),
                             Konstanten.PROGRAMMNAME,
                             JOptionPane.ERROR_MESSAGE,
                         )
@@ -86,14 +87,14 @@ class FilmFileAndDuplicateContextActions(
         }
 
     private fun createDuplicateDetailsMenuItem(film: DatenFilm): JMenuItem =
-        JMenuItem("Zusammengehörige Filme anzeigen...").apply {
+        JMenuItem(UiMessages.text("film.context.related")).apply {
             addActionListener {
                 DuplicateFilmDetailsDialog(host.ownerFrame(), filmCatalog, film).isVisible = true
             }
         }
 
     private fun createRemoveDuplicatesMenuItem(film: DatenFilm): JMenuItem =
-        JMenuItem("Duplikate entfernen...").apply {
+        JMenuItem(UiMessages.text("film.context.removeDuplicates")).apply {
             addActionListener {
                 isEnabled = false
                 uiScope.launch {
@@ -105,7 +106,7 @@ class FilmFileAndDuplicateContextActions(
                         logger.error("Could not remove duplicates.", ex)
                         JOptionPane.showMessageDialog(
                             host.ownerFrame(),
-                            "Duplikate konnten nicht entfernt werden.",
+                            UiMessages.text("film.context.duplicatesError"),
                             Konstanten.PROGRAMMNAME,
                             JOptionPane.ERROR_MESSAGE,
                         )
@@ -124,7 +125,7 @@ class FilmFileAndDuplicateContextActions(
         if (filmCount <= 1) {
             JOptionPane.showMessageDialog(
                 host.ownerFrame(),
-                "Es wurden keine Duplikate gefunden.",
+                UiMessages.text("film.context.noDuplicates"),
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.INFORMATION_MESSAGE,
             )
@@ -132,8 +133,7 @@ class FilmFileAndDuplicateContextActions(
         }
 
         val duplicateCount = filmCount - 1
-        val duplicateString = if (duplicateCount == 1) "Duplikat" else "Duplikate"
-        val message = "Es wurden $duplicateCount $duplicateString gefunden.\nMöchten Sie diese entfernen?"
+        val message = UiMessages.format("film.context.duplicatesConfirm", duplicateCount)
         val result = JOptionPane.showConfirmDialog(
             host.ownerFrame(),
             message,
@@ -161,7 +161,7 @@ class FilmFileAndDuplicateContextActions(
                 blacklistServices.applyToFilmListAndNotifyListeners()
                 JOptionPane.showMessageDialog(
                     host.ownerFrame(),
-                    "Duplikate wurden entfernt.",
+                    UiMessages.text("film.context.duplicatesRemoved"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.INFORMATION_MESSAGE,
                 )
@@ -170,7 +170,7 @@ class FilmFileAndDuplicateContextActions(
                 logger.error("Could not persist duplicate-removal changes.", error)
                 JOptionPane.showMessageDialog(
                     host.ownerFrame(),
-                    "Duplikate konnten nicht gespeichert werden.",
+                    UiMessages.text("film.context.duplicatesSaveError"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.ERROR_MESSAGE,
                 )

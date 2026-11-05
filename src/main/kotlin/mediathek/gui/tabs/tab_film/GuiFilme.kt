@@ -67,6 +67,7 @@ import mediathek.gui.tabs.tab_film.view.FilmViewController
 import mediathek.gui.watchlist.ManageWatchlistDialog
 import mediathek.gui.watchlist.WatchlistBellButton
 import mediathek.gui.watchlist.WatchlistNotificationPanel
+import mediathek.i18n.UiMessages
 import mediathek.mainwindow.FilmBookmarkHost
 import mediathek.swing.SwingDispatch
 import mediathek.tool.ReplacementRules
@@ -209,8 +210,8 @@ class GuiFilme(
             }
         val bookmarkStartupReloadCoordinator = BookmarkStartupReloadCoordinator()
         val filmListScrollPane = JScrollPane()
-        val cbkShowDescription = JCheckBoxMenuItem("Beschreibung anzeigen")
-        val cbShowButtons = JCheckBoxMenuItem("Buttons anzeigen")
+        val cbkShowDescription = JCheckBoxMenuItem(UiMessages.text("film.description.show"))
+        val cbShowButtons = JCheckBoxMenuItem(UiMessages.text("film.buttons.show"))
         val filterComponents = createFilterComponents(filterConfiguration)
         filterController = filterComponents.filterController
         val searchFieldHost = createSearchFieldHost()

@@ -20,6 +20,7 @@ package mediathek.gui.abo
 
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.abo.DatenAbo
+import mediathek.i18n.UiMessages
 import mediathek.tool.JsonStringUtils
 import org.apache.logging.log4j.LogManager
 import java.util.regex.Pattern
@@ -40,15 +41,18 @@ class AboTableColumnSettings(
         val columnModel = table.columnModel
         for (index in 0 until columnModel.columnCount) {
             val column = columnModel.getColumn(index)
-            column.identifier = table.model.getColumnName(index)
+            column.identifier = AboTableFormat.columnIdentifier(column.modelIndex)
+            val headerWidth = table.tableHeader.getFontMetrics(table.tableHeader.font)
+                .stringWidth(column.headerValue.toString()) + 24
+            val initialWidth = maxOf(defaultWidth(index), headerWidth)
             allColumns += column
             settings += ColumnSetting(
                 id = column.identifier.toString(),
                 position = index,
-                width = defaultWidth(index),
+                width = initialWidth,
                 visible = index !in DEFAULT_HIDDEN_COLUMNS,
             )
-            column.preferredWidth = defaultWidth(index)
+            column.preferredWidth = initialWidth
         }
     }
 
@@ -95,7 +99,7 @@ class AboTableColumnSettings(
         for (column in allColumns) {
             val columnName = column.identifier.toString()
             val setting = settings.firstOrNull { it.id == columnName } ?: continue
-            val item = JCheckBoxMenuItem(columnName, setting.visible)
+            val item = JCheckBoxMenuItem(column.headerValue.toString(), setting.visible)
             item.addActionListener {
                 setting.visible = item.isSelected
                 if (item.isSelected) {
@@ -109,14 +113,14 @@ class AboTableColumnSettings(
         }
 
         popup.addSeparator()
-        val showSenderIconsItem = JCheckBoxMenuItem("Sendericons anzeigen", table.showSenderIcons())
+        val showSenderIconsItem = JCheckBoxMenuItem(UiMessages.text("abo.columns.icons"), table.showSenderIcons())
         showSenderIconsItem.addActionListener {
             table.setShowSenderIcons(showSenderIconsItem.isSelected)
             save()
         }
         popup.add(showSenderIconsItem)
 
-        val smallSenderIconsItem = JCheckBoxMenuItem("Kleine Sendericons anzeigen", table.getUseSmallSenderIcons())
+        val smallSenderIconsItem = JCheckBoxMenuItem(UiMessages.text("abo.columns.smallIcons"), table.getUseSmallSenderIcons())
         smallSenderIconsItem.addActionListener {
             table.setUseSmallSenderIcons(smallSenderIconsItem.isSelected)
             save()
@@ -124,7 +128,7 @@ class AboTableColumnSettings(
         popup.add(smallSenderIconsItem)
 
         popup.addSeparator()
-        val resetSortingItem = JMenuItem("Sortierschlüssel zurücksetzen")
+        val resetSortingItem = JMenuItem(UiMessages.text("abo.columns.resetSort"))
         resetSortingItem.addActionListener { clearSorting() }
         popup.add(resetSortingItem)
 

@@ -35,6 +35,7 @@ import mediathek.gui.actions.CreateNewAboAction
 import mediathek.gui.dialog.DialogEditAbo
 import mediathek.gui.dialog.MissingProgramSetDialog
 import mediathek.gui.messages.AboListChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.swing.InfiniteProgressPanel
 import mediathek.tool.*
 import mediathek.tool.cellrenderer.CellRendererBase
@@ -264,14 +265,14 @@ class ManageAboPanel(
 
     private fun setupToolBar() {
         swingToolBar.addToolbarButton(
-            tooltip = "Abos einschalten",
+            tooltip = UiMessages.text("abo.enableMany"),
             iconPath = "icons/fontawesome/check.svg",
         ) {
             changeAboActiveState(true)
         }
 
         swingToolBar.addToolbarButton(
-            tooltip = "Abos ausschalten",
+            tooltip = UiMessages.text("abo.disableMany"),
             iconPath = "icons/fontawesome/xmark.svg",
             iconSize = 16f,
         ) {
@@ -284,7 +285,7 @@ class ManageAboPanel(
         swingToolBar.add(button)
 
         swingToolBar.addToolbarButton(
-            tooltip = "Abos löschen",
+            tooltip = UiMessages.text("abo.deleteMany"),
             iconPath = "icons/fontawesome/trash-can.svg",
         ) {
             aboLoeschen()
@@ -296,7 +297,7 @@ class ManageAboPanel(
         swingToolBar.add(btnEditAbo)
         swingToolBar.addSeparator()
 
-        swingToolBar.add(JLabel("Abos für Sender:"))
+        swingToolBar.add(JLabel(UiMessages.text("abo.filter.channel")))
         senderCombo.maximumSize = Dimension(150, Int.MAX_VALUE)
         senderCombo.model = SenderListComboBoxModel(filmCatalog.allSenders)
         senderCombo.selectedIndex = 0
@@ -312,14 +313,10 @@ class ManageAboPanel(
         val listeAbo = abos.list
         val numAbos = listeAbo.size
 
-        totalAbos.text = if (numAbos == 1) {
-            "Gesamt: 1 Abo"
-        } else {
-            String.format("Gesamt: %d Abos", numAbos)
-        }
+        totalAbos.text = UiMessages.format("abo.count.total", numAbos)
 
-        activeAbos.text = String.format("%d eingeschaltet", numActiveAbos())
-        inactiveAbos.text = String.format("%d ausgeschaltet", numInactiveAbos())
+        activeAbos.text = UiMessages.format("abo.count.active", numActiveAbos())
+        inactiveAbos.text = UiMessages.format("abo.count.inactive", numInactiveAbos())
     }
 
     private fun filmCountForAbo(abo: DatenAbo): Int? =
@@ -415,15 +412,15 @@ class ManageAboPanel(
     }
 
     private fun createContextMenu(): JPopupMenu {
-        val itemEinschalten = JMenuItem("Abo einschalten")
+        val itemEinschalten = JMenuItem(UiMessages.text("abo.enable"))
         itemEinschalten.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/check.svg")
         itemEinschalten.addActionListener { changeAboActiveState(true) }
 
-        val itemDeaktivieren = JMenuItem("Abo ausschalten")
+        val itemDeaktivieren = JMenuItem(UiMessages.text("abo.disable"))
         itemDeaktivieren.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/xmark.svg")
         itemDeaktivieren.addActionListener { changeAboActiveState(false) }
 
-        val itemLoeschen = JMenuItem("Abo löschen")
+        val itemLoeschen = JMenuItem(UiMessages.text("abo.delete"))
         itemLoeschen.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/minus.svg")
         itemLoeschen.addActionListener { aboLoeschen() }
 
@@ -634,12 +631,12 @@ class ManageAboPanel(
         if (selectedAbos.isNotEmpty()) {
             val text = if (selectedAbos.size == 1) {
                 val abo = selectedAbos.first()
-                "\"${abo.name}\" löschen?"
+                UiMessages.format("abo.delete.confirmSingle", abo.name)
             } else {
-                "Möchten Sie wirklich ${selectedAbos.size} Abos löschen?"
+                UiMessages.format("abo.delete.confirmMany", selectedAbos.size)
             }
 
-            val ret = JOptionPane.showConfirmDialog(this, text, "Abo löschen", JOptionPane.YES_NO_OPTION)
+            val ret = JOptionPane.showConfirmDialog(this, text, UiMessages.text("abo.delete"), JOptionPane.YES_NO_OPTION)
             if (ret == JOptionPane.OK_OPTION) {
                 try {
                     abos.list.removeAbosWithoutNotification(selectedAbos)
@@ -687,7 +684,7 @@ class ManageAboPanel(
         uiScope.launch {
             val progressJob = launch {
                 delay(PROGRESS_PANEL_DELAY.milliseconds)
-                infiniteProgressPanel.setText("Verarbeite Abos...")
+                infiniteProgressPanel.setText(UiMessages.text("abo.processing"))
                 infiniteProgressPanel.start()
             }
             try {
@@ -703,7 +700,7 @@ class ManageAboPanel(
     }
 
     private companion object {
-        private const val EDIT_ABO_TEXT = "Abo ändern"
+        private val EDIT_ABO_TEXT get() = UiMessages.text("abo.edit")
         private const val ACTION_MAP_KEY_EDIT_ABO = "edit_abo"
         private const val ACTION_MAP_KEY_DELETE_ABO = "delete_abo"
         private const val PROGRESS_PANEL_DELAY = 150L

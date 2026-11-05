@@ -1,5 +1,7 @@
 package mediathek.mac
 
+import mediathek.i18n.UiLanguage
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import java.lang.foreign.*
 import java.lang.invoke.MethodHandles
@@ -12,7 +14,7 @@ internal object MacApplicationMenuLocalizer {
     private val logger by lazy { LogManager.getLogger(MacApplicationMenuLocalizer::class.java) }
 
     fun localize() {
-        if (Locale.getDefault(Locale.Category.DISPLAY).language != Locale.GERMAN.language) {
+        if (UiMessages.language != UiLanguage.GERMAN) {
             return
         }
 

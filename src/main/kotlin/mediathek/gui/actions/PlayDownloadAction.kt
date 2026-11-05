@@ -19,6 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.gui.tabs.tab_downloads.GuiDownloads
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import org.kordamp.ikonli.fontawesome6.FontAwesomeSolid
 import java.awt.event.ActionEvent
@@ -38,6 +39,6 @@ class PlayDownloadAction(
     }
 
     private companion object {
-        private const val ACTION_TEXT = "Gespeicherten Film abspielen"
+        private val ACTION_TEXT get() = UiMessages.text("action.playDownload.text")
     }
 }

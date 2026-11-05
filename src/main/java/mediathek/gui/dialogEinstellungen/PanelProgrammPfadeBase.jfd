@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelProgrammPfade"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq l {space :::p, comp jScrollPane1:::::x, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane1:::::x, space :::p}}"
@@ -26,7 +33,7 @@ new FormModel {
 						"$verticalGroup": "par l {seq l {space :::p, par c {comp jTextFieldVlc:1:c:p::p, comp jButtonVlcPfad:1:c:p::p, comp jButtonVlcSuchen::c:p::p}, space :p::p}}"
 					} ) {
 						name: "jPanelVlc"
-						"border": new javax.swing.border.TitledBorder( "Pfad zum VLC-Player auswählen" )
+						"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelProgrammPfade.jPanelVlc.borderTitle" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -39,15 +46,15 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonVlcPfad"
 							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-							"toolTipText": "Programm auswählen"
+							"toolTipText": new FormMessage( null, "settings.PanelProgrammPfade.jButtonVlcPfad.toolTipText" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonVlcSuchen"
-							"text": "suchen"
-							"toolTipText": "nach dem Programm suchen"
+							"text": new FormMessage( null, "settings.PanelProgrammPfade.jButtonVlcSuchen.text" )
+							"toolTipText": new FormMessage( null, "settings.PanelProgrammPfade.jButtonVlcSuchen.toolTipText" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
@@ -56,7 +63,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonHilfe"
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-						"toolTipText": "Hilfe anzeigen"
+						"toolTipText": new FormMessage( null, "settings.PanelProgrammPfade.jButtonHilfe.toolTipText" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -66,7 +73,7 @@ new FormModel {
 						"$verticalGroup": "par l {seq {space :::p, par c {comp jTextFieldFFmpeg:9:c:p::p, comp jButtonFFmpegPfad:9:c:p::p, comp jButtonFFmpegSuchen:9:c:p::p}, space :::x}}"
 					} ) {
 						name: "jPanelFFmpeg"
-						"border": new javax.swing.border.TitledBorder( "Pfad zu ffmpeg auswählen" )
+						"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelProgrammPfade.jPanelFFmpeg.borderTitle" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -78,8 +85,8 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonFFmpegSuchen"
-							"text": "suchen"
-							"toolTipText": "nach dem Programm suchen"
+							"text": new FormMessage( null, "settings.PanelProgrammPfade.jButtonFFmpegSuchen.text" )
+							"toolTipText": new FormMessage( null, "settings.PanelProgrammPfade.jButtonFFmpegSuchen.toolTipText" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
@@ -87,7 +94,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "jButtonFFmpegPfad"
 							"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-file-open.png" )
-							"toolTipText": "Programm auswählen"
+							"toolTipText": new FormMessage( null, "settings.PanelProgrammPfade.jButtonFFmpegPfad.toolTipText" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}

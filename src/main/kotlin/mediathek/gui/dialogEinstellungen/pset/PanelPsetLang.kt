@@ -11,6 +11,7 @@ import mediathek.controller.starter.RuntimeExec
 import mediathek.daten.*
 import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.messages.ProgramSetChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.*
 import mediathek.tool.cellrenderer.PsetNameCellRenderer
 import mediathek.tool.table.MVPsetTable
@@ -301,7 +302,7 @@ class PanelPsetLang(
                     val modelRow = tabellePset.convertRowIndexToModel(row)
                     val datenPset = listePset[modelRow]
                     tabellePset.model.setValueAt(jTextFieldSetName.text, modelRow, DatenPset.PROGRAMMSET_NAME)
-                    jTabbedPane.setTitleAt(0, "Set Name: ${datenPset.name}")
+                    jTabbedPane.setTitleAt(0, UiMessages.format("settings.pset.setName", datenPset.name))
                 }
             }
         }
@@ -316,7 +317,7 @@ class PanelPsetLang(
 
     private fun chooseProgramPath() {
         val initialFile = jTextFieldProgPfad.text.takeIf { it.isNotEmpty() }.orEmpty()
-        val destFile = FileDialogs.chooseLoadFileLocation(parentFrame(), "Programm auswählen", initialFile)
+        val destFile = FileDialogs.chooseLoadFileLocation(parentFrame(), UiMessages.text("settings.pset.chooseProgram"), initialFile)
         if (destFile != null) {
             jTextFieldProgPfad.text = destFile.absolutePath
         }
@@ -340,10 +341,10 @@ class PanelPsetLang(
             }
             prog.name
         } else {
-            "${modelRows.size} Programme löschen?"
+            UiMessages.format("settings.pset.deletePrograms", modelRows.size)
         }
 
-        val ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION)
+        val ret = JOptionPane.showConfirmDialog(parentComponent, text, UiMessages.text("settings.pset.delete"), JOptionPane.YES_NO_OPTION)
         if (ret == JOptionPane.OK_OPTION) {
             val progsToDelete = modelRows.map { programList[it] }
             programList.removeAllEntries(progsToDelete)
@@ -385,7 +386,7 @@ class PanelPsetLang(
 
     private fun chooseProgramSetColor() {
         getPset()?.let { pSet ->
-            val selectedColor = JColorChooser.showDialog(this, "Farbe auswählen", pSet.farbe)
+            val selectedColor = JColorChooser.showDialog(this, UiMessages.text("settings.pset.chooseColour"), pSet.farbe)
             if (selectedColor != null) {
                 pSet.farbe = selectedColor
                 tabellePset()
@@ -415,7 +416,7 @@ class PanelPsetLang(
 
     private fun chooseProgramSetTargetPath() {
         val initialFile = tfGruppeZielPfad.text.takeIf { it.isNotEmpty() }.orEmpty()
-        val destDirectory = FileDialogs.chooseDirectoryLocation(parentFrame(), "Filme speichern unter", initialFile)
+        val destDirectory = FileDialogs.chooseDirectoryLocation(parentFrame(), UiMessages.text("settings.pset.saveUnder"), initialFile)
         if (destDirectory != null) {
             tfGruppeZielPfad.text = destDirectory.absolutePath
         }
@@ -478,7 +479,7 @@ class PanelPsetLang(
         var valid = true
 
         details.append(SEPARATOR).append('\n')
-        details.append(PIPE).append("Programmgruppe: ").append(programSet.name).append('\n')
+        details.append(PIPE).append(UiMessages.text("settings.pset.group")).append(programSet.name).append('\n')
 
         if (programSet.containsProgramPath && !checkTargetPath(programSet.targetPath, details)) {
             valid = false
@@ -491,7 +492,7 @@ class PanelPsetLang(
         }
 
         if (valid) {
-            details.append(PIPE).append(ARROW).append("Ok!\n")
+            details.append(PIPE).append(ARROW).append(UiMessages.text("settings.pset.valid"))
         }
         details.append(SEPARATOR).append("\n\n\n")
 
@@ -500,13 +501,12 @@ class PanelPsetLang(
 
     private fun checkTargetPath(zielPfad: String, details: StringBuilder): Boolean {
         if (zielPfad.isEmpty()) {
-            details.append(PIPE).append(INDENT).append("Zielpfad fehlt!\n")
+            details.append(PIPE).append(INDENT).append(UiMessages.text("settings.pset.missingDestination"))
             return false
         }
         if (!GuiFunktionenProgramme.checkPathWriteable(zielPfad)) {
-            details.append(PIPE).append(INDENT).append("Falscher Zielpfad!\n")
-            details.append(PIPE).append(INDENT).append(ARROW).append("Zielpfad \"")
-                .append(zielPfad).append("\" nicht beschreibbar!\n")
+            details.append(PIPE).append(INDENT).append(UiMessages.text("settings.pset.invalidDestination"))
+            details.append(PIPE).append(INDENT).append(ARROW).append(UiMessages.format("settings.pset.notWritable", zielPfad))
             return false
         }
         return true
@@ -516,7 +516,7 @@ class PanelPsetLang(
         val programPath = program.path
         val programName = program.name
         if (programPath.isEmpty()) {
-            appendProgramPathError(details, "Kein Programm angegeben!", programName, programPath)
+            appendProgramPathError(details, UiMessages.text("settings.pset.missingProgram"), programName, programPath)
             return false
         }
         if (Files.isExecutable(Paths.get(programPath))) {
@@ -529,11 +529,10 @@ class PanelPsetLang(
             return true
         }
 
-        appendProgramPathError(details, "Falscher Programmpfad!", programName, programPath)
+        appendProgramPathError(details, UiMessages.text("settings.pset.invalidProgram"), programName, programPath)
         if (!programPath.contains(File.separator)) {
             details.append(PIPE).append(INDENT).append(ARROW)
-                .append("Wenn das Programm nicht im Systempfad liegt, \n")
-            details.append(PIPE).append(INDENT).append(INDENT).append("wird der Start nicht klappen!\n")
+                .append(UiMessages.text("settings.pset.notOnPath")).append('\n')
         }
         return false
     }
@@ -545,15 +544,15 @@ class PanelPsetLang(
         programPath: String
     ) {
         details.append(PIPE).append(INDENT).append(message).append('\n')
-        details.append(PIPE).append(INDENT).append(ARROW).append("Programmname: ").append(programName).append('\n')
-        details.append(PIPE).append(INDENT).append(INDENT).append("Pfad: ").append(programPath).append('\n')
+        details.append(PIPE).append(INDENT).append(ARROW).append(UiMessages.text("settings.pset.name")).append(programName).append('\n')
+        details.append(PIPE).append(INDENT).append(INDENT).append(UiMessages.text("settings.pset.path")).append(programPath).append('\n')
     }
 
     private fun showProgramCheckResult(result: ProgramCheckResult) {
         if (result.allValid) {
             JOptionPane.showMessageDialog(
                 this,
-                "Alle Programm-Sets sind in Ordnung.",
+                UiMessages.text("settings.pset.allValid"),
                 Konstanten.PROGRAMMNAME,
                 JOptionPane.INFORMATION_MESSAGE
             )
@@ -594,6 +593,8 @@ class PanelPsetLang(
         val columnModel = tabellePset.columnModel
         for (i in 0 until tabellePset.columnCount) {
             val column = columnModel.getColumn(tabellePset.convertColumnIndexToView(i))
+            column.identifier = DatenPset.COLUMN_NAMES[i]
+            column.headerValue = UiMessages.text("settings.pset.column.$i")
             when (i) {
                 DatenPset.PROGRAMMSET_NAME -> {
                     column.cellRenderer = psetNameRenderer
@@ -625,7 +626,7 @@ class PanelPsetLang(
         enableComponents(jTabbedPane, pSet != null)
         jButtonAbspielen.background = null
         if (pSet != null) {
-            jTabbedPane.setTitleAt(0, "Set Name: ${pSet.name}")
+            jTabbedPane.setTitleAt(0, UiMessages.format("settings.pset.setName", pSet.name))
             if (pSet.maxLaenge == null) {
                 jSpinnerLaenge.value = Konstanten.LAENGE_DATEINAME
                 pSet.maxLaenge = Konstanten.LAENGE_DATEINAME
@@ -648,7 +649,7 @@ class PanelPsetLang(
             jCheckBoxSpotlight.isSelected = pSet.isSpotlight
             jScrollPane1.border = BorderFactory.createTitledBorder(
                 null,
-                "Set Name: ${pSet.name}",
+                UiMessages.format("settings.pset.setName", pSet.name),
                 javax.swing.border.TitledBorder.LEFT,
                 javax.swing.border.TitledBorder.TOP
             )
@@ -680,7 +681,7 @@ class PanelPsetLang(
                 javax.swing.border.TitledBorder.LEFT,
                 javax.swing.border.TitledBorder.TOP
             )
-            jTabbedPane.setTitleAt(0, "Sets")
+            jTabbedPane.setTitleAt(0, UiMessages.text("settings.pset.sets"))
             jCheckBoxLaenge.isSelected = false
             jCheckBoxThema.isSelected = false
             jCheckBoxInfodatei.isSelected = false
@@ -828,7 +829,7 @@ class PanelPsetLang(
     }
 
     private fun setNeu() {
-        programSets.addProgramSet(DatenPset("Neu-${++neuZaehler}"))
+        programSets.addProgramSet(DatenPset(UiMessages.format("settings.pset.newName", (++neuZaehler).toString())))
         tabellePset()
     }
 
@@ -838,9 +839,9 @@ class PanelPsetLang(
             val text = if (rows.size == 1) {
                 listePset[tabellePset.convertRowIndexToModel(rows[0])].name
             } else {
-                "${rows.size} Set löschen?"
+                UiMessages.format("settings.pset.deleteSets", rows.size)
             }
-            val ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION)
+            val ret = JOptionPane.showConfirmDialog(parentComponent, text, UiMessages.text("settings.pset.delete"), JOptionPane.YES_NO_OPTION)
             if (ret == JOptionPane.OK_OPTION) {
                 val modelRows = rows.map { tabellePset.convertRowIndexToModel(it) }.toIntArray()
                 programSets.removeAtIndexes(modelRows)
@@ -864,13 +865,13 @@ class PanelPsetLang(
                 replacementRules.takeIf { applicationConfiguration.useFilenameReplaceTable },
                 applicationConfiguration.onlyAsciiFilenames
             )
-            val resultFile = FileDialogs.chooseSaveFileLocation(parentFrame(), "PSet exportieren", fileName)
+            val resultFile = FileDialogs.chooseSaveFileLocation(parentFrame(), UiMessages.text("settings.pset.export"), fileName)
             if (resultFile != null) {
                 val ziel = resultFile.absolutePath
                 programSetExporter.accept(liste.toTypedArray(), ziel)
                 JOptionPane.showMessageDialog(
                     this,
-                    "Das Programmset wurde erfolgreich exportiert.",
+                    UiMessages.text("settings.pset.exported"),
                     Konstanten.PROGRAMMNAME,
                     JOptionPane.INFORMATION_MESSAGE
                 )
@@ -988,7 +989,7 @@ class PanelPsetLang(
                     datenPset[psetIndex] = textComponent.text
                     if (psetIndex == DatenPset.PROGRAMMSET_NAME) {
                         tabellePset.model.setValueAt(jTextFieldSetName.text, modelIndex, DatenPset.PROGRAMMSET_NAME)
-                        jTabbedPane.setTitleAt(0, "Set Name: ${datenPset.name}")
+                        jTabbedPane.setTitleAt(0, UiMessages.format("settings.pset.setName", datenPset.name))
                     }
                     if (fireUpdate) {
                         notifyProgramSetChanged()

@@ -9,6 +9,7 @@ import org.jdesktop.swingx.VerticalLayout;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
+/** Settings controls using the selected interface-language bundle. */
 public class PanelEinstellungenGeoBase extends JPanel {
     public PanelEinstellungenGeoBase() {
         initComponents();
@@ -22,6 +23,7 @@ public class PanelEinstellungenGeoBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var panel1 = new JPanel();
         var panel2 = new JPanel();
         jRadioButtonDe = new JRadioButton();
@@ -59,7 +61,7 @@ public class PanelEinstellungenGeoBase extends JPanel {
 
         //======== panel1 ========
         {
-            panel1.setBorder(new TitledBorder("Mein Standort")); //NON-NLS
+            panel1.setBorder(new TitledBorder(bundle.getString("settings.PanelEinstellungenGeo.panel1.borderTitle"))); //NON-NLS
             panel1.setLayout(new VerticalLayout());
 
             //======== panel2 ========
@@ -79,7 +81,7 @@ public class PanelEinstellungenGeoBase extends JPanel {
                 panel2.add(lblIcon_DE, new CC().cell(0, 0));
 
                 //---- label2 ----
-                label2.setText("Deutschland (DE)"); //NON-NLS
+                label2.setText(bundle.getString("settings.PanelEinstellungenGeo.label2.text")); //NON-NLS
                 panel2.add(label2, new CC().cell(0, 0));
             }
             panel1.add(panel2);
@@ -98,7 +100,7 @@ public class PanelEinstellungenGeoBase extends JPanel {
                 panel3.add(lblIcon_AT, new CC().cell(0, 0));
 
                 //---- label4 ----
-                label4.setText("\u00d6sterreich (AT)"); //NON-NLS
+                label4.setText(bundle.getString("settings.PanelEinstellungenGeo.label4.text")); //NON-NLS
                 panel3.add(label4, new CC().cell(0, 0));
             }
             panel1.add(panel3);
@@ -117,7 +119,7 @@ public class PanelEinstellungenGeoBase extends JPanel {
                 panel4.add(lblIcon_CH, new CC().cell(0, 0));
 
                 //---- label6 ----
-                label6.setText("Schweiz (CH)"); //NON-NLS
+                label6.setText(bundle.getString("settings.PanelEinstellungenGeo.label6.text")); //NON-NLS
                 panel4.add(label6, new CC().cell(0, 0));
             }
             panel1.add(panel4);
@@ -136,7 +138,7 @@ public class PanelEinstellungenGeoBase extends JPanel {
                 panel5.add(lblIcon_FR, new CC().cell(0, 0));
 
                 //---- label8 ----
-                label8.setText("Frankreich (FR)"); //NON-NLS
+                label8.setText(bundle.getString("settings.PanelEinstellungenGeo.label8.text")); //NON-NLS
                 panel5.add(label8, new CC().cell(0, 0));
             }
             panel1.add(panel5);
@@ -155,20 +157,20 @@ public class PanelEinstellungenGeoBase extends JPanel {
                 panel6.add(lblIcon_EU, new CC().cell(0, 0));
 
                 //---- label10 ----
-                label10.setText("EU (EBU - European Broadcasting Union)"); //NON-NLS
+                label10.setText(bundle.getString("settings.PanelEinstellungenGeo.label10.text")); //NON-NLS
                 panel6.add(label10, new CC().cell(0, 0));
             }
             panel1.add(panel6);
 
             //---- jRadioButtonSonst ----
-            jRadioButtonSonst.setText("Sonstiger"); //NON-NLS
+            jRadioButtonSonst.setText(bundle.getString("settings.PanelEinstellungenGeo.jRadioButtonSonst.text")); //NON-NLS
             panel1.add(jRadioButtonSonst);
         }
         add(panel1, new CC().cell(0, 0));
 
         //---- jButtonHilfe ----
         jButtonHilfe.setIcon(null);
-        jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
+        jButtonHilfe.setToolTipText(bundle.getString("settings.PanelEinstellungenGeo.jButtonHilfe.toolTipText")); //NON-NLS
         add(jButtonHilfe, new CC().cell(0, 1).alignX("right").growX(0)); //NON-NLS
 
         //---- buttonGroup1 ----

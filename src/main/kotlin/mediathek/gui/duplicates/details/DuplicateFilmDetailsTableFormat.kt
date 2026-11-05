@@ -2,6 +2,7 @@ package mediathek.gui.duplicates.details
 
 import ca.odell.glazedlists.gui.AdvancedTableFormat
 import mediathek.daten.DatenFilm
+import mediathek.i18n.UiMessages
 
 class DuplicateFilmDetailsTableFormat : AdvancedTableFormat<DatenFilm> {
     override fun getColumnClass(column: Int): Class<*> = String::class.java
@@ -14,12 +15,12 @@ class DuplicateFilmDetailsTableFormat : AdvancedTableFormat<DatenFilm> {
     override fun getColumnCount(): Int = 7
 
     override fun getColumnName(column: Int): String = when (column) {
-        0 -> "Sender"
-        1 -> "Thema"
-        2 -> "Titel"
-        3 -> "Datum"
-        4 -> "Sendezeit"
-        5 -> "URL HQ"
+        0 -> UiMessages.text("duplicates.sender")
+        1 -> UiMessages.text("duplicates.topic")
+        2 -> UiMessages.text("duplicates.title")
+        3 -> UiMessages.text("duplicates.date")
+        4 -> UiMessages.text("duplicates.time")
+        5 -> UiMessages.text("duplicates.hq")
         6 -> "URL"
         else -> "X$column"
     }

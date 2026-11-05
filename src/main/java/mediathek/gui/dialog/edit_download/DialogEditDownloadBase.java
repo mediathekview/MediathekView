@@ -28,6 +28,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+/** Generated layout using the selected interface language. */
 public class DialogEditDownloadBase extends JDialog {
     protected DialogEditDownloadBase(Frame owner) {
         super(owner);
@@ -41,7 +42,9 @@ public class DialogEditDownloadBase extends JDialog {
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
+    /** Initializes the generated controls using the selected interface language. */
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jScrollPane1 = new JScrollPane();
         jPanelExtra = new ViewportWidthPanel();
         jPanelRes = new JPanel();
@@ -61,7 +64,7 @@ public class DialogEditDownloadBase extends JDialog {
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Download \u00e4ndern");
+        setTitle(bundle.getString("download.edit.dialog.this.title"));
         setMinimumSize(new Dimension(720, 500));
         setModal(true);
         setPreferredSize(null);
@@ -99,7 +102,7 @@ public class DialogEditDownloadBase extends JDialog {
 
         //======== jPanelRes ========
         {
-            jPanelRes.setBorder(new TitledBorder("Download-Qualit\u00e4t:"));
+            jPanelRes.setBorder(new TitledBorder(bundle.getString("download.edit.dialog.jPanelRes.borderTitle")));
             jPanelRes.setLayout(new MigLayout(
                 new LC().fillX().insets("5").hideMode(3),
                 // columns
@@ -124,15 +127,15 @@ public class DialogEditDownloadBase extends JDialog {
                         .fill()));
 
                 //---- jRadioButtonResHd ----
-                jRadioButtonResHd.setText("H\u00f6chste/Hoch");
+                jRadioButtonResHd.setText(bundle.getString("download.edit.dialog.jRadioButtonResHd.text"));
                 jPanelResButtons.add(jRadioButtonResHd, new CC().cell(0, 0));
 
                 //---- jRadioButtonResHi ----
-                jRadioButtonResHi.setText("Mittel");
+                jRadioButtonResHi.setText(bundle.getString("download.edit.dialog.jRadioButtonResHi.text"));
                 jPanelResButtons.add(jRadioButtonResHi, new CC().cell(1, 0));
 
                 //---- jRadioButtonResLo ----
-                jRadioButtonResLo.setText("Niedrig");
+                jRadioButtonResLo.setText(bundle.getString("download.edit.dialog.jRadioButtonResLo.text"));
                 jPanelResButtons.add(jRadioButtonResLo, new CC().cell(2, 0));
             }
             jPanelRes.add(jPanelResButtons, new CC().cell(0, 0).alignX("left"));
@@ -151,7 +154,7 @@ public class DialogEditDownloadBase extends JDialog {
                         .fill()));
 
                 //---- jButtonRequestLiveInfo ----
-                jButtonRequestLiveInfo.setText("Codec-Details abrufen...");
+                jButtonRequestLiveInfo.setText(bundle.getString("download.edit.dialog.jButtonRequestLiveInfo.text"));
                 jPanelResInfo.add(jButtonRequestLiveInfo, new CC().cell(0, 0).alignY("top"));
                 jPanelResInfo.add(jLabelBusyIndicator, new CC().cell(1, 0).alignY("top"));
 
@@ -160,11 +163,11 @@ public class DialogEditDownloadBase extends JDialog {
                     jPanelLiveInfo.setLayout(new GridLayout(2, 1));
 
                     //---- jLabelVideoInfo ----
-                    jLabelVideoInfo.setText("Video: n/a");
+                    jLabelVideoInfo.setText(bundle.getString("download.edit.dialog.jLabelVideoInfo.text"));
                     jPanelLiveInfo.add(jLabelVideoInfo);
 
                     //---- jLabelAudioInfo ----
-                    jLabelAudioInfo.setText("Audio: n/a");
+                    jLabelAudioInfo.setText(bundle.getString("download.edit.dialog.jLabelAudioInfo.text"));
                     jPanelLiveInfo.add(jLabelAudioInfo);
                 }
                 jPanelResInfo.add(jPanelLiveInfo, new CC().cell(2, 0).pushX().growX());
@@ -178,11 +181,11 @@ public class DialogEditDownloadBase extends JDialog {
             buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 
             //---- jButtonOk ----
-            jButtonOk.setText("Ok");
+            jButtonOk.setText(bundle.getString("download.edit.dialog.jButtonOk.text"));
             buttonPanel.add(jButtonOk);
 
             //---- jButtonAbbrechen ----
-            jButtonAbbrechen.setText("Abbrechen");
+            jButtonAbbrechen.setText(bundle.getString("download.edit.dialog.jButtonAbbrechen.text"));
             buttonPanel.add(jButtonAbbrechen);
         }
         contentPane.add(buttonPanel, new CC().cell(0, 2).growX());

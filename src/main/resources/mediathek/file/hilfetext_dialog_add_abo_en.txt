@@ -1,0 +1,23 @@
+For subscriptions, Channel and Topic must match exactly. The Title input only needs to occur within the film title.
+
+Topic/title matches either the topic OR the title. Anywhere additionally searches the description.
+
+======================================
+
+A filter term can contain spaces. Separate alternative terms with commas, for example "Hallo ich,Tatort". Films match if the corresponding field contains "Hallo ich" OR "Tatort".
+
+Matching is case-insensitive.
+
+======================================
+
+Filters also accept regular expressions. Prefix them with "#:" to apply them to the corresponding film fields.
+
+#:Abend.*
+
+This finds films whose corresponding field begins with "Abend". Regular expressions are also case-insensitive.
+
+https://en.wikipedia.org/wiki/Regular_expression
+
+======================================
+
+Subscriptions work like the filters in the Films tab. Narrow the film list to your desired results, then right-click a film to create a subscription using those filter settings.

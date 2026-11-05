@@ -24,6 +24,7 @@ import java.util.*
 import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
+import mediathek.i18n.UiMessages
 
 class FilmContextMenuBuilder(
     private val host: TableContextMenuHandler.Host,
@@ -67,16 +68,16 @@ class FilmContextMenuBuilder(
                 popupMenu.remove(bookmarkMenuItem)
             } else {
                 bookmarkMenuItem.text = if (film.isBookmarked) {
-                    "Film aus Merkliste entfernen"
+                    UiMessages.text("film.bookmark.removeSingle")
                 } else {
-                    "Film merken"
+                    UiMessages.text("film.bookmark.addSingle")
                 }
             }
         }
     }
 
     private fun addFilmProgramsMenu(popupMenu: JPopupMenu) {
-        val submenu = JMenu("Film mit Set starten")
+        val submenu = JMenu(UiMessages.text("film.context.startWithSet"))
         popupMenu.add(submenu)
         val liste = programSets.list.listeButton
         for (pset in liste) {

@@ -33,6 +33,7 @@ import mediathek.filmlisten.FilmListLoadProgress
 import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.messages.BlacklistAboSettingChangedEvent
 import mediathek.gui.messages.BlacklistChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.*
 import net.engio.mbassy.listener.Handler
@@ -366,7 +367,7 @@ class PanelBlacklist(
 
     private fun updateMinimumLengthText() {
         jTextFieldMinuten.text = if (jSliderMinuten.value == 0) {
-            "alles"
+            UiMessages.text("settings.blacklist.all")
         } else {
             jSliderMinuten.value.toString()
         }
@@ -397,13 +398,13 @@ class PanelBlacklist(
     }
 
     private fun populateBlacklistActionsButton() {
-        jButtonBlacklistActions.add(JMenuItem("Regeln ohne Treffer deaktivieren").apply {
+        jButtonBlacklistActions.add(JMenuItem(UiMessages.text("settings.blacklist.disableEmpty")).apply {
             addActionListener { onDeactivateZeroFilterRules() }
         })
-        jButtonBlacklistActions.add(JMenuItem("Regeln ohne Treffer löschen...").apply {
+        jButtonBlacklistActions.add(JMenuItem(UiMessages.text("settings.blacklist.deleteEmpty")).apply {
             addActionListener { onRemoveZeroFilterRules() }
         })
-        jButtonBlacklistActions.add(JMenuItem("Alle Regeln löschen...").apply {
+        jButtonBlacklistActions.add(JMenuItem(UiMessages.text("settings.blacklist.deleteAll")).apply {
             addActionListener { onRemoveAllBlacklistRules() }
         })
     }
@@ -425,8 +426,8 @@ class PanelBlacklist(
     private fun onRemoveZeroFilterRules() {
         val result = JOptionPane.showConfirmDialog(
             parentComponent,
-            "<html>Möchten Sie wirklich <b>alle Regeln ohne Treffer</b> dauerhaft löschen?</html>",
-            "Blacklist Regeln",
+            UiMessages.text("settings.blacklist.confirmEmpty"),
+            UiMessages.text("settings.blacklist.title"),
             JOptionPane.YES_NO_OPTION,
         )
         if (result == JOptionPane.OK_OPTION) {
@@ -440,8 +441,8 @@ class PanelBlacklist(
     private fun onRemoveAllBlacklistRules() {
         val result = JOptionPane.showConfirmDialog(
             parentComponent,
-            "<html>Möchten Sie wirklich <b>alle Regeln</b> dauerhaft löschen?</html>",
-            "Blacklist Regeln",
+            UiMessages.text("settings.blacklist.confirmAll"),
+            UiMessages.text("settings.blacklist.title"),
             JOptionPane.YES_NO_OPTION,
         )
         if (result == JOptionPane.OK_OPTION) {
@@ -581,11 +582,11 @@ class PanelBlacklist(
             }
 
             val menu = JPopupMenu()
-            val toggleActiveItem = JMenuItem("Aktiv umschalten")
+            val toggleActiveItem = JMenuItem(UiMessages.text("settings.blacklist.toggle"))
             toggleActiveItem.addActionListener { onToggleBlacklistRulesActive() }
             menu.add(toggleActiveItem)
 
-            val menuText = if (jTableBlacklist.selectedRowCount > 1) "Zeilen löschen" else "Zeile löschen"
+            val menuText = if (jTableBlacklist.selectedRowCount > 1) UiMessages.text("settings.blacklist.deleteRows") else UiMessages.text("settings.blacklist.deleteRow")
             val item = JMenuItem(menuText)
             item.addActionListener { onRemoveBlacklistRules() }
             menu.add(item)

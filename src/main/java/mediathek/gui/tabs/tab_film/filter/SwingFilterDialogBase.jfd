@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "filter.dialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "fillx,insets 5,hidemode 3"
 			"$columnConstraints": "[left]"
@@ -10,7 +17,7 @@ new FormModel {
 		} ) {
 			name: "this"
 			"type": enum java.awt.Window$Type UTILITY
-			"title": "Filter"
+			"title": new FormMessage( null, "filter.dialog.this.title" )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "fillx,insets 0,hidemode 3"
 				"$columnConstraints": "[grow,fill][fill][fill]"
@@ -33,7 +40,8 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbLockCurrentFilter"
-					"toolTipText": "Filteränderungen nur temporär anwenden und nicht speichern"
+					"text": new FormMessage( null, "filter.dialog.cbLockCurrentFilter.text" )
+					"toolTipText": new FormMessage( null, "filter.dialog.cbLockCurrentFilter.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -67,35 +75,35 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowNewOnly"
-					"text": "Nur neue Filme anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbShowNewOnly.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowBookMarkedOnly"
-					"text": "Nur gemerkte Filme anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbShowBookMarkedOnly.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowOnlyHq"
-					"text": "Nur High-Quality-Filme (HQ) anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbShowOnlyHq.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowSubtitlesOnly"
-					"text": "Nur Filme mit Untertitel anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbShowSubtitlesOnly.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowOnlyLivestreams"
-					"text": "Nur Livestreams anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbShowOnlyLivestreams.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -118,49 +126,49 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbShowUnseenOnly"
-					"text": "Gesehene Filme nicht anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbShowUnseenOnly.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDontShowAbos"
-					"text": "Abos nicht anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbDontShowAbos.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDontShowSignLanguage"
-					"text": "Gebärdensprache nicht anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbDontShowSignLanguage.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDontShowTrailers"
-					"text": "Trailer/Teaser/Vorschau nicht anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbDontShowTrailers.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDontShowAudioVersions"
-					"text": "Hörfassungen ausblenden"
+					"text": new FormMessage( null, "filter.dialog.cbDontShowAudioVersions.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDontShowDuplicates"
-					"text": "Duplikate nicht anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbDontShowDuplicates.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "cbDontShowGeoblocked"
-					"text": "Geo-blockierte Filme nicht anzeigen"
+					"text": new FormMessage( null, "filter.dialog.cbDontShowGeoblocked.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -188,7 +196,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label3"
-					"text": "Sender:"
+					"text": new FormMessage( null, "filter.dialog.label3.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -237,7 +245,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label4"
-					"text": "Thema:"
+					"text": new FormMessage( null, "filter.dialog.label4.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -285,7 +293,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label5"
-					"text": "Mindestlänge:"
+					"text": new FormMessage( null, "filter.dialog.label5.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -311,7 +319,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label7"
-					"text": "Maximallänge:"
+					"text": new FormMessage( null, "filter.dialog.label7.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -358,7 +366,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label1"
-					"text": "Zeitraum:"
+					"text": new FormMessage( null, "filter.dialog.label1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -375,7 +383,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label2"
-					"text": "Tage"
+					"text": new FormMessage( null, "filter.dialog.label2.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}

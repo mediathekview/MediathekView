@@ -25,6 +25,7 @@ public class DialogFilmBeschreibungBase extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var panel1 = new JPanel();
         jButtonOk = new JButton();
         jButtonHilfe = new JButton();
@@ -64,16 +65,16 @@ public class DialogFilmBeschreibungBase extends JDialog {
                     .fill()));
 
             //---- jButtonOk ----
-            jButtonOk.setText("Ok"); //NON-NLS
+            jButtonOk.setText(bundle.getString("dialog.DialogFilmBeschreibung.jButtonOk.text")); //NON-NLS
             panel1.add(jButtonOk, new CC().cell(3, 0));
 
             //---- jButtonHilfe ----
             jButtonHilfe.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); //NON-NLS
-            jButtonHilfe.setToolTipText("Hilfe anzeigen"); //NON-NLS
+            jButtonHilfe.setToolTipText(bundle.getString("dialog.DialogFilmBeschreibung.jButtonHilfe.toolTipText")); //NON-NLS
             panel1.add(jButtonHilfe, new CC().cell(2, 0));
 
             //---- jButtonSpeichern ----
-            jButtonSpeichern.setText("Speichern"); //NON-NLS
+            jButtonSpeichern.setText(bundle.getString("dialog.DialogFilmBeschreibung.jButtonSpeichern.text")); //NON-NLS
             panel1.add(jButtonSpeichern, new CC().cell(0, 0));
         }
         contentPane.add(panel1, new CC().cell(0, 2));
@@ -103,7 +104,7 @@ public class DialogFilmBeschreibungBase extends JDialog {
                     .fill()));
 
             //---- jLabel2 ----
-            jLabel2.setText("Filmtitel:"); //NON-NLS
+            jLabel2.setText(bundle.getString("dialog.DialogFilmBeschreibung.jLabel2.text")); //NON-NLS
             panel2.add(jLabel2, new CC().cell(0, 0));
 
             //---- jTextFieldTitel ----

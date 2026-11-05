@@ -3,6 +3,7 @@ package mediathek.gui.actions.import_actions
 import mediathek.config.Konstanten
 import mediathek.daten.abo.AboServices
 import mediathek.daten.blacklist.BlacklistServices
+import mediathek.i18n.UiMessages
 import mediathek.tool.FileDialogs.chooseLoadFileLocation
 import mediathek.tool.ReplacementRules
 import mediathek.tool.SwingErrorDialog
@@ -18,8 +19,8 @@ class ImportOldAbosAction(
     private val replacementRules: ReplacementRules,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Alte Abos...")
-        putValue(SHORT_DESCRIPTION, "Ermöglicht den Import der Abos aus einer alten Konfigurationsdatei.")
+        putValue(NAME, UiMessages.text("action.importOldAbosAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.importOldAbosAction.description"))
     }
 
     override fun actionPerformed(e: ActionEvent) {

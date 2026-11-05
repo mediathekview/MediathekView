@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelFilmlisteLaden"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "fillx,insets 5,hidemode 3,gap 5 5"
 			"$columnConstraints": "[label][640,grow,fill]"
@@ -16,13 +23,13 @@ new FormModel {
 				"$rowConstraints": "[fill]"
 			} ) {
 				name: "jPanelAuto"
-				"border": new javax.swing.border.TitledBorder( "Die Filmliste automatisch laden" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelFilmlisteLaden.jPanelAuto.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "mediathek.swing.MultilineLabel" ) {
 					name: "multilineLabel1"
-					"text": "Die Filmliste wird beim Programmstart automatisch geladen (wenn älter als 3h). Zusätzlich kann sie über den Button \"Neue Filmliste laden\" aktualisiert werden."
+					"text": new FormMessage( null, "settings.PanelFilmlisteLaden.multilineLabel1.text" )
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
@@ -39,14 +46,14 @@ new FormModel {
 				"$rowConstraints": "[fill][fill][fill]"
 			} ) {
 				name: "jPanelManuel"
-				"border": new javax.swing.border.TitledBorder( "Filmliste nur manuell laden" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelFilmlisteLaden.jPanelManuel.borderTitle" )
 				"maximumSize": new java.awt.Dimension( 750, 2147483647 )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "mediathek.swing.MultilineLabel" ) {
 					name: "multilineLabel2"
-					"text": "Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\" aus dem Internet geladen. Alternativ kann auch eine Datei zum Laden angegeben werden."
+					"text": new FormMessage( null, "settings.PanelFilmlisteLaden.multilineLabel2.text" )
 					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
@@ -56,7 +63,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "Datei:"
+					"text": new FormMessage( null, "settings.PanelFilmlisteLaden.jLabel1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableName": "lblUrl"
 					}
@@ -73,13 +80,13 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonDateiAuswaehlen"
-					"toolTipText": "URL oder lokale Filmliste auswählen"
+					"toolTipText": new FormMessage( null, "settings.PanelFilmlisteLaden.jButtonDateiAuswaehlen.toolTipText" )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 3 1,alignx left,growx 0,width 32:32:32,height 32:32:32"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxUpdate"
-					"text": "Alte Filmliste nicht löschen, nur erweitern"
+					"text": new FormMessage( null, "settings.PanelFilmlisteLaden.jCheckBoxUpdate.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableGetter": true
 					}
@@ -111,19 +118,19 @@ new FormModel {
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
 				name: "panel3"
-				"border": new javax.swing.border.TitledBorder( "Einschränkungen für das Laden der Filmliste" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelFilmlisteLaden.panel3.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.swingx.VerticalLayout ) ) {
 					name: "panel4"
-					"border": new javax.swing.border.TitledBorder( "Duplikate (Änderungen erfordern Neuladen der Filmliste)" )
+					"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelFilmlisteLaden.panel4.borderTitle" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "cbEvaluateDuplicates"
-						"text": "Erkennung beim Laden der Filmliste einschalten"
+						"text": new FormMessage( null, "settings.PanelFilmlisteLaden.cbEvaluateDuplicates.text" )
 					} )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
@@ -137,7 +144,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
-						"text": "Nur Filme der letzten"
+						"text": new FormMessage( null, "settings.PanelFilmlisteLaden.label1.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -154,7 +161,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
-						"text": "Tage laden."
+						"text": new FormMessage( null, "settings.PanelFilmlisteLaden.label2.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableLocal": true
 						}
@@ -163,7 +170,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnReloadFilmlist"
-						"toolTipText": "Filmliste jetzt aktualisieren"
+						"toolTipText": new FormMessage( null, "settings.PanelFilmlisteLaden.btnReloadFilmlist.toolTipText" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 0"
 					} )
@@ -174,32 +181,32 @@ new FormModel {
 					"$rowConstraints": "[fill]"
 				} ) {
 					name: "jPanel1"
-					"border": new javax.swing.border.TitledBorder( "Zusätzliche Filmdaten laden" )
-					"toolTipText": "<html>Alle nicht angewählten Einträge werden beim Laden der Filmliste aus dem Endergebnis herausgefiltert.<br/><b>Die Einträge werden dauerhaft aus der lokalen Filmliste entfernt.</b><br/>Sie werden erst wieder beim Laden einer neuen Liste vom Server hinzugefügt wenn die Einstellungen entsprechend angepasst wurden.</html>"
+					"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelFilmlisteLaden.jPanel1.borderTitle" )
+					"toolTipText": new FormMessage( null, "settings.PanelFilmlisteLaden.jPanel1.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "cbSign"
-						"text": "Gebärdensprache"
+						"text": new FormMessage( null, "settings.PanelFilmlisteLaden.cbSign.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 0"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "cbTrailer"
-						"text": "Trailer/Teaser/Vorschau"
+						"text": new FormMessage( null, "settings.PanelFilmlisteLaden.cbTrailer.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "cbAudio"
-						"text": "Hörfassungen"
+						"text": new FormMessage( null, "settings.PanelFilmlisteLaden.cbAudio.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 0"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "cbLivestreams"
-						"text": "Livestreams"
+						"text": new FormMessage( null, "settings.PanelFilmlisteLaden.cbLivestreams.text" )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 0"
 					} )
@@ -210,8 +217,8 @@ new FormModel {
 					"$rowConstraints": "[]"
 				} ) {
 					name: "panel1"
-					"border": new javax.swing.border.TitledBorder( "Diese Sender laden (Änderungen erfordern Programmneustart und eine vollständig neue Filmliste)" )
-					"toolTipText": "<html>Die Einstellungen beziehen sich auf den nächsten <b>vollständigen</b> Ladevorgang einer Fillmliste.<br>Es kann somit vorkommen dass die Aktualisierung erst nach Neustart des Programms <br><b>und dem Laden einer kompletten Liste vom Server</b> (keine DIFF-Liste!) sichtbar wird.<br><br>Hier geänderte Einstellungen werden in der Senderliste des Filterdialogs <b>erst nach Neustart</b> sichtbar!</html>"
+					"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelFilmlisteLaden.panel1.borderTitle" )
+					"toolTipText": new FormMessage( null, "settings.PanelFilmlisteLaden.panel1.toolTipText" )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						auxiliary() {

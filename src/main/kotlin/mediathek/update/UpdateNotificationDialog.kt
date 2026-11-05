@@ -5,6 +5,7 @@ import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.gui.dialog.ButtonFlowPanel
 import mediathek.gui.dialog.ButtonPanel
+import mediathek.i18n.UiMessages
 import mediathek.swing.centerOnScreen
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.Version
@@ -22,7 +23,7 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
 
     private fun createButtonPanel(): ButtonFlowPanel {
         val pnl = ButtonFlowPanel()
-        val dlBtn = JButton("Zur Download-Seite")
+        val dlBtn = JButton(UiMessages.text("update.download"))
         dlBtn.addActionListener {
             try {
                 UrlHyperlinkAction.openURI(URI(Konstanten.ADRESSE_DOWNLOAD))
@@ -31,7 +32,7 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
                 logger.error(e)
             }
         }
-        val btn = JButton(DisposeDialogAction(this, "Schließen", "Dialog schließen"))
+        val btn = JButton(DisposeDialogAction(this, UiMessages.text("update.close"), UiMessages.text("update.closeHint")))
         rootPane.defaultButton = btn
         pnl.add(dlBtn)
         pnl.add(btn)
@@ -39,8 +40,7 @@ class UpdateNotificationDialog(owner: Frame?, title: String?, private val versio
     }
 
     private fun setupDialogInformation() {
-        val label = ("MediathekView " + version + " ist verfügbar - "
-                + "Sie haben Version " + Konstanten.MVVERSION)
+        val label = UiMessages.format("update.available", version.toString(), Konstanten.MVVERSION.toString())
         panel.releaseInfoLabel.text = label
     }
 

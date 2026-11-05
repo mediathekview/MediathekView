@@ -3,6 +3,7 @@ package mediathek.gui.actions
 import mediathek.config.Konstanten
 import mediathek.daten.DatenPset
 import mediathek.daten.ProgramSetRepository
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.GuiFunktionen
 import org.apache.commons.lang3.SystemUtils
@@ -21,8 +22,8 @@ class PlayFilmAction(
     private val parentProvider: () -> Component?,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Film abspielen")
-        putValue(SHORT_DESCRIPTION, "Film abspielen")
+        putValue(NAME, UiMessages.text("action.playFilmAction.text"))
+        putValue(SHORT_DESCRIPTION, UiMessages.text("action.playFilmAction.description"))
         putValue(SMALL_ICON, IconUtils.toolbarIcon(FontAwesomeSolid.PLAY))
         val keyStroke = if (SystemUtils.IS_OS_MAC_OSX) {
             KeyStroke.getKeyStroke(KeyEvent.VK_F6, GuiFunktionen.getPlatformControlKey())

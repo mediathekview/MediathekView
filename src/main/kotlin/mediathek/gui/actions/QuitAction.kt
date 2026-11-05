@@ -23,12 +23,13 @@ import java.awt.event.KeyEvent
 import java.util.function.BooleanSupplier
 import javax.swing.AbstractAction
 import javax.swing.KeyStroke
+import mediathek.i18n.UiMessages
 
 class QuitAction(
     private val quitApplication: BooleanSupplier,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "Beenden")
+        putValue(NAME, UiMessages.text("action.quitAction.text"))
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK))
     }
 

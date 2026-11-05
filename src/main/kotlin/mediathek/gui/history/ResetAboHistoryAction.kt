@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JFrame
 import javax.swing.JOptionPane
+import mediathek.i18n.UiMessages
 
 class ResetAboHistoryAction(
     private val owner: JFrame,
@@ -26,6 +27,6 @@ class ResetAboHistoryAction(
     }
 
     init {
-        putValue(NAME, "Abo-Historie zurücksetzen...")
+        putValue(NAME, UiMessages.text("action.resetAboHistoryAction.text"))
     }
 }

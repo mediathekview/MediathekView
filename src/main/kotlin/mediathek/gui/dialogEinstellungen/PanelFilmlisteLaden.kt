@@ -29,6 +29,7 @@ import mediathek.controller.SenderFilmlistLoadApprover
 import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.messages.FilmListImportTypeChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.*
 import net.engio.mbassy.listener.Handler
@@ -64,9 +65,8 @@ class PanelFilmlisteLaden(
         if (inSettingsDialog) {
             prepareSettingsLayout()
         } else {
-            panel1.toolTipText = "<html>Bei Änderungen wird eine komplette Filmliste vom Server geladen.<br>" +
-                "Dies funktioniert <b>NICHT im Erweiterungsmodus</b>!!!</html>"
-            panel1.border = TitledBorder("Ausgewählte Sender laden:")
+            panel1.toolTipText = UiMessages.text("settings.filmList.complete")
+            panel1.border = TitledBorder(UiMessages.text("settings.filmList.channels"))
         }
 
         setupSenderList()
@@ -129,7 +129,7 @@ class PanelFilmlisteLaden(
         uiScope.launch {
             if (!warningDialogShown) {
                 val message =
-                    "<html>Bei Änderungen an den Sendern <b>muss</b> zwingend ein Neustart durchgeführt werden.</html>"
+                    UiMessages.text("settings.filmList.restart")
                 JOptionPane.showMessageDialog(
                     this@PanelFilmlisteLaden,
                     message,
@@ -181,7 +181,7 @@ class PanelFilmlisteLaden(
 
         jButtonDateiAuswaehlen.icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/folder-open.svg")
         jButtonDateiAuswaehlen.addActionListener {
-            val loadFile = FileDialogs.chooseLoadFileLocation(owner, "Filmliste laden", "")
+            val loadFile = FileDialogs.chooseLoadFileLocation(owner, UiMessages.text("settings.filmList.load"), "")
             if (loadFile != null) {
                 jTextFieldUrl.text = loadFile.absolutePath
             }

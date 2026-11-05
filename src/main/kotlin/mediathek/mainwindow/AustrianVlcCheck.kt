@@ -6,6 +6,7 @@ import mediathek.config.Konstanten
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.Country
 import mediathek.gui.actions.UrlHyperlinkAction
+import mediathek.i18n.UiMessages
 import org.apache.logging.log4j.LogManager
 import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.Font
@@ -34,7 +35,7 @@ class AustrianVlcCheck(val owner: JFrame) {
         val boldFont = getFontWeight(font)
         val style = "font-family:${font.family};font-weight:$boldFont;font-size: ${font.size}pt;"
         val msg =
-            "<html><body style=\"$style\">Um den ORF erfolgreich zu nutzen sind zusätzliche Einstellungen erforderlich.<br>Bitte lesen Sie sich hierzu den <a href=\"\">Link</a> durch.</body></html>"
+            UiMessages.format("startup.orf", style)
 
         val ep = JEditorPane("text/html", msg)
         ep.isEditable = false
@@ -50,7 +51,7 @@ class AustrianVlcCheck(val owner: JFrame) {
             }
         }
 
-        JOptionPane.showMessageDialog(owner, ep, "Wichtige Information für ORF", JOptionPane.WARNING_MESSAGE)
+        JOptionPane.showMessageDialog(owner, ep, UiMessages.text("startup.orfTitle"), JOptionPane.WARNING_MESSAGE)
     }
 
     fun perform() {

@@ -7,6 +7,8 @@ import mediathek.controller.starter.DownloadProgressText
 import mediathek.controller.starter.DownloadRunState
 import mediathek.controller.starter.StartStatus
 import mediathek.daten.DatenDownload
+import mediathek.daten.DownloadType
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.SVGIconUtilities
 import mediathek.tool.table.MVTable
@@ -125,6 +127,11 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
                 DownloadColumn.FILM_NUMBER -> hideZeroFilmNumber(table, rowModelIndex)
                 DownloadColumn.TYPE -> renderDownloadType(datenDownload)
                 DownloadColumn.SOURCE -> renderDownloadSource(datenDownload)
+                DownloadColumn.PROGRAM -> {
+                    if (datenDownload.programName == DownloadType.DIRECT.label) {
+                        text = DownloadType.DIRECT.displayLabel
+                    }
+                }
                 DownloadColumn.BUTTON_START -> handleButtonStartColumn(datenDownload, isSelected)
                 DownloadColumn.BUTTON_DELETE -> handleButtonDeleteColumn(datenDownload, isSelected)
                 DownloadColumn.ABO -> handleAboColumn(datenDownload)
@@ -187,11 +194,11 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private fun renderDownloadType(datenDownload: DatenDownload) {
-        text = datenDownload.art.label
+        text = datenDownload.art.displayLabel
     }
 
     private fun renderDownloadSource(datenDownload: DatenDownload) {
-        text = datenDownload.quelle.label
+        text = datenDownload.quelle.displayLabel
     }
 
     private fun createTextArea(
@@ -281,11 +288,11 @@ class CellRendererDownloads : CellRendererBaseWithStart() {
     }
 
     private companion object {
-        private const val DOWNLOAD_STARTEN = "Download starten"
-        private const val DOWNLOAD_LOESCHEN = "Download aus Liste entfernen"
-        private const val DOWNLOAD_STOPPEN = "Download stoppen"
-        private const val DOWNLOAD_ENTFERNEN = "Download entfernen"
-        private const val PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen"
+        private val DOWNLOAD_STARTEN get() = UiMessages.text("downloads.start")
+        private val DOWNLOAD_LOESCHEN get() = UiMessages.text("downloads.removeFromList")
+        private val DOWNLOAD_STOPPEN get() = UiMessages.text("downloads.stop")
+        private val DOWNLOAD_ENTFERNEN get() = UiMessages.text("downloads.remove")
+        private val PLAY_DOWNLOADED_FILM get() = UiMessages.text("downloads.play")
         private val logger = LogManager.getLogger(CellRendererDownloads::class.java)
     }
 }

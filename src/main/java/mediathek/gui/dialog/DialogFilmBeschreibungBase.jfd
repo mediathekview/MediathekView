@@ -2,7 +2,14 @@ JFDML JFormDesigner: "7.0.0.0.133" Java: "1.8.0_152-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.DialogFilmBeschreibung"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "fill,insets 5,hidemode 3,gap 5 5"
 			"$columnConstraints": "[grow,fill]"
@@ -22,7 +29,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonOk"
-					"text": "Ok"
+					"text": new FormMessage( null, "dialog.DialogFilmBeschreibung.jButtonOk.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -32,7 +39,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonHilfe"
 					"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
-					"toolTipText": "Hilfe anzeigen"
+					"toolTipText": new FormMessage( null, "dialog.DialogFilmBeschreibung.jButtonHilfe.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -41,7 +48,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonSpeichern"
-					"text": "Speichern"
+					"text": new FormMessage( null, "dialog.DialogFilmBeschreibung.jButtonSpeichern.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -80,7 +87,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel2"
-					"text": "Filmtitel:"
+					"text": new FormMessage( null, "dialog.DialogFilmBeschreibung.jLabel2.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}

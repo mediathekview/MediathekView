@@ -24,12 +24,13 @@ import java.awt.Component
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 import javax.swing.JOptionPane
+import mediathek.i18n.UiMessages
 
 class OptimizeHistoryDbAction(
     private val parentComponent: Component,
 ) : AbstractAction() {
     init {
-        putValue(NAME, "History-Datenbank optimieren...")
+        putValue(NAME, UiMessages.text("action.optimizeHistoryDbAction.text"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

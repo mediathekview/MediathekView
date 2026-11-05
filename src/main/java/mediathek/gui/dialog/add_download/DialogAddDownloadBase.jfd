@@ -2,7 +2,15 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "download.dialog"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
+
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets dialog,hidemode 3,fillx"
 			"$columnConstraints": "[grow,fill]"
@@ -10,7 +18,7 @@ new FormModel {
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
-			"title": "Film speichern"
+			"title": new FormMessage( null, "download.dialog.this.title" )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "insets 0,hidemode 3,alignx right,gap 5 5"
 				"$columnConstraints": "[fill][fill][fill]"
@@ -22,7 +30,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnQueueDownload"
-					"text": "In die Warteschlange"
+					"text": new FormMessage( null, "download.dialog.btnQueueDownload.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -31,7 +39,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "btnDownloadImmediately"
-					"text": "Sofort laden"
+					"text": new FormMessage( null, "download.dialog.btnDownloadImmediately.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -40,7 +48,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonAbbrechen"
-					"text": "Abbrechen"
+					"text": new FormMessage( null, "download.dialog.jButtonAbbrechen.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -61,7 +69,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabelSet"
-					"text": "Set:"
+					"text": new FormMessage( null, "download.dialog.jLabelSet.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -80,7 +88,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "Zielpfad:"
+					"text": new FormMessage( null, "download.dialog.jLabel1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -109,8 +117,8 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonZiel"
-						"text": "F"
-						"toolTipText": "Zielpfad auswählen"
+						"text": new FormMessage( null, "download.dialog.jButtonZiel.text" )
+						"toolTipText": new FormMessage( null, "download.dialog.jButtonZiel.toolTipText" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -119,8 +127,8 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "jButtonDelHistory"
-						"text": "H"
-						"toolTipText": "History löschen"
+						"text": new FormMessage( null, "download.dialog.jButtonDelHistory.text" )
+						"toolTipText": new FormMessage( null, "download.dialog.jButtonDelHistory.toolTipText" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -132,7 +140,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel4"
-					"text": "Dateiname:"
+					"text": new FormMessage( null, "download.dialog.jLabel4.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -163,8 +171,8 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxInfodatei"
-					"text": "Lege Infodatei an"
-					"toolTipText": "Erzeugt eine Infodatei im Format \"Infodatei.txt\""
+					"text": new FormMessage( null, "download.dialog.jCheckBoxInfodatei.text" )
+					"toolTipText": new FormMessage( null, "download.dialog.jCheckBoxInfodatei.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -173,7 +181,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "jCheckBoxPfadSpeichern"
-					"text": "Zielpfad speichern"
+					"text": new FormMessage( null, "download.dialog.jCheckBoxPfadSpeichern.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
@@ -207,7 +215,7 @@ new FormModel {
 				"$rowConstraints": "[][]"
 			} ) {
 				name: "jPanelSize"
-				"border": new javax.swing.border.TitledBorder( "Download-Qualität" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=download.dialog.jPanelSize.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}
@@ -223,7 +231,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "jRadioButtonAufloesungHd"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"text": "Höchste/Hoch"
+						"text": new FormMessage( null, "download.dialog.jRadioButtonAufloesungHd.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -233,7 +241,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "jRadioButtonAufloesungHoch"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"text": "Mittel"
+						"text": new FormMessage( null, "download.dialog.jRadioButtonAufloesungHoch.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -243,7 +251,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "jRadioButtonAufloesungKlein"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
-						"text": "Niedrig"
+						"text": new FormMessage( null, "download.dialog.jRadioButtonAufloesungKlein.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -264,7 +272,7 @@ new FormModel {
 					}
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "btnRequestLiveInfo"
-						"text": "Codec-Details abrufen..."
+						"text": new FormMessage( null, "download.dialog.btnRequestLiveInfo.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -289,14 +297,14 @@ new FormModel {
 						}
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "lblStatus"
-							"text": "Video: n/a"
+							"text": new FormMessage( null, "download.dialog.lblStatus.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "lblAudioInfo"
-							"text": "Audio: n/a"
+							"text": new FormMessage( null, "download.dialog.lblAudioInfo.text" )
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 4
 							}
@@ -344,7 +352,7 @@ new FormModel {
 						name: "lblFilmTitle"
 						"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
 						"minimumSize": new java.awt.Dimension( 0, 0 )
-						"text": "Tatort, ..."
+						"text": new FormMessage( null, "download.dialog.lblFilmTitle.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -354,7 +362,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "lblFilmThema"
 						"minimumSize": new java.awt.Dimension( 0, 0 )
-						"text": "Thema"
+						"text": new FormMessage( null, "download.dialog.lblFilmThema.text" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}

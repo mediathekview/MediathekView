@@ -21,6 +21,7 @@ package mediathek.gui.actions
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen
 import mediathek.gui.messages.ProgramLocationChangedEvent
+import mediathek.i18n.UiMessages
 import mediathek.tool.MessageBus
 import org.apache.logging.log4j.LogManager
 import java.awt.Desktop
@@ -42,7 +43,7 @@ object OpenPlayerAction {
             JOptionPane.showMessageDialog(
                 parent,
                 "Film existiert noch nicht!",
-                "Fehler",
+                UiMessages.text("player.errorTitle"),
                 JOptionPane.ERROR_MESSAGE,
             )
             return
@@ -97,8 +98,8 @@ object OpenPlayerAction {
     }
 
     private fun resolvePlayerProgram(parent: Frame): String {
-        val text = "Ein Videoplayer zum Abspielen wird nicht gefunden. Videoplayer selbst auswählen."
-        return DialogProgrammOrdnerOeffnen.showDialog(parent, "", "Videoplayer suchen", text).orElse("") ?: ""
+        val text = UiMessages.text("player.missing")
+        return DialogProgrammOrdnerOeffnen.showDialog(parent, "", UiMessages.text("player.choose"), text).orElse("") ?: ""
     }
 
     private fun publishProgramLocationChanged() {
@@ -108,8 +109,8 @@ object OpenPlayerAction {
     private fun showPlayerOpenError(parent: Frame) {
         JOptionPane.showMessageDialog(
             parent,
-            "Kann den Videoplayer nicht öffnen!",
-            "Fehler",
+            UiMessages.text("player.error"),
+            UiMessages.text("player.errorTitle"),
             JOptionPane.ERROR_MESSAGE,
         )
     }

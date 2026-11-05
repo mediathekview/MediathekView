@@ -2,7 +2,14 @@ JFDML JFormDesigner: "8.3" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelPsetKurz"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel1:::::x, comp jPanel2::l:::x}, space :::p}}"
 			"$verticalGroup": "par l {seq l {space :::p, comp jPanel1:::p::p, space u:::p, comp jPanel2:::::x, space :::p}}"
@@ -13,7 +20,7 @@ new FormModel {
 				"$verticalGroup": "par l {seq t {space :::p, comp jPanelExtra:::::x}}"
 			} ) {
 				name: "jPanel2"
-				"border": new javax.swing.border.TitledBorder( "<html><b>Programme</b></html>" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetKurz.jPanel2.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
@@ -32,20 +39,20 @@ new FormModel {
 				"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane1:::p:116:p, space :::p, par b {comp jLabel1::b:p::p, comp jTextFieldName:6:b:p::p}, space :::p, par l {comp jButtonZiel:6:l:p::p, par b:l {comp jLabel2::b:p::p, comp jTextFieldZiel:6:b:p::p}}, space u:::p, comp jScrollPane2:::p::p, space :::x}}"
 			} ) {
 				name: "jPanel1"
-				"border": new javax.swing.border.TitledBorder( "<html><b>Set</b></html>" )
+				"border": new javax.swing.border.TitledBorder( "i18nKey=settings.PanelPsetKurz.jPanel1.borderTitle" )
 				auxiliary() {
 					"JavaCodeGenerator.variableLocal": true
 				}
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel1"
-					"text": "Set Name:"
+					"text": new FormMessage( null, "settings.PanelPsetKurz.jLabel1.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
 				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "jLabel2"
-					"text": "Zielpfad:"
+					"text": new FormMessage( null, "settings.PanelPsetKurz.jLabel2.text" )
 					auxiliary() {
 						"JavaCodeGenerator.variableLocal": true
 					}
@@ -64,7 +71,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "jButtonZiel"
-					"toolTipText": "Pfad auswählen"
+					"toolTipText": new FormMessage( null, "settings.PanelPsetKurz.jButtonZiel.toolTipText" )
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 						"JavaCodeGenerator.preInitCode": "${field}.setIcon(SVGIconUtilities.createSVGIcon(\"icons/fontawesome/folder-open.svg\"));"

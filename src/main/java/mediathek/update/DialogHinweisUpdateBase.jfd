@@ -2,7 +2,14 @@ JFDML JFormDesigner: "7.0.5.1.409" Java: "11.0.15" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "dialog.DialogHinweisUpdate"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 			"$columnConstraints": "[grow,fill]"
@@ -10,7 +17,7 @@ new FormModel {
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 2
-			"title": "Programminformationen"
+			"title": new FormMessage( null, "dialog.DialogHinweisUpdate.this.title" )
 			"minimumSize": new java.awt.Dimension( 480, 100 )
 			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 				name: "jScrollPane1"
@@ -23,7 +30,7 @@ new FormModel {
 					"columns": 20
 					"lineWrap": true
 					"rows": 5
-					"text": "\n\n"
+					"text": new FormMessage( null, "dialog.DialogHinweisUpdate.jTextArea1.text" )
 					"wrapStyleWord": true
 					"minimumSize": new java.awt.Dimension( 459, 85 )
 				} )
@@ -32,13 +39,13 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonOk"
-				"text": "Schließen"
+				"text": new FormMessage( null, "dialog.DialogHinweisUpdate.jButtonOk.text" )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 2,alignx right,growx 0"
 			} )
 			add( new FormComponent( "org.jdesktop.swingx.JXHyperlink" ) {
 				name: "hyperLink"
-				"text": "Link zur Webseite"
+				"text": new FormMessage( null, "dialog.DialogHinweisUpdate.hyperLink.text" )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1"
 			} )

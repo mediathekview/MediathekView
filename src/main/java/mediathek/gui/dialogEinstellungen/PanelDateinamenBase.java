@@ -14,6 +14,7 @@ public class PanelDateinamenBase extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        var bundle = mediathek.i18n.UiMessages.getBundle("mediathek.i18n.Messages");
         var jTabbedPane1 = new JTabbedPane();
         var jPanel1 = new JPanel();
         var jScrollPane5 = new JScrollPane();
@@ -52,7 +53,7 @@ public class PanelDateinamenBase extends JPanel {
                     jTextArea3.setEditable(false);
                     jTextArea3.setColumns(20);
                     jTextArea3.setRows(5);
-                    jTextArea3.setText("\nDie Dateinamen werden f\u00fcr jedes Betriebssystem passend aufbereitet.\n\nWer will, kann dar\u00fcber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"\u00df\" durch \"ss\" ersetzen.\n"); //NON-NLS
+                    jTextArea3.setText(bundle.getString("settings.PanelDateinamen.jTextArea3.text")); //NON-NLS
                     jTextArea3.setMargin(new Insets(3, 3, 3, 3));
                     jScrollPane5.setViewportView(jTextArea3);
                 }
@@ -74,20 +75,20 @@ public class PanelDateinamenBase extends JPanel {
                             .addContainerGap(459, Short.MAX_VALUE))
                 );
             }
-            jTabbedPane1.addTab("Dateinamen", jPanel1); //NON-NLS
+            jTabbedPane1.addTab(bundle.getString("settings.PanelDateinamen.jTextArea3.title"), jPanel1); //NON-NLS
 
             //======== jPanel2 ========
             {
 
                 //---- jCheckBoxTable ----
-                jCheckBoxTable.setText("Ersetzungstabelle anwenden"); //NON-NLS
+                jCheckBoxTable.setText(bundle.getString("settings.PanelDateinamen.jCheckBoxTable.text")); //NON-NLS
 
                 //======== jPanel3 ========
                 {
                     jPanel3.setBorder(new EtchedBorder());
 
                     //---- jButtonReset ----
-                    jButtonReset.setText("Tabelle zur\u00fccksetzen"); //NON-NLS
+                    jButtonReset.setText(bundle.getString("settings.PanelDateinamen.jButtonReset.text")); //NON-NLS
 
                     //======== jScrollPane3 ========
                     {
@@ -98,7 +99,7 @@ public class PanelDateinamenBase extends JPanel {
                         jTextArea2.setBackground(UIManager.getColor("Label.background")); //NON-NLS
                         jTextArea2.setColumns(20);
                         jTextArea2.setRows(4);
-                        jTextArea2.setText("Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also m\u00f6glich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!"); //NON-NLS
+                        jTextArea2.setText(bundle.getString("settings.PanelDateinamen.jTextArea2.text")); //NON-NLS
                         jTextArea2.setBorder(new EmptyBorder(1, 1, 1, 1));
                         jScrollPane3.setViewportView(jTextArea2);
                     }
@@ -122,13 +123,13 @@ public class PanelDateinamenBase extends JPanel {
                     }
 
                     //---- jLabelAlert ----
-                    jLabelAlert.setText("Achtung"); //NON-NLS
+                    jLabelAlert.setText(bundle.getString("settings.PanelDateinamen.jLabelAlert.text")); //NON-NLS
 
                     //---- jLabelVon ----
-                    jLabelVon.setText("von:"); //NON-NLS
+                    jLabelVon.setText(bundle.getString("settings.PanelDateinamen.jLabelVon.text")); //NON-NLS
 
                     //---- jLabelNach ----
-                    jLabelNach.setText("nach:"); //NON-NLS
+                    jLabelNach.setText(bundle.getString("settings.PanelDateinamen.jLabelNach.text")); //NON-NLS
 
                     //---- jButtonMinus ----
                     jButtonMinus.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); //NON-NLS
@@ -202,8 +203,8 @@ public class PanelDateinamenBase extends JPanel {
                 }
 
                 //---- jCheckBoxAscii ----
-                jCheckBoxAscii.setText("Nur ASCII-Zeichen erlauben"); //NON-NLS
-                jCheckBoxAscii.setToolTipText("<html>Es werden alle Zeichen \"\u00fcber 127\" ersetzt.  Auch Umlaute wie \"\u00f6 -> oe\" werden ersetzt.<br>Wenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.</html>"); //NON-NLS
+                jCheckBoxAscii.setText(bundle.getString("settings.PanelDateinamen.jCheckBoxAscii.text")); //NON-NLS
+                jCheckBoxAscii.setToolTipText(bundle.getString("settings.PanelDateinamen.jCheckBoxAscii.toolTipText")); //NON-NLS
 
                 GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
                 jPanel2.setLayout(jPanel2Layout);
@@ -234,7 +235,7 @@ public class PanelDateinamenBase extends JPanel {
                             .addContainerGap())
                 );
             }
-            jTabbedPane1.addTab("Eigene Einstellungen", jPanel2); //NON-NLS
+            jTabbedPane1.addTab(bundle.getString("settings.PanelDateinamen.jCheckBoxAscii.title"), jPanel2); //NON-NLS
         }
 
         GroupLayout layout = new GroupLayout(this);

@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen.allgemein
 import com.jidesoft.swing.MultilineLabel
 import mediathek.config.application.ApplicationConfiguration
 import mediathek.daten.LuceneDirectoryMode
+import mediathek.i18n.UiMessages
 import net.miginfocom.layout.AC
 import net.miginfocom.layout.CC
 import net.miginfocom.layout.LC
@@ -33,10 +34,9 @@ class LuceneDirectoryModePanel : JPanel() {
     private val modeComboBox = JComboBox(LuceneDirectoryMode.entries.toTypedArray())
     private val descriptionLabel = JLabel()
     private val restartWarningIconLabel = JLabel(UIManager.getIcon("OptionPane.warningIcon"))
-    private val restartWarningTextLabel = JLabel("<html><b>Neustart notwendig</b></html>")
+    private val restartWarningTextLabel = JLabel(UiMessages.text("settings.lucene.restart"))
     private val infoLabel = MultilineLabel(
-        "Wählen Sie, welche Lucene-Directory-Implementierung verwendet wird.\n" +
-            "Die Einstellung beeinflusst Indexdateien, Speicherverbrauch und Suchzugriffe.",
+        UiMessages.text("settings.lucene.explanation"),
     )
     private var initializing = false
 
@@ -64,7 +64,7 @@ class LuceneDirectoryModePanel : JPanel() {
 
         add(infoLabel, CC().cell(0, 0, 2, 1).growX())
 
-        add(JLabel("Lucene-Directory-Anbieter:"), CC().cell(0, 1))
+        add(JLabel(UiMessages.text("settings.lucene.provider")), CC().cell(0, 1))
         add(modeComboBox, CC().cell(1, 1))
 
         descriptionLabel.verticalAlignment = SwingConstants.TOP
@@ -93,6 +93,6 @@ class LuceneDirectoryModePanel : JPanel() {
     }
 
     private fun updateDescription() {
-        descriptionLabel.text = "<html>${getSelectedMode().description}</html>"
+        descriptionLabel.text = "<html>${UiMessages.text("settings.lucene.mode.${getSelectedMode().configValue}")}</html>"
     }
 }

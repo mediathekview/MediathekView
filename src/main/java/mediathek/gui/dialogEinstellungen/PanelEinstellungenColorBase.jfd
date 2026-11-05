@@ -2,7 +2,14 @@ JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.8" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
+	"i18n.bundlePackage": "mediathek.i18n"
+	"i18n.bundleName": "Messages"
+	"i18n.keyPrefix": "settings.PanelEinstellungenColor"
+	"i18n.autoExternalize": true
 	root: new FormRoot {
+		auxiliary() {
+			"JavaCodeGenerator.i18nGetBundleFormat": "mediathek.i18n.UiMessages.getBundle(${bundleName})"
+		}
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "insets 5,hidemode 3,gap 5 5"
 			"$columnConstraints": "[fill][grow,fill][fill]"
@@ -38,7 +45,7 @@ new FormModel {
 						"value": "cell 0 0"
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"value": "Hell"
+					"title": new FormMessage( null, "settings.PanelEinstellungenColor.jTableLight.value" )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "insets 0,hidemode 3"
@@ -64,7 +71,7 @@ new FormModel {
 						"value": "cell 0 0"
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"value": "Dunkel"
+					"title": new FormMessage( null, "settings.PanelEinstellungenColor.jTableDark.value" )
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 0 2 1"
@@ -79,7 +86,7 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "jButtonReset"
-				"text": "Helle Farben zurücksetzen"
+				"text": new FormMessage( null, "settings.PanelEinstellungenColor.jButtonReset.text" )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 4
 				}

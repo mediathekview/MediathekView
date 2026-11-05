@@ -13,6 +13,7 @@ import kotlinx.coroutines.swing.Swing
 import mediathek.daten.DatenFilm
 import mediathek.filmlisten.FilmCatalog
 import mediathek.gui.duplicates.details.DuplicateFilmDetailsTableFormat
+import mediathek.i18n.UiMessages
 import mediathek.tool.EscapeKeyHandler
 import org.apache.logging.log4j.LogManager
 import java.awt.Window
@@ -186,7 +187,7 @@ class FilmDuplicateOverviewDialog(
         if (sender in PENALIZED_SENDERS) 1 else 0
 
     private companion object {
-        private const val ROOT_NODE_LABEL = "Filmduplikate"
+        private val ROOT_NODE_LABEL get() = UiMessages.text("duplicates.root")
         private const val DEFAULT_COLUMN_WIDTH = 90
         private val PENALIZED_SENDERS = setOf("ARD", "ZDF")
         private val logger = LogManager.getLogger()

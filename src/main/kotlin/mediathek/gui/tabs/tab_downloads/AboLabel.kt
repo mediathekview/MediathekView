@@ -21,10 +21,11 @@ package mediathek.gui.tabs.tab_downloads
 import mediathek.controller.starter.DownloadStartInfo
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
+import mediathek.i18n.UiMessages
 
 class AboLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     init {
-        toolTipText = "Anzahl der Abos in der Liste"
+        toolTipText = UiMessages.text("downloads.status.AboLabel.description")
         startInfoProperty.addStartInfoChangeListener { event ->
             SwingUtilities.invokeLater {
                 process(event.newValue as DownloadStartInfo)
@@ -33,6 +34,6 @@ class AboLabel(startInfoProperty: DownloadStartInfoProperty) : JLabel() {
     }
 
     private fun process(info: DownloadStartInfo) {
-        text = if (info.aboCount == 1) "1 Abo" else "${info.aboCount} Abos"
+        text = UiMessages.format("downloads.status.subscriptions", info.aboCount)
     }
 }

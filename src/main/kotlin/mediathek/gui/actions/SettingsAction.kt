@@ -19,6 +19,7 @@
 package mediathek.gui.actions
 
 import mediathek.gui.messages.ShowSettingsDialogEvent
+import mediathek.i18n.UiMessages
 import mediathek.swing.IconUtils
 import mediathek.tool.MessageBus
 import org.apache.commons.lang3.SystemUtils
@@ -30,12 +31,12 @@ import javax.swing.KeyStroke
 
 class SettingsAction : AbstractAction() {
     init {
-        putValue(NAME, "Einstellungen...")
+        putValue(NAME, UiMessages.text("settings.action.text"))
         if (!SystemUtils.IS_OS_MAC_OSX) {
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0))
         }
         putValue(SMALL_ICON, IconUtils.windowBarSpecificToolbarIcon(FontAwesomeSolid.COGS))
-        putValue(SHORT_DESCRIPTION, "Einstellungen öffnen")
+        putValue(SHORT_DESCRIPTION, UiMessages.text("settings.action.description"))
     }
 
     override fun actionPerformed(event: ActionEvent?) {

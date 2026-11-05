@@ -6,6 +6,7 @@ import mediathek.filmlisten.FilmCatalog
 import mediathek.filmlisten.FilmListLoadCoordinator
 import mediathek.gui.actions.DisposeDialogAction
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden
+import mediathek.i18n.UiMessages
 import mediathek.swing.centerOnScreen
 import mediathek.tool.EscapeKeyHandler
 import mediathek.tool.FilmListUpdateType
@@ -24,7 +25,7 @@ class LoadFilmListDialog(
     owner: Frame?,
     filmCatalog: FilmCatalog,
     private val filmListLoader: FilmListLoadCoordinator,
-) : JDialog(owner, "Filmliste laden", true) {
+) : JDialog(owner, UiMessages.text("load.title"), true) {
     private val contentPanel: PanelFilmlisteLaden
     private val logger: Logger = LogManager.getLogger()
     private val btnContentPanel = ButtonPanel()
@@ -33,11 +34,11 @@ class LoadFilmListDialog(
         val buttonFlowPanel = ButtonFlowPanel()
         btnContentPanel.add(buttonFlowPanel, BorderLayout.EAST)
 
-        val closeBtn = JButton(DisposeDialogAction(this, "Schließen", "Dialog schließen"))
+        val closeBtn = JButton(DisposeDialogAction(this, UiMessages.text("load.close"), UiMessages.text("load.closeHint")))
         buttonFlowPanel.add(closeBtn)
         rootPane.defaultButton = closeBtn
 
-        val btn = JButton("Filmliste laden")
+        val btn = JButton(UiMessages.text("load.title"))
         btn.addActionListener {
             val immerNeuLaden = contentPanel.hasSenderSelectionChanged()
             if (immerNeuLaden && !contentPanel.updateCheckBox.isSelected) {
@@ -52,15 +53,7 @@ class LoadFilmListDialog(
                 val strUrl = contentPanel.urlTextField.text
                 if (strUrl.contains("mediathekview.de", true)) {
                     JOptionPane.showMessageDialog(
-                        this, """
-                        Bitte vermeiden Sie das Laden der Filmliste von unseren Servern über eine manuell eingegebene URL.
-                        
-                        Sie umgehen damit unter Umständen Mechanismen, die eine Lastverteilung auf unseren Servern ermöglichen
-                        oder erhalten veraltete Dateien.
-                        
-                        Nutzen Sie diese Möglichkeit NUR, wenn der reguläre Download OHNE manuelle Adresse nicht funktioniert.
-                        Sie können sicher sein, dass wir einen Fehler schnellstmöglich beheben werden.
-                    """.trimIndent(), Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE
+                        this, UiMessages.text("load.manualWarning"), Konstanten.PROGRAMMNAME, JOptionPane.WARNING_MESSAGE
                     )
                 }
                 if (contentPanel.updateCheckBox.isSelected)
