@@ -57,13 +57,15 @@ class DialogAddDownload(
     private val ownerFrame: Frame,
     programSets: ProgramSetRepository,
     private val downloads: DownloadServices,
-    private val film: DatenFilm,
+    film: DatenFilm,
     /**
      * The currently selected pSet or null when no selection.
      */
     private var activeProgramSet: DatenPset,
     private val requestedResolution: Optional<FilmResolution.Enum>
 ) : DialogAddDownloadBase(ownerFrame) {
+    private val film = DownloadQualitySupport.prepareFilmForQualitySelection(film)
+
     private sealed interface LiveInfoCommand {
         data object Cancel : LiveInfoCommand
         data class Fetch(val resolution: FilmResolution.Enum) : LiveInfoCommand

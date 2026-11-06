@@ -43,6 +43,27 @@ data class DownloadQualityResolutionSizeLoadResult(
 object DownloadQualitySupport {
     private val logger = LogManager.getLogger()
     private const val NO_DATA_AVAILABLE = "Keine Daten verfügbar."
+    private val ARTE_SENDER = Regex("arte(?:[.][a-z]{2})?", RegexOption.IGNORE_CASE)
+
+    internal fun prepareFilmForQualitySelection(film: DatenFilm): DatenFilm {
+        if (!ARTE_SENDER.matches(film.sender) ||
+            (film.isHighQuality && film.hasLowQuality())
+        ) {
+            return film
+        }
+
+        val normalUrl = film.urlNormalQuality
+        if (ArteHlsQualitySelector.programId(normalUrl, FilmResolution.Enum.NORMAL) == null) {
+            return film
+        }
+
+        // Like ARTE online search, keep the language-specific master URL for each quality.
+        // The size lookup, ffprobe and download invocation select the requested HLS program.
+        return DatenFilm(film).apply {
+            if (!isHighQuality) highQualityUrl = normalUrl
+            if (!hasLowQuality()) lowQualityUrl = normalUrl
+        }
+    }
 
     fun loadResolutionSizes(film: DatenFilm): DownloadQualityResolutionSizes {
         return loadResolutionSizeResult(film).sizes
