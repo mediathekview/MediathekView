@@ -83,10 +83,16 @@ class ExternalProgramDownload(
         while (stat < STAT_ENDE) {
             stat = when (stat) {
                 STAT_START -> {
-                    if (starten()) {
-                        if (datenDownload.isDownloadManager) STAT_FERTIG_OK else STAT_LAUFEN
-                    } else {
-                        STAT_RESTART
+                    val started = starten()
+                    when {
+                        start.stoppen -> {
+                            // Cancellation may arrive while ProcessBuilder.start() is returning.
+                            // Clean up before bypassing the normal running-process polling path.
+                            start.process?.destroy()
+                            STAT_FERTIG_OK
+                        }
+                        started -> if (datenDownload.isDownloadManager) STAT_FERTIG_OK else STAT_LAUFEN
+                        else -> STAT_RESTART
                     }
                 }
 
@@ -184,11 +190,14 @@ class ExternalProgramDownload(
         // die Reihenfolge: startcounter - logStart ist wichtig!
         start.incrementStartCounter()
         DownloadLogMessages.logStart(datenDownload, start)
+        val arguments = ArteHlsDownloadPreparer.prepare(datenDownload)
+        if (start.stoppen) return false
         val runtimeExec = RuntimeExec(
             datenDownload.runtime.filmSize,
             datenDownload.runtime.runState,
             datenDownload.programInvocation,
-            datenDownload.programInvocationArray
+            datenDownload.programInvocationArray,
+            arguments,
         )
         start.process = runtimeExec.exec(true)
         return start.process != null

@@ -38,13 +38,14 @@ class RuntimeExec(
     private val start: DownloadRunState?,
     private val strProgCall: String,
     strProgCallArray: String,
+    arguments: List<String>? = null,
 ) {
     private val progressTracker = ProgressTracker()
-    private val arrProgCallArray = strProgCallArray
+    private val arrProgCallArray = arguments?.toTypedArray() ?: strProgCallArray
         .split(TRENNER_PROG_ARRAY)
         .takeIf { it.size > 1 }
         ?.toTypedArray()
-    private val strProgCallArray = strProgCallArray
+    private val strProgCallArray = arguments?.joinToString(TRENNER_PROG_ARRAY) ?: strProgCallArray
 
     constructor(programCall: String) : this(null, null, programCall, "")
 
