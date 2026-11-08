@@ -11,14 +11,15 @@ import javax.swing.JDialog
 /**
  * A standard swing dialog template with a close button.
  */
-abstract class StandardCloseDialog(owner: Frame?, title: String, modal: Boolean) : JDialog(owner, title, modal) {
+open class StandardCloseDialog(owner: Frame?, title: String, modal: Boolean, content: JComponent) :
+    JDialog(owner, title, modal) {
     init {
         defaultCloseOperation = DISPOSE_ON_CLOSE
         EscapeKeyHandler.installHandler(this, ::dispose)
 
         contentPane.apply {
             layout = BorderLayout()
-            add(createContentPanel(), BorderLayout.CENTER)
+            add(content, BorderLayout.CENTER)
             add(
                 ButtonPanel().apply { add(createButtonPanel(), BorderLayout.EAST) },
                 BorderLayout.SOUTH,
@@ -26,8 +27,6 @@ abstract class StandardCloseDialog(owner: Frame?, title: String, modal: Boolean)
         }
         pack()
     }
-
-    abstract fun createContentPanel(): JComponent
 
     private fun createButtonPanel(): ButtonFlowPanel {
         val button = JButton(DisposeDialogAction(this, "Schließen", "Dialog schließen"))

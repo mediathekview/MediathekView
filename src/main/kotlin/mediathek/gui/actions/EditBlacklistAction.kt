@@ -13,7 +13,6 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignL
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import javax.swing.AbstractAction
-import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.KeyStroke
 
@@ -36,10 +35,12 @@ class EditBlacklistAction(
     }
 
     override fun actionPerformed(event: ActionEvent?) {
-        object : StandardCloseDialog(parent, "Blacklist", true) {
-            override fun createContentPanel(): JComponent =
-                PanelBlacklist(blacklist, filmCatalog, filmListLoader, null)
-        }.apply {
+        StandardCloseDialog(
+            parent,
+            "Blacklist",
+            true,
+            PanelBlacklist(blacklist, filmCatalog, filmListLoader, null),
+        ).apply {
             centerOnScreen()
             isVisible = true
         }
