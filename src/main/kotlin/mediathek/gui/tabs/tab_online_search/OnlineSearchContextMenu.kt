@@ -2,6 +2,7 @@ package mediathek.gui.tabs.tab_online_search
 
 import mediathek.gui.actions.UrlHyperlinkAction
 import mediathek.tool.GuiFunktionen
+import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 
@@ -34,17 +35,20 @@ class OnlineSearchContextMenu(
             isEnabled = selectedResult?.websiteUrl?.isNotEmpty() == true
             if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.websiteUrl) }
         })
-        add(JMenuItem("URL kopieren").apply {
-            isEnabled = selectedResult?.normalQualityUrl?.isNotEmpty() == true
-            if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.normalQualityUrl) }
-        })
-        add(JMenuItem("HD-URL kopieren").apply {
-            isEnabled = selectedResult?.highQualityUrl?.isNotEmpty() == true
-            if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.highQualityUrl) }
-        })
-        add(JMenuItem("Kleine URL kopieren").apply {
-            isEnabled = selectedResult?.lowQualityUrl?.isNotEmpty() == true
-            if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.lowQualityUrl) }
+        add(JMenu("Film-URL kopieren").apply {
+            add(JMenuItem("höchste/hohe Qualität").apply {
+                isEnabled = selectedResult?.highQualityUrl?.isNotEmpty() == true
+                if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.highQualityUrl) }
+            })
+            add(JMenuItem("mittlere Qualität").apply {
+                isEnabled = selectedResult?.normalQualityUrl?.isNotEmpty() == true
+                if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.normalQualityUrl) }
+            })
+            add(JMenuItem("niedrige Qualität").apply {
+                isEnabled = selectedResult?.lowQualityUrl?.isNotEmpty() == true
+                if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.lowQualityUrl) }
+            })
+            isEnabled = menuComponents.filterIsInstance<JMenuItem>().any { it.isEnabled }
         })
     }
 }

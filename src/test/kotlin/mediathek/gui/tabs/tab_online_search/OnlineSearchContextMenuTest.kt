@@ -3,6 +3,7 @@ package mediathek.gui.tabs.tab_online_search
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import javax.swing.JMenu
 import javax.swing.JMenuItem
 
 class OnlineSearchContextMenuTest {
@@ -18,13 +19,18 @@ class OnlineSearchContextMenuTest {
                 "Download anlegen",
                 "Webseite im Browser öffnen",
                 "Website-URL kopieren",
-                "URL kopieren",
-                "HD-URL kopieren",
-                "Kleine URL kopieren",
+                "Film-URL kopieren",
             ),
             items.map { it.text },
         )
         assertTrue(items.all { !it.isEnabled })
+        val filmUrlMenu = items.filterIsInstance<JMenu>().single()
+        val qualityItems = filmUrlMenu.menuComponents.filterIsInstance<JMenuItem>()
+        assertEquals(
+            listOf("höchste/hohe Qualität", "mittlere Qualität", "niedrige Qualität"),
+            qualityItems.map { it.text },
+        )
+        assertTrue(qualityItems.all { !it.isEnabled })
     }
 
     private class StubHost : OnlineSearchHost {
