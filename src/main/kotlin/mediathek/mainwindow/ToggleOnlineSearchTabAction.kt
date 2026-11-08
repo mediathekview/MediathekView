@@ -3,7 +3,7 @@ package mediathek.mainwindow
 import mediathek.config.application.ApplicationConfiguration
 import javax.swing.JTabbedPane
 
-private const val ACTION_TITLE = "Onlinesuche Tab ein-/ausblenden"
+private const val ACTION_TITLE = "Onlinesuche ein-/ausblenden"
 private const val PREFERRED_INSERT_INDEX = 2
 
 class ToggleOnlineSearchTabAction(

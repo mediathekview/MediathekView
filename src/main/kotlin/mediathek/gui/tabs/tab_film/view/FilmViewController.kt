@@ -41,6 +41,7 @@ class FilmViewController(private val host: Host) {
 
     fun installViewMenuEntry(menu: JMenu) {
         menu.add(host.showButtonsMenuItem(), 0)
+        menu.insertSeparator(1)
     }
 
     fun makeButtonsTabVisible(visible: Boolean) {

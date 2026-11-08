@@ -21,7 +21,7 @@ package mediathek.mainwindow
 import mediathek.config.application.ApplicationConfiguration
 import javax.swing.JTabbedPane
 
-private const val ACTION_TITLE = "Zapp Livestreams Tab ein-/ausblenden"
+private const val ACTION_TITLE = "Zapp Livestreams ein-/ausblenden"
 private const val PREFERRED_INSERT_INDEX = 3
 
 class ToggleZappLivestreamsTabAction(
