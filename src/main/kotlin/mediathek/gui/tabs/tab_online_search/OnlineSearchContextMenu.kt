@@ -26,11 +26,11 @@ class OnlineSearchContextMenu(
             }
         })
         addSeparator()
-        add(JMenuItem("Website öffnen").apply {
+        add(JMenuItem("Webseite im Browser öffnen").apply {
             isEnabled = selectedResult?.websiteUrl?.isNotEmpty() == true
             if (selectedResult != null) addActionListener { UrlHyperlinkAction.openURL(selectedResult.websiteUrl) }
         })
-        add(JMenuItem("Website kopieren").apply {
+        add(JMenuItem("Website-URL kopieren").apply {
             isEnabled = selectedResult?.websiteUrl?.isNotEmpty() == true
             if (selectedResult != null) addActionListener { GuiFunktionen.copyToClipboard(selectedResult.websiteUrl) }
         })
