@@ -75,7 +75,7 @@
         <flatlaf.version>3.8</flatlaf.version>
         <git-commit-id-maven-plugin.version>10.0.1</git-commit-id-maven-plugin.version>
         <ikonli.version>12.4.0</ikonli.version>
-        <jackson.version>3.2.4</jackson.version>
+        <jackson.version>3.3.0</jackson.version>
         <jaffree.version>2024.08.29</jaffree.version>
         <javax-activation.version>1.2.0</javax-activation.version>
         <javax.transaction-api.version>1.3</javax.transaction-api.version>
