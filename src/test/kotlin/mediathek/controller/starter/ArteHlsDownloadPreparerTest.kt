@@ -80,6 +80,82 @@ internal class ArteHlsDownloadPreparerTest {
     }
 
     @Test
+    fun `styroll command preserves http seekable and saved Pset while correcting all six audio tracks`() {
+        val streamUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/ce27f048-f06a-4795-a243-93af69fabb71/de/XQ+KS+CHEV1/112793-000-A.m3u8"
+        val target = "/tmp/Kino_-_Filme-Zwei_zu_Eins.mp4"
+        val args = listOf(
+            "bin/ffmpeg", "-http_seekable", "0", "-i", streamUrl,
+            "-map", "p:1", "-map", "-0:s", "-c", "copy", "-bsf:a", "aac_adtstoasc", target,
+        )
+        val program = DatenProg("ffmpeg", "bin/ffmpeg", "-http_seekable 0 -i %f -c copy -bsf:a aac_adtstoasc **", "false", "false")
+        val pset = DatenPset("Mac Speichern mod").apply { listeProg.add(program) }
+        val download = download(args).apply {
+            downloadUrl = streamUrl
+            programInvocation = args.joinToString(" ")
+            pSet = pset
+        }
+        val originalSwitches = program.switches
+        val originalCommand = download.programInvocation
+        val originalArray = download.programInvocationArray
+        val tracks = listOf(
+            "Deutsch" to "de",
+            "Französisch" to "fr",
+            "Deutsch (Klare Sprache)" to "de",
+            "Deutsch (Audiodeskription)" to "de",
+            "Französisch (Klare Sprache)" to "fr",
+            "Französisch (Audiodeskription)" to "fr",
+        )
+        val playlist = buildString {
+            appendLine("#EXTM3U")
+            tracks.forEachIndexed { index, (name, language) ->
+                val characteristics = if (index in listOf(3, 5)) ",CHARACTERISTICS=\"public.accessibility.describes-video\"" else ""
+                appendLine("#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID=\"audio_0\",NAME=\"$name\",LANGUAGE=\"$language\",URI=\"audio$index.m3u8\"$characteristics")
+            }
+            appendLine("#EXT-X-STREAM-INF:BANDWIDTH=100,AUDIO=\"audio_0\"")
+            appendLine("low.m3u8")
+            appendLine("#EXT-X-STREAM-INF:BANDWIDTH=200,AUDIO=\"audio_0\"")
+            appendLine("high.m3u8")
+        }
+
+        val prepared = requireNotNull(prepare(download, playlist))
+
+        assertEquals(args.take(5), prepared.take(5))
+        assertEquals(listOf("0"), optionValues(prepared, "-http_seekable"))
+        assertEquals(listOf(streamUrl), optionValues(prepared, "-i"))
+        assertEquals(listOf("0:p:1:v:0") + tracks.map { (name, _) -> "0:p:1:a:m:comment:'$name'" }, optionValues(prepared, "-map"))
+        tracks.forEachIndexed { index, (name, language) ->
+            val isoLanguage = if (language == "de") "deu" else "fra"
+            assertEquals(listOf("title=$name", "handler_name=$name", "language=$isoLanguage"), optionValues(prepared, "-metadata:s:a:$index"))
+        }
+        assertEquals(listOf("0"), optionValues(prepared, "-disposition:a"))
+        assertEquals(listOf("visual_impaired"), optionValues(prepared, "-disposition:a:3"))
+        assertEquals(listOf("visual_impaired"), optionValues(prepared, "-disposition:a:5"))
+        assertEquals(target, prepared.last())
+        assertEquals(prepared, prepare(download, playlist))
+        assertSame(pset, download.pSet)
+        assertSame(program, pset.listeProg.single())
+        assertEquals("bin/ffmpeg", program.programPath)
+        assertEquals(originalSwitches, program.switches)
+        assertEquals(originalCommand, download.programInvocation)
+        assertEquals(originalArray, download.programInvocationArray)
+    }
+
+    @Test
+    fun `unsupported or incomplete input options are not rewritten`() {
+        listOf(
+            listOf("-http_seekable"),
+            listOf("-http_seekable", "invalid"),
+            listOf("-headers", "Custom: value"),
+            listOf("-http_seekable", "0", "-headers", "Custom: value"),
+        ).forEach { prefix ->
+            val args = baseArgs.take(1) + prefix + baseArgs.drop(1)
+            val download = download(args)
+            assertNull(ArteHlsDownloadPreparer.prepare(download) { fail("Unexpected request for $args") })
+            assertEquals(args.joinToString(RuntimeExec.TRENNER_PROG_ARRAY), download.programInvocationArray)
+        }
+    }
+
+    @Test
     fun `special character preparation preserves raw labels Pset and persisted commands`() {
         val name = " Français: version d'origine\\original <> ? "
         val program = DatenProg("ffmpeg", "/opt/bin/ffmpeg", "-i %f -c copy -bsf:a aac_adtstoasc **", "false", "false")
@@ -159,12 +235,15 @@ internal class ArteHlsDownloadPreparerTest {
         assertNull(prepare(download(baseArgs.toMutableList().apply { this[4] = "p:99" })))
     }
 
-    @Test
-    fun `single variant works without a program map but multiple variants need an explicit selection`() {
-        val args = baseArgs.take(3) + baseArgs.drop(7)
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun `single variant works without a program map but multiple variants need an explicit selection`(disableHttpSeeking: Boolean) {
+        val inputOptions = if (disableHttpSeeking) listOf("-http_seekable", "0") else emptyList()
+        val args = baseArgs.take(1) + inputOptions + baseArgs.subList(1, 3) + baseArgs.drop(7)
         assertNull(prepare(download(args)))
         val singleVariant = master.substringBefore("#EXT-X-STREAM-INF") + "#EXT-X-STREAM-INF:BANDWIDTH=200,AUDIO=\"selected\"\nhigh.m3u8"
         val prepared = requireNotNull(prepare(download(args), singleVariant))
+        assertEquals(args.take(3 + inputOptions.size), prepared.take(3 + inputOptions.size))
         assertEquals("0:p:0:v:0", optionValues(prepared, "-map").first())
     }
 

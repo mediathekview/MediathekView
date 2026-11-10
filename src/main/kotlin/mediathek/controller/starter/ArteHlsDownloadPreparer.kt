@@ -11,7 +11,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
-import java.util.Locale
+import java.util.*
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -36,11 +36,14 @@ internal object ArteHlsDownloadPreparer {
             // Limit automatic rewriting to the standard, single-output stream-copy invocation.
             // Custom stream mappings, metadata, filters and input options keep their original semantics.
             if (args.size < 8 || Path.of(args[0]).fileName.toString().lowercase(Locale.ROOT) !in setOf("ffmpeg", "ffmpeg.exe") ||
-                args.subList(1, 3) != listOf("-i", download.downloadUrl) ||
                 args.last().removeSurrounding("\"") != download.targetPathFileName ||
                 !download.targetPathFileName.endsWith(".mp4", ignoreCase = true)
             ) return null
-            val switches = args.subList(3, args.lastIndex)
+            // Preserve the supported HTTP input option in its original position before -i.
+            val inputIndex = if (args.subList(1, 3) == listOf("-http_seekable", "0")) 3 else 1
+            val inputEndIndex = inputIndex + 2
+            if (args.subList(inputIndex, inputEndIndex) != listOf("-i", download.downloadUrl)) return null
+            val switches = args.subList(inputEndIndex, args.lastIndex)
             val copyOptions = listOf("-c", "copy", "-bsf:a", "aac_adtstoasc")
             val programId = when {
                 switches == copyOptions -> null
@@ -87,7 +90,7 @@ internal object ArteHlsDownloadPreparer {
             // Resolve by that identity inside the selected program instead of guessing stream
             // indexes. Keep one HLS input so its audio/video timestamp alignment is preserved.
             buildList {
-                addAll(args.take(3))
+                addAll(args.take(inputEndIndex))
                 addAll(listOf("-map", "0:p:$selectedProgram:v:0"))
                 streamNames.forEach { addAll(listOf("-map", "0:p:$selectedProgram:a:m:comment:${quoteStreamName(it)}")) }
                 addAll(copyOptions)

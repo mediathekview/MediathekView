@@ -4,7 +4,8 @@ import com.sun.net.httpserver.HttpServer
 import kotlinx.serialization.json.*
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadType
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,7 +22,12 @@ internal class ArteHlsDownloadIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("audioNames")
-    fun `FFmpeg preserves selected video and labeled selectable audio tracks`(name: String, language: String, isoLanguage: String) {
+    fun `FFmpeg preserves selected video and labeled selectable audio tracks`(
+        name: String,
+        language: String,
+        isoLanguage: String,
+        disableHttpSeeking: Boolean,
+    ) {
         val ffmpeg = executable("ffmpeg")
         val ffprobe = executable("ffprobe")
         assumeTrue(ffmpeg != null && ffprobe != null, "FFmpeg and FFprobe required for media integration test")
@@ -62,7 +68,8 @@ internal class ArteHlsDownloadIntegrationTest {
         server.start()
         try {
             val remoteUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ/master.m3u8"
-            val args = listOf(ffmpeg!!, "-i", remoteUrl, "-map", "p:1", "-map", "-0:s", "-c", "copy", "-bsf:a", "aac_adtstoasc", directory.resolve("a film.mp4").toString())
+            val inputOptions = if (disableHttpSeeking) listOf("-http_seekable", "0") else emptyList()
+            val args = listOf(ffmpeg!!) + inputOptions + listOf("-i", remoteUrl, "-map", "p:1", "-map", "-0:s", "-c", "copy", "-bsf:a", "aac_adtstoasc", directory.resolve("a film.mp4").toString())
             val download = DatenDownload().apply {
                 sender = "ARTE.DE"
                 art = DownloadType.PROGRAM
@@ -73,6 +80,7 @@ internal class ArteHlsDownloadIntegrationTest {
             val prepared = requireNotNull(ArteHlsDownloadPreparer.prepare(download) {
                 ArteHlsDownloadPreparer.Playlist(it, master)
             })
+            assertEquals(listOf(ffmpeg) + inputOptions + listOf("-i", remoteUrl), prepared.take(3 + inputOptions.size))
             // Serve the same public-URL fixture locally; production preparation rejects loopback URLs.
             val remoteBase = remoteUrl.substringBeforeLast('/') + "/"
             val localBase = "http://127.0.0.1:${server.address.port}/"
@@ -102,13 +110,14 @@ internal class ArteHlsDownloadIntegrationTest {
     companion object {
         @JvmStatic
         fun audioNames(): List<Arguments> = listOf(
-            Arguments.of("Deutsch, Stereo", "de", "deu"),
-            Arguments.of("Français (Version d'origine)", "fr", "fra"),
-            Arguments.of("Italiano: originale", "it", "ita"),
-            Arguments.of("English\\Original", "en", "eng"),
-            Arguments.of("Español?", "es", "spa"),
-            Arguments.of("Polski, oryginał", "pl", "pol"),
-            Arguments.of(" Română: O'Ton <> ? ", "ro", "ron"),
+            Arguments.of("Deutsch, Stereo", "de", "deu", false),
+            Arguments.of("Français (Version d'origine)", "fr", "fra", false),
+            Arguments.of("Italiano: originale", "it", "ita", false),
+            Arguments.of("English\\Original", "en", "eng", false),
+            Arguments.of("Español?", "es", "spa", false),
+            Arguments.of("Polski, oryginał", "pl", "pol", false),
+            Arguments.of(" Română: O'Ton <> ? ", "ro", "ron", false),
+            Arguments.of("Deutsch", "de", "deu", true),
         )
     }
 
