@@ -25,6 +25,15 @@ internal class ArteHlsDownloadIntegrationTest {
         val ffmpeg = executable("ffmpeg")
         val ffprobe = executable("ffprobe")
         assumeTrue(ffmpeg != null && ffprobe != null, "FFmpeg and FFprobe required for media integration test")
+        val encoders = runCommand(listOf(ffmpeg!!, "-hide_banner", "-encoders"))
+            .lineSequence()
+            .map { it.trim().split(Regex("\\s+")) }
+            .filter { it.size >= 2 && it[0].matches(Regex("[VAS][A-Z.]{5}")) }
+            .map { it[1] }
+            .toSet()
+        val missingEncoders = listOf("libx264", "aac").filterNot { it in encoders }
+        assumeTrue(missingEncoders.isEmpty(),
+            "FFmpeg media integration test requires unavailable encoders: ${missingEncoders.joinToString()}; executable: $ffmpeg")
         val master = """
             #EXTM3U
             #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="other",NAME="Wrong track",LANGUAGE="fr",DEFAULT=YES,URI="wrong.m3u8"
