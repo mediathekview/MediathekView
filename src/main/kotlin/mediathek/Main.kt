@@ -38,6 +38,7 @@ import mediathek.daten.abo.AboServices
 import mediathek.gui.dialog.DialogStarteinstellungen
 import mediathek.gui.tabs.tab_film.filter.FilmLengthSlider
 import mediathek.logging.JavaUtilLoggingConfiguration
+import mediathek.logging.StartupLogging
 import mediathek.logging.SwingAppender
 import mediathek.mac.MediathekGuiMac
 import mediathek.mainwindow.MediathekGui
@@ -52,14 +53,7 @@ import org.apache.commons.lang3.SystemUtils
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.apache.logging.log4j.core.Filter
 import org.apache.logging.log4j.core.LoggerContext
-import org.apache.logging.log4j.core.appender.AsyncAppender
-import org.apache.logging.log4j.core.appender.ConsoleAppender
-import org.apache.logging.log4j.core.appender.FileAppender
-import org.apache.logging.log4j.core.config.AppenderRef
-import org.apache.logging.log4j.core.filter.ThresholdFilter
-import org.apache.logging.log4j.core.layout.PatternLayout
 import picocli.CommandLine
 import java.awt.GraphicsEnvironment
 import java.awt.Taskbar
@@ -100,7 +94,7 @@ object Main {
             System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.")
             exitProcess(1)
         }
-        configureStartup(parseResult, args)
+        val loggingWarning = configureStartup(parseResult, args)
         printDirectoryPaths()
 
         val daten = Daten()
@@ -138,6 +132,11 @@ object Main {
         }
 
         initializeSwingEnvironment()
+        if (loggingWarning != null) {
+            withContext(Dispatchers.Swing) {
+                JOptionPane.showMessageDialog(null, loggingWarning, "Dateiprotokollierung deaktiviert", JOptionPane.WARNING_MESSAGE)
+            }
+        }
         showSplashScreenIfEnabled()
 
         performBackgroundStartup(cleanupMediaDb = true)
@@ -209,8 +208,8 @@ object Main {
         }
     }
 
-    private fun configureStartup(parseResult: CommandLine.ParseResult, args: Array<String>) {
-        setupLogging()
+    private fun configureStartup(parseResult: CommandLine.ParseResult, args: Array<String>): String? {
+        val loggingWarning = setupLogging()
 
         val level = when {
             CommandLineOptions.isEnhancedLoggingEnabled() && CommandLineOptions.isDebugModeEnabled() -> Level.TRACE
@@ -225,6 +224,7 @@ object Main {
         printVersionInformation()
         printJvmParameters()
         printArguments(args)
+        return loggingWarning
     }
 
     private suspend fun initializeSwingEnvironment() = withContext(Dispatchers.Swing) {
@@ -355,65 +355,12 @@ object Main {
         ctx.updateLoggers()
     }
 
-    private fun setupLogging() {
-        val loggerContext = LogManager.getContext(false) as LoggerContext
-        val config = loggerContext.configuration
-        val path = StandardLocations.getLogFilePath().toString()
-
-        val consolePattern = if (CommandLineOptions.isEnhancedLoggingEnabled() || CommandLineOptions.isDebugModeEnabled()) {
-            PatternLayout.newBuilder().withPattern("[%-5level] [%t] %c - %msg%n").build()
-        } else {
-            PatternLayout.newBuilder().withPattern(". %msg%n").build()
-        }
-
-        val consoleAppender = ConsoleAppender.createDefaultAppenderForLayout(consolePattern)
-        //for normal users only show INFO and higher messages
-        if (!CommandLineOptions.isEnhancedLoggingEnabled() && !CommandLineOptions.isDebugModeEnabled()) {
-            val thresholdFilter = ThresholdFilter.createFilter(Level.INFO, Filter.Result.ACCEPT, Filter.Result.DENY)
-            consoleAppender.addFilter(thresholdFilter)
-        }
-        consoleAppender.start()
-
-        val fileAppenderBuilder = FileAppender.newBuilder()
-            .setName("LogFile")
-            .withAppend(false)
-            .withFileName(path)
-            .setLayout(PatternLayout.newBuilder().withPattern("%-5p %d  [%t] %C{2} (%F:%L) - %m%n").build())
-            .setConfiguration(config)
-
-        //regular users may have DEBUG output in log file but not TRACE
-        if (!CommandLineOptions.isEnhancedLoggingEnabled() && !CommandLineOptions.isDebugModeEnabled()) {
-            val thresholdFilter = ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY)
-            fileAppenderBuilder.filter = thresholdFilter
-        }
-
-        var asyncAppender: AsyncAppender? = null
-        if (!CommandLineOptions.isFileLoggingDisabled()) {
-            val fileAppender = fileAppenderBuilder.build()
-            fileAppender.start()
-            config.addAppender(fileAppender)
-
-            asyncAppender = AsyncAppender.newBuilder()
-                .setName("Async")
-                .setAppenderRefs(arrayOf(AppenderRef.createAppenderRef(fileAppender.name, null, null)))
-                .setConfiguration(config)
-                .setIncludeLocation(true)
-                .setBlocking(false)
-                .build()
-
-            asyncAppender.start()
-            config.addAppender(asyncAppender)
-        }
-
-        val rootLogger = loggerContext.rootLogger
-        rootLogger.level = Level.TRACE
-        rootLogger.addAppender(consoleAppender)
-        if (!CommandLineOptions.isFileLoggingDisabled()) {
-            rootLogger.addAppender(asyncAppender)
-        }
-
-        loggerContext.updateLoggers()
-    }
+    private fun setupLogging(): String? = StartupLogging.configure(
+        LogManager.getContext(false) as LoggerContext,
+        CommandLineOptions.isEnhancedLoggingEnabled() || CommandLineOptions.isDebugModeEnabled(),
+        CommandLineOptions.isFileLoggingDisabled(),
+        StandardLocations::getLogFilePath,
+    )
 
     private fun setupEnvironmentProperties() {
         System.setProperty("file.encoding", "UTF-8")
