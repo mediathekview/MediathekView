@@ -12,6 +12,7 @@ import okhttp3.Request
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -25,7 +26,11 @@ internal object ArteHlsDownloadPreparer {
     private val hlsEscapePattern = Regex("""\\(.)""")
     private const val MAX_PLAYLIST_BYTES = 1_048_576L
 
-    fun prepare(download: DatenDownload, load: (HttpUrl) -> Playlist = ::loadPlaylist): List<String>? {
+    fun prepare(
+        download: DatenDownload,
+        detectQuotedSelectors: (String) -> Boolean? = ::detectQuotedSelectors,
+        load: (HttpUrl) -> Playlist = ::loadPlaylist,
+    ): List<String>? {
         if (download.art != DownloadType.PROGRAM || download.isDownloadManager ||
             !senderPattern.matches(download.sender) ||
             ArteHlsQualitySelector.programId(download.downloadUrl, FilmResolution.Enum.HIGH_QUALITY) == null
@@ -86,13 +91,20 @@ internal object ArteHlsDownloadPreparer {
                 val uri = audioUrl(rendition) ?: return null
                 allAudioUrls.count { it == uri } != 1
             }) return null
+            val quotedSelectors = detectQuotedSelectors(args[0]) ?: return null
+            // The old -map parser splits at commas (sync syntax) and question marks
+            // (optional maps) before matching metadata; quoting cannot protect them.
+            if (!quotedSelectors && streamNames.any { ',' in it || '?' in it }) return null
             // FFmpeg's HLS demuxer exposes EXT-X-MEDIA NAME as the stream's comment metadata.
             // Resolve by that identity inside the selected program instead of guessing stream
             // indexes. Keep one HLS input so its audio/video timestamp alignment is preserved.
             buildList {
                 addAll(args.take(inputEndIndex))
                 addAll(listOf("-map", "0:p:$selectedProgram:v:0"))
-                streamNames.forEach { addAll(listOf("-map", "0:p:$selectedProgram:a:m:comment:${quoteStreamName(it)}")) }
+                streamNames.forEach {
+                    val selector = if (quotedSelectors) quoteStreamName(it) else it
+                    addAll(listOf("-map", "0:p:$selectedProgram:a:m:comment:$selector"))
+                }
                 addAll(copyOptions)
                 addAll(listOf("-disposition:a", "0"))
                 audio.forEachIndexed { index, rendition ->
@@ -117,6 +129,32 @@ internal object ArteHlsDownloadPreparer {
 
     /** Quote for FFmpeg's stream-specifier parser, not for a shell. */
     private fun quoteStreamName(name: String): String = "'" + name.replace("'", "'\\''") + "'"
+
+    /** Probe the stream-specifier grammar, including on development builds with no release version. */
+    internal fun detectQuotedSelectors(executable: String): Boolean? {
+        // The new parser unquotes the metadata value and rejects the remaining suffix.
+        // The old parser stores the option verbatim and reaches the empty-output check.
+        // No input, decoding, encoding, network access or output file is needed.
+        val process = ProcessBuilder(
+            executable, "-v", "error", "-nostdin",
+            "-c:a:m:mediathek_probe:'value':mediathek_invalid", "copy", "-f", "null", "-",
+        ).redirectErrorStream(true).start()
+        try {
+            check(process.waitFor(3, TimeUnit.SECONDS)) { "FFmpeg parser probe timed out" }
+            check(process.exitValue() != 0) { "Unexpected successful FFmpeg parser probe" }
+            val output = process.inputStream.bufferedReader().use { it.readText() }
+            return parseSelectorProbe(output)
+        } finally {
+            process.destroyForcibly()
+            process.inputStream.close()
+        }
+    }
+
+    internal fun parseSelectorProbe(output: String): Boolean? = when {
+        "Trailing garbage at the end of a stream specifier: :mediathek_invalid" in output -> true
+        Regex("""Output file(?: #\d+)? does not contain any stream""").containsMatchIn(output) -> false
+        else -> null
+    }
 
     private fun attributes(value: String): Map<String, String> = buildMap {
         var offset = 0

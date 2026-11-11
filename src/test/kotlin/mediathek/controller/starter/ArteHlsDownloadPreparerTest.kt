@@ -34,8 +34,12 @@ internal class ArteHlsDownloadPreparerTest {
         programInvocation = "unchanged display command"
     }
 
-    private fun prepare(download: DatenDownload = download(), text: String = master): List<String>? =
-        ArteHlsDownloadPreparer.prepare(download) { ArteHlsDownloadPreparer.Playlist(it, text) }
+    private fun prepare(
+        download: DatenDownload = download(),
+        text: String = master,
+        quotedSelectors: Boolean? = true,
+    ): List<String>? =
+        ArteHlsDownloadPreparer.prepare(download, { quotedSelectors }) { ArteHlsDownloadPreparer.Playlist(it, text) }
 
     @Test
     fun `maps only selected group and labels the explicit output audio order`() {
@@ -174,6 +178,65 @@ internal class ArteHlsDownloadPreparerTest {
     }
 
     @Test
+    fun `older FFmpeg matches literal names including punctuation and whitespace`() {
+        val name = " Français: version d'origine\\original <> "
+        val prepared = requireNotNull(prepare(
+            text = master.replace("Deutsch, Stereo", name),
+            quotedSelectors = false,
+        ))
+        assertEquals(listOf("0:p:1:v:0", "0:p:1:a:m:comment: Français: version d'origineoriginal <> ",
+            "0:p:1:a:m:comment:Audiodeskription <> ä"), optionValues(prepared, "-map"))
+        assertTrue("handler_name=$name" in optionValues(prepared, "-metadata:s:a:0"))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["Deutsch, Stereo", "Español?", "Question? in the middle"])
+    fun `legacy map control characters preserve the original invocation`(name: String) {
+        val download = download()
+        assertNull(prepare(download, master.replace("Deutsch, Stereo", name), quotedSelectors = false))
+        assertEquals(baseArgs, download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY))
+    }
+
+    @Test
+    fun `new parser uses quoted metadata selectors`() {
+        val prepared = requireNotNull(prepare(quotedSelectors = true))
+        assertEquals("0:p:1:a:m:comment:'Deutsch, Stereo'", optionValues(prepared, "-map")[1])
+    }
+
+    @Test
+    fun `unrecognized parser preserves the original invocation`() {
+        val download = download()
+        assertNull(prepare(download, quotedSelectors = null))
+        assertEquals(baseArgs, download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "Output file #0 does not contain any stream",
+        "[out#0/null @ 0x1234] Output file does not contain any stream",
+    ])
+    fun `recognizes old parser diagnostics across FFmpeg generations`(output: String) {
+        assertEquals(false, ArteHlsDownloadPreparer.parseSelectorProbe(output))
+    }
+
+    @Test
+    fun `recognizes the new parser diagnostic`() {
+        assertEquals(true, ArteHlsDownloadPreparer.parseSelectorProbe(
+            "Trailing garbage at the end of a stream specifier: :mediathek_invalid\nError opening output files: Invalid argument",
+        ))
+        assertNull(ArteHlsDownloadPreparer.parseSelectorProbe("Unrecognized option"))
+    }
+
+    @Test
+    fun `failed parser probe preserves the original invocation`() {
+        val download = download()
+        assertNull(ArteHlsDownloadPreparer.prepare(download, { throw IOException("unavailable") }) {
+            ArteHlsDownloadPreparer.Playlist(it, master)
+        })
+        assertEquals(baseArgs, download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY))
+    }
+
+    @Test
     fun `names that collide after FFmpeg HLS unescaping keep the original invocation`() {
         val text = master.replace("Deutsch, Stereo", "Audio\\Name").replace("Audiodeskription <> ä", "AudioName")
         assertNull(prepare(text = text))
@@ -249,11 +312,11 @@ internal class ArteHlsDownloadPreparerTest {
 
     @Test
     fun `recognizes ambiguous shared rendition URLs after a redirect`() {
-        val args = requireNotNull(ArteHlsDownloadPreparer.prepare(download()) {
+        val args = requireNotNull(ArteHlsDownloadPreparer.prepare(download(), { true }) {
             ArteHlsDownloadPreparer.Playlist("https://cdn.example/path/master.m3u8".toHttpUrl(), master)
         })
         assertEquals(listOf(url), optionValues(args, "-i"))
-        assertNull(ArteHlsDownloadPreparer.prepare(download()) {
+        assertNull(ArteHlsDownloadPreparer.prepare(download(), { true }) {
             ArteHlsDownloadPreparer.Playlist("https://cdn.example/path/master.m3u8".toHttpUrl(), master.replace("../ad.m3u8", "https://cdn.example/path/audio/de.m3u8"))
         })
     }
