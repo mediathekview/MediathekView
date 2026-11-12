@@ -25,6 +25,7 @@ import java.nio.file.Paths
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 import javax.swing.*
+import javax.swing.border.TitledBorder
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 import javax.swing.table.TableModel
@@ -58,6 +59,9 @@ class PanelPsetLang(
 
     @Handler
     private fun handleProgramSetChanged(@Suppress("UNUSED_PARAMETER") event: ProgramSetChangedEvent) {
+        // Local document updates already update the table cell and tab title. Check
+        // before dispatching: the document listener clears this guard before the EDT runs the coroutine.
+        if (SwingUtilities.isEventDispatchThread() && stopBeob) return
         panelScope.launch {
             if (!stopBeob) {
                 tabellePset()
@@ -74,6 +78,7 @@ class PanelPsetLang(
 
     private fun initPanel() {
         configureIcons()
+        configureDownloadHelpText()
         MessageBus.messageBus.subscribe(this)
 
         configureProgramTables()
@@ -89,6 +94,16 @@ class PanelPsetLang(
 
         tabellePset()
         selectFirstProgramSet()
+    }
+
+    private fun configureDownloadHelpText() {
+        // Clear the generated form's fixed light background and let the UI delegate
+        // choose the theme's non-editable text colors, including on later theme changes.
+        val downloadPanel = jTabbedPane.getComponentAt(3) as Container
+        downloadPanel.components.filterIsInstance<JTextArea>().forEach {
+            it.background = null
+            it.updateUI()
+        }
     }
 
     private fun configureIcons() {
@@ -989,6 +1004,8 @@ class PanelPsetLang(
                     if (psetIndex == DatenPset.PROGRAMMSET_NAME) {
                         tabellePset.model.setValueAt(jTextFieldSetName.text, modelIndex, DatenPset.PROGRAMMSET_NAME)
                         jTabbedPane.setTitleAt(0, "Set Name: ${datenPset.name}")
+                        (jScrollPane1.border as TitledBorder).title = "Set Name: ${datenPset.name}"
+                        jScrollPane1.repaint()
                     }
                     if (fireUpdate) {
                         notifyProgramSetChanged()
