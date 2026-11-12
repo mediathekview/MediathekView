@@ -96,7 +96,9 @@ internal class ArteHlsDownloadIntegrationTest {
                 assertEquals(listOf(name, "Audiodeskription <> ä"), audio.map { it.getValue("tags").jsonObject.getValue("handler_name").jsonPrimitive.content })
                 assertEquals(listOf(isoLanguage, "deu"), audio.map { it.getValue("tags").jsonObject.getValue("language").jsonPrimitive.content })
                 assertTrue(audio.sumOf { it.getValue("disposition").jsonObject.getValue("default").jsonPrimitive.int } <= 1)
-                assertEquals(1, audio[1].getValue("disposition").jsonObject.getValue("visual_impaired").jsonPrimitive.int)
+                if (supportsMp4VisualImpaired(ffmpeg, ffprobe)) {
+                    assertEquals(1, audio[1].getValue("disposition").jsonObject.getValue("visual_impaired").jsonPrimitive.int)
+                }
             }
         } finally {
             server.stop(0)
@@ -151,6 +153,21 @@ internal class ArteHlsDownloadIntegrationTest {
         .filter { it.size >= 2 && it[0].matches(Regex("[VAS][A-Z.]{5}")) && it[1] != "=" }
         .map { it[1] }
         .toSet()
+
+    private fun supportsMp4VisualImpaired(ffmpeg: String, ffprobe: String): Boolean {
+        // Check the actual writer/reader pair independently of the prepared ARTE command.
+        // Older MP4 muxers may discard this flag, and older probes may not read it.
+        val probe = directory.resolve("disposition-probe.mp4").toString()
+        runCommand(listOf(
+            ffmpeg, "-v", "error", "-f", "lavfi", "-i", "sine=frequency=440", "-t", "0.1",
+            "-c:a", "aac", "-disposition:a:0", "visual_impaired", probe,
+        ))
+        val report = Json.parseToJsonElement(runCommand(listOf(
+            ffprobe, "-v", "error", "-show_streams", "-of", "json", probe,
+        ))).jsonObject
+        val stream = report.getValue("streams").jsonArray.single().jsonObject
+        return stream.getValue("disposition").jsonObject.getValue("visual_impaired").jsonPrimitive.int == 1
+    }
 
     private fun runCommand(args: List<String>): String {
         val log = Files.createTempFile(directory, "process", ".log")
