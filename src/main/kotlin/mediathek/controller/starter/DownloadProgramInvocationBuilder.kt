@@ -26,6 +26,7 @@ import mediathek.tool.ArteHlsQualitySelector
 internal data class DownloadInvocation(
     val command: String,
     val commandArray: String,
+    val automaticArteHlsProgramMap: Boolean = false,
 )
 
 internal data class DownloadInvocationRequest(
@@ -44,18 +45,16 @@ internal object DownloadProgramInvocationBuilder {
         downloadType: DownloadType,
         program: DatenProg,
         request: DownloadInvocationRequest,
-    ): DownloadInvocation =
-        if (downloadType == DownloadType.DIRECT) {
-            DownloadInvocation(command = "", commandArray = "")
-        } else {
-            DownloadInvocation(
-                command = replaceExec(program.programmAufruf.withArteHlsQualityMap(request, " "), request),
-                commandArray = replaceExec(
-                    program.programmAufrufArray.withArteHlsQualityMap(request, RuntimeExec.TRENNER_PROG_ARRAY),
-                    request,
-                ),
-            )
-        }
+    ): DownloadInvocation {
+        if (downloadType == DownloadType.DIRECT) return DownloadInvocation(command = "", commandArray = "")
+        val originalArray = program.programmAufrufArray
+        val mappedArray = originalArray.withArteHlsQualityMap(request, RuntimeExec.TRENNER_PROG_ARRAY)
+        return DownloadInvocation(
+            command = replaceExec(program.programmAufruf.withArteHlsQualityMap(request, " "), request),
+            commandArray = replaceExec(mappedArray, request),
+            automaticArteHlsProgramMap = mappedArray != originalArray,
+        )
+    }
 
     private fun replaceExec(command: String, request: DownloadInvocationRequest): String =
         command.replace("**", request.targetPathFileName)
@@ -79,5 +78,5 @@ internal object DownloadProgramInvocationBuilder {
     }
 
     private fun DownloadInvocationRequest.arteHlsProgramId(): Int? =
-        ArteHlsQualitySelector.programId(downloadUrl, selectedResolution)
+        ArteHlsQualitySelector.fallbackProgramId(downloadUrl, selectedResolution)
 }

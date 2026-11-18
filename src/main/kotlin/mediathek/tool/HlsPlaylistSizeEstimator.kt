@@ -1,6 +1,7 @@
 package mediathek.tool
 
 import kotlinx.coroutines.*
+import mediathek.daten.FilmResolution
 import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -23,6 +24,7 @@ class HlsPlaylistSizeEstimator(
         val codecs: String?,
         val playlistUrl: HttpUrl,
         val audioPlaylistUrl: HttpUrl? = null,
+        val programId: Int? = null,
     ) {
         val height: Int?
             get() = resolution?.substringAfter('x')?.toIntOrNull()
@@ -104,7 +106,15 @@ class HlsPlaylistSizeEstimator(
         val variants = parseVariants(masterUrl, playlist)
         require(variants.isNotEmpty()) { "No bitrate variants found in playlist: $masterUrl" }
 
-        val selectedVariant = selectVariant(variants, quality)
+        val arteProgram = if (ArteHlsQualitySelector.isArteManifest(masterUrl.toString())) {
+            ArteHlsQualitySelector.selectProgram(
+                playlist,
+                FilmResolution.Enum.entries.firstOrNull { it.name == quality } ?: FilmResolution.Enum.HIGH_QUALITY,
+            )
+        } else null
+        val selectedVariant = if (arteProgram != null) {
+            variants.first { it.programId == arteProgram }
+        } else selectVariant(variants, quality)
 
         return estimateMediaPlaylist(selectedVariant, variants, probeSegments, textLoader, contentLengthLoader)
     }
@@ -237,17 +247,20 @@ class HlsPlaylistSizeEstimator(
         val variants = mutableListOf<VariantInfo>()
         val audioGroups = parseAudioGroups(baseUrl, lines)
 
+        var programId = 0
         for (index in 0 until lines.lastIndex) {
             val line = lines[index]
             if (!line.startsWith(STREAM_INF_TAG)) {
                 continue
             }
 
+            val variantProgramId = programId++
             val attributes = parseAttributes(line.removePrefix(STREAM_INF_TAG))
             val bandwidth = attributes["BANDWIDTH"]?.toLongOrNull() ?: continue
             val nextLine = lines.subList(index + 1, lines.size).firstOrNull { it.isNotBlank() && !it.startsWith("#") } ?: continue
 
             variants += VariantInfo(
+                programId = variantProgramId,
                 bandwidth = bandwidth,
                 averageBandwidth = attributes["AVERAGE-BANDWIDTH"]?.toLongOrNull(),
                 resolution = attributes["RESOLUTION"],

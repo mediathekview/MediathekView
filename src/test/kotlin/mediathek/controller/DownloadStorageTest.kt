@@ -20,6 +20,21 @@ internal class DownloadStorageTest {
     lateinit var tempDir: Path
 
     @Test
+    fun oldDownloadsWithoutMappingProvenanceKeepTheirStoredMappings() {
+        val storagePath = tempDir.resolve("downloads.json")
+        val download = download("Legacy").apply {
+            art = DownloadType.PROGRAM
+            programInvocationArray = "ffmpeg<>-i<>https://example.org/master.m3u8<>-map<>p:1"
+        }
+        DownloadStorage.write(storagePath, listOf(download))
+        // Default values are omitted, matching files written before mapping provenance existed.
+        assertFalse(storagePath.readText().contains("automaticArteHlsProgramMap"))
+        val restored = DownloadStorage.read(storagePath).single()
+        assertFalse(restored.automaticArteHlsProgramMap)
+        assertEquals(download.programInvocationArray, restored.programInvocationArray)
+    }
+
+    @Test
     fun writeAndReadPreservesExplicitDownloadFields() {
         val storagePath = tempDir.resolve("downloads.json")
         val download = download("Title").apply {
@@ -28,6 +43,7 @@ internal class DownloadStorageTest {
             quelle = DownloadSource.DOWNLOAD
             selectedResolution = FilmResolution.Enum.HIGH_QUALITY
             isMp4Metadata = true
+            automaticArteHlsProgramMap = true
         }
 
         DownloadStorage.write(storagePath, listOf(download))
@@ -58,6 +74,7 @@ internal class DownloadStorageTest {
 
         assertEquals(1, loaded.size)
         val loadedDownload = loaded.single()
+        assertTrue(loadedDownload.automaticArteHlsProgramMap)
         assertEquals("Title", loadedDownload.title)
         assertEquals("Sender", loadedDownload.sender)
         assertEquals("/tmp/Title.mp4", loadedDownload.targetPathFileName)

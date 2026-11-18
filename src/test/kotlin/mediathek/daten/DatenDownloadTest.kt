@@ -50,6 +50,7 @@ internal class DatenDownloadTest {
             program = "Program",
             programInvocation = "program invocation",
             programInvocationArray = "program|invocation",
+            automaticArteHlsProgramMap = true,
             restart = true,
             targetFileName = "target.mp4",
             targetPath = "/tmp",
@@ -181,8 +182,9 @@ internal class DatenDownloadTest {
         assertEquals("program<>--subtitle<>\"$subtitleUrl\"<>https://example.invalid/video.mp4", download.programInvocationArray)
     }
 
-    @Test
-    fun buildsArteHlsProgramMappingForSelectedQuality() {
+    @ParameterizedTest
+    @CsvSource("HIGH_QUALITY,1", "NORMAL,2", "LOW,0")
+    fun buildsArteHlsProgramMappingForSelectedQuality(resolution: FilmResolution.Enum, programId: Int) {
         val program = DatenProg(
             "ffmpeg",
             "ffmpeg",
@@ -202,20 +204,43 @@ internal class DatenDownloadTest {
                 targetPathFileName = "/tmp/video.mp4",
                 websiteUrl = "https://www.arte.tv/de/videos/123456-000-A/video/",
                 subtitleUrl = "",
-                selectedResolution = FilmResolution.Enum.HIGH_QUALITY,
+                selectedResolution = resolution,
             ),
         )
 
+        assertTrue(invocation.automaticArteHlsProgramMap)
         assertEquals(
             "ffmpeg -i https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/video.m3u8 " +
-                "-map p:1 -map -0:s -c copy -bsf:a aac_adtstoasc /tmp/video.mp4",
+                "-map p:$programId -map -0:s -c copy -bsf:a aac_adtstoasc /tmp/video.mp4",
             invocation.command,
         )
         assertEquals(
             "ffmpeg<>-i<>https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/video.m3u8" +
-                "<>-map<>p:1<>-map<>-0:s<>-c<>copy<>-bsf:a<>aac_adtstoasc<>/tmp/video.mp4",
+                "<>-map<>p:$programId<>-map<>-0:s<>-c<>copy<>-bsf:a<>aac_adtstoasc<>/tmp/video.mp4",
             invocation.commandArray,
         )
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun modelRetainsMappingOwnershipThroughCopyAndRestoration(explicitMapping: Boolean) {
+        val switches = "-i %f " + (if (explicitMapping) "-map p:1 -map -0:s " else "") + "-c copy -bsf:a aac_adtstoasc **"
+        val program = DatenProg("ffmpeg", "ffmpeg", switches, "false", "false")
+        val pset = DatenPset("ARTE").apply {
+            zielPfad = "/tmp"
+            zielDateiname = "video.mp4"
+            addProg(program)
+        }
+        val film = DatenFilm().apply {
+            sender = "ARTE"
+            highQualityUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ/master.m3u8"
+            urlNormalQuality = highQualityUrl
+        }
+        val download = DatenDownload(pset, film, DownloadSource.DOWNLOAD, null, "", "", FilmResolution.HIGH_QUALITY, ReplacementRules())
+        assertEquals(!explicitMapping, download.automaticArteHlsProgramMap)
+        assertEquals(!explicitMapping, download.copy.automaticArteHlsProgramMap)
+        assertEquals(!explicitMapping, DatenDownload.fromConfig(download.toConfig()).automaticArteHlsProgramMap)
+        assertEquals(switches, program.switches)
     }
 
     @Test

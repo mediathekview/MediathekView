@@ -11,6 +11,8 @@ import mediathek.tool.ArteHlsQualitySelector
 import mediathek.tool.FileSize
 import mediathek.tool.FileUtils
 import mediathek.tool.GuiFunktionenProgramme
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Files
 import java.nio.file.Path
@@ -53,7 +55,7 @@ object DownloadQualitySupport {
         }
 
         val normalUrl = film.urlNormalQuality
-        if (ArteHlsQualitySelector.programId(normalUrl, FilmResolution.Enum.NORMAL) == null) {
+        if (ArteHlsQualitySelector.fallbackProgramId(normalUrl, FilmResolution.Enum.NORMAL) == null) {
             return film
         }
 
@@ -173,7 +175,7 @@ object DownloadQualitySupport {
         resolution: FilmResolution.Enum?
     ): DownloadQualityLiveInfoText {
         val result = FFprobe.atPath(ffprobePath).apply {
-            ArteHlsQualitySelector.programId(url, resolution)?.let { programId ->
+            selectArteProgram(url, resolution)?.let { programId ->
                 setSelectStreams("p:$programId")
             }
         }
@@ -181,6 +183,17 @@ object DownloadQualitySupport {
             .setInput(url)
             .execute()
         return buildLiveInfoText(result)
+    }
+
+    internal fun selectArteProgram(
+        url: String,
+        resolution: FilmResolution.Enum?,
+        load: (HttpUrl) -> ArteHlsQualitySelector.Playlist = ArteHlsQualitySelector::loadPlaylist,
+    ): Int? {
+        val fallback = ArteHlsQualitySelector.fallbackProgramId(url, resolution) ?: return null
+        return runCatching {
+            ArteHlsQualitySelector.selectProgram(load(url.toHttpUrl()).text, requireNotNull(resolution)) ?: fallback
+        }.getOrElse { fallback }
     }
 
     fun getLiveInfoErrorString(ex: JaffreeAbnormalExitException): String {

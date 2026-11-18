@@ -5,81 +5,85 @@ import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
 import mediathek.tool.ArteHlsQualitySelector
 import mediathek.tool.HlsEgressPolicy
-import mediathek.tool.http.MVHttpClient
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.Request
 import org.apache.logging.log4j.LogManager
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toJavaDuration
 
 /** Prepares a run-local command; neither the Pset nor persisted download invocations are modified. */
 internal object ArteHlsDownloadPreparer {
-    internal data class Playlist(val url: HttpUrl, val text: String)
-    private data class Variant(val audioGroup: String?)
     private val logger = LogManager.getLogger(ArteHlsDownloadPreparer::class.java)
     private val senderPattern = Regex("arte(?:[.](?:de|en|es|fr|it|pl))?", RegexOption.IGNORE_CASE)
     private val attributePattern = Regex("([A-Z0-9-]+)=(\"[^\"]*\"|[^,\"]+)(?:,|$)")
+    private val programIdPattern = Regex("p:[0-9]+")
+    private val copyOptions = listOf("-c", "copy", "-bsf:a", "aac_adtstoasc")
     private val hlsEscapePattern = Regex("""\\(.)""")
-    private const val MAX_PLAYLIST_BYTES = 1_048_576L
 
     fun prepare(
         download: DatenDownload,
         detectQuotedSelectors: (String) -> Boolean? = ::detectQuotedSelectors,
-        load: (HttpUrl) -> Playlist = ::loadPlaylist,
+        load: (HttpUrl) -> ArteHlsQualitySelector.Playlist = ArteHlsQualitySelector::loadPlaylist,
     ): List<String>? {
         if (download.art != DownloadType.PROGRAM || download.isDownloadManager ||
             !senderPattern.matches(download.sender) ||
-            ArteHlsQualitySelector.programId(download.downloadUrl, FilmResolution.Enum.HIGH_QUALITY) == null
+            !ArteHlsQualitySelector.isArteManifest(download.downloadUrl)
         ) return null
 
+        var qualityArguments: List<String>? = null
         return try {
             val args = download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY)
-            // Limit automatic rewriting to the standard, single-output stream-copy invocation.
-            // Custom stream mappings, metadata, filters and input options keep their original semantics.
             if (args.size < 8 || Path.of(args[0]).fileName.toString().lowercase(Locale.ROOT) !in setOf("ffmpeg", "ffmpeg.exe") ||
-                args.last().removeSurrounding("\"") != download.targetPathFileName ||
-                !download.targetPathFileName.endsWith(".mp4", ignoreCase = true)
+                args.last().removeSurrounding("\"") != download.targetPathFileName
             ) return null
-            // Preserve the supported HTTP input option in its original position before -i.
-            val inputIndex = if (args.subList(1, 3) == listOf("-http_seekable", "0")) 3 else 1
+            val inputIndex = args.indices.singleOrNull { args[it] == "-i" } ?: return null
             val inputEndIndex = inputIndex + 2
-            if (args.subList(inputIndex, inputEndIndex) != listOf("-i", download.downloadUrl)) return null
+            if (args.getOrNull(inputIndex + 1) != download.downloadUrl || inputEndIndex >= args.size) return null
             val switches = args.subList(inputEndIndex, args.lastIndex)
-            val copyOptions = listOf("-c", "copy", "-bsf:a", "aac_adtstoasc")
-            val programId = when {
-                switches == copyOptions -> null
-                switches.size == 8 && switches.take(4).let {
-                    it[0] == "-map" && it[1].matches(Regex("p:[0-9]+")) && it[2] == "-map" && it[3] == "-0:s"
-                } && switches.drop(4) == copyOptions -> switches[1].substringAfter(':').toInt()
-                else -> return null
-            }
+            val mapping = switches.take(4)
+            val programId = if (mapping.size == 4 && mapping[0] == "-map" &&
+                programIdPattern.matches(mapping[1]) && mapping[2] == "-map" && mapping[3] == "-0:s"
+            ) mapping[1].substringAfter(':').toIntOrNull() else null
+            // Provenance comes from invocation construction, never from a coincidentally equal Pset mapping.
+            val automatic = download.automaticArteHlsProgramMap && programId != null && args.count { it == "-map" } == 2 &&
+                (programId == ArteHlsQualitySelector.fallbackProgramId(download.downloadUrl, download.selectedResolution) ||
+                    (programId == 3 && download.selectedResolution == FilmResolution.Enum.LOW))
+            // Quality selection preserves every additional option. Audio metadata rewriting retains its
+            // narrower contract so custom metadata, filters and input/output options keep their semantics.
+            val standardInput = inputIndex == 1 || (inputIndex == 3 && args.subList(1, 3) == listOf("-http_seekable", "0"))
+            val prepareAudio = download.targetPathFileName.endsWith(".mp4", ignoreCase = true) && standardInput &&
+                (switches == copyOptions || (programId != null && switches.drop(4) == copyOptions))
+            if (!automatic && !prepareAudio) return null
             val playlist = load(download.downloadUrl.toHttpUrl())
             val lines = playlist.text.lineSequence().map(String::trim).filter(String::isNotEmpty).toList()
             require(lines.firstOrNull() == "#EXTM3U") { "Not an HLS playlist" }
-            val variants = lines.filter { it.startsWith("#EXT-X-STREAM-INF:") }
-                .map { Variant(attributes(it.substringAfter(':'))["AUDIO"]) }
+            val audioGroups = lines.filter { it.startsWith("#EXT-X-STREAM-INF:") }
+                .map { attributes(it.substringAfter(':'))["AUDIO"] }
             // HLS program IDs are the zero-based variant indexes used by FFmpeg.
-            val selectedProgram = programId ?: if (variants.size == 1) 0 else return null
-            val group = variants.getOrNull(selectedProgram)?.audioGroup ?: return null
+            val selectedProgram = if (automatic) {
+                ArteHlsQualitySelector.selectProgram(playlist.text, download.selectedResolution) ?: programId
+            } else programId ?: if (audioGroups.size == 1) 0 else return null
+            if (selectedProgram != programId && programId != null) {
+                qualityArguments = args.toMutableList().apply { this[inputEndIndex + 1] = "p:$selectedProgram" }
+            }
+            if (!prepareAudio) return qualityArguments
+            val group = audioGroups.getOrNull(selectedProgram) ?: return qualityArguments
             val renditions = lines.filter { it.startsWith("#EXT-X-MEDIA:") }
                 .map { attributes(it.substringAfter(':')) }
                 .filter { it["TYPE"] == "AUDIO" }
             val audio = renditions.filter { it["GROUP-ID"] == group }
-            if (audio.isEmpty() || audio.size > 32) return null
-            val names = audio.map { it["NAME"]?.takeIf(String::isNotBlank) ?: return null }
+            if (audio.isEmpty() || audio.size > 32) return qualityArguments
+            val names = audio.map { it["NAME"]?.takeIf(String::isNotBlank) ?: return qualityArguments }
             // FFmpeg stores HLS rendition names in a 64-byte, NUL-terminated field.
-            if (names.distinct().size != names.size || names.any { it.toByteArray(Charsets.UTF_8).size >= 64 }) return null
+            if (names.distinct().size != names.size || names.any { it.toByteArray(Charsets.UTF_8).size >= 64 }) return qualityArguments
             val streamNames = names.map { name ->
                 // FFmpeg's HLS parser consumes backslash escapes inside quoted attributes.
                 // Keep the original NAME for output labels, but match the demuxer's value.
-                if (name.takeLastWhile { it == '\\' }.length % 2 != 0) return null
+                if (name.takeLastWhile { it == '\\' }.length % 2 != 0) return qualityArguments
                 hlsEscapePattern.replace(name) { it.groupValues[1] }
             }
-            if (streamNames.distinct().size != streamNames.size) return null
+            if (streamNames.distinct().size != streamNames.size) return qualityArguments
             fun audioUrl(rendition: Map<String, String>): String? {
                 val uri = rendition["URI"]?.takeIf(String::isNotBlank) ?: return null
                 return HlsEgressPolicy.requirePublicHttpUrl(requireNotNull(playlist.url.resolve(uri))).toString()
@@ -88,13 +92,13 @@ internal object ArteHlsDownloadPreparer {
             // Only use metadata selectors when each selected rendition has an unambiguous identity.
             val allAudioUrls = renditions.map(::audioUrl)
             if (audio.any { rendition ->
-                val uri = audioUrl(rendition) ?: return null
+                val uri = audioUrl(rendition) ?: return qualityArguments
                 allAudioUrls.count { it == uri } != 1
-            }) return null
-            val quotedSelectors = detectQuotedSelectors(args[0]) ?: return null
+            }) return qualityArguments
+            val quotedSelectors = detectQuotedSelectors(args[0]) ?: return qualityArguments
             // The old -map parser splits at commas (sync syntax) and question marks
             // (optional maps) before matching metadata; quoting cannot protect them.
-            if (!quotedSelectors && streamNames.any { ',' in it || '?' in it }) return null
+            if (!quotedSelectors && streamNames.any { ',' in it || '?' in it }) return qualityArguments
             // FFmpeg's HLS demuxer exposes EXT-X-MEDIA NAME as the stream's comment metadata.
             // Resolve by that identity inside the selected program instead of guessing stream
             // indexes. Keep one HLS input so its audio/video timestamp alignment is preserved.
@@ -122,8 +126,8 @@ internal object ArteHlsDownloadPreparer {
                 add(download.targetPathFileName)
             }
         } catch (ex: Exception) {
-            logger.warn("ARTE-Audiospuren konnten nicht vorbereitet werden; ursprünglicher Programmaufruf wird verwendet: {}", ex.message)
-            null
+            logger.warn("ARTE-Audiospuren konnten nicht vorbereitet werden; verfügbare Qualitätsauswahl wird beibehalten: {}", ex.message)
+            qualityArguments
         }
     }
 
@@ -174,18 +178,4 @@ internal object ArteHlsDownloadPreparer {
             else -> Locale.forLanguageTag(language).isO3Language.takeIf { it.length == 3 }
         }
     }.getOrNull()
-
-    private fun loadPlaylist(url: HttpUrl): Playlist {
-        val client = HlsEgressPolicy.clientFor(MVHttpClient.httpClient).newBuilder()
-            .callTimeout(10.seconds.toJavaDuration())
-            .build()
-        val request = Request.Builder().url(HlsEgressPolicy.requirePublicHttpUrl(url)).build()
-        return client.newCall(request).execute().use { response ->
-            check(response.isSuccessful) { "HLS HTTP ${response.code}" }
-            val body = response.body
-            val bytes = body.byteStream().readNBytes((MAX_PLAYLIST_BYTES + 1).toInt())
-            require(bytes.size <= MAX_PLAYLIST_BYTES) { "HLS playlist too large" }
-            Playlist(response.request.url, bytes.toString(Charsets.UTF_8))
-        }
-    }
 }

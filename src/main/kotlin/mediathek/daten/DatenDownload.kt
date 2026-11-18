@@ -193,6 +193,9 @@ class DatenDownload() : Comparable<DatenDownload> {
 
     var programInvocationArray: String = ""
 
+    // Only builder-owned mappings may follow the shared ARTE quality policy at runtime.
+    internal var automaticArteHlsProgramMap: Boolean = false
+
     var targetFileName: String = ""
 
     var targetPath: String = ""
@@ -321,6 +324,7 @@ class DatenDownload() : Comparable<DatenDownload> {
             program = programName,
             programInvocation = programInvocation,
             programInvocationArray = programInvocationArray,
+            automaticArteHlsProgramMap = automaticArteHlsProgramMap,
             restart = isRestart,
             targetFileName = targetFileName,
             targetPath = targetPath,
@@ -376,6 +380,7 @@ class DatenDownload() : Comparable<DatenDownload> {
         target.programName = programName
         target.programInvocation = programInvocation
         target.programInvocationArray = programInvocationArray
+        target.automaticArteHlsProgramMap = automaticArteHlsProgramMap
         target.targetFileName = targetFileName
         target.targetPath = targetPath
         target.targetPathFileName = targetPathFileName
@@ -527,6 +532,7 @@ class DatenDownload() : Comparable<DatenDownload> {
         )
         programInvocation = invocation.command
         programInvocationArray = invocation.commandArray
+        automaticArteHlsProgramMap = invocation.automaticArteHlsProgramMap
     }
 
     fun getDatumForObject(): Datum {
@@ -595,6 +601,7 @@ class DatenDownload() : Comparable<DatenDownload> {
                 download.programName = config.program
                 download.programInvocation = config.programInvocation
                 download.programInvocationArray = config.programInvocationArray
+                download.automaticArteHlsProgramMap = config.automaticArteHlsProgramMap
                 download.isRestart = config.restart
                 download.targetFileName = config.targetFileName
                 download.targetPath = config.targetPath

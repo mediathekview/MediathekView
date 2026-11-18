@@ -4,6 +4,9 @@ import com.sun.net.httpserver.HttpServer
 import kotlinx.serialization.json.*
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadType
+import mediathek.daten.FilmResolution
+import mediathek.gui.dialog.download.DownloadQualitySupport
+import mediathek.tool.ArteHlsQualitySelector
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
@@ -27,6 +30,7 @@ internal class ArteHlsDownloadIntegrationTest {
         language: String,
         isoLanguage: String,
         disableHttpSeeking: Boolean,
+        preferHevc: Boolean,
     ) {
         val ffmpeg = executable("ffmpeg")
         val ffprobe = executable("ffprobe")
@@ -34,7 +38,7 @@ internal class ArteHlsDownloadIntegrationTest {
         val quotedSelectors = requireNotNull(ArteHlsDownloadPreparer.detectQuotedSelectors(ffmpeg!!))
         val originalMapping = !quotedSelectors && (',' in name || '?' in name)
         val encoders = availableEncoders(runCommand(listOf(ffmpeg, "-hide_banner", "-encoders")))
-        val missingEncoders = listOf("libx264", "aac").filterNot { it in encoders }
+        val missingEncoders = (listOf("libx264", "aac") + if (preferHevc) listOf("libx265") else emptyList()).filterNot { it in encoders }
         assumeTrue(missingEncoders.isEmpty(),
             "FFmpeg media integration test requires unavailable encoders: ${missingEncoders.joinToString()}; executable: $ffmpeg")
         val master = """
@@ -46,7 +50,15 @@ internal class ArteHlsDownloadIntegrationTest {
             low.m3u8
             #EXT-X-STREAM-INF:BANDWIDTH=200000,RESOLUTION=32x32,AUDIO="audio"
             high.m3u8
-        """.trimIndent()
+        """.trimIndent() + if (preferHevc) """
+
+            #EXT-X-STREAM-INF:BANDWIDTH=150000,RESOLUTION=32x32,CODECS="hev1.1.6.L90.B0,mp4a.40.2",AUDIO="audio"
+            hevc.m3u8
+        """.trimIndent().let { "\n$it" } else ""
+        if (preferHevc) {
+            runCommand(listOf(ffmpeg, "-v", "error", "-f", "lavfi", "-i", "color=size=32x32:rate=1", "-t", "1",
+                "-c:v", "libx265", "-x265-params", "pools=1:frame-threads=1", "-f", "hls", directory.resolve("hevc.m3u8").toString()))
+        }
         listOf("low" to 16, "high" to 32).forEach { (name, size) ->
             runCommand(listOf(ffmpeg, "-v", "error", "-f", "lavfi", "-i", "color=size=${size}x$size:rate=1", "-t", "1", "-c:v", "libx264", "-f", "hls", directory.resolve("$name.m3u8").toString()))
         }
@@ -68,6 +80,8 @@ internal class ArteHlsDownloadIntegrationTest {
             val inputOptions = if (disableHttpSeeking) listOf("-http_seekable", "0") else emptyList()
             val args = listOf(ffmpeg) + inputOptions + listOf("-i", remoteUrl, "-map", "p:1", "-map", "-0:s", "-c", "copy", "-bsf:a", "aac_adtstoasc", directory.resolve("a film.mp4").toString())
             val download = DatenDownload().apply {
+                selectedResolution = FilmResolution.Enum.HIGH_QUALITY
+                automaticArteHlsProgramMap = true
                 sender = "ARTE.DE"
                 art = DownloadType.PROGRAM
                 downloadUrl = remoteUrl
@@ -75,7 +89,7 @@ internal class ArteHlsDownloadIntegrationTest {
                 programInvocationArray = args.joinToString(RuntimeExec.TRENNER_PROG_ARRAY)
             }
             val prepared = ArteHlsDownloadPreparer.prepare(download) {
-                ArteHlsDownloadPreparer.Playlist(it, master)
+                ArteHlsQualitySelector.Playlist(it, master)
             }
             if (originalMapping) assertNull(prepared)
             val invocation = if (originalMapping) args else requireNotNull(prepared)
@@ -90,6 +104,13 @@ internal class ArteHlsDownloadIntegrationTest {
             val streams = report.getValue("streams").jsonArray.map { it.jsonObject }
             val video = streams.single { it["codec_type"]?.jsonPrimitive?.content == "video" }
             assertEquals(32, video.getValue("width").jsonPrimitive.int)
+            assertEquals(if (preferHevc) "hevc" else "h264", video.getValue("codec_name").jsonPrimitive.content)
+            val selectedProgram = DownloadQualitySupport.selectArteProgram(remoteUrl, FilmResolution.Enum.HIGH_QUALITY) {
+                ArteHlsQualitySelector.Playlist(it, master)
+            }
+            val probe = Json.parseToJsonElement(runCommand(listOf(ffprobe, "-v", "error", "-select_streams", "p:$selectedProgram:v:0",
+                "-show_streams", "-of", "json", "${localBase}master.m3u8"))).jsonObject
+            assertEquals(video.getValue("codec_name"), probe.getValue("streams").jsonArray.single().jsonObject.getValue("codec_name"))
             val audio = streams.filter { it["codec_type"]?.jsonPrimitive?.content == "audio" }
             assertEquals(2, audio.size)
             if (!originalMapping) {
@@ -133,15 +154,16 @@ internal class ArteHlsDownloadIntegrationTest {
     companion object {
         @JvmStatic
         fun audioNames(): List<Arguments> = listOf(
-            Arguments.of("Deutsch, Stereo", "de", "deu", false),
-            Arguments.of("Français (Version d'origine)", "fr", "fra", false),
-            Arguments.of("Italiano: originale", "it", "ita", false),
-            Arguments.of("English\\Original", "en", "eng", false),
-            Arguments.of("Español?", "es", "spa", false),
-            Arguments.of("Polski, oryginał", "pl", "pol", false),
-            Arguments.of(" Română: O'Ton <> ? ", "ro", "ron", false),
-            Arguments.of(" Română: O'Ton <> ", "ro", "ron", false),
-            Arguments.of("Deutsch", "de", "deu", true),
+            Arguments.of("Deutsch, Stereo", "de", "deu", false, false),
+            Arguments.of("Français (Version d'origine)", "fr", "fra", false, false),
+            Arguments.of("Italiano: originale", "it", "ita", false, false),
+            Arguments.of("English\\Original", "en", "eng", false, false),
+            Arguments.of("Español?", "es", "spa", false, false),
+            Arguments.of("Polski, oryginał", "pl", "pol", false, false),
+            Arguments.of(" Română: O'Ton <> ? ", "ro", "ron", false, false),
+            Arguments.of(" Română: O'Ton <> ", "ro", "ron", false, false),
+            Arguments.of("Deutsch", "de", "deu", true, false),
+            Arguments.of("Deutsch", "de", "deu", true, true),
         )
     }
 

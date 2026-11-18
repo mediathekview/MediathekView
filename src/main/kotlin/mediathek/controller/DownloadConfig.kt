@@ -44,6 +44,7 @@ internal data class DownloadConfig(
     val program: String = "",
     val programInvocation: String = "",
     val programInvocationArray: String = "",
+    val automaticArteHlsProgramMap: Boolean = false,
     val restart: Boolean = false,
     val targetFileName: String = "",
     val targetPath: String = "",

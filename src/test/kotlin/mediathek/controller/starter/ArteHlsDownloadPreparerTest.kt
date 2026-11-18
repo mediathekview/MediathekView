@@ -1,9 +1,8 @@
 package mediathek.controller.starter
 
-import mediathek.daten.DatenDownload
-import mediathek.daten.DatenProg
-import mediathek.daten.DatenPset
-import mediathek.daten.DownloadType
+import mediathek.daten.*
+import mediathek.tool.ArteHlsQualitySelector
+import mediathek.tool.ArteQualityFixture
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -26,6 +25,7 @@ internal class ArteHlsDownloadPreparerTest {
     """.trimIndent()
 
     private fun download(args: List<String> = baseArgs) = DatenDownload().apply {
+        automaticArteHlsProgramMap = true
         sender = "ARTE.DE"
         art = DownloadType.PROGRAM
         downloadUrl = url
@@ -39,7 +39,7 @@ internal class ArteHlsDownloadPreparerTest {
         text: String = master,
         quotedSelectors: Boolean? = true,
     ): List<String>? =
-        ArteHlsDownloadPreparer.prepare(download, { quotedSelectors }) { ArteHlsDownloadPreparer.Playlist(it, text) }
+        ArteHlsDownloadPreparer.prepare(download, { quotedSelectors }) { ArteHlsQualitySelector.Playlist(it, text) }
 
     @Test
     fun `maps only selected group and labels the explicit output audio order`() {
@@ -153,7 +153,7 @@ internal class ArteHlsDownloadPreparerTest {
             listOf("-http_seekable", "0", "-headers", "Custom: value"),
         ).forEach { prefix ->
             val args = baseArgs.take(1) + prefix + baseArgs.drop(1)
-            val download = download(args)
+            val download = download(args).apply { automaticArteHlsProgramMap = false }
             assertNull(ArteHlsDownloadPreparer.prepare(download) { fail("Unexpected request for $args") })
             assertEquals(args.joinToString(RuntimeExec.TRENNER_PROG_ARRAY), download.programInvocationArray)
         }
@@ -231,7 +231,7 @@ internal class ArteHlsDownloadPreparerTest {
     fun `failed parser probe preserves the original invocation`() {
         val download = download()
         assertNull(ArteHlsDownloadPreparer.prepare(download, { throw IOException("unavailable") }) {
-            ArteHlsDownloadPreparer.Playlist(it, master)
+            ArteHlsQualitySelector.Playlist(it, master)
         })
         assertEquals(baseArgs, download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY))
     }
@@ -254,7 +254,7 @@ internal class ArteHlsDownloadPreparerTest {
             baseArgs.dropLast(1) + listOf("second.mp4", baseArgs.last()),
         )
         commands.forEach { args ->
-            assertNull(ArteHlsDownloadPreparer.prepare(download(args)) { fail("Unexpected request for $args") })
+            assertNull(ArteHlsDownloadPreparer.prepare(download(args).apply { automaticArteHlsProgramMap = false }) { fail("Unexpected request for $args") })
         }
         assertNull(ArteHlsDownloadPreparer.prepare(download().apply { art = DownloadType.DIRECT }) { fail("Unexpected request") })
         assertNull(ArteHlsDownloadPreparer.prepare(download().apply { downloadUrl = "https://example.org/a.m3u8" }) { fail("Unexpected request") })
@@ -313,11 +313,11 @@ internal class ArteHlsDownloadPreparerTest {
     @Test
     fun `recognizes ambiguous shared rendition URLs after a redirect`() {
         val args = requireNotNull(ArteHlsDownloadPreparer.prepare(download(), { true }) {
-            ArteHlsDownloadPreparer.Playlist("https://cdn.example/path/master.m3u8".toHttpUrl(), master)
+            ArteHlsQualitySelector.Playlist("https://cdn.example/path/master.m3u8".toHttpUrl(), master)
         })
         assertEquals(listOf(url), optionValues(args, "-i"))
         assertNull(ArteHlsDownloadPreparer.prepare(download(), { true }) {
-            ArteHlsDownloadPreparer.Playlist("https://cdn.example/path/master.m3u8".toHttpUrl(), master.replace("../ad.m3u8", "https://cdn.example/path/audio/de.m3u8"))
+            ArteHlsQualitySelector.Playlist("https://cdn.example/path/master.m3u8".toHttpUrl(), master.replace("../ad.m3u8", "https://cdn.example/path/audio/de.m3u8"))
         })
     }
 
@@ -334,6 +334,119 @@ internal class ArteHlsDownloadPreparerTest {
         val args = requireNotNull(prepare(text = master.replace("LANGUAGE=\"de\"", "LANGUAGE=\"invalid\"")))
         assertFalse(optionValues(args, "-metadata:s:a:0").any { it.startsWith("language=") })
         assertEquals(3, optionValues(args, "-map").size)
+    }
+
+    @Test
+    fun `shared selection preserves selected audio Psets and commands for every quality and playlist order`() {
+        val qualities = listOf(FilmResolution.Enum.HIGH_QUALITY, FilmResolution.Enum.NORMAL, FilmResolution.Enum.LOW)
+        val fixtures = listOf(
+            ArteQualityFixture.variants to listOf(4, 2, 0),
+            ArteQualityFixture.variants.take(3) to listOf(1, 2, 0),
+            ArteQualityFixture.variants.reversed() to listOf(1, 3, 5),
+        )
+        for ((variants, indexes) in fixtures) {
+            qualities.zip(indexes).forEach { (quality, index) ->
+                val fallback = requireNotNull(ArteHlsQualitySelector.fallbackProgramId(url, quality))
+                val args = baseArgs.toMutableList().apply { this[4] = "p:$fallback" }
+                val program = DatenProg("ffmpeg", "/opt/bin/ffmpeg", "-i %f -c copy -bsf:a aac_adtstoasc **", "false", "false")
+                val download = download(args).apply {
+                    selectedResolution = quality
+                    pSet = DatenPset().apply { listeProg.add(program) }
+                }
+                val switches = program.switches
+                val stored = download.programInvocationArray
+                val display = download.programInvocation
+                val prepared = requireNotNull(prepare(download, ArteQualityFixture.master(variants)))
+                assertEquals(listOf("0:p:$index:v:0", "0:p:$index:a:m:comment:'Track $index'"), optionValues(prepared, "-map"))
+                assertTrue("title=Track $index" in optionValues(prepared, "-metadata:s:a:0"))
+                assertEquals(listOf("visual_impaired"), optionValues(prepared, "-disposition:a:0"))
+                assertEquals(switches, program.switches)
+                assertEquals(stored, download.programInvocationArray)
+                assertEquals(display, download.programInvocation)
+                assertEquals(prepared, prepare(download, ArteQualityFixture.master(variants)))
+            }
+        }
+    }
+
+    @Test
+    fun `legacy LOW program three is corrected and HEVC selection survives unavailable audio labels`() {
+        val low = download(baseArgs.toMutableList().apply { this[4] = "p:3" }).apply { selectedResolution = FilmResolution.Enum.LOW }
+        assertEquals("0:p:0:v:0", optionValues(requireNotNull(prepare(low, ArteQualityFixture.master())), "-map").first())
+        val high = download().apply { selectedResolution = FilmResolution.Enum.HIGH_QUALITY }
+        val prepared = requireNotNull(prepare(high, ArteQualityFixture.master().replace("NAME=", "UNKNOWN=")))
+        assertEquals(listOf("p:4", "-0:s"), optionValues(prepared, "-map"))
+    }
+
+    private fun builtDownload(switches: String, quality: FilmResolution.Enum): Pair<DatenDownload, DatenProg> {
+        val program = DatenProg("ffmpeg", "/opt/bin/ffmpeg", switches, "false", "false")
+        val invocation = DownloadProgramInvocationBuilder.build(
+            DownloadType.PROGRAM, program,
+            DownloadInvocationRequest(url, "", "/tmp", "a film.mp4", "/tmp/a film.mp4", "", "", quality),
+        )
+        return download(invocation.commandArray.split(RuntimeExec.TRENNER_PROG_ARRAY)).apply {
+            selectedResolution = quality
+            automaticArteHlsProgramMap = invocation.automaticArteHlsProgramMap
+            programInvocation = invocation.command
+            pSet = DatenPset().apply { listeProg.add(program) }
+        } to program
+    }
+
+    @Test
+    fun `explicit Pset mappings remain explicit even when their numbers match automatic or legacy LOW mappings`() {
+        for ((quality, programId) in listOf(FilmResolution.Enum.HIGH_QUALITY to 1, FilmResolution.Enum.LOW to 0, FilmResolution.Enum.LOW to 3)) {
+            val switches = "-i %f -map p:$programId -map -0:s -c copy -bsf:a aac_adtstoasc **"
+            val (download, program) = builtDownload(switches, quality)
+            assertFalse(download.automaticArteHlsProgramMap)
+            val stored = download.programInvocationArray
+            val display = download.programInvocation
+            val prepared = requireNotNull(prepare(download, ArteQualityFixture.master()))
+            assertEquals(listOf("0:p:$programId:v:0", "0:p:$programId:a:m:comment:'Track $programId'"), optionValues(prepared, "-map"))
+            assertTrue("title=Track $programId" in optionValues(prepared, "-metadata:s:a:0"))
+            assertEquals(listOf("visual_impaired"), optionValues(prepared, "-disposition:a:0"))
+            assertEquals(switches, program.switches)
+            assertEquals(stored, download.programInvocationArray)
+            assertEquals(display, download.programInvocation)
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["-movflags +faststart", "-metadata title=Custom", "-disposition:a default", "-threads 2"])
+    fun `automatic quality selection preserves additional output options across codecs qualities and restoration`(options: String) {
+        val qualities = listOf(FilmResolution.Enum.HIGH_QUALITY, FilmResolution.Enum.NORMAL, FilmResolution.Enum.LOW)
+        for ((variants, indexes) in listOf(
+            ArteQualityFixture.variants to listOf(4, 2, 0),
+            ArteQualityFixture.variants.take(3) to listOf(1, 2, 0),
+            ArteQualityFixture.variants.reversed() to listOf(1, 3, 5),
+        )) {
+            qualities.zip(indexes).forEach { (quality, index) ->
+                val switches = "-i %f -c copy -bsf:a aac_adtstoasc $options **"
+                val (original, program) = builtDownload(switches, quality)
+                assertTrue(original.automaticArteHlsProgramMap)
+                for (download in listOf(original, original.copy, DatenDownload.fromConfig(original.toConfig()))) {
+                    val stored = download.programInvocationArray
+                    val display = download.programInvocation
+                    val args = stored.split(RuntimeExec.TRENNER_PROG_ARRAY)
+                    val expected = args.toMutableList().apply { this[indexOf("-map") + 1] = "p:$index" }
+                    val prepared = prepare(download, ArteQualityFixture.master(variants)) ?: args
+                    assertEquals(expected, prepared)
+                    assertEquals(switches, program.switches)
+                    assertEquals(stored, download.programInvocationArray)
+                    assertEquals(display, download.programInvocation)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `automatic quality selection preserves additional input options and explicit custom options never fetch`() {
+        val (download, program) = builtDownload("-user_agent MediathekView -i %f -c copy -bsf:a aac_adtstoasc **", FilmResolution.Enum.HIGH_QUALITY)
+        val original = download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY)
+        val prepared = requireNotNull(prepare(download, ArteQualityFixture.master()))
+        assertEquals(original.toMutableList().apply { this[indexOf("-map") + 1] = "p:4" }, prepared)
+        assertEquals("-user_agent MediathekView -i %f -c copy -bsf:a aac_adtstoasc **", program.switches)
+        val (explicit, _) = builtDownload("-i %f -map p:1 -map -0:s -c copy -bsf:a aac_adtstoasc -movflags +faststart **", FilmResolution.Enum.HIGH_QUALITY)
+        assertFalse(explicit.automaticArteHlsProgramMap)
+        assertNull(ArteHlsDownloadPreparer.prepare(explicit) { fail("Explicit custom mapping must not fetch") })
     }
 
     private fun optionValues(args: List<String>, option: String): List<String> =

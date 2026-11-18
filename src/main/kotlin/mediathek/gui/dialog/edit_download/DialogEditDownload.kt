@@ -26,7 +26,6 @@ import mediathek.config.application.ApplicationConfiguration
 import mediathek.controller.DownloadColumn
 import mediathek.controller.starter.DownloadProgressText
 import mediathek.daten.DatenDownload
-import mediathek.daten.DatenProg
 import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
 import mediathek.gui.dialog.HelpTextDialog
@@ -68,7 +67,6 @@ class DialogEditDownload(
     private val jCheckBoxSubtitle = JCheckBox()
     private val jCheckBoxSpotlight = JCheckBox()
     private val mVPanelDownloadZiel = MVPanelDownloadZiel(parent, datenDownload, false)
-    private val orgProgArray = datenDownload.programInvocationArray
     private val cbHighQuality = JCheckBox().apply { isEnabled = false }
     private val cbSubtitleAvailable = JCheckBox().apply { isEnabled = false }
 
@@ -86,6 +84,7 @@ class DialogEditDownload(
     private var urlField: JTextField? = null
     private var programmAufrufField: JTextField? = null
     private var programmAufrufArrayField: JTextField? = null
+    private var invocationEditor: DownloadInvocationEditor? = null
     private var btnQuerCodecDetailsForLocalUrl: JButton? = null
 
     init {
@@ -250,12 +249,7 @@ class DialogEditDownload(
             replacementRules = replacementRules,
         )
 
-        datenDownload.programInvocation =
-            newDownload.programInvocation
-        datenDownload.programInvocationArray =
-            newDownload.programInvocationArray
-        programmAufrufField?.text = datenDownload.programInvocation
-        programmAufrufArrayField?.text = datenDownload.programInvocationArray
+        requireNotNull(invocationEditor).applyGenerated(newDownload)
     }
 
     private fun loadResolutionSizesAsync() {
@@ -753,17 +747,18 @@ class DialogEditDownload(
             return false
         }
 
+        invocationEditor = DownloadInvocationEditor(datenDownload, requireNotNull(programmAufrufField), textField)
         if (datenDownload.programInvocationArray.isEmpty()) {
             label.foreground = hyperlinkColor()
             programmAufrufField?.let {
-                makeEditable(it, DownloadColumn.PROGRAM_INVOCATION)
+                it.isEditable = !gestartet
                 addValueComponent(label, it)
             }
             return true
         }
 
         label.foreground = hyperlinkColor()
-        makeEditable(textField, column)
+        textField.isEditable = !gestartet
         addValueComponent(label, createProgramCallPanel())
         return true
     }
@@ -781,7 +776,7 @@ class DialogEditDownload(
         val resetButton = JButton("").apply {
             toolTipText = "Reset"
             icon = IconUtils.of(FontAwesomeSolid.REDO_ALT)
-            addActionListener { programmArrayField.text = orgProgArray }
+            addActionListener { requireNotNull(invocationEditor).reset() }
         }
         val helpButton = JButton("").apply {
             icon = SVGIconUtilities.createSVGIcon("icons/fontawesome/circle-question.svg")
@@ -833,7 +828,7 @@ class DialogEditDownload(
 
             DownloadColumn.URL -> if (datenDownload.art == DownloadType.DIRECT) {
                 label.foreground = hyperlinkColor()
-                makeEditable(textField, column)
+                makeUrlEditable(textField)
             }
 
             DownloadColumn.PROGRESS -> textField.text =
@@ -897,33 +892,16 @@ class DialogEditDownload(
         makeShrinkable(this)
     }
 
-    private fun makeEditable(textField: JTextField, column: DownloadColumn) {
+    private fun makeUrlEditable(textField: JTextField) {
         textField.isEditable = !gestartet
-        textField.document.addDocumentListener(createDocumentListener(textField, column))
-    }
-
-    private fun createDocumentListener(textField: JTextField, column: DownloadColumn) = object : DocumentListener {
-        override fun insertUpdate(e: DocumentEvent) = updateDownloadValue(textField, column)
-        override fun removeUpdate(e: DocumentEvent) = updateDownloadValue(textField, column)
-        override fun changedUpdate(e: DocumentEvent) = updateDownloadValue(textField, column)
-    }
-
-    private fun updateDownloadValue(textField: JTextField, column: DownloadColumn) {
-        val value = textField.text.trim()
-        when (column) {
-            DownloadColumn.URL -> datenDownload.downloadUrl = value
-            DownloadColumn.PROGRAM_INVOCATION -> datenDownload.programInvocation = value
-            DownloadColumn.PROGRAM_INVOCATION_ARRAY -> datenDownload.programInvocationArray = value
-            else -> {
-                logger.warn("Ignoring unsupported editable download column: {}", column)
-                return
+        textField.document.addDocumentListener(object : DocumentListener {
+            private fun updateUrl() {
+                datenDownload.downloadUrl = textField.text.trim()
             }
-        }
-        if (column == DownloadColumn.PROGRAM_INVOCATION_ARRAY) {
-            datenDownload.programInvocation =
-                DatenProg.makeProgAufrufArray(datenDownload.programInvocationArray)
-            programmAufrufField?.text = datenDownload.programInvocation
-        }
+            override fun insertUpdate(e: DocumentEvent) = updateUrl()
+            override fun removeUpdate(e: DocumentEvent) = updateUrl()
+            override fun changedUpdate(e: DocumentEvent) = updateUrl()
+        })
     }
 
     private fun downloadArtText(): String = datenDownload.art.label
