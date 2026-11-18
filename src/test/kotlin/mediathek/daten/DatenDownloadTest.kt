@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Path
 
@@ -118,12 +119,13 @@ internal class DatenDownloadTest {
         )
     }
 
-    @Test
-    fun buildsProgramInvocationFromDownloadContext() {
+    @ParameterizedTest
+    @ValueSource(strings = ["https://example.invalid/subtitle.vtt?token=abc&lang=de", ""])
+    fun buildsProgramInvocationFromDownloadContext(subtitleUrl: String) {
         val program = DatenProg(
             "Program",
             "program",
-            "--target ** --url %f --rtmp %F --path %a --name %b --web %w",
+            "--target ** --url %f --rtmp %F --path %a --name %b --web %w --subtitle \"%u\"",
             false.toString(),
             false.toString(),
         )
@@ -138,15 +140,45 @@ internal class DatenDownloadTest {
                 targetFileName = "download.mp4",
                 targetPathFileName = "/tmp/download.mp4",
                 websiteUrl = "https://example.invalid/film",
+                subtitleUrl = subtitleUrl,
             ),
         )
 
         assertEquals(
             "program --target /tmp/download.mp4 --url https://example.invalid/download.mp4 " +
                 "--rtmp rtmp://example.invalid/download --path /tmp --name download.mp4 " +
-                "--web https://example.invalid/film",
+                "--web https://example.invalid/film --subtitle \"$subtitleUrl\"",
             invocation.command,
         )
+        assertEquals(
+            "program<>--target<>/tmp/download.mp4<>--url<>https://example.invalid/download.mp4" +
+                "<>--rtmp<>rtmp://example.invalid/download<>--path<>/tmp<>--name<>download.mp4" +
+                "<>--web<>https://example.invalid/film<>--subtitle<>\"$subtitleUrl\"",
+            invocation.commandArray,
+        )
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "BUTTON, https://example.invalid/subtitle.vtt?token=abc&lang=de",
+        "BUTTON, ''",
+        "DOWNLOAD, https://example.invalid/subtitle.vtt?token=abc&lang=de",
+        "DOWNLOAD, ''",
+    )
+    fun substitutesSubtitleUrlInPlaybackAndSaveSets(source: DownloadSource, subtitleUrl: String) {
+        val film = DatenFilm().apply {
+            urlNormalQuality = "https://example.invalid/video.mp4"
+            this.subtitleUrl = subtitleUrl
+        }
+        val programSet = DatenPset("Set").apply {
+            zielDateiname = "video.mp4"
+            zielPfad = "/downloads"
+            addProg(DatenProg("Program", "program", "--subtitle \"%u\" %f", "false", "false"))
+        }
+        val download = DatenDownload(programSet, film, source, null, "", "", "", ReplacementRules())
+
+        assertEquals("program --subtitle \"$subtitleUrl\" https://example.invalid/video.mp4", download.programInvocation)
+        assertEquals("program<>--subtitle<>\"$subtitleUrl\"<>https://example.invalid/video.mp4", download.programInvocationArray)
     }
 
     @Test
@@ -169,6 +201,7 @@ internal class DatenDownloadTest {
                 targetFileName = "video.mp4",
                 targetPathFileName = "/tmp/video.mp4",
                 websiteUrl = "https://www.arte.tv/de/videos/123456-000-A/video/",
+                subtitleUrl = "",
                 selectedResolution = FilmResolution.Enum.HIGH_QUALITY,
             ),
         )

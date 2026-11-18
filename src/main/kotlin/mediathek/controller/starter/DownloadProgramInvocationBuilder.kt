@@ -35,6 +35,7 @@ internal data class DownloadInvocationRequest(
     val targetFileName: String,
     val targetPathFileName: String,
     val websiteUrl: String,
+    val subtitleUrl: String,
     val selectedResolution: FilmResolution.Enum? = null,
 )
 
@@ -63,6 +64,7 @@ internal object DownloadProgramInvocationBuilder {
             .replace("%a", request.targetPath)
             .replace("%b", request.targetFileName)
             .replace("%w", request.websiteUrl)
+            .replace("%u", request.subtitleUrl)
 
     private fun String.withArteHlsQualityMap(request: DownloadInvocationRequest, separator: String): String {
         val programId = request.arteHlsProgramId() ?: return this

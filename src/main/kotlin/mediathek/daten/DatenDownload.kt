@@ -521,6 +521,7 @@ class DatenDownload() : Comparable<DatenDownload> {
                 targetFileName = targetFileName,
                 targetPathFileName = targetPathFileName,
                 websiteUrl = websiteUrl,
+                subtitleUrl = subtitleUrl,
                 selectedResolution = selectedResolution,
             ),
         )

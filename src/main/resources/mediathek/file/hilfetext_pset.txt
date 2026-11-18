@@ -79,6 +79,8 @@ Hier werden die Programme zum jeweiligen Set eingetragen. Sind mehrere Programme
 
 Diese Angaben werden durch die URL ersetzt:
 %f ist die URL des Films (Original-URL)
+%u ist die Untertitel-URL des Films (leere Zeichenfolge, wenn keine vorhanden ist).
+%u kann in Abspiel- und Speicher-Sets verwendet werden.
 
 Zwei Sterne "**" werden durch den Zieldateinamen mit Pfad ersetzt.
 
