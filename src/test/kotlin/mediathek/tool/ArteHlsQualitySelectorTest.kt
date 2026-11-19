@@ -22,6 +22,18 @@ internal object ArteQualityFixture {
 
 class ArteHlsQualitySelectorTest {
     @Test
+    fun `High quality selects The Game 1080p HEVC on the secure manifest host`() {
+        val url = "https://secure-manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ+KS+CHEV1/042694-000-B.m3u8"
+        val master = ArteQualityFixture.master()
+
+        val programId = DownloadQualitySupport.selectArteProgram(url, FilmResolution.Enum.HIGH_QUALITY) {
+            ArteHlsQualitySelector.Playlist(it, master)
+        }
+
+        assertEquals(4, programId)
+    }
+
+    @Test
     fun `downloads probes and size estimates agree for six streams AVC fallback and reordered streams`() {
         val fixtures = listOf(
             ArteQualityFixture.variants to listOf(4, 2, 0),

@@ -15,11 +15,12 @@ object ArteHlsQualitySelector {
 
     private const val STREAM_INF_TAG = "#EXT-X-STREAM-INF:"
     private const val MAX_PLAYLIST_BYTES = 1_048_576
+    private val manifestHosts = setOf("manifest-arte.akamaized.net", "secure-manifest-arte.akamaized.net")
     private val attributePattern = Regex("""([A-Z0-9-]+)=("[^"]*"|[^,"]+)(?:,|$)""")
 
     fun isArteManifest(url: String): Boolean {
         val httpUrl = url.toHttpUrlOrNull() ?: return false
-        return httpUrl.host.equals("manifest-arte.akamaized.net", ignoreCase = true) &&
+        return httpUrl.host in manifestHosts &&
             httpUrl.encodedPath.endsWith(".m3u8") &&
             httpUrl.encodedPath.contains("/api/manifest/", ignoreCase = true)
     }
