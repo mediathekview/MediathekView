@@ -62,8 +62,8 @@
         <kotlin.language.target>25</kotlin.language.target>
 
         <kotlin.version>2.5.0-RC</kotlin.version>
-        <kotlin.language.version>2.4</kotlin.language.version>
-        <kotlin.api.version>2.4</kotlin.api.version>
+        <kotlin.language.version>2.5</kotlin.language.version>
+        <kotlin.api.version>2.5</kotlin.api.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
         <commons-configuration2.version>2.15.1</commons-configuration2.version>

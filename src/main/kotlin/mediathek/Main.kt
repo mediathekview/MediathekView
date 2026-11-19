@@ -487,7 +487,7 @@ object Main {
         val strScale = System.getProperty("sun.java2d.uiScale")
         if (strScale != null) {
             try {
-                strScale.toInt()
+                val _ = strScale.toInt()
             } catch (_: NumberFormatException) {
                 // not an int -> show warning
                 // fractional scale is NOT supported under Linux, must use integer only.

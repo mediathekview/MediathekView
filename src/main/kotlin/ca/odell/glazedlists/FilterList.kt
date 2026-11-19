@@ -300,7 +300,7 @@ class FilterList<E> private constructor(
         updates.beginEvent()
         val iterator: BarcodeIterator = flagList.iterator()
         while (iterator.hasNext()) {
-            iterator.next()
+            val _ = iterator.next()
             val filteredIndex = iterator.blackIndex
             val wasIncluded = filteredIndex != -1
             val value = source!![iterator.index]

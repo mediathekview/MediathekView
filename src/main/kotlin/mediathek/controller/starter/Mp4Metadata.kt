@@ -80,7 +80,7 @@ internal object Mp4Metadata {
             logger.warn("Fehler beim Schreiben der MP4-Metadaten: {}", target, ex)
             false
         } finally {
-            runCatching { Files.deleteIfExists(temporaryTarget) }
+            val _ = runCatching { Files.deleteIfExists(temporaryTarget) }
         }
     }
 

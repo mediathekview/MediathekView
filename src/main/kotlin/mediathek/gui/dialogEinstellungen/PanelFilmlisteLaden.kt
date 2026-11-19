@@ -196,8 +196,8 @@ class PanelFilmlisteLaden(
 
             MessageBus.messageBus.publishAsync(FilmListImportTypeChangedEvent())
         }
-        jRadioButtonManuell.addActionListener { listener() }
-        jRadioButtonAuto.addActionListener { listener() }
+        jRadioButtonManuell.addActionListener { val _ = listener() }
+        jRadioButtonAuto.addActionListener { val _ = listener() }
 
         jTextFieldUrl.document.addDocumentListener(ImportUrlDocumentListener())
         val handler = TextCopyPasteHandler(jTextFieldUrl)
