@@ -1027,7 +1027,7 @@ return true;</property>
         </modules>
       </jreBundle>
     </unixArchive>
-    <linuxRPM name="Linux RPM" id="67">
+    <linuxRPM name="Linux RPM" id="67" arch="x86_64">
       <jreBundle>
         <modules>
           <defaultModules set="jre" />
