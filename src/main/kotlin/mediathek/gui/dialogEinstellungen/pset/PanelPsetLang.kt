@@ -28,6 +28,7 @@ import javax.swing.*
 import javax.swing.border.TitledBorder
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import javax.swing.table.DefaultTableModel
 import javax.swing.table.TableModel
 import javax.swing.text.JTextComponent
 
@@ -43,11 +44,19 @@ class PanelPsetLang(
     private val tabelleProgramme = JTable()
     private val psetNameRenderer = PsetNameCellRenderer()
     private val emptyProgramList = ListeProg()
-    private val panelScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+    @Volatile
+    private var panelScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
     private var programTableSorter: TriStateTableRowSorter<TableModel>? = null
     private var currentProgramList: ListeProg? = null
     private var programCheckJob: Job? = null
     private var stopBeob = false
+    private var programTableState: ProgramTableState? = null
+
+    private data class ProgramTableState(
+        val programSet: DatenPset?,
+        val program: DatenProg?,
+        val sortKeys: List<RowSorter.SortKey>,
+    )
 
     init {
         jScrollPane3.setViewportView(tabellePset)
@@ -69,11 +78,59 @@ class PanelPsetLang(
         }
     }
 
+    override fun addNotify() {
+        super.addNotify()
+        if (!panelScope.isActive) {
+            panelScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
+            MessageBus.messageBus.subscribe(this)
+            restoreProgramTable()
+        }
+    }
+
     override fun removeNotify() {
         MessageBus.messageBus.unsubscribe(this)
         programCheckJob?.cancel()
+        programCheckJob = null
         panelScope.cancel()
+        val model = tabelleProgramme.model as? AdvancedTableModel<*>
+        if (model != null) {
+            programTableState = ProgramTableState(
+                listePset.firstOrNull { it.listeProg === currentProgramList },
+                getSelectedProgramEntry(),
+                tabelleProgramme.rowSorter?.sortKeys.orEmpty(),
+            )
+            tabelleProgramme.rowSorter = null
+            tabelleProgramme.model = DefaultTableModel()
+            programTableSorter = null
+            currentProgramList = null
+            model.dispose()
+        }
         super.removeNotify()
+    }
+
+    private fun restoreProgramTable() {
+        val state = programTableState
+        programTableState = null
+        nurtabellePset()
+        val setIndex = listePset.indexOfFirst { it === state?.programSet }
+        stopBeob = true
+        if (setIndex == -1) {
+            tabellePset.clearSelection()
+        } else {
+            val viewRow = tabellePset.convertRowIndexToView(setIndex)
+            tabellePset.setRowSelectionInterval(viewRow, viewRow)
+        }
+        // Swing can retain the selection on reattach without firing a selection event.
+        tabelleProgramme()
+        if (state == null || setIndex == -1) return
+
+        tabelleProgramme.rowSorter.sortKeys = state.sortKeys
+        val programIndex = listePset[setIndex].listeProg.indexOfFirst { it === state.program }
+        if (programIndex != -1) {
+            selectProgramModelRow(programIndex)
+        } else if (state.program == null) {
+            tabelleProgramme.clearSelection()
+        }
     }
 
     private fun initPanel() {
