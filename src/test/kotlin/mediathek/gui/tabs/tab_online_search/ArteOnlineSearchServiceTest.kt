@@ -1,11 +1,26 @@
 package mediathek.gui.tabs.tab_online_search
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Response
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TestTimeSource
 
 class ArteOnlineSearchServiceTest {
     @Test
@@ -466,7 +481,7 @@ class ArteOnlineSearchServiceTest {
     }
 
     @Test
-    fun `search retries rate limited ARTE request and stores learned delay`() = runBlocking {
+    fun `search paces requests and reduces the learned delay after five consecutive successes`() = runBlocking {
         val searchUrl = "$SEARCH_CONTENT_URL?page=1&query=tatort"
         val httpClient = RateLimitedOnlineSearchHttpClient(
             responses = mapOf(
@@ -474,15 +489,641 @@ class ArteOnlineSearchServiceTest {
                 "$PLAYER_CONFIG_URL/118267-006-A" to arteConfigJson(),
             ),
             rateLimitedUrl = searchUrl,
+            retryAfterValues = listOf(Duration.ofMillis(1)),
         )
         val rateLimitState = TestArteRateLimitState()
-        val service = ArteOnlineSearchService(httpClient, rateLimitState)
+        val clock = TestTimeSource()
+        val waits = mutableListOf<Long>()
+        val service = ArteOnlineSearchService(httpClient, rateLimitState, clock) {
+            waits += it.inWholeMilliseconds
+            clock += it
+        }
 
         val page = service.search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "tatort"))
 
         assertEquals(1, page.results.size)
         assertEquals(2, httpClient.requestedUrls.count { it == searchUrl })
-        assertEquals(250, rateLimitState.requestDelayMillis)
+        assertEquals(List(5) { 500L } + List(3) { 375L }, waits)
+        assertEquals(375L, rateLimitState.requestDelayMillis)
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun `sustained traffic stops testing a delay that caused a 429`(withRetryAfter: Boolean) = runBlocking {
+        val clock = TestTimeSource()
+        val retryAfter = Duration.ofSeconds(1).takeIf { withRetryAfter }
+        val rejectedLookups = mutableListOf<Int>()
+        var minimumSpacing = 1.seconds
+        var lookup = 0
+        val client = object : OnlineSearchHttpClient {
+            private var lastAcceptedRequest = clock.markNow() - 1.seconds
+
+            override suspend fun get(url: String, headers: Map<String, String>): String {
+                if (lastAcceptedRequest.elapsedNow() < minimumSpacing) {
+                    rejectedLookups += lookup
+                    throw OnlineSearchHttpException(429, "Too Many Requests", url, retryAfter)
+                }
+                lastAcceptedRequest = clock.markNow()
+                return arteConfigJson()
+            }
+        }
+        val rateLimitState = TestArteRateLimitState(requestDelayMillis = 1_000L)
+        val service = ArteOnlineSearchService(client, rateLimitState, clock) { clock += it }
+        val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, "$PLAYER_CONFIG_URL/118267-006-A")
+
+        for (index in 1..150) {
+            lookup = index
+            assertTrue(service.loadByUrl(request) != null)
+            if (index >= 6) {
+                assertTrue(rateLimitState.requestDelayMillis >= 1_000L, "Delay fell below the floor at lookup $index")
+            }
+        }
+
+        assertEquals(listOf(6), rejectedLookups)
+        assertEquals(1_000L, rateLimitState.requestDelayMillis)
+
+        clock += 1.minutes
+        minimumSpacing = 500.milliseconds
+        for (index in 151..156) {
+            lookup = index
+            assertTrue(service.loadByUrl(request) != null)
+        }
+        assertEquals(750L, rateLimitState.requestDelayMillis)
+        assertEquals(listOf(6), rejectedLookups)
+    }
+
+    @Test
+    fun `a 429 resets the success streak and backs off even with a short Retry-After`() = runBlocking {
+        val ordinaryUrl = "$PLAYER_CONFIG_URL/118267-006-A"
+        val limitedUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+        val httpClient = RateLimitedOnlineSearchHttpClient(
+            responses = mapOf(ordinaryUrl to "{}", limitedUrl to "{}"),
+            rateLimitedUrl = limitedUrl,
+            retryAfterValues = listOf(Duration.ofSeconds(1)),
+        )
+        val rateLimitState = TestArteRateLimitState(requestDelayMillis = 2_000L)
+        val clock = TestTimeSource()
+        val service = ArteOnlineSearchService(httpClient, rateLimitState, clock) { clock += it }
+        val ordinaryRequest = OnlineUrlRequest(OnlineSearchProvider.ARTE, ordinaryUrl)
+
+        repeat(4) { service.loadByUrl(ordinaryRequest) }
+        service.loadByUrl(OnlineUrlRequest(OnlineSearchProvider.ARTE, limitedUrl))
+        assertEquals(4_000L, rateLimitState.requestDelayMillis)
+
+        repeat(3) { service.loadByUrl(ordinaryRequest) }
+        assertEquals(4_000L, rateLimitState.requestDelayMillis)
+        service.loadByUrl(ordinaryRequest)
+        assertEquals(3_000L, rateLimitState.requestDelayMillis)
+    }
+
+    @Test
+    fun `short Retry-After still learns the sustained two-second request interval`() = runBlocking {
+        val clock = TestTimeSource()
+        val rejectedLookups = mutableListOf<Int>()
+        var lookup = 0
+        val httpClient = object : OnlineSearchHttpClient {
+            private var lastAcceptedRequest = clock.markNow() - 2.seconds
+
+            override suspend fun get(url: String, headers: Map<String, String>): String {
+                if (lastAcceptedRequest.elapsedNow() < 2.seconds) {
+                    rejectedLookups += lookup
+                    throw OnlineSearchHttpException(429, "Too Many Requests", url, Duration.ofSeconds(1))
+                }
+                lastAcceptedRequest = clock.markNow()
+                return arteConfigJson()
+            }
+        }
+        val rateLimitState = TestArteRateLimitState(requestDelayMillis = 1_000L)
+        val service = ArteOnlineSearchService(httpClient, rateLimitState, clock) { clock += it }
+        val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, "$PLAYER_CONFIG_URL/118267-006-A")
+
+        for (index in 1..150) {
+            lookup = index
+            assertTrue(service.loadByUrl(request) != null)
+        }
+
+        assertEquals(listOf(2, 7), rejectedLookups)
+        assertEquals(2_000L, rateLimitState.requestDelayMillis)
+    }
+
+    @Test
+    fun `player config retries honor a Retry-After above the learned delay cap`() = runBlocking {
+        val configUrl = "$PLAYER_CONFIG_URL/118267-006-A"
+        val httpClient = RateLimitedOnlineSearchHttpClient(
+            responses = mapOf(configUrl to arteConfigJson()),
+            rateLimitedUrl = configUrl,
+            retryAfterValues = listOf(Duration.ofSeconds(30)),
+        )
+        val rateLimitState = TestArteRateLimitState()
+        val clock = TestTimeSource()
+        val startedAt = clock.markNow()
+        val service = ArteOnlineSearchService(httpClient, rateLimitState, clock) { clock += it }
+        val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, configUrl)
+
+        assertTrue(service.loadByUrl(request) != null)
+        assertEquals(listOf(configUrl, configUrl), httpClient.requestedUrls)
+        assertEquals(30.seconds, startedAt.elapsedNow())
+        assertEquals(10_000L, rateLimitState.requestDelayMillis)
+
+        clock += 4.seconds
+        assertTrue(service.loadByUrl(request) != null)
+        assertEquals(40.seconds, startedAt.elapsedNow())
+        assertEquals(10_000L, rateLimitState.requestDelayMillis)
+    }
+
+    @Test
+    fun `a final 429 keeps its cooldown for the next request`() = runBlocking {
+        val configUrl = "$PLAYER_CONFIG_URL/118267-006-A"
+        val httpClient = RateLimitedOnlineSearchHttpClient(
+            responses = mapOf(configUrl to arteConfigJson()),
+            rateLimitedUrl = configUrl,
+            retryAfterValues = listOf(null, null, Duration.ofSeconds(90)),
+        )
+        val clock = TestTimeSource()
+        val startedAt = clock.markNow()
+        val service = ArteOnlineSearchService(httpClient, TestArteRateLimitState(), clock) { clock += it }
+        val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, configUrl)
+
+        assertEquals(429, assertThrows<OnlineSearchHttpException> { service.loadByUrl(request) }.statusCode)
+        assertEquals(3, httpClient.requestedUrls.size)
+        assertEquals(1500.milliseconds, startedAt.elapsedNow())
+
+        clock += 65.seconds
+        assertTrue(service.loadByUrl(request) != null)
+        assertEquals(91_500.milliseconds, startedAt.elapsedNow())
+    }
+
+    @Test
+    fun `cancelling during Retry-After preserves the remaining cooldown for the next search`() = runBlocking {
+        withTimeout(5.seconds) {
+            val firstUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+            val nextUrl = "$PLAYER_CONFIG_URL/118267-006-A"
+            val httpClient = RateLimitedOnlineSearchHttpClient(
+                responses = mapOf(nextUrl to arteConfigJson()),
+                rateLimitedUrl = firstUrl,
+                retryAfterValues = listOf(Duration.ofSeconds(30)),
+            )
+            val clock = TestTimeSource()
+            val waits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val resumeWait = CompletableDeferred<Unit>()
+            val rateLimitState = TestArteRateLimitState()
+            val service = ArteOnlineSearchService(httpClient, rateLimitState, clock) { wait ->
+                waits.send(wait)
+                resumeWait.await()
+                clock += wait
+            }
+
+            val firstSearch = launch { service.loadByUrl(OnlineUrlRequest(OnlineSearchProvider.ARTE, firstUrl)) }
+            assertEquals(30.seconds, waits.receive())
+            clock += 12.seconds
+            firstSearch.cancelAndJoin()
+
+            val nextSearch = async { service.loadByUrl(OnlineUrlRequest(OnlineSearchProvider.ARTE, nextUrl)) }
+            assertEquals(18.seconds, waits.receive())
+            assertEquals(listOf(firstUrl), httpClient.requestedUrls)
+            assertEquals(10_000L, rateLimitState.requestDelayMillis)
+            resumeWait.complete(Unit)
+
+            assertTrue(nextSearch.await() != null)
+            assertEquals(listOf(firstUrl, nextUrl), httpClient.requestedUrls)
+            assertEquals(10_000L, rateLimitState.requestDelayMillis)
+        }
+    }
+
+    @Test
+    fun `cancelling after the idle threshold preserves the learned floor and pending Retry-After`() = runBlocking {
+        withTimeout(5.seconds) {
+            val clock = TestTimeSource()
+            val rateLimitState = TestArteRateLimitState(requestDelayMillis = 1_000L)
+            var calls = 0
+            var rejections = 0
+            val httpClient = object : OnlineSearchHttpClient {
+                private var lastAcceptedRequest = clock.markNow() - 1.seconds
+
+                override suspend fun get(url: String, headers: Map<String, String>): String {
+                    calls++
+                    if (lastAcceptedRequest.elapsedNow() < 1.seconds) {
+                        rejections++
+                        throw OnlineSearchHttpException(429, "Too Many Requests", url, Duration.ofSeconds(90))
+                    }
+                    lastAcceptedRequest = clock.markNow()
+                    return arteConfigJson()
+                }
+            }
+            val cooldownWaits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val resumeWait = CompletableDeferred<Unit>()
+            val service = ArteOnlineSearchService(httpClient, rateLimitState, clock) { wait ->
+                if (wait > 10.seconds) {
+                    cooldownWaits.send(wait)
+                    resumeWait.await()
+                }
+                clock += wait
+            }
+            val firstRequest = OnlineUrlRequest(OnlineSearchProvider.ARTE, "$PLAYER_CONFIG_URL/119947-000-A")
+            val nextRequest = OnlineUrlRequest(OnlineSearchProvider.ARTE, "$PLAYER_CONFIG_URL/118267-006-A")
+
+            repeat(5) { service.loadByUrl(firstRequest) }
+            assertEquals(750L, rateLimitState.requestDelayMillis)
+            val firstSearch = launch { service.loadByUrl(firstRequest) }
+            assertEquals(90.seconds, cooldownWaits.receive())
+            clock += 65.seconds
+            firstSearch.cancelAndJoin()
+
+            val nextSearch = async { service.loadByUrl(nextRequest) }
+            assertEquals(25.seconds, cooldownWaits.receive())
+            assertEquals(6, calls)
+            resumeWait.complete(Unit)
+            assertTrue(nextSearch.await() != null)
+
+            repeat(60) { assertTrue(service.loadByUrl(nextRequest) != null) }
+            assertEquals(1_000L, rateLimitState.requestDelayMillis)
+            assertEquals(1, rejections)
+            assertEquals(67, calls)
+        }
+    }
+
+    @Test
+    fun `a cancelled subtitle cooldown stays on its CDN and leaves the ARTE API available`() = runBlocking {
+        withTimeout(5.seconds) {
+            val firstUrl = "$PLAYER_CONFIG_URL/118267-006-A"
+            val nextUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+            val masterUrl = "https://manifest-arte.akamaized.net/118267-006-A.m3u8"
+            val subtitleUrl = "https://manifest-arte.akamaized.net/subtitles/de.vtt"
+            val clock = TestTimeSource()
+            val apiRateLimitState = TestArteRateLimitState()
+            val requestedUrls = mutableListOf<String>()
+            var masterRequests = 0
+            val httpClient = object : OnlineSearchHttpClient {
+                override suspend fun get(url: String, headers: Map<String, String>): String {
+                    requestedUrls += url
+                    return when (url) {
+                        firstUrl -> arteConfigJson(hasGermanSubtitles = true)
+                        nextUrl -> arteConfigJson()
+                        masterUrl -> {
+                            if (++masterRequests == 1) {
+                                throw OnlineSearchHttpException(429, "Too Many Requests", url, Duration.ofSeconds(90))
+                            }
+                            arteMasterPlaylist(subtitleUrl)
+                        }
+                        else -> error("Unexpected ARTE request: $url")
+                    }
+                }
+            }
+            val waits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val resumeWait = CompletableDeferred<Unit>()
+            val service = ArteOnlineSearchService(httpClient, apiRateLimitState, clock) { wait ->
+                waits.send(wait)
+                resumeWait.await()
+                clock += wait
+            }
+            val firstRequest = OnlineUrlRequest(OnlineSearchProvider.ARTE, firstUrl)
+            val firstSearch = launch { service.loadByUrl(firstRequest) }
+            assertEquals(90.seconds, waits.receive())
+            clock += 65.seconds
+            firstSearch.cancelAndJoin()
+
+            val retry = async { service.loadByUrl(firstRequest) }
+            assertEquals(25.seconds, waits.receive())
+            assertEquals(listOf(firstUrl, masterUrl, firstUrl), requestedUrls)
+
+            val cooldownStartedAt = clock.markNow()
+            assertTrue(service.loadByUrl(OnlineUrlRequest(OnlineSearchProvider.ARTE, nextUrl)) != null)
+            assertEquals(kotlin.time.Duration.ZERO, cooldownStartedAt.elapsedNow())
+            assertEquals(listOf(firstUrl, masterUrl, firstUrl, nextUrl), requestedUrls)
+            assertEquals(0L, apiRateLimitState.requestDelayMillis)
+
+            resumeWait.complete(Unit)
+            assertEquals(subtitleUrl, retry.await()?.subtitleUrl)
+            assertEquals(25.seconds, cooldownStartedAt.elapsedNow())
+            assertEquals(listOf(firstUrl, masterUrl, firstUrl, nextUrl, masterUrl), requestedUrls)
+        }
+    }
+
+    @Test
+    fun `a redirected CDN retains its cooldown and learned floor across cancellation`() = runBlocking {
+        withTimeout(5.seconds) {
+            val clock = TestTimeSource()
+            val redirectingUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+            val healthyUrl = "$PLAYER_CONFIG_URL/118267-006-A"
+            val redirectLocation = "//manifest-arte.akamaized.net/config/119947-000-A"
+            val cdnUrl = "https:$redirectLocation"
+            val cdnRequests = AtomicInteger()
+            val cdnRejections = AtomicInteger()
+            var lastAcceptedCdnRequest = clock.markNow() - 1.seconds
+            val client = OkHttpClient.Builder().addInterceptor { chain ->
+                val request = chain.request()
+                val response = Response.Builder().request(request).protocol(Protocol.HTTP_1_1)
+                when (request.url.toString()) {
+                    redirectingUrl -> response.code(302).message("Found")
+                        .header("Location", redirectLocation)
+                        .body("".toResponseBody())
+                    healthyUrl -> response.code(200).message("OK").body(arteConfigJson().toResponseBody())
+                    cdnUrl -> {
+                        cdnRequests.incrementAndGet()
+                        if (lastAcceptedCdnRequest.elapsedNow() < 1.seconds) {
+                            val retryAfter = if (cdnRejections.incrementAndGet() == 1) "1" else "90"
+                            response.code(429).message("Too Many Requests").header("Retry-After", retryAfter)
+                                .body("".toResponseBody())
+                        } else {
+                            lastAcceptedCdnRequest = clock.markNow()
+                            response.code(200).message("OK").body(arteConfigJson().toResponseBody())
+                        }
+                    }
+                    else -> error("Unexpected ARTE request: ${request.url}")
+                }.build()
+            }.build()
+            val waits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val resumeWait = CompletableDeferred<Unit>()
+            val apiRateLimitState = TestArteRateLimitState()
+            val service = ArteOnlineSearchService(OkHttpOnlineSearchHttpClient(client), apiRateLimitState, clock) { wait ->
+                if (wait > 10.seconds) {
+                    waits.send(wait)
+                    resumeWait.await()
+                }
+                clock += wait
+            }
+            val redirectingRequest = OnlineUrlRequest(OnlineSearchProvider.ARTE, redirectingUrl)
+            val healthyRequest = OnlineUrlRequest(OnlineSearchProvider.ARTE, healthyUrl)
+            repeat(6) { assertTrue(service.loadByUrl(redirectingRequest) != null) }
+            assertEquals(1, cdnRejections.get())
+
+            val first = launch { service.loadByUrl(redirectingRequest) }
+            assertEquals(90.seconds, waits.receive())
+            clock += 65.seconds
+            first.cancelAndJoin()
+
+            val next = async { service.loadByUrl(redirectingRequest) }
+            assertEquals(25.seconds, waits.receive())
+            assertEquals(8, cdnRequests.get())
+            val startedAt = clock.markNow()
+            assertTrue(service.loadByUrl(healthyRequest) != null)
+            assertEquals(kotlin.time.Duration.ZERO, startedAt.elapsedNow())
+            assertEquals(0L, apiRateLimitState.requestDelayMillis)
+            resumeWait.complete(Unit)
+            assertTrue(next.await() != null)
+
+            repeat(55) { assertTrue(service.loadByUrl(redirectingRequest) != null) }
+            val sustainedStart = clock.markNow()
+            repeat(5) { assertTrue(service.loadByUrl(redirectingRequest) != null) }
+            assertEquals(5.seconds, sustainedStart.elapsedNow())
+            assertEquals(2, cdnRejections.get())
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun `a redirected lookup refreshes the target after the full cooldown`(cancelFirstLookup: Boolean) = runBlocking {
+        withTimeout(5.seconds) {
+            val originalUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+            val oldTarget = "https://manifest-arte.akamaized.net/temporary-config/old"
+            val newTarget = "https://manifest-arte.akamaized.net/temporary-config/new"
+            val clock = TestTimeSource()
+            val startedAt = clock.markNow()
+            val requests = CopyOnWriteArrayList<String>()
+            val client = OkHttpClient.Builder().addInterceptor { chain ->
+                val request = chain.request()
+                val url = request.url.toString()
+                val targetExpired = startedAt.elapsedNow() >= 30.seconds
+                requests += url
+                val response = Response.Builder().request(request).protocol(Protocol.HTTP_1_1)
+                when {
+                    url == originalUrl -> response.code(302).message("Found")
+                        .header("Location", if (targetExpired) newTarget else oldTarget).body("".toResponseBody())
+                    url == oldTarget && !targetExpired -> response.code(429).message("Too Many Requests")
+                        .header("Retry-After", "90").body("".toResponseBody())
+                    url == oldTarget -> response.code(403).message("Expired").body("".toResponseBody())
+                    url == newTarget -> response.code(200).message("OK").body(arteConfigJson().toResponseBody())
+                    else -> error("Unexpected ARTE request: $url")
+                }.build()
+            }.build()
+            val waits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val resumeWait = CompletableDeferred<Unit>()
+            val apiRateLimitState = TestArteRateLimitState()
+            val service = ArteOnlineSearchService(OkHttpOnlineSearchHttpClient(client), apiRateLimitState, clock) { wait ->
+                waits.send(wait)
+                resumeWait.await()
+                clock += wait
+            }
+            val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, originalUrl)
+            val first = async { service.loadByUrl(request) }
+            assertEquals(90.seconds, waits.receive())
+            assertEquals(listOf(originalUrl, oldTarget), requests)
+
+            val lookup = if (cancelFirstLookup) {
+                clock += 15.seconds
+                first.cancelAndJoin()
+                val replacement = async { service.loadByUrl(request) }
+                assertEquals(75.seconds, waits.receive())
+                assertEquals(listOf(originalUrl, oldTarget, originalUrl), requests)
+                replacement
+            } else {
+                first
+            }
+            val requestsBeforeRetry = requests.toList()
+            resumeWait.complete(Unit)
+
+            assertTrue(lookup.await() != null)
+            assertEquals(90.seconds, startedAt.elapsedNow())
+            assertEquals(requestsBeforeRetry + listOf(originalUrl, newTarget), requests)
+            assertEquals(0L, apiRateLimitState.requestDelayMillis)
+        }
+    }
+
+    @Test
+    fun `concurrent lookups both refresh redirects queued during a CDN cooldown`() = runBlocking {
+        withTimeout(5.seconds) {
+            val originalUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+            val oldTarget = "https://manifest-arte.akamaized.net/temporary-config/old"
+            val newTarget = "https://manifest-arte.akamaized.net/temporary-config/new"
+            val clock = TestTimeSource()
+            val startedAt = clock.markNow()
+            val requests = mutableListOf<String>()
+            val waits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val resumeWait = CompletableDeferred<Unit>()
+            val client = object : OnlineSearchHttpClient {
+                override suspend fun get(url: String, headers: Map<String, String>): String = error("Expected a single hop")
+
+                override suspend fun getHop(url: String): OnlineSearchHttpHop {
+                    requests += url
+                    val expired = startedAt.elapsedNow() >= 30.seconds
+                    return when (url) {
+                        originalUrl -> OnlineSearchHttpHop.Redirect((if (expired) newTarget else oldTarget).toHttpUrl())
+                        oldTarget -> if (expired) {
+                            throw OnlineSearchHttpException(403, "Expired", url)
+                        } else {
+                            throw OnlineSearchHttpException(429, "Too Many Requests", url, Duration.ofSeconds(90))
+                        }
+                        newTarget -> OnlineSearchHttpHop.Body(arteConfigJson())
+                        else -> error("Unexpected ARTE request: $url")
+                    }
+                }
+            }
+            val service = ArteOnlineSearchService(client, TestArteRateLimitState(), clock) { wait ->
+                if (!resumeWait.isCompleted) {
+                    waits.send(wait)
+                    resumeWait.await()
+                }
+                clock += wait
+            }
+            val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, originalUrl)
+            val cancelled = launch { service.loadByUrl(request) }
+            assertEquals(90.seconds, waits.receive())
+            clock += 15.seconds
+            cancelled.cancelAndJoin()
+
+            val waiting = async { service.loadByUrl(request) }
+            assertEquals(75.seconds, waits.receive())
+            val queued = async(start = CoroutineStart.UNDISPATCHED) { service.loadByUrl(request) }
+            assertEquals(listOf(originalUrl, oldTarget, originalUrl, originalUrl), requests)
+
+            resumeWait.complete(Unit)
+            assertTrue(waiting.await() != null)
+            assertTrue(queued.await() != null)
+            assertEquals(1, requests.count { it == oldTarget })
+            assertEquals(2, requests.count { it == newTarget })
+            assertEquals(5, requests.count { it == originalUrl })
+            assertEquals(100.seconds, startedAt.elapsedNow())
+        }
+    }
+
+    @Test
+    fun `a delayed redirect response still refreshes a target issued during the CDN cooldown`() = runBlocking {
+        withTimeout(5.seconds) {
+            val originalUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+            val oldRoute = "$PLAYER_CONFIG_URL/redirect-old"
+            val newRoute = "$PLAYER_CONFIG_URL/redirect-new"
+            val oldTarget = "https://manifest-arte.akamaized.net/temporary-config/old"
+            val newTarget = "https://manifest-arte.akamaized.net/temporary-config/new"
+            val clock = TestTimeSource()
+            val startedAt = clock.markNow()
+            val waits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val redirectIssued = CompletableDeferred<Unit>()
+            val deliverRedirect = CompletableDeferred<Unit>()
+            val requests = mutableListOf<String>()
+            var originalRequests = 0
+            val client = object : OnlineSearchHttpClient {
+                override suspend fun get(url: String, headers: Map<String, String>): String = error("Expected a single hop")
+
+                override suspend fun getHop(url: String): OnlineSearchHttpHop {
+                    requests += url
+                    val expired = startedAt.elapsedNow() >= 88.seconds
+                    return when (url) {
+                        originalUrl -> {
+                            val route = if (expired) newRoute else oldRoute
+                            if (++originalRequests == 2) {
+                                redirectIssued.complete(Unit)
+                                deliverRedirect.await()
+                            }
+                            OnlineSearchHttpHop.Redirect(route.toHttpUrl())
+                        }
+                        oldRoute -> OnlineSearchHttpHop.Redirect(oldTarget.toHttpUrl())
+                        newRoute -> OnlineSearchHttpHop.Redirect(newTarget.toHttpUrl())
+                        oldTarget -> if (expired) {
+                            throw OnlineSearchHttpException(403, "Expired", url)
+                        } else {
+                            throw OnlineSearchHttpException(429, "Too Many Requests", url, Duration.ofSeconds(90))
+                        }
+                        newTarget -> OnlineSearchHttpHop.Body(arteConfigJson())
+                        else -> error("Unexpected ARTE request: $url")
+                    }
+                }
+            }
+            val service = ArteOnlineSearchService(client, TestArteRateLimitState(), clock) { wait ->
+                waits.send(wait)
+                awaitCancellation()
+            }
+            val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, originalUrl)
+            val cancelled = launch { service.loadByUrl(request) }
+            assertEquals(90.seconds, waits.receive())
+            clock += 85.seconds
+            cancelled.cancelAndJoin()
+
+            val replacement = async { service.loadByUrl(request) }
+            redirectIssued.await()
+            clock += 6.seconds
+            deliverRedirect.complete(Unit)
+
+            assertTrue(replacement.await() != null)
+            assertEquals(91.seconds, startedAt.elapsedNow())
+            assertEquals(
+                listOf(originalUrl, oldRoute, oldTarget, originalUrl, oldRoute, originalUrl, newRoute, newTarget),
+                requests,
+            )
+        }
+    }
+
+    @Test
+    fun `a replacement lookup shares one three-attempt budget across CDN hosts`() = runBlocking {
+        withTimeout(5.seconds) {
+            val clock = TestTimeSource()
+            val startedAt = clock.markNow()
+            val originalUrl = "$PLAYER_CONFIG_URL/119947-000-A"
+            val firstCdn = "https://one.example.invalid/config"
+            val secondCdn = "https://two.example.invalid/config"
+            val finalCdn = "https://three.example.invalid/config"
+            val cdnCalls = mutableListOf<Pair<String, kotlin.time.Duration>>()
+            val waits = Channel<kotlin.time.Duration>(Channel.UNLIMITED)
+            val resumeWait = CompletableDeferred<Unit>()
+            var cdnRecovered = false
+            val client = object : OnlineSearchHttpClient {
+                override suspend fun get(url: String, headers: Map<String, String>): String = error("Expected a single hop")
+
+                override suspend fun getHop(url: String): OnlineSearchHttpHop {
+                    val elapsed = startedAt.elapsedNow()
+                    if (url == originalUrl) {
+                        val destination = when {
+                            elapsed < 120.seconds -> firstCdn
+                            elapsed < 160.seconds -> secondCdn
+                            else -> finalCdn
+                        }
+                        return OnlineSearchHttpHop.Redirect(destination.toHttpUrl())
+                    }
+
+                    cdnCalls += url to elapsed
+                    if (cdnRecovered) return OnlineSearchHttpHop.Body(arteConfigJson())
+                    check(cdnCalls.size <= 4) { "Replacement lookup exceeded its three-attempt budget" }
+                    val retryAfter = when (url) {
+                        firstCdn -> if (elapsed == kotlin.time.Duration.ZERO) 90L else 30L
+                        secondCdn -> 40L
+                        finalCdn -> 50L
+                        else -> error("Unexpected ARTE request: $url")
+                    }
+                    throw OnlineSearchHttpException(429, "Too Many Requests", url, Duration.ofSeconds(retryAfter))
+                }
+            }
+            val apiRateLimitState = TestArteRateLimitState()
+            val service = ArteOnlineSearchService(client, apiRateLimitState, clock) { wait ->
+                if (!resumeWait.isCompleted) {
+                    waits.send(wait)
+                    resumeWait.await()
+                }
+                clock += wait
+            }
+            val request = OnlineUrlRequest(OnlineSearchProvider.ARTE, originalUrl)
+            val cancelled = launch { service.loadByUrl(request) }
+            assertEquals(90.seconds, waits.receive())
+            clock += 15.seconds
+            cancelled.cancelAndJoin()
+
+            val replacement = async { assertThrows<OnlineSearchHttpException> { service.loadByUrl(request) } }
+            assertEquals(75.seconds, waits.receive())
+            resumeWait.complete(Unit)
+
+            val failure = replacement.await()
+            assertEquals(429, failure.statusCode)
+            assertEquals(finalCdn, failure.url)
+            assertEquals(
+                listOf(firstCdn to 0.seconds, firstCdn to 90.seconds, secondCdn to 120.seconds, finalCdn to 160.seconds),
+                cdnCalls,
+            )
+            assertEquals(160.seconds, startedAt.elapsedNow())
+            assertEquals(0L, apiRateLimitState.requestDelayMillis)
+
+            cdnRecovered = true
+            assertTrue(service.loadByUrl(request) != null)
+            assertEquals(finalCdn to 210.seconds, cdnCalls.last())
+            assertEquals(5, cdnCalls.size)
+        }
     }
 
     private companion object {
@@ -522,19 +1163,19 @@ private fun testArteService(httpClient: OnlineSearchHttpClient): ArteOnlineSearc
 private class RateLimitedOnlineSearchHttpClient(
     responses: Map<String, String>,
     private val rateLimitedUrl: String,
+    retryAfterValues: List<Duration?>,
 ) : OnlineSearchHttpClient {
     private val responses = responses.withEmptyOtherCatalogues()
     val requestedUrls = ArrayList<String>()
-    private var rateLimitThrown = false
+    private val retryAfterValues = retryAfterValues.iterator()
 
     override suspend fun get(url: String, headers: Map<String, String>): String {
         requestedUrls += url
-        if (url == rateLimitedUrl && !rateLimitThrown) {
-            rateLimitThrown = true
+        if (url == rateLimitedUrl && retryAfterValues.hasNext()) {
             throw OnlineSearchHttpException(
                 statusCode = 429,
                 message = "Too Many Requests",
-                retryAfter = Duration.ofMillis(1),
+                retryAfter = retryAfterValues.next(),
             )
         }
         return responses[url] ?: error("No fake response registered for $url")

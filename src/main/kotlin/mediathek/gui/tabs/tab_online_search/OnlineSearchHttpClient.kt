@@ -9,11 +9,17 @@ import java.time.Duration
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 interface OnlineSearchHttpClient {
     suspend fun get(url: String, headers: Map<String, String> = emptyMap()): String
+
+    suspend fun getHop(url: String): OnlineSearchHttpHop = OnlineSearchHttpHop.Body(get(url))
+}
+
+sealed interface OnlineSearchHttpHop {
+    data class Body(val text: String) : OnlineSearchHttpHop
+    data class Redirect(val url: HttpUrl) : OnlineSearchHttpHop
 }
 
 class OnlineSearchHttpException(
@@ -35,7 +41,40 @@ class OnlineSearchHttpException(
 class OkHttpOnlineSearchHttpClient(
     private val client: OkHttpClient,
 ) : OnlineSearchHttpClient {
-    override suspend fun get(url: String, headers: Map<String, String>): String = suspendCancellableCoroutine { continuation ->
+    private val singleHopClient by lazy { client.newBuilder().followRedirects(false).build() }
+
+    override suspend fun get(url: String, headers: Map<String, String>): String =
+        execute(client, url, headers, ::readBody)
+
+    override suspend fun getHop(url: String): OnlineSearchHttpHop =
+        execute(singleHopClient, url, emptyMap()) { response ->
+            val target = if (client.followRedirects && response.isRedirect) {
+                response.header("Location")?.let(response.request.url::resolve)
+                    ?.takeIf { client.followSslRedirects || it.scheme == response.request.url.scheme }
+            } else {
+                null
+            }
+            target?.let(OnlineSearchHttpHop::Redirect) ?: OnlineSearchHttpHop.Body(readBody(response))
+        }
+
+    private fun readBody(response: Response): String {
+        if (!response.isSuccessful) {
+            throw OnlineSearchHttpException(
+                statusCode = response.code,
+                message = response.message,
+                url = response.request.url.toString(),
+                retryAfter = response.header("Retry-After")?.toRetryAfterDuration(),
+            )
+        }
+        return response.body.string()
+    }
+
+    private suspend fun <T> execute(
+        client: OkHttpClient,
+        url: String,
+        headers: Map<String, String>,
+        readResponse: (Response) -> T,
+    ): T = suspendCancellableCoroutine { continuation ->
         val request = Request.Builder()
             .url(url)
             .apply { headers.forEach { (name, value) -> header(name, value) } }
@@ -52,24 +91,10 @@ class OkHttpOnlineSearchHttpClient(
             }
 
             override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (!it.isSuccessful) {
-                        if (continuation.isActive) {
-                            continuation.resumeWithException(
-                                OnlineSearchHttpException(
-                                    statusCode = it.code,
-                                    message = it.message,
-                                    url = url,
-                                    retryAfter = it.header("Retry-After")?.toRetryAfterDuration(),
-                                ),
-                            )
-                        }
-                        return
-                    }
-                    val body = it.body.string()
-                    if (continuation.isActive) {
-                        continuation.resume(body)
-                    }
+                if (continuation.isActive) {
+                    continuation.resumeWith(runCatching { response.use(readResponse) })
+                } else {
+                    response.close()
                 }
             }
         })

@@ -6,6 +6,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.*
 import mediathek.config.application.ApplicationConfiguration
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import java.net.ProtocolException
 import java.net.URI
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -14,14 +16,27 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.ComparableTimeMark
+import kotlin.time.Duration as WaitDuration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.TimeSource
+import kotlin.time.toKotlinDuration
 
-class ArteOnlineSearchService(
-    private val httpClient: OnlineSearchHttpClient = MvOnlineSearchHttpClient,
-    private val rateLimitState: ArteOnlineSearchRateLimitState = ApplicationConfigurationArteOnlineSearchRateLimitState,
+class ArteOnlineSearchService internal constructor(
+    private val httpClient: OnlineSearchHttpClient,
+    private val rateLimitState: ArteOnlineSearchRateLimitState,
+    private val timeSource: TimeSource.WithComparableMarks,
+    private val waitFor: suspend (WaitDuration) -> Unit,
 ) : OnlineSearchService {
+    constructor(
+        httpClient: OnlineSearchHttpClient = MvOnlineSearchHttpClient,
+        rateLimitState: ArteOnlineSearchRateLimitState = ApplicationConfigurationArteOnlineSearchRateLimitState,
+    ) : this(httpClient, rateLimitState, TimeSource.Monotonic, { delay(it) })
+
     private val json = Json { ignoreUnknownKeys = true }
-    private val rateLimitMutex = Mutex()
+    private val hostRateLimits = ConcurrentHashMap<String, HostRateLimit>()
 
     override suspend fun search(request: OnlineSearchRequest): OnlineSearchPage {
         require(request.provider == OnlineSearchProvider.ARTE)
@@ -259,33 +274,136 @@ class ArteOnlineSearchService(
 
     private fun String.resolveUrl(reference: String): String = URI(this).resolve(reference).toString()
 
-    private suspend fun get(url: String): String = rateLimitMutex.withLock {
-        var retryDelayMillis = rateLimitState.requestDelayMillis.coerceIn(MIN_REQUEST_DELAY_MILLIS, MAX_REQUEST_DELAY_MILLIS)
-        repeat(MAX_RATE_LIMIT_ATTEMPTS) { attempt ->
-            if (attempt > 0) {
-                delay(retryDelayMillis.milliseconds)
+    private suspend fun get(url: String): String {
+        val originalUrl = url.toHttpUrl()
+        var requestUrl = originalUrl
+        var originalRequestStartedAt: ComparableTimeMark? = null
+        var redirects = 0
+        var rateLimitAttempts = 0
+        while (true) {
+            val rateLimit = hostRateLimits.computeIfAbsent(requestUrl.host) { host ->
+                HostRateLimit(rateLimitState.takeIf { host == ARTE_API_HOST })
             }
-            try {
-                return httpClient.get(url)
+            val hop = try {
+                rateLimit.getHop(requestUrl.toString(), originalRequestStartedAt)
             } catch (ex: OnlineSearchHttpException) {
-                if (!ex.isRateLimit || attempt == MAX_RATE_LIMIT_ATTEMPTS - 1) {
+                if (!ex.isRateLimit || ++rateLimitAttempts >= MAX_RATE_LIMIT_ATTEMPTS) {
                     throw ex
                 }
-                retryDelayMillis = nextRequestDelayMillis(retryDelayMillis, ex)
-                rateLimitState.requestDelayMillis = retryDelayMillis
+                if (redirects > 0) {
+                    rateLimit.awaitRetry()
+                }
+                null
+            }
+            when (val response = hop?.response) {
+                is OnlineSearchHttpHop.Body -> return response.text
+                is OnlineSearchHttpHop.Redirect -> {
+                    if (++redirects > MAX_REDIRECTS) {
+                        throw ProtocolException("Too many ARTE redirects for $url")
+                    }
+                    requestUrl = response.url
+                    originalRequestStartedAt = originalRequestStartedAt ?: hop.startedAt
+                }
+                null -> {
+                    requestUrl = originalUrl
+                    originalRequestStartedAt = null
+                    redirects = 0
+                }
             }
         }
-        error("Unreachable ARTE request retry state")
     }
 
-    private fun nextRequestDelayMillis(currentDelayMillis: Long, exception: OnlineSearchHttpException): Long {
-        val retryAfterMillis = exception.retryAfter?.toMillis()
-        val nextDelayMillis = retryAfterMillis ?: if (currentDelayMillis > 0) {
-            currentDelayMillis * 2
-        } else {
-            MIN_REQUEST_DELAY_MILLIS
+    private data class TimedHop(val response: OnlineSearchHttpHop, val startedAt: ComparableTimeMark)
+
+    private inner class HostRateLimit(private val persistedState: ArteOnlineSearchRateLimitState?) {
+        private val rateLimitMutex = Mutex()
+        private var lastRequestFinishedAt: ComparableTimeMark? = null
+        private var retryNotBefore: ComparableTimeMark? = null
+        private var consecutiveSuccesses = 0
+        private var delayBeforeReductionMillis = 0L
+        private var learnedDelayFloorMillis = 0L
+        private var inMemoryDelayMillis = 0L
+        private var requestDelayMillis: Long
+            get() = persistedState?.requestDelayMillis ?: inMemoryDelayMillis
+            set(value) {
+                if (persistedState == null) {
+                    inMemoryDelayMillis = value
+                } else {
+                    persistedState.requestDelayMillis = value
+                }
+            }
+        private val learnedDelayMillis: Long
+            get() = requestDelayMillis.coerceIn(0, MAX_REQUEST_DELAY_MILLIS)
+
+        suspend fun awaitRetry() {
+            rateLimitMutex.withLock { waitForRequest(learnedDelayMillis) }
         }
-        return nextDelayMillis.coerceIn(MIN_REQUEST_DELAY_MILLIS, MAX_REQUEST_DELAY_MILLIS)
+
+        suspend fun getHop(url: String, originalRequestStartedAt: ComparableTimeMark?): TimedHop? = rateLimitMutex.withLock {
+            val cooldownDeadline = retryNotBefore
+            // Keep the deadline so queued or delayed redirects can be checked against the original request.
+            if (originalRequestStartedAt != null && cooldownDeadline != null && originalRequestStartedAt < cooldownDeadline) {
+                waitUntil(cooldownDeadline)
+                return@withLock null
+            }
+            lastRequestFinishedAt?.let { finishedAt ->
+                val idleSince = maxOf(finishedAt, cooldownDeadline ?: finishedAt)
+                if (idleSince.elapsedNow() >= RATE_LIMIT_IDLE_RESET) {
+                    consecutiveSuccesses = 0
+                    delayBeforeReductionMillis = 0
+                    learnedDelayFloorMillis = 0
+                }
+            }
+
+            val currentDelayMillis = learnedDelayMillis
+            waitForRequest(currentDelayMillis)
+            val startedAt = timeSource.markNow()
+            var retryDelay: WaitDuration? = null
+            try {
+                val hop = httpClient.getHop(url)
+                if (currentDelayMillis > learnedDelayFloorMillis) {
+                    consecutiveSuccesses++
+                    if (consecutiveSuccesses == SUCCESSES_BEFORE_DELAY_REDUCTION) {
+                        delayBeforeReductionMillis = currentDelayMillis
+                        requestDelayMillis = (currentDelayMillis * 3 / 4).coerceAtLeast(learnedDelayFloorMillis)
+                        consecutiveSuccesses = 0
+                    }
+                }
+                TimedHop(hop, startedAt)
+            } catch (ex: Exception) {
+                consecutiveSuccesses = 0
+                if (ex is OnlineSearchHttpException && ex.isRateLimit) {
+                    // A failed reduction pins the previous successful interval until traffic goes idle.
+                    learnedDelayFloorMillis = maxOf(learnedDelayFloorMillis, delayBeforeReductionMillis)
+                    delayBeforeReductionMillis = 0
+                    // Retry-After governs the next request. Only the recurring interval is capped.
+                    val serverCooldown = ex.retryAfter?.toKotlinDuration() ?: WaitDuration.ZERO
+                    val backoff = currentDelayMillis.coerceAtLeast(MIN_REQUEST_DELAY_MILLIS) * 2
+                    requestDelayMillis = maxOf(backoff.milliseconds, serverCooldown)
+                        .coerceAtMost(MAX_REQUEST_DELAY_MILLIS.milliseconds)
+                        .inWholeMilliseconds
+                        .coerceAtLeast(learnedDelayFloorMillis)
+                    retryDelay = maxOf(requestDelayMillis.milliseconds, serverCooldown)
+                }
+                throw ex
+            } finally {
+                val finishedAt = timeSource.markNow()
+                lastRequestFinishedAt = finishedAt
+                retryDelay?.let { retryNotBefore = finishedAt + it }
+            }
+        }
+
+        private suspend fun waitForRequest(learnedDelayMillis: Long) {
+            val nextRequestAt = lastRequestFinishedAt?.plus(learnedDelayMillis.milliseconds) ?: return
+            waitUntil(maxOf(nextRequestAt, retryNotBefore ?: nextRequestAt))
+        }
+
+        private suspend fun waitUntil(deadline: ComparableTimeMark) {
+            val remaining = -deadline.elapsedNow()
+            if (remaining > WaitDuration.ZERO) {
+                waitFor(remaining)
+            }
+        }
     }
 
     private fun searchUrl(query: String, pageNumber: Int, language: String): String {
@@ -336,12 +454,16 @@ class ArteOnlineSearchService(
 
     private companion object {
         private val CATALOGUE_LANGUAGES = listOf("de", "fr", "en", "es", "pl", "it", "ro")
-        private const val EMAC_BASE_URL = "https://api.arte.tv/api/emac/v4"
+        private const val ARTE_API_HOST = "api.arte.tv"
+        private const val EMAC_BASE_URL = "https://$ARTE_API_HOST/api/emac/v4"
         private const val EMAC_CDN_BASE_URL = "https://api-cdn.arte.tv/api/emac/v4"
         private const val SEARCH_ZONE = "f75e7b54-a37b-4f8f-b01b-dbefa877c041"
         private const val COLLECTION_ZONE = "8fbf35e4-324d-4d3e-a194-28f7d288789b"
-        private const val PLAYER_CONFIG_URL = "https://api.arte.tv/api/player/v2/config"
+        private const val PLAYER_CONFIG_URL = "https://$ARTE_API_HOST/api/player/v2/config"
         private const val MAX_RATE_LIMIT_ATTEMPTS = 3
+        private const val MAX_REDIRECTS = 20
+        private val RATE_LIMIT_IDLE_RESET = 1.minutes
+        private const val SUCCESSES_BEFORE_DELAY_REDUCTION = 5
         private const val MIN_REQUEST_DELAY_MILLIS = 250L
         private const val MAX_REQUEST_DELAY_MILLIS = 10_000L
         private val ARTE_PROGRAM_ID_PATTERN = Regex("""[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6}""")
