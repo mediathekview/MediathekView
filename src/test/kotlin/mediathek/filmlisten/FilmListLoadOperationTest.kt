@@ -1,6 +1,7 @@
 package mediathek.filmlisten
 
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -28,6 +29,20 @@ class FilmListLoadOperationTest {
 
         assertTrue(operation.handle.completion.await().failed)
         assertFalse(state.isRunning)
+    }
+
+    @Test
+    fun `finish releases the running state before notifying completion callbacks`() {
+        val state = FilmListLoadState()
+        val operation = FilmListLoadOperation.begin(state)
+        var runningAtCompletion: Boolean? = null
+        operation.handle.completion.invokeOnCompletion {
+            runningAtCompletion = state.isRunning
+        }
+
+        operation.finish(FilmListLoadProgress.completed(failed = false))
+
+        assertEquals(false, runningAtCompletion)
     }
 
     @Test

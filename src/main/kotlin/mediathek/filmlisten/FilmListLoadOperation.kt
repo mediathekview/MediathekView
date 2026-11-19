@@ -30,8 +30,8 @@ internal class FilmListLoadOperation private constructor(
     }
 
     fun finish(progress: FilmListLoadProgress) {
-        completion?.complete(FilmListLoadResult.finished(progress.failed))
         loadState?.finish()
+        completion?.complete(FilmListLoadResult.finished(progress.failed))
     }
 
     fun completeExceptionally(throwable: Throwable) {
