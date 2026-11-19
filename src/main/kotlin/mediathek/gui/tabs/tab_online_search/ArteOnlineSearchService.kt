@@ -468,7 +468,7 @@ class ArteOnlineSearchService internal constructor(
         private const val MAX_REQUEST_DELAY_MILLIS = 10_000L
         private val ARTE_PROGRAM_ID_PATTERN = Regex("""[0-9]{6}-[0-9A-Z]{3}-[A-Z]|RC-[0-9]{6}""")
         private val ARTE_MANIFEST_PATTERN =
-            Regex("""(https://manifest-arte\.akamaized\.net/api/manifest/v1/Generate/[^/]+/)[^/]+(/.*)""")
+            Regex("""(https://(?:secure-)?manifest-arte\.akamaized\.net/api/manifest/v1/Generate/[^/]+/)[^/]+(/.*)""")
         private val SUBCOLLECTION_ID_PATTERN = Regex("""subCollectionId(?:=|\\u003d)(RC-[0-9]{6})""")
         private val HLS_ATTRIBUTE_PATTERN = Regex("""([A-Z0-9-]+)=(?:"([^"]*)"|([^,]*))""")
         private val BERLIN: ZoneId = ZoneId.of("Europe/Berlin")

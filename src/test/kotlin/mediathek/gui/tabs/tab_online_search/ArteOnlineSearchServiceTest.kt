@@ -92,6 +92,40 @@ class ArteOnlineSearchServiceTest {
     }
 
     @Test
+    fun `search returns separate audio languages for The Game on the secure manifest host`() = runBlocking {
+        val id = "042694-000-A"
+        val manifestRoot = "https://secure-manifest-arte.akamaized.net/api/manifest/v1/Generate/test-id"
+        val manifestPath = "XQ+KS+CHEV1/042694-000-B.m3u8"
+        val streamsJson = """
+            [{ "url": "$manifestRoot/de/$manifestPath", "versions": [
+              { "code": "VA-STA", "audioLanguage": "de" },
+              { "code": "VF-STF", "audioLanguage": "fr" },
+              { "code": "VO-STF", "audioLanguage": "en" },
+              { "code": "VF-STMF", "audioLanguage": "fr" },
+              { "code": "VAAUD", "audioLanguage": "de", "audioDescription": true },
+              { "code": "VFAUD", "audioLanguage": "fr", "audioDescription": true }
+            ] }]
+        """.trimIndent()
+        val httpClient = arteHttpClient(
+            mapOf(
+                "$SEARCH_CONTENT_URL?page=1&query=The+Game" to arteSearchJson(id = id, title = "The Game"),
+                "$PLAYER_CONFIG_URL/$id" to arteConfigJson(id = id, title = "The Game", streamsJson = streamsJson),
+            ),
+        )
+
+        val page = testArteService(httpClient).search(OnlineSearchRequest(OnlineSearchProvider.ARTE, "The Game"))
+
+        assertEquals(
+            listOf("The Game (Deutsch)", "The Game (Französisch)", "The Game (Englisch)"),
+            page.results.map { it.title },
+        )
+        val expectedUrls = listOf("VA-STA", "VF-STF", "VO-STF").map { "$manifestRoot/$it/$manifestPath" }
+        assertEquals(expectedUrls, page.results.map { it.normalQualityUrl })
+        assertEquals(expectedUrls, page.results.map { it.lowQualityUrl })
+        assertEquals(expectedUrls, page.results.map { it.highQualityUrl })
+    }
+
+    @Test
     fun `search preserves separate legacy language streams and removes duplicate languages`() = runBlocking {
         val httpClient = arteHttpClient(
             mapOf(
