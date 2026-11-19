@@ -2,7 +2,7 @@
 <component type="desktop-application">
     <id>de.mediathekview.mediathekview</id>
     <launchable type="desktop-id">de.mediathekview.MediathekView.desktop</launchable>
-    <icon type="scalable">mediathekview</icon>
+    <icon type="stock">mediathekview</icon>
     <provides>
 		<id>de.mediathekview.MediathekView.desktop</id>
 	</provides>
