@@ -11,13 +11,14 @@ object ProgramSetTemplateResolver {
     const val MUSTER_PFAD_VLC = "PFAD_VLC"
     const val MUSTER_PFAD_FFMPEG = "PFAD_FFMPEG"
 
-    fun replaceTemplates(parent: JFrame?, programSets: ListePset) {
+    /** An explicit [vlcPath] may be empty. A null value allows prompting for a missing VLC path. */
+    fun replaceTemplates(parent: JFrame?, programSets: ListePset, vlcPath: String? = null) {
         for (programSet in programSets) {
-            replaceTemplates(parent, programSet)
+            replaceTemplates(parent, programSet, vlcPath)
         }
     }
 
-    private fun replaceTemplates(parent: JFrame?, programSet: DatenPset) {
+    private fun replaceTemplates(parent: JFrame?, programSet: DatenPset, vlcPath: String?) {
         programSet.zielPfad = programSet.zielPfad.replace(MUSTER_PFAD_ZIEL, StandardLocations.getStandardDownloadPath())
         var vlc = ""
         var ffmpeg = ""
@@ -25,7 +26,7 @@ object ProgramSetTemplateResolver {
         // damit nur die Variablen abgefragt werden, die auch verwendet werden
         for (program in programSet.listeProg) {
             if (program.programPath.contains(MUSTER_PFAD_VLC) || program.switches.contains(MUSTER_PFAD_VLC)) {
-                vlc = getPfadVlc(parent)
+                vlc = vlcPath ?: getPfadVlc(parent)
                 break
             }
         }

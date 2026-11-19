@@ -169,9 +169,10 @@ class DialogStarteinstellungen(
             ListePsetVorlagen.getStandarset(parent, false)
         } ?: return false
 
-        ProgramSetTemplateResolver.replaceTemplates(parent, pSet)
+        val config = ApplicationConfiguration.getInstance()
+        ProgramSetTemplateResolver.replaceTemplates(parent, pSet, vlcPath = config.standardVlcPath)
         programSets.addProgramSets(pSet)
-        ApplicationConfiguration.getInstance().standardProgramSetVersion = pSet.version
+        config.standardProgramSetVersion = pSet.version
         return true
     }
 
