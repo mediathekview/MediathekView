@@ -151,24 +151,7 @@ open class SqliteExportAudioSource(
     protected open fun publicDatabaseUrl(): String = PUBLIC_AUDIO_DATABASE_URL
 
     private fun Connection.loadAudioEntries(): List<AudioEntry> =
-        prepareStatement(
-            """
-            SELECT c.title AS category_title,
-                   ps.title AS program_set_title,
-                   i.title,
-                   i.page_url,
-                   i.sender,
-                   i.publish_date,
-                   i.description,
-                   i.duration_seconds,
-                   i.preferred_audio_asset,
-                   i.preferred_audio_asset_file_size_bytes
-            FROM items i
-            JOIN program_sets ps ON ps.id = i.program_set_id
-            JOIN categories c ON c.id = ps.category_id
-            ORDER BY c.id, ps.id, i.id
-            """.trimIndent()
-        ).use { statement ->
+        prepareStatement(LOAD_AUDIO_ENTRIES_SQL).use { statement ->
             statement.executeQuery().use { resultSet ->
                 buildList {
                     while (resultSet.next()) {
@@ -198,13 +181,7 @@ open class SqliteExportAudioSource(
         }
 
     private fun Connection.readMetadataInstant(key: String): Instant? =
-        prepareStatement(
-            """
-            SELECT value
-            FROM metadata
-            WHERE key = ?
-            """.trimIndent()
-        ).use { statement ->
+        prepareStatement(READ_METADATA_SQL).use { statement ->
             statement.setString(1, key)
             statement.executeQuery().use { resultSet ->
                 if (!resultSet.next()) {
@@ -292,14 +269,7 @@ open class SqliteExportAudioSource(
                         "Downloaded MediathekView Audiothek failed SQLite quick_check"
                     }
                 }
-                statement.executeQuery(
-                    """
-                    SELECT COUNT(*)
-                    FROM sqlite_master
-                    WHERE type = 'table'
-                      AND name IN ('metadata', 'categories', 'program_sets', 'items')
-                    """.trimIndent()
-                ).use { resultSet ->
+                statement.executeQuery(COUNT_REQUIRED_TABLES_SQL).use { resultSet ->
                     check(resultSet.next() && resultSet.getInt(1) == 4) {
                         "Downloaded MediathekView Audiothek does not contain the expected schema"
                     }
@@ -326,6 +296,36 @@ open class SqliteExportAudioSource(
         private const val DOWNLOAD_METADATA_FILENAME = "mv-audiothek-db-download.properties"
         private const val KEY_SOURCE_URL = "sourceUrl"
         private const val KEY_ETAG = "etag"
+
+        private const val LOAD_AUDIO_ENTRIES_SQL = """
+            SELECT c.title AS category_title,
+                   ps.title AS program_set_title,
+                   i.title,
+                   i.page_url,
+                   i.sender,
+                   i.publish_date,
+                   i.description,
+                   i.duration_seconds,
+                   i.preferred_audio_asset,
+                   i.preferred_audio_asset_file_size_bytes
+            FROM items i
+            JOIN program_sets ps ON ps.id = i.program_set_id
+            JOIN categories c ON c.id = ps.category_id
+            ORDER BY c.id, ps.id, i.id
+            """.trimIndent()
+
+        private const val READ_METADATA_SQL = """
+            SELECT value
+            FROM metadata
+            WHERE key = ?
+            """.trimIndent()
+
+        private const val COUNT_REQUIRED_TABLES_SQL = """
+            SELECT COUNT(*)
+            FROM sqlite_master
+            WHERE type = 'table'
+              AND name IN ('metadata', 'categories', 'program_sets', 'items')
+            """.trimIndent()
 
         private val PUBLIC_AUDIO_DATABASE_URL = Konstanten.AUDIOTHEK_DB_DOWNLOAD_URL.toString()
 

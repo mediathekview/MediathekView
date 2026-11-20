@@ -37,6 +37,7 @@ internal class AudiothekSearchHistory {
     }
 }
 
+@MustUseReturnValues
 internal object AudiothekSearchHistoryCodec {
     fun normalize(entries: Collection<String>): List<String> {
         val seen = linkedSetOf<String>()

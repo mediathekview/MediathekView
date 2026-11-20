@@ -27,10 +27,12 @@ class ImportOldReplacementListAction(
         if (selectedFile != null) {
             try {
                 val configReader = OldConfigFileImporter(abos, blacklist, replacementRules)
-                val (_, _, foundReplaceListEntries) = configReader.importAboBlacklist(selectedFile.absolutePath,
-                                                                                      importAbo = false,
-                                                                                      importBlacklist = false,
-                                                                                      importReplaceList = true)
+                val foundReplaceListEntries = configReader.importAboBlacklist(
+                    selectedFile.absolutePath,
+                    importAbo = false,
+                    importBlacklist = false,
+                    importReplaceList = true,
+                ).foundReplaceListEntries
                 val text = "Es wurden $foundReplaceListEntries Einträge importiert."
                 JOptionPane.showMessageDialog(parent, text, Konstanten.PROGRAMMNAME, JOptionPane.INFORMATION_MESSAGE)
             }
