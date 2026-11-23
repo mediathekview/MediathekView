@@ -146,29 +146,25 @@ abstract class MVTable protected constructor(
     }
 
     protected open fun restoreSelectedTableRows() {
-        if (selectedRowsSnapshot.isEmpty()) {
-            return
-        }
+        val validRows = 0 until rowCount
+        val firstRow = selectedRowsSnapshot.firstOrNull { it in validRows } ?: return
 
-        val visibleRow = if (selectedRowsSnapshot.size == 1) {
-            val selectedRow = selectedRowsSnapshot[0]
-            selectionModel.setSelectionInterval(selectedRow, selectedRow)
-            selectedRow
+        if (selectedRowsSnapshot.size == 1) {
+            selectionModel.setSelectionInterval(firstRow, firstRow)
         } else {
             selectionModel.valueIsAdjusting = true
             try {
                 for (selectedRow in selectedRowsSnapshot) {
-                    if (selectedRow < rowCount) {
+                    if (selectedRow in validRows) {
                         addRowSelectionInterval(selectedRow, selectedRow)
                     }
                 }
             } finally {
                 selectionModel.valueIsAdjusting = false
             }
-            selectedRowsSnapshot[0]
         }
 
-        scrollToIndexDelegate(visibleRow)
+        scrollToIndexDelegate(firstRow)
         requestFocusInWindow()
     }
 
