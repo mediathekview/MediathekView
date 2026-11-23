@@ -8,12 +8,12 @@ import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang
 import mediathek.gui.messages.ProgramSetChangedEvent
 import mediathek.swing.SwingDispatch
 import mediathek.tool.MessageBus
-import mediathek.tool.table.MVPsetTable
 import net.engio.mbassy.listener.Handler
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.awt.Color
 import java.awt.Component
 import java.awt.Container
 import javax.swing.*
@@ -39,7 +39,7 @@ internal class PanelPsetLangTest {
             }
             flushEdt()
             val table = SwingDispatch.callAndWait {
-                panel.descendants().filterIsInstance<MVPsetTable>().single().also {
+                panel.programSetTable().also {
                     it.setRowSelectionInterval(repository.list.lastIndex, repository.list.lastIndex)
                 }
             }
@@ -84,12 +84,119 @@ internal class PanelPsetLangTest {
             PanelPsetLang(null, repository, repository.list, { _, _ -> })
         }
         try {
-            repository.addProgramSet(DatenPset("Extern"))
+            val nameColumn = SwingDispatch.callAndWait {
+                val table = panel.programSetTable()
+                assertEquals(JTable::class.java, table.javaClass)
+                assertNull(table.rowSorter)
+                assertEquals(
+                    listOf(DatenPset.PROGRAMMSET_NAME, DatenPset.PROGRAMMSET_IST_ABSPIELEN, DatenPset.PROGRAMMSET_IST_SPEICHERN),
+                    table.columnModel.columns.toList().map { it.modelIndex },
+                )
+                val nameIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_NAME)
+                val playbackIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_IST_ABSPIELEN)
+                table.moveColumn(nameIndex, playbackIndex)
+                table.columnModel.getColumn(playbackIndex).apply { width = 180 }
+            }
+            repository.addProgramSet(DatenPset("Extern").apply {
+                farbe = Color.BLUE
+                setSpeichern(true)
+            })
             flushEdt()
             SwingDispatch.runAndWait {
-                val table = panel.descendants().filterIsInstance<MVPsetTable>().single()
+                val table = panel.programSetTable()
                 assertEquals(2, table.rowCount)
-                assertEquals("Extern", table.model.getValueAt(1, DatenPset.PROGRAMMSET_NAME))
+                assertArrayEquals(intArrayOf(0), table.selectedRows)
+                val nameIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_NAME)
+                val playbackIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_IST_ABSPIELEN)
+                val saveIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_IST_SPEICHERN)
+                assertEquals("Extern", table.getValueAt(1, nameIndex))
+                assertEquals(Boolean::class.javaObjectType, table.getColumnClass(playbackIndex))
+                assertEquals(false, table.getValueAt(1, playbackIndex))
+                assertEquals(Boolean::class.javaObjectType, table.getColumnClass(saveIndex))
+                assertEquals(true, table.getValueAt(1, saveIndex))
+                assertSame(nameColumn, table.columnModel.getColumn(nameIndex))
+                assertEquals(180, nameColumn.width)
+                assertTrue(nameIndex > playbackIndex)
+                assertEquals(-1, table.convertColumnIndexToView(DatenPset.PROGRAMMSET_FARBE))
+                val renderedName = table.prepareRenderer(table.getCellRenderer(1, nameIndex), 1, nameIndex)
+                assertEquals(Color.BLUE, renderedName.foreground)
+            }
+        } finally {
+            SwingDispatch.runAndWait { panel.removeNotify() }
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [1, 3])
+    fun removingSelectedLastProgramSetClearsTheSelectionAndEditor(setCount: Int) {
+        val repository = ProgramSetRepository()
+        repeat(setCount) { index -> repository.list.add(DatenPset("Set $index")) }
+        val panel = SwingDispatch.callAndWait {
+            PanelPsetLang(null, repository, repository.list, { _, _ -> })
+        }
+        try {
+            val table = SwingDispatch.callAndWait {
+                panel.programSetTable().also {
+                    it.setRowSelectionInterval(setCount - 1, setCount - 1)
+                }
+            }
+            val nameField = panel.field("jTextFieldSetName")
+            SwingDispatch.runAndWait {
+                assertEquals("Set ${setCount - 1}", nameField.text)
+                repository.removeAtIndexes(intArrayOf(setCount - 1))
+            }
+            flushEdt()
+            SwingDispatch.runAndWait {
+                assertEquals(setCount - 1, table.rowCount)
+                assertEquals(-1, table.selectedRow)
+                assertEquals("", nameField.text)
+                assertFalse(nameField.isEnabled)
+                if (table.rowCount > 0) {
+                    table.setRowSelectionInterval(0, 0)
+                    assertEquals("Set 0", nameField.text)
+                    panel.assertProgramHeading("Set 0")
+                }
+            }
+        } finally {
+            SwingDispatch.runAndWait { panel.removeNotify() }
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun removingMultipleProgramSetsRestoresOnlyRowsStillInRange(removeAll: Boolean) {
+        val repository = ProgramSetRepository()
+        repeat(4) { index -> repository.list.add(DatenPset("Set $index")) }
+        val panel = SwingDispatch.callAndWait {
+            PanelPsetLang(null, repository, repository.list, { _, _ -> })
+        }
+        try {
+            val table = SwingDispatch.callAndWait {
+                panel.programSetTable().also {
+                    if (removeAll) {
+                        it.setRowSelectionInterval(0, 3)
+                    } else {
+                        it.setRowSelectionInterval(1, 1)
+                        it.addRowSelectionInterval(3, 3)
+                    }
+                    repository.removeAtIndexes(it.selectedRows)
+                }
+            }
+            flushEdt()
+            SwingDispatch.runAndWait {
+                val nameField = panel.field("jTextFieldSetName")
+                if (removeAll) {
+                    assertEquals(0, table.rowCount)
+                    assertEquals(-1, table.selectedRow)
+                    assertFalse(nameField.isEnabled)
+                    assertEquals("", nameField.text)
+                } else {
+                    assertEquals(listOf("Set 0", "Set 2"), repository.list.map { it.name })
+                    assertEquals(2, table.rowCount)
+                    assertArrayEquals(intArrayOf(1), table.selectedRows)
+                    assertEquals("Set 2", nameField.text)
+                    panel.assertProgramHeading("Set 2")
+                }
             }
         } finally {
             SwingDispatch.runAndWait { panel.removeNotify() }
@@ -134,7 +241,7 @@ internal class PanelPsetLangTest {
     private fun flushEdt() = SwingDispatch.runAndWait { }
 
     private fun PanelPsetLang.assertProgramHeading(name: String) {
-        val programTable = descendants().filterIsInstance<JTable>().single { it !is MVPsetTable }
+        val programTable = helperProgramTable()
         val scrollPane = SwingUtilities.getAncestorOfClass(JScrollPane::class.java, programTable) as JScrollPane
         assertEquals("Set Name: $name", (scrollPane.border as TitledBorder).title)
     }
@@ -161,4 +268,14 @@ internal class PanelPsetLangTest {
             count++
         }
     }
+}
+
+internal fun PanelPsetLang.programSetTable(): JTable = tableInScrollPane("jScrollPane3")
+
+internal fun PanelPsetLang.helperProgramTable(): JTable = tableInScrollPane("jScrollPane1")
+
+private fun PanelPsetLang.tableInScrollPane(name: String): JTable {
+    val scrollPane = PanelPsetLang::class.java.superclass.getDeclaredField(name)
+        .apply { isAccessible = true }[this] as JScrollPane
+    return scrollPane.viewport.view as JTable
 }

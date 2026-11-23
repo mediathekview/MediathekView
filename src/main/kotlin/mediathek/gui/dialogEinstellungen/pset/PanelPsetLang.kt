@@ -13,8 +13,6 @@ import mediathek.gui.dialog.HelpTextDialog
 import mediathek.gui.messages.ProgramSetChangedEvent
 import mediathek.tool.*
 import mediathek.tool.cellrenderer.PsetNameCellRenderer
-import mediathek.tool.table.MVPsetTable
-import mediathek.tool.table.MVTable
 import net.engio.mbassy.listener.Handler
 import org.apache.commons.lang3.SystemUtils
 import java.awt.Component
@@ -28,7 +26,9 @@ import javax.swing.*
 import javax.swing.border.TitledBorder
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import javax.swing.table.DefaultTableColumnModel
 import javax.swing.table.DefaultTableModel
+import javax.swing.table.TableColumn
 import javax.swing.table.TableModel
 import javax.swing.text.JTextComponent
 
@@ -40,9 +40,13 @@ class PanelPsetLang(
     private val replacementRules: ReplacementRules? = null,
 ) : PanelPsetLangBase() {
     private var neuZaehler = 0
-    private val tabellePset: MVTable = MVPsetTable()
+    private val tabellePset = JTable().apply {
+        autoResizeMode = JTable.AUTO_RESIZE_OFF
+        autoCreateRowSorter = false // Match the program-set repository order.
+        autoCreateColumnsFromModel = false
+        columnModel = createProgramSetColumnModel()
+    }
     private val tabelleProgramme = JTable()
-    private val psetNameRenderer = PsetNameCellRenderer()
     private val emptyProgramList = ListeProg()
     @Volatile
     private var panelScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
@@ -138,7 +142,6 @@ class PanelPsetLang(
         configureDownloadHelpText()
         MessageBus.messageBus.subscribe(this)
 
-        configureProgramTables()
         installProgramFieldListeners()
         installProgramFieldPopupMenus()
         disableProgramFields()
@@ -179,10 +182,6 @@ class PanelPsetLang(
         val exclamationIcon = SVGIconUtilities.createSVGIcon("icons/fontawesome/triangle-exclamation.svg")
         jLabelMeldungAbspielen.icon = exclamationIcon
         jLabelMeldungSeichern.icon = exclamationIcon
-    }
-
-    private fun configureProgramTables() {
-        tabellePset.autoResizeMode = JTable.AUTO_RESIZE_OFF
     }
 
     private fun installProgramFieldListeners() {
@@ -652,43 +651,49 @@ class PanelPsetLang(
     }
 
     private fun nurtabellePset() {
+        val selectedRows = tabellePset.selectedRows
         stopBeob = true
-        tabellePset.getSpalten()
-        tabellePset.model = listePset.createModel()
-        tabellePset.setSpalten()
-        spaltenSetzen()
-        jLabelMeldungAbspielen.isVisible = listePset.psetAbspielen == null
-        jLabelMeldungSeichern.isVisible = listePset.listeSpeichern.isEmpty()
-        stopBeob = false
-    }
-
-    private fun spaltenSetzen() {
-        val columnModel = tabellePset.columnModel
-        for (i in 0 until tabellePset.columnCount) {
-            val column = columnModel.getColumn(tabellePset.convertColumnIndexToView(i))
-            when (i) {
-                DatenPset.PROGRAMMSET_NAME -> {
-                    column.cellRenderer = psetNameRenderer
-                    column.minWidth = 10
-                    column.preferredWidth = 120
-                    column.maxWidth = 1000
-                }
-
-                DatenPset.PROGRAMMSET_IST_ABSPIELEN,
-                DatenPset.PROGRAMMSET_IST_SPEICHERN -> {
-                    column.minWidth = 10
-                    column.preferredWidth = 80
-                    column.maxWidth = 1000
-                }
-
-                else -> {
-                    column.minWidth = 0
-                    column.preferredWidth = 0
-                    column.maxWidth = 0
-                }
-            }
+        try {
+            tabellePset.model = listePset.createModel()
+            restoreProgramSetSelection(selectedRows)
+            jLabelMeldungAbspielen.isVisible = listePset.psetAbspielen == null
+            jLabelMeldungSeichern.isVisible = listePset.listeSpeichern.isEmpty()
+        } finally {
+            stopBeob = false
         }
     }
+
+    private fun restoreProgramSetSelection(selectedRows: IntArray) {
+        val validRows = selectedRows.filter { it in 0 until tabellePset.rowCount }
+        val firstRow = validRows.firstOrNull() ?: return
+        val selection = tabellePset.selectionModel
+        selection.valueIsAdjusting = true
+        try {
+            for (row in validRows) {
+                tabellePset.addRowSelectionInterval(row, row)
+            }
+        } finally {
+            selection.valueIsAdjusting = false
+        }
+        tabellePset.scrollRectToVisible(tabellePset.getCellRect(firstRow, 0, true))
+        tabellePset.requestFocusInWindow()
+    }
+
+    private fun createProgramSetColumnModel() = DefaultTableColumnModel().apply {
+        addColumn(programSetColumn(DatenPset.PROGRAMMSET_NAME, 120).apply {
+            cellRenderer = PsetNameCellRenderer()
+        })
+        addColumn(programSetColumn(DatenPset.PROGRAMMSET_IST_ABSPIELEN, 80))
+        addColumn(programSetColumn(DatenPset.PROGRAMMSET_IST_SPEICHERN, 80))
+    }
+
+    private fun programSetColumn(modelIndex: Int, preferredWidth: Int): TableColumn =
+        TableColumn(modelIndex).apply {
+            headerValue = DatenPset.COLUMN_NAMES[modelIndex]
+            minWidth = 10
+            this.preferredWidth = preferredWidth
+            maxWidth = 1000
+        }
 
     private fun tabelleProgramme() {
         val pSet = getPset()
@@ -721,8 +726,8 @@ class PanelPsetLang(
             jScrollPane1.border = BorderFactory.createTitledBorder(
                 null,
                 "Set Name: ${pSet.name}",
-                javax.swing.border.TitledBorder.LEFT,
-                javax.swing.border.TitledBorder.TOP
+                TitledBorder.LEFT,
+                TitledBorder.TOP
             )
             jTextFieldSetName.text = pSet.name
             tfGruppeDirektSuffix.text = pSet.getSuffixDirekt()
@@ -749,8 +754,8 @@ class PanelPsetLang(
             jScrollPane1.border = BorderFactory.createTitledBorder(
                 null,
                 "",
-                javax.swing.border.TitledBorder.LEFT,
-                javax.swing.border.TitledBorder.TOP
+                TitledBorder.LEFT,
+                TitledBorder.TOP
             )
             jTabbedPane.setTitleAt(0, "Sets")
             jCheckBoxLaenge.isSelected = false

@@ -11,7 +11,6 @@ import mediathek.gui.dialogEinstellungen.pset.PanelPsetLang
 import mediathek.mainwindow.SettingsDialogHost
 import mediathek.swing.SwingDispatch
 import mediathek.tool.ReplacementRules
-import mediathek.tool.table.MVPsetTable
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Test
@@ -140,7 +139,7 @@ internal class PanelPsetTest {
                         .asSequence().single { it.toString() == "Set bearbeiten" } as DefaultMutableTreeNode
                     tree.selectionPath = TreePath(page.path)
                     val panel = dialog.descendants().filterIsInstance<PanelPset>().single()
-                    val setTable = panel.descendants().filterIsInstance<MVPsetTable>().single()
+                    val setTable = panel.advancedSettings().programSetTable()
                     setTable.setRowSelectionInterval(1, 1)
                     val table = panel.programTable()
                     val oldModel = table.model as AdvancedTableModel<*>
@@ -191,8 +190,10 @@ internal class PanelPsetTest {
     private fun PanelPset.showAllSettingsCheckBox(): JCheckBox =
         descendants().filterIsInstance<JCheckBox>().single { it.name == PanelPsetComponentNames.SHOW_ALL_SETTINGS }
 
-    private fun PanelPset.programTable(): JTable =
-        descendants().filterIsInstance<JTable>().single { it !is MVPsetTable }
+    private fun PanelPset.advancedSettings(): PanelPsetLang =
+        descendants().filterIsInstance<PanelPsetLang>().single()
+
+    private fun PanelPset.programTable(): JTable = advancedSettings().helperProgramTable()
 
     private fun Component.descendants(): Sequence<Component> = sequence {
         yield(this@descendants)
