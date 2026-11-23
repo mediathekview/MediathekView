@@ -44,7 +44,6 @@ import java.awt.*
 import java.awt.event.ActionListener
 import java.io.File
 import java.nio.file.Path
-import java.util.*
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
@@ -58,11 +57,7 @@ class DialogAddDownload(
     programSets: ProgramSetRepository,
     private val downloads: DownloadServices,
     film: DatenFilm,
-    /**
-     * The currently selected pSet or null when no selection.
-     */
     private var activeProgramSet: DatenPset,
-    private val requestedResolution: Optional<FilmResolution.Enum>
 ) : DialogAddDownloadBase(ownerFrame) {
     private val film = DownloadQualitySupport.prepareFilmForQualitySelection(film)
 
@@ -85,7 +80,6 @@ class DialogAddDownload(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    private var highQualityMandated: Boolean = false
     private var stopBeob = false
     private var nameGeaendert = false
     private var isInitialSizeLookupRunning: Boolean = false
@@ -403,10 +397,8 @@ class DialogAddDownload(
     }
 
     private fun selectResolution() {
-        requestedResolution.ifPresent { highQualityMandated = it == FilmResolution.Enum.HIGH_QUALITY }
-
         when {
-            highQualityMandated || isHighQualityRequested() -> jRadioButtonAufloesungHd.isSelected = true
+            isHighQualityRequested() -> jRadioButtonAufloesungHd.isSelected = true
             isLowQualityRequested() -> jRadioButtonAufloesungKlein.isSelected = true
             else -> jRadioButtonAufloesungHoch.isSelected = true
         }

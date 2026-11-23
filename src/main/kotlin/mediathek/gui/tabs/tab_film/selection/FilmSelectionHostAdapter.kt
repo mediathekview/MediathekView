@@ -20,7 +20,6 @@ package mediathek.gui.tabs.tab_film.selection
 
 import mediathek.daten.DatenFilm
 import mediathek.daten.DatenPset
-import mediathek.daten.FilmResolution
 import mediathek.gui.tabs.tab_film.table.FilmTableModelBinding
 import java.awt.Component
 import java.util.function.Consumer
@@ -28,7 +27,7 @@ import java.util.function.Consumer
 class FilmSelectionHostAdapter(
     private val tableBindingProvider: () -> FilmTableModelBinding,
     private val parentComponent: Component,
-    private val saveFilmsAction: (List<DatenFilm>, DatenPset?, FilmResolution.Enum?) -> Unit,
+    private val saveFilmsAction: (List<DatenFilm>, DatenPset?) -> Unit,
     private val startFilmWithProgramAction: (DatenPset, DatenFilm, String) -> Unit,
     private val showHighQualityOnlyProvider: () -> Boolean,
     private val currentFilm: Consumer<DatenFilm?>,
@@ -37,8 +36,8 @@ class FilmSelectionHostAdapter(
 
     override fun parentComponent(): Component = parentComponent
 
-    override fun saveFilms(films: List<DatenFilm>, pSet: DatenPset?, requestedResolution: FilmResolution.Enum?) {
-        saveFilmsAction(films, pSet, requestedResolution)
+    override fun saveFilms(films: List<DatenFilm>, pSet: DatenPset?) {
+        saveFilmsAction(films, pSet)
     }
 
     override fun startFilmWithProgram(pSet: DatenPset, film: DatenFilm, resolution: String) {

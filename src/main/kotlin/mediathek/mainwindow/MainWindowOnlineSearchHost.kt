@@ -28,7 +28,6 @@ import mediathek.gui.tabs.tab_film.startDownloads
 import mediathek.gui.tabs.tab_online_search.OnlineSearchFilmAdapter
 import mediathek.gui.tabs.tab_online_search.OnlineSearchHost
 import mediathek.gui.tabs.tab_online_search.OnlineSearchResult
-import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 import javax.swing.JFrame
@@ -57,16 +56,14 @@ class MainWindowOnlineSearchHost(
             ownerFrame,
             results.map { it.toDatenFilm() },
             null,
-            null,
             programSetExporter,
-        ) { film, pSet, requestedResolution ->
+        ) { film, pSet ->
             DialogAddDownload(
                 ownerFrame,
                 programSets,
                 downloads,
                 film,
-                pSet,
-                Optional.ofNullable(requestedResolution),
+                pSet
             ).isVisible = true
         }
     }

@@ -76,7 +76,6 @@ import java.awt.*
 import java.awt.event.AWTEventListener
 import java.awt.event.MouseEvent
 import java.beans.PropertyChangeListener
-import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.IntConsumer
@@ -276,7 +275,7 @@ class GuiFilme(
             override fun downloads() = downloads
 
             override fun addDownloads(films: List<DatenFilm>) {
-                startFilmDownloads(films, null, null)
+                startFilmDownloads(films, null)
             }
 
             override fun editFilmDescription(film: DatenFilm) {
@@ -346,7 +345,6 @@ class GuiFilme(
     private fun startFilmDownloads(
         films: List<DatenFilm>,
         pSet: DatenPset?,
-        requestedResolution: FilmResolution.Enum?,
     ) {
         startDownloads(
             programSets,
@@ -354,16 +352,14 @@ class GuiFilme(
             ownerFrame,
             films,
             pSet,
-            requestedResolution,
             programSetExporter,
-        ) { film, effectivePSet, resolution ->
+        ) { film, effectivePSet ->
             DialogAddDownload(
                 ownerFrame,
                 programSets,
                 downloads,
                 film,
-                effectivePSet,
-                Optional.ofNullable(resolution),
+                effectivePSet
             ).isVisible = true
         }
     }
@@ -886,7 +882,7 @@ class GuiFilme(
                 showMissingWatchlistFilmMessage()
                 return@launch
             }
-            startFilmDownloads(listOf(film), null, null)
+            startFilmDownloads(listOf(film), null)
         }
     }
 

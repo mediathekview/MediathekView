@@ -37,9 +37,8 @@ fun startDownloads(
     parent: JFrame,
     films: List<DatenFilm>,
     pSet: DatenPset?,
-    requestedResolution: FilmResolution.Enum?,
     programSetExporter: BiConsumer<Array<DatenPset>, String>,
-    showSingleDownloadDialog: (DatenFilm, DatenPset, FilmResolution.Enum?) -> Unit,
+    showSingleDownloadDialog: (DatenFilm, DatenPset) -> Unit,
 ) {
     if (films.isEmpty()) {
         return
@@ -91,7 +90,7 @@ fun startDownloads(
                     DownloadStartActions.start(datenDownload)
                 }
             } else {
-                showSingleDownloadDialog(film, effectiveProgramSet, requestedResolution)
+                showSingleDownloadDialog(film, effectiveProgramSet)
             }
         }
 
@@ -103,7 +102,7 @@ fun startDownloads(
         return
     }
 
-    showSingleDownloadDialog(film, effectiveProgramSet, requestedResolution)
+    showSingleDownloadDialog(film, effectiveProgramSet)
 }
 
 private fun confirmDuplicateDownload(parent: JFrame): Boolean {

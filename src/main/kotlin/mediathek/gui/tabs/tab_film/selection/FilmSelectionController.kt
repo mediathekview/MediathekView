@@ -30,7 +30,7 @@ class FilmSelectionController(private val host: Host) {
     interface Host {
         fun tableBinding(): FilmTableModelBinding
         fun parentComponent(): Component
-        fun saveFilms(films: List<DatenFilm>, pSet: DatenPset?, requestedResolution: FilmResolution.Enum?)
+        fun saveFilms(films: List<DatenFilm>, pSet: DatenPset?)
         fun startFilmWithProgram(pSet: DatenPset, film: DatenFilm, resolution: String)
         fun showHighQualityOnly(): Boolean
         fun updateCurrentFilm(film: DatenFilm?)
@@ -40,12 +40,7 @@ class FilmSelectionController(private val host: Host) {
 
     @Synchronized
     fun saveFilm(pSet: DatenPset?) {
-        val requestedResolution = if (host.showHighQualityOnly()) {
-            FilmResolution.Enum.HIGH_QUALITY
-        } else {
-            null
-        }
-        host.saveFilms(getSelectedFilms(), pSet, requestedResolution)
+        host.saveFilms(getSelectedFilms(), pSet)
     }
 
     fun startFilm(pSet: DatenPset) {

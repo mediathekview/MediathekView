@@ -17,6 +17,7 @@
 - **BUGFIX(macOS):** Die bisher englischen Apple-Menüeinträge von MediathekView werden auf deutschen Systemen nun in Deutsch dargestellt.
 - **BUGFIX:** LRU-Sortier-Feature der Suchhistorie kann in den Einstellungen nun aktiviert werden. Default ist aus.
 - **BUGFIX:** Beim ersten Start führt *Weiter* bei leerem VLC-Pfad direkt zur Programmset-Auswahl, ohne erneut nach VLC zu fragen.
+- **BUGFIX:** Die Auswahl des Filters *Nur High-Quality-Filme(HQ) anzeigen* überschreibt nicht mehr die Voreinstellung der Programmsets.
 - viele interne Änderungen
 
 # **15.0.0**
