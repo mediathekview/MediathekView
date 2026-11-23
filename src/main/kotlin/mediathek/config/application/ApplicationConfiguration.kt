@@ -30,26 +30,29 @@ import org.apache.commons.configuration2.io.FileHandler
 import org.apache.commons.configuration2.sync.LockMode
 import org.apache.commons.configuration2.sync.ReadWriteSynchronizer
 import org.apache.logging.log4j.LogManager
+import java.io.IOException
+import java.nio.file.AccessDeniedException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import java.nio.file.attribute.PosixFileAttributeView
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.atomic.AtomicReference
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * The global application configuration class. This will contain all the config data in the future.
  */
-class ApplicationConfiguration private constructor() {
-    private val writerLock = ReentrantLock()
-    private val config = createXmlConfiguration()
+class ApplicationConfiguration internal constructor(
+    settingsPath: Path,
+    private val config: XMLConfiguration = createXmlConfiguration(),
+    private val scheduleAutosave: (Runnable) -> ScheduledFuture<*> = { TimerPool.schedule(it, 5.seconds) },
+) {
+    private val settingsPath = settingsPath.toAbsolutePath()
     private val handler = createFileHandler()
     private val windowStateConfiguration = ApplicationWindowStateConfiguration(config)
     private val downloadConfiguration = ApplicationDownloadConfiguration(config)
@@ -66,16 +69,14 @@ class ApplicationConfiguration private constructor() {
     private val generalConfiguration = ApplicationGeneralConfiguration(config)
     private val timerTaskListener = TimerTaskListener()
 
-    /**
-     * Stores the previous writer task in order to cancel it if necessary. We don't want to write
-     * several times in a row.
-     */
-    private var future: ScheduledFuture<*>? = null
-    private var timedEventWritingEnabled = false
+    // The configuration write lock also guards autosave state. Change listeners run while holding it.
+    private var pendingAutosave: ScheduledFuture<*>? = null
+    private var autosaveEnabled = false
 
     init {
         loadOrCreateConfiguration()
-        initializeTimedEventWriting()
+        autosaveEnabled = true
+        config.addEventListener(ConfigurationEvent.ANY, timerTaskListener)
         writeVersionMetadata()
     }
 
@@ -904,13 +905,6 @@ class ApplicationConfiguration private constructor() {
             mainWindowConfiguration.buttonsPanelVisible = value
         }
 
-    private fun initializeTimedEventWriting() {
-        writerLock.withLock {
-            timedEventWritingEnabled = true
-        }
-        config.addEventListener(ConfigurationEvent.ANY, timerTaskListener)
-    }
-
     private fun loadOrCreateConfiguration() {
         try {
             handler.load()
@@ -923,8 +917,41 @@ class ApplicationConfiguration private constructor() {
     private fun createFileHandler(): FileHandler =
         FileHandler(config).apply {
             encoding = "UTF-8"
-            path = StandardLocations.getApplicationSettingsFile().toString()
+            path = settingsPath.toString()
         }
+
+    private fun saveSettings() {
+        try {
+            // Replace the file behind a settings symlink, leaving the link in place.
+            val target = if (Files.isSymbolicLink(settingsPath)) settingsPath.toRealPath() else settingsPath
+            val permissions = if (Files.exists(target)) {
+                if (!Files.isWritable(target)) {
+                    throw AccessDeniedException(target.toString())
+                }
+                Files.getFileAttributeView(target, PosixFileAttributeView::class.java)?.readAttributes()?.permissions()
+            } else {
+                null
+            }
+            val temporaryFile = Files.createTempFile(target.parent, "${target.fileName}.", ".tmp")
+            try {
+                Files.newBufferedWriter(temporaryFile).use { handler.save(it) }
+                permissions?.let { Files.setPosixFilePermissions(temporaryFile, it) }
+                Files.move(
+                    temporaryFile, target,
+                    StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING,
+                )
+            } catch (failure: Exception) {
+                try {
+                    Files.deleteIfExists(temporaryFile)
+                } catch (cleanupFailure: IOException) {
+                    failure.addSuppressed(cleanupFailure)
+                }
+                throw failure
+            }
+        } catch (failure: IOException) {
+            throw ConfigurationException("Could not save application settings to $settingsPath", failure)
+        }
+    }
 
     private fun writeVersionMetadata() {
         config.withLock(LockMode.WRITE) {
@@ -937,11 +964,11 @@ class ApplicationConfiguration private constructor() {
 
     fun writeConfiguration() {
         try {
-            config.removeEventListener(ConfigurationEvent.ANY, timerTaskListener)
-            withWriterLock {
-                timedEventWritingEnabled = false
-                cancelPendingWriterTask(mayInterruptIfRunning = true)
-                handler.save()
+            config.withLock(LockMode.WRITE) {
+                config.removeEventListener(ConfigurationEvent.ANY, timerTaskListener)
+                autosaveEnabled = false
+                cancelPendingAutosave()
+                saveSettings()
             }
         } catch (configurationException: ConfigurationException) {
             logger.debug("Something went wrong while saving the config.", configurationException)
@@ -949,29 +976,28 @@ class ApplicationConfiguration private constructor() {
     }
 
     fun cleanupConfiguration(dryRun: Boolean): ApplicationConfigurationCleanupStatistics {
-        config.removeEventListener(ConfigurationEvent.ANY, timerTaskListener)
-        return try {
-            withWriterLock {
-                timedEventWritingEnabled = false
-                cancelPendingWriterTask(mayInterruptIfRunning = true)
-
-                val settingsPath = StandardLocations.getApplicationSettingsFile()
-                val backupPath = if (dryRun) null else createSettingsBackup(settingsPath)
-                val statistics = ApplicationConfigurationCleanupService(config).cleanup(settingsPath, backupPath, dryRun)
-                if (!dryRun) {
-                    handler.save()
-                }
-                statistics
+        val cleanup = ApplicationConfigurationCleanupService(config)
+        if (dryRun) {
+            return config.withLock(LockMode.READ) {
+                cleanup.cleanup(settingsPath, backupPath = null, dryRun = true)
             }
-        } finally {
-            writerLock.withLock {
-                timedEventWritingEnabled = true
-                config.addEventListener(ConfigurationEvent.ANY, timerTaskListener)
+        }
+        return config.withLock(LockMode.WRITE) {
+            val restoreAutosave = autosaveEnabled
+            try {
+                autosaveEnabled = false
+                cancelPendingAutosave()
+                val backupPath = createSettingsBackup()
+                val statistics = cleanup.cleanup(settingsPath, backupPath, dryRun = false)
+                saveSettings()
+                statistics
+            } finally {
+                autosaveEnabled = restoreAutosave
             }
         }
     }
 
-    private fun createSettingsBackup(settingsPath: Path): Path? {
+    private fun createSettingsBackup(): Path? {
         if (Files.notExists(settingsPath)) {
             return null
         }
@@ -981,11 +1007,9 @@ class ApplicationConfiguration private constructor() {
         return backupPath
     }
 
-    private fun <T> withWriterLock(action: () -> T): T = writerLock.withLock(action)
-
-    private fun cancelPendingWriterTask(mayInterruptIfRunning: Boolean) {
-        future?.cancel(mayInterruptIfRunning)
-        future = null
+    private fun cancelPendingAutosave() {
+        pendingAutosave?.cancel(false)
+        pendingAutosave = null
     }
 
     private fun createDefaultConfigSettings() {
@@ -995,7 +1019,7 @@ class ApplicationConfiguration private constructor() {
             filmListConfiguration.setDefaultLuceneDirectoryMode()
             downloadConfiguration.setDefaultCdnAwareDirectDownload()
             generalConfiguration.geographicLocation = Country.DE
-            handler.save()
+            config.withLock(LockMode.WRITE) { saveSettings() }
         } catch (configurationException: ConfigurationException) {
             logger.error("Something went wrong while creating the default config.", configurationException)
         } catch (noSuchElementException: NoSuchElementException) {
@@ -1018,47 +1042,37 @@ class ApplicationConfiguration private constructor() {
      * config is written only once.
      */
     private inner class TimerTaskListener : EventListener<ConfigurationEvent> {
-        private fun launchWriterTaskLocked() {
+        private fun scheduleAutosaveLocked() {
             try {
-                val scheduledTask = AtomicReference<ScheduledFuture<*>?>()
-                val newFuture = TimerPool.schedule(
-                    {
-                        try {
-                            withWriterLock {
-                                if (future !== scheduledTask.get()) {
-                                    return@withWriterLock
-                                }
-                                try {
-                                    logger.trace("Writing app configuration file")
-                                    handler.save()
-                                } finally {
-                                    if (future === scheduledTask.get()) {
-                                        future = null
-                                    }
-                                }
+                lateinit var scheduledTask: ScheduledFuture<*>
+                scheduledTask = scheduleAutosave {
+                    try {
+                        config.withLock(LockMode.WRITE) {
+                            if (pendingAutosave !== scheduledTask) {
+                                return@withLock
                             }
-                        } catch (configurationException: ConfigurationException) {
-                            logger.error("writing app config file:", configurationException)
+                            pendingAutosave = null
+                            logger.trace("Writing app configuration file")
+                            saveSettings()
                         }
-                    },
-                    5.seconds,
-                )
-                scheduledTask.set(newFuture)
-                future = newFuture
+                    } catch (configurationException: ConfigurationException) {
+                        logger.error("writing app config file:", configurationException)
+                    }
+                }
+                pendingAutosave = scheduledTask
             } catch (ex: RejectedExecutionException) {
                 logger.error("TimerPool: can't schedule timer task", ex)
-                future = null
             }
         }
 
         override fun onEvent(configurationEvent: ConfigurationEvent) {
             if (!configurationEvent.isBeforeUpdate) {
-                writerLock.withLock {
-                    if (!timedEventWritingEnabled) {
+                config.withLock(LockMode.WRITE) {
+                    if (!autosaveEnabled) {
                         return@withLock
                     }
-                    cancelPendingWriterTask(mayInterruptIfRunning = false)
-                    launchWriterTaskLocked()
+                    cancelPendingAutosave()
+                    scheduleAutosaveLocked()
                 }
             }
         }
@@ -1283,6 +1297,6 @@ class ApplicationConfiguration private constructor() {
     }
 
     private object ConfigHolder {
-        val INSTANCE: ApplicationConfiguration = ApplicationConfiguration()
+        val INSTANCE = ApplicationConfiguration(StandardLocations.getApplicationSettingsFile())
     }
 }
