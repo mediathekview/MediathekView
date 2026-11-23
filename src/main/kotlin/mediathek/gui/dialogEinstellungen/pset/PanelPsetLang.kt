@@ -19,6 +19,7 @@ import java.awt.Component
 import java.awt.Container
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.InvalidPathException
 import java.nio.file.Paths
 import java.util.function.BiConsumer
 import java.util.function.Consumer
@@ -614,13 +615,7 @@ class PanelPsetLang(
             appendProgramPathError(details, "Kein Programm angegeben!", programName, programPath)
             return false
         }
-        if (Files.isExecutable(Paths.get(programPath))) {
-            return true
-        }
-
-        val process = RuntimeExec(programPath).exec(false)
-        if (process != null) {
-            process.destroy()
+        if (isProgramPathValid(programPath)) {
             return true
         }
 
@@ -1142,5 +1137,25 @@ class PanelPsetLang(
         private const val ARROW = " -> "
         private const val SEPARATOR = "++++++++++++++++++++++++++++++++++++++++++++"
         private val PROGRAM_TABLE_FORMAT = ProgramTableFormat()
+
+        internal fun isProgramPathValid(programPath: String): Boolean {
+            val path = try {
+                Paths.get(programPath)
+            } catch (_: InvalidPathException) {
+                return false
+            }
+            if (Files.isRegularFile(path) && Files.isExecutable(path)) return true
+
+            val launcher = if (Files.isDirectory(path)) {
+                // A bare name can still resolve to an executable through PATH.
+                if (path.fileName?.toString() != programPath || programPath == "." || programPath == "..") return false
+                RuntimeExec(null, null, programPath, "", listOf(programPath))
+            } else {
+                RuntimeExec(programPath)
+            }
+            val process = launcher.exec(false) ?: return false
+            process.destroy()
+            return true
+        }
     }
 }

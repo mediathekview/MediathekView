@@ -11,16 +11,66 @@ import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import java.awt.Color
 import java.awt.Component
 import java.awt.Container
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardCopyOption.COPY_ATTRIBUTES
+import java.util.concurrent.TimeUnit
 import javax.swing.*
 import javax.swing.border.TitledBorder
 import javax.swing.event.TableModelEvent
 
 internal class PanelPsetLangTest {
+    @Test
+    fun malformedProgramPathIsRejected() {
+        assertFalse(PanelPsetLang.isProgramPathValid("malformed\u0000program"))
+    }
+
+    @Test
+    fun directoryIsRejectedAsProgramPath(@TempDir directory: Path) {
+        assertFalse(PanelPsetLang.isProgramPathValid(directory.toString()))
+    }
+
+    @Test
+    fun bareProgramNameUsesPathWhenLocalDirectoryHasSameName(@TempDir directory: Path) {
+        Files.createDirectory(directory.resolve("java"))
+        val java = javaExecutable()
+        val log = directory.resolve("program-path-check.log")
+        val builder = ProcessBuilder(
+            java.toString(), "-cp", System.getProperty("java.class.path"), ProgramPathCheckProbe::class.java.name
+        ).directory(directory.toFile()).redirectErrorStream(true).redirectOutput(log.toFile())
+        val environment = builder.environment()
+        val pathKey = environment.keys.firstOrNull { it.equals("PATH", ignoreCase = true) } ?: "PATH"
+        environment[pathKey] = java.parent.toString()
+        val process = builder.start()
+        try {
+            assertTrue(process.waitFor(20, TimeUnit.SECONDS), "Program path check timed out")
+            assertEquals(0, process.exitValue()) { Files.readString(log) }
+        } finally {
+            process.destroyForcibly()
+        }
+    }
+
+    @Test
+    fun executablePathContainingSpacesIsAccepted(@TempDir directory: Path) {
+        val java = javaExecutable()
+        val spacedDirectory = Files.createDirectory(directory.resolve("Program Files"))
+        val executable = Files.copy(java, spacedDirectory.resolve(java.fileName), COPY_ATTRIBUTES)
+
+        assertTrue(PanelPsetLang.isProgramPathValid(executable.toString()))
+    }
+
+    private fun javaExecutable(): Path {
+        val name = if (File.separatorChar == '\\') "java.exe" else "java"
+        return Path.of(System.getProperty("java.home"), "bin", name)
+    }
+
     @ParameterizedTest
     @ValueSource(strings = ["existing", "new", "duplicate"])
     fun editingNameKeepsEditorStateAndNotifiesOtherConsumers(kind: String) {
@@ -324,6 +374,16 @@ internal class PanelPsetLangTest {
         fun changed(@Suppress("UNUSED_PARAMETER") event: ProgramSetChangedEvent) {
             count++
         }
+    }
+}
+
+internal object ProgramPathCheckProbe {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        check(Files.isDirectory(Path.of("java"))) { "Expected a directory named java in the working directory" }
+        check(PanelPsetLang.isProgramPathValid("java")) { "Expected java to resolve through PATH" }
+        check(!PanelPsetLang.isProgramPathValid(".${File.separator}java")) { "Explicit directory was accepted" }
+        check(!PanelPsetLang.isProgramPathValid("java${File.separator}")) { "Directory with trailing separator was accepted" }
     }
 }
 

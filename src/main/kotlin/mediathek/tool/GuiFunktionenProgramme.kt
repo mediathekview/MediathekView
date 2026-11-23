@@ -474,8 +474,8 @@ object GuiFunktionenProgramme {
             return false
         }
 
-        val directory = Paths.get(path)
         return try {
+            val directory = Paths.get(path)
             if (Files.notExists(directory)) {
                 Files.createDirectories(directory)
             }
@@ -502,8 +502,8 @@ object GuiFunktionenProgramme {
             return false
         }
 
-        val directory = Paths.get(path)
         return try {
+            val directory = Paths.get(path)
             if (Files.exists(directory)) {
                 return Files.isDirectory(directory) && canWriteTempFile(directory)
             }

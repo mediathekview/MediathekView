@@ -46,6 +46,14 @@ internal class GuiFunktionenProgrammeTest {
     }
 
     @Test
+    fun malformedDestinationPathIsRejected() {
+        val malformedPath = "malformed\u0000destination"
+
+        assertFalse(GuiFunktionenProgramme.checkPathWriteable(malformedPath))
+        assertFalse(GuiFunktionenProgramme.checkPathWriteableWithoutCreating(malformedPath))
+    }
+
+    @Test
     fun checkPathWriteableWithoutCreatingLeavesMissingTargetDirectoryUncreated() {
         val missingTargetDirectory = tempDirectory.resolve("queued-download")
 
