@@ -140,6 +140,7 @@ internal class PanelPsetTest {
                     tree.selectionPath = TreePath(page.path)
                     val panel = dialog.descendants().filterIsInstance<PanelPset>().single()
                     val setTable = panel.advancedSettings().programSetTable()
+                    val setModel = setTable.model
                     setTable.setRowSelectionInterval(1, 1)
                     val table = panel.programTable()
                     val oldModel = table.model as AdvancedTableModel<*>
@@ -153,6 +154,7 @@ internal class PanelPsetTest {
 
                     assertSame(table, dialog.descendants().filterIsInstance<PanelPset>().single().programTable())
                     assertNotSame(oldModel, table.model)
+                    assertSame(setModel, setTable.model)
                     assertEquals(1, setTable.selectedRow)
                     assertEquals(sortKeys, table.rowSorter.sortKeys)
                     assertEquals(2, table.rowCount)

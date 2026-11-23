@@ -18,9 +18,6 @@
 
 package mediathek.daten
 
-import javax.swing.table.DefaultTableModel
-import javax.swing.table.TableModel
-
 class ListePset : ArrayList<DatenPset>() {
     // Liste aller Programmsets
     var version: String = ""
@@ -106,31 +103,4 @@ class ListePset : ArrayList<DatenPset>() {
 
     val objectDataCombo: Array<String>
         get() = Array(size) { index -> this[index].name }
-
-    fun createModel(): TableModel {
-        val data = Array(size) { index -> createModelRow(this[index]) }
-        return PsetTableModel(data)
-    }
-
-    private class PsetTableModel(data: Array<Array<Any?>>) : DefaultTableModel(data, DatenPset.COLUMN_NAMES) {
-        override fun isCellEditable(row: Int, column: Int): Boolean = false
-
-        override fun getColumnClass(columnIndex: Int): Class<*> =
-            when (columnIndex) {
-                DatenPset.PROGRAMMSET_IST_ABSPIELEN,
-                DatenPset.PROGRAMMSET_IST_SPEICHERN,
-                -> Boolean::class.javaObjectType
-                else -> String::class.java
-            }
-    }
-
-    companion object {
-        private fun createModelRow(datenPset: DatenPset): Array<Any?> {
-            val values = datenPset.toArray()
-            return Array<Any?>(DatenPset.MAX_ELEM) { index -> values[index] }.apply {
-                this[DatenPset.PROGRAMMSET_IST_ABSPIELEN] = datenPset.istAbspielen()
-                this[DatenPset.PROGRAMMSET_IST_SPEICHERN] = datenPset.istSpeichern()
-            }
-        }
-    }
 }

@@ -26,6 +26,7 @@ import javax.swing.*
 import javax.swing.border.TitledBorder
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import javax.swing.table.AbstractTableModel
 import javax.swing.table.DefaultTableColumnModel
 import javax.swing.table.DefaultTableModel
 import javax.swing.table.TableColumn
@@ -40,11 +41,10 @@ class PanelPsetLang(
     private val replacementRules: ReplacementRules? = null,
 ) : PanelPsetLangBase() {
     private var neuZaehler = 0
-    private val tabellePset = JTable().apply {
+    private val programSetTableModel = ProgramSetTableModel()
+    private val tabellePset = JTable(programSetTableModel, createProgramSetColumnModel()).apply {
         autoResizeMode = JTable.AUTO_RESIZE_OFF
         autoCreateRowSorter = false // Match the program-set repository order.
-        autoCreateColumnsFromModel = false
-        columnModel = createProgramSetColumnModel()
     }
     private val tabelleProgramme = JTable()
     private val emptyProgramList = ListeProg()
@@ -62,6 +62,35 @@ class PanelPsetLang(
         val sortKeys: List<RowSorter.SortKey>,
     )
 
+    private class ProgramSetTableModel : AbstractTableModel() {
+        private var rows: List<DatenPset> = emptyList()
+
+        fun updateRows(programSets: List<DatenPset>) {
+            rows = programSets.toList()
+            fireTableDataChanged()
+        }
+
+        override fun getRowCount(): Int = rows.size
+
+        override fun getColumnCount(): Int = DatenPset.MAX_ELEM
+
+        override fun getColumnName(column: Int): String = DatenPset.COLUMN_NAMES[column]
+
+        override fun getColumnClass(columnIndex: Int): Class<*> = when (columnIndex) {
+            DatenPset.PROGRAMMSET_IST_ABSPIELEN, DatenPset.PROGRAMMSET_IST_SPEICHERN -> Boolean::class.javaObjectType
+            else -> String::class.java
+        }
+
+        override fun getValueAt(rowIndex: Int, columnIndex: Int): Any {
+            val programSet = rows[rowIndex]
+            return when (columnIndex) {
+                DatenPset.PROGRAMMSET_IST_ABSPIELEN -> programSet.istAbspielen()
+                DatenPset.PROGRAMMSET_IST_SPEICHERN -> programSet.istSpeichern()
+                else -> programSet[columnIndex]
+            }
+        }
+    }
+
     init {
         jScrollPane3.setViewportView(tabellePset)
         tabelleProgramme.autoCreateRowSorter = false
@@ -72,12 +101,11 @@ class PanelPsetLang(
 
     @Handler
     private fun handleProgramSetChanged(@Suppress("UNUSED_PARAMETER") event: ProgramSetChangedEvent) {
-        // Local document updates already update the table cell and tab title. Check
-        // before dispatching: the document listener clears this guard before the EDT runs the coroutine.
+        // Actions and document listeners that refresh locally publish synchronously.
         if (SwingUtilities.isEventDispatchThread() && stopBeob) return
         panelScope.launch {
             if (!stopBeob) {
-                tabellePset()
+                refreshProgramSets()
             }
         }
     }
@@ -115,7 +143,7 @@ class PanelPsetLang(
     private fun restoreProgramTable() {
         val state = programTableState
         programTableState = null
-        nurtabellePset()
+        refreshProgramSetTable()
         val setIndex = listePset.indexOfFirst { it === state?.programSet }
         stopBeob = true
         if (setIndex == -1) {
@@ -152,7 +180,7 @@ class PanelPsetLang(
         installHelpAndCheckActions()
         installTableSelectionListeners()
 
-        tabellePset()
+        refreshProgramSets()
         selectFirstProgramSet()
     }
 
@@ -232,8 +260,8 @@ class PanelPsetLang(
     private fun installProgramSetActions() {
         jButtonAbspielen.addActionListener {
             getPset()?.let { pset ->
-                programSets.activateAsPlayer(pset)
-                nurtabellePset()
+                withoutObserving { programSets.activateAsPlayer(pset) }
+                refreshProgramSetTable()
             }
         }
         jCheckBoxSpeichern.addActionListener {
@@ -367,13 +395,6 @@ class PanelPsetLang(
         tabellePset.selectionModel.addListSelectionListener { event ->
             if (!stopBeob && !event.valueIsAdjusting) {
                 tabelleProgramme()
-                val row = tabellePset.selectedRow
-                if (row != -1) {
-                    val modelRow = tabellePset.convertRowIndexToModel(row)
-                    val datenPset = listePset[modelRow]
-                    tabellePset.model.setValueAt(jTextFieldSetName.text, modelRow, DatenPset.PROGRAMMSET_NAME)
-                    jTabbedPane.setTitleAt(0, "Set Name: ${datenPset.name}")
-                }
             }
         }
     }
@@ -458,18 +479,20 @@ class PanelPsetLang(
         getPset()?.let { pSet ->
             val selectedColor = JColorChooser.showDialog(this, "Farbe auswählen", pSet.farbe)
             if (selectedColor != null) {
-                pSet.farbe = selectedColor
-                tabellePset()
-                notifyProgramSetChanged()
+                changeProgramSets {
+                    pSet.farbe = selectedColor
+                    notifyProgramSetChanged()
+                }
             }
         }
     }
 
     private fun clearProgramSetColor() {
         getPset()?.let { pSet ->
-            pSet.clearFarbe()
-            tabellePset()
-            notifyProgramSetChanged()
+            changeProgramSets {
+                pSet.clearFarbe()
+                notifyProgramSetChanged()
+            }
         }
     }
 
@@ -477,8 +500,7 @@ class PanelPsetLang(
         val row = tabellePset.selectedRow
         if (row != -1) {
             val gruppe = listePset[tabellePset.convertRowIndexToModel(row)]
-            programSets.addProgramSet(gruppe.copy())
-            tabellePset()
+            changeProgramSets { programSets.addProgramSet(gruppe.copy()) }
         } else {
             NoSelectionErrorDialog.show(this)
         }
@@ -494,11 +516,13 @@ class PanelPsetLang(
 
     private fun updateSelectedProgramSet(update: Consumer<DatenPset>, notifyChange: Boolean) {
         getPset()?.let { pset ->
-            update.accept(pset)
-            nurtabellePset()
-            if (notifyChange) {
-                notifyProgramSetChanged()
+            withoutObserving {
+                update.accept(pset)
+                if (notifyChange) {
+                    notifyProgramSetChanged()
+                }
             }
+            refreshProgramSetTable()
         }
     }
 
@@ -645,21 +669,32 @@ class PanelPsetLang(
         }
     }
 
-    private fun tabellePset() {
-        nurtabellePset()
+    private fun changeProgramSets(update: () -> Unit) {
+        withoutObserving(update)
+        refreshProgramSets()
+    }
+
+    private inline fun <T> withoutObserving(update: () -> T): T {
+        val wasObservingStopped = stopBeob
+        stopBeob = true
+        try {
+            return update()
+        } finally {
+            stopBeob = wasObservingStopped
+        }
+    }
+
+    private fun refreshProgramSets() {
+        refreshProgramSetTable()
         tabelleProgramme()
     }
 
-    private fun nurtabellePset() {
-        val selectedRows = tabellePset.selectedRows
-        stopBeob = true
-        try {
-            tabellePset.model = listePset.createModel()
+    private fun refreshProgramSetTable(selectedRows: IntArray = tabellePset.selectedRows) {
+        withoutObserving {
+            programSetTableModel.updateRows(listePset)
             restoreProgramSetSelection(selectedRows)
             jLabelMeldungAbspielen.isVisible = listePset.psetAbspielen == null
             jLabelMeldungSeichern.isVisible = listePset.listeSpeichern.isEmpty()
-        } finally {
-            stopBeob = false
         }
     }
 
@@ -895,18 +930,16 @@ class PanelPsetLang(
     private fun setAufAb(auf: Boolean) {
         val row = tabellePset.selectedRow
         if (row != -1) {
-            var neu = programSets.move(tabellePset.convertRowIndexToModel(row), auf)
-            neu = tabellePset.convertRowIndexToView(neu)
-            tabellePset.setRowSelectionInterval(neu, neu)
-            tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false))
+            val newIndex = withoutObserving { programSets.move(tabellePset.convertRowIndexToModel(row), auf) }
+            refreshProgramSetTable(intArrayOf(newIndex))
+            tabelleProgramme()
         } else {
             NoSelectionErrorDialog.show(this)
         }
     }
 
     private fun setNeu() {
-        programSets.addProgramSet(DatenPset("Neu-${++neuZaehler}"))
-        tabellePset()
+        changeProgramSets { programSets.addProgramSet(DatenPset("Neu-${++neuZaehler}")) }
     }
 
     private fun setLoeschen() {
@@ -920,8 +953,7 @@ class PanelPsetLang(
             val ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION)
             if (ret == JOptionPane.OK_OPTION) {
                 val modelRows = rows.map { tabellePset.convertRowIndexToModel(it) }.toIntArray()
-                programSets.removeAtIndexes(modelRows)
-                tabellePset()
+                changeProgramSets { programSets.removeAtIndexes(modelRows) }
             }
         } else {
             NoSelectionErrorDialog.show(this)
@@ -1064,7 +1096,7 @@ class PanelPsetLang(
                     val datenPset = listePset[modelIndex]
                     datenPset[psetIndex] = textComponent.text
                     if (psetIndex == DatenPset.PROGRAMMSET_NAME) {
-                        tabellePset.model.setValueAt(jTextFieldSetName.text, modelIndex, DatenPset.PROGRAMMSET_NAME)
+                        programSetTableModel.fireTableCellUpdated(modelIndex, DatenPset.PROGRAMMSET_NAME)
                         jTabbedPane.setTitleAt(0, "Set Name: ${datenPset.name}")
                         (jScrollPane1.border as TitledBorder).title = "Set Name: ${datenPset.name}"
                         jScrollPane1.repaint()

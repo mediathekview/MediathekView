@@ -18,6 +18,7 @@ import java.awt.Component
 import java.awt.Container
 import javax.swing.*
 import javax.swing.border.TitledBorder
+import javax.swing.event.TableModelEvent
 
 internal class PanelPsetLangTest {
     @ParameterizedTest
@@ -43,7 +44,10 @@ internal class PanelPsetLangTest {
                     it.setRowSelectionInterval(repository.list.lastIndex, repository.list.lastIndex)
                 }
             }
-            val model = SwingDispatch.callAndWait { table.model }
+            val modelEvents = mutableListOf<TableModelEvent>()
+            val model = SwingDispatch.callAndWait {
+                table.model.also { it.addTableModelListener { event -> modelEvents.add(event) } }
+            }
             val nameField = panel.field("jTextFieldSetName")
             val oldName = SwingDispatch.callAndWait { nameField.text }
             val beforeNotifications = notifications.count
@@ -53,7 +57,9 @@ internal class PanelPsetLangTest {
             }
             flushEdt()
             SwingDispatch.runAndWait {
-                assertSame(model, table.model, "Typing must not rebuild the table and request table focus")
+                assertSame(model, table.model)
+                assertEquals(DatenPset.PROGRAMMSET_NAME, modelEvents.single().column)
+                assertEquals(table.selectedRow, modelEvents.single().firstRow)
                 assertEquals(oldName + "X", nameField.text)
                 assertEquals(oldName.length + 1, nameField.caretPosition)
                 assertEquals(repository.list.lastIndex, table.selectedRow)
@@ -62,13 +68,63 @@ internal class PanelPsetLangTest {
             }
             flushEdt()
             SwingDispatch.runAndWait {
-                assertSame(model, table.model, "Deleting must not rebuild the table either")
+                assertSame(model, table.model)
+                assertEquals(2, modelEvents.size)
+                assertTrue(modelEvents.all { it.column == DatenPset.PROGRAMMSET_NAME })
                 assertEquals(oldName, repository.list.last().name)
                 assertEquals(oldName, nameField.text)
                 assertEquals(oldName, table.model.getValueAt(table.selectedRow, DatenPset.PROGRAMMSET_NAME))
                 assertEquals(oldName.length, nameField.caretPosition)
                 assertEquals(beforeNotifications + 2, notifications.count)
                 panel.assertProgramHeading(oldName)
+            }
+        } finally {
+            SwingDispatch.runAndWait { panel.removeNotify() }
+            MessageBus.messageBus.unsubscribe(notifications)
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "jButtonGruppeNeu",
+        "jButtonGruppeDuplizieren",
+        "jButtonGruppeAb",
+        "jButtonAbspielen",
+        "jCheckBoxSpeichern",
+        "jButtonGruppeStandardfarbe",
+    ])
+    fun localChangesRefreshTheSameModelOnceAndNotifyOtherConsumers(controlName: String) {
+        val repository = ProgramSetRepository()
+        val first = DatenPset("First").apply { farbe = Color.BLUE }
+        repository.list.add(first)
+        repository.list.add(DatenPset("Second"))
+        val notifications = ChangeCounter()
+        MessageBus.messageBus.subscribe(notifications)
+        val panel = SwingDispatch.callAndWait {
+            PanelPsetLang(null, repository, repository.list, { _, _ -> })
+        }
+        try {
+            var refreshes = 0
+            val model = SwingDispatch.callAndWait {
+                val table = panel.programSetTable()
+                table.model.also {
+                    it.addTableModelListener { refreshes++ }
+                    panel.button(controlName).doClick()
+                }
+            }
+            flushEdt()
+            SwingDispatch.runAndWait {
+                val table = panel.programSetTable()
+                assertSame(model, table.model)
+                assertEquals(1, refreshes)
+                assertEquals(1, notifications.count)
+                assertEquals(repository.list.map { it.name }, List(table.rowCount) { row ->
+                    model.getValueAt(row, DatenPset.PROGRAMMSET_NAME)
+                })
+                val selectedRow = if (controlName == "jButtonGruppeAb") 1 else 0
+                assertArrayEquals(intArrayOf(selectedRow), table.selectedRows)
+                assertSame(first, repository.list[selectedRow])
+                assertEquals(first.name, panel.field("jTextFieldSetName").text)
             }
         } finally {
             SwingDispatch.runAndWait { panel.removeNotify() }
@@ -84,7 +140,7 @@ internal class PanelPsetLangTest {
             PanelPsetLang(null, repository, repository.list, { _, _ -> })
         }
         try {
-            val nameColumn = SwingDispatch.callAndWait {
+            val (model, nameColumn) = SwingDispatch.callAndWait {
                 val table = panel.programSetTable()
                 assertEquals(JTable::class.java, table.javaClass)
                 assertNull(table.rowSorter)
@@ -95,7 +151,7 @@ internal class PanelPsetLangTest {
                 val nameIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_NAME)
                 val playbackIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_IST_ABSPIELEN)
                 table.moveColumn(nameIndex, playbackIndex)
-                table.columnModel.getColumn(playbackIndex).apply { width = 180 }
+                table.model to table.columnModel.getColumn(playbackIndex).apply { width = 180 }
             }
             repository.addProgramSet(DatenPset("Extern").apply {
                 farbe = Color.BLUE
@@ -104,6 +160,7 @@ internal class PanelPsetLangTest {
             flushEdt()
             SwingDispatch.runAndWait {
                 val table = panel.programSetTable()
+                assertSame(model, table.model)
                 assertEquals(2, table.rowCount)
                 assertArrayEquals(intArrayOf(0), table.selectedRows)
                 val nameIndex = table.convertColumnIndexToView(DatenPset.PROGRAMMSET_NAME)
@@ -249,8 +306,8 @@ internal class PanelPsetLangTest {
     private fun PanelPsetLang.field(name: String): JTextField =
         PanelPsetLang::class.java.superclass.getDeclaredField(name).apply { isAccessible = true }[this] as JTextField
 
-    private fun PanelPsetLang.button(name: String): JButton =
-        PanelPsetLang::class.java.superclass.getDeclaredField(name).apply { isAccessible = true }[this] as JButton
+    private fun PanelPsetLang.button(name: String): AbstractButton =
+        PanelPsetLang::class.java.superclass.getDeclaredField(name).apply { isAccessible = true }[this] as AbstractButton
 
     private fun Component.descendants(): Sequence<Component> = sequence {
         yield(this@descendants)
