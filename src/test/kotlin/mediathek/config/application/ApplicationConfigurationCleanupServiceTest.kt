@@ -71,8 +71,8 @@ class ApplicationConfigurationCleanupServiceTest {
             dryRun = false,
         )
 
-        assertEquals(5, statistics.totalKeysBefore)
-        assertEquals(3, statistics.totalKeysAfter)
+        assertEquals(8, statistics.totalKeysBefore)
+        assertEquals(6, statistics.totalKeysAfter)
         assertFalse(statistics.dryRun)
         assertEquals(
             listOf("filter.filter_not-a-uuid.thema", "obsolete.application.key"),
@@ -81,6 +81,7 @@ class ApplicationConfigurationCleanupServiceTest {
         assertTrue(config.containsKey("application.dark_mode"))
         assertTrue(config.containsKey("download.toolbar.state.main.orientation"))
         assertTrue(config.containsKey("filter.filter_$filterId.thema"))
+        assertViewPreferencesPreserved(config)
         assertFalse(config.containsKey("obsolete.application.key"))
         assertFalse(config.containsKey("filter.filter_not-a-uuid.thema"))
     }
@@ -96,8 +97,8 @@ class ApplicationConfigurationCleanupServiceTest {
             dryRun = true,
         )
 
-        assertEquals(5, statistics.totalKeysBefore)
-        assertEquals(5, statistics.totalKeysAfter)
+        assertEquals(8, statistics.totalKeysBefore)
+        assertEquals(8, statistics.totalKeysAfter)
         assertTrue(statistics.dryRun)
         assertEquals(
             listOf("filter.filter_not-a-uuid.thema", "obsolete.application.key"),
@@ -106,6 +107,7 @@ class ApplicationConfigurationCleanupServiceTest {
         assertTrue(config.containsKey("application.dark_mode"))
         assertTrue(config.containsKey("download.toolbar.state.main.orientation"))
         assertTrue(config.containsKey("filter.filter_$filterId.thema"))
+        assertViewPreferencesPreserved(config)
         assertTrue(config.containsKey("obsolete.application.key"))
         assertTrue(config.containsKey("filter.filter_not-a-uuid.thema"))
     }
@@ -114,7 +116,16 @@ class ApplicationConfigurationCleanupServiceTest {
         addProperty("application.dark_mode", true)
         addProperty("download.toolbar.state.main.orientation", 1)
         addProperty("filter.filter_$filterId.thema", "Test")
+        addProperty("application.ui.program_set.show_all_settings", true)
+        addProperty("ui.default_font.family", "Dialog")
+        addProperty("ui.default_font.size", 15)
         addProperty("obsolete.application.key", "remove")
         addProperty("filter.filter_not-a-uuid.thema", "remove")
+    }
+
+    private fun assertViewPreferencesPreserved(config: XMLConfiguration) {
+        assertEquals(true, config.getProperty("application.ui.program_set.show_all_settings"))
+        assertEquals("Dialog", config.getProperty("ui.default_font.family"))
+        assertEquals(15, config.getProperty("ui.default_font.size"))
     }
 }

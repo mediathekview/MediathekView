@@ -178,12 +178,15 @@ class ApplicationMainWindowConfiguration(
         private const val APPLICATION_UI_USE_TRAY = "application.ui.tray.use"
         @field:ApplicationConfigKey
         private const val APPLICATION_UI_SHOW_ZAPP_LIVESTREAMS = "application.ui.zapp.show"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_DEFAULT_FONT_FAMILY = "ui.default_font.family"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_DEFAULT_FONT_SIZE = "ui.default_font.size"
         @field:ApplicationConfigKey
         private const val APPLICATION_UI_LOCAL_SENDER_ICONS = "application.sender_icons.use_local"
         @field:ApplicationConfigKey
         private const val APPLICATION_UI_LIST_ICON_POSITION_RIGHT = "ui.list.iconposition_right"
+        @field:ApplicationConfigKey
         private const val APPLICATION_UI_PROGRAM_SET_SHOW_ALL_SETTINGS =
             "application.ui.program_set.show_all_settings"
         @field:ApplicationConfigKey
