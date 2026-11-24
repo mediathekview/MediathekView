@@ -1,5 +1,6 @@
 package mediathek.controller.starter
 
+import kotlinx.coroutines.CancellationException
 import mediathek.config.CommandLineOptions
 import mediathek.config.Konstanten
 import mediathek.controller.history.AboHistoryController
@@ -86,6 +87,23 @@ internal class ExternalProgramDownloadTest {
         assertNull(state.process)
         assertNull(download.runtime.runState)
         assertFalse(state.isError)
+    }
+
+    @Test
+    fun `coroutine cancellation propagates after download cleanup`() {
+        val download = download()
+        val state = requireNotNull(download.runtime.runState)
+        val cancellation = CancellationException("Download cancelled")
+        mockConstruction(RuntimeExec::class.java) { runtime, _ ->
+            `when`(runtime.exec(true)).thenThrow(cancellation)
+        }.use {
+            val thrown = assertThrows(CancellationException::class.java) { runner(download).run() }
+            assertSame(cancellation, thrown)
+        }
+
+        assertTrue(state.stoppen)
+        assertFalse(state.isError)
+        assertNull(download.runtime.runState)
     }
 
     @Test

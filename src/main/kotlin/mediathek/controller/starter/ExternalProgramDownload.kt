@@ -1,5 +1,6 @@
 package mediathek.controller.starter
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import mediathek.config.CommandLineOptions
@@ -41,11 +42,13 @@ class ExternalProgramDownload(
 
     init {
         start.markRunning()
-        var fileName = datenDownload.targetPathFileName
+        val targetFileName = datenDownload.targetPathFileName
 
         // JDK 25+ workaround
-        if (Runtime.version().feature() > 24 && fileName.isEmpty()) {
-            fileName = EMPTY_FILENAME_JDK25_WORKAROUND
+        val fileName = if (Runtime.version().feature() > 24 && targetFileName.isEmpty()) {
+            EMPTY_FILENAME_JDK25_WORKAROUND
+        } else {
+            targetFileName
         }
 
         file = File(fileName)
@@ -64,6 +67,9 @@ class ExternalProgramDownload(
                     startAncillaryDownloads()
                     processDownload()
                 }
+            } catch (ex: CancellationException) {
+                start.requestStop()
+                throw ex
             } catch (ex: Exception) {
                 if (!start.stoppen) {
                     logger.error("External-program download failed for {}", datenDownload.targetPathFileName, ex)
@@ -136,12 +142,10 @@ class ExternalProgramDownload(
 
     private fun finishSuccessfulProcess(): Boolean {
         val validateProgress = datenDownload.quelle != DownloadSource.BUTTON && !datenDownload.isDownloadManager
-        val output = ffmpegOutput
-        if (output == null) {
-            return !validateProgress || DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
-                aboHistoryControllerProvider(), datenDownload, start,
+        val output = ffmpegOutput ?: return !validateProgress ||
+            DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
+                aboHistoryControllerProvider(), datenDownload, start
             )
-        }
 
         if (start.stoppen) return true
         val part = output.partFile
