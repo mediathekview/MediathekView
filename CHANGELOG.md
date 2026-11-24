@@ -6,6 +6,7 @@
 - **FEATURE:** Via *Filme/Watchlist verwalten...*-Dialog sowie Kontextmenüeinträge unter `Watchlist` können nun für einzelne Themen/Titel Überwachungen eingerichet werden, sodass bei Neuerscheinungen in der Filmliste eine Benachrichtigung eingeblendet wird sowie ein roter Punkt am Glockensymbol im Tab Filme erscheint.
 - **FEATURE:** ARTE Onlinesuche durchsucht nun die Kataloge der Sprachen *Deutsch*, *Französisch*, *Englisch*, *Spanisch*, *Polnisch*, *Italienisch* und *Rumänisch*.
 - **FEATURE:** ARTE-Downloads verwenden in der höchsten Qualitätsstufe bevorzugt H.265 (HEVC) mit H.264 (AVC) als Fallback. Die mittlere und niedrige Qualitätsstufe bevorzugen H.264 (AVC).
+- **FEATURE:** MP4-Downloads mit dem FFmpeg-Standardbefehl werden zunächst als `.mp4.part` gespeichert. Die Zieldatei wird erst nach erfolgreichem Abschluss erstellt oder ersetzt.
 - **BUGFIX:** `HQ`-, `UT`- und `Geo`-Spalten-Icons wurden nicht vollständig aus der `Titel`-Spalte ausgeblendet, wenn diese sichtbar waren.
 - **BUGFIX:** Sender-Checkboxliste reagiert nun weniger sensibel auf die Position der Mausklicks.
 - **BUGFIX:** Die App stürzt nicht mehr unter JDK 26 aufgrund der JIde-Bibliothek ab.

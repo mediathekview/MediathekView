@@ -18,6 +18,8 @@ import mediathek.tool.notification.NotificationPublisher
 import org.apache.logging.log4j.LogManager
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.LinkOption.NOFOLLOW_LINKS
+import java.util.concurrent.TimeUnit.SECONDS
 import javax.swing.JFrame
 
 /**
@@ -32,6 +34,8 @@ class ExternalProgramDownload(
 
     private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
     private var file: File
+    private var ffmpegOutput: FfmpegMp4Output? = null
+    private var stagedAttempt: RuntimeExec? = null
     private var state = HttpDownloadState.DOWNLOAD
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
 
@@ -53,19 +57,29 @@ class ExternalProgramDownload(
 
         runBlocking {
             try {
+                ffmpegOutput = FfmpegMp4Output.forDownload(datenDownload, start)
                 createDownloadTargetDirectory(datenDownload.targetPath)
 
-                if (!cancelDownload()) {
+                if (!start.stoppen && !cancelDownload() && !start.stoppen) {
                     startAncillaryDownloads()
                     processDownload()
                 }
             } catch (ex: Exception) {
-                logger.error("External-program download failed for {}", datenDownload.targetPathFileName, ex)
-                start.markError()
-                state = HttpDownloadState.ERROR
-                showDownloadError(ex.localizedMessage)
+                if (!start.stoppen) {
+                    logger.error("External-program download failed for {}", datenDownload.targetPathFileName, ex)
+                    start.markError()
+                    state = HttpDownloadState.ERROR
+                    showDownloadError(ex.localizedMessage)
+                }
             } finally {
-                DownloadCompletionHandler.finalizeDownload(datenDownload, start, state, notificationPublisher)
+                try {
+                    DownloadCompletionHandler.finalizeDownload(
+                        datenDownload, start, state, notificationPublisher,
+                        handleTargetFile = ffmpegOutput?.published != false,
+                    )
+                } finally {
+                    ffmpegOutput?.releaseAfter(start.process)
+                }
                 waitForPendingDownloads()
                 MessageBus.messageBus.publish(DownloadFinishedEvent(datenDownload))
             }
@@ -83,12 +97,12 @@ class ExternalProgramDownload(
         while (stat < STAT_ENDE) {
             stat = when (stat) {
                 STAT_START -> {
-                    val started = starten()
+                    val started = !start.stoppen && starten()
                     when {
                         start.stoppen -> {
                             // Cancellation may arrive while ProcessBuilder.start() is returning.
                             // Clean up before bypassing the normal running-process polling path.
-                            start.process?.destroy()
+                            stopProcess()
                             STAT_FERTIG_OK
                         }
                         started -> if (datenDownload.isDownloadManager) STAT_FERTIG_OK else STAT_LAUFEN
@@ -98,34 +112,20 @@ class ExternalProgramDownload(
 
                 STAT_LAUFEN -> laufendenDownloadPruefen()
                 STAT_RESTART -> restartPruefen(filesize).also { nextStat ->
-                    if (nextStat == STAT_START && file.exists()) {
+                    if (ffmpegOutput == null && nextStat == STAT_START && file.exists()) {
                         filesize = file.length()
                     }
                 }
 
-                STAT_PRUEFEN -> {
-                    if (datenDownload.quelle == DownloadSource.BUTTON || datenDownload.isDownloadManager) {
-                        STAT_FERTIG_OK
-                    } else if (
-                        DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
-                            aboHistoryControllerProvider(),
-                            datenDownload,
-                            start,
-                        )
-                    ) {
-                        STAT_FERTIG_OK
-                    } else {
-                        STAT_FERTIG_FEHLER
-                    }
-                }
+                STAT_PRUEFEN -> if (finishSuccessfulProcess()) STAT_FERTIG_OK else STAT_FERTIG_FEHLER
 
                 STAT_FERTIG_FEHLER -> {
-                    start.markError()
+                    if (!start.stoppen) start.markError()
                     STAT_ENDE
                 }
 
                 STAT_FERTIG_OK -> {
-                    start.markFinished()
+                    if (!start.stoppen) start.markFinished()
                     STAT_ENDE
                 }
 
@@ -134,36 +134,61 @@ class ExternalProgramDownload(
         }
     }
 
+    private fun finishSuccessfulProcess(): Boolean {
+        val validateProgress = datenDownload.quelle != DownloadSource.BUTTON && !datenDownload.isDownloadManager
+        val output = ffmpegOutput
+        if (output == null) {
+            return !validateProgress || DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
+                aboHistoryControllerProvider(), datenDownload, start,
+            )
+        }
+
+        if (start.stoppen) return true
+        val part = output.partFile
+        if (!part.isFile || !DownloadCompletionValidator.isSuccessfulDownload(part, start.takeIf { validateProgress })) {
+            return false
+        }
+        if (start.stoppen) return true
+        output.publish()
+        if (validateProgress) {
+            DownloadCompletionValidator.recordSuccessfulAboDownload(aboHistoryControllerProvider(), datenDownload)
+        }
+        return true
+    }
+
     private fun laufendenDownloadPruefen(): Int {
-        return try {
-            if (start.stoppen) {
-                start.process?.destroy()
-                STAT_FERTIG_OK
-            } else if (start.process!!.exitValue() != 0) {
-                STAT_RESTART
-            } else {
-                /*
-                 * In case of ffmpeg there may be frames skipped which prevents correct progress calculation,
-                 * we therefore make percent max when the process terminated without error.
-                 */
-                if (start.percent > 990) {
-                    start.updateProgress(DownloadRunState.PROGRESS_FERTIG)
-                }
-                STAT_PRUEFEN
-            }
-        } catch (_: Exception) {
+        val process = checkNotNull(start.process)
+        if (start.stoppen) {
+            stopProcess()
+            return STAT_FERTIG_OK
+        }
+        val exitCode = try {
+            process.exitValue()
+        } catch (_: IllegalThreadStateException) {
             try {
                 sleep(PROCESS_POLL_DELAY_MILLIS)
             } catch (_: InterruptedException) {
                 currentThread().interrupt()
             }
-            STAT_LAUFEN
+            return STAT_LAUFEN
         }
+        stagedAttempt?.awaitProgress()
+        if (start.stoppen) return STAT_FERTIG_OK
+        if (exitCode != 0) return STAT_RESTART
+
+        // FFmpeg can skip frames, so near-complete progress counts as complete after a successful exit.
+        if (start.percent > 990) start.updateProgress(DownloadRunState.PROGRESS_FERTIG)
+        return STAT_PRUEFEN
     }
 
     private fun restartPruefen(filesize: Long): Int {
+        if (start.stoppen) return STAT_FERTIG_OK
         if (!datenDownload.isRestart) {
             return STAT_FERTIG_FEHLER
+        }
+        if (ffmpegOutput != null) {
+            // Attempts create independent files, so growth across attempts is not a retry criterion.
+            return if (start.startcounter < Konstanten.MAX_EXTERNAL_STARTS) STAT_START else STAT_FERTIG_FEHLER
         }
 
         if (filesize == -1L) {
@@ -182,6 +207,16 @@ class ExternalProgramDownload(
         }
     }
 
+    private fun stopProcess() {
+        val process = start.process ?: return
+        process.destroy()
+        if (ffmpegOutput != null && process.isAlive && !process.waitFor(FFMPEG_STOP_GRACE_SECONDS, SECONDS)) {
+            // FFmpeg can defer SIGTERM while blocked reading a stream segment.
+            process.destroyForcibly()
+            process.waitFor(FFMPEG_STOP_GRACE_SECONDS, SECONDS)
+        }
+    }
+
     private suspend fun waitForPendingDownloads() {
         ancillaryDownloads.await()
     }
@@ -190,15 +225,26 @@ class ExternalProgramDownload(
         // die Reihenfolge: startcounter - logStart ist wichtig!
         start.incrementStartCounter()
         DownloadLogMessages.logStart(datenDownload, start)
-        val arguments = ArteHlsDownloadPreparer.prepare(datenDownload)
+        val output = ffmpegOutput
+        val preparedArguments = ArteHlsDownloadPreparer.prepare(datenDownload)
         if (start.stoppen) return false
+        val arguments = if (output != null) {
+            val stagedArguments = output.prepareAttempt(preparedArguments) ?: return false
+            if (start.stoppen) return false
+            start.updateProgress(DownloadRunState.PROGRESS_NICHT_GESTARTET)
+            datenDownload.runtime.filmSize.aktSize = 0
+            stagedArguments
+        } else {
+            preparedArguments
+        }
         val runtimeExec = RuntimeExec(
             datenDownload.runtime.filmSize,
-            datenDownload.runtime.runState,
+            start,
             datenDownload.programInvocation,
             datenDownload.programInvocationArray,
             arguments,
         )
+        if (output != null) stagedAttempt = runtimeExec
         start.process = runtimeExec.exec(true)
         return start.process != null
     }
@@ -208,7 +254,7 @@ class ExternalProgramDownload(
             // da kuemmert sich ein anderes Programm darum
             return false
         }
-        if (!file.exists()) {
+        if (!targetExists()) {
             // dann ist alles OK
             return false
         }
@@ -222,7 +268,7 @@ class ExternalProgramDownload(
 
     private fun abbrechen(): Boolean {
         var result = false
-        if (file.exists()) {
+        if (targetExists()) {
             val dialogContinueDownload = DialogContinueDownload(dialogOwnerProvider(), datenDownload, false)
             dialogContinueDownload.isVisible = true
 
@@ -234,14 +280,7 @@ class ExternalProgramDownload(
                 }
 
                 DialogContinueDownload.DownloadResult.CONTINUE -> {
-                    // dann mit gleichem Namen und Datei vorher loeschen
-                    try {
-                        Files.deleteIfExists(file.toPath())
-                        file = File(datenDownload.targetPathFileName)
-                    } catch (ex: Exception) {
-                        // kann nicht geloescht werden, evtl. klappt ja das Ueberschreiben
-                        logger.error("File exists: {}", datenDownload.targetPathFileName, ex)
-                    }
+                    approveOverwrite()
                 }
 
                 DialogContinueDownload.DownloadResult.RESTART_WITH_NEW_NAME -> {
@@ -251,6 +290,7 @@ class ExternalProgramDownload(
                         MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                         createDownloadTargetDirectory(datenDownload.targetPath)
                         file = File(datenDownload.targetPathFileName)
+                        ffmpegOutput = FfmpegMp4Output.forDownload(datenDownload, start)
                     }
                 }
             }
@@ -263,13 +303,26 @@ class ExternalProgramDownload(
             "CLI download mode: overwriting existing external-program target for {}",
             datenDownload.targetPathFileName
         )
+        approveOverwrite()
+        return false
+    }
+
+    private fun targetExists(): Boolean =
+        if (ffmpegOutput == null) file.exists() else Files.exists(file.toPath(), NOFOLLOW_LINKS)
+
+    private fun approveOverwrite() {
+        if (start.stoppen) return
+        val output = ffmpegOutput
+        if (output != null) {
+            output.approveOverwrite()
+            return
+        }
         try {
             Files.deleteIfExists(file.toPath())
             file = File(datenDownload.targetPathFileName)
         } catch (ex: Exception) {
             logger.error("File exists: {}", datenDownload.targetPathFileName, ex)
         }
-        return false
     }
 
     private fun showDownloadError(message: String?) {
@@ -294,6 +347,7 @@ class ExternalProgramDownload(
         private const val STAT_ENDE = 99
 
         private const val PROCESS_POLL_DELAY_MILLIS = 2_000L
+        private const val FFMPEG_STOP_GRACE_SECONDS = 1L
         private const val EMPTY_FILENAME_JDK25_WORKAROUND =
             "ORACLE/DO/NOT/FUCK/AROUND/WITH/CORE/JAVA/CLASSES/WITHOUT/COMPATIBILITY/SWITCH"
 

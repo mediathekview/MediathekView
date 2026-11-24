@@ -43,10 +43,15 @@ internal object DownloadCompletionValidator {
         datenDownload: DatenDownload,
         start: DownloadRunState?,
     ): Boolean {
-        if (!isSuccessfulDownload(datenDownload, start)) {
+        if (!isSuccessfulDownload(File(datenDownload.targetPathFileName), start)) {
             return false
         }
 
+        recordSuccessfulAboDownload(aboHistoryController, datenDownload)
+        return true
+    }
+
+    fun recordSuccessfulAboDownload(aboHistoryController: AboHistoryController, datenDownload: DatenDownload) {
         if (datenDownload.isFromAbo) {
             val entry = AboHistoryEntry.today(
                 datenDownload.topic,
@@ -55,13 +60,11 @@ internal object DownloadCompletionValidator {
             )
             aboHistoryController.add(entry)
         }
-
-        return true
     }
 
-    private fun isSuccessfulDownload(datenDownload: DatenDownload, start: DownloadRunState?): Boolean {
+    fun isSuccessfulDownload(file: File, start: DownloadRunState?): Boolean {
         // prüfen ob der Download geklappt hat und die Datei existiert und eine min. Größe hat
-        val filePath = datenDownload.targetPathFileName
+        val filePath = file.path
 
         if (start != null && start.percent > -1 && start.percent < MIN_COMPLETED_DOWNLOAD_PERCENT) {
             // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
@@ -70,7 +73,6 @@ internal object DownloadCompletionValidator {
             return false
         }
 
-        val file = File(filePath)
         return when {
             !file.exists() -> {
                 logger.error("Download fehlgeschlagen, Datei existiert nicht: {}", filePath)
@@ -113,15 +115,17 @@ internal object DownloadCompletionHandler {
         start: DownloadRunState,
         state: HttpDownloadState,
         notificationPublisher: NotificationPublisher,
+        handleTargetFile: Boolean = true,
     ) {
-        DownloadFileCleanup.deleteIfEmpty(Paths.get(datenDownload.targetPathFileName))
-        setFileSize(datenDownload)
+        if (handleTargetFile) {
+            DownloadFileCleanup.deleteIfEmpty(Paths.get(datenDownload.targetPathFileName))
+            setFileSize(datenDownload)
 
-        if (SystemUtils.IS_OS_MAC_OSX) {
-            writeSpotlightComment(datenDownload, state)
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                writeSpotlightComment(datenDownload, state)
+            }
+            scheduleMp4MetadataWrite(datenDownload, start, state)
         }
-
-        scheduleMp4MetadataWrite(datenDownload, start, state)
 
         makeBeep()
         val completionMessage = DownloadLogMessages.logCompletion(datenDownload, start, state == HttpDownloadState.CANCEL)
@@ -130,7 +134,7 @@ internal object DownloadCompletionHandler {
         }
 
         if (state == HttpDownloadState.CANCEL || start.stoppen) {
-            DownloadLifecycleActions.reset(datenDownload)
+            if (datenDownload.runtime.runState === start) DownloadLifecycleActions.reset(datenDownload)
         } else {
             start.markCompletedProgress()
             datenDownload.runtime.filmSize.aktSize = -1

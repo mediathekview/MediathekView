@@ -41,6 +41,7 @@ class RuntimeExec(
     arguments: List<String>? = null,
 ) {
     private val progressTracker = ProgressTracker()
+    private var progressConsumer: Thread? = null
     private val arrProgCallArray = arguments?.toTypedArray() ?: strProgCallArray
         .split(TRENNER_PROG_ARRAY)
         .takeIf { it.size > 1 }
@@ -64,7 +65,7 @@ class RuntimeExec(
             }
 
             startStreamConsumer(process, IoType.INPUT)
-            startStreamConsumer(process, IoType.ERROR)
+            progressConsumer = startStreamConsumer(process, IoType.ERROR)
             process
         }.getOrElse { ex ->
             logger.error("Fehler beim Starten", ex)
@@ -78,11 +79,14 @@ class RuntimeExec(
         logger.info("=====================")
     }
 
-    private fun startStreamConsumer(process: Process, ioType: IoType) {
+    internal fun awaitProgress() {
+        progressConsumer?.join()
+    }
+
+    private fun startStreamConsumer(process: Process, ioType: IoType): Thread =
         Thread.ofVirtual()
             .name("RuntimeExec ffmpeg stream consumer type $ioType for pid ${process.pid()}")
             .start { consumeStream(process, ioType) }
-    }
 
     private fun consumeStream(process: Process, ioType: IoType) {
         val streamContext = createStreamContext(process, ioType)
@@ -109,7 +113,7 @@ class RuntimeExec(
             IoType.ERROR -> StreamContext("ERRORSTREAM [${process.pid()}]", process.errorStream, parseProgress = true)
         }
 
-    private fun canTrackProgress(): Boolean = start?.startTime != null && downloadSizeState != null
+    private fun canTrackProgress(): Boolean = start?.startTime != null && !start.stoppen && downloadSizeState != null
 
     private fun secondsSinceStart(): Long =
         Duration.between(start!!.startTime, LocalDateTime.now()).toSeconds()

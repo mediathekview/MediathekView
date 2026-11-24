@@ -54,7 +54,8 @@ internal class DownloadCompletionHandlerTest {
             download,
             start,
             HttpDownloadState.DOWNLOAD,
-        ) { notifications += it }
+            notificationPublisher = { notifications += it },
+        )
 
         assertEquals(
             listOf(

@@ -31,8 +31,13 @@ internal object DirectDownloadPartFiles {
     }
 
     @Throws(IOException::class)
-    fun moveCompletedPartToFinal(partFile: File, finalFile: File) {
-        FileUtils.moveAtomicallyWithFallback(partFile.toPath(), finalFile.toPath())
+    fun moveCompletedPartToFinal(partFile: File, finalFile: File, replaceExisting: Boolean = true) {
+        if (replaceExisting) {
+            FileUtils.moveAtomicallyWithFallback(partFile.toPath(), finalFile.toPath())
+        } else {
+            // ATOMIC_MOVE leaves the handling of an existing target up to the filesystem provider.
+            Files.move(partFile.toPath(), finalFile.toPath())
+        }
     }
 
     @Throws(IOException::class)
