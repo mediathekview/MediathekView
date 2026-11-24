@@ -71,7 +71,7 @@
         <commons-lang3.version>3.22.0</commons-lang3.version>
         <caffeine.version>3.3.1</caffeine.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
-        <dd-plist.version>1.30</dd-plist.version>
+        <dd-plist.version>1.31</dd-plist.version>
         <flatlaf.version>3.8</flatlaf.version>
         <git-commit-id-maven-plugin.version>10.0.1</git-commit-id-maven-plugin.version>
         <ikonli.version>12.4.0</ikonli.version>
