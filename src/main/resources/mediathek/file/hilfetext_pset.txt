@@ -81,6 +81,17 @@ Diese Angaben werden durch die URL ersetzt:
 %f ist die URL des Films (Original-URL)
 %u ist die Untertitel-URL des Films (leere Zeichenfolge, wenn keine vorhanden ist).
 %u kann in Abspiel- und Speicher-Sets verwendet werden.
+Beispiel für ein FFmpeg-Speicher-Set, das nur Untertitel speichert:
+Schalter: "-i %u -c:s srt **"
+Dateiname: "%t-%T.srt"
+
+%arteHlsWithSubtitles übernimmt in FFmpeg-Speicher-Sets die Untertitelspuren
+des gewählten ARTE-HLS-Programms zusammen mit Bild und Ton. Die Auflösung
+bleibt im Download-Dialog wählbar. Den Platzhalter direkt nach "-i %f"
+einfügen und keine eigenen "-map"-Schalter oder weiteren Eingaben angeben.
+Beispiel für MKV: "-i %f %arteHlsWithSubtitles -c:v copy -c:a copy -c:s srt **"
+Für MP4 stattdessen "-c:s mov_text" und einen Dateinamen mit ".mp4" verwenden.
+Die Untertitelspuren müssen in der HLS-Wiedergabeliste verfügbar sein.
 
 Zwei Sterne "**" werden durch den Zieldateinamen mit Pfad ersetzt.
 

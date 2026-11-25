@@ -8,6 +8,7 @@ import mediathek.config.Konstanten
 import mediathek.controller.history.AboHistoryController
 import mediathek.daten.DatenDownload
 import mediathek.daten.DownloadSource
+import mediathek.daten.DownloadType
 import mediathek.gui.dialog.DialogContinueDownload
 import mediathek.gui.dialog.MeldungDownloadfehler
 import mediathek.gui.messages.DownloadFinishedEvent
@@ -15,6 +16,7 @@ import mediathek.gui.messages.DownloadListChangedEvent
 import mediathek.gui.messages.DownloadStartEvent
 import mediathek.swing.SwingDispatch
 import mediathek.tool.MessageBus
+import mediathek.tool.ProcessCommandUtils
 import mediathek.tool.notification.NotificationPublisher
 import org.apache.logging.log4j.LogManager
 import java.io.File
@@ -36,6 +38,7 @@ class ExternalProgramDownload(
     private val start: DownloadRunState = checkNotNull(datenDownload.runtime.runState)
     private var file: File
     private var ffmpegOutput: FfmpegMp4Output? = null
+    private var subtitleOnly = false
     private var stagedAttempt: RuntimeExec? = null
     private var state = HttpDownloadState.DOWNLOAD
     private var ancillaryDownloads = DirectDownloadAncillaryFiles.empty(logger)
@@ -60,6 +63,7 @@ class ExternalProgramDownload(
 
         runBlocking {
             try {
+                subtitleOnly = isSubtitleOnlyInvocation()
                 ffmpegOutput = FfmpegMp4Output.forDownload(datenDownload, start)
                 createDownloadTargetDirectory(datenDownload.targetPath)
 
@@ -79,9 +83,13 @@ class ExternalProgramDownload(
                 }
             } finally {
                 try {
+                    val cleanupMinimum = if (subtitleOnly && start.isFinished) MIN_SUBTITLE_OUTPUT_BYTES
+                    else Konstanten.MIN_FILM_FILE_SIZE_KB
                     DownloadCompletionHandler.finalizeDownload(
                         datenDownload, start, state, notificationPublisher,
-                        handleTargetFile = ffmpegOutput?.published != false,
+                        // Before launch, the subtitle target can still be the user's existing file.
+                        handleTargetFile = ffmpegOutput?.published != false && (!subtitleOnly || start.process != null),
+                        minimumOutputBytes = cleanupMinimum,
                     )
                 } finally {
                     ffmpegOutput?.releaseAfter(start.process)
@@ -93,7 +101,24 @@ class ExternalProgramDownload(
     }
 
     private fun CoroutineScope.startAncillaryDownloads() {
-        ancillaryDownloads = DirectDownloadAncillaryFiles.start(this, datenDownload, logger)
+        ancillaryDownloads = DirectDownloadAncillaryFiles.start(this, datenDownload, logger, exportSubtitles = !subtitleOnly)
+    }
+
+    private fun isSubtitleOnlyInvocation(): Boolean {
+        val subtitleUrl = datenDownload.subtitleUrl
+        if (datenDownload.art != DownloadType.PROGRAM || datenDownload.isDownloadManager ||
+            subtitleUrl.isBlank() || subtitleUrl == datenDownload.downloadUrl ||
+            file.extension.lowercase() !in SUBTITLE_EXTENSIONS
+        ) return false
+
+        // Inspect the executed command so restored downloads and manual edits follow the same rule.
+        val args = datenDownload.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY)
+            .takeIf { it.size > 1 } ?: ProcessCommandUtils.tokenizeCommand(datenDownload.programInvocation).asList()
+        if (args.size < 4 || !ProcessCommandUtils.isFfmpeg(args.first()) ||
+            args.last().removeSurrounding("\"") != datenDownload.targetPathFileName
+        ) return false
+        val inputIndex = args.indices.singleOrNull { args[it] == "-i" } ?: return false
+        return args.getOrNull(inputIndex + 1) == subtitleUrl
     }
 
     private fun processDownload() {
@@ -142,6 +167,15 @@ class ExternalProgramDownload(
 
     private fun finishSuccessfulProcess(): Boolean {
         val validateProgress = datenDownload.quelle != DownloadSource.BUTTON && !datenDownload.isDownloadManager
+        if (subtitleOnly) {
+            if (start.stoppen) return true
+            // Subtitle cue timestamps do not measure completion of the conversion.
+            if (!DownloadCompletionValidator.isSuccessfulDownload(file, null, MIN_SUBTITLE_OUTPUT_BYTES) || !file.isFile) return false
+            if (datenDownload.isFromAbo) {
+                DownloadCompletionValidator.recordSuccessfulAboDownload(aboHistoryControllerProvider(), datenDownload)
+            }
+            return true
+        }
         val output = ffmpegOutput ?: return !validateProgress ||
             DownloadCompletionValidator.validateAndRecordSuccessfulAboDownload(
                 aboHistoryControllerProvider(), datenDownload, start
@@ -214,7 +248,7 @@ class ExternalProgramDownload(
     private fun stopProcess() {
         val process = start.process ?: return
         process.destroy()
-        if (ffmpegOutput != null && process.isAlive && !process.waitFor(FFMPEG_STOP_GRACE_SECONDS, SECONDS)) {
+        if ((ffmpegOutput != null || subtitleOnly) && process.isAlive && !process.waitFor(FFMPEG_STOP_GRACE_SECONDS, SECONDS)) {
             // FFmpeg can defer SIGTERM while blocked reading a stream segment.
             process.destroyForcibly()
             process.waitFor(FFMPEG_STOP_GRACE_SECONDS, SECONDS)
@@ -294,6 +328,7 @@ class ExternalProgramDownload(
                         MessageBus.messageBus.publishAsync(DownloadListChangedEvent())
                         createDownloadTargetDirectory(datenDownload.targetPath)
                         file = File(datenDownload.targetPathFileName)
+                        subtitleOnly = isSubtitleOnlyInvocation()
                         ffmpegOutput = FfmpegMp4Output.forDownload(datenDownload, start)
                     }
                 }
@@ -340,6 +375,9 @@ class ExternalProgramDownload(
     }
 
     companion object {
+        private const val MIN_SUBTITLE_OUTPUT_BYTES = 1L
+        private val SUBTITLE_EXTENSIONS = setOf("srt", "vtt", "ass", "ssa", "ttml")
+
         private const val STAT_START = 0
         private const val STAT_LAUFEN = 1
         private const val STAT_RESTART = 3

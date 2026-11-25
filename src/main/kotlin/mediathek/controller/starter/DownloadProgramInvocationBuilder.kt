@@ -22,6 +22,7 @@ import mediathek.daten.DatenProg
 import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
 import mediathek.tool.ArteHlsQualitySelector
+import mediathek.tool.ProcessCommandUtils
 
 internal data class DownloadInvocation(
     val command: String,
@@ -41,16 +42,30 @@ internal data class DownloadInvocationRequest(
 )
 
 internal object DownloadProgramInvocationBuilder {
+    private const val ARTE_HLS_WITH_SUBTITLES = "%arteHlsWithSubtitles"
+
     fun build(
         downloadType: DownloadType,
         program: DatenProg,
         request: DownloadInvocationRequest,
     ): DownloadInvocation {
         if (downloadType == DownloadType.DIRECT) return DownloadInvocation(command = "", commandArray = "")
-        val originalArray = program.programmAufrufArray
-        val mappedArray = originalArray.withArteHlsQualityMap(request, RuntimeExec.TRENNER_PROG_ARRAY)
+        val separator = RuntimeExec.TRENNER_PROG_ARRAY
+        val switches = program.switches.split(' ')
+        val subtitleOption = switches.indexOf(ARTE_HLS_WITH_SUBTITLES)
+        val includeSubtitles = subtitleOption >= 2 &&
+            switches.subList(subtitleOption - 2, subtitleOption) == listOf("-i", "%f") &&
+            switches.count { it == "-i" } == 1 &&
+            !program.isDownloadManager && ProcessCommandUtils.isFfmpeg(program.programPath)
+        val originalArray = program.programmAufrufArray.let {
+            if (subtitleOption >= 0) it.withoutSubtitleOption(separator) else it
+        }
+        val originalCommand = program.programmAufruf.let {
+            if (subtitleOption >= 0) it.withoutSubtitleOption(" ") else it
+        }
+        val mappedArray = originalArray.withArteHlsQualityMap(request, separator, includeSubtitles)
         return DownloadInvocation(
-            command = replaceExec(program.programmAufruf.withArteHlsQualityMap(request, " "), request),
+            command = replaceExec(originalCommand.withArteHlsQualityMap(request, " ", includeSubtitles), request),
             commandArray = replaceExec(mappedArray, request),
             automaticArteHlsProgramMap = mappedArray != originalArray,
         )
@@ -65,16 +80,22 @@ internal object DownloadProgramInvocationBuilder {
             .replace("%w", request.websiteUrl)
             .replace("%u", request.subtitleUrl)
 
-    private fun String.withArteHlsQualityMap(request: DownloadInvocationRequest, separator: String): String {
+    private fun String.withoutSubtitleOption(separator: String): String =
+        split(separator).filterNot { it == ARTE_HLS_WITH_SUBTITLES }.joinToString(separator)
+
+    private fun String.withArteHlsQualityMap(
+        request: DownloadInvocationRequest,
+        separator: String,
+        includeSubtitles: Boolean,
+    ): String {
         val programId = request.arteHlsProgramId() ?: return this
         val inputMarker = "-i${separator}%f"
         if (!contains(inputMarker) || contains("${separator}-map${separator}")) {
             return this
         }
-        return replace(
-            inputMarker,
-            "$inputMarker${separator}-map${separator}p:$programId${separator}-map${separator}-0:s",
-        )
+        val mapping = if (includeSubtitles) listOf("-map", "0:p:$programId")
+        else listOf("-map", "p:$programId", "-map", "-0:s")
+        return replace(inputMarker, inputMarker + separator + mapping.joinToString(separator))
     }
 
     private fun DownloadInvocationRequest.arteHlsProgramId(): Int? =

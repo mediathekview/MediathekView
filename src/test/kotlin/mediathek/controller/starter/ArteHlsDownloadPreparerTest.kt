@@ -7,6 +7,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.io.IOException
 
@@ -389,6 +390,83 @@ internal class ArteHlsDownloadPreparerTest {
             programInvocation = invocation.command
             pSet = DatenPset().apply { listeProg.add(program) }
         } to program
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["srt", "mov_text"])
+    fun `opt-in retains only the selected HLS program and survives restoration`(codec: String) {
+        val switches = "-http_seekable 0 -i %f %arteHlsWithSubtitles -c:v copy -c:a copy -c:s $codec **"
+        val variants = ArteQualityFixture.variants.reversed()
+        val selections = listOf(FilmResolution.Enum.HIGH_QUALITY to 1, FilmResolution.Enum.NORMAL to 3, FilmResolution.Enum.LOW to 5)
+        for ((quality, programId) in selections) {
+            val (original, program) = builtDownload(switches, quality)
+            for (download in listOf(original, original.copy, DatenDownload.fromConfig(original.toConfig()))) {
+                assertTrue(download.automaticArteHlsProgramMap)
+                val stored = download.programInvocationArray
+                val display = download.programInvocation
+                assertFalse(display.contains("%arteHlsWithSubtitles"))
+                val prepared = prepare(download, ArteQualityFixture.master(variants)) ?: stored.split(RuntimeExec.TRENNER_PROG_ARRAY)
+                assertEquals(
+                    listOf("/opt/bin/ffmpeg", "-http_seekable", "0", "-i", url,
+                        "-map", "0:p:$programId", "-c:v", "copy", "-c:a", "copy", "-c:s", codec, "/tmp/a film.mp4"),
+                    prepared,
+                )
+                assertEquals(stored, download.programInvocationArray)
+                assertEquals(display, download.programInvocation)
+                assertEquals(switches, program.switches)
+            }
+        }
+    }
+
+    @Test
+    fun `explicit maps keep control with and without the opt-in marker`() {
+        val quality = FilmResolution.Enum.HIGH_QUALITY
+        for (marker in listOf("", "%arteHlsWithSubtitles ")) {
+            val (download, _) = builtDownload("-i %f ${marker}-map 0:p:1 -c:s mov_text **", quality)
+            assertFalse(download.automaticArteHlsProgramMap)
+            assertEquals(listOf("0:p:1"), optionValues(download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY), "-map"))
+            assertNull(ArteHlsDownloadPreparer.prepare(download) { fail("Unexpected playlist request") })
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "'', true",
+        "'-metadata:s:a:0 language=fra', true",
+        "'-metadata:s:s:0 language=eng', false",
+        "'-metadata:s:0 language=eng', false",
+        "'-map_metadata:s:s -1', false",
+        "'-map_metadata -1', false",
+    )
+    fun `MP4 subtitle languages follow the selected group and respect custom metadata`(customMetadata: String, setSubtitleLanguages: Boolean) {
+        val options = if (customMetadata.isEmpty()) "" else "$customMetadata "
+        val (download, program) = builtDownload(
+            "-i %f %arteHlsWithSubtitles -c:v copy -c:a copy -c:s mov_text ${options}**",
+            FilmResolution.Enum.HIGH_QUALITY,
+        )
+        val stored = download.programInvocationArray
+        val switches = program.switches
+        val playlist = """
+            #EXTM3U
+            #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="selected",NAME="Français",LANGUAGE="fr",URI="fr.m3u8"
+            #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="selected",NAME="Français SDH",LANGUAGE="fr",URI="fr-sdh.m3u8"
+            #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="selected",NAME="Deutsch",LANGUAGE="de",URI="de.m3u8"
+            #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="other",NAME="Italiano",LANGUAGE="it",URI="it.m3u8"
+            #EXT-X-STREAM-INF:BANDWIDTH=200,RESOLUTION=1920x1080,SUBTITLES="selected"
+            high.m3u8
+            #EXT-X-STREAM-INF:BANDWIDTH=100,RESOLUTION=768x432,SUBTITLES="other"
+            low.m3u8
+        """.trimIndent()
+        val prepared = requireNotNull(prepare(download, playlist))
+        val expected = stored.split(RuntimeExec.TRENNER_PROG_ARRAY).toMutableList().apply {
+            this[indexOf("-map") + 1] = "0:p:0"
+            if (setSubtitleLanguages) {
+                addAll(lastIndex, listOf("-metadata:s:s:m:language:fr", "language=fra", "-metadata:s:s:m:language:de", "language=deu"))
+            }
+        }
+        assertEquals(expected, prepared)
+        assertEquals(stored, download.programInvocationArray)
+        assertEquals(switches, program.switches)
     }
 
     @Test

@@ -6,6 +6,7 @@ import mediathek.config.Konstanten
 import mediathek.controller.history.AboHistoryController
 import mediathek.controller.history.AboHistoryEntry
 import mediathek.daten.DatenDownload
+import mediathek.daten.DatenProg
 import mediathek.daten.DownloadSource
 import mediathek.daten.DownloadType
 import mediathek.tool.notification.DisabledNotificationBackend
@@ -72,6 +73,48 @@ internal class ExternalProgramDownloadTest {
     }
 
     @Test
+    fun `cancelling subtitle conversion removes its partial output after stopping FFmpeg`() {
+        val download = downloadToSubtitleFile("-i %u", "srt")
+        val target = Path.of(download.targetPathFileName)
+        val state = requireNotNull(download.runtime.runState)
+        val process = mock(Process::class.java)
+        `when`(process.isAlive).thenReturn(true)
+        `when`(process.waitFor(1, SECONDS)).thenAnswer {
+            // FFmpeg can still flush buffered subtitle cues after receiving SIGTERM.
+            Files.writeString(target, "Partial subtitle flushed during shutdown")
+            true
+        }
+        mockConstruction(RuntimeExec::class.java) { runtime, _ ->
+            `when`(runtime.exec(true)).thenReturn(process)
+        }.use {
+            `when`(process.exitValue()).thenAnswer {
+                Files.writeString(target, "Partial subtitle")
+                state.requestStop()
+                throw IllegalThreadStateException("FFmpeg is still running")
+            }
+            runner(download).run()
+        }
+        verify(process).destroy()
+        verify(process).waitFor(1, SECONDS)
+        assertFalse(Files.exists(target))
+        assertFalse(state.isFinished)
+        assertFalse(state.isError)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["", "Existing subtitle"])
+    fun `cancelling before launch preserves an existing subtitle target`(existingContent: String) {
+        val download = downloadToSubtitleFile("-i %u", "srt")
+        val target = Files.writeString(Path.of(download.targetPathFileName), existingContent)
+        requireNotNull(download.runtime.runState).requestStop()
+        mockConstruction(RuntimeExec::class.java).use { construction ->
+            runner(download).run()
+            assertTrue(construction.constructed().isEmpty())
+        }
+        assertEquals(existingContent, Files.readString(target))
+    }
+
+    @Test
     fun `cancellation during failed startup finishes without retrying or marking an error`() {
         val download = download()
         val state = requireNotNull(download.runtime.runState)
@@ -122,6 +165,49 @@ internal class ExternalProgramDownloadTest {
         verify(process, never()).destroy()
         assertTrue(state.isFinished)
         assertSame(state, download.runtime.runState)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "'-i %u', srt, 49, 0, true, true",
+        "'-i %u', srt, 0, 0, false, false",
+        "'-i %u', srt, -1, 0, false, false",
+        "'-i %u', srt, 0, 1, false, false",
+        "'-i %u', srt, 49, 1, false, false",
+        "'-i %f -i %u', srt, 49, 0, false, false",
+        "'-i %f', srt, 49, 0, false, false",
+        "'-i %u', mkv, 49, 0, false, false",
+    )
+    fun `only nonempty subtitle-only output can pass below the film size limit`(
+        inputs: String,
+        extension: String,
+        bytes: Int,
+        exitCode: Int,
+        succeeds: Boolean,
+        retained: Boolean,
+    ) {
+        val download = downloadToSubtitleFile(inputs, extension)
+        val restored = DatenDownload.fromConfig(download.toConfig()).apply {
+            runtime.runState = requireNotNull(download.runtime.runState)
+        }
+        val target = Path.of(restored.targetPathFileName)
+        val state = requireNotNull(restored.runtime.runState)
+        val process = mock(Process::class.java)
+        `when`(process.exitValue()).thenReturn(exitCode)
+        mockConstruction(RuntimeExec::class.java) { runtime, _ ->
+            `when`(runtime.exec(true)).thenAnswer {
+                if (bytes >= 0) Files.write(target, ByteArray(bytes) { 'a'.code.toByte() })
+                // A subtitle's last cue may be much earlier than the end of the input.
+                if (succeeds) state.updateProgress(100)
+                process
+            }
+        }.use {
+            runner(restored) { mock(AboHistoryController::class.java) }.run()
+        }
+        assertEquals(succeeds, state.isFinished)
+        assertEquals(!succeeds, state.isError)
+        assertEquals(retained, Files.exists(target))
+        if (retained) assertEquals(bytes.toLong(), Files.size(target))
     }
 
     @ParameterizedTest
@@ -473,6 +559,19 @@ internal class ExternalProgramDownloadTest {
         datenDownload = download,
         notificationPublisher = DisabledNotificationBackend,
     )
+
+    private fun downloadToSubtitleFile(inputs: String, extension: String) = download().apply {
+        quelle = DownloadSource.DOWNLOAD
+        subtitleUrl = "https://example.invalid/film.vtt"
+        targetFileName = "Film mit Leerzeichen.$extension"
+        targetPathFileName = directory.resolve(targetFileName).toString()
+        val invocation = DownloadProgramInvocationBuilder.build(
+            art, DatenProg("ffmpeg", "ffmpeg", "$inputs -c:s srt **", "false", "false"),
+            DownloadInvocationRequest(downloadUrl, "", targetPath, targetFileName, targetPathFileName, "", subtitleUrl),
+        )
+        programInvocation = invocation.command
+        programInvocationArray = invocation.commandArray
+    }
 
     private fun download() = DatenDownload().apply {
         title = "Startup cancellation"

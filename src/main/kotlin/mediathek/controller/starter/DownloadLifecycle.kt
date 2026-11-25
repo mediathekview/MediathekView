@@ -62,7 +62,11 @@ internal object DownloadCompletionValidator {
         }
     }
 
-    fun isSuccessfulDownload(file: File, start: DownloadRunState?): Boolean {
+    fun isSuccessfulDownload(
+        file: File,
+        start: DownloadRunState?,
+        minimumOutputBytes: Long = Konstanten.MIN_FILM_FILE_SIZE_KB,
+    ): Boolean {
         // prüfen ob der Download geklappt hat und die Datei existiert und eine min. Größe hat
         val filePath = file.path
 
@@ -79,7 +83,7 @@ internal object DownloadCompletionValidator {
                 false
             }
 
-            file.length() < Konstanten.MIN_FILM_FILE_SIZE_KB -> {
+            file.length() < minimumOutputBytes -> {
                 logger.error("Download fehlgeschlagen, Datei zu klein:{}", filePath)
                 false
             }
@@ -95,9 +99,9 @@ internal object DownloadFileCleanup {
      *
      * @param path The file which is to be deleted.
      */
-    fun deleteIfEmpty(path: Path) {
+    fun deleteIfEmpty(path: Path, minimumOutputBytes: Long = Konstanten.MIN_FILM_FILE_SIZE_KB) {
         try {
-            if (Files.exists(path) && Files.size(path) < Konstanten.MIN_FILM_FILE_SIZE_KB) {
+            if (Files.isRegularFile(path) && Files.size(path) < minimumOutputBytes) {
                 // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                 Files.delete(path)
             }
@@ -116,9 +120,10 @@ internal object DownloadCompletionHandler {
         state: HttpDownloadState,
         notificationPublisher: NotificationPublisher,
         handleTargetFile: Boolean = true,
+        minimumOutputBytes: Long = Konstanten.MIN_FILM_FILE_SIZE_KB,
     ) {
         if (handleTargetFile) {
-            DownloadFileCleanup.deleteIfEmpty(Paths.get(datenDownload.targetPathFileName))
+            DownloadFileCleanup.deleteIfEmpty(Paths.get(datenDownload.targetPathFileName), minimumOutputBytes)
             setFileSize(datenDownload)
 
             if (SystemUtils.IS_OS_MAC_OSX) {

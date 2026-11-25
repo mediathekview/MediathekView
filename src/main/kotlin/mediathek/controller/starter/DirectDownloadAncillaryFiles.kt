@@ -50,7 +50,12 @@ internal class DirectDownloadAncillaryFiles private constructor(
             return DirectDownloadAncillaryFiles(emptyList(), logger)
         }
 
-        fun start(scope: CoroutineScope, datenDownload: DatenDownload, logger: Logger): DirectDownloadAncillaryFiles {
+        fun start(
+            scope: CoroutineScope,
+            datenDownload: DatenDownload,
+            logger: Logger,
+            exportSubtitles: Boolean = true,
+        ): DirectDownloadAncillaryFiles {
             val infoJob = if (datenDownload.isInfoFile) {
                 scope.async(Dispatchers.IO) {
                     try {
@@ -63,7 +68,7 @@ internal class DirectDownloadAncillaryFiles private constructor(
                 null
             }
 
-            val subtitleJob = if (datenDownload.isSubtitle) {
+            val subtitleJob = if (exportSubtitles && datenDownload.isSubtitle) {
                 scope.async {
                     writeSubtitleFile(datenDownload, logger)
                 }

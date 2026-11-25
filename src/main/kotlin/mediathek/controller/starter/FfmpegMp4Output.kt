@@ -104,8 +104,7 @@ internal class FfmpegMp4Output private constructor(
                 .takeIf { it.size > 1 }
                 ?: ProcessCommandUtils.tokenizeCommand(download.programInvocation).asList()
             if (args.size < 8 || args.last().removeSurrounding("\"") != download.targetPathFileName) return null
-            val executable = args.first().substringAfterLast('/').substringAfterLast('\\')
-            if (!executable.equals("ffmpeg", ignoreCase = true) && !executable.equals("ffmpeg.exe", ignoreCase = true)) return null
+            if (!ProcessCommandUtils.isFfmpeg(args.first())) return null
 
             val inputIndex = if (args.subList(1, 3) == listOf("-http_seekable", "0")) 3 else 1
             if (args[inputIndex] != "-i" || args[inputIndex + 1] != download.downloadUrl) return null

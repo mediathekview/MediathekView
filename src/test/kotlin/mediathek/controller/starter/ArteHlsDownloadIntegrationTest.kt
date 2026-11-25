@@ -3,6 +3,7 @@ package mediathek.controller.starter
 import com.sun.net.httpserver.HttpServer
 import kotlinx.serialization.json.*
 import mediathek.daten.DatenDownload
+import mediathek.daten.DatenProg
 import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
 import mediathek.gui.dialog.download.DownloadQualitySupport
@@ -22,6 +23,71 @@ import java.util.concurrent.TimeUnit
 internal class ArteHlsDownloadIntegrationTest {
     @TempDir
     lateinit var directory: Path
+
+    @Test
+    fun `quality selection muxes the matching subtitle group into MP4 and MKV`() {
+        val ffmpeg = executable("ffmpeg")
+        val ffprobe = executable("ffprobe")
+        assumeTrue(ffmpeg != null && ffprobe != null, "FFmpeg and FFprobe required for media integration test")
+        val encoders = availableEncoders(runCommand(listOf(ffmpeg!!, "-hide_banner", "-encoders")))
+        assumeTrue(encoders.containsAll(setOf("libx264", "aac", "webvtt", "srt", "mov_text")),
+            "FFmpeg media integration test requires H.264, AAC, WebVTT, SubRip and mov_text encoders")
+        val master = """
+            #EXTM3U
+            #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="high",NAME="Français",LANGUAGE="fr",DEFAULT=YES,AUTOSELECT=YES,URI="720_vtt.m3u8"
+            #EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="low",NAME="Deutsch",LANGUAGE="deu",DEFAULT=YES,AUTOSELECT=YES,URI="480_vtt.m3u8"
+            #EXT-X-STREAM-INF:BANDWIDTH=200000,RESOLUTION=720x720,SUBTITLES="high"
+            720.m3u8
+            #EXT-X-STREAM-INF:BANDWIDTH=100000,RESOLUTION=480x480,SUBTITLES="low"
+            480.m3u8
+        """.trimIndent()
+        val localMaster = Files.writeString(directory.resolve("master.m3u8"), master)
+        for (size in listOf(480, 720)) {
+            val captions = Files.writeString(directory.resolve("$size.srt"),
+                "1\n00:00:00,250 --> 00:00:01,500\nOpening caption for $size\n\n" +
+                    "2\n00:00:03,000 --> 00:00:04,500\nCaption for $size\n\n")
+            runCommand(listOf(ffmpeg, "-v", "error", "-f", "lavfi", "-i", "color=size=${size}x$size:rate=25",
+                "-f", "lavfi", "-i", "sine=frequency=440", "-i", captions.toString(), "-t", "6",
+                "-map", "0:v", "-map", "1:a", "-map", "2:s", "-c:v", "libx264", "-g", "50", "-c:a", "aac",
+                "-c:s", "webvtt", "-f", "hls", "-hls_time", "2", "-var_stream_map", "v:0,a:0,s:0,sgroup:subs",
+                directory.resolve("$size.m3u8").toString()))
+        }
+        val remoteUrl = "https://manifest-arte.akamaized.net/api/manifest/v1/Generate/id/de/XQ/master.m3u8"
+        for ((quality, extension) in listOf(FilmResolution.Enum.HIGH_QUALITY to "mp4", FilmResolution.Enum.LOW to "mkv")) {
+            val mp4 = extension == "mp4"
+            val codec = if (mp4) "mov_text" else "srt"
+            val audioLanguage = if (mp4) "-metadata:s:a:0 language=eng " else ""
+            val target = directory.resolve("film.$extension")
+            val program = DatenProg("ffmpeg", ffmpeg,
+                "-i %f %arteHlsWithSubtitles -c:v copy -c:a copy -c:s $codec ${audioLanguage}**", "false", "false")
+            val invocation = DownloadProgramInvocationBuilder.build(
+                DownloadType.PROGRAM, program,
+                DownloadInvocationRequest(remoteUrl, "", directory.toString(), target.fileName.toString(), target.toString(), "", "", quality),
+            )
+            val download = DatenDownload().apply {
+                selectedResolution = quality
+                automaticArteHlsProgramMap = invocation.automaticArteHlsProgramMap
+                sender = "ARTE.DE"
+                art = DownloadType.PROGRAM
+                downloadUrl = remoteUrl
+                targetPathFileName = target.toString()
+                programInvocationArray = invocation.commandArray
+            }
+            val prepared = requireNotNull(ArteHlsDownloadPreparer.prepare(download) { ArteHlsQualitySelector.Playlist(it, master) })
+            runCommand(prepared.map { if (it == remoteUrl) localMaster.toString() else it })
+            val report = Json.parseToJsonElement(runCommand(listOf(ffprobe!!, "-v", "error", "-show_streams", "-of", "json", target.toString()))).jsonObject
+            val streams = report.getValue("streams").jsonArray.map { it.jsonObject }
+            val video = streams.single { it.getValue("codec_type").jsonPrimitive.content == "video" }
+            val subtitle = streams.single { it.getValue("codec_type").jsonPrimitive.content == "subtitle" }
+            assertEquals(if (mp4) 720 else 480, video.getValue("width").jsonPrimitive.int)
+            val audio = streams.single { it.getValue("codec_type").jsonPrimitive.content == "audio" }
+            if (mp4) assertEquals("eng", audio["tags"]?.jsonObject?.get("language")?.jsonPrimitive?.content)
+            assertEquals(if (mp4) "mov_text" else "subrip", subtitle.getValue("codec_name").jsonPrimitive.content)
+            assertEquals(if (mp4) "fra" else "deu", subtitle["tags"]?.jsonObject?.get("language")?.jsonPrimitive?.content)
+            val cues = runCommand(listOf(ffmpeg, "-v", "error", "-i", target.toString(), "-map", "0:s:0", "-f", "srt", "-"))
+            assertEquals("Caption for ${if (mp4) 720 else 480}", cues.trim().lineSequence().last())
+        }
+    }
 
     @ParameterizedTest
     @MethodSource("audioNames")

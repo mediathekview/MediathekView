@@ -21,6 +21,11 @@ package mediathek.tool
 import java.util.*
 
 object ProcessCommandUtils {
+    internal fun isFfmpeg(executable: String): Boolean {
+        val name = executable.substringAfterLast('/').substringAfterLast('\\')
+        return name.equals("ffmpeg", ignoreCase = true) || name.equals("ffmpeg.exe", ignoreCase = true)
+    }
+
     fun tokenizeCommand(command: String): Array<String> {
         val tokenizer = StringTokenizer(command)
         val tokens = Array(tokenizer.countTokens()) { "" }

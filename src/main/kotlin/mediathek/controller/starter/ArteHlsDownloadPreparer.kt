@@ -5,10 +5,10 @@ import mediathek.daten.DownloadType
 import mediathek.daten.FilmResolution
 import mediathek.tool.ArteHlsQualitySelector
 import mediathek.tool.HlsEgressPolicy
+import mediathek.tool.ProcessCommandUtils
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.apache.logging.log4j.LogManager
-import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -18,6 +18,9 @@ internal object ArteHlsDownloadPreparer {
     private val senderPattern = Regex("arte(?:[.](?:de|en|es|fr|it|pl))?", RegexOption.IGNORE_CASE)
     private val attributePattern = Regex("([A-Z0-9-]+)=(\"[^\"]*\"|[^,\"]+)(?:,|$)")
     private val programIdPattern = Regex("p:[0-9]+")
+    private val subtitleProgramPattern = Regex("0:p:[0-9]+")
+    private val languageTagPattern = Regex("[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*")
+    private val nonSubtitleStreamTypes = setOf("a", "v", "V", "d", "t")
     private val copyOptions = listOf("-c", "copy", "-bsf:a", "aac_adtstoasc")
     private val hlsEscapePattern = Regex("""\\(.)""")
 
@@ -34,7 +37,7 @@ internal object ArteHlsDownloadPreparer {
         var qualityArguments: List<String>? = null
         return try {
             val args = download.programInvocationArray.split(RuntimeExec.TRENNER_PROG_ARRAY)
-            if (args.size < 8 || Path.of(args[0]).fileName.toString().lowercase(Locale.ROOT) !in setOf("ffmpeg", "ffmpeg.exe") ||
+            if (args.size < 6 || !ProcessCommandUtils.isFfmpeg(args[0]) ||
                 args.last().removeSurrounding("\"") != download.targetPathFileName
             ) return null
             val inputIndex = args.indices.singleOrNull { args[it] == "-i" } ?: return null
@@ -42,33 +45,46 @@ internal object ArteHlsDownloadPreparer {
             if (args.getOrNull(inputIndex + 1) != download.downloadUrl || inputEndIndex >= args.size) return null
             val switches = args.subList(inputEndIndex, args.lastIndex)
             val mapping = switches.take(4)
-            val programId = if (mapping.size == 4 && mapping[0] == "-map" &&
+            val mapCount = args.count { it == "-map" }
+            val includeSubtitles = download.automaticArteHlsProgramMap && mapCount == 1 &&
+                mapping.firstOrNull() == "-map" && mapping.getOrNull(1)?.matches(subtitleProgramPattern) == true
+            val programId = if (includeSubtitles) mapping[1].substringAfterLast(':').toIntOrNull()
+            else if (mapping.size == 4 && mapping[0] == "-map" &&
                 programIdPattern.matches(mapping[1]) && mapping[2] == "-map" && mapping[3] == "-0:s"
             ) mapping[1].substringAfter(':').toIntOrNull() else null
             // Provenance comes from invocation construction, never from a coincidentally equal Pset mapping.
-            val automatic = download.automaticArteHlsProgramMap && programId != null && args.count { it == "-map" } == 2 &&
+            val automatic = download.automaticArteHlsProgramMap && programId != null &&
+                (includeSubtitles || mapCount == 2) &&
                 (programId == ArteHlsQualitySelector.fallbackProgramId(download.downloadUrl, download.selectedResolution) ||
                     (programId == 3 && download.selectedResolution == FilmResolution.Enum.LOW))
             // Quality selection preserves every additional option. Audio metadata rewriting retains its
             // narrower contract so custom metadata, filters and input/output options keep their semantics.
             val standardInput = inputIndex == 1 || (inputIndex == 3 && args.subList(1, 3) == listOf("-http_seekable", "0"))
-            val prepareAudio = download.targetPathFileName.endsWith(".mp4", ignoreCase = true) && standardInput &&
+            val mp4Output = download.targetPathFileName.endsWith(".mp4", ignoreCase = true)
+            val prepareAudio = !includeSubtitles && mp4Output && standardInput &&
                 (switches == copyOptions || (programId != null && switches.drop(4) == copyOptions))
             if (!automatic && !prepareAudio) return null
             val playlist = load(download.downloadUrl.toHttpUrl())
             val lines = playlist.text.lineSequence().map(String::trim).filter(String::isNotEmpty).toList()
             require(lines.firstOrNull() == "#EXTM3U") { "Not an HLS playlist" }
-            val audioGroups = lines.filter { it.startsWith("#EXT-X-STREAM-INF:") }
-                .map { attributes(it.substringAfter(':'))["AUDIO"] }
+            val variants = lines.filter { it.startsWith("#EXT-X-STREAM-INF:") }
+                .map { attributes(it.substringAfter(':')) }
             // HLS program IDs are the zero-based variant indexes used by FFmpeg.
             val selectedProgram = if (automatic) {
                 ArteHlsQualitySelector.selectProgram(playlist.text, download.selectedResolution) ?: programId
-            } else programId ?: if (audioGroups.size == 1) 0 else return null
+            } else programId ?: if (variants.size == 1) 0 else return null
             if (selectedProgram != programId && programId != null) {
-                qualityArguments = args.toMutableList().apply { this[inputEndIndex + 1] = "p:$selectedProgram" }
+                val programMap = if (includeSubtitles) "0:p:$selectedProgram" else "p:$selectedProgram"
+                qualityArguments = args.toMutableList().apply { this[inputEndIndex + 1] = programMap }
+            }
+            if (includeSubtitles && mp4Output) {
+                val group = variants.getOrNull(selectedProgram)?.get("SUBTITLES") ?: return qualityArguments
+                val metadata = mp4SubtitleLanguageOptions(lines, group, switches)
+                if (metadata.isEmpty()) return qualityArguments
+                return (qualityArguments ?: args).dropLast(1) + metadata + args.last()
             }
             if (!prepareAudio) return qualityArguments
-            val group = audioGroups.getOrNull(selectedProgram) ?: return qualityArguments
+            val group = variants.getOrNull(selectedProgram)?.get("AUDIO") ?: return qualityArguments
             val renditions = lines.filter { it.startsWith("#EXT-X-MEDIA:") }
                 .map { attributes(it.substringAfter(':')) }
                 .filter { it["TYPE"] == "AUDIO" }
@@ -126,10 +142,43 @@ internal object ArteHlsDownloadPreparer {
                 add(download.targetPathFileName)
             }
         } catch (ex: Exception) {
-            logger.warn("ARTE-Audiospuren konnten nicht vorbereitet werden; verfügbare Qualitätsauswahl wird beibehalten: {}", ex.message)
+            logger.warn("ARTE-Spuren konnten nicht vorbereitet werden; verfügbare Qualitätsauswahl wird beibehalten: {}", ex.message)
             qualityArguments
         }
     }
+
+    private fun mp4SubtitleLanguageOptions(lines: List<String>, group: String, switches: List<String>): List<String> {
+        if (switches.withIndex().any { (index, option) ->
+                option == "-map_metadata" || option.startsWith("-map_metadata:") ||
+                    (canSetSubtitleMetadata(option) && switches.getOrNull(index + 1)?.startsWith("language=", ignoreCase = true) == true)
+            }
+        ) return emptyList()
+
+        val languages = lines.asSequence()
+            .filter { it.startsWith("#EXT-X-MEDIA:") }
+            .map { attributes(it.substringAfter(':')) }
+            .filter { it["TYPE"] == "SUBTITLES" && it["GROUP-ID"] == group }
+            .mapNotNull { rendition ->
+                val primary = rendition["LANGUAGE"]?.takeIf(languageTagPattern::matches) ?: return@mapNotNull null
+                val associated = rendition["ASSOC-LANGUAGE"].orEmpty()
+                if (associated.isNotEmpty() && !languageTagPattern.matches(associated)) return@mapNotNull null
+                val source = if (associated.isEmpty()) primary else "$primary,$associated"
+                val normalized = mp4Language(primary)?.takeUnless { it == source } ?: return@mapNotNull null
+                source to normalized
+            }
+            .distinct()
+        return buildList {
+            // FFmpeg copies the rendition language before applying output metadata. Match the tag
+            // so a missing rendition never shifts a language onto the wrong subtitle stream.
+            languages.forEach { (source, normalized) ->
+                addAll(listOf("-metadata:s:s:m:language:$source", "language=$normalized"))
+            }
+        }
+    }
+
+    private fun canSetSubtitleMetadata(option: String): Boolean =
+        option == "-metadata:s" || (option.startsWith("-metadata:s:") &&
+            option.removePrefix("-metadata:s:").substringBefore(':') !in nonSubtitleStreamTypes)
 
     /** Quote for FFmpeg's stream-specifier parser, not for a shell. */
     private fun quoteStreamName(name: String): String = "'" + name.replace("'", "'\\''") + "'"

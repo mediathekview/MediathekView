@@ -7,6 +7,7 @@
 - **FEATURE:** ARTE Onlinesuche durchsucht nun die Kataloge der Sprachen *Deutsch*, *Französisch*, *Englisch*, *Spanisch*, *Polnisch*, *Italienisch* und *Rumänisch*.
 - **FEATURE:** ARTE-Downloads verwenden in der höchsten Qualitätsstufe bevorzugt H.265 (HEVC) mit H.264 (AVC) als Fallback. Die mittlere und niedrige Qualitätsstufe bevorzugen H.264 (AVC).
 - **FEATURE:** MP4-Downloads mit dem FFmpeg-Standardbefehl werden zunächst als `.mp4.part` gespeichert. Die Zieldatei wird erst nach erfolgreichem Abschluss erstellt oder ersetzt.
+- **FEATURE:** FFmpeg-Speicher-Sets können mit `%arteHlsWithSubtitles` ARTE-HLS-Untertitel in die Video-Datei übernehmen. Die Download-Auflösung bleibt wählbar.
 - **BUGFIX:** `HQ`-, `UT`- und `Geo`-Spalten-Icons wurden nicht vollständig aus der `Titel`-Spalte ausgeblendet, wenn diese sichtbar waren.
 - **BUGFIX:** Sender-Checkboxliste reagiert nun weniger sensibel auf die Position der Mausklicks.
 - **BUGFIX:** Die App stürzt nicht mehr unter JDK 26 aufgrund der JIde-Bibliothek ab.
@@ -19,6 +20,7 @@
 - **BUGFIX:** LRU-Sortier-Feature der Suchhistorie kann in den Einstellungen nun aktiviert werden. Default ist aus.
 - **BUGFIX:** Beim ersten Start führt *Weiter* bei leerem VLC-Pfad direkt zur Programmset-Auswahl, ohne erneut nach VLC zu fragen.
 - **BUGFIX:** Die Auswahl des Filters *Nur High-Quality-Filme(HQ) anzeigen* überschreibt nicht mehr die Voreinstellung der Programmsets.
+- **BUGFIX:** FFmpeg-Speicher-Sets, die mit `%u` nur Untertitel herunterladen, akzeptieren auch kleine Untertiteldateien.
 - viele interne Änderungen
 
 # **15.0.0**
