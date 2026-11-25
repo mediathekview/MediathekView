@@ -5,7 +5,7 @@
     <languages>
       <principalLanguage id="de" />
     </languages>
-    <jreBundles jdkProviderId="JBR" release="25/latest">
+    <jreBundles jdkProviderId="JBR" release="27/latest">
       <modules>
         <defaultModules set="all" />
         <module name="jdk.incubator.vector" />
