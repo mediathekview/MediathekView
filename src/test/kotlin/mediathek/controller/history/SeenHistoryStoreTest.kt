@@ -1,11 +1,13 @@
 package mediathek.controller.history
 
+import mediathek.daten.DatenFilm
 import mediathek.tool.sql.SqlDatabaseConfig
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import org.sqlite.SQLiteDataSource
 import java.nio.file.Files
 import java.nio.file.Path
@@ -116,6 +118,69 @@ class SeenHistoryStoreTest {
         )
         assertTrue(store!!.containsUrl(SeenHistorySource.FILM, sharedUrl))
         assertTrue(store!!.containsUrl(SeenHistorySource.AUDIOTHEK, sharedUrl))
+    }
+
+    @Test
+    fun filmAnnotationMatchesExactDecodedUrlsAcrossSourcesAndHashCollisions() {
+        val first = "https://example.org/Aa"
+        val collision = "https://example.org/BB"
+        val utf8 = "https://example.org/日本語/🚀"
+        val embeddedZero = "https://example.org/a\u0000tail"
+        val audioOnly = "https://example.org/audio"
+        val replacement = "\uFFFD"
+        assertEquals(first.hashCode(), collision.hashCode())
+
+        val store = checkNotNull(store)
+        store.insertSeenEntries(
+            listOf(first, utf8, embeddedZero, "", " ", "\u2003").map {
+                SeenHistoryEntry(SeenHistorySource.FILM, "", "", it)
+            } + SeenHistoryEntry(SeenHistorySource.AUDIOTHEK, "", "", audioOnly),
+        )
+        dataSource.connection.use { connection ->
+            connection.createStatement().use {
+                it.executeUpdate("INSERT INTO seen_history(source, url) VALUES ('FILM', CAST(X'FF' AS TEXT))")
+            }
+        }
+
+        val catalogUrls = listOf(
+            first, collision, first.lowercase(), first, utf8, embeddedZero,
+            "https://example.org/a", audioOnly, replacement, "", " ", "\u2003",
+        )
+        val films = catalogUrls.map { url -> DatenFilm().apply { urlNormalQuality = url } }
+        val filmUrls = SeenFilmUrls(films)
+        store.matchSeenFilmUrls(filmUrls)
+
+        val original = store.loadUrls(SeenHistorySource.FILM)
+        assertEquals(
+            catalogUrls.map { it.isNotBlank() && it in original },
+            films.map { filmUrls.isSeen(it.urlNormalQuality) },
+        )
+        assertEquals(listOf(first, first, utf8, embeddedZero, replacement), catalogUrls.filter(filmUrls::isSeen))
+    }
+
+    @Test
+    fun filmAnnotationUsesTextMatchingInLegacyUtf16Database(@TempDir directory: Path) {
+        val path = directory.resolve("legacy-history.db")
+        DriverManager.getConnection("jdbc:sqlite:$path").use { connection ->
+            connection.createStatement().use {
+                it.executeUpdate("PRAGMA encoding='UTF-16le'")
+                it.executeUpdate(SeenHistoryMigrator.CREATE_TABLE_STMT)
+                it.executeUpdate("INSERT INTO seen_history(source, url) VALUES ('FILM', '䉁')")
+                it.executeQuery("PRAGMA encoding").use { result ->
+                    assertTrue(result.next())
+                    assertEquals("UTF-16le", result.getString(1))
+                }
+            }
+        }
+
+        // U+4241 in UTF-16LE has the same bytes as ASCII "AB".
+        val urls = listOf("AB", "䉁")
+        val films = urls.map { url -> DatenFilm().apply { urlNormalQuality = url } }
+        SeenHistoryStore(SqlDatabaseConfig.createDataSource(path), path).use { legacyStore ->
+            val filmUrls = SeenFilmUrls(films)
+            legacyStore.matchSeenFilmUrls(filmUrls)
+            assertEquals(listOf("䉁"), urls.filter(filmUrls::isSeen))
+        }
     }
 
     @Test

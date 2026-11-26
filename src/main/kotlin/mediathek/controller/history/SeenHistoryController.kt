@@ -131,11 +131,6 @@ class SeenHistoryController : AutoCloseable {
     fun isMemoryCachePrepared(source: SeenHistorySource = SeenHistorySource.FILM): Boolean =
         SeenHistoryCache.isPrepared(source)
 
-    internal fun loadSeenUrls(source: SeenHistorySource): Set<String>? =
-        runStoreCatching("loadSeenUrls", null as Set<String>?) {
-            loadUrls(source)
-        }
-
     fun performMaintenance() {
         logger.trace("Start maintenance")
 
@@ -256,9 +251,12 @@ class SeenHistoryController : AutoCloseable {
             }
         }
 
-        fun loadSeenUrlsFromSharedStore(source: SeenHistorySource): Set<String>? =
+        internal fun matchSeenFilmUrlsFromSharedStore(filmUrls: SeenFilmUrls): Boolean =
             SeenHistoryController().use { controller ->
-                controller.loadSeenUrls(source)
+                controller.runStoreCatching("matchSeenFilmUrls", false) {
+                    matchSeenFilmUrls(filmUrls)
+                    true
+                }
             }
 
         fun closeSharedStore() {

@@ -116,9 +116,12 @@ class FilmSeenHistoryController : AutoCloseable {
                 return
             }
 
-            val seenUrls = SeenHistoryController.loadSeenUrlsFromSharedStore(SeenHistorySource.FILM) ?: return
+            val seenUrls = SeenFilmUrls(films)
+            if (!SeenHistoryController.matchSeenFilmUrlsFromSharedStore(seenUrls)) {
+                return
+            }
             films.parallelStream().forEach { film ->
-                film.isSeenInHistory = film.urlNormalQuality.isNotBlank() && film.urlNormalQuality in seenUrls
+                film.isSeenInHistory = seenUrls.isSeen(film.urlNormalQuality)
                 film.seenHistoryAnnotationEpoch = currentEpoch
             }
         }

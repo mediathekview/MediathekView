@@ -108,6 +108,30 @@ internal class SeenHistoryStore(
         }
     }
 
+    fun matchSeenFilmUrls(filmUrls: SeenFilmUrls) {
+        val usesUtf8 = connection.createStatement().use { statement ->
+            statement.executeQuery("PRAGMA encoding").use { resultSet ->
+                resultSet.next() && resultSet.getString(1) == "UTF-8"
+            }
+        }
+        connection.prepareStatement(SELECT_FILM_URLS_SQL).use { statement ->
+            statement.setString(1, SeenHistorySource.FILM.name)
+            statement.executeQuery().use { resultSet ->
+                while (resultSet.next()) {
+                    // The binary column avoids decoding ASCII URLs. Read the original TEXT column for
+                    // non-ASCII values and databases with a different encoding.
+                    if (usesUtf8) {
+                        val bytes = resultSet.getBytes(1) ?: continue
+                        if (filmUrls.markSeenIfAscii(bytes)) {
+                            continue
+                        }
+                    }
+                    resultSet.getString(2)?.let(filmUrls::markSeen)
+                }
+            }
+        }
+    }
+
     fun containsUrl(source: SeenHistorySource, url: String): Boolean {
         if (url.isBlank()) {
             return false
@@ -305,6 +329,7 @@ internal class SeenHistoryStore(
         private const val INSERT_SQL = "INSERT OR IGNORE INTO seen_history(source,thema,titel,url) values (?,?,?,?)"
         private const val DELETE_SQL = "DELETE FROM seen_history WHERE source = ? AND url = ?"
         private const val SELECT_URLS_SQL = "SELECT url FROM seen_history WHERE source = ?"
+        private const val SELECT_FILM_URLS_SQL = "SELECT CAST(url AS BLOB), url FROM seen_history WHERE source = ?"
         private const val SEEN_SQL = "SELECT COUNT(url) AS total FROM seen_history WHERE source = ? AND url = ?"
         private const val DELETE_ALL_SQL = "DELETE FROM seen_history"
         private const val DELETE_LIVESTREAMS_SQL = "DELETE FROM seen_history WHERE thema = 'Livestream'"
