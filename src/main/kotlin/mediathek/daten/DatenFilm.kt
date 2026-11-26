@@ -581,8 +581,9 @@ class DatenFilm private constructor(
             ++prefixLength
         }
 
-        val compressedUrl = "$prefixLength$COMPRESSION_MARKER${requestedUrl.substring(prefixLength)}"
-        return if (compressedUrl.length < requestedUrl.length) compressedUrl else requestedUrl
+        return compressUrlSuffix(requestedUrl, prefixLength) {
+            append(prefixLength).append(COMPRESSION_MARKER)
+        }
     }
 
     private fun parseCompressionPrefixLength(requestedUrl: String, markerIndex: Int): Int {
@@ -883,6 +884,8 @@ private object UrlHostDictionary {
     private const val MARKER = '~'
     private val baseIds = HashMap<String, Int>()
     private val bases = ArrayList<String>()
+    private val recentBaseIds = IntArray(4) { -1 }
+    private var nextRecentBase = 0
 
     fun compress(url: String): String {
         if (url.isEmpty() || isCompressed(url)) {
@@ -894,19 +897,33 @@ private object UrlHostDictionary {
             return url
         }
 
-        val base = url.substring(0, baseEnd)
-        val suffix = url.substring(baseEnd)
-        val id = idFor(base)
-        val compressed = "$MARKER$id/$suffix"
-        return if (compressed.length < url.length) compressed else url
+        val id = idFor(url, baseEnd)
+        return compressUrlSuffix(url, baseEnd) {
+            append(MARKER).append(id).append('/')
+        }
     }
 
     @Synchronized
-    private fun idFor(base: String): Int =
-        baseIds[base] ?: bases.size.also { id ->
+    private fun idFor(url: String, baseEnd: Int): Int {
+        // Catalog rows commonly reuse the same video, website and subtitle hosts.
+        for (id in recentBaseIds) {
+            if (id >= 0) {
+                val base = bases[id]
+                if (base.length == baseEnd && url.startsWith(base)) {
+                    return id
+                }
+            }
+        }
+
+        val base = url.substring(0, baseEnd)
+        val id = baseIds[base] ?: bases.size.also { id ->
             bases += base
             baseIds[base] = id
         }
+        recentBaseIds[nextRecentBase] = id
+        nextRecentBase = (nextRecentBase + 1) % recentBaseIds.size
+        return id
+    }
 
     fun expand(url: String): String = withExpandedParts(url) { prefix, suffixStart ->
         if (suffixStart == 0) url else prefix + url.substring(suffixStart)
@@ -941,4 +958,18 @@ private object UrlHostDictionary {
         val pathStart = url.indexOf('/', startIndex = schemeSeparator + 3)
         return if (pathStart < 0) -1 else pathStart + 1
     }
+}
+
+private const val MAX_REUSABLE_URL_LENGTH = 4096
+private val urlCompressionBuffer = ThreadLocal.withInitial { StringBuilder(256) }
+
+private inline fun compressUrlSuffix(url: String, suffixStart: Int, appendPrefix: StringBuilder.() -> Unit): String {
+    val buffer = if (url.length <= MAX_REUSABLE_URL_LENGTH) urlCompressionBuffer.get() else StringBuilder()
+    buffer.setLength(0)
+    buffer.appendPrefix()
+    if (buffer.length >= suffixStart) {
+        return url
+    }
+    buffer.append(url, suffixStart, url.length)
+    return buffer.toString()
 }

@@ -401,6 +401,29 @@ internal class DatenFilmTest {
     }
 
     @Test
+    fun hostCompressionPreservesStoredPrefixesAcrossDifferentHosts() {
+        val film = DatenFilm()
+        val base = "https://cache-a.example.org/"
+        film.websiteUrl = base + "first"
+        val storedPrefix = checkNotNull(film.storedWebsiteUrl).removeSuffix("first")
+
+        for (host in 'b'..'h') {
+            val url = "https://cache-$host.example.org/short"
+            film.websiteUrl = url
+            assertEquals(url, film.websiteUrl)
+        }
+
+        val longSuffix = "ä界\uD83D\uDE80".repeat(1500)
+        film.websiteUrl = base + longSuffix
+        assertEquals(storedPrefix + longSuffix, film.storedWebsiteUrl)
+        assertEquals(base + longSuffix, film.websiteUrl)
+
+        film.websiteUrl = base + "next"
+        assertEquals(storedPrefix + "next", film.storedWebsiteUrl)
+        assertEquals(base + "next", film.websiteUrl)
+    }
+
+    @Test
     fun highQualityUrlStorageKeepsCompressedValue() {
         val film = DatenFilm()
         val sharedPrefix = "https://example.org/video/"
@@ -415,6 +438,16 @@ internal class DatenFilmTest {
             sharedPrefix + "high.mp4",
             film.getUrlFuerAufloesung(FilmResolution.Enum.HIGH_QUALITY),
         )
+    }
+
+    @Test
+    fun highQualityUrlStorageKeepsInputWhenCompressionWouldNotShortenIt() {
+        val film = DatenFilm()
+        film.urlNormalQuality = "abNormal.mp4"
+        film.highQualityUrl = "abHigh.mp4"
+
+        assertEquals("abHigh.mp4", film.storedHighQualityUrl)
+        assertEquals("abHigh.mp4", film.highQualityUrl)
     }
 
     @Test
