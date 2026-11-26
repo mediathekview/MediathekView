@@ -77,6 +77,7 @@ object Main {
     private const val MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar"
 
     init {
+        MemoryUsageMonitor.start()
         JavaUtilLoggingConfiguration.install()
         System.setProperty("log4j.shutdownCallbackRegistry", LOG4J_SHUTDOWN_CALLBACK_REGISTRY)
     }
@@ -90,7 +91,11 @@ object Main {
         setupEnvironmentProperties()
 
         val parseResult = parseCommandLine(args)
-        if (GraphicsEnvironment.isHeadless() && !CommandLineOptions.isDownloadAndQuit()) {
+        val downloadAndQuit = CommandLineOptions.isDownloadAndQuit()
+        if (downloadAndQuit) {
+            MemoryUsageMonitor.stop()
+        }
+        if (GraphicsEnvironment.isHeadless() && !downloadAndQuit) {
             System.err.println("Diese Version von MediathekView unterstützt keine Kommandozeilenausführung.")
             exitProcess(1)
         }
@@ -99,7 +104,7 @@ object Main {
 
         val daten = Daten()
 
-        if (CommandLineOptions.isDownloadAndQuit()) {
+        if (downloadAndQuit) {
             val downloadAndQuitRunner = DownloadAndQuitRunner(
                 daten.downloads,
                 daten.filmCatalog,

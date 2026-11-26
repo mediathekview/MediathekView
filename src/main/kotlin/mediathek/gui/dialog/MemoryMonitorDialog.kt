@@ -24,16 +24,16 @@ import org.pushingpixels.radiance.swing.ktx.addDelayedComponentListener
 import org.pushingpixels.radiance.swing.ktx.addDelayedWindowListener
 import java.awt.BorderLayout
 import java.awt.Dimension
-import java.time.Duration
 import javax.swing.JDialog
 import javax.swing.JFrame
 
-class MemoryMonitorDialog(
+internal class MemoryMonitorDialog(
     parent: JFrame,
+    memoryUsagePanel: MemoryUsagePanel = MemoryUsagePanel(),
+    private val configuration: ApplicationConfiguration = ApplicationConfiguration.getInstance(),
     private val onClose: Runnable,
 ) : JDialog(parent, "Speicherverbrauch", false) {
 
-    private val memoryUsagePanel = MemoryUsagePanel(HISTORY_WINDOW, SAMPLE_INTERVAL)
     private var preserveVisibilityOnClose = false
 
     init {
@@ -62,11 +62,6 @@ class MemoryMonitorDialog(
         )
     }
 
-    override fun dispose() {
-        memoryUsagePanel.close()
-        super.dispose()
-    }
-
     fun disposeForShutdown() {
         preserveVisibilityOnClose = true
         dispose()
@@ -77,7 +72,7 @@ class MemoryMonitorDialog(
     }
 
     private fun readStoredBounds(): DialogBounds? {
-        val state = ApplicationConfiguration.getInstance().memoryMonitorDialogState
+        val state = configuration.memoryMonitorDialogState
         return if (state.hasStoredBounds()) {
             DialogBounds(state.x, state.y, state.width, state.height)
         } else {
@@ -100,11 +95,11 @@ class MemoryMonitorDialog(
         }
 
         val bounds = bounds
-        ApplicationConfiguration.getInstance().setMemoryMonitorDialogBounds(bounds.x, bounds.y, bounds.width, bounds.height)
+        configuration.setMemoryMonitorDialogBounds(bounds.x, bounds.y, bounds.width, bounds.height)
     }
 
     private fun storeVisibility(visible: Boolean) {
-        ApplicationConfiguration.getInstance().memoryMonitorDialogVisible = visible
+        configuration.memoryMonitorDialogVisible = visible
     }
 
     private fun notifyClosed() {
@@ -119,8 +114,6 @@ class MemoryMonitorDialog(
     )
 
     companion object {
-        private val HISTORY_WINDOW: Duration = Duration.ofMinutes(2)
-        private val SAMPLE_INTERVAL: Duration = Duration.ofSeconds(1)
         private val DEFAULT_SIZE = Dimension(480, 240)
     }
 }

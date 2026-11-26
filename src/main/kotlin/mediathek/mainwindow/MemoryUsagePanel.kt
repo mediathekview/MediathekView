@@ -19,9 +19,9 @@
 package mediathek.mainwindow
 
 import com.formdev.flatlaf.FlatLaf
-import kotlinx.coroutines.*
-import kotlinx.coroutines.swing.Swing
 import mediathek.gui.messages.DarkModeChangeEvent
+import mediathek.tool.MemoryUsageMonitor
+import mediathek.tool.MemoryUsageSnapshot
 import mediathek.tool.MessageBus
 import net.engio.mbassy.listener.Handler
 import org.jfree.chart.ChartPanel
@@ -33,42 +33,30 @@ import org.jfree.chart.plot.XYPlot
 import org.jfree.chart.renderer.xy.XYAreaRenderer
 import org.jfree.chart.ui.Layer
 import org.jfree.chart.ui.RectangleInsets
-import org.jfree.data.time.Millisecond
-import org.jfree.data.time.TimeSeries
-import org.jfree.data.time.TimeSeriesCollection
-import org.jfree.data.time.TimeSeriesDataItem
+import org.jfree.data.xy.DefaultXYDataset
 import java.awt.BasicStroke
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.time.Duration
 import javax.swing.JPanel
 import javax.swing.SwingUtilities
+import javax.swing.Timer
 import javax.swing.UIManager
-import kotlin.math.max
-import kotlin.time.toKotlinDuration
 
-class MemoryUsagePanel(
-    historyWindow: Duration,
-    sampleInterval: Duration,
-) : JPanel(BorderLayout()), AutoCloseable {
-    private val configuration = MonitorConfiguration(historyWindow, sampleInterval)
-    private val usedMemorySeries = TimeSeries("Used Memory")
+internal class MemoryUsagePanel(
+    private val snapshot: () -> MemoryUsageSnapshot = MemoryUsageMonitor::snapshot,
+) : JPanel(BorderLayout()) {
+    private val dataset = DefaultXYDataset()
     private val timeAxis = createTimeAxis()
     private val memoryAxis = createMemoryAxis()
     private val averageMarker = createAverageMarker()
-    private val plot: XYPlot
-    private val chart: JFreeChart
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Swing)
-    private var samplingJob: Job? = null
+    private val plot = createPlot()
+    private val chart = createChart()
+    private val refreshTimer = Timer(MemoryUsageMonitor.SAMPLE_INTERVAL_MILLIS) { updateChart() }
     private var subscribedToMessageBus = false
 
     init {
-        configureDataset()
-        plot = createPlot()
-        chart = createChart()
-
         add(createChartPanel(), BorderLayout.CENTER)
         applyTheme()
     }
@@ -76,19 +64,14 @@ class MemoryUsagePanel(
     override fun addNotify() {
         super.addNotify()
         subscribeToMessageBus()
-        startSampling()
+        updateChart()
+        refreshTimer.start()
     }
 
     override fun removeNotify() {
-        stopSampling()
+        refreshTimer.stop()
         unsubscribeFromMessageBus()
         super.removeNotify()
-    }
-
-    override fun close() {
-        stopSampling()
-        coroutineScope.coroutineContext[Job]?.cancel()
-        unsubscribeFromMessageBus()
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -97,15 +80,8 @@ class MemoryUsagePanel(
         SwingUtilities.invokeLater(::applyTheme)
     }
 
-    private fun configureDataset() {
-        usedMemorySeries.maximumItemAge = configuration.historyWindow.toMillis()
-        usedMemorySeries.maximumItemCount = configuration.maxItemCount
-    }
-
     private fun createTimeAxis() = DateAxis("Zeit").apply {
-        isAutoRange = true
-        lowerMargin = 0.0
-        upperMargin = 0.0
+        isAutoRange = false
         isTickLabelsVisible = true
     }
 
@@ -116,7 +92,6 @@ class MemoryUsagePanel(
     }
 
     private fun createPlot(): XYPlot {
-        val dataset = TimeSeriesCollection(usedMemorySeries)
         val renderer = XYAreaRenderer().apply {
             isOutline = true
             setSeriesPaint(0, SERIES_FILL)
@@ -147,46 +122,18 @@ class MemoryUsagePanel(
         })
     }
 
-    private fun startSampling() {
-        if (samplingJob?.isActive == true) {
-            return
-        }
-
-        samplingJob = coroutineScope.launch {
-            while (isActive) {
-                delay(configuration.sampleInterval.toKotlinDuration())
-                sampleUsedMemory()
-            }
-        }
+    private fun updateChart() {
+        val history = snapshot()
+        timeAxis.setRange(history.windowStartMillis.toDouble(), history.windowEndMillis.toDouble())
+        val samples = history.samples
+        val timestamps = DoubleArray(samples.size) { samples[it].timestampMillis.toDouble() }
+        val usage = DoubleArray(samples.size) { samples[it].usedMiB }
+        dataset.addSeries("Speicherverbrauch", arrayOf(timestamps, usage))
+        averageMarker.value = if (usage.isEmpty()) 0.0 else usage.average()
     }
-
-    private fun stopSampling() {
-        samplingJob?.cancel()
-        samplingJob = null
-    }
-
-    private fun sampleUsedMemory() {
-        usedMemorySeries.addOrUpdate(Millisecond(), usedMemoryInMiB())
-        averageMarker.value = calculateAverageUsedMemoryInMiB()
-    }
-
-    private fun usedMemoryInMiB(): Double =
-        (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / (1024.0 * 1024.0)
 
     private fun createAverageMarker() = ValueMarker(0.0, AVERAGE_LINE_LIGHT_THEME, AVERAGE_STROKE).apply {
         alpha = 0.9f
-    }
-
-    private fun calculateAverageUsedMemoryInMiB(): Double {
-        val itemCount = usedMemorySeries.itemCount
-        if (itemCount == 0) {
-            return 0.0
-        }
-
-        val totalUsedMemory = usedMemorySeries.items.sumOf { item ->
-            (item as TimeSeriesDataItem).value.toDouble()
-        }
-        return totalUsedMemory / itemCount
     }
 
     private fun applyTheme() {
@@ -223,19 +170,6 @@ class MemoryUsagePanel(
             MessageBus.messageBus.unsubscribe(this)
             subscribedToMessageBus = false
         }
-    }
-
-    private data class MonitorConfiguration(
-        val historyWindow: Duration,
-        val sampleInterval: Duration,
-    ) {
-        init {
-            require(!(historyWindow.isZero || historyWindow.isNegative)) { "historyWindow must be positive" }
-            require(!(sampleInterval.isZero || sampleInterval.isNegative)) { "sampleInterval must be positive" }
-        }
-
-        val maxItemCount: Int =
-            max(2L, Math.ceilDiv(historyWindow.toMillis(), sampleInterval.toMillis()) + 1L).toInt()
     }
 
     private companion object {
