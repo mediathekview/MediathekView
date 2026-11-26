@@ -29,6 +29,7 @@ import mediathek.tool.episodes.SeasonEpisode
 import org.apache.commons.lang3.time.DurationFormatUtils
 import org.apache.logging.log4j.LogManager
 import java.net.HttpURLConnection
+import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -670,41 +671,47 @@ class DatenFilm private constructor(
     }
 
     private object IntelAmdSha256FastPath {
-        private const val UTF16LE_BUFFER_SIZE = 8192
         private val digest = ThreadLocal.withInitial { createSha256Digest() }
         private val utf16LeBuffer = ThreadLocal.withInitial { ByteArray(UTF16LE_BUFFER_SIZE) }
 
         fun hash(film: DatenFilm): String {
             val currentDigest = digest.get()
+            val buffer = utf16LeBuffer.get()
             currentDigest.reset()
-            updateDigestUtf16Le(currentDigest, film.sender)
-            updateDigestUtf16Le(currentDigest, film.thema)
-            updateDigestUtf16Le(currentDigest, film.urlNormalQuality)
-            updateDigestUtf16Le(currentDigest, film.websiteUrl)
+            updateDigestUtf16Le(currentDigest, buffer, film.sender)
+            updateDigestUtf16Le(currentDigest, buffer, film.thema)
+            updateDigestUtf16Le(currentDigest, buffer, film.urlNormalQuality)
+            updateDigestUtf16Le(currentDigest, buffer, film.websiteUrl)
             return HexFormat.of().formatHex(currentDigest.digest())
         }
+    }
 
-        private fun updateDigestUtf16Le(digest: MessageDigest, value: String) {
-            val buffer = utf16LeBuffer.get()
-            var position = 0
-            var index = 0
-            while (index < value.length) {
-                if (position + 2 > buffer.size) {
-                    digest.update(buffer, 0, position)
-                    position = 0
-                }
-                val ch = value[index]
-                if (ch.isSurrogate()) {
-                    digest.update(buffer, 0, position)
-                    digest.update(value.substring(index).toByteArray(StandardCharsets.UTF_16LE))
-                    return
-                }
-                buffer[position++] = ch.code.toByte()
-                buffer[position++] = (ch.code ushr 8).toByte()
-                ++index
+    /** Supplies a reusable lookup key for the legacy bookmark SHA-256 without warming the film's caches. */
+    internal class BookmarkHash {
+        private val digest = createSha256Digest()
+        private val buffer = ByteArray(UTF16LE_BUFFER_SIZE)
+        private val bytes = ByteArray(digest.digestLength)
+        private val lookupKey = ByteBuffer.wrap(bytes)
+
+        /** The returned key is valid until the next call. Use it only to look up a saved hash. */
+        fun lookupKey(film: DatenFilm): ByteBuffer {
+            updateDigestUtf16Le(digest, buffer, film.sender)
+            updateDigestUtf16Le(digest, buffer, film.thema)
+            val cachedNormalUrl = film.normalQualityUrlCache
+            if (cachedNormalUrl != null) {
+                updateDigestUtf16Le(digest, buffer, cachedNormalUrl)
+            } else {
+                updateExpandedUrl(film.normalQualityUrlStorage)
             }
-            if (position > 0) {
-                digest.update(buffer, 0, position)
+            film.websiteUrlStorage?.let(::updateExpandedUrl)
+            digest.digest(bytes, 0, bytes.size)
+            return lookupKey
+        }
+
+        private fun updateExpandedUrl(url: String) {
+            UrlHostDictionary.withExpandedParts(url) { prefix, suffixStart ->
+                updateDigestUtf16Le(digest, buffer, prefix)
+                updateDigestUtf16Le(digest, buffer, url, suffixStart)
             }
         }
     }
@@ -726,6 +733,7 @@ class DatenFilm private constructor(
         private val sorter = GermanStringSorter
         private val logger = LogManager.getLogger(DatenFilm::class.java)
         private val USE_SHA256_FAST_PATH = RuntimeArchitecture.isIntelOrAmd64Bit
+        private const val UTF16LE_BUFFER_SIZE = 8192
         private val UNDEFINED_DATUM_FILM_TIME_MILLIS = DatumFilm.UNDEFINED_FILM_DATE.time
         private const val UNDEFINED_SENDE_DATUM_EPOCH_DAY = Int.MIN_VALUE
         private const val UNDEFINED_SENDE_ZEIT_SECOND_OF_DAY = -1
@@ -740,6 +748,27 @@ class DatenFilm private constructor(
             } catch (ex: NoSuchAlgorithmException) {
                 logger.error("Failed to create SHA-256 message digest", ex)
                 throw IllegalStateException("SHA-256 algorithm is unavailable", ex)
+            }
+        }
+
+        private fun updateDigestUtf16Le(digest: MessageDigest, buffer: ByteArray, value: String, start: Int = 0) {
+            var position = 0
+            for (index in start..<value.length) {
+                if (position == buffer.size) {
+                    digest.update(buffer, 0, position)
+                    position = 0
+                }
+                val ch = value[index]
+                if (ch.isSurrogate()) {
+                    digest.update(buffer, 0, position)
+                    digest.update(value.substring(index).toByteArray(StandardCharsets.UTF_16LE))
+                    return
+                }
+                buffer[position++] = ch.code.toByte()
+                buffer[position++] = (ch.code ushr 8).toByte()
+            }
+            if (position > 0) {
+                digest.update(buffer, 0, position)
             }
         }
 
@@ -879,19 +908,24 @@ private object UrlHostDictionary {
             baseIds[base] = id
         }
 
-    fun expand(url: String): String {
+    fun expand(url: String): String = withExpandedParts(url) { prefix, suffixStart ->
+        if (suffixStart == 0) url else prefix + url.substring(suffixStart)
+    }
+
+    // A stored prefix ends with '/', so UTF-16 surrogate pairs cannot straddle the two parts.
+    inline fun <T> withExpandedParts(url: String, consume: (prefix: String, suffixStart: Int) -> T): T {
         if (!isCompressed(url)) {
-            return url
+            return consume("", 0)
         }
 
         val separator = url.indexOf('/', startIndex = 1)
         if (separator <= 1) {
-            return url
+            return consume("", 0)
         }
 
-        val id = url.substring(1, separator).toIntOrNull() ?: return url
-        val base = baseFor(id) ?: return url
-        return base + url.substring(separator + 1)
+        val id = url.substring(1, separator).toIntOrNull() ?: return consume("", 0)
+        val base = baseFor(id) ?: return consume("", 0)
+        return consume(base, separator + 1)
     }
 
     @Synchronized

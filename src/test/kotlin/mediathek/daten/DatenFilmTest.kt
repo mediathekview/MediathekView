@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util.*
@@ -62,6 +63,35 @@ internal class DatenFilmTest {
             legacySha256(film),
             film.sha256,
         )
+    }
+
+    @Test
+    fun bookmarkHashReusesItsLookupKeyWithoutPopulatingFilmCaches() {
+        val film = DatenFilm().apply {
+            sender = "ARTE"
+            thema = "ä".repeat(4096) + "\uD83D\uDE80"
+            urlNormalQuality = "https://example.org/ä-\uD83D\uDE80.mp4"
+            websiteUrl = "https://example.org/page-\uD800"
+        }
+        val expectedHash = legacySha256(film)
+        val urlCache = DatenFilm::class.java.getDeclaredField("normalQualityUrlCache").apply { isAccessible = true }
+        urlCache.set(film, null)
+        val otherFilm = DatenFilm().apply {
+            sender = "ZDF"
+            urlNormalQuality = "relative.mp4"
+            websiteUrl = "~unknown/site"
+        }
+        val expectedOtherHash = legacySha256(otherFilm)
+
+        val hasher = DatenFilm.BookmarkHash()
+        val firstKey = hasher.lookupKey(film)
+        assertEquals(ByteBuffer.wrap(HexFormat.of().parseHex(expectedHash)), firstKey)
+        assertNull(film.privateField("sha256Cache"))
+        assertNull(film.privateField("normalQualityUrlCache"))
+        val nextKey = hasher.lookupKey(otherFilm)
+        assertSame(firstKey, nextKey)
+        assertEquals(ByteBuffer.wrap(HexFormat.of().parseHex(expectedOtherHash)), nextKey)
+        assertNull(otherFilm.privateField("sha256Cache"))
     }
 
     @Test

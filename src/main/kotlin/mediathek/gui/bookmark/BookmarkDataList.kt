@@ -33,6 +33,7 @@ import mediathek.tool.withWriteLock
 import net.engio.mbassy.listener.Handler
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.nio.ByteBuffer
 import java.time.LocalDate
 import java.util.*
 
@@ -270,20 +271,25 @@ class BookmarkDataList(
     }
 
     private fun createFilmHashIndex(films: List<DatenFilm>, targetHashes: Set<String>): Map<String, DatenFilm> {
-        if (targetHashes.isEmpty()) {
+        val hex = HexFormat.of()
+        val unmatchedHashes = HashMap<ByteBuffer, String>(targetHashes.size)
+        for (hash in targetHashes) {
+            // The persisted hex string was compared case-sensitively.
+            if (hash.length == 64 && hash.all { it in '0'..'9' || it in 'a'..'f' }) {
+                unmatchedHashes[ByteBuffer.wrap(hex.parseHex(hash))] = hash
+            }
+        }
+        if (unmatchedHashes.isEmpty()) {
             return emptyMap()
         }
 
-        val unmatchedHashes = HashSet(targetHashes)
-        val filmsByHash = HashMap<String, DatenFilm>(targetHashes.size)
+        val hash = DatenFilm.BookmarkHash()
+        val filmsByHash = HashMap<String, DatenFilm>(unmatchedHashes.size)
         for (film in films) {
-            val hash = film.sha256
-            if (hash in unmatchedHashes) {
-                filmsByHash.putIfAbsent(hash, film)
-                unmatchedHashes.remove(hash)
-                if (unmatchedHashes.isEmpty()) {
-                    break
-                }
+            val matchedHash = unmatchedHashes.remove(hash.lookupKey(film)) ?: continue
+            filmsByHash[matchedHash] = film
+            if (unmatchedHashes.isEmpty()) {
+                break
             }
         }
         return filmsByHash
