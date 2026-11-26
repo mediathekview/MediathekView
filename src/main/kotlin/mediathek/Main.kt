@@ -88,6 +88,7 @@ object Main {
 
     @JvmStatic
     fun main(args: Array<String>) = runBlocking {
+        JvmHeapSettings.applyDefaultSoftHeapTarget()
         setupEnvironmentProperties()
 
         val parseResult = parseCommandLine(args)
