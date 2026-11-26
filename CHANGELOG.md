@@ -2,6 +2,7 @@
 - **FEATURE:** In Abspiel- und Speicher-Sets kann nun `%u` für die Untertitel-URL verwendet werden. Ist keine Untertitel-URL vorhanden, wird der Platzhalter durch eine leere Zeichenfolge ersetzt.
 - **FEATURE:** Optionales Schreiben von MP4-Metadaten nach dem Download hinzugefügt. Die Funktion kann pro Download oder über ein Programmset aktiviert werden und schreibt Standard-MP4-Tags wieTitel, Sender, Thema, Sendedatum und Beschreibung in fertige MP4-Dateien.
 - **FEATURE:** verringerter Speicherverbrauch der intern genutzten Caches.
+- **FEATURE:** MediathekView benötigt beim Programmstart deutlich weniger Arbeitsspeicher, auch wenn die Filmliste dabei automatisch aktualisiert wird.
 - **FEATURE:** Lokalisierte ARTE-Senderlogos im Tab *Filme* zeigen nun zusätzlich die jeweilige Sprachkennung an.
 - **FEATURE:** Via *Filme/Watchlist verwalten...*-Dialog sowie Kontextmenüeinträge unter `Watchlist` können nun für einzelne Themen/Titel Überwachungen eingerichet werden, sodass bei Neuerscheinungen in der Filmliste eine Benachrichtigung eingeblendet wird sowie ein roter Punkt am Glockensymbol im Tab Filme erscheint.
 - **FEATURE:** ARTE Onlinesuche durchsucht nun die Kataloge der Sprachen *Deutsch*, *Französisch*, *Englisch*, *Spanisch*, *Polnisch*, *Italienisch* und *Rumänisch*.
